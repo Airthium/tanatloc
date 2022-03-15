@@ -112,9 +112,9 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width">
+    <Space direction="vertical" className="full-width" size={20}>
       <Card title="Administrators">
-        <Space direction="vertical" className="full-width">
+        <Space direction="vertical" className="full-width" size={20}>
           <Add
             title="New administrator"
             organization={{
@@ -139,7 +139,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
         </Space>
       </Card>
       <Card title="Users">
-        <Space direction="vertical" className="full-width">
+        <Space direction="vertical" className="full-width" size={20}>
           <Add
             title="New user"
             organization={{

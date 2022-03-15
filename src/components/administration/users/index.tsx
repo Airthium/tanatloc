@@ -173,7 +173,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width">
+    <Space direction="vertical" className="full-width" size={20}>
       <Add
         plugins={
           plugins?.map((plugin) => ({

@@ -131,7 +131,7 @@ const Groups = ({ organization }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width">
+    <Space direction="vertical" className="full-width" size={20}>
       <Group
         userOptions={userOptions}
         organization={{ id: organization.id }}

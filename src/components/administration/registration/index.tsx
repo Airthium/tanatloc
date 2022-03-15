@@ -118,7 +118,7 @@ const Registration = (): JSX.Element => {
   if (loadingSystem) return <Loading.Simple />
   else
     return (
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" className="full-width" size={20}>
         <Card title="Signup">
           <Checkbox
             checked={system?.allowsignup}

@@ -5,17 +5,17 @@ import { ISimulation } from '@/database/index.d'
 
 import Initialization, { errors } from '..'
 
-const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, err: Error) =>
-    mockErrorNotification(title, err)
-}))
-
 const mockFormula = jest.fn()
 jest.mock(
   '@/components/assets/formula',
   () => (props: any) => mockFormula(props)
 )
+
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
 
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplcator = jest.fn()
@@ -226,6 +226,7 @@ describe('components/project/simulation/initialization', () => {
     mockFormula.mockImplementation(() => <div />)
 
     mockGetFilesNumbers.mockReset()
+    mockGetFilesNumbers.mockImplementation(() => [])
     mockGetMultiplcator.mockReset()
 
     mockUpdate.mockReset()
@@ -394,6 +395,19 @@ describe('components/project/simulation/initialization', () => {
   }
 
   test('onCouplingChange', async () => {
+    mockGetFilesNumbers.mockImplementation(() => [
+      {
+        type: 'result',
+        number: 0,
+        fileName: 'result_0.vtu'
+      },
+      {
+        type: 'result',
+        number: 1,
+        fileName: 'result_1.vtu'
+      }
+    ])
+    mockGetMultiplcator.mockImplementation(() => 1)
     setTasksResults()
     const { unmount } = render(
       <Initialization
@@ -429,22 +443,16 @@ describe('components/project/simulation/initialization', () => {
     })
     await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
-    // await waitFor(() =>
-    //   expect(mockErrorNotification).toHaveBeenLastCalledWith(
-    //     errors.update,
-    //     expect.any(Error)
-    //   )
-    // )
 
     // Normal
     await act(async () => {
       fireEvent.click(option1)
     })
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )
-    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(4))
 
     // Results
     const newSelects = screen.getAllByRole('combobox')
@@ -456,7 +464,7 @@ describe('components/project/simulation/initialization', () => {
     const resultOptions0 = screen.getAllByText('result.vtu')
     const resultOption0 = resultOptions0[0]
     const resultOptions1 = screen.getAllByText('0')
-    // const resultOption1 = resultOptions1[0]
+    const resultOption1 = resultOptions1[0]
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -465,16 +473,16 @@ describe('components/project/simulation/initialization', () => {
     await act(async () => {
       fireEvent.click(resultOption0)
     })
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
-    // // Normal
-    // mockUpdate.mockReset()
-    // await act(async () => fireEvent.click(resultOption1))
-    // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    // await waitFor(() =>
-    //   expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
-    // )
+    // Normal
+    mockUpdate.mockReset()
+    fireEvent.click(resultOption1)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+    )
 
     unmount()
   })
@@ -502,6 +510,18 @@ describe('components/project/simulation/initialization', () => {
 
   test('onCouplingChange, without multiplicator', async () => {
     setTasksResults()
+    mockGetFilesNumbers.mockImplementation(() => [
+      {
+        type: 'result',
+        number: 0,
+        fileName: 'result_0.vtu'
+      },
+      {
+        type: 'result',
+        number: 1,
+        fileName: 'result_1.vtu'
+      }
+    ])
     const simulations2: ISimulation[] = [
       {
         id: 'id',

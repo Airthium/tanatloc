@@ -279,14 +279,16 @@ const loadResults = async (
 
         // Add to results
         results.push(
-          ...notFilteredFiles.map((file) => {
-            if (file.type === 'result')
-              results.push({
-                label: file.fileName,
-                value: file.fileName,
-                file: file.fileName
-              })
-          })
+          ...notFilteredFiles
+            .map((file) => {
+              if (file.type === 'result')
+                results.push({
+                  label: file.fileName,
+                  value: file.fileName,
+                  file: file.fileName
+                })
+            })
+            .filter((f) => f)
         )
         results.push(
           ...options.map((option) => {

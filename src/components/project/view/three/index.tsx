@@ -424,10 +424,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     camera.current.position.z = 10
 
     // Light
-    const ambientLight = new AmbientLight('#ffffff', 0.75)
+    const ambientLight = new AmbientLight('#aaa', 0.75)
     scene.current.add(ambientLight)
 
-    const pointLight1 = new PointLight('#ffffff', 0.5)
+    const pointLight1 = new PointLight('#fff', 0.5)
     pointLight1.decay = 2
 
     camera.current.add(pointLight1)

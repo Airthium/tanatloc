@@ -11,7 +11,7 @@ const NoManipBrowser = (): JSX.Element => {
   return (
     <Layout>
       <Layout.Content>
-        <Typography.Title level={3}>No manipulation needed</Typography.Title>
+        <Typography.Title level={5} mark={true}>No manipulation needed</Typography.Title>
         <Typography.Text>
           This browser has full support for WebGL on all platforms.
         </Typography.Text>

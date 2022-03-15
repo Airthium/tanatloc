@@ -150,11 +150,10 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
           {singleFiles?.map((file) => (
             <Space key={file.name} style={{ alignItems: 'center' }}>
               <Button
-                size="small"
                 icon={
                   result?.fileName === file?.fileName &&
                   result?.name === file?.name ? (
-                    <EyeOutlined />
+                    <EyeOutlined style={{ color: '#fad114' }} />
                   ) : (
                     <EyeInvisibleOutlined />
                   )
@@ -202,11 +201,10 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                       style={{ alignItems: 'center' }}
                     >
                       <Button
-                        size="small"
                         icon={
                           result?.fileName === filteredFile?.fileName &&
                           result?.name === filteredFile?.name ? (
-                            <EyeOutlined />
+                            <EyeOutlined style={{ color: '#fad114' }} />
                           ) : (
                             <EyeInvisibleOutlined />
                           )

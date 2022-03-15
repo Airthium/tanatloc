@@ -77,7 +77,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
         title="Log"
         visible={visible}
         onClose={() => setVisible(false)}
-        width={512}
+        width="50%"
       >
         <Tabs>
           {steps?.map((step) => (

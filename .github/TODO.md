@@ -39,6 +39,29 @@
 
 - Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
+- alignement title card boundary condition (et autre ?)
+
+- selector virer divider
+
+- last card dans panel sans border bottom
+
+- bc (material?) nom long + mise à jour du nom
+
+- dans les delete, mettre nom des bc, material, ... en gras
+  are you sure... the boundary condition <b>name</b>
+
+- cloudserver account settings link au lieu de boutton
+
+- cloudserver -> computational (ou HPC) resource
+
+- log plus grand
+
+- complete log error
+
+- colorbar smaller font, gauche droite
+
+- debug mathjax
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

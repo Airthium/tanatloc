@@ -205,7 +205,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
               }
             />
             <Card size="small" title="Run">
-              <Space direction="vertical" className="full-width">
+              <Space direction="vertical" className="full-width" size={20}>
                 <div
                   className="full-width"
                   style={{

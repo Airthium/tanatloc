@@ -73,7 +73,6 @@ const Download = ({ simulation, file }: IProps): JSX.Element => {
       <Button
         loading={loading}
         icon={<DownloadOutlined />}
-        size="small"
         onClick={async () => {
           setLoading(true)
           try {

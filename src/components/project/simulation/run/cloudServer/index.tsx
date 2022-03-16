@@ -77,10 +77,10 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Card size="small" title="Cloud server">
+    <Card size="small" title="Computational resource">
       <Modal
         visible={visible}
-        title="Cloud server"
+        title="Computational resource"
         okButtonProps={{
           disabled: true,
           style: { display: 'none' }
@@ -90,8 +90,10 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
       >
         <Space direction="vertical">
           <Typography.Text>
-            Your cloud server does not appear in this list? Create one in your
+            Your computational resource does not appear in this list? Create one
+            in your
             <Button
+              type="link"
               onClick={() =>
                 router.push({
                   pathname: '/dashboard',
@@ -165,7 +167,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           icon={<CloudServerOutlined />}
           onClick={() => setVisible(true)}
         >
-          {cloudServer ? 'Modify the cloud server' : 'Select a Cloud server'}
+          {cloudServer ? 'Modify the resource' : 'Select a resource'}
         </Button>
       </Space>
     </Card>

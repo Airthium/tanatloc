@@ -68,6 +68,8 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
+  console.log(steps)
+
   /**
    * Render
    */
@@ -98,6 +100,14 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                   >
                     Complete log
                   </Button>
+                  <br />
+                </>
+              )}
+              {step.link && (
+                <>
+                  <a href={'https://' + step.link.href} target="_blank">
+                    {step.link.label}
+                  </a>
                   <br />
                 </>
               )}

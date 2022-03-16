@@ -148,6 +148,10 @@ export interface ISimulationTask {
   warning?: string
   error?: string
   systemLog?: string
+  link?: {
+    label: string
+    href: string
+  }
   file?: ISimulationTaskFile
   files?: ISimulationTaskFile[]
   plugin?: string

@@ -50,14 +50,6 @@
 - dans les delete, mettre nom des bc, material, ... en gras
   are you sure... the boundary condition <b>name</b>
 
-- cloudserver account settings link au lieu de boutton
-
-- cloudserver -> computational (ou HPC) resource
-
-- log plus grand
-
-- complete log error
-
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

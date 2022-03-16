@@ -342,7 +342,11 @@ const getLog = async (
   const filePath = path.join(SIMULATION, simulation.id, file)
 
   // Read file
-  return Tools.readFile(filePath) as Promise<Buffer>
+  try {
+    return await (Tools.readFile(filePath) as Promise<Buffer>)
+  } catch (err) {
+    return Buffer.from('Not available yet')
+  }
 }
 
 /**

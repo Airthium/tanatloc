@@ -107,7 +107,7 @@
     "swr": "1.2.2",
     "tar": "6.1.11",
     "three": "0.138.3",
-    "three-to-glb": "ssh://git@github.com:Airthium/three-to-glb.git#1.1.4",
+    "three-to-glb": "ssh://git@github.com:Airthium/three-to-glb.git#1.1.5",
     "typedoc": "0.22.13",
     "typedoc-plugin-airthium": "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.2",
     "typescript": "4.6.2",

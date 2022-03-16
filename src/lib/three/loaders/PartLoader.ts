@@ -120,18 +120,29 @@ const PartLoader = (
 
     // Set original colors
     const solids = object.children[0]
-    for (const solid of solids.children) {
-      solid.material.originalColor = solid.material.color
-      solid.material.roughness = 0.5
-      solid.material.clippingPlanes = [clippingPlane]
-      solid.visible = false
-    }
+    if (solids)
+      for (const solid of solids.children) {
+        solid.material.originalColor = solid.material.color
+        solid.material.roughness = 0.5
+        solid.material.clippingPlanes = [clippingPlane]
+        solid.visible = false
+      }
+
     const faces = object.children[1]
-    for (const face of faces.children) {
-      face.material.originalColor = face.material.color
-      face.material.roughness = 0.5
-      face.material.clippingPlanes = [clippingPlane]
-    }
+    if (faces)
+      for (const face of faces.children) {
+        face.material.originalColor = face.material.color
+        face.material.roughness = 0.5
+        face.material.clippingPlanes = [clippingPlane]
+      }
+
+    const edges = object.children[2]
+    if (edges)
+      for (const edge of edges.children) {
+        edge.material.originalColor = edge.material.color
+        edge.material.roughness = 0.5
+        edge.material.clippingPlanes = [clippingPlane]
+      }
 
     // Transparency
     setTransparent(object, transparent)
@@ -177,6 +188,14 @@ const PartLoader = (
       const faces = part.children[1]
       faces.children?.forEach((face) => {
         mergeBox(box, face.geometry.boundingBox)
+      })
+    }
+
+    if (box.isEmpty()) {
+      // Try edges
+      const edges = part.children[2]
+      edges.children?.forEach((edge) => {
+        mergeBox(box, edge.geometry.boundingBox)
       })
     }
 
@@ -253,6 +272,17 @@ const PartLoader = (
     })
   }
 
+  /**
+   * Set edges visible
+   * @param part Part
+   * @param visible Visible
+   */
+  const setEdgesVisible = (part: IPart, visible: boolean): void => {
+    part.children[2].children.forEach((edge) => {
+      edge.visible = visible
+    })
+  }
+
   // highlight / selection Variables
   let raycaster = new Raycaster()
   let selectionPart: IPart = null
@@ -289,13 +319,21 @@ const PartLoader = (
     if (type === 'solids') {
       setSolidsVisible(part, true)
       setFacesVisible(part, false)
+      setEdgesVisible(part, false)
 
       selectionType = 0
     } else if (type === 'faces') {
       setSolidsVisible(part, false)
       setFacesVisible(part, true)
+      setEdgesVisible(part, false)
 
       selectionType = 1
+    } else if (type === 'edges') {
+      setSolidsVisible(part, false)
+      setFacesVisible(part, false)
+      setEdgesVisible(part, true)
+
+      selectionType = 2
     }
 
     selectionRenderer.domElement.addEventListener('pointermove', mouseMove)
@@ -352,6 +390,12 @@ const PartLoader = (
     const faces = part.children[1]
     for (const face of faces.children) {
       if (face.userData.uuid === uuid) return face
+    }
+
+    // Search in edges
+    const edges = part.children[2]
+    for (const edge of edges.children) {
+      if (edge.userData.uuid === uuid) return edge
     }
   }
 

@@ -52,16 +52,15 @@ const toThree = async (
   }
 
   // Convert
-  return new Promise((resolve, reject) => {
-    let run: any
-    let data = ''
-    let error = ''
+  if (isDocker()) {
+    const data = execSync(command, { cwd: bindPath })
+    return { code: 0, data: data.toString(), error: '' }
+  } else {
+    return new Promise((resolve, reject) => {
+      let run: any
+      let data = ''
+      let error = ''
 
-    if (isDocker()) {
-      run = spawn(command, {
-        cwd: bindPath
-      })
-    } else {
       const user =
         process.platform === 'win32'
           ? 1000
@@ -80,28 +79,28 @@ const toThree = async (
         '-c',
         command
       ])
-    }
 
-    run.stdout.on('data', (stdout: Buffer) => {
-      stdout && (data += stdout.toString())
-    })
+      run.stdout.on('data', (stdout: Buffer) => {
+        stdout && (data += stdout.toString())
+      })
 
-    run.stderr.on('data', (stderr: Buffer) => {
-      stderr && (error += stderr.toString())
-    })
+      run.stderr.on('data', (stderr: Buffer) => {
+        stderr && (error += stderr.toString())
+      })
 
-    run.on('close', (code: any) => {
-      resolve({
-        code,
-        data,
-        error
+      run.on('close', (code: any) => {
+        resolve({
+          code,
+          data,
+          error
+        })
+      })
+
+      run.on('error', (err: Error) => {
+        reject(err)
       })
     })
-
-    run.on('error', (err: Error) => {
-      reject(err)
-    })
-  })
+  }
 }
 
 export default toThree

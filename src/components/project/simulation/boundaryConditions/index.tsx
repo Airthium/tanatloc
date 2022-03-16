@@ -169,9 +169,9 @@ BoundaryConditions.propTypes = {
   }).isRequired,
   geometry: PropTypes.exact({
     id: PropTypes.string.isRequired,
+    dimension: PropTypes.number.isRequired,
     summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
-      dimension: PropTypes.number.isRequired,
       faces: PropTypes.array.isRequired,
       edges: PropTypes.array.isRequired
     }).isRequired

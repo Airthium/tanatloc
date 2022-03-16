@@ -151,9 +151,9 @@ const Materials = ({
 Materials.propTypes = {
   geometry: PropTypes.exact({
     id: PropTypes.string.isRequired,
+    dimension: PropTypes.number.isRequired,
     summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
-      dimension: PropTypes.number.isRequired,
       solids: PropTypes.array.isRequired,
       faces: PropTypes.array.isRequired
     }).isRequired

@@ -35,6 +35,8 @@
 
 - last card dans material et bc drawer sans border bottom
 
+- Correct clone of objects ? ({...simulation} is a shallow copy)
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

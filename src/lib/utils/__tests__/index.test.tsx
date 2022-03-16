@@ -21,7 +21,7 @@ describe('lib/utils', () => {
 
     // With string
     color = Utils.stringToColor('string')
-    expect(color).toBe('#D56011')
+    expect(color).toBe('hsl(-223, 100%, 50%)')
   })
 
   test('rgbToHex', () => {

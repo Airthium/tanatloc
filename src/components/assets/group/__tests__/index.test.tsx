@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form } from 'antd'
 
 import Group, { Delete, errors } from '..'
 
@@ -28,7 +29,7 @@ jest.mock('@/api/group', () => ({
   update: async () => mockUpdate()
 }))
 
-describe('components/assets/groups', () => {
+describe('components/assets/group', () => {
   const userOptions = []
   const organization = {
     id: 'id'
@@ -134,15 +135,18 @@ describe('components/assets/groups', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
+    let name = 'name'
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
         onClick={async () => {
           try {
-            await props.onOk({ name: 'name', users: ['id'] })
+            await props.onOk({ name: name, users: ['id'] })
           } catch (err) {}
         }}
-      />
+      >
+        <Form>{props.children}</Form>
+      </div>
     ))
     const { unmount } = render(
       <Group
@@ -158,6 +162,10 @@ describe('components/assets/groups', () => {
 
     const dialog = screen.getByRole('Dialog')
 
+    // Empty
+    fireEvent.click(dialog)
+
+    name = 'new name'
     // Normal
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))

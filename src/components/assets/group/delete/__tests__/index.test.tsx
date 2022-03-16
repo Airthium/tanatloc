@@ -19,7 +19,7 @@ jest.mock('@/api/group', () => ({
   del: async () => mockDel()
 }))
 
-describe('components/administration/groups/delete', () => {
+describe('components/assets/group/delete', () => {
   const group = { id: 'id', name: 'name' }
   const swr = {
     delOneGroup: jest.fn()

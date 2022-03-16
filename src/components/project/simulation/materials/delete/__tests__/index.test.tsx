@@ -40,6 +40,7 @@ describe('components/project/simulation/materials/delete', () => {
           values: [
             {
               uuid: 'uuid',
+              material: { label: 'label' },
               selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
@@ -119,6 +120,7 @@ describe('components/project/simulation/materials/delete', () => {
     simulation.scheme.configuration.materials.values = [
       {
         uuid: 'uuid',
+        material: { label: 'label', children: [] },
         selected: [{ uuid: 'uuid', label: 1 }]
       }
     ]

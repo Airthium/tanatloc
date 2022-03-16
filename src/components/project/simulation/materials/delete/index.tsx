@@ -109,7 +109,7 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
       text={
         <>
           Are you sure you want to delete the material{' '}
-          <Typography.Text strong>{material.material.label}</Typography.Text>
+          <Typography.Text strong>{material?.material.label}</Typography.Text>
         </>
       }
       onDelete={async () => {

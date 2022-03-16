@@ -139,7 +139,7 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
       text={
         <>
           Are you sure you want to delete the condition{' '}
-          <Typography.Text strong>{boundaryCondition.name}</Typography.Text>?
+          <Typography.Text strong>{boundaryCondition?.name}</Typography.Text>?
         </>
       }
     />

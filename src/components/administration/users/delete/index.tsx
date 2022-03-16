@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { Typography } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
 
@@ -68,7 +69,12 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
     <DeleteButton
       loading={loading}
       bordered
-      text={'Delete ' + user.email + '?'}
+      text={
+        <>
+          Are you sure you want to delete the user{' '}
+          <Typography.Text strong>{user.email}</Typography.Text>?
+        </>
+      }
       title="Delete user"
       onDelete={async () => {
         setLoading(true)

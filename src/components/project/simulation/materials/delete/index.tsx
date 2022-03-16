@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useContext, useState } from 'react'
+import { Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -96,6 +97,8 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
 
   // Data
   const { dispatch } = useContext(SelectContext)
+  const materials = simulation.scheme.configuration.materials
+  const material = materials.values[index]
 
   /**
    * Render
@@ -103,6 +106,12 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
+      text={
+        <>
+          Are you sure you want to delete the material{' '}
+          <Typography.Text strong>{material.material.label}</Typography.Text>
+        </>
+      }
       onDelete={async () => {
         setLoading(true)
         try {

@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { Typography } from 'antd'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
@@ -82,7 +83,12 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
       disabled={disabled}
       loading={loading}
       title="Delete the project"
-      text={'Are you sure you want to delete ' + project.title + '?'}
+      text={
+        <>
+          Are you sure you want to delete the project{' '}
+          <Typography.Text strong>{project.title}</Typography.Text>?
+        </>
+      }
       onDelete={async () => {
         setLoading(true)
         try {

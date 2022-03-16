@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { Typography } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'
 
@@ -65,7 +66,15 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
     <DeleteButton
       loading={loading}
       title="Delete plugin"
-      text={'Delete "' + (plugin.configuration.name?.value || 'plugin') + '"?'}
+      text={
+        <>
+          Are you sure you want to delete the plugin{' '}
+          <Typography.Text strong>
+            {plugin.configuration.name?.value}
+          </Typography.Text>
+          ?
+        </>
+      }
       onDelete={async () => {
         setLoading(true)
         try {

@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
@@ -78,7 +79,12 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
-      text={'Are you sure you want to delete ' + simulation.name + '?'}
+      text={
+        <>
+          Are you sure you want to delete the simulation{' '}
+          <Typography.Text strong>{simulation.name}</Typography.Text>?
+        </>
+      }
       onDelete={async () => {
         setLoading(true)
         try {

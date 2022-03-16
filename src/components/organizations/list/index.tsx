@@ -67,7 +67,8 @@ const List = ({
           </Button>
           <Delete
             organization={{
-              id: org.id
+              id: org.id,
+              name: org.name
             }}
             swr={{ delOneOrganization: swr.delOneOrganization }}
           />

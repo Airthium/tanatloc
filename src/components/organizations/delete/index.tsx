@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { Typography } from 'antd'
 
 import { IOrganizationWithData } from '@/lib/index.d'
 
@@ -65,7 +66,12 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
     <DeleteButton
       bordered
       title="Delete organization"
-      text={'Delete ' + organization?.name + '?'}
+      text={
+        <>
+          Are you sure you want to delete the organization{' '}
+          <Typography.Text strong>{organization.name}</Typography.Text>?
+        </>
+      }
       onDelete={async () => {
         setLoading(true)
         try {
@@ -81,7 +87,8 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
 
 Delete.propTypes = {
   organization: PropTypes.exact({
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
   }).isRequired,
   swr: PropTypes.exact({
     delOneOrganization: PropTypes.func.isRequired

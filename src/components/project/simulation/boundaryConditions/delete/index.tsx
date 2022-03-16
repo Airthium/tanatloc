@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useContext, useState } from 'react'
+import { Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
@@ -115,6 +116,11 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
 
   // Data
   const { dispatch } = useContext(SelectContext)
+  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
+  const typedBoundaryCondition = boundaryConditions[
+    type
+  ] as IModelTypedBoundaryCondition
+  const boundaryCondition = typedBoundaryCondition.values[index]
 
   /**
    * Render
@@ -130,7 +136,12 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
           setLoading(false)
         }
       }}
-      text={'Are you sure you want to delete this condition ?'}
+      text={
+        <>
+          Are you sure you want to delete the condition{' '}
+          <Typography.Text strong>{boundaryCondition.name}</Typography.Text>?
+        </>
+      }
     />
   )
 }

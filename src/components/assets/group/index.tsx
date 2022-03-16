@@ -207,7 +207,9 @@ const Group = ({
       </Dialog>
 
       {group ? (
-        <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>
+        <EditButton bordered onEdit={() => setVisible(true)}>
+          Edit
+        </EditButton>
       ) : (
         <AddButton onAdd={() => setVisible(true)}>New group</AddButton>
       )}

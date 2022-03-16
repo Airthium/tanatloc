@@ -197,7 +197,12 @@ const Geometry = ({
               <DeleteButton
                 key="delete"
                 loading={deleting}
-                text="Are you sure you want to delete this geometry?"
+                text={
+                  <>
+                    Are you sure you want to delete the geometry{' '}
+                    <Typography.Text strong>{geometry.name}</Typography.Text>?
+                  </>
+                }
                 onDelete={async () => {
                   setDeleting(true)
                   try {

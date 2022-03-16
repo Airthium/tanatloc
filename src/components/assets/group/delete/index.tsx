@@ -9,6 +9,7 @@ import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
+import { Typography } from 'antd'
 
 /**
  * Props
@@ -67,8 +68,14 @@ const Delete = ({ group, swr }: IProps): JSX.Element => {
    */
   return (
     <DeleteButton
+      bordered
       title="Delete group"
-      text={'Delete ' + group.name + '?'}
+      text={
+        <>
+          Are you sure you want to delete the group{' '}
+          <Typography.Text strong>{group.name}</Typography.Text>?
+        </>
+      }
       loading={loading}
       onDelete={async () => {
         setLoading(true)

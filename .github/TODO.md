@@ -41,9 +41,6 @@
 
 - bc (material?) nom long + mise à jour du nom
 
-- dans les delete, mettre nom des bc, material, ... en gras
-  are you sure... the boundary condition <b>name</b>
-
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
@@ -103,9 +104,15 @@ const Delete = ({
    */
   return (
     <DeleteButton
+      bordered
       disabled={disabled}
       title="Delete organization"
-      text={'Delete ' + setName(user) + '?'}
+      text={
+        <>
+          Are you sure you want to delete the user{' '}
+          <Typography.Text strong>{setName(user)}</Typography.Text>?
+        </>
+      }
       loading={loading}
       onDelete={async () => {
         setLoading(true)

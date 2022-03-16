@@ -14,7 +14,7 @@ export interface IProps {
   disabled?: boolean
   loading?: boolean
   bordered?: boolean
-  text?: string
+  text?: ReactChild | string
   title?: string
   children?: ReactChild | ReactChild[]
   onDelete: () => Promise<void>

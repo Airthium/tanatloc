@@ -6,19 +6,16 @@ import { parseOneAddress } from 'email-addresses'
 /**
  * String to color
  * @param {string} str String
- * @returns {string} Color
+ * @returns {string} HSL color
  */
 const stringToColor = (str?: string): string => {
   if (!str) return '#FFFFFF'
 
-  str = str.replace(/[\W_]+/g, '')
+  const stringHash = Array.from(str).reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc)
+  }, 0)
 
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  const c = (hash & 0x00ffffff).toString(16).toUpperCase()
-  return '#' + '00000'.substring(0, 6 - c.length) + c
+  return 'hsl(' + (stringHash % 360) + ', 100%, 50%)'
 }
 
 /**

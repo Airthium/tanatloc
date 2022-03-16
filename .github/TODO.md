@@ -33,15 +33,9 @@
 
 - Formula, label au dessus
 
-- Utils stringToRGB couleur foncé (HSV ?)
-
-- Parameters -> advanced marge
-
-- Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
+- /!\ Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
 - alignement title card boundary condition (et autre ?)
-
-- selector virer divider
 
 - last card dans panel sans border bottom
 

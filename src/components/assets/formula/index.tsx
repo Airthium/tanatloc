@@ -9,7 +9,7 @@ import {
   useEffect,
   useState
 } from 'react'
-import { Checkbox, Input, Space } from 'antd'
+import { Checkbox, Form, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
@@ -132,26 +132,29 @@ const Formula = ({
    * Render
    */
   return (
-    <Space className={className}>
+    <Space className={className} align="start">
       {defaultChecked !== undefined && (
         <Checkbox checked={internalChecked} onChange={onCheckboxChange} />
       )}
-      {label && <label>{label}:</label>}
-      <Input
-        disabled={disabled}
-        value={internalValue}
-        onChange={onInputChange}
-        addonAfter={
-          <Space>
-            <MathJax.Inline text={unit} />
-            {saving ? (
-              <LoadingOutlined spin className="color-orange" />
-            ) : (
-              <CheckCircleOutlined className="color-green" />
-            )}
-          </Space>
-        }
-      />
+      <Form layout="vertical">
+        <Form.Item label={label}>
+          <Input
+            disabled={disabled}
+            value={internalValue}
+            onChange={onInputChange}
+            addonAfter={
+              <Space>
+                <MathJax.Inline text={unit} />
+                {saving ? (
+                  <LoadingOutlined spin className="color-orange" />
+                ) : (
+                  <CheckCircleOutlined className="color-green" />
+                )}
+              </Space>
+            }
+          />
+        </Form.Item>
+      </Form>
     </Space>
   )
 }

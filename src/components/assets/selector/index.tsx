@@ -304,9 +304,7 @@ const Selector = ({
         />
       </Space>
 
-      <Divider className="border-light" />
-
-      <div className="full-width">
+      <div className="full-width marginTop-20">
         {geometry?.[type]
           ? geometry[type].map(
               (

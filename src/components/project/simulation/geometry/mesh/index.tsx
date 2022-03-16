@@ -8,7 +8,7 @@ import {
   useEffect,
   useCallback
 } from 'react'
-import { Card, Select, Space, Typography } from 'antd'
+import { Card, Form, Select, Space, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -174,53 +174,50 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   return (
     <Card size="small" title="Mesh refinement">
       <Space direction="vertical" className="full-width">
-        <Typography.Text>
-          Type:
-          <br />
-          <Select
-            className="full-width"
-            value={meshGlobalType}
-            onChange={async (type) => {
-              try {
-                await onMeshGlobalType(simulation, type, swr)
-
-                setMeshGlobalType(type)
-                if (type === 'auto') setMeshGlobalValue('normal')
-                else setMeshGlobalValue('1')
-              } catch (err) {}
-            }}
-          >
-            <Select.Option value="auto">Automatic</Select.Option>
-            <Select.Option value="manual">Manual</Select.Option>
-          </Select>
-        </Typography.Text>
-        {meshGlobalType === 'auto' && (
-          <Typography.Text>
-            Size:
-            <br />
+        <Form layout="vertical">
+          <Form.Item label="Type">
             <Select
               className="full-width"
-              value={meshGlobalValue}
-              onChange={onSize}
+              value={meshGlobalType}
+              onChange={async (type) => {
+                try {
+                  await onMeshGlobalType(simulation, type, swr)
+
+                  setMeshGlobalType(type)
+                  if (type === 'auto') setMeshGlobalValue('normal')
+                  else setMeshGlobalValue('1')
+                } catch (err) {}
+              }}
             >
-              <Select.Option value="veryfine">Very fine</Select.Option>
-              <Select.Option value="fine">Fine</Select.Option>
-              <Select.Option value="normal">Normal</Select.Option>
-              <Select.Option value="coarse">Coarse</Select.Option>
-              <Select.Option value="verycoarse">Very coarse</Select.Option>
+              <Select.Option value="auto">Automatic</Select.Option>
+              <Select.Option value="manual">Manual</Select.Option>
             </Select>
-          </Typography.Text>
+          </Form.Item>
+        </Form>
+        {meshGlobalType === 'auto' && (
+          <Form layout="vertical">
+            <Form.Item label="Size">
+              <Select
+                className="full-width"
+                value={meshGlobalValue}
+                onChange={onSize}
+              >
+                <Select.Option value="veryfine">Very fine</Select.Option>
+                <Select.Option value="fine">Fine</Select.Option>
+                <Select.Option value="normal">Normal</Select.Option>
+                <Select.Option value="coarse">Coarse</Select.Option>
+                <Select.Option value="verycoarse">Very coarse</Select.Option>
+              </Select>
+            </Form.Item>
+          </Form>
         )}
         {meshGlobalType === 'manual' && (
-          <Typography.Text>
-            Size:
-            <br />
-            <Formula
-              defaultValue={meshGlobalValue}
-              onValueChange={onSize}
-              unit="m"
-            />
-          </Typography.Text>
+          <Formula
+            label="Size"
+            defaultValue={meshGlobalValue}
+            onValueChange={onSize}
+            unit="m"
+          />
         )}
       </Space>
     </Card>

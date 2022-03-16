@@ -457,21 +457,20 @@ const Initialization = ({
         (child: IModelInitialization, index: number) => {
           if (child.htmlEntity === 'formula') {
             return (
-              <Typography.Text key={key + '&' + index}>
-                {child.label}:<br />
-                <Formula
-                  defaultValue={
-                    initializationValue?.values?.[index] ||
-                    ((child?.value as string) ?? (child.default as string))
-                  }
-                  onValueChange={async (value) => {
-                    try {
-                      await onChange(simulation, index, value, swr)
-                    } catch (err) {}
-                  }}
-                  unit={child.unit}
-                />
-              </Typography.Text>
+              <Formula
+                key={key + '&' + index}
+                label={child.label}
+                defaultValue={
+                  initializationValue?.values?.[index] ||
+                  ((child?.value as string) ?? (child.default as string))
+                }
+                onValueChange={async (value) => {
+                  try {
+                    await onChange(simulation, index, value, swr)
+                  } catch (err) {}
+                }}
+                unit={child.unit}
+              />
             )
           } else if (child.htmlEntity === 'select') {
             return (

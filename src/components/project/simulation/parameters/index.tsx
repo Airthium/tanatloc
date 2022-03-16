@@ -6,6 +6,7 @@ import {
   Card,
   Checkbox,
   Collapse,
+  Form,
   Layout,
   Select,
   Space,
@@ -156,45 +157,44 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
     const components = parameter?.children.map((child, index) => {
       if (child.htmlEntity === 'formula') {
         return (
-          <Typography.Text key={key + '&' + index}>
-            {child.label}:<br />
-            <Formula
-              defaultValue={
-                (child.value as string) ?? (child.default as string)
-              }
-              onValueChange={(value: string) =>
-                onChange(simulation, key, index, value, swr)
-              }
-              unit={child.unit}
-            />
-          </Typography.Text>
+          <Formula
+            key={key + '&' + index}
+            label={child.label}
+            defaultValue={(child.value as string) ?? (child.default as string)}
+            onValueChange={(value: string) =>
+              onChange(simulation, key, index, value, swr)
+            }
+            unit={child.unit}
+          />
         )
       } else if (child.htmlEntity === 'select') {
         return (
-          <Typography.Text key={key + '&' + index}>
-            {child.label}:<br />
-            <Select
-              options={child.options}
-              defaultValue={
-                (child.value as string) || (child.default as string)
-              }
-              onChange={(value: string) =>
-                onChange(simulation, key, index, value, swr)
-              }
-            />
-          </Typography.Text>
+          <Form layout="vertical" key={key + '&' + index}>
+            <Form.Item label={child.label}>
+              <Select
+                options={child.options}
+                defaultValue={
+                  (child.value as string) || (child.default as string)
+                }
+                onChange={(value: string) =>
+                  onChange(simulation, key, index, value, swr)
+                }
+              />
+            </Form.Item>
+          </Form>
         )
       } else if (child.htmlEntity === 'checkbox') {
         return (
-          <Typography.Text key={key + '&' + index}>
-            {child.label}:<br />
-            <Checkbox
-              defaultChecked={child.value as boolean}
-              onChange={(e) =>
-                onChange(simulation, key, index, e.target.checked, swr)
-              }
-            />
-          </Typography.Text>
+          <Form layout="vertical" key={key + '&' + index}>
+            <Form.Item label={child.label}>
+              <Checkbox
+                defaultChecked={child.value as boolean}
+                onChange={(e) =>
+                  onChange(simulation, key, index, e.target.checked, swr)
+                }
+              />
+            </Form.Item>
+          </Form>
         )
       }
     })

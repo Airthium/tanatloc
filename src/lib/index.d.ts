@@ -28,6 +28,7 @@ export interface INewGeometryWithData extends INewGeometry {
       color: { r: number; g: number; b: number }
     }>
   }
+  dimension: number
 }
 
 export interface IGeometryFile {

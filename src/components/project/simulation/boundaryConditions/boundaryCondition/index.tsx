@@ -42,6 +42,7 @@ export interface IProps {
   simulation: ISimulation
   geometry: {
     faces: IGeometry['summary']['faces']
+    edges?: IGeometry['summary']['edges']
   }
   boundaryCondition?: IModelBoundaryConditionValue
   swr: {
@@ -376,7 +377,8 @@ const BoundaryCondition = ({
         )}
         <Selector
           geometry={{
-            faces: geometry.faces
+            faces: geometry.faces,
+            edges: geometry.edges
           }}
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
@@ -403,7 +405,8 @@ BoundaryCondition.propTypes = {
     }).isRequired
   }).isRequired,
   geometry: PropTypes.exact({
-    faces: PropTypes.array.isRequired
+    faces: PropTypes.array.isRequired,
+    edges: PropTypes.array
   }).isRequired,
   boundaryCondition: PropTypes.exact({
     uuid: PropTypes.string.isRequired,

@@ -408,9 +408,11 @@ const Project = (): JSX.Element => {
           <Simulation.Materials
             geometry={{
               id: geometry.id,
+              dimension: geometry.dimension,
               summary: {
                 uuid: geometry.summary.uuid,
-                solids: geometry.summary.solids
+                solids: geometry.summary.solids,
+                faces: geometry.summary.faces
               }
             }}
             simulation={{
@@ -462,9 +464,11 @@ const Project = (): JSX.Element => {
           <Simulation.BoundaryConditions
             geometry={{
               id: geometry.id,
+              dimension: geometry.dimension,
               summary: {
                 uuid: geometry.summary.uuid,
-                faces: geometry.summary.faces
+                faces: geometry.summary.faces,
+                edges: geometry.summary.edges
               }
             }}
             simulation={{

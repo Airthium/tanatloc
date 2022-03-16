@@ -122,20 +122,25 @@ const add = async (
       ...geometryData,
       json: part.json,
       glb: part.glb,
-      summary
+      summary,
+      dimension: summary.solids?.length ? 3 : 2
     }
     await GeometryDB.update({ id: geometryData.id }, [
       {
         key: 'glb',
-        value: part.glb
+        value: newGeometry.glb
       },
       {
         key: 'json',
-        value: part.json
+        value: newGeometry.json
       },
       {
         key: 'summary',
-        value: JSON.stringify(summary)
+        value: JSON.stringify(newGeometry.summary)
+      },
+      {
+        key: 'dimension',
+        value: newGeometry.dimension
       }
     ])
 

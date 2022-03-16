@@ -52,8 +52,12 @@ export interface IGeometry {
       uuid: string
       number: number | string
     }[]
-    edges?: {}[]
+    edges?: {
+      uuid: string
+      number: number | string
+    }[]
   }
+  dimension?: number
   project?: string
 }
 

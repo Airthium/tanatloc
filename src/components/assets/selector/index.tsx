@@ -10,16 +10,7 @@ import {
   useCallback,
   useContext
 } from 'react'
-import {
-  Button,
-  Card,
-  Divider,
-  Input,
-  Space,
-  Tag,
-  Tooltip,
-  Typography
-} from 'antd'
+import { Button, Card, Input, Space, Tag, Tooltip, Typography } from 'antd'
 import {
   CloseOutlined,
   CloseSquareOutlined,
@@ -52,13 +43,13 @@ export interface IColor {
  */
 export interface IProps {
   geometry: {
-    faces?: {
+    solids?: {
       uuid: string
       number?: number | string
       name?: string
       color?: IColor
     }[]
-    solids?: {
+    faces?: {
       uuid: string
       number?: number | string
       name?: string

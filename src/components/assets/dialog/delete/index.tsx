@@ -80,7 +80,7 @@ const DeleteDialog = ({
 DeleteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   children: PropTypes.node.isRequired,
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired

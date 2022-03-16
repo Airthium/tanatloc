@@ -52,6 +52,7 @@ export default async (req: Request, res: Response): Promise<void> => {
               'name',
               'originalfilename',
               'summary',
+              'dimension',
               'project'
             ])
             if (!geometry) throw error(400, 'Invalid geometry identifier')

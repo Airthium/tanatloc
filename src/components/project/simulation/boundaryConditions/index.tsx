@@ -66,7 +66,7 @@ const BoundaryConditions = ({
 
   // Part
   useEffect(() => {
-    dispatch(setType('faces'))
+    dispatch(setType(geometry.dimension === 2 ? 'edges' : 'faces'))
     dispatch(setPart(geometry.summary.uuid))
   }, [geometry, dispatch])
 
@@ -135,7 +135,8 @@ const BoundaryConditions = ({
               scheme: simulation.scheme
             }}
             geometry={{
-              faces: geometry.summary.faces
+              faces: geometry.summary.faces,
+              edges: geometry.summary.edges
             }}
             boundaryCondition={
               boundaryCondition && {
@@ -170,7 +171,9 @@ BoundaryConditions.propTypes = {
     id: PropTypes.string.isRequired,
     summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
-      faces: PropTypes.array.isRequired
+      dimension: PropTypes.number.isRequired,
+      faces: PropTypes.array.isRequired,
+      edges: PropTypes.array.isRequired
     }).isRequired
   }).isRequired,
   swr: PropTypes.exact({

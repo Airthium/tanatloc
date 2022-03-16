@@ -62,7 +62,7 @@ const Materials = ({
 
   // Part
   useEffect(() => {
-    dispatch(setType('solids'))
+    dispatch(setType(geometry.dimension === 2 ? 'faces' : 'solids'))
     dispatch(setPart(geometry.summary.uuid))
   }, [geometry, dispatch])
 
@@ -127,7 +127,8 @@ const Materials = ({
               scheme: simulation.scheme
             }}
             geometry={{
-              solids: geometry.summary.solids
+              solids: geometry.summary.solids,
+              faces: geometry.summary.faces
             }}
             material={
               material && {
@@ -152,7 +153,9 @@ Materials.propTypes = {
     id: PropTypes.string.isRequired,
     summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
-      solids: PropTypes.array.isRequired
+      dimension: PropTypes.number.isRequired,
+      solids: PropTypes.array.isRequired,
+      faces: PropTypes.array.isRequired
     }).isRequired
   }).isRequired,
   simulation: PropTypes.exact({

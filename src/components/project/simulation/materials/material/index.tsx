@@ -32,6 +32,7 @@ export interface IProps {
   simulation: ISimulation
   geometry: {
     solids: IGeometry['summary']['solids']
+    faces?: IGeometry['summary']['faces']
   }
   material?: IModelMaterialValue
   swr: {
@@ -225,7 +226,8 @@ const Material = ({
 
         <Selector
           geometry={{
-            solids: geometry.solids
+            solids: geometry.solids,
+            faces: geometry.faces
           }}
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
@@ -255,7 +257,8 @@ Material.propTypes = {
     }).isRequired
   }).isRequired,
   geometry: PropTypes.exact({
-    solids: PropTypes.array.isRequired
+    solids: PropTypes.array.isRequired,
+    faces: PropTypes.array
   }).isRequired,
   material: PropTypes.exact({
     uuid: PropTypes.string.isRequired,

@@ -396,6 +396,10 @@ export const schemas: Scheme = {
       type: 'JSONB'
     },
     {
+      name: 'dimension',
+      type: 'SMALLINT'
+    },
+    {
       name: 'project',
       type: 'UUID',
       constraint: 'NOT NULL'

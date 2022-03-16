@@ -29,17 +29,11 @@
 
 - add topics in help, what archive does, ...
 
-- bug dans edit material, le material se remet par défaut tout le temps
-
-- Formula, label au dessus
-
 - /!\ Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
 - alignement title card boundary condition (et autre ?)
 
-- last card dans panel sans border bottom
-
-- bc (material?) nom long + mise à jour du nom
+- last card dans material et bc drawer sans border bottom
 
 ## Share
 

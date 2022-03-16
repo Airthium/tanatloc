@@ -77,8 +77,8 @@ const Material = ({
 
   // Edit
   useEffect(() => {
-    if (material) setCurrent(material)
-  }, [material])
+    if (!current && material) setCurrent(material)
+  }, [current, material])
 
   // Already selected
   useEffect(() => {
@@ -130,7 +130,7 @@ const Material = ({
       setCurrent((prevCurrent) => ({
         ...prevCurrent,
         material: {
-          label: 'custom',
+          label: 'Custom',
           children: [
             ...(prevCurrent?.material?.children?.slice(0, index) || []),
             {

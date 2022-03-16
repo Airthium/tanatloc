@@ -13,6 +13,7 @@ import {
   Button,
   Card,
   Drawer,
+  Form,
   Input,
   Radio,
   RadioChangeEvent,
@@ -94,8 +95,8 @@ const BoundaryCondition = ({
 
   // Edit
   useEffect(() => {
-    if (boundaryCondition) setCurrent(boundaryCondition)
-  }, [boundaryCondition])
+    if (!current && boundaryCondition) setCurrent(boundaryCondition)
+  }, [current, boundaryCondition])
 
   // Already selected
   useEffect(() => {
@@ -308,26 +309,51 @@ const BoundaryCondition = ({
       }
     >
       <Space direction="vertical" className="full-width">
-        <Card title="Boundary condition name" size="small">
-          <Input value={current?.name || ''} onChange={onName} />
+        <Card size="small">
+          <Form layout="vertical">
+            <Form.Item
+              label={
+                <Typography.Text strong>
+                  Boundary condition name
+                </Typography.Text>
+              }
+            >
+              <Input
+                value={current?.name || ''}
+                onChange={onName}
+                maxLength={50}
+              />
+            </Form.Item>
+          </Form>
         </Card>
-        <Card title="Boundary condition type" size="small">
-          <Radio.Group
-            className="BoundaryCondition-types"
-            optionType="button"
-            buttonStyle="solid"
-            value={current?.type?.key}
-            onChange={onType}
-          >
-            {types?.map((type) => {
-              return (
-                <Radio.Button key={type.key} value={type.key}>
-                  {type.label}
-                </Radio.Button>
-              )
-            })}
-          </Radio.Group>
+        <Card size="small">
+          <Form layout="vertical">
+            <Form.Item
+              label={
+                <Typography.Text strong>
+                  Boundary condition type
+                </Typography.Text>
+              }
+            >
+              <Radio.Group
+                className="BoundaryCondition-types"
+                optionType="button"
+                buttonStyle="solid"
+                value={current?.type?.key}
+                onChange={onType}
+              >
+                {types?.map((type) => {
+                  return (
+                    <Radio.Button key={type.key} value={type.key}>
+                      {type.label}
+                    </Radio.Button>
+                  )
+                })}
+              </Radio.Group>
+            </Form.Item>
+          </Form>
         </Card>
+
         {current?.type && current.type?.children && (
           <Card>
             {current.type.children.map((child, index) => (

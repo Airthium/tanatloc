@@ -68,8 +68,6 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
-  console.log(steps)
-
   /**
    * Render
    */

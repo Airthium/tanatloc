@@ -6,7 +6,7 @@ import isDocker from 'is-docker'
 
 /**
  * Gmsh service
- * @param path Path
+ * @param bindPath Path
  * @param fileIn In file (POSIX path)
  * @param fileOut Out file (POSIX path)
  * @param callback Callback

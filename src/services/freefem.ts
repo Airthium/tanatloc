@@ -6,7 +6,7 @@ import isDocker from 'is-docker'
 
 /**
  * FreeFEM service
- * @param  path Path
+ * @param  bindPath Path
  * @param script Script (POSIX path)
  * @param callback Callback
  */

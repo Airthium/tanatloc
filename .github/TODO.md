@@ -37,6 +37,8 @@
 
 - Correct clone of objects ? ({...simulation} is a shallow copy)
 
+- Default enabled plugins dans admin / registration ?
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

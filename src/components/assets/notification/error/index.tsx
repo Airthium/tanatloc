@@ -42,7 +42,7 @@ const ErrorNotification = (
       message: title,
       description: err && (
         <>
-          <Typography.Text code={true}>{err.message}</Typography.Text>
+          <Typography.Text code>{err.message}</Typography.Text>
           {(err.status || err.info) && (
             <Collapse>
               <Collapse.Panel key="information" header="More information">

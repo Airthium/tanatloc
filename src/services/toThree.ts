@@ -23,79 +23,138 @@ const toThree = async (
   const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)
   const pathOutPOSIX = pathOut.split(path.sep).join(path.posix.sep)
 
-  // Check extension
+  // Extension
   const extension = fileInPOSIX.split('.').pop()
-  switch (extension.toLowerCase()) {
-    case 'step':
-      conversionCode = 'StepToThreeJS'
-      break
-    case 'stp':
-      conversionCode = 'StepToThreeJS'
-      break
-    case 'dxf':
-      conversionCode = 'DXFToThreeJS'
-      break
-    case 'msh':
-      conversionCode = 'GmshToThreeJS'
-      break
-    case 'vtu':
-      conversionCode = 'VTUToThreeJS'
-      break
-    default:
-      throw new Error('Unknown conversion code')
-  }
 
-  // Convert
-  return new Promise((resolve, reject) => {
-    let run: any
-    let data = ''
-    let error = ''
+  // DXF specific
+  if (extension.toLocaleLowerCase() === 'dxf') {
+    return new Promise((resolve, reject) => {
+      let run: any
+      let data = ''
+      let error = ''
 
-    if (isDocker()) {
-      run = spawn(conversionCode, [fileInPOSIX, pathOutPOSIX], {
-        cwd: bindPath
+      if (isDocker()) {
+        throw new Error('not implemented')
+        run = spawn(conversionCode, [fileInPOSIX, pathOutPOSIX], {
+          cwd: bindPath
+        })
+      } else {
+        const user =
+          process.platform === 'win32'
+            ? 1000
+            : execSync('id -u').toString().trim()
+        const group =
+          process.platform === 'win32'
+            ? 1000
+            : execSync('id -g').toString().trim()
+        run = spawn('docker', [
+          'run',
+          '--volume=' + bindPath + ':/three',
+          '--user=' + user + ':' + group,
+          '-w=/three',
+          'tanatloc/worker:latest',
+          '/bin/bash',
+          '-c',
+          'DXFToBRep ' +
+            fileInPOSIX +
+            ' temp.brep && BRepToThreeJS temp.brep ' +
+            pathOutPOSIX
+        ])
+      }
+
+      run.stdout.on('data', (stdout: Buffer) => {
+        stdout && (data += stdout.toString())
       })
-    } else {
-      const user =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -u').toString().trim()
-      const group =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -g').toString().trim()
-      run = spawn('docker', [
-        'run',
-        '--volume=' + bindPath + ':/three',
-        '--user=' + user + ':' + group,
-        '-w=/three',
-        'tanatloc/worker:latest',
-        conversionCode,
-        fileInPOSIX,
-        pathOutPOSIX
-      ])
+
+      run.stderr.on('data', (stderr: Buffer) => {
+        stderr && (error += stderr.toString())
+
+        console.log(stderr.toString())
+      })
+
+      run.on('close', (code: any) => {
+        resolve({
+          code,
+          data,
+          error
+        })
+      })
+
+      run.on('error', (err: Error) => {
+        reject(err)
+      })
+    })
+  } else {
+    // Check extension
+    switch (extension.toLowerCase()) {
+      case 'step':
+        conversionCode = 'StepToThreeJS'
+        break
+      case 'stp':
+        conversionCode = 'StepToThreeJS'
+        break
+      case 'msh':
+        conversionCode = 'GmshToThreeJS'
+        break
+      case 'vtu':
+        conversionCode = 'VTUToThreeJS'
+        break
+      default:
+        throw new Error('Unknown conversion code')
     }
 
-    run.stdout.on('data', (stdout: Buffer) => {
-      stdout && (data += stdout.toString())
-    })
+    // Convert
+    return new Promise((resolve, reject) => {
+      let run: any
+      let data = ''
+      let error = ''
 
-    run.stderr.on('data', (stderr: Buffer) => {
-      stderr && (error += stderr.toString())
-    })
+      if (isDocker()) {
+        run = spawn(conversionCode, [fileInPOSIX, pathOutPOSIX], {
+          cwd: bindPath
+        })
+      } else {
+        const user =
+          process.platform === 'win32'
+            ? 1000
+            : execSync('id -u').toString().trim()
+        const group =
+          process.platform === 'win32'
+            ? 1000
+            : execSync('id -g').toString().trim()
+        run = spawn('docker', [
+          'run',
+          '--volume=' + bindPath + ':/three',
+          '--user=' + user + ':' + group,
+          '-w=/three',
+          'tanatloc/worker:latest',
+          conversionCode,
+          fileInPOSIX,
+          pathOutPOSIX
+        ])
+      }
 
-    run.on('close', (code: any) => {
-      resolve({
-        code,
-        data,
-        error
+      run.stdout.on('data', (stdout: Buffer) => {
+        stdout && (data += stdout.toString())
+      })
+
+      run.stderr.on('data', (stderr: Buffer) => {
+        stderr && (error += stderr.toString())
+      })
+
+      run.on('close', (code: any) => {
+        resolve({
+          code,
+          data,
+          error
+        })
+      })
+
+      run.on('error', (err: Error) => {
+        reject(err)
       })
     })
-
-    run.on('error', (err: Error) => {
-      reject(err)
-    })
-  })
+  }
 }
 
 export default toThree

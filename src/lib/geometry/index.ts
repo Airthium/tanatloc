@@ -105,7 +105,7 @@ const add = async (
               path.join(GEOMETRY, geometry.uid, edge.path)
             )
             edge.uuid = content.uuid
-            if (content.data?.attributes.color.itemSize === 3)
+            if (content.data?.attributes.color?.itemSize === 3)
               edge.color = {
                 r: content.data.attributes.color.array[0],
                 g: content.data.attributes.color.array[1],

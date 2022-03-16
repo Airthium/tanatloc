@@ -105,7 +105,11 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
               )}
               {step.link && (
                 <>
-                  <a href={'https://' + step.link.href} target="_blank">
+                  <a
+                    href={'https://' + step.link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {step.link.label}
                   </a>
                   <br />

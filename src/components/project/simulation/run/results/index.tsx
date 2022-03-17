@@ -191,13 +191,20 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                 className="full-width"
                 options={filteredFiles.options}
                 value={currentNumber}
-                onChange={(value) => setCurrentNumber(value)}
+                onChange={(value) => {
+                  const nextResult = filteredFiles.files.find(
+                    (file) =>
+                      file.number === value && file.name === result?.name
+                  )
+                  setResult(nextResult)
+                  setCurrentNumber(value)
+                }}
               />
               {filteredFiles.files.map((filteredFile) => {
                 if (filteredFile.number === currentNumber) {
                   return (
                     <Space
-                      key={filteredFile.fileName}
+                      key={filteredFile.name}
                       style={{ alignItems: 'center' }}
                     >
                       <Button

@@ -10,7 +10,6 @@
 
 ## Models
 
-- Linearelasticity: output gamma1-6
 - Linearelasticity: cylindrical coordinates
 
 ## Electron

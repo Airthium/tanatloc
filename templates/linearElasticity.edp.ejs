@@ -176,9 +176,9 @@ try {
 			path: run.resultPath,
 			name: '"Result"',
 			mesh: mesh.name,
-			sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'Sigma'],
+			sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'Sigma', 'gamma11', 'gamma12', 'gamma13', 'gamma22', 'gamma23', 'gamma33'],
 			dataName: run.results.map(r => r.name),
-			order: [1, 1]
+			order: [1, 1, 1, 1, 1, 1, 1, 1]
 		}
 	}); -%>
 

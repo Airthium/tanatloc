@@ -208,6 +208,24 @@ const LinearElasticity: IModel = {
         },
         {
           name: 'vonMises'
+        },
+        {
+          name: 'gamma11'
+        },
+        {
+          name: 'gamma12'
+        },
+        {
+          name: 'gamma13'
+        },
+        {
+          name: 'gamma22'
+        },
+        {
+          name: 'gamma23'
+        },
+        {
+          name: 'gamma33'
         }
       ]
     }

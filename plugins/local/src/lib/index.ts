@@ -639,7 +639,9 @@ const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
 
   tasks?.forEach((task) => {
     if (task?.status === 'wait' || task?.status === 'process')
-      task.pid && process.kill(+task.pid)
+      try {
+        process.kill(+task.pid)
+      } catch (err) {}
   })
 }
 

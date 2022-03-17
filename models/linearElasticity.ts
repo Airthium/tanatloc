@@ -178,6 +178,7 @@ const LinearElasticity: IModel = {
             unit: '\\(m\\)'
           },
           {
+            only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,

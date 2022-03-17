@@ -93,6 +93,7 @@ const BoundaryCondition = ({
 
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
+  const dimension = simulation.scheme.configuration.dimension
 
   // Edit
   useEffect(() => {
@@ -357,22 +358,25 @@ const BoundaryCondition = ({
 
         {current?.type && current.type?.children && (
           <Card>
-            {current.type.children.map((child, index) => (
-              <Formula
-                className="marginBottom-10"
-                key={index}
-                label={child.label}
-                defaultValue={String(current.values[index].value)}
-                defaultChecked={
-                  current.type.children.length > 1
-                    ? current.values[index].checked
-                    : undefined
-                }
-                onValueChange={(value) => onValueChange(index, value)}
-                onCheckedChange={(checked) => onCheckedChange(index, checked)}
-                unit={child.unit}
-              />
-            ))}
+            {current.type.children.map((child, index) => {
+              if (dimension === 2 && child.only3D) return
+              return (
+                <Formula
+                  className="marginBottom-10"
+                  key={index}
+                  label={child.label}
+                  defaultValue={String(current.values[index].value)}
+                  defaultChecked={
+                    current.type.children.length > 1
+                      ? current.values[index].checked
+                      : undefined
+                  }
+                  onValueChange={(value) => onValueChange(index, value)}
+                  onCheckedChange={(checked) => onCheckedChange(index, checked)}
+                  unit={child.unit}
+                />
+              )
+            })}
           </Card>
         )}
         <Selector

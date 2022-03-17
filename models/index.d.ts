@@ -63,12 +63,14 @@ export interface IModelBoundaryCondition {
   label: string
   htmlEntity: string
   default: TValue
+  only3D?: boolean
   unit?: string
 }
 
 export interface IModelInitialization {
   label: string
   htmlEntity: string
+  only3D?: boolean
   options?: { label: string; value: string }[]
   default: TValue
   unit?: string

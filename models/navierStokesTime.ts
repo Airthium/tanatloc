@@ -88,6 +88,7 @@ const NavierStokesTime: IModel = {
             unit: '\\(N.m^{-3}\\)'
           },
           {
+            only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: 0,
@@ -118,18 +119,22 @@ const NavierStokesTime: IModel = {
         children: [
           {
             label: '[Ux, Uy, Uz, p]',
+            label2D: '[Ux, Uy, p]',
             htmlEntity: 'select',
             options: [
               {
                 label: 'P2/P1',
-                value: 'P2, P2, P2, P1'
+                value: 'P2, P2, P2, P1',
+                value2D: 'P2, P2, P1'
               },
               {
                 label: 'P1b/P1',
-                value: 'P1b, P1b, P1b, P1'
+                value: 'P1b, P1b, P1b, P1',
+                value2D: 'P1b, P1b, P1'
               }
             ],
-            default: 'P2, P2, P2, P1'
+            default: 'P2, P2, P2, P1',
+            default2D: 'P2, P2, P1'
           }
         ]
       },
@@ -170,6 +175,7 @@ const NavierStokesTime: IModel = {
             unit: '\\(m.s^{-1}\\)'
           },
           {
+            only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,
@@ -218,6 +224,7 @@ const NavierStokesTime: IModel = {
             unit: '\\(m.s^{-1}\\)'
           },
           {
+            only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,

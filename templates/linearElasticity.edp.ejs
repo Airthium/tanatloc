@@ -62,7 +62,7 @@ try {
 	const rhsY = rhs[1].value ?? rhs[1].default
 	const rhsZ = rhs[2].value ?? rhs[2].default
 
-	const N = '[N.x, N.y, N.z]'
+	const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	-%>
 	// Problem
 	appendLog("Define the problem...");
@@ -127,9 +127,6 @@ try {
 
 	<% if (parameters.meshAdaptation.children[0].value) { -%>
 	// Mesh adaptation
-	load "mshmet"
-	load "mmg"
-
 	fespace Hh(Mesh, P0);
 	Hh h = hTriangle;
 	real minh = h[].min;
@@ -137,9 +134,16 @@ try {
 
 	int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
 	for (int i = 0; i < nLoops; ++i) {
+		<% if (dimension === 2) { -%>
+		Mesh = adaptmesh(Mesh, [Ux, Uy], hmin=minh/5., hmax=maxh);
+		<% } else { -%>
+		load "mshmet"
+		load "mmg"
 		real[int] metric = mshmet(Mesh, [Ux, Uy, Uz], aniso=1, hmin=minh/5., hmax=maxh);
 		Mesh = mmg3d(Mesh, metric=metric);
-		[Ux, Uy, Uz] = [Ux, Uy, Uz];
+		<% } -%>
+
+		<%= unknownFunction -%> = <%= unknownFunction -%>;
 
 		matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 		real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);

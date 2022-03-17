@@ -408,7 +408,7 @@ const Project = (): JSX.Element => {
           <Simulation.Materials
             geometry={{
               id: geometry.id,
-              dimension: geometry.dimension,
+              dimension: geometry.dimension ?? 3,
               summary: {
                 uuid: geometry.summary.uuid,
                 solids: geometry.summary.solids,
@@ -464,7 +464,7 @@ const Project = (): JSX.Element => {
           <Simulation.BoundaryConditions
             geometry={{
               id: geometry.id,
-              dimension: geometry.dimension,
+              dimension: geometry.dimension ?? 3,
               summary: {
                 uuid: geometry.summary.uuid,
                 faces: geometry.summary.faces,
@@ -616,6 +616,7 @@ const Project = (): JSX.Element => {
     const configuration = s?.scheme?.configuration || {}
     const categories = []
     Object.keys(configuration).forEach((key) => {
+      if (key === 'dimension') return
       const child = configuration[key]
       let icon = <CheckCircleOutlined style={{ color: 'green' }} />
       if (child.error) icon = <CloseCircleOutlined style={{ color: 'red' }} />

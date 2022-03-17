@@ -96,6 +96,7 @@ const LinearElasticityTime: IModel = {
             unit: '\\(N.m^{-3}\\)'
           },
           {
+            only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: 0,
@@ -126,18 +127,22 @@ const LinearElasticityTime: IModel = {
         children: [
           {
             label: '[Ux, Uy, Uz]',
+            label2D: '[Ux, Uy]',
             htmlEntity: 'select',
             options: [
               {
                 label: 'P1',
-                value: 'P1, P1, P1'
+                value: 'P1, P1, P1',
+                value2D: 'P1, P1'
               },
               {
                 label: 'P2',
-                value: 'P2, P2, P2'
+                value: 'P2, P2, P2',
+                value2D: 'P2, P2'
               }
             ],
-            default: 'P1, P1, P1'
+            default: 'P1, P1, P1',
+            default2D: 'P1, P1'
           }
         ]
       },
@@ -165,11 +170,6 @@ const LinearElasticityTime: IModel = {
             label: 'Enabled',
             htmlEntity: 'checkbox',
             default: false
-          },
-          {
-            label: 'Number of mesh adaptation loops',
-            htmlEntity: 'formula',
-            default: 1
           }
         ]
       }
@@ -197,6 +197,7 @@ const LinearElasticityTime: IModel = {
             unit: '\\(m\\)'
           },
           {
+            only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,
@@ -227,6 +228,24 @@ const LinearElasticityTime: IModel = {
         },
         {
           name: 'vonMises'
+        },
+        {
+          name: 'gamma11'
+        },
+        {
+          name: 'gamma12'
+        },
+        {
+          name: 'gamma13'
+        },
+        {
+          name: 'gamma22'
+        },
+        {
+          name: 'gamma23'
+        },
+        {
+          name: 'gamma33'
         }
       ],
       resultsFilter: {

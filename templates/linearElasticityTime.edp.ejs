@@ -34,24 +34,24 @@ try {
 
 	<%# Finite element function -%>
 	<%
-	const unknownFunction = '[Ux, Uy, Uz]'
-	const testFunction = '[Uhx, Uhy, Uhz]'
+	const unknownFunction = dimension === 2 ? '[Ux, Uy]' : '[Ux, Uy, Uz]'
+	const testFunction = dimension === 2 ? '[Uhx, Uhy]' : '[Uhx, Uhy, Uhz]'
 	-%>
 	<%- include('/blobs/fespaceFunction.edp.ejs', {
 		finiteElementSpace,
-		finiteElementFunction: ['Ux', 'Uy', 'Uz']
+		finiteElementFunction: dimension === 2 ? ['Ux', 'Uy'] : ['Ux', 'Uy', 'Uz']
 	}); -%>
 	<%
-	const unknownPFunction = '[Upx, Upy, Upz]'
-	const unknownPPFunction = '[Uppx, Uppy, Uppz]'
+	const unknownPFunction = dimension === 2 ? '[Upx, Upy]' : '[Upx, Upy, Upz]'
+	const unknownPPFunction = dimension === 2 ? '[Uppx, Uppy]' : '[Uppx, Uppy, Uppz]'
 	-%>
 	<%- include('/blobs/fespaceFunction.edp.ejs', {
 		finiteElementSpace,
-		finiteElementFunction: ['Upx', 'Upy', 'Upz']
+		finiteElementFunction: dimension === 2 ? ['Upx', 'Upy'] : ['Upx', 'Upy', 'Upz']
 	}); -%>
 	<%- include('/blobs/fespaceFunction.edp.ejs', {
 		finiteElementSpace,
-		finiteElementFunction: ['Uppx', 'Uppy', 'Uppz']
+		finiteElementFunction: dimension === 2 ? ['Uppx', 'Uppy'] : ['Uppx', 'Uppy', 'Uppz']
 	}); -%>
 
 	<%# Macro -%>
@@ -78,7 +78,7 @@ try {
 	const rhsY = rhs[1].value ?? rhs[1].default
 	const rhsZ = rhs[2].value ?? rhs[2].default
 
-	const N = '[N.x, N.y, N.z]'
+	const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	-%>
 	// Problem
 	appendLog("Define the problem...");
@@ -95,11 +95,11 @@ try {
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
 		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
-		<% if (d.values[2].checked) { -%>, Uz=0<% } -%>
+		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=0<% } -%>
 		)
 	<% } -%>
 	<% for (const f of fixed) { -%>
-		+ on(<%= f.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+		+ on(<%= f.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
 	<% } -%>
 		;
 
@@ -122,11 +122,11 @@ try {
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
 		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
-		<% if (d.values[2].checked) { -%>, Uz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>
+		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>
 		)
 	<% } -%>
 	<% for (const f of fixed) { -%>
-		+ on(<%= f.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+		+ on(<%= f.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
 	<% } -%>
 		;
 
@@ -157,34 +157,33 @@ try {
 
 		<% if (parameters.meshAdaptation.children[0].value) { -%>
 		// Mesh adaptation
-		load "mshmet"
-		load "mmg"
-	
 		fespace Hh(Mesh, P0);
 		Hh h = hTriangle;
 		real minh = h[].min;
 		real maxh = h[].max;
 	
-		int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
-		for (int i = 0; i < nLoops; ++i) {
-			real[int] metric = mshmet(Mesh, [Ux, Uy, Uz], aniso=0, hmin=minh/5., hmax=maxh);
-			Mesh = mmg3d(Mesh, metric=metric);
-			[Ux, Uy, Uz] = [Ux, Uy, Uz];
-	
-			matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-			real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
-			Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
-		}
+		<% if (dimension === 2) { -%>
+		Mesh = adaptmesh(Mesh, [Ux, Uy], hmin=minh/5., hmax=maxh);
+		<% } else { -%>
+		load "mshmet"
+		load "mmg"
+		real[int] metric = mshmet(Mesh, [Ux, Uy, Uz], aniso=0, hmin=minh/5., hmax=maxh);
+		Mesh = mmg3d(Mesh, metric=metric);
+		<% } -%>
+
+		<%= unknownFunction -%> = <%= unknownFunction -%>;
+		
+		LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 		<% } -%>
 	
 		<%# von Mises stress -%>
 		fespace Sh(Mesh, P2);
 		Sh epsilon11 = dx(Ux);
 		Sh epsilon22 = dy(Uy);
-		Sh epsilon33 = dz(Uz);
+		Sh epsilon33 = <% if (dimension === 2) { -%>0<% } else { -%>dz(Uz)<% } -%>;
 		Sh epsilon12 = 0.5*(dy(Ux) + dx(Uy));
-		Sh epsilon13 = 0.5*(dz(Ux) + dx(Uz));
-		Sh epsilon23 = 0.5*(dy(Uz) + dz(Uy));
+		Sh epsilon13 = <% if (dimension === 2) { -%>0<% } else { -%>0.5*(dz(Ux) + dx(Uz))<% } -%>;
+		Sh epsilon23 = <% if (dimension === 2) { -%>0<% } else { -%>0.5*(dy(Uz) + dz(Uy))<% } -%>;
 	
 		Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
 	
@@ -202,12 +201,12 @@ try {
 
 		Sh UUx = Ux;
 		Sh UUy = Uy;
-		Sh UUz = Uz;
+		Sh UUz = <% if (dimension === 2) { -%>0.<% } else { -%>Uz<% } -%>;
 
 		real maxUx = UUx[].max;
 		real maxUy = UUy[].max;
 		real maxUz = UUz[].max;
-		real maxU = Ux[].max;
+		real maxU = max(max(abs(maxUx), abs(maxUy)), abs(maxUz));
 
 		// Save data
 		<%- include('/blobs/data.edp.ejs', {
@@ -252,9 +251,9 @@ try {
 				path: run.resultPath,
 				name: '"Result_"+timeIter',
 				mesh: mesh.name,
-				sol: [['Ux', 'Uy', 'Uz'], 'Sigma'],
+				sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'Sigma', 'gamma11', 'gamma12', 'gamma13', 'gamma22', 'gamma23', 'gamma33'],
 				dataName: run.results.map(r => r.name),
-				order: [1, 1]
+				order: [1, 1, 1, 1, 1, 1, 1, 1]
 			}
 		}); -%>
 	}

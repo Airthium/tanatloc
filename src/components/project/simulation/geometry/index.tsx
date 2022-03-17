@@ -35,7 +35,7 @@ export const errors = {
  * On select
  * @param simulation Simulation
  * @param geometries Geometries
- * @param id Id
+ * @param geometry Geometry
  * @param setGeometry Set geometry
  * @param swr Swr
  */
@@ -54,7 +54,7 @@ export const onSelect = async (
 
     const diff = {
       ...newSimulation.scheme.configuration,
-      dimension: geometry.dimension,
+      dimension: geometry.dimension ?? 3,
       geometry: {
         ...newSimulation.scheme.configuration.geometry,
         done: true

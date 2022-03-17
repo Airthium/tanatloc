@@ -39,6 +39,8 @@
 
 - Default enabled plugins dans admin / registration ?
 
+- Visualisation 2D dans un plan ? plus de rotation ?
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

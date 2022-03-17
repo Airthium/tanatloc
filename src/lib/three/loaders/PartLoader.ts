@@ -194,7 +194,7 @@ const PartLoader = (
     if (box.isEmpty()) {
       // Try edges
       const edges = part.children[2]
-      edges.children?.forEach((edge) => {
+      edges?.children?.forEach((edge) => {
         mergeBox(box, edge.geometry.boundingBox)
       })
     }
@@ -278,7 +278,7 @@ const PartLoader = (
    * @param visible Visible
    */
   const setEdgesVisible = (part: IPart, visible: boolean): void => {
-    part.children[2].children.forEach((edge) => {
+    part.children[2]?.children.forEach((edge) => {
       edge.visible = visible
     })
   }
@@ -394,9 +394,10 @@ const PartLoader = (
 
     // Search in edges
     const edges = part.children[2]
-    for (const edge of edges.children) {
-      if (edge.userData.uuid === uuid) return edge
-    }
+    if (edges)
+      for (const edge of edges.children) {
+        if (edge.userData.uuid === uuid) return edge
+      }
   }
 
   /**

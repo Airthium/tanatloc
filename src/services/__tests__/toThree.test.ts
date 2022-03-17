@@ -212,8 +212,8 @@ describe('services/toThree', () => {
       }
     }))
     const res = await toThree('path', 'file.step', 'pathour')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
-    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(mockExecSync).toHaveBeenCalledTimes(1)
+    expect(mockSpawn).toHaveBeenCalledTimes(0)
     expect(res.code).toBe(0)
   })
 })

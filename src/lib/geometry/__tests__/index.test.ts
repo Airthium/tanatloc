@@ -123,6 +123,7 @@ describe('lib/geometry', () => {
     expect(mockToolsConvert).toHaveBeenCalledTimes(1)
     expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(7)
     expect(geometry).toEqual({
+      dimension: 3,
       id: 'id',
       json: 'json',
       glb: 'glb',

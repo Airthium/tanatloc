@@ -135,7 +135,8 @@ List.propTypes = {
       configuration: PropTypes.object.isRequired,
       inUseConfiguration: PropTypes.object,
       data: PropTypes.object,
-      needInit: PropTypes.bool
+      needInit: PropTypes.bool,
+      needReInit: PropTypes.bool
     }).isRequired
   ).isRequired,
   swr: PropTypes.exact({

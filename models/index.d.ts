@@ -27,9 +27,12 @@ export interface IModelMaterial {
 
 export interface IModelParameter {
   label: string
+  label2D?: string
   htmlEntity: string
   default: TValue
-  options?: { label: string; value: string }[]
+  default2D?: TValue
+  only3D?: boolean
+  options?: { label: string; value: string; value2D?: string }[]
   unit?: string
   value?: TValue
 }

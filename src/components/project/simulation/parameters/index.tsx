@@ -2,16 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
-import {
-  Card,
-  Checkbox,
-  Collapse,
-  Form,
-  Layout,
-  Select,
-  Space,
-  Typography
-} from 'antd'
+import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 import { IModelParameter } from '@/models/index.d'
@@ -134,6 +125,7 @@ export const onChange = async (
 const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // Data
   const subScheme = simulation?.scheme.configuration.parameters
+  const dimension = simulation?.scheme.configuration.dimension
 
   // Initial
   useEffect(() => {
@@ -145,74 +137,153 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // Build parameters
   const parameters = []
   const advanced = []
-  Object.keys(subScheme).forEach((key) => {
-    if (key === 'index' || key === 'title' || key == 'done') return
+  if (dimension === 2) {
+    Object.keys(subScheme).forEach((key) => {
+      if (key === 'index' || key === 'title' || key == 'done') return
 
-    const parameter = subScheme[key] as {
-      label: string
-      advanced?: boolean
-      children: IModelParameter[]
-    }
+      const parameter = subScheme[key] as {
+        label: string
+        advanced?: boolean
+        children: IModelParameter[]
+      }
 
-    const components = parameter?.children.map((child, index) => {
-      if (child.htmlEntity === 'formula') {
-        return (
-          <Formula
-            key={key + '&' + index}
-            label={child.label}
-            defaultValue={(child.value as string) ?? (child.default as string)}
-            onValueChange={(value: string) =>
-              onChange(simulation, key, index, value, swr)
-            }
-            unit={child.unit}
-          />
+      const components = parameter?.children.map((child, index) => {
+        if (child.only3D) return
+        if (child.htmlEntity === 'formula') {
+          return (
+            <Formula
+              key={key + '&' + index}
+              label={child.label2D || child.label}
+              defaultValue={
+                (child.value as string) ?? (child.default as string)
+              }
+              onValueChange={(value: string) =>
+                onChange(simulation, key, index, value, swr)
+              }
+              unit={child.unit}
+            />
+          )
+        } else if (child.htmlEntity === 'select') {
+          return (
+            <Form layout="vertical" key={key + '&' + index}>
+              <Form.Item label={child.label2D || child.label}>
+                <Select
+                  options={child.options.map((option) => ({
+                    label: option.label,
+                    value: option.value2D ?? option.value
+                  }))}
+                  defaultValue={
+                    (child.value as string) || (child.default as string)
+                  }
+                  onChange={(value: string) =>
+                    onChange(simulation, key, index, value, swr)
+                  }
+                />
+              </Form.Item>
+            </Form>
+          )
+        } else if (child.htmlEntity === 'checkbox') {
+          return (
+            <Form layout="vertical" key={key + '&' + index}>
+              <Form.Item label={child.label2D || child.label}>
+                <Checkbox
+                  defaultChecked={child.value as boolean}
+                  onChange={(e) =>
+                    onChange(simulation, key, index, e.target.checked, swr)
+                  }
+                />
+              </Form.Item>
+            </Form>
+          )
+        }
+      })
+
+      if (parameter?.advanced) {
+        advanced.push(
+          <Card size="small" key={key} title={parameter?.label}>
+            <Space direction="vertical">{components}</Space>
+          </Card>
         )
-      } else if (child.htmlEntity === 'select') {
-        return (
-          <Form layout="vertical" key={key + '&' + index}>
-            <Form.Item label={child.label}>
-              <Select
-                options={child.options}
-                defaultValue={
-                  (child.value as string) || (child.default as string)
-                }
-                onChange={(value: string) =>
-                  onChange(simulation, key, index, value, swr)
-                }
-              />
-            </Form.Item>
-          </Form>
-        )
-      } else if (child.htmlEntity === 'checkbox') {
-        return (
-          <Form layout="vertical" key={key + '&' + index}>
-            <Form.Item label={child.label}>
-              <Checkbox
-                defaultChecked={child.value as boolean}
-                onChange={(e) =>
-                  onChange(simulation, key, index, e.target.checked, swr)
-                }
-              />
-            </Form.Item>
-          </Form>
+      } else {
+        parameters.push(
+          <Card size="small" key={key} title={parameter?.label}>
+            <Space direction="vertical">{components}</Space>
+          </Card>
         )
       }
     })
+  } else {
+    Object.keys(subScheme).forEach((key) => {
+      if (key === 'index' || key === 'title' || key == 'done') return
 
-    if (parameter?.advanced) {
-      advanced.push(
-        <Card size="small" key={key} title={parameter?.label}>
-          <Space direction="vertical">{components}</Space>
-        </Card>
-      )
-    } else {
-      parameters.push(
-        <Card size="small" key={key} title={parameter?.label}>
-          <Space direction="vertical">{components}</Space>
-        </Card>
-      )
-    }
-  })
+      const parameter = subScheme[key] as {
+        label: string
+        advanced?: boolean
+        children: IModelParameter[]
+      }
+
+      const components = parameter?.children.map((child, index) => {
+        if (child.htmlEntity === 'formula') {
+          return (
+            <Formula
+              key={key + '&' + index}
+              label={child.label}
+              defaultValue={
+                (child.value as string) ?? (child.default as string)
+              }
+              onValueChange={(value: string) =>
+                onChange(simulation, key, index, value, swr)
+              }
+              unit={child.unit}
+            />
+          )
+        } else if (child.htmlEntity === 'select') {
+          return (
+            <Form layout="vertical" key={key + '&' + index}>
+              <Form.Item label={child.label}>
+                <Select
+                  options={child.options}
+                  defaultValue={
+                    (child.value as string) || (child.default as string)
+                  }
+                  onChange={(value: string) =>
+                    onChange(simulation, key, index, value, swr)
+                  }
+                />
+              </Form.Item>
+            </Form>
+          )
+        } else if (child.htmlEntity === 'checkbox') {
+          return (
+            <Form layout="vertical" key={key + '&' + index}>
+              <Form.Item label={child.label}>
+                <Checkbox
+                  defaultChecked={child.value as boolean}
+                  onChange={(e) =>
+                    onChange(simulation, key, index, e.target.checked, swr)
+                  }
+                />
+              </Form.Item>
+            </Form>
+          )
+        }
+      })
+
+      if (parameter?.advanced) {
+        advanced.push(
+          <Card size="small" key={key} title={parameter?.label}>
+            <Space direction="vertical">{components}</Space>
+          </Card>
+        )
+      } else {
+        parameters.push(
+          <Card size="small" key={key} title={parameter?.label}>
+            <Space direction="vertical">{components}</Space>
+          </Card>
+        )
+      }
+    })
+  }
 
   /**
    * Render

@@ -439,7 +439,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
         onOk={() => onMaterialSelect(current)}
         okText="Choose"
         okButtonProps={{ disabled: !current }}
-        width="auto"
+        width="50%"
       >
         <Layout>
           <Layout.Content>

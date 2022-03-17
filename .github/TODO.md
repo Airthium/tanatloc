@@ -30,8 +30,6 @@
 
 - /!\ Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
-- alignement title card boundary condition (et autre ?)
-
 - last card dans material et bc drawer sans border bottom
 
 - Correct clone of objects ? ({...simulation} is a shallow copy)
@@ -41,6 +39,8 @@
 - Visualisation 2D dans un plan ? plus de rotation ?
 
 - projet vide projects.geometries undefined
+
+- Unable to get project (json error) (F5 many times on simulation to reproduce)
 
 ## Share
 

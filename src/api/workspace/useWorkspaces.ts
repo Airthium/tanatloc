@@ -31,32 +31,41 @@ export const useWorkspaces = (): [
    * Add one (useWorkspaces)
    * @param workspace Workspace
    */
-  const addOne = useCallback((workspace: INewWorkspace): void => {
-    const newWorkspaces = [...workspaces, workspace]
-    //@ts-ignore
-    mutate({ workspaces: newWorkspaces })
-  }, [])
+  const addOne = useCallback(
+    (workspace: INewWorkspace): void => {
+      const newWorkspaces = [...workspaces, workspace]
+      //@ts-ignore
+      mutate({ workspaces: newWorkspaces })
+    },
+    [workspaces]
+  )
 
   /**
    * Delete one (useWorkspaces)
    * @param workspace Workspace
    */
-  const delOne = useCallback((workspace: IWorkspaceWithData): void => {
-    const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
-    mutate({ workspaces: filteredWorkspaces })
-  }, [])
+  const delOne = useCallback(
+    (workspace: IWorkspaceWithData): void => {
+      const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
+      mutate({ workspaces: filteredWorkspaces })
+    },
+    [workspaces]
+  )
 
   /**
    * Mutate one (useWorkspace)
    * @param workspace Workspace
    */
-  const mutateOne = useCallback((workspace: IWorkspaceWithData): void => {
-    const mutatedWorkspaces = workspaces.map((w) => {
-      if (w.id === workspace.id) w = { ...w, ...workspace }
-      return w
-    })
-    mutate({ workspaces: mutatedWorkspaces })
-  }, [])
+  const mutateOne = useCallback(
+    (workspace: IWorkspaceWithData): void => {
+      const mutatedWorkspaces = workspaces.map((w) => {
+        if (w.id === workspace.id) w = { ...w, ...workspace }
+        return w
+      })
+      mutate({ workspaces: mutatedWorkspaces })
+    },
+    [workspaces]
+  )
 
   return [
     workspaces,

@@ -109,7 +109,11 @@ export interface INewProject {
   id: string
   title: string
   description?: string
-  owners: Array<string>
+  geometries: string[]
+  simulations: string[]
+  owners: string[]
+  users: string[]
+  groups: string[]
   workspace: string
 }
 
@@ -290,7 +294,8 @@ export interface IUserCheck {
 export interface INewWorkspace {
   id: string
   name: string
-  owners: Array<string>
+  owners: string[]
+  projects: string[]
 }
 
 export interface IWorkspace {

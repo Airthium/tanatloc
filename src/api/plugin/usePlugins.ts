@@ -26,23 +26,32 @@ export const usePlugins = (): [
   const loading = !data
   const plugins = data?.plugins || []
 
-  const addOne = useCallback((plugin: IClientPlugin): void => {
-    const newPlugins = [...plugins, plugin]
-    mutate({ plugins: newPlugins })
-  }, [])
+  const addOne = useCallback(
+    (plugin: IClientPlugin): void => {
+      const newPlugins = [...plugins, plugin]
+      mutate({ plugins: newPlugins })
+    },
+    [plugins]
+  )
 
-  const delOne = useCallback((plugin: IClientPlugin): void => {
-    const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
-    mutate({ plugins: filteredPlugins })
-  }, [])
+  const delOne = useCallback(
+    (plugin: IClientPlugin): void => {
+      const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
+      mutate({ plugins: filteredPlugins })
+    },
+    [plugins]
+  )
 
-  const mutateOne = useCallback((plugin: IClientPlugin): void => {
-    const mutatedPlugin = plugins.map((p) => {
-      if (p.key === plugin.key) p = { ...p, ...plugin }
-      return p
-    })
-    mutate({ plugins: mutatedPlugin })
-  }, [])
+  const mutateOne = useCallback(
+    (plugin: IClientPlugin): void => {
+      const mutatedPlugin = plugins.map((p) => {
+        if (p.key === plugin.key) p = { ...p, ...plugin }
+        return p
+      })
+      mutate({ plugins: mutatedPlugin })
+    },
+    [plugins]
+  )
 
   return [
     plugins,

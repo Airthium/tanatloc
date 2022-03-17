@@ -161,7 +161,7 @@ const Selector = ({
       <Layout>
         <Layout.Sider theme="light">
           <Menu mode="inline" onSelect={onSelect}>
-            <Menu.Item disabled>
+            <Menu.Item key="category" disabled>
               <Select
                 className="full-width"
                 options={categories}

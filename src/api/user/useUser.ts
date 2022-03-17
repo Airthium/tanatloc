@@ -28,14 +28,17 @@ export const useUser = (): [
    * Mutate
    * @param update User
    */
-  const localMutate = useCallback((update: IUserWithData): void => {
-    mutate({
-      user: {
-        ...user,
-        ...update
-      }
-    })
-  }, [])
+  const localMutate = useCallback(
+    (update: IUserWithData): void => {
+      mutate({
+        user: {
+          ...user,
+          ...update
+        }
+      })
+    },
+    [user]
+  )
 
   const clear = useCallback(() => {
     mutate({ user: null })

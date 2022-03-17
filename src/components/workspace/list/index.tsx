@@ -1,7 +1,7 @@
 /** @module Components.Workspace.List */
 
 import PropTypes from 'prop-types'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { Dispatch, SetStateAction, useState } from 'react'
 import {
   Divider,
@@ -52,10 +52,12 @@ export const errors = {
 
 /**
  * On confirm
+ * @param router Router
  * @param values Values
  * @param swr SWR
  */
 export const onOk = async (
+  router: NextRouter,
   values: { name: string },
   swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
 ): Promise<void> => {
@@ -65,6 +67,11 @@ export const onOk = async (
 
     // Mutate
     swr.addOneWorkspace(workspace)
+
+    router.push({
+      pathname: '/dashboard',
+      query: { page: 'workspaces', workspaceId: workspace.id }
+    })
   } catch (err) {
     ErrorNotification(errors.add, err)
     throw err
@@ -119,7 +126,7 @@ const WorkspacesList = ({
               onOk={async (values) => {
                 setLoading(true)
                 try {
-                  await onOk(values, swr)
+                  await onOk(router, values, swr)
 
                   // Close
                   setLoading(false)

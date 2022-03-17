@@ -27,14 +27,17 @@ export const useSystem = (): [
    * Mutate
    * @param update System
    */
-  const localMutate = useCallback((update: ISystem): void => {
-    mutate({
-      system: {
-        ...system,
-        ...update
-      }
-    })
-  }, [])
+  const localMutate = useCallback(
+    (update: ISystem): void => {
+      mutate({
+        system: {
+          ...system,
+          ...update
+        }
+      })
+    },
+    [system]
+  )
 
   return [
     system,

@@ -36,21 +36,27 @@ export const useSimulations = (
    * Add one (useSimulations)
    * @param simulation Simulation
    */
-  const addOne = useCallback((simulation: ISimulation): void => {
-    const newSimulations = [...simulations, simulation]
-    mutate({ simulations: newSimulations })
-  }, [])
+  const addOne = useCallback(
+    (simulation: ISimulation): void => {
+      const newSimulations = [...simulations, simulation]
+      mutate({ simulations: newSimulations })
+    },
+    [simulations]
+  )
 
   /**
    * Delete one (useSimulations)
    * @param simulation Simulation
    */
-  const delOne = useCallback((simulation: ISimulation): void => {
-    const filteredSimulations = simulations.filter(
-      (s) => s.id !== simulation.id
-    )
-    mutate({ simulations: filteredSimulations })
-  }, [])
+  const delOne = useCallback(
+    (simulation: ISimulation): void => {
+      const filteredSimulations = simulations.filter(
+        (s) => s.id !== simulation.id
+      )
+      mutate({ simulations: filteredSimulations })
+    },
+    [simulations]
+  )
 
   /**
    * Mutate one (useSimulations)
@@ -64,7 +70,7 @@ export const useSimulations = (
       })
       mutate({ simulations: mutatedSimulations }, revalidate)
     },
-    []
+    [simulations]
   )
 
   return [

@@ -36,32 +36,41 @@ export const useProjects = (
    * Add one (useProjects)
    * @param project Project
    */
-  const addOne = useCallback((project: INewProject): void => {
-    const newProjects = [...projects, project]
-    //@ts-ignore
-    mutate({ projects: newProjects })
-  }, [])
+  const addOne = useCallback(
+    (project: INewProject): void => {
+      const newProjects = [...projects, project]
+      //@ts-ignore
+      mutate({ projects: newProjects })
+    },
+    [projects]
+  )
 
   /**
    * Delete one (useProjects)
    * @param project project
    */
-  const delOne = useCallback((project: IProjectWithData): void => {
-    const filteredProjects = projects.filter((p) => p.id !== project.id)
-    mutate({ projects: filteredProjects })
-  }, [])
+  const delOne = useCallback(
+    (project: IProjectWithData): void => {
+      const filteredProjects = projects.filter((p) => p.id !== project.id)
+      mutate({ projects: filteredProjects })
+    },
+    [projects]
+  )
 
   /**
    * Mutate one (useProjects)
    * @param project Project
    */
-  const mutateOne = useCallback((project: IProjectWithData): void => {
-    const mutatedProjects = projects.map((p) => {
-      if (p.id === project.id) p = { ...p, ...project }
-      return p
-    })
-    mutate({ projects: mutatedProjects })
-  }, [])
+  const mutateOne = useCallback(
+    (project: IProjectWithData): void => {
+      const mutatedProjects = projects.map((p) => {
+        if (p.id === project.id) p = { ...p, ...project }
+        return p
+      })
+      mutate({ projects: mutatedProjects })
+    },
+    [projects]
+  )
 
   return [
     projects,

@@ -30,31 +30,40 @@ export const useUsers = (): [
    * Add one
    * @param user User
    */
-  const addOne = useCallback((user: IUserWithData): void => {
-    const newUsers = [...users, user]
-    mutate({ users: newUsers })
-  }, [])
+  const addOne = useCallback(
+    (user: IUserWithData): void => {
+      const newUsers = [...users, user]
+      mutate({ users: newUsers })
+    },
+    [users]
+  )
 
   /**
    * Del one
    * @param user User
    */
-  const delOne = useCallback((user: IUserWithData): void => {
-    const filteredUsers = users.filter((u) => u.id !== user.id)
-    mutate({ users: filteredUsers })
-  }, [])
+  const delOne = useCallback(
+    (user: IUserWithData): void => {
+      const filteredUsers = users.filter((u) => u.id !== user.id)
+      mutate({ users: filteredUsers })
+    },
+    [users]
+  )
 
   /**
    * Mutate one
    * @param user User
    */
-  const mutateOne = useCallback((user: IUserWithData): void => {
-    const mutatedUsers = users.map((u) => {
-      if (u.id === user.id) u = { ...u, ...user }
-      return u
-    })
-    mutate({ users: mutatedUsers })
-  }, [])
+  const mutateOne = useCallback(
+    (user: IUserWithData): void => {
+      const mutatedUsers = users.map((u) => {
+        if (u.id === user.id) u = { ...u, ...user }
+        return u
+      })
+      mutate({ users: mutatedUsers })
+    },
+    [users]
+  )
 
   return [
     users,

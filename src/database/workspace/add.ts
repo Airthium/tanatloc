@@ -26,6 +26,7 @@ export const add = async (
   const newWorkspace = response.rows[0]
   newWorkspace && (newWorkspace.name = workspace.name)
   newWorkspace && (newWorkspace.owners = [user.id])
+  newWorkspace && (newWorkspace.projects = [])
 
   return newWorkspace
 }

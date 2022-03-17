@@ -41,6 +41,8 @@
 
 - Visualisation 2D dans un plan ? plus de rotation ?
 
+- projet vide projects.geometries undefined
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

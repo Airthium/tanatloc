@@ -35,14 +35,17 @@ export const useSimulation = (
    * Mutate
    * @param update Simulation
    */
-  const localMutate = useCallback((update: ISimulation): void => {
-    mutate({
-      simulation: {
-        ...simulation,
-        ...update
-      }
-    })
-  }, [])
+  const localMutate = useCallback(
+    (update: ISimulation): void => {
+      mutate({
+        simulation: {
+          ...simulation,
+          ...update
+        }
+      })
+    },
+    [simulation]
+  )
 
   return [
     simulation,

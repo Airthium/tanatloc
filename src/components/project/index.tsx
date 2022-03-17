@@ -180,6 +180,7 @@ const Project = (): JSX.Element => {
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
   const [project, { mutateProject, errorProject, loadingProject }] =
     ProjectAPI.useProject(projectId || '')
+
   const [
     simulations,
     {
@@ -200,6 +201,14 @@ const Project = (): JSX.Element => {
       loadingGeometries
     }
   ] = GeometryAPI.useGeometries(project?.geometries)
+
+  /**
+   * On panel close
+   */
+  const onPanelClose = useCallback((): void => {
+    setPanel(null)
+    setMenuKey(null)
+  }, [])
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -227,7 +236,7 @@ const Project = (): JSX.Element => {
 
   // Update geometry
   useEffect(() => {
-    if (geometry) {
+    if (!loadingGeometries && geometry) {
       const current = geometries.find((g) => g.id === geometry?.id)
       if (current) {
         if (JSON.stringify(current) !== JSON.stringify(geometry))
@@ -238,28 +247,21 @@ const Project = (): JSX.Element => {
     } else {
       setGeometry(geometries[0])
     }
-  }, [geometries, geometry, setGeometry])
+  }, [geometries, geometry, loadingGeometries, setGeometry])
 
   // Update simulation
   useEffect(() => {
-    if (simulation) {
+    if (!loadingSimulations && simulation) {
       const current = simulations.find((s) => s.id === simulation?.id)
       if (current) {
         if (JSON.stringify(current) !== JSON.stringify(simulation))
           setSimulation(current)
       } else {
+        onPanelClose()
         setSimulation(null)
       }
     }
-  }, [simulations, simulation, setSimulation])
-
-  /**
-   * On panel close
-   */
-  const onPanelClose = useCallback((): void => {
-    setPanel(null)
-    setMenuKey(null)
-  }, [])
+  }, [simulations, simulation, loadingSimulations, setSimulation, onPanelClose])
 
   /**
    * On geometry cleanup

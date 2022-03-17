@@ -173,7 +173,7 @@ BoundaryConditions.propTypes = {
     summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
       faces: PropTypes.array.isRequired,
-      edges: PropTypes.array.isRequired
+      edges: PropTypes.array
     }).isRequired
   }).isRequired,
   swr: PropTypes.exact({

@@ -34,32 +34,41 @@ export const useGroups = (
    * Add one
    * @param group Group
    */
-  const addOne = useCallback((group: INewGroup): void => {
-    const newGroups = [...groups, group]
-    //@ts-ignore
-    mutate({ groups: newGroups })
-  }, [])
+  const addOne = useCallback(
+    (group: INewGroup): void => {
+      const newGroups = [...groups, group]
+      //@ts-ignore
+      mutate({ groups: newGroups })
+    },
+    [groups]
+  )
 
   /**
    * Del one
    * @param group Group
    */
-  const delOne = useCallback((group: IGroupWithData): void => {
-    const filteredGroups = groups.filter((g) => g.id !== group.id)
-    mutate({ groups: filteredGroups })
-  }, [])
+  const delOne = useCallback(
+    (group: IGroupWithData): void => {
+      const filteredGroups = groups.filter((g) => g.id !== group.id)
+      mutate({ groups: filteredGroups })
+    },
+    [groups]
+  )
 
   /**
    * Mutate one
    * @param groups Group
    */
-  const mutateOne = useCallback((group: IGroupWithData): void => {
-    const mutatedGroups = groups.map((g) => {
-      if (g.id === group.id) g = { ...g, ...group }
-      return g
-    })
-    mutate({ groups: mutatedGroups })
-  }, [])
+  const mutateOne = useCallback(
+    (group: IGroupWithData): void => {
+      const mutatedGroups = groups.map((g) => {
+        if (g.id === group.id) g = { ...g, ...group }
+        return g
+      })
+      mutate({ groups: mutatedGroups })
+    },
+    [groups]
+  )
 
   return [
     groups,

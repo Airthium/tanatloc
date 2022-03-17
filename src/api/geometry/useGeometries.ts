@@ -36,31 +36,40 @@ export const useGeometries = (
    * Add one (useGeometries)
    * @param geometry Geometry
    */
-  const addOne = useCallback((geometry: IGeometry): void => {
-    const newGeometries = [...geometries, geometry]
-    mutate({ geometries: newGeometries })
-  }, [])
+  const addOne = useCallback(
+    (geometry: IGeometry): void => {
+      const newGeometries = [...geometries, geometry]
+      mutate({ geometries: newGeometries })
+    },
+    [geometries]
+  )
 
   /**
    * Delete one (useGeometries)
    * @param geometry Geometry
    */
-  const delOne = useCallback((geometry: IGeometry): void => {
-    const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
-    mutate({ geometries: filteredGeometries })
-  }, [])
+  const delOne = useCallback(
+    (geometry: IGeometry): void => {
+      const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
+      mutate({ geometries: filteredGeometries })
+    },
+    [geometries]
+  )
 
   /**
    * Mutate one (useGeometries)
    * @param geometry Geometry
    */
-  const mutateOne = useCallback((geometry: IGeometry): void => {
-    const mutatedGeometries = geometries.map((g) => {
-      if (g.id === geometry.id) g = { ...g, ...geometry }
-      return g
-    })
-    mutate({ geometries: mutatedGeometries })
-  }, [])
+  const mutateOne = useCallback(
+    (geometry: IGeometry): void => {
+      const mutatedGeometries = geometries.map((g) => {
+        if (g.id === geometry.id) g = { ...g, ...geometry }
+        return g
+      })
+      mutate({ geometries: mutatedGeometries })
+    },
+    [geometries]
+  )
 
   return [
     geometries,

@@ -33,13 +33,16 @@ export const useProject = (
    * Mutate
    * @param update Project
    */
-  const localMutate = useCallback((update: IProjectWithData): void => {
-    const mutatedProject = {
-      ...project,
-      ...update
-    }
-    mutate({ project: mutatedProject })
-  }, [])
+  const localMutate = useCallback(
+    (update: IProjectWithData): void => {
+      const mutatedProject = {
+        ...project,
+        ...update
+      }
+      mutate({ project: mutatedProject })
+    },
+    [project]
+  )
 
   return [
     project,

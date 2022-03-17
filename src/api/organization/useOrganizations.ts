@@ -33,34 +33,43 @@ export const useOrganizations = (): [
    * Add one
    * @param organization Organization
    */
-  const addOne = useCallback((organization: INewOrganization): void => {
-    const newOrganizations = [...organizations, organization]
-    //@ts-ignore
-    mutate({ organizations: newOrganizations })
-  }, [])
+  const addOne = useCallback(
+    (organization: INewOrganization): void => {
+      const newOrganizations = [...organizations, organization]
+      //@ts-ignore
+      mutate({ organizations: newOrganizations })
+    },
+    [organizations]
+  )
 
   /**
    * Delete one
    * @param organization Organization
    */
-  const delOne = useCallback((organization: IOrganizationWithData): void => {
-    const filteredOrganizations = organizations.filter(
-      (o) => o.id !== organization.id
-    )
-    mutate({ organizations: filteredOrganizations })
-  }, [])
+  const delOne = useCallback(
+    (organization: IOrganizationWithData): void => {
+      const filteredOrganizations = organizations.filter(
+        (o) => o.id !== organization.id
+      )
+      mutate({ organizations: filteredOrganizations })
+    },
+    [organizations]
+  )
 
   /**
    * Mutate one
    * @param organization Organization
    */
-  const mutateOne = useCallback((organization: IOrganizationWithData): void => {
-    const mutatedOrganizations = organizations.map((o) => {
-      if (o.id === organization.id) o = { ...o, ...organization }
-      return o
-    })
-    mutate({ organizations: mutatedOrganizations })
-  }, [])
+  const mutateOne = useCallback(
+    (organization: IOrganizationWithData): void => {
+      const mutatedOrganizations = organizations.map((o) => {
+        if (o.id === organization.id) o = { ...o, ...organization }
+        return o
+      })
+      mutate({ organizations: mutatedOrganizations })
+    },
+    [organizations]
+  )
 
   return [
     organizations,

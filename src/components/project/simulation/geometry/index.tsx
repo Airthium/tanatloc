@@ -42,7 +42,7 @@ export const errors = {
 export const onSelect = async (
   simulation: ISimulation,
   geometries: IGeometry[],
-  id: string,
+  geometry: IGeometry,
   setGeometry: (geometry: IGeometry) => void,
   swr: { mutateOneSimulation: (simulation: ISimulation) => void }
 ): Promise<void> => {
@@ -50,11 +50,15 @@ export const onSelect = async (
     const newSimulation = { ...simulation }
 
     // Update
-    newSimulation.scheme.configuration.geometry.value = id
+    newSimulation.scheme.configuration.geometry.value = geometry.id
 
     const diff = {
-      ...newSimulation.scheme.configuration.geometry,
-      done: true
+      ...newSimulation.scheme.configuration,
+      dimension: geometry.dimension,
+      geometry: {
+        ...newSimulation.scheme.configuration.geometry,
+        done: true
+      }
     }
 
     // API
@@ -63,7 +67,7 @@ export const onSelect = async (
         key: 'scheme',
         type: 'json',
         method: 'set',
-        path: ['configuration', 'geometry'],
+        path: ['configuration'],
         value: diff
       }
     ])
@@ -72,7 +76,7 @@ export const onSelect = async (
     swr.mutateOneSimulation(newSimulation)
 
     // Display
-    const newGeometry = geometries.find((g) => g.id === id)
+    const newGeometry = geometries.find((g) => g.id === geometry.id)
     setGeometry(newGeometry)
   } catch (err) {
     ErrorNotification(errors.update, err)
@@ -93,8 +97,7 @@ const Geometry = ({
 }: IProps): JSX.Element => {
   // Data
   const geometryId = simulation.scheme.configuration.geometry.value
-  if (!geometryId)
-    onSelect(simulation, geometries, geometry.id, setGeometry, swr)
+  if (!geometryId) onSelect(simulation, geometries, geometry, setGeometry, swr)
 
   // List
   const list = geometries.map((g) => (
@@ -104,7 +107,7 @@ const Geometry = ({
       style={{
         backgroundColor: g.id === geometry.id ? '#FFFBE6' : '#FAFAFA'
       }}
-      onClick={() => onSelect(simulation, geometries, g.id, setGeometry, swr)}
+      onClick={() => onSelect(simulation, geometries, g, setGeometry, swr)}
     >
       <Typography.Text strong>{g.name}</Typography.Text>
     </div>

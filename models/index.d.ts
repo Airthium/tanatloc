@@ -105,6 +105,7 @@ export interface IModel {
   version: string
   description: string
   configuration: {
+    dimension?: number
     geometry?: {
       index: number
       title: string

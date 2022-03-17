@@ -183,6 +183,10 @@ const run = async (
     'uploadfilename',
     'extension'
   ])
+  if (geometry.extension === 'dxf') {
+    // 2D replace
+    geometry.uploadfilename = geometry.uploadfilename.replace('.dxf', '.brep')
+  }
   configuration.geometry.file = geometry.uploadfilename
   configuration.geometry.name = geometry.uploadfilename.replace(
     '.' + geometry.extension,

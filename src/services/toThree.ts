@@ -38,7 +38,11 @@ const toThree = async (
       command =
         'DXFToBRep ' +
         fileInPOSIX +
-        ' temp.brep && BRepToThreeJS temp.brep ' +
+        ' ' +
+        pathOutPOSIX +
+        '.brep && BRepToThreeJS ' +
+        pathOutPOSIX +
+        '.brep ' +
         pathOutPOSIX
       break
     case 'msh':

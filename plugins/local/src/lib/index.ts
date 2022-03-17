@@ -90,7 +90,7 @@ const clean = async (simulationPath: string): Promise<void> => {
  */
 const computeMesh = async (
   simulationPath: string,
-  geometry: { path: string; file: string; name: string },
+  geometry: { path: string; file: string; name: string; dimension: number },
   mesh: { path: string; parameters: any },
   callback: (data: { pid?: number; data?: string; error?: string }) => void
 ): Promise<{
@@ -107,7 +107,7 @@ const computeMesh = async (
 
   // Render template
   await Template.render(
-    'gmsh3D',
+    geometry.dimension === 2 ? 'gmsh2D' : 'gmsh3D',
     {
       ...mesh.parameters,
       geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))
@@ -243,7 +243,8 @@ const computeMeshes = async (
             {
               path: path.join(geometry.path),
               file: geometry.file,
-              name: geometry.name
+              name: geometry.name,
+              dimension: configuration.dimension
             },
             {
               path: path.join(geometry.name + '_mesh'),
@@ -306,6 +307,9 @@ const computeSimulation = async (
   // Create tasks
   const tasks = []
 
+  // Ensure dimension
+  configuration.dimension ?? (configuration.dimension = 3)
+
   // Meshes
   await computeMeshes(id, simulationPath, configuration, tasks)
 
@@ -329,7 +333,6 @@ const computeSimulation = async (
       algorithm,
       {
         ...configuration,
-        dimension: 3,
         run: {
           ...configuration.run,
           couplingPath: Tools.toPosix(path.join(runPath, couplingPath)),

@@ -1,6 +1,7 @@
 /** @module Templates */
 
 export default {
+  gmsh2D: 'gmsh2D.geo.ejs',
   gmsh3D: 'gmsh3D.geo.ejs',
   poisson: 'poisson.edp.ejs',
   linearElasticity: 'linearElasticity.edp.ejs',

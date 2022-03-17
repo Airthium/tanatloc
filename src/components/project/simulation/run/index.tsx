@@ -139,7 +139,8 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
     let done = true
     Object.keys(configuration).forEach((key) => {
-      if (key !== 'run' && !configuration[key].done) done = false
+      if (key !== 'dimension' && key !== 'run' && !configuration[key].done)
+        done = false
     })
     if (!configuration.run.cloudServer) done = false
     setDisabled(!done)

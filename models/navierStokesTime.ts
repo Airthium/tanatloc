@@ -108,7 +108,7 @@ const NavierStokesTime: IModel = {
           {
             label: 'Time step',
             htmlEntity: 'formula',
-            default: 1e-3,
+            default: 0.1,
             unit: '\\(s\\)'
           }
         ]

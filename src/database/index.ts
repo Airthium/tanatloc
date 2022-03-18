@@ -38,7 +38,7 @@ export const checkdB = async (): Promise<boolean> => {
       'docker container ls -a --filter "name=tanatloc-postgres" -q'
     )
 
-    if (!id.length) return
+    if (!id.length) throw new Error()
 
     // Restart docker container
     execSync('docker restart ' + id.toString())
@@ -74,7 +74,7 @@ const startdB = (): void => {
 }
 
 checkdB().then((res) => {
-  if (!res) throw new Error('Database not found')
+  if (!res) console.error('Database not found')
   else startdB()
 })
 

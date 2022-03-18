@@ -1,5 +1,9 @@
 import { query, getter, updater, deleter } from '..'
 
+jest.mock('child_process', () => ({
+  execSync: () => ''
+}))
+
 const mockQuery = jest.fn(() => 'query')
 jest.mock('pg', () => {
   return {

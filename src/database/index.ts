@@ -1,26 +1,82 @@
 /** @module Database */
 
+import { execSync } from 'child_process'
 import { Pool } from 'pg'
 
 import { IDataBaseEntry, IDataBaseResponse } from './index.d'
 
-import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
+import {
+  ADMIN,
+  ADMIN_DATABASE,
+  ADMIN_PASSWORD,
+  USER,
+  HOST,
+  DATABASE,
+  PASSWORD,
+  PORT
+} from '@/config/db'
+
+export const checkdB = async (): Promise<boolean> => {
+  // Legacy postgres
+  try {
+    const checkPool = new Pool({
+      host: HOST,
+      port: PORT,
+      user: ADMIN,
+      database: ADMIN_DATABASE,
+      password: ADMIN_PASSWORD
+    })
+    await checkPool.query('SELECT NOW()')
+    await checkPool.end()
+    return true
+  } catch (err) {}
+
+  // Docker postgres
+  try {
+    // Existing tanatloc-postgres docker
+    const id = execSync(
+      'docker container ls -a --filter "name=tanatloc-postgres" -q'
+    )
+
+    if (!id.length) return
+
+    // Restart docker container
+    execSync('docker restart ' + id.toString())
+
+    // Get docker host
+    const host = execSync(
+      'docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
+    )
+    process.env.DB_HOST = host.toString().replace('\n', '')
+    process.env.DB_ADMIN_PASSWORD ??
+      (process.env.DB_ADMIN_PASSWORD = 'password')
+
+    return true
+  } catch (err) {}
+
+  return false
+}
+
+let pool: Pool
 
 /**
  * Start database
  * @returns Pool
  */
-const startdB = (): Pool => {
-  return new Pool({
+const startdB = (): void => {
+  pool = new Pool({
     user: USER,
-    host: HOST,
+    host: process.env.DB_HOST || HOST,
     database: DATABASE,
     password: PASSWORD,
     port: PORT
   })
 }
 
-const pool = startdB()
+checkdB().then((res) => {
+  if (!res) throw new Error('Database not found')
+  else startdB()
+})
 
 /**
  * PostgreSQL query
@@ -32,6 +88,10 @@ export const query = async (
   command: string,
   args: Array<boolean | number | string | Array<string> | object>
 ): Promise<IDataBaseResponse> => {
+  // Wait for pool
+  while (!pool) await new Promise((resolve) => setTimeout(resolve, 10))
+
+  // Query
   const client = await pool.connect()
   const res = await client.query(command, args)
   client.release()

@@ -8,7 +8,7 @@ import {
   useEffect,
   useCallback
 } from 'react'
-import { Card, Form, Select, Space, Typography } from 'antd'
+import { Card, Form, Select, Space } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 

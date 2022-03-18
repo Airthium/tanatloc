@@ -117,6 +117,39 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     unmount()
   })
 
+  test('no visible', () => {
+    const { rerender, unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        simulation={simulation}
+        geometry={geometry}
+        boundaryCondition={{
+          uuid: 'uuid',
+          name: 'name',
+          type: {
+            key: 'key',
+            label: 'key'
+          },
+          selected: [{ uuid: 'uuid', label: 1 }]
+        }}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    rerender(
+      <BoundaryCondition
+        visible={false}
+        simulation={simulation}
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
+
   test('2D render', () => {
     const { unmount } = render(
       <BoundaryCondition
@@ -238,6 +271,11 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     // Add
     const add = screen.getByRole('Add')
     fireEvent.click(add)
+
+    // Close
+    const close = screen.getByRole('img', { name: 'close' })
+    fireEvent.click(close)
+    expect(onClose).toHaveBeenCalledTimes(1)
 
     unmount()
   })

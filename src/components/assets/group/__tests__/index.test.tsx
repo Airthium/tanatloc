@@ -33,7 +33,7 @@ describe('components/assets/group', () => {
   const userOptions = []
   const organization = {
     id: 'id',
-    groups: []
+    groups: [{ id: 'id' }]
   }
   const group = {
     id: 'id',
@@ -143,7 +143,7 @@ describe('components/assets/group', () => {
         role="Dialog"
         onClick={async () => {
           try {
-            await props.onOk({ name: name, users: ['id'] })
+            await props.onOk({ id: 'id', name: name, users: ['id'] })
           } catch (err) {}
         }}
       >

@@ -292,7 +292,6 @@ const update = async (
 ): Promise<void> => {
   // Get data
   const workspaceData = await getWithData(workspace.id, ['groups'])
-  if (!workspaceData.groups) workspaceData.groups = []
 
   // Check groups
   const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)

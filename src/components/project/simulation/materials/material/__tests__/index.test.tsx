@@ -109,6 +109,37 @@ describe('components/project/simulation/materials/material', () => {
     unmount()
   })
 
+  test('not visible', () => {
+    const { rerender, unmount } = render(
+      <Material
+        visible={true}
+        simulation={simulation}
+        geometry={geometry}
+        material={
+          {
+            uuid: 'uuid',
+            material: {},
+            selected: [{ uuid: 'uuid', label: 1 }]
+          } as IModelMaterialValue
+        }
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    rerender(
+      <Material
+        visible={false}
+        simulation={simulation}
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
+
   test('fill', () => {
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={() => props.onValueChange(1)} />
@@ -149,13 +180,13 @@ describe('components/project/simulation/materials/material', () => {
       />
     )
 
-    // Database
-    const database = screen.getByRole('Database')
-    fireEvent.click(database)
-
     // Formula
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
+
+    // Database
+    const database = screen.getByRole('Database')
+    fireEvent.click(database)
 
     // Selector
     const selector = screen.getByRole('Selector')
@@ -168,6 +199,11 @@ describe('components/project/simulation/materials/material', () => {
     // Close
     const button = screen.getByRole('Cancel')
     fireEvent.click(button)
+    expect(onClose).toHaveBeenCalledTimes(1)
+
+    const close = screen.getByRole('img', { name: 'close' })
+    fireEvent.click(close)
+    expect(onClose).toHaveBeenCalledTimes(2)
 
     unmount()
   })

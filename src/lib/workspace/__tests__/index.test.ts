@@ -77,8 +77,47 @@ describe('lib/workspace', () => {
     mockGet.mockImplementation(() => ({
       name: 'name'
     }))
-    const workspace = await Workspace.get('id', ['name'])
-    expect(workspace).toEqual({ name: 'name' })
+    let workspace = await Workspace.get('id', [
+      'name',
+      'owners',
+      'users',
+      'groups',
+      'projects',
+      'archivedprojects'
+    ])
+    expect(workspace).toEqual({
+      name: 'name',
+      owners: [],
+      users: [],
+      groups: [],
+      projects: [],
+      archivedprojects: []
+    })
+
+    mockGet.mockImplementation(() => ({
+      name: 'name',
+      owners: [],
+      users: [],
+      groups: [],
+      projects: [],
+      archivedprojects: []
+    }))
+    workspace = await Workspace.get('id', [
+      'name',
+      'owners',
+      'users',
+      'groups',
+      'projects',
+      'archivedprojects'
+    ])
+    expect(workspace).toEqual({
+      name: 'name',
+      owners: [],
+      users: [],
+      groups: [],
+      projects: [],
+      archivedprojects: []
+    })
   })
 
   test('getWithData', async () => {

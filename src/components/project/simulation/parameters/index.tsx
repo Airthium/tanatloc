@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 import { ISimulation } from '@/database/index.d'
 import { IModelParameter } from '@/models/index.d'
@@ -28,6 +29,141 @@ export interface IProps {
 export const errors = {
   update: 'Unable to update the simulation'
 }
+
+/**
+ * Build 2D Formula
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Formula
+ */
+export const build2DFormula = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (value: string) => void
+): JSX.Element => (
+  <Formula
+    key={key}
+    label={child.label2D || child.label}
+    defaultValue={(child.value as string) ?? (child.default as string)}
+    onValueChange={onValueChange}
+    unit={child.unit}
+  />
+)
+
+/**
+ * Build 2D Select
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Select
+ */
+export const build2DSelect = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (value: string) => void
+): JSX.Element => (
+  <Form layout="vertical" key={key}>
+    <Form.Item label={child.label2D || child.label}>
+      <Select
+        options={child.options.map((option) => ({
+          label: option.label,
+          value: option.value2D ?? option.value
+        }))}
+        defaultValue={(child.value as string) || (child.default as string)}
+        onChange={onValueChange}
+      />
+    </Form.Item>
+  </Form>
+)
+
+/**
+ * Build 2D checkbox
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Checkbox
+ */
+export const build2DCheckbox = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (e: CheckboxChangeEvent) => void
+) => (
+  <Form layout="vertical" key={key}>
+    <Form.Item label={child.label2D || child.label}>
+      <Checkbox
+        defaultChecked={child.value as boolean}
+        onChange={onValueChange}
+      />
+    </Form.Item>
+  </Form>
+)
+
+/**
+ * Build Formula
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Formula
+ */
+export const buildFormula = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (value: string) => void
+) => (
+  <Formula
+    key={key}
+    label={child.label}
+    defaultValue={(child.value as string) ?? (child.default as string)}
+    onValueChange={onValueChange}
+    unit={child.unit}
+  />
+)
+
+/**
+ * Build Select
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Select
+ */
+export const buildSelect = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (value: string) => void
+) => (
+  <Form layout="vertical" key={key}>
+    <Form.Item label={child.label}>
+      <Select
+        options={child.options}
+        defaultValue={(child.value as string) || (child.default as string)}
+        onChange={onValueChange}
+      />
+    </Form.Item>
+  </Form>
+)
+
+/**
+ * Build Checkbox
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Checkbox
+ */
+const buildCheckbox = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (e: CheckboxChangeEvent) => void
+) => (
+  <Form layout="vertical" key={key}>
+    <Form.Item label={child.label}>
+      <Checkbox
+        defaultChecked={child.value as boolean}
+        onChange={onValueChange}
+      />
+    </Form.Item>
+  </Form>
+)
 
 /**
  * On done
@@ -150,50 +286,16 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       const components = parameter?.children.map((child, index) => {
         if (child.only3D) return
         if (child.htmlEntity === 'formula') {
-          return (
-            <Formula
-              key={key + '&' + index}
-              label={child.label2D || child.label}
-              defaultValue={
-                (child.value as string) ?? (child.default as string)
-              }
-              onValueChange={(value: string) =>
-                onChange(simulation, key, index, value, swr)
-              }
-              unit={child.unit}
-            />
+          return build2DFormula(key + '&' + index, child, (value: string) =>
+            onChange(simulation, key, index, value, swr)
           )
         } else if (child.htmlEntity === 'select') {
-          return (
-            <Form layout="vertical" key={key + '&' + index}>
-              <Form.Item label={child.label2D || child.label}>
-                <Select
-                  options={child.options.map((option) => ({
-                    label: option.label,
-                    value: option.value2D ?? option.value
-                  }))}
-                  defaultValue={
-                    (child.value as string) || (child.default as string)
-                  }
-                  onChange={(value: string) =>
-                    onChange(simulation, key, index, value, swr)
-                  }
-                />
-              </Form.Item>
-            </Form>
+          return build2DSelect(key + '&' + index, child, (value: string) =>
+            onChange(simulation, key, index, value, swr)
           )
         } else if (child.htmlEntity === 'checkbox') {
-          return (
-            <Form layout="vertical" key={key + '&' + index}>
-              <Form.Item label={child.label2D || child.label}>
-                <Checkbox
-                  defaultChecked={child.value as boolean}
-                  onChange={(e) =>
-                    onChange(simulation, key, index, e.target.checked, swr)
-                  }
-                />
-              </Form.Item>
-            </Form>
+          return build2DCheckbox(key + '&' + index, child, (e) =>
+            onChange(simulation, key, index, e.target.checked, swr)
           )
         }
       })
@@ -224,47 +326,16 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
 
       const components = parameter?.children.map((child, index) => {
         if (child.htmlEntity === 'formula') {
-          return (
-            <Formula
-              key={key + '&' + index}
-              label={child.label}
-              defaultValue={
-                (child.value as string) ?? (child.default as string)
-              }
-              onValueChange={(value: string) =>
-                onChange(simulation, key, index, value, swr)
-              }
-              unit={child.unit}
-            />
+          return buildFormula(key + '&' + index, child, (value: string) =>
+            onChange(simulation, key, index, value, swr)
           )
         } else if (child.htmlEntity === 'select') {
-          return (
-            <Form layout="vertical" key={key + '&' + index}>
-              <Form.Item label={child.label}>
-                <Select
-                  options={child.options}
-                  defaultValue={
-                    (child.value as string) || (child.default as string)
-                  }
-                  onChange={(value: string) =>
-                    onChange(simulation, key, index, value, swr)
-                  }
-                />
-              </Form.Item>
-            </Form>
+          return buildSelect(key + '&' + index, child, (value: string) =>
+            onChange(simulation, key, index, value, swr)
           )
         } else if (child.htmlEntity === 'checkbox') {
-          return (
-            <Form layout="vertical" key={key + '&' + index}>
-              <Form.Item label={child.label}>
-                <Checkbox
-                  defaultChecked={child.value as boolean}
-                  onChange={(e) =>
-                    onChange(simulation, key, index, e.target.checked, swr)
-                  }
-                />
-              </Form.Item>
-            </Form>
+          return buildCheckbox(key + '&' + index, child, (e) =>
+            onChange(simulation, key, index, e.target.checked, swr)
           )
         }
       })

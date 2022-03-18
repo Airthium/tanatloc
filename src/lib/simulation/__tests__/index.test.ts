@@ -56,7 +56,9 @@ const mockToolsConvert = jest.fn()
 const mockToolsRemoveFile = jest.fn()
 const mockToolsRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
-  createPath: async () => {},
+  createPath: async () => {
+    // Empty
+  },
   readFile: async () => mockToolsReadFile(),
   copyFile: async () => mockToolsCopyFile(),
   copyDirectory: async () => mockToolsCopyDirectory(),
@@ -119,9 +121,15 @@ describe('lib/simulation', () => {
 
   test('get', async () => {
     mockGet.mockImplementation(() => ({}))
-    const simulation = await Simulation.get('id', [])
+    let simulation = await Simulation.get('id', ['tasks'])
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(simulation).toEqual({})
+    expect(simulation).toEqual({ tasks: [] })
+
+    mockGet.mockImplementation(() => ({
+      tasks: []
+    }))
+    simulation = await Simulation.get('id', ['tasks'])
+    expect(simulation).toEqual({ tasks: [] })
   })
 
   test('getAll', async () => {
@@ -296,6 +304,36 @@ describe('lib/simulation', () => {
     expect(mockPluginCompute).toHaveBeenCalledTimes(5)
   })
 
+  test('run 2D', async () => {
+    // Normal
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {},
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      }
+    }))
+    mockUserGet.mockImplementation(() => ({
+      authorizedplugins: ['key']
+    }))
+    mockGeometryGet.mockImplementation(() => ({
+      uploadfilename: 'uploadfilename',
+      extension: 'dxf'
+    }))
+
+    await Simulation.run({ id: 'id' }, { id: 'id' })
+    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(1)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(1)
+  })
+
   test('stop', async () => {
     mockGet.mockImplementation(() => ({
       scheme: {
@@ -319,9 +357,17 @@ describe('lib/simulation', () => {
 
   test('getLog', async () => {
     mockToolsReadFile.mockImplementation(() => 'log')
-    const log = await Simulation.getLog({ id: 'id' }, 'log')
+    let log = await Simulation.getLog({ id: 'id' }, 'log')
     expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
     expect(log).toBe('log')
+
+    // Error
+    mockToolsReadFile.mockImplementation(() => {
+      throw new Error()
+    })
+    log = await Simulation.getLog({ id: 'id' }, 'log')
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(2)
+    expect(log.toString()).toBe('Not available yet')
   })
 
   test('archive', async () => {

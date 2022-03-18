@@ -211,7 +211,6 @@ const update = async (
   if (groupsUpdate) {
     // Get data
     const projectData = await get(project.id, ['groups'])
-    if (!projectData.groups) projectData.groups = []
 
     // Delete groups
     const deleted = projectData.groups.filter(

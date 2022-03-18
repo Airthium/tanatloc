@@ -108,6 +108,49 @@ describe('lib/project', () => {
     expect(project).toEqual({ id: 'id' })
   })
 
+  test('get', async () => {
+    mockGet.mockImplementation(() => ({ id: 'id' }))
+    let project = await Project.get('id', [
+      'geometries',
+      'simulations',
+      'owners',
+      'users',
+      'groups'
+    ])
+    expect(project).toEqual({
+      id: 'id',
+      geometries: [],
+      simulations: [],
+      owners: [],
+      users: [],
+      groups: []
+    })
+
+    mockGet.mockImplementation(() => ({
+      id: 'id',
+      geometries: [],
+      simulations: [],
+      owners: [],
+      users: [],
+      groups: []
+    }))
+    project = await Project.get('id', [
+      'geometries',
+      'simulations',
+      'owners',
+      'users',
+      'groups'
+    ])
+    expect(project).toEqual({
+      id: 'id',
+      geometries: [],
+      simulations: [],
+      owners: [],
+      users: [],
+      groups: []
+    })
+  })
+
   test('getWithData', async () => {
     let project
 

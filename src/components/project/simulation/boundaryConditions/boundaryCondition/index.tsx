@@ -83,7 +83,7 @@ const BoundaryCondition = ({
   const [totalNumber, setTotalNumber]: [
     number,
     Dispatch<SetStateAction<number>>
-  ] = useState(0)
+  ] = useState()
   const [current, setCurrent]: [
     IModelBoundaryConditionValue,
     Dispatch<SetStateAction<IModelBoundaryConditionValue>>
@@ -100,10 +100,16 @@ const BoundaryCondition = ({
     if (!visible) setCurrent(null)
   }, [visible])
 
-  // Edit
+  // Edit or name
   useEffect(() => {
     if (!current && boundaryCondition) setCurrent(boundaryCondition)
-  }, [current, boundaryCondition])
+    else if (visible && !current && !boundaryCondition && totalNumber) {
+      setCurrent((prevCurrent) => ({
+        ...prevCurrent,
+        name: 'Boundary condition ' + (totalNumber + 1)
+      }))
+    }
+  }, [current, totalNumber, visible, boundaryCondition])
 
   // Already selected
   useEffect(() => {
@@ -157,15 +163,6 @@ const BoundaryCondition = ({
 
     setTotalNumber(numberOfBoundaryConditions)
   }, [types])
-
-  // Name
-  useEffect(() => {
-    if (visible)
-      setCurrent((prevCurrent) => ({
-        ...prevCurrent,
-        name: 'Boundary condition ' + (totalNumber + 1)
-      }))
-  }, [visible, totalNumber])
 
   /**
    * On name

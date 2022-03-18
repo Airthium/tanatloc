@@ -163,7 +163,10 @@ describe('lib/workspace', () => {
             workspaces: ['id', 'id'],
             organizations: ['organizationid']
           }
-        ]
+        ],
+        users: [],
+        groups: [],
+        projects: []
       },
       {
         id: 'id',
@@ -174,7 +177,10 @@ describe('lib/workspace', () => {
             workspaces: ['id', 'id'],
             organizations: ['organizationid']
           }
-        ]
+        ],
+        users: [],
+        groups: [],
+        projects: []
       },
       {
         id: 'id',
@@ -185,7 +191,10 @@ describe('lib/workspace', () => {
             workspaces: ['id', 'id'],
             organizations: ['organizationid']
           }
-        ]
+        ],
+        users: [],
+        groups: [],
+        projects: []
       },
       {
         id: 'groupid',

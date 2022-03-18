@@ -31,13 +31,11 @@
 
 - last card dans material et bc drawer sans border bottom
 
-- Correct clone of objects ? ({...simulation} is a shallow copy)
-
 - Default enabled plugins dans admin / registration ?
 
 - Visualisation 2D dans un plan ? plus de rotation ?
 
-- projet vide projects.geometries undefined
+- projet vide projects.geometries undefined [Fixed?]
 
 - Unable to get project (json error) (F5 many times on simulation to reproduce)
 

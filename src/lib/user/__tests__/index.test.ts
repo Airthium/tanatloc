@@ -79,8 +79,45 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email'
     }))
-    const user = await User.get('id', ['email'])
-    expect(user).toEqual({ id: 'id', email: 'email' })
+    let user = await User.get('id', [
+      'email',
+      'organizations',
+      'workspaces',
+      'authorizedplugins',
+      'plugins'
+    ])
+    expect(user).toEqual({
+      id: 'id',
+      email: 'email',
+      organizations: [],
+      workspaces: [],
+      authorizedplugins: [],
+      plugins: []
+    })
+
+    mockGet.mockImplementation(() => ({
+      id: 'id',
+      email: 'email',
+      organizations: [],
+      workspaces: [],
+      authorizedplugins: [],
+      plugins: []
+    }))
+    user = await User.get('id', [
+      'email',
+      'organizations',
+      'workspaces',
+      'authorizedplugins',
+      'plugins'
+    ])
+    expect(user).toEqual({
+      id: 'id',
+      email: 'email',
+      organizations: [],
+      workspaces: [],
+      authorizedplugins: [],
+      plugins: []
+    })
   })
 
   test('getWithData', async () => {

@@ -104,10 +104,10 @@ const BoundaryConditions = ({
    * On close
    */
   const onClose = useCallback((): void => {
-    setBoundaryConditionVisible(false)
-    setVisible(true)
-    setBoundaryCondition(null)
     dispatch(disable())
+    setBoundaryConditionVisible(false)
+    setBoundaryCondition(null)
+    setVisible(true)
   }, [dispatch, setVisible])
 
   /**

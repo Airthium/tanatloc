@@ -262,10 +262,24 @@ const BoundaryCondition = ({
       mask={false}
       maskClosable={false}
       width={300}
-      extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
+      extra={
+        <Button
+          type="text"
+          icon={<CloseOutlined />}
+          onClick={() => {
+            setCurrent(null)
+            onClose()
+          }}
+        />
+      }
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CancelButton onCancel={onClose} />
+          <CancelButton
+            onCancel={() => {
+              setCurrent(null)
+              onClose()
+            }}
+          />
           {boundaryCondition ? (
             <Edit
               boundaryCondition={{

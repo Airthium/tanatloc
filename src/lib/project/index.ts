@@ -47,7 +47,21 @@ const add = async (
  * @returns Project
  */
 const get = async (id: string, data: string[]): Promise<IProject> => {
-  return ProjectDB.get(id, data)
+  const projectData = await ProjectDB.get(id, data)
+
+  if (data.includes('geometries') && !projectData.geometries)
+    projectData.geometries = []
+
+  if (data.includes('simulations') && !projectData.simulations)
+    projectData.simulations = []
+
+  if (data.includes('owners') && !projectData.owners) projectData.owners = []
+
+  if (data.includes('users') && !projectData.users) projectData.users = []
+
+  if (data.includes('groups') && !projectData.groups) projectData.groups = []
+
+  return projectData
 }
 
 /**

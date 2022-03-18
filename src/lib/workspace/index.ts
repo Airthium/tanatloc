@@ -50,7 +50,23 @@ const add = async (
  * @returns Workspace
  */
 const get = async (id: string, data: string[]): Promise<IWorkspace> => {
-  return WorkspaceDB.get(id, data)
+  const workspaceData = await WorkspaceDB.get(id, data)
+
+  if (data.includes('owners') && !workspaceData.owners)
+    workspaceData.owners = []
+
+  if (data.includes('users') && !workspaceData.users) workspaceData.users = []
+
+  if (data.includes('groups') && !workspaceData.groups)
+    workspaceData.groups = []
+
+  if (data.includes('projects') && !workspaceData.projects)
+    workspaceData.projects = []
+
+  if (data.includes('archivedprojects') && !workspaceData.archivedprojects)
+    workspaceData.archivedprojects = []
+
+  return workspaceData
 }
 
 /**

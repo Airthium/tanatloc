@@ -42,7 +42,16 @@ const add = async (
  * @returns Group
  */
 const get = async (id: string, data: Array<string>): Promise<IGroup> => {
-  return GroupDB.get(id, data)
+  const groupData = await GroupDB.get(id, data)
+
+  if (data.includes('users') && !groupData.users) groupData.users = []
+
+  if (data.includes('workspaces') && !groupData.workspaces)
+    groupData.workspaces = []
+
+  if (data.includes('projects') && !groupData.projects) groupData.projects = []
+
+  return groupData
 }
 
 /**

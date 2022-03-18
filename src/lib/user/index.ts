@@ -35,7 +35,20 @@ const add = async (user: {
  * @returns User
  */
 const get = async (id: string, data: Array<string>): Promise<IUser> => {
-  return UserDB.get(id, data)
+  const userData = await UserDB.get(id, data)
+
+  if (data.includes('organizations') && !userData.organizations)
+    userData.organizations = []
+
+  if (data.includes('workspaces') && !userData.workspaces)
+    userData.workspaces = []
+
+  if (data.includes('authorizedplugins') && !userData.authorizedplugins)
+    userData.authorizedplugins = []
+
+  if (data.includes('plugins') && !userData.plugins) userData.plugins = []
+
+  return userData
 }
 
 /**

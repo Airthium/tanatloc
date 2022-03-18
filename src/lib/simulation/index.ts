@@ -52,7 +52,11 @@ const add = async (
  * @returns Simulation
  */
 const get = async (id: string, data: string[]): Promise<ISimulation> => {
-  return SimulationDB.get(id, data)
+  const simulationData = await SimulationDB.get(id, data)
+
+  if (data.includes('tasks') && !simulationData.tasks) simulationData.tasks = []
+
+  return simulationData
 }
 
 /**

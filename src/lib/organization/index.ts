@@ -55,7 +55,18 @@ const add = async (
  * @returns Organization
  */
 const get = async (id: string, data: string[]): Promise<IOrganization> => {
-  return OrganizationDB.get(id, data)
+  const organizationData = await OrganizationDB.get(id, data)
+
+  if (data.includes('owners') && !organizationData.owners)
+    organizationData.owners = []
+
+  if (data.includes('users') && !organizationData.users)
+    organizationData.users = []
+
+  if (data.includes('groups') && !organizationData.groups)
+    organizationData.groups = []
+
+  return organizationData
 }
 
 /**

@@ -251,7 +251,7 @@ const Selector = ({
    * Render
    */
   return (
-    <Card size="small">
+    <Card size="small" className="no-border-bottom">
       <Space direction="vertical" className="full-width">
         <Typography.Text strong>Filters</Typography.Text>
         <Space direction="horizontal" wrap={true}>

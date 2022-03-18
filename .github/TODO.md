@@ -29,8 +29,6 @@
 
 - /!\ Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
-- last card dans material et bc drawer sans border bottom
-
 - Default enabled plugins dans admin / registration ?
 
 - Visualisation 2D dans un plan ? plus de rotation ?

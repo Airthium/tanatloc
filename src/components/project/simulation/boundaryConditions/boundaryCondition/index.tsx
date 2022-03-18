@@ -103,7 +103,12 @@ const BoundaryCondition = ({
   // Edit or name
   useEffect(() => {
     if (!current && boundaryCondition) setCurrent(boundaryCondition)
-    else if (visible && !current && !boundaryCondition && totalNumber) {
+    else if (
+      visible &&
+      !current &&
+      !boundaryCondition &&
+      totalNumber !== undefined
+    ) {
       setCurrent((prevCurrent) => ({
         ...prevCurrent,
         name: 'Boundary condition ' + (totalNumber + 1)

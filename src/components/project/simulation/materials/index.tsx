@@ -96,10 +96,10 @@ const Materials = ({
    * On close
    */
   const onClose = useCallback((): void => {
-    setMaterialVisible(false)
-    setVisible(true)
-    setMaterial(null)
     dispatch(disable())
+    setMaterialVisible(false)
+    setMaterial(null)
+    setVisible(true)
   }, [dispatch, setVisible])
 
   /**

@@ -108,7 +108,7 @@ try {
 		<% } -%>
 		)
 	<% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join() -%>)(
+		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join() -%>)(
 			(<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
 	<% } -%>

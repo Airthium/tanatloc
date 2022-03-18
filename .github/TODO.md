@@ -1,9 +1,5 @@
 # TODO list
 
-## Global
-
-- 2D support
-
 ## UI
 
 - FIGMA: https://www.figma.com/file/zA0A5rq8U5zqBoTdqJwYzh/Cleaning_Tanatloc?node-id=92%3A0
@@ -32,10 +28,6 @@
 - Default enabled plugins dans admin / registration ?
 
 - Visualisation 2D dans un plan ? plus de rotation ?
-
-- projet vide projects.geometries undefined [Fixed?]
-
-- Unable to get project (json error) (F5 many times on simulation to reproduce)
 
 ## Share
 

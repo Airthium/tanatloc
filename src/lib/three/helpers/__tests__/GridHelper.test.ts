@@ -12,15 +12,15 @@ jest.mock('../LabelHelper', () => () => ({
 global.MockVector3 = { x: 1e5, y: 3, z: 1e-13 }
 
 describe('lib/three/helpers/GridHelper', () => {
-  const scene = new Scene() as Scene & {
-    boundingBox: Box3
-    boundingSphere: Sphere
-  }
-  scene.boundingBox = new Box3(
-    new Vector3(-1e-5, -3, -1e-13),
-    new Vector3(1, 1, 1)
-  )
-  scene.boundingSphere = new Sphere(new Vector3(0, 0, 0), 1)
+  const scene = {} as Scene & { boundingBox: Box3; boundingSphere: Sphere }
+  scene.children = []
+  scene.boundingBox = {
+    min: { x: -1e-5, y: -3, z: -1e-13 } as Vector3,
+    max: { x: 1, y: 1, z: 1 } as Vector3
+  } as Box3
+  scene.boundingSphere = {
+    center: { x: 0, y: 0, z: 0 } as Vector3
+  } as Sphere
   scene.children.push({
     type: 'Mesh'
   } as Object3D)

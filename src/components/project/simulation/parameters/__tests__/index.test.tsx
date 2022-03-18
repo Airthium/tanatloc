@@ -1,5 +1,7 @@
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+
+import { ISimulation } from '@/database/index.d'
 
 import Parameters, { errors } from '@/components/project/simulation/parameters'
 
@@ -18,7 +20,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/parameters', () => {
-  const simulation = {
+  const simulation: ISimulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -40,6 +42,13 @@ describe('components/project/simulation/parameters', () => {
                 default: 0
               },
               {
+                label: 'Formula',
+                htmlEntity: 'formula',
+                value: 1,
+                default: 0
+              },
+              {
+                only3D: true,
                 label: 'Formula',
                 htmlEntity: 'formula',
                 value: 1,
@@ -145,7 +154,9 @@ describe('components/project/simulation/parameters', () => {
         new Error('update error')
       )
     )
-    mockUpdate.mockImplementation(() => {})
+    mockUpdate.mockImplementation(() => {
+      // Empty
+    })
 
     // Open advanced
     const open = screen.getByRole('button', { name: 'right Advanced' })
@@ -153,15 +164,11 @@ describe('components/project/simulation/parameters', () => {
 
     // Select
     const select = screen.getByRole('combobox')
-    await act(async () => {
-      fireEvent.mouseDown(select)
-    })
+    fireEvent.mouseDown(select)
 
     const options2 = screen.getAllByText('option2')
     const option2 = options2[1]
-    await act(async () => {
-      fireEvent.click(option2)
-    })
+    fireEvent.click(option2)
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
@@ -170,6 +177,44 @@ describe('components/project/simulation/parameters', () => {
     fireEvent.click(checkbox)
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
+
+    unmount()
+  })
+
+  test('2D', async () => {
+    mockFormula.mockImplementation((props) => (
+      <div role="Formula" onClick={() => props.onValueChange()} />
+    ))
+    simulation.scheme.configuration.dimension = 2
+    //@ts-ignore
+    simulation.scheme.configuration.parameters.param2.children[0].value =
+      undefined
+    const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
+
+    // Formula
+    const formulas = screen.getAllByRole('Formula')
+    fireEvent.click(formulas[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+
+    // Open advanced
+    const open = screen.getByRole('button', { name: 'right Advanced' })
+    fireEvent.click(open)
+
+    // Select
+    const select = screen.getByRole('combobox')
+    fireEvent.mouseDown(select)
+
+    const options2 = screen.getAllByText('option2')
+    const option2 = options2[1]
+    fireEvent.click(option2)
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+
+    // Checkbox
+    const checkbox = screen.getByRole('checkbox')
+    fireEvent.click(checkbox)
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     unmount()
   })

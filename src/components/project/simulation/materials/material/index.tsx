@@ -76,6 +76,11 @@ const Material = ({
   // Data
   const materials = simulation.scheme.configuration.materials
 
+  // Visible
+  useEffect(() => {
+    if (!visible) setCurrent(null)
+  }, [visible])
+
   // Edit
   useEffect(() => {
     if (!current && material) setCurrent(material)
@@ -157,6 +162,7 @@ const Material = ({
       placement="left"
       closable={false}
       visible={visible}
+      destroyOnClose={true}
       mask={false}
       maskClosable={false}
       width={300}

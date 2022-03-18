@@ -95,6 +95,11 @@ const BoundaryCondition = ({
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
   const dimension = simulation.scheme.configuration.dimension
 
+  // Visible
+  useEffect(() => {
+    if (!visible) setCurrent(null)
+  }, [visible])
+
   // Edit
   useEffect(() => {
     if (!current && boundaryCondition) setCurrent(boundaryCondition)
@@ -155,11 +160,12 @@ const BoundaryCondition = ({
 
   // Name
   useEffect(() => {
-    setCurrent((prevCurrent) => ({
-      ...prevCurrent,
-      name: 'Boundary condition ' + (totalNumber + 1)
-    }))
-  }, [totalNumber])
+    if (visible)
+      setCurrent((prevCurrent) => ({
+        ...prevCurrent,
+        name: 'Boundary condition ' + (totalNumber + 1)
+      }))
+  }, [visible, totalNumber])
 
   /**
    * On name
@@ -249,6 +255,8 @@ const BoundaryCondition = ({
     }))
   }, [])
 
+  console.log(current)
+
   /**
    * Render
    */
@@ -259,6 +267,7 @@ const BoundaryCondition = ({
       placement="left"
       closable={false}
       visible={visible}
+      destroyOnClose={true}
       mask={false}
       maskClosable={false}
       width={300}

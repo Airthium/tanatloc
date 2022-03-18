@@ -117,6 +117,52 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     unmount()
   })
 
+  test('2D render', () => {
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        simulation={{
+          id: 'id',
+          scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
+            configuration: {
+              dimension: 2,
+              boundaryConditions: {
+                index: 1,
+                title: 'title',
+                key: {
+                  label: 'label',
+                  children: [
+                    {
+                      only3D: true,
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0
+                    }
+                  ],
+                  values: []
+                }
+              }
+            }
+          }
+        }}
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    const radio = screen.getByRole('radio')
+    fireEvent.click(radio)
+
+    unmount()
+  })
+
   test('close', () => {
     mockCancelButton.mockImplementation((props) => (
       <div role="GoBack" onClick={props.onCancel} />

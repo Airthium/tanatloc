@@ -22,6 +22,9 @@ import GroupAPI from '@/api/group'
  */
 export interface IProps {
   organization: IOrganizationWithData
+  swr: {
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
+  }
 }
 
 /**
@@ -39,7 +42,7 @@ export const errors = {
  * - organization (Object) Organization `{ id, owners, [users] }`
  * @returns Groups
  */
-const Groups = ({ organization }: IProps): JSX.Element => {
+const Groups = ({ organization, swr }: IProps): JSX.Element => {
   // State
   const [userOptions, setUserOptions]: [
     { label: string; value: string }[],
@@ -88,7 +91,8 @@ const Groups = ({ organization }: IProps): JSX.Element => {
       <Group
         userOptions={userOptions}
         organization={{
-          id: organization.id
+          id: organization.id,
+          groups: organization.groups
         }}
         group={{
           id: group.id,
@@ -96,6 +100,7 @@ const Groups = ({ organization }: IProps): JSX.Element => {
           users: group.users
         }}
         swr={{
+          mutateOneOrganization: swr.mutateOneOrganization,
           mutateOneGroup
         }}
       />
@@ -134,8 +139,9 @@ const Groups = ({ organization }: IProps): JSX.Element => {
     <Space direction="vertical" className="full-width" size={20}>
       <Group
         userOptions={userOptions}
-        organization={{ id: organization.id }}
+        organization={{ id: organization.id, groups: organization.groups }}
         swr={{
+          mutateOneOrganization: swr.mutateOneOrganization,
           addOneGroup
         }}
       />
@@ -154,7 +160,11 @@ Groups.propTypes = {
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
     owners: PropTypes.array.isRequired,
-    users: PropTypes.array
+    users: PropTypes.array,
+    groups: PropTypes.array.isRequired
+  }).isRequired,
+  swr: PropTypes.exact({
+    mutateOneOrganization: PropTypes.func.isRequired
   }).isRequired
 }
 

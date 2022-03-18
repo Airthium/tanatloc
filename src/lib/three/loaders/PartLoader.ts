@@ -354,6 +354,7 @@ const PartLoader = (
 
     setSolidsVisible(part, false)
     setFacesVisible(part, true)
+    setEdgesVisible(part, true)
 
     unhighlight()
     highlighted = null

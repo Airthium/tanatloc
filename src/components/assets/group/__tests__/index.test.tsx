@@ -32,7 +32,8 @@ jest.mock('@/api/group', () => ({
 describe('components/assets/group', () => {
   const userOptions = []
   const organization = {
-    id: 'id'
+    id: 'id',
+    groups: []
   }
   const group = {
     id: 'id',
@@ -40,6 +41,7 @@ describe('components/assets/group', () => {
     users: [{ id: 'id' }]
   }
   const swr = {
+    mutateOneOrganization: jest.fn(),
     addOneGroup: jest.fn(),
     mutateOneGroup: jest.fn()
   }

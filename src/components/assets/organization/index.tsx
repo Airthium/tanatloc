@@ -116,7 +116,11 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
             organization={{
               id: organization.id,
               owners: organization.owners,
-              users: organization.users
+              users: organization.users,
+              groups: organization.groups
+            }}
+            swr={{
+              mutateOneOrganization: swr.mutateOneOrganization
             }}
           />
         </Tabs.TabPane>
@@ -130,7 +134,8 @@ Organization.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     owners: PropTypes.array.isRequired,
-    users: PropTypes.array
+    users: PropTypes.array,
+    groups: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.exact({
     mutateOneOrganization: PropTypes.func.isRequired,

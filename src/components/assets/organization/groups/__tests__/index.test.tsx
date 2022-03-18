@@ -46,6 +46,9 @@ describe('components/assets/organization/groups', () => {
     id: 'id',
     owners: []
   }
+  const swr = {
+    mutateOneOrganization: jest.fn()
+  }
 
   beforeEach(() => {
     mockErrorNotification.mockReset()
@@ -63,14 +66,14 @@ describe('components/assets/organization/groups', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Groups organization={organization} />)
+    const { unmount } = render(<Groups organization={organization} swr={swr} />)
 
     unmount()
   })
 
   test('error', () => {
     mockErrorNotificationGroups.mockImplementation(() => true)
-    const { unmount } = render(<Groups organization={organization} />)
+    const { unmount } = render(<Groups organization={organization} swr={swr} />)
 
     expect(mockErrorNotification).toHaveBeenCalledTimes(1)
     expect(mockErrorNotification).toHaveBeenLastCalledWith(errors.groups, true)
@@ -86,6 +89,7 @@ describe('components/assets/organization/groups', () => {
           owners: [{ id: 'id1', firstname: 'firstname', lastname: 'lastname' }],
           users: [{ id: 'id2', email: 'email' }, {}]
         }}
+        swr={swr}
       />
     )
 

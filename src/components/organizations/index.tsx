@@ -72,7 +72,8 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
                 id: organization.id,
                 name: organization.name,
                 owners: organization.owners,
-                users: organization.users
+                users: organization.users,
+                groups: organization.groups
               }}
               swr={{
                 mutateOneOrganization: swr.mutateOneOrganization,

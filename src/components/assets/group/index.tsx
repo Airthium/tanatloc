@@ -23,6 +23,7 @@ export interface IProps {
   organization: IOrganizationWithData
   group?: IGroupWithData
   swr: {
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
     addOneGroup?: (group: INewGroup) => void
     mutateOneGroup?: (group: IGroupWithData) => void
   }
@@ -48,7 +49,10 @@ export const onAdd = async (
     name: string
     users: string[]
   },
-  swr: { addOneGroup: (group: INewGroup) => void }
+  swr: {
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    addOneGroup: (group: INewGroup) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -63,6 +67,11 @@ export const onAdd = async (
       name: values.name,
       users: values.users
     })
+
+    swr.mutateOneOrganization({
+      id: organization.id,
+      groups: [...organization.groups, newGroup as IGroupWithData]
+    })
   } catch (err) {
     ErrorNotification(errors.add, err)
     throw err
@@ -71,17 +80,20 @@ export const onAdd = async (
 
 /**
  * On update
+ * @param organization Organization
  * @param group Group
  * @param values Values
  * @param swr SWR
  */
 export const onUpdate = async (
+  organization: IOrganizationWithData,
   group: IGroupWithData,
   values: {
     name: string
     users: string[]
   },
   swr: {
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
     mutateOneGroup: (group: IGroupWithData) => void
   }
 ): Promise<void> => {
@@ -116,6 +128,16 @@ export const onUpdate = async (
         ...values
       }
     )
+
+    const groupIndex = organization.groups.findIndex((g) => g.id === group.id)
+    swr.mutateOneOrganization({
+      id: organization.id,
+      groups: [
+        ...organization.groups.slice(0, groupIndex),
+        group,
+        ...organization.groups.slice(groupIndex + 1)
+      ]
+    })
   } catch (err) {
     ErrorNotification(errors.update, err)
     throw err
@@ -164,15 +186,26 @@ const Group = ({
           try {
             if (group) {
               await onUpdate(
+                organization,
                 group,
                 values,
-                swr as { mutateOneGroup: (group: IGroupWithData) => void }
+                swr as {
+                  mutateOneOrganization: (
+                    organization: IOrganizationWithData
+                  ) => void
+                  mutateOneGroup: (group: IGroupWithData) => void
+                }
               )
             } else {
               await onAdd(
                 organization,
                 values,
-                swr as { addOneGroup: (group: INewGroup) => void }
+                swr as {
+                  mutateOneOrganization: (
+                    organization: IOrganizationWithData
+                  ) => void
+                  addOneGroup: (group: INewGroup) => void
+                }
               )
             }
 
@@ -225,7 +258,8 @@ Group.propTypes = {
     })
   ).isRequired,
   organization: PropTypes.exact({
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    groups: PropTypes.array.isRequired
   }).isRequired,
   group: PropTypes.exact({
     id: PropTypes.string.isRequired,
@@ -233,6 +267,7 @@ Group.propTypes = {
     users: PropTypes.array.isRequired
   }),
   swr: PropTypes.exact({
+    mutateOneOrganization: PropTypes.func.isRequired,
     addOneGroup: PropTypes.func,
     mutateOneGroup: PropTypes.func
   }).isRequired

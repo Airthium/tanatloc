@@ -4,9 +4,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import List, { errors } from '..'
 
 const mockQuery = jest.fn()
+const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    query: mockQuery()
+    query: mockQuery(),
+    push: () => mockPush()
   })
 }))
 
@@ -38,6 +40,7 @@ describe('components/workspace/list', () => {
   }
 
   beforeEach(() => {
+    mockPush.mockReset()
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
 
@@ -58,6 +61,19 @@ describe('components/workspace/list', () => {
       <List
         user={user}
         workspaces={workspaces}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('empty workspaces', () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        workspaces={[]}
         organizations={organizations}
         swr={swr}
       />
@@ -91,12 +107,19 @@ describe('components/workspace/list', () => {
 
     const dialog = screen.getByRole('Dialog')
 
+    // Normal
+    mockWorkspaceAdd.mockImplementation(() => ({}))
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+
     // Error
     mockWorkspaceAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -104,12 +127,6 @@ describe('components/workspace/list', () => {
         new Error('add error')
       )
     )
-
-    // Normal
-    mockWorkspaceAdd.mockImplementation(() => ({}))
-    fireEvent.click(dialog)
-    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
 
     unmount()
   })

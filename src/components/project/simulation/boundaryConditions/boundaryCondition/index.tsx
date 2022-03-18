@@ -96,8 +96,9 @@ const BoundaryCondition = ({
   const dimension = simulation.scheme.configuration.dimension
 
   // Visible
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!visible) setCurrent(null)
+    if (!visible && current) setCurrent(null)
   })
 
   // Edit or name
@@ -267,7 +268,6 @@ const BoundaryCondition = ({
       placement="left"
       closable={false}
       visible={visible}
-      destroyOnClose={true}
       mask={false}
       maskClosable={false}
       width={300}

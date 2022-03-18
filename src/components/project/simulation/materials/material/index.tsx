@@ -77,8 +77,9 @@ const Material = ({
   const materials = simulation.scheme.configuration.materials
 
   // Visible
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!visible) setCurrent(null)
+    if (!visible && current) setCurrent(null)
   })
 
   // Edit
@@ -162,7 +163,6 @@ const Material = ({
       placement="left"
       closable={false}
       visible={visible}
-      destroyOnClose={true}
       mask={false}
       maskClosable={false}
       width={300}

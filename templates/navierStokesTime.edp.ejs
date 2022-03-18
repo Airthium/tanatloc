@@ -158,12 +158,12 @@ try {
 	<% } else if (initialization.value.type === 'direct' && initialization.value.values ) { -%>
 	<% if (dimension === 2) { -%>
 	[<%= feFunction -%>] = [
-		<%= nitialization.value.values[0] ?? initialization.direct.children[0].default -%>,
+		<%= initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
 		<%= initialization.value.values[1] ?? initialization.direct.children[1].default -%>
 		0];
 	<% } else { -%>
 	[<%= feFunction -%>] = [
-		<%= nitialization.value.values[0] ?? initialization.direct.children[0].default -%>,
+		<%= initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
 		<%= initialization.value.values[1] ?? initialization.direct.children[1].default -%>,
 		<%= initialization.value.values[2] ?? initialization.direct.children[2].default -%>,
 		0];

@@ -232,7 +232,7 @@ describe('plugins/local/src/lib', () => {
     })
     const data = await Local.computeMesh(
       'path',
-      { path: 'path', name: 'name', file: 'file' },
+      { path: 'path', name: 'name', file: 'file', dimension: 3 },
       { path: 'path', parameters: {} },
       jest.fn()
     )
@@ -252,7 +252,7 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeMesh(
         'path',
-        { path: 'path', name: 'name', file: 'file' },
+        { path: 'path', name: 'name', file: 'file', dimension: 2 },
         { path: 'path', parameters: {} },
         jest.fn()
       )
@@ -268,7 +268,7 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeMesh(
         'path',
-        { path: 'path', name: 'name', file: 'file' },
+        { path: 'path', name: 'name', file: 'file', dimension: 3 },
         { path: 'path', parameters: {} },
         jest.fn()
       )
@@ -446,6 +446,6 @@ describe('plugins/local/src/lib', () => {
       { label: 'label', status: 'wait' },
       { label: 'label', pid: '0', status: 'process' }
     ])
-    expect(mockKill).toHaveBeenCalledTimes(1)
+    expect(mockKill).toHaveBeenCalledTimes(2)
   })
 })

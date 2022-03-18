@@ -255,8 +255,6 @@ const BoundaryCondition = ({
     }))
   }, [])
 
-  console.log(current)
-
   /**
    * Render
    */

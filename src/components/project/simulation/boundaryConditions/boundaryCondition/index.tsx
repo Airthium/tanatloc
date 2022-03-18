@@ -98,7 +98,7 @@ const BoundaryCondition = ({
   // Visible
   useEffect(() => {
     if (!visible) setCurrent(null)
-  }, [visible])
+  })
 
   // Edit or name
   useEffect(() => {

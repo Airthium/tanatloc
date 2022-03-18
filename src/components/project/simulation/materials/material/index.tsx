@@ -79,7 +79,7 @@ const Material = ({
   // Visible
   useEffect(() => {
     if (!visible) setCurrent(null)
-  }, [visible])
+  })
 
   // Edit
   useEffect(() => {

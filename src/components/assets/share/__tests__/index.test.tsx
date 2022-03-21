@@ -44,7 +44,9 @@ describe('components/assets/share', () => {
           name: 'group name',
           users: [
             { id: 'id1', lastname: 'lastname', firstname: 'firstname' },
-            { id: 'id2', email: 'email' }
+            { id: 'id2', email: 'email' },
+            { id: 'id3', lastname: 'lastname' },
+            { id: 'id4', firstname: 'firstname' }
           ]
         }
       ]
@@ -120,8 +122,9 @@ describe('components/assets/share', () => {
       <Share project={project} organizations={organizations} swr={projectSwr} />
     )
 
-    const close = screen.getAllByLabelText('close')[0]
-    fireEvent.click(close)
+    const closes = screen.getAllByLabelText('close')
+    fireEvent.click(closes[0])
+    fireEvent.click(closes[1])
 
     unmount()
   })

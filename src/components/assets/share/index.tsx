@@ -66,35 +66,59 @@ export const errors = {
 export const onShare = async (
   workspace: IProps['workspace'],
   project: IProps['project'],
-  selected: string[],
+  selected: { value: string }[],
   swr: IProps['swr']
 ): Promise<void> => {
   try {
+    // Check groups
+    const groups = selected
+      .map(({ value }) => {
+        const [type, id] = value.split('&')
+        if (type === 'group') return id
+      })
+      .filter((g) => g)
+
+    // Check users
+    const users = selected
+      .map(({ value }) => {
+        const [type, id] = value.split('&')
+        if (type === 'user') return id
+      })
+      .filter((u) => u)
+
     if (workspace) {
       // API
       await WorkspaceAPI.update({ id: workspace.id }, [
         {
           key: 'groups',
-          value: selected
+          value: groups
+        },
+        {
+          key: 'users',
+          value: users
         }
       ])
-
       // Mutate
       const newWorkspace = { ...workspace }
-      newWorkspace.groups = selected.map((s) => ({ id: s }))
+      newWorkspace.groups = groups.map((g) => ({ id: g }))
+      newWorkspace.users = users.map((u) => ({ id: u }))
       swr.mutateOneWorkspace(newWorkspace)
     } else {
       // API
       await ProjectAPI.update({ id: project.id }, [
         {
           key: 'groups',
-          value: selected
+          value: groups
+        },
+        {
+          key: 'users',
+          value: users
         }
       ])
-
       // Mutate
       const newProject = { ...project }
-      newProject.groups = selected.map((s) => ({ id: s }))
+      newProject.groups = groups.map((g) => ({ id: g }))
+      newProject.users = users.map((u) => ({ id: u }))
       swr.mutateOneProject(newProject)
     }
   } catch (err) {
@@ -133,18 +157,18 @@ const Share = ({
     Dispatch<SetStateAction<TreeDataNode[]>>
   ] = useState([])
   const [selected, setSelected]: [
-    string[],
-    Dispatch<SetStateAction<string[]>>
+    { value: string }[],
+    Dispatch<SetStateAction<{ value: string }[]>>
   ] = useState([])
 
   // Effect
   useEffect(() => {
-    // Default value
-    const defaultValue = workspace
-      ? workspace.groups?.map((group) => group.id)
-      : project.groups?.map((group) => group.id)
+    const parent = workspace || project
 
-    setSelected(defaultValue)
+    const defaultGroups = parent.groups.map((g) => ({ value: 'group&' + g.id }))
+    const defaultUsers = parent.users.map((u) => ({ value: 'user&' + u.id }))
+
+    setSelected([...defaultGroups, ...defaultUsers])
   }, [workspace, project])
 
   useEffect(() => {
@@ -157,19 +181,19 @@ const Share = ({
               ? user.lastname + ' ' + user.firstname
               : user.email
           return {
-            key: group.id + '&' + user.id,
+            key: 'user&' + user.id,
             title,
-            disabled: true,
-            checkable: false,
-            value: group.id + '&' + user.id
+            value: 'user&' + user.id,
+            type: 'user'
           }
         })
 
         return {
-          key: group.id,
+          key: 'group&' + group.id,
           title: group.name,
-          value: group.id,
-          children: users
+          value: 'group&' + group.id,
+          children: users,
+          type: 'group'
         }
       })
 
@@ -206,6 +230,7 @@ const Share = ({
           treeDefaultExpandAll
           treeCheckable
           showCheckedStrategy={TreeSelect.SHOW_ALL}
+          treeCheckStrictly
           value={selected}
           onChange={(value) => setSelected(value)}
         />
@@ -278,12 +303,14 @@ Share.propTypes = {
   project: PropTypes.exact({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    groups: PropTypes.array
+    groups: PropTypes.array,
+    users: PropTypes.array
   }),
   workspace: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    groups: PropTypes.array
+    groups: PropTypes.array,
+    users: PropTypes.array
   }),
   organizations: PropTypes.arrayOf(
     PropTypes.shape({

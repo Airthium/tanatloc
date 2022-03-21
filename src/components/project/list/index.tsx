@@ -293,7 +293,8 @@ const ProjectList = ({
                   project={{
                     id: project.id,
                     title: project.title,
-                    groups: project.groups
+                    groups: project.groups,
+                    users: project.users
                   }}
                   organizations={organizations}
                   swr={{ mutateOneProject: swr.mutateOneProject }}

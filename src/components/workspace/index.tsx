@@ -126,7 +126,8 @@ const Workspace = ({
                     workspace={{
                       id: workspace.id,
                       name: workspace.name,
-                      groups: workspace.groups
+                      groups: workspace.groups,
+                      users: workspace.users
                     }}
                     organizations={organizations}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}

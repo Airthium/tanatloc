@@ -329,7 +329,7 @@ const Initialization = ({
   const [currentKey, setCurrentKey]: [
     string,
     Dispatch<SetStateAction<string>>
-  ] = useState()
+  ] = useState('None')
   const [couplingSimulation, setCouplingSimulation]: [
     ISimulation,
     Dispatch<SetStateAction<ISimulation>>
@@ -338,15 +338,11 @@ const Initialization = ({
     { label: string; value: string }[],
     Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState()
-  const [selectedAlgorithm, setSelectedAlgorithm]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
   let content = {
-    velocity: null,
-    coupling: null
+    Velocity: null,
+    Coupling: null,
+    None: null
   }
-  const [displayedContent, setDisplayedContent] = useState(<></>)
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
@@ -411,7 +407,7 @@ const Initialization = ({
 
       content = {
         ...content,
-        coupling: (
+        Coupling: (
           <Card key={key} title={couplingInitialization?.label}>
             <Typography.Text>
               If you use coupling, the selected simulation mesh will be used, at
@@ -505,7 +501,7 @@ const Initialization = ({
 
       content = {
         ...content,
-        velocity: (
+        Velocity: (
           <Card key={key} title={valueInitialization?.label}>
             <Space direction="vertical" className="full-width">
               {components}
@@ -516,17 +512,6 @@ const Initialization = ({
     }
   })
 
-  //Display content
-  useEffect(() => {
-    if (selectedAlgorithm === 'Velocity') {
-      setDisplayedContent(content.velocity)
-    } else if (selectedAlgorithm === 'Coupling') {
-      setDisplayedContent(content.coupling)
-    } else {
-      setDisplayedContent(<></>)
-    }
-  }, [selectedAlgorithm])
-
   /**
    * Render
    */
@@ -535,11 +520,11 @@ const Initialization = ({
       <Layout.Content>
         <Select
           style={{ width: '100%' }}
-          defaultValue={'None'}
+          value={currentKey}
           onChange={async (key) => {
             try {
               await onPanelChange(simulation, key, swr)
-              setSelectedAlgorithm(key)
+              setCurrentKey(key)
             } catch (err) {}
           }}
         >
@@ -549,7 +534,9 @@ const Initialization = ({
             </Select.Option>
           ))}
         </Select>
-        {displayedContent}
+        {Object.entries(content).map(([key, value]) => {
+          return key === currentKey && value
+        })}
       </Layout.Content>
     </Layout>
   )

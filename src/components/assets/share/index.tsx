@@ -60,13 +60,15 @@ export const errors = {
  * On share
  * @param workspace Workspace
  * @param project Project
- * @param selected Selected
+ * @param groupsSelected Groups selected
+ * @param usersSelected User selected
  * @param swr SWR
  */
 export const onShare = async (
   workspace: IProps['workspace'],
   project: IProps['project'],
-  selected: string[],
+  groupsSelected: string[],
+  usersSelected: string[],
   swr: IProps['swr']
 ): Promise<void> => {
   try {
@@ -75,26 +77,34 @@ export const onShare = async (
       await WorkspaceAPI.update({ id: workspace.id }, [
         {
           key: 'groups',
-          value: selected
+          value: groupsSelected
+        },
+        {
+          key: 'users',
+          value: usersSelected
         }
       ])
-
       // Mutate
       const newWorkspace = { ...workspace }
-      newWorkspace.groups = selected.map((s) => ({ id: s }))
+      newWorkspace.groups = groupsSelected.map((group) => ({ id: group }))
+      newWorkspace.users = usersSelected.map((user) => ({ id: user }))
       swr.mutateOneWorkspace(newWorkspace)
     } else {
       // API
       await ProjectAPI.update({ id: project.id }, [
         {
           key: 'groups',
-          value: selected
+          value: groupsSelected
+        },
+        {
+          key: 'users',
+          value: usersSelected
         }
       ])
-
       // Mutate
       const newProject = { ...project }
-      newProject.groups = selected.map((s) => ({ id: s }))
+      newProject.groups = groupsSelected.map((group) => ({ id: group }))
+      newProject.users = usersSelected.map((user) => ({ id: user }))
       swr.mutateOneProject(newProject)
     }
   } catch (err) {
@@ -128,48 +138,43 @@ const Share = ({
     useState(false)
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
-  const [treeData, setTreeData]: [
+  const [treeGroupsData, setTreeGroupsData]: [
     TreeDataNode[],
     Dispatch<SetStateAction<TreeDataNode[]>>
   ] = useState([])
-  const [selected, setSelected]: [
+  const [treeUsersData, setTreeUsersData]: [
+    TreeDataNode[],
+    Dispatch<SetStateAction<TreeDataNode[]>>
+  ] = useState([])
+  const [groupsSelected, setGroupsSelected]: [
+    string[],
+    Dispatch<SetStateAction<string[]>>
+  ] = useState([])
+  const [usersSelected, setUsersSelected]: [
     string[],
     Dispatch<SetStateAction<string[]>>
   ] = useState([])
 
   // Effect
   useEffect(() => {
-    // Default value
-    const defaultValue = workspace
-      ? workspace.groups?.map((group) => group.id)
-      : project.groups?.map((group) => group.id)
+    const parent = workspace || project
 
-    setSelected(defaultValue)
+    const defaultGroups = parent.groups.map((g) => g.id)
+    const defaultUsers = parent.users.map((u) => u.id)
+
+    setGroupsSelected(defaultGroups)
+    setUsersSelected(defaultUsers)
   }, [workspace, project])
 
   useEffect(() => {
     // Tree data
-    const data = organizations.map((organization) => {
+    const groupsData = organizations.map((organization) => {
       const groups = organization.groups?.map((group) => {
-        const users = group.users?.map((user) => {
-          const title =
-            user.lastname || user.firstname
-              ? user.lastname + ' ' + user.firstname
-              : user.email
-          return {
-            key: group.id + '&' + user.id,
-            title,
-            disabled: true,
-            checkable: false,
-            value: group.id + '&' + user.id
-          }
-        })
-
         return {
           key: group.id,
           title: group.name,
           value: group.id,
-          children: users
+          type: 'group'
         }
       })
 
@@ -183,33 +188,83 @@ const Share = ({
       }
     })
 
-    setTreeData(data)
+    const usersData = organizations
+      .map((organization) => {
+        return organization.groups
+          ?.map((group) => {
+            return group.users?.map((user) => {
+              let title = user.email
+              if (user.lastname || user.firstname) {
+                title = user.lastname ? user.lastname + ' ' : ''
+                title += user.firstname || ''
+              }
+              return {
+                key: user.id,
+                title,
+                value: user.id,
+                type: 'user'
+              }
+            })
+          })
+          .flatMap((g) => g)
+      })
+      .flatMap((o) => o)
+
+    const uniqueUsersData = usersData.filter(
+      (user, index, self) => self.findIndex((s) => s.key === user.key) === index
+    )
+
+    setTreeGroupsData(groupsData)
+    setTreeUsersData(uniqueUsersData)
   }, [organizations])
 
   let selector = null
-  if (treeData?.length)
+  if (treeGroupsData?.length)
     selector = (
-      <Form.Item
-        label={
-          <>
-            Share this {workspace ? 'workspace' : 'project'} with organization
-            groups or users
-          </>
-        }
-      >
-        <TreeSelect
-          multiple
-          placeholder="Select groups or users"
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          className="full-width"
-          treeData={treeData}
-          treeDefaultExpandAll
-          treeCheckable
-          showCheckedStrategy={TreeSelect.SHOW_ALL}
-          value={selected}
-          onChange={(value) => setSelected(value)}
-        />
-      </Form.Item>
+      <>
+        <Form.Item
+          label={
+            <>
+              Share this {workspace ? 'workspace' : 'project'} with
+              organizations groups
+            </>
+          }
+        >
+          <TreeSelect
+            multiple
+            treeCheckable
+            treeDefaultExpandAll
+            showCheckedStrategy={TreeSelect.SHOW_ALL}
+            placeholder="Select groups"
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            className="full-width"
+            treeData={treeGroupsData}
+            value={groupsSelected}
+            onChange={(value) => setGroupsSelected(value)}
+          />
+        </Form.Item>
+        <Form.Item
+          label={
+            <>
+              Share this {workspace ? 'workspace' : 'project'} with
+              organizations users
+            </>
+          }
+        >
+          <TreeSelect
+            multiple
+            treeCheckable
+            treeDefaultExpandAll
+            showCheckedStrategy={TreeSelect.SHOW_ALL}
+            placeholder="Select users"
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            className="full-width"
+            treeData={treeUsersData}
+            value={usersSelected}
+            onChange={(value) => setUsersSelected(value)}
+          />
+        </Form.Item>
+      </>
     )
   else
     selector = (
@@ -251,7 +306,13 @@ const Share = ({
         onOk={async () => {
           setLoading(true)
           try {
-            await onShare(workspace, project, selected, swr)
+            await onShare(
+              workspace,
+              project,
+              groupsSelected,
+              usersSelected,
+              swr
+            )
 
             // Close
             setLoading(false)
@@ -278,12 +339,14 @@ Share.propTypes = {
   project: PropTypes.exact({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    groups: PropTypes.array
+    groups: PropTypes.array,
+    users: PropTypes.array
   }),
   workspace: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    groups: PropTypes.array
+    groups: PropTypes.array,
+    users: PropTypes.array
   }),
   organizations: PropTypes.arrayOf(
     PropTypes.shape({

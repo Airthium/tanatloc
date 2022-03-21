@@ -28,6 +28,7 @@ import WorkspaceAPI from '@/api/workspace'
 
 import Workspace from '..'
 import Add from '../add'
+import { menuItems } from '@/components/dashboard'
 
 /**
  * Props
@@ -166,7 +167,7 @@ const WorkspacesList = ({
                 >
                   <Workspace
                     user={user}
-                    page={page}
+                    page={page || menuItems.workspaces.key}
                     workspace={{
                       id: workspace.id,
                       name: workspace.name,

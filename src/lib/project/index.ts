@@ -172,6 +172,24 @@ const getWithData = async (
 }
 
 /**
+ * Add to group
+ * @param group Group
+ * @param project Project
+ */
+const addToGroup = async (group: { id: string }, project: { id: string }) => {
+  const groupData = await Group.get(group.id, ['projects'])
+  if (!groupData.projects.includes(project.id))
+    await Group.update({ id: group.id }, [
+      {
+        key: 'projects',
+        type: 'array',
+        method: 'append',
+        value: project.id
+      }
+    ])
+}
+
+/**
  * Delete from group
  * @param group Group
  * @param project Project
@@ -229,14 +247,7 @@ const update = async (
     )
     await Promise.all(
       added.map(async (group) => {
-        await Group.update({ id: group.id }, [
-          {
-            key: 'projects',
-            type: 'array',
-            method: 'append',
-            value: project.id
-          }
-        ])
+        await addToGroup({ id: group }, project)
       })
     )
   }

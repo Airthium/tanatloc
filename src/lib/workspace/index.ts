@@ -224,7 +224,7 @@ const getByUser = async ({
               ])
 
               // Workspaces
-              if (groupData.workspaces) {
+              if (groupData.workspaces.length) {
                 const groupWorkspaces = await getGroupWorkspaces(groupData)
 
                 groupsWorkspaces.push(
@@ -234,8 +234,8 @@ const getByUser = async ({
                 )
               }
 
-              // projects
-              if (groupData.projects) {
+              // Projects
+              if (groupData.projects.length) {
                 groupsProjects.push({
                   id: groupData.id,
                   name: 'Projects from ' + groupData.name,
@@ -255,11 +255,37 @@ const getByUser = async ({
       })
     )
 
-    workspaces.push(...groupsWorkspaces)
-    workspaces.push(...groupsProjects)
+    // Make unique
+    const uniqueGroupWorkspaces = groupsWorkspaces.filter(
+      (value, index, self) => self.findIndex((s) => s.id === value.id) === index
+    )
+    const uniqueGroupProjects = groupsProjects.filter(
+      (value, index, self) => self.findIndex((s) => s.id === value.id) === index
+    )
+
+    workspaces.push(...uniqueGroupWorkspaces)
+    workspaces.push(...uniqueGroupProjects)
   }
 
   return workspaces
+}
+
+/**
+ * Add to group
+ * @param group Group
+ * @param workspace Workspace
+ */
+const addToGroup = async (group: { id: string }, workspace: { id: string }) => {
+  const groupData = await Group.get(group.id, ['workspaces'])
+  if (!groupData.workspaces.includes(workspace.id))
+    await Group.update({ id: group.id }, [
+      {
+        key: 'workspaces',
+        type: 'array',
+        method: 'append',
+        value: workspace.id
+      }
+    ])
 }
 
 /**
@@ -312,15 +338,8 @@ const update = async (
       (group: string) => !workspaceData.groups.find((g) => g.id === group)
     )
     await Promise.all(
-      added.map(async (group: { id: string }) => {
-        await Group.update({ id: group.id }, [
-          {
-            key: 'workspaces',
-            type: 'array',
-            method: 'append',
-            value: workspace.id
-          }
-        ])
+      added.map(async (group) => {
+        await addToGroup({ id: group }, workspace)
       })
     )
   }

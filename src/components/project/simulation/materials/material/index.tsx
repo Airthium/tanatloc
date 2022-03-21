@@ -84,7 +84,7 @@ const Material = ({
 
   // Edit
   useEffect(() => {
-    if (!current && material) setCurrent(material)
+    if (visible && !current && material) setCurrent(material)
   }, [current, material])
 
   // Already selected

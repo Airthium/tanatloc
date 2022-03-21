@@ -338,12 +338,15 @@ const Initialization = ({
     { label: string; value: string }[],
     Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState()
-
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState()
+  const [selectedAlgorithm, setSelectedAlgorithm]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
   let content = {
     velocity: null,
     coupling: null
   }
+  const [displayedContent, setDisplayedContent] = useState(<></>)
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
@@ -513,6 +516,17 @@ const Initialization = ({
     }
   })
 
+  //Display content
+  useEffect(() => {
+    if (selectedAlgorithm === 'Velocity') {
+      setDisplayedContent(content.velocity)
+    } else if (selectedAlgorithm === 'Coupling') {
+      setDisplayedContent(content.coupling)
+    } else {
+      setDisplayedContent(<></>)
+    }
+  }, [selectedAlgorithm])
+
   /**
    * Render
    */
@@ -521,15 +535,21 @@ const Initialization = ({
       <Layout.Content>
         <Select
           style={{ width: '100%' }}
-          onChange={(a) => setSelectedAlgorithm(a)}
+          defaultValue={'None'}
+          onChange={async (key) => {
+            try {
+              await onPanelChange(simulation, key, swr)
+              setSelectedAlgorithm(key)
+            } catch (err) {}
+          }}
         >
-          {['Velocity', 'Coupling'].map((algo) => (
+          {['Velocity', 'Coupling', 'None'].map((algo) => (
             <Select.Option key={algo} value={algo}>
               {algo}
             </Select.Option>
           ))}
         </Select>
-        {selectedAlgorithm === 'Velocity' ? content.velocity : content.coupling}
+        {displayedContent}
       </Layout.Content>
     </Layout>
   )

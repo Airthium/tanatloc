@@ -62,7 +62,6 @@ const onSelectorChange = async (
     // Update local
     const initialization = newSimulation.scheme.configuration.initialization
     initialization.value = {
-      ...initialization.value,
       type: key
     }
 
@@ -228,6 +227,17 @@ const loadResults = async (
 
   const results = []
   tasks.forEach((task) => {
+    // Check file
+    if (task.file) {
+      if (task.file.type === 'result')
+        results.push({
+          label: task.file.fileName,
+          value: task.file.fileName,
+          file: task.file.fileName
+        })
+    }
+
+    // Check files
     if (task.files) {
       if (!filter) {
         task.files.forEach((file) => {
@@ -244,31 +254,35 @@ const loadResults = async (
         const notFilteredFiles = task.files.filter(
           (file) => !pattern.test(file.fileName)
         )
-        const filteredFiles = task.files.filter((file) =>
-          pattern.test(file.fileName)
-        )
+        const files = task.files.filter((file) => pattern.test(file.fileName))
 
         // Numbering
-        const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
-        const numbers = filesWithNumbers
-          .map((file) => file.number)
-          .filter((n, i, s) => s.indexOf(n) === i)
-          .sort((a, b) => a - b)
+        const filesWithNumbers = getFilesNumbers(files, filter)
+        const uniqueFilesWithNumbers = filesWithNumbers
+          .map((file) => ({
+            number: file.number,
+            fileName: file.fileName.replace(
+              new RegExp(filter.suffixPattern),
+              ''
+            )
+          }))
+          .filter(
+            (file, index, self) =>
+              self.findIndex((s) => s.number === file.number) === index
+          )
+          .sort((a, b) => a.number - b.number)
 
         // Multiplicator
         const multiplicator = getMultiplicator(configuration, filter)
 
         // Options
-        const options = numbers.map((n, i) => {
-          const value = multiplicator ? n * multiplicator : i
+        const options = uniqueFilesWithNumbers.map((file, index) => {
+          const value = multiplicator ? file.number * multiplicator : index
           const floatingPointFix = Math.round(value * 1e15) / 1e15
           return {
             label: floatingPointFix,
-            value: n,
-            file: filesWithNumbers[i].fileName.replace(
-              new RegExp(filter.suffixPattern),
-              ''
-            )
+            value: file.number,
+            file: file.fileName
           }
         })
 
@@ -295,14 +309,6 @@ const loadResults = async (
           })
         )
       }
-    }
-    if (task.file) {
-      if (task.file.type === 'result')
-        results.push({
-          label: task.file.fileName,
-          value: task.file.fileName,
-          file: task.file.fileName
-        })
     }
   })
 
@@ -399,6 +405,7 @@ const Initialization = ({
     if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
       return
 
+    // Coupling
     const coupling = subScheme[key] as IModelInitializationCoupling
     if (coupling.compatibility) {
       // Simulations
@@ -473,6 +480,7 @@ const Initialization = ({
       )
     }
 
+    // Direct
     const direct = subScheme[key] as {
       label: string
       children: IModelInitialization[]
@@ -485,7 +493,7 @@ const Initialization = ({
             key={index}
             label={child.label}
             defaultValue={(
-              initializationValue?.values[index] ?? child.default
+              initializationValue?.values?.[index] ?? child.default
             ).toString()}
             unit={child.unit}
             onValueChange={(value) => onChange(simulation, index, value, swr)}

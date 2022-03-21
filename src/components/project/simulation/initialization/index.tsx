@@ -338,7 +338,6 @@ const Initialization = ({
     { label: string; value: string }[],
     Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState()
-
   const [selectedAlgorithm, setSelectedAlgorithm]: [
     string,
     Dispatch<SetStateAction<string>>
@@ -347,6 +346,7 @@ const Initialization = ({
     velocity: null,
     coupling: null
   }
+  const [displayedContent, setDisplayedContent] = useState(<></>)
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
@@ -516,6 +516,17 @@ const Initialization = ({
     }
   })
 
+  //Display content
+  useEffect(() => {
+    if (selectedAlgorithm === 'Velocity') {
+      setDisplayedContent(content.velocity)
+    } else if (selectedAlgorithm === 'Coupling') {
+      setDisplayedContent(content.coupling)
+    } else {
+      setDisplayedContent(<></>)
+    }
+  }, [selectedAlgorithm])
+
   /**
    * Render
    */
@@ -538,13 +549,7 @@ const Initialization = ({
             </Select.Option>
           ))}
         </Select>
-        {selectedAlgorithm === 'Velocity' ? (
-          content.velocity
-        ) : selectedAlgorithm === 'Coupling' ? (
-          content.coupling
-        ) : (
-          <></>
-        )}
+        {displayedContent}
       </Layout.Content>
     </Layout>
   )

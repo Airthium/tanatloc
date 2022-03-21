@@ -281,7 +281,7 @@ const loadResults = async (
           const floatingPointFix = Math.round(value * 1e15) / 1e15
           return {
             label: floatingPointFix,
-            value: file.number,
+            value: file.fileName,
             file: file.fileName
           }
         })
@@ -441,7 +441,7 @@ const Initialization = ({
               className="full-width"
               options={simulationsOptions}
               placeholder="Select a simulation"
-              defaultValue={initializationValue?.simulation}
+              value={initializationValue?.simulation}
               onChange={async (value: string) => {
                 setLoading(true)
                 try {
@@ -463,7 +463,7 @@ const Initialization = ({
                   className="full-width"
                   options={couplingResults}
                   placeholder={'Select a ' + filter.name}
-                  defaultValue={initializationValue?.result}
+                  value={initializationValue?.result}
                   onChange={async (
                     value: string,
                     option: { label: string; value: string; file: string }

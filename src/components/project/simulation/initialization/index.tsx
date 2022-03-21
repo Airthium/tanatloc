@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Card, Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/index.d'
 import {
   IModelInitialization,
   IModelInitializationCoupling,
@@ -45,12 +45,12 @@ export const errors = {
 }
 
 /**
- * On panel change
+ * On selector change
  * @param simulation Simulation
  * @param key Key
  * @param swr SWR
  */
-const onPanelChange = async (
+const onSelectorChange = async (
   simulation: ISimulation,
   key: string,
   swr: IProps['swr']
@@ -190,14 +190,8 @@ const onChange = async (
 
     // Update local
     const initialization = newSimulation.scheme.configuration.initialization
-    initialization.value = {
-      ...initialization.value,
-      values: [
-        ...(initialization.value.values?.slice(0, index) || []),
-        value,
-        ...(initialization.value.values?.slice(index + 1) || [])
-      ]
-    }
+    if (!initialization.value.values) initialization.value.values = []
+    initialization.value.values[index] = value
 
     // API
     await SimulationAPI.update({ id: simulation.id }, [
@@ -226,7 +220,7 @@ const loadResults = async (
   simulations: ISimulation[],
   id: string
 ): Promise<{ label: string; value: string; file: string }[]> => {
-  const tasks = await SimulationAPI.tasks({ id })
+  const tasks = (await SimulationAPI.tasks({ id })) as ISimulationTask[]
 
   const currentSimulation = simulations.find((s) => s.id === id)
   const configuration = currentSimulation.scheme.configuration
@@ -339,14 +333,10 @@ const Initialization = ({
     { label: string; value: string }[],
     Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState()
-  let content = {
-    Velocity: null,
-    Coupling: null,
-    None: null
-  }
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
+  const dimension = simulation?.scheme.configuration.dimension
 
   /**
    * Set simulation
@@ -388,7 +378,7 @@ const Initialization = ({
         return
 
       const initialization = subScheme[key] as
-        | IModelInitialization
+        | { label: string; children: IModelInitialization[] }
         | IModelInitializationCoupling
 
       return {
@@ -400,6 +390,40 @@ const Initialization = ({
   selectorOptions.unshift({
     label: 'None',
     value: 'none'
+  })
+
+  // Build initialization
+  const initializationValue = subScheme.value
+  const initializations = {}
+  Object.keys(subScheme).forEach((key) => {
+    if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
+      return
+
+    const coupling = subScheme[key] as IModelInitializationCoupling
+    if (coupling.compatibility) {
+      // TODO return coupling
+    }
+
+    const direct = subScheme[key] as {
+      label: string
+      children: IModelInitialization[]
+    }
+    if (direct.children) {
+      initializations[key] = direct.children.map((child, index) => {
+        if (dimension === 2 && child.only3D) return
+        return (
+          <Formula
+            key={index}
+            label={child.label}
+            defaultValue={(
+              initializationValue?.values[index] ?? child.default
+            ).toString()}
+            unit={child.unit}
+            onValueChange={(value) => onChange(simulation, index, value, swr)}
+          />
+        )
+      })
+    }
   })
 
   // const initializationValue = subScheme.value
@@ -553,15 +577,16 @@ const Initialization = ({
             options={selectorOptions}
             onChange={async (key) => {
               try {
-                await onPanelChange(simulation, key, swr)
+                await onSelectorChange(simulation, key, swr)
                 setCurrentKey(key)
               } catch (err) {}
             }}
           />
 
-          {Object.entries(content).map(([key, value]) => {
+          {initializations[currentKey]}
+          {/* {Object.entries(content).map(([key, value]) => {
             return key === currentKey && value
-          })}
+          })} */}
         </Card>
       </Layout.Content>
     </Layout>

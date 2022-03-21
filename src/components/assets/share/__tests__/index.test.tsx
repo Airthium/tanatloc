@@ -23,8 +23,18 @@ jest.mock('@/api/workspace', () => ({
 }))
 
 describe('components/assets/share', () => {
-  const project = { id: 'id', title: 'title', groups: [{ id: 'id' }] }
-  const workspace = { id: 'id', name: 'name', groups: [{ id: 'id' }] }
+  const project = {
+    id: 'id',
+    title: 'title',
+    groups: [{ id: 'id' }],
+    users: [{ id: 'id' }]
+  }
+  const workspace = {
+    id: 'id',
+    name: 'name',
+    groups: [{ id: 'id' }],
+    users: [{ id: 'id' }]
+  }
   const organizations = [
     {
       id: 'id0',
@@ -110,7 +120,7 @@ describe('components/assets/share', () => {
       <Share project={project} organizations={organizations} swr={projectSwr} />
     )
 
-    const close = screen.getByLabelText('close')
+    const close = screen.getAllByLabelText('close')[0]
     fireEvent.click(close)
 
     unmount()

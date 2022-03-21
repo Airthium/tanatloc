@@ -159,8 +159,8 @@ const Share = ({
   useEffect(() => {
     const parent = workspace || project
 
-    const defaultGroups = parent.groups.map((g) => g.id)
-    const defaultUsers = parent.users.map((u) => u.id)
+    const defaultGroups = parent.groups?.map((g) => g.id)
+    const defaultUsers = parent.users?.map((u) => u.id)
 
     setGroupsSelected(defaultGroups)
     setUsersSelected(defaultUsers)

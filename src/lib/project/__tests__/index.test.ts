@@ -208,6 +208,7 @@ describe('lib/project', () => {
 
   test('update', async () => {
     mockGet.mockImplementation(() => ({}))
+    mockGroupGet.mockImplementation(() => ({ projects: [] }))
     await Project.update({ id: 'id' }, [{ key: 'groups', value: ['id'] }])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)

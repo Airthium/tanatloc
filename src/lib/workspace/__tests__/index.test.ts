@@ -259,7 +259,7 @@ describe('lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
     // Without group data
-    mockGroupGet.mockImplementation(() => ({}))
+    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(8)
@@ -271,7 +271,7 @@ describe('lib/workspace', () => {
 
     // Without groups
     mockOrganizationGet.mockImplementation(() => ({}))
-    mockGroupGet.mockImplementation(() => ({}))
+    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(10)
@@ -282,7 +282,7 @@ describe('lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
     // Without workspaces & organizations
-    mockUserGet.mockImplementation(() => ({}))
+    mockUserGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
 
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -296,6 +296,7 @@ describe('lib/workspace', () => {
 
   test('update', async () => {
     mockGet.mockImplementation(() => ({}))
+    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
     await Workspace.update({ id: 'id' }, [])
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)

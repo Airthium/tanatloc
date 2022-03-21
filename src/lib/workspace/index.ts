@@ -224,7 +224,7 @@ const getByUser = async ({
               ])
 
               // Workspaces
-              if (groupData.workspaces) {
+              if (groupData.workspaces.length) {
                 const groupWorkspaces = await getGroupWorkspaces(groupData)
 
                 groupsWorkspaces.push(
@@ -235,7 +235,7 @@ const getByUser = async ({
               }
 
               // projects
-              if (groupData.projects) {
+              if (groupData.projects.length) {
                 groupsProjects.push({
                   id: groupData.id,
                   name: 'Projects from ' + groupData.name,

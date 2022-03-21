@@ -401,7 +401,76 @@ const Initialization = ({
 
     const coupling = subScheme[key] as IModelInitializationCoupling
     if (coupling.compatibility) {
-      // TODO return coupling
+      // Simulations
+      const simulationsOptions = simulations.map((s) => {
+        let disabled = s.id === simulation.id
+        if (s.id === simulation.id) disabled = true
+        if (
+          !coupling.compatibility.find(
+            (c) => c.algorithm === s.scheme.algorithm
+          )
+        )
+          disabled = true
+
+        return { label: s.name, value: s.id, disabled }
+      })
+
+      // Compatbility
+      const compatibility = coupling.compatibility.find(
+        (c) => c.algorithm === couplingSimulation?.scheme?.algorithm
+      )
+
+      // Filter
+      const filter = compatibility?.filter
+
+      initializations[key] = (
+        <>
+          <Typography.Text>
+            If you use coupling, the selected simulation mesh will be used, at
+            least for the first iteration.
+          </Typography.Text>
+          <Space direction="vertical" className="full-width marginTop-10">
+            <Select
+              className="full-width"
+              options={simulationsOptions}
+              placeholder="Select a simulation"
+              defaultValue={initializationValue?.simulation}
+              onChange={async (value: string) => {
+                setLoading(true)
+                try {
+                  await onCouplingChange(simulations, simulation, value, swr)
+                  setSimulation(value)
+                } catch (err) {
+                } finally {
+                  setLoading(false)
+                }
+              }}
+            />
+            {loading && <Spin />}
+            {couplingResults?.length ? (
+              <>
+                <Typography.Text key={'simulation'}>
+                  {filter?.name}:
+                </Typography.Text>
+                <Select
+                  className="full-width"
+                  options={couplingResults}
+                  placeholder={'Select a ' + filter.name}
+                  defaultValue={initializationValue?.result}
+                  onChange={async (
+                    value: string,
+                    option: { label: string; value: string; file: string }
+                  ) => onCouplingResultChange(simulation, value, option, swr)}
+                />
+              </>
+            ) : (
+              <Typography.Text type="danger">
+                No results, please select an other simulation.
+              </Typography.Text>
+            )}
+          </Space>
+        </>
+      )
     }
 
     const direct = subScheme[key] as {
@@ -426,143 +495,6 @@ const Initialization = ({
     }
   })
 
-  // const initializationValue = subScheme.value
-  // console.log(initializationValue)
-  // Object.keys(subScheme).forEach((key) => {
-  //   if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
-  //     return
-
-  //   const initialization = subScheme[key]
-
-  //   if (key === 'coupling') {
-  //     const couplingInitialization =
-  //       initialization as IModelInitializationCoupling
-
-  //     const simulationsOptions = simulations.map((s) => {
-  //       let disabled = false
-  //       if (s.id === simulation.id) disabled = true
-  //       if (
-  //         !couplingInitialization.compatibility.find(
-  //           (c) => c.algorithm === s.scheme.algorithm
-  //         )
-  //       )
-  //         disabled = true
-  //       return { label: s.name, value: s.id, disabled }
-  //     })
-
-  //     const compatibility = couplingInitialization.compatibility.find(
-  //       (c) => c.algorithm === couplingSimulation?.scheme?.algorithm
-  //     )
-
-  //     const filter = compatibility?.filter
-
-  //     content = {
-  //       ...content,
-  //       Coupling: (
-  //         <Card key={key} title={couplingInitialization?.label}>
-  //           <Typography.Text>
-  //             If you use coupling, the selected simulation mesh will be used, at
-  //             least for the first iteration.
-  //           </Typography.Text>
-  //           <Space direction="vertical" className="full-width marginTop-10">
-  //             <Select
-  //               className="full-width"
-  //               options={simulationsOptions}
-  //               placeholder="Select a simulation"
-  //               defaultValue={initializationValue?.simulation}
-  //               onChange={async (value: string) => {
-  //                 setLoading(true)
-  //                 try {
-  //                   await onCouplingChange(simulations, simulation, value, swr)
-  //                   setSimulation(value)
-  //                 } catch (err) {
-  //                 } finally {
-  //                   setLoading(false)
-  //                 }
-  //               }}
-  //             />
-  //             {loading && <Spin />}
-  //             {couplingResults?.length ? (
-  //               <>
-  //                 <Typography.Text key={'simulation'}>
-  //                   {filter?.name}:
-  //                 </Typography.Text>
-  //                 <Select
-  //                   options={couplingResults}
-  //                   placeholder={'Select a ' + filter.name}
-  //                   defaultValue={initializationValue?.result}
-  //                   onChange={async (
-  //                     value: string,
-  //                     option: { label: string; value: string; file: string }
-  //                   ) => onCouplingResultChange(simulation, value, option, swr)}
-  //                 />
-  //               </>
-  //             ) : (
-  //               <Typography.Text type="danger">
-  //                 No results, please select an other simulation.
-  //               </Typography.Text>
-  //             )}
-  //           </Space>
-  //         </Card>
-  //       )
-  //     }
-  //   } else {
-  //     const valueInitialization = initialization as {
-  //       label: string
-  //       children: IModelInitialization[]
-  //     }
-
-  //     const components = valueInitialization?.children.map(
-  //       (child: IModelInitialization, index: number) => {
-  //         if (child.htmlEntity === 'formula') {
-  //           return (
-  //             <Formula
-  //               key={key + '&' + index}
-  //               label={child.label}
-  //               defaultValue={
-  //                 initializationValue?.values?.[index] ||
-  //                 ((child?.value as string) ?? (child.default as string))
-  //               }
-  //               onValueChange={async (value) => {
-  //                 try {
-  //                   await onChange(simulation, index, value, swr)
-  //                 } catch (err) {}
-  //               }}
-  //               unit={child.unit}
-  //             />
-  //           )
-  //         } else if (child.htmlEntity === 'select') {
-  //           return (
-  //             <Typography.Text key={key + '&' + index}>
-  //               {child.label}:<br />
-  //               <Select
-  //                 options={child.options}
-  //                 defaultValue={child?.value ?? child.default}
-  //                 onChange={async (value: string) => {
-  //                   try {
-  //                     await onChange(simulation, index, value, swr)
-  //                   } catch (err) {}
-  //                 }}
-  //               />
-  //             </Typography.Text>
-  //           )
-  //         }
-  //       }
-  //     )
-
-  //     content = {
-  //       ...content,
-  //       Velocity: (
-  //         <Card key={key} title={valueInitialization?.label}>
-  //           <Space direction="vertical" className="full-width">
-  //             {components}
-  //           </Space>
-  //         </Card>
-  //       )
-  //     }
-  //   }
-  // })
-
   /**
    * Render
    */
@@ -571,7 +503,7 @@ const Initialization = ({
       <Layout.Content>
         <Card size="small">
           <Select
-            style={{ width: '100%' }}
+            className="full-width marginBottom-10"
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}
@@ -584,9 +516,6 @@ const Initialization = ({
           />
 
           {initializations[currentKey]}
-          {/* {Object.entries(content).map(([key, value]) => {
-            return key === currentKey && value
-          })} */}
         </Card>
       </Layout.Content>
     </Layout>

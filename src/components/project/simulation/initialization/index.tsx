@@ -8,7 +8,7 @@ import {
   useEffect,
   useCallback
 } from 'react'
-import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
+import { Card, Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 import {
@@ -339,6 +339,12 @@ const Initialization = ({
     Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState()
 
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState()
+  let content = {
+    velocity: null,
+    coupling: null
+  }
+
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
 
@@ -371,7 +377,6 @@ const Initialization = ({
   }, [simulations, couplingSimulation])
 
   // Build initialization
-  const initializations = []
   const initializationValue = subScheme.value
   Object.keys(subScheme).forEach((key) => {
     if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
@@ -401,52 +406,56 @@ const Initialization = ({
 
       const filter = compatibility?.filter
 
-      initializations.push(
-        <Collapse.Panel key={key} header={couplingInitialization?.label}>
-          <Typography.Text>
-            If you use coupling, the selected simulation mesh will be used, at
-            least for the first iteration.
-          </Typography.Text>
-          <Space direction="vertical" className="full-width">
-            <Select
-              options={simulationsOptions}
-              placeholder="Select a simulation"
-              defaultValue={initializationValue?.simulation}
-              onChange={async (value: string) => {
-                setLoading(true)
-                try {
-                  await onCouplingChange(simulations, simulation, value, swr)
-                  setSimulation(value)
-                } catch (err) {
-                } finally {
-                  setLoading(false)
-                }
-              }}
-            />
-            {loading && <Spin />}
-            {couplingResults?.length ? (
-              <>
-                <Typography.Text key={'simulation'}>
-                  {filter?.name}:
+      content = {
+        ...content,
+        coupling: (
+          <Card key={key} title={couplingInitialization?.label}>
+            <Typography.Text>
+              If you use coupling, the selected simulation mesh will be used, at
+              least for the first iteration.
+            </Typography.Text>
+            <Space direction="vertical" className="full-width marginTop-10">
+              <Select
+                className="full-width"
+                options={simulationsOptions}
+                placeholder="Select a simulation"
+                defaultValue={initializationValue?.simulation}
+                onChange={async (value: string) => {
+                  setLoading(true)
+                  try {
+                    await onCouplingChange(simulations, simulation, value, swr)
+                    setSimulation(value)
+                  } catch (err) {
+                  } finally {
+                    setLoading(false)
+                  }
+                }}
+              />
+              {loading && <Spin />}
+              {couplingResults?.length ? (
+                <>
+                  <Typography.Text key={'simulation'}>
+                    {filter?.name}:
+                  </Typography.Text>
+                  <Select
+                    options={couplingResults}
+                    placeholder={'Select a ' + filter.name}
+                    defaultValue={initializationValue?.result}
+                    onChange={async (
+                      value: string,
+                      option: { label: string; value: string; file: string }
+                    ) => onCouplingResultChange(simulation, value, option, swr)}
+                  />
+                </>
+              ) : (
+                <Typography.Text type="danger">
+                  No results, please select an other simulation.
                 </Typography.Text>
-                <Select
-                  options={couplingResults}
-                  placeholder={'Select a ' + filter.name}
-                  defaultValue={initializationValue?.result}
-                  onChange={async (
-                    value: string,
-                    option: { label: string; value: string; file: string }
-                  ) => onCouplingResultChange(simulation, value, option, swr)}
-                />
-              </>
-            ) : (
-              <Typography.Text type="warning">
-                No results, please select an other simulation.
-              </Typography.Text>
-            )}
-          </Space>
-        </Collapse.Panel>
-      )
+              )}
+            </Space>
+          </Card>
+        )
+      }
     } else {
       const valueInitialization = initialization as {
         label: string
@@ -491,13 +500,16 @@ const Initialization = ({
         }
       )
 
-      initializations.push(
-        <Collapse.Panel key={key} header={valueInitialization?.label}>
-          <Space direction="vertical" className="full-width">
-            {components}
-          </Space>
-        </Collapse.Panel>
-      )
+      content = {
+        ...content,
+        velocity: (
+          <Card key={key} title={valueInitialization?.label}>
+            <Space direction="vertical" className="full-width">
+              {components}
+            </Space>
+          </Card>
+        )
+      }
     }
   })
 
@@ -507,18 +519,17 @@ const Initialization = ({
   return (
     <Layout>
       <Layout.Content>
-        <Collapse
-          accordion
-          onChange={async (key: string) => {
-            try {
-              await onPanelChange(simulation, key, swr)
-              setCurrentKey(key)
-            } catch (err) {}
-          }}
-          activeKey={currentKey}
+        <Select
+          style={{ width: '100%' }}
+          onChange={(a) => setSelectedAlgorithm(a)}
         >
-          {initializations}
-        </Collapse>
+          {['Velocity', 'Coupling'].map((algo) => (
+            <Select.Option key={algo} value={algo}>
+              {algo}
+            </Select.Option>
+          ))}
+        </Select>
+        {selectedAlgorithm === 'Velocity' ? content.velocity : content.coupling}
       </Layout.Content>
     </Layout>
   )

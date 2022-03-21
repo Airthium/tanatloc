@@ -8,13 +8,12 @@ import {
   useEffect,
   useCallback
 } from 'react'
-import { Card, Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
+import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { ISimulation, ISimulationTask } from '@/database/index.d'
 import {
   IModelInitialization,
-  IModelInitializationCoupling,
-  IModelInitializationValue
+  IModelInitializationCoupling
 } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'

@@ -482,7 +482,7 @@ const Initialization = ({
       children: IModelInitialization[]
     }
     if (direct.children) {
-      initializations[key] = direct.children?.map((child, index) => {
+      initializations[key] = direct.children.map((child, index) => {
         if (dimension === 2 && child.only3D) return
         return (
           <Formula

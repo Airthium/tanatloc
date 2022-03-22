@@ -76,7 +76,7 @@ import { highlight, select, unselect } from '@/context/select/actions'
 export interface IProps {
   loading: boolean
   project: IProjectWithData
-  part?: { uuid?: string; buffer: Buffer }
+  part?: { uuid?: string; buffer: Buffer; dimension?: number }
 }
 
 /**
@@ -624,7 +624,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       }
     })
 
-    if (part)
+    if (part) {
+      // Load
       loadPart(
         part,
         transparent,
@@ -635,11 +636,38 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         sectionViewHelper.current,
         colorbarHelper.current,
         dispatch
-      ).catch((err) => {
-        ErrorNotification(errors.load, err)
-        computeSceneBoundingSphere(scene.current)
-      })
-    else {
+      )
+        .then(() => {
+          // Dimension
+          if (part.dimension === 2) {
+            // Set camera
+            const normal = new Vector3(0, 0, 1)
+            const up = new Vector3(0, 1, 0)
+
+            const center = new Vector3()
+            scene.current.boundingBox.getCenter(center)
+
+            const distance = camera.current.position.distanceTo(
+              controls.current.target
+            )
+            const interval = normal.clone().multiplyScalar(distance)
+            const newPosition = center.add(interval)
+
+            camera.current.position.copy(newPosition)
+            camera.current.up.copy(up)
+
+            // Stop rotate
+            controls.current.noRotate = true
+          } else {
+            // Activate rotate
+            controls.current.noRotate = false
+          }
+        })
+        .catch((err) => {
+          ErrorNotification(errors.load, err)
+          computeSceneBoundingSphere(scene.current)
+        })
+    } else {
       // Scene
       computeSceneBoundingSphere(scene.current)
 
@@ -926,7 +954,8 @@ ThreeView.propTypes = {
   }).isRequired,
   part: PropTypes.exact({
     uuid: PropTypes.string.isRequired,
-    buffer: PropTypes.object.isRequired
+    buffer: PropTypes.object.isRequired,
+    dimension: PropTypes.number
   })
 }
 

@@ -31,6 +31,4 @@
 
 - Default enabled plugins dans admin / registration ?
 
-- Visualisation 2D dans un plan ? plus de rotation ?
-
 - check name / description length server side

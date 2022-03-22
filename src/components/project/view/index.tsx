@@ -73,7 +73,9 @@ const View = ({
   // State
   const [part, setPart]: [
     { uuid?: string; buffer: Buffer },
-    Dispatch<SetStateAction<{ uuid?: string; buffer: Buffer }>>
+    Dispatch<
+      SetStateAction<{ uuid?: string; buffer: Buffer; dimension?: number }>
+    >
   ] = useState()
   const [previous, setPrevious]: [
     IProps['geometry'] | IProps['result'],
@@ -90,7 +92,7 @@ const View = ({
 
         setLoading(true)
         loadPart(simulation, result, 'result')
-          .then(setPart)
+          .then((part) => setPart({ ...part, dimension: geometry?.dimension }))
           .finally(() => setLoading(false))
       }
     } else if (geometry) {
@@ -103,7 +105,7 @@ const View = ({
           setLoading(false)
         } else {
           loadPart(simulation, geometry, 'geometry')
-            .then(setPart)
+            .then((part) => setPart({ ...part, dimension: geometry.dimension }))
             .finally(() => setLoading(false))
         }
       }
@@ -133,6 +135,7 @@ View.propTypes = {
   }),
   geometry: PropTypes.exact({
     id: PropTypes.string.isRequired,
+    dimension: PropTypes.number,
     needCleanup: PropTypes.bool
   }),
   result: PropTypes.exact({

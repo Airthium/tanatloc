@@ -850,6 +850,7 @@ const Project = (): JSX.Element => {
               geometry={
                 geometry && {
                   id: geometry.id,
+                  dimension: geometry.dimension,
                   needCleanup: geometry.needCleanup
                 }
               }

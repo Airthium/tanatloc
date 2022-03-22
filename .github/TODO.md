@@ -21,13 +21,9 @@
 
 - Table scroll
 
-- workspace.users ne sert à rien ? (voir avec Share)
-
 - denso solderFilling, remove data/phi\*.mesh data/phi\*.data
 
 - add topics in help, what archive does, ...
-
-- /!\ Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
 - Default enabled plugins dans admin / registration ?
 

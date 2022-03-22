@@ -15,7 +15,7 @@
 
 ## ThreeJS
 
-- faces disapear when speed click on different faces, visible is set to false by somethink ?
+- faces disapear when speed click on different faces, visible is set to false by something ?
 
 ## Misc
 
@@ -34,9 +34,3 @@
 - Visualisation 2D dans un plan ? plus de rotation ?
 
 - check name / description length server side
-
-- Share si pas org mesage ou lien
-
-## Share
-
-- share for user (just group for now) (and whole organization ?)

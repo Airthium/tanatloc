@@ -1,6 +1,7 @@
 /** @module Components.Assets.Share */
 
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import {
   useState,
   useEffect,
@@ -29,6 +30,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
+import { LinkButton } from '../button'
 
 /**
  * Props
@@ -155,6 +157,9 @@ const Share = ({
     Dispatch<SetStateAction<string[]>>
   ] = useState([])
 
+  // Data
+  const router = useRouter()
+
   // Effect
   useEffect(() => {
     const parent = workspace || project
@@ -275,7 +280,18 @@ const Share = ({
         </Typography.Text>
         <br />
         <Typography.Text>
-          You can create organizations and groups in the Organization menu.
+          You can create organizations and groups in the{' '}
+          <LinkButton
+            onClick={() =>
+              router.push({
+                pathname: '/dashboard',
+                query: { page: 'organizations' }
+              })
+            }
+          >
+            Organization menu
+          </LinkButton>
+          .
         </Typography.Text>
       </>
     )
@@ -324,10 +340,10 @@ const Share = ({
         }}
         loading={loading}
       >
-        <Typography.Text strong>
+        <Typography.Title level={5}>
           {workspace ? 'Workspace: ' : 'Project: '}
           {workspace?.name || project?.title}
-        </Typography.Text>
+        </Typography.Title>
         {selector}
       </Dialog>
     </>

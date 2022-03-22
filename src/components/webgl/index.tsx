@@ -54,7 +54,7 @@ const WebGLError = (): JSX.Element => {
                     type="text"
                     onClick={() =>
                       Modal.info({
-                        title: 'Google Chrome',
+                        title: 'Google Chrome (Windows)',
                         content: <NoManipBrowser />
                       })
                     }
@@ -67,7 +67,7 @@ const WebGLError = (): JSX.Element => {
                     type="text"
                     onClick={() =>
                       Modal.info({
-                        title: 'Firefox',
+                        title: 'Firefox (Windows)',
                         content: <FirefoxWindows />
                       })
                     }
@@ -80,7 +80,7 @@ const WebGLError = (): JSX.Element => {
                     type="text"
                     onClick={() =>
                       Modal.info({
-                        title: 'Microsoft Edge',
+                        title: 'Microsoft Edge (Windows)',
                         content: <NoManipBrowser />
                       })
                     }
@@ -97,7 +97,7 @@ const WebGLError = (): JSX.Element => {
                     type="text"
                     onClick={() =>
                       Modal.info({
-                        title: 'Google Chrome',
+                        title: 'Google Chrome (MacOS / Linux)',
                         content: <NoManipBrowser />
                       })
                     }
@@ -110,7 +110,7 @@ const WebGLError = (): JSX.Element => {
                     type="text"
                     onClick={() =>
                       Modal.info({
-                        title: 'Firefox',
+                        title: 'Firefox (MacOS / Linux)',
                         content: <FirefoxMac />
                       })
                     }
@@ -123,7 +123,7 @@ const WebGLError = (): JSX.Element => {
                     type="text"
                     onClick={() =>
                       Modal.info({
-                        title: 'Safari',
+                        title: 'Safari (MacOS)',
                         content: <SafariMac />
                       })
                     }

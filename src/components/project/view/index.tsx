@@ -92,7 +92,9 @@ const View = ({
 
         setLoading(true)
         loadPart(simulation, result, 'result')
-          .then((part) => setPart({ ...part, dimension: geometry?.dimension }))
+          .then((partLoaded) =>
+            setPart({ ...partLoaded, dimension: geometry?.dimension })
+          )
           .finally(() => setLoading(false))
       }
     } else if (geometry) {
@@ -105,7 +107,9 @@ const View = ({
           setLoading(false)
         } else {
           loadPart(simulation, geometry, 'geometry')
-            .then((part) => setPart({ ...part, dimension: geometry.dimension }))
+            .then((partLoaded) =>
+              setPart({ ...partLoaded, dimension: geometry.dimension })
+            )
             .finally(() => setLoading(false))
         }
       }

@@ -409,14 +409,11 @@ const Initialization = ({
     if (coupling.compatibility) {
       // Simulations
       const simulationsOptions = simulations.map((s) => {
-        let disabled = s.id === simulation.id
-        if (s.id === simulation.id) disabled = true
-        if (
+        let disabled =
+          s.id === simulation.id ||
           !coupling.compatibility.find(
             (c) => c.algorithm === s.scheme.algorithm
           )
-        )
-          disabled = true
 
         return { label: s.name, value: s.id, disabled }
       })
@@ -484,8 +481,7 @@ const Initialization = ({
       label: string
       children: IModelInitialization[]
     }
-    if (direct.children) {
-      initializations[key] = direct.children.map((child, index) => {
+      initializations[key] = direct.children?.map((child, index) => {
         if (dimension === 2 && child.only3D) return
         return (
           <Formula
@@ -499,7 +495,6 @@ const Initialization = ({
           />
         )
       })
-    }
   })
 
   /**

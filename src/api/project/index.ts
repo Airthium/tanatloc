@@ -8,6 +8,7 @@ import { del } from './del'
 import { archive } from './archive'
 import { unarchiveFromServer } from './unarchiveFromServer'
 import { deleteArchiveFile } from './deleteArchiveFile'
+import { unarchiveFromFile } from './unarchiveFromFile'
 
 export default {
   useProjects,
@@ -17,5 +18,6 @@ export default {
   del,
   archive,
   unarchiveFromServer,
-  deleteArchiveFile
+  deleteArchiveFile,
+  unarchiveFromFile
 }

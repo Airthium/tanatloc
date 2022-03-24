@@ -39,6 +39,14 @@ export default async (req: Request, res: Response) => {
           throw error(500, err.message)
         }
         break
+      case 'POST':
+        try {
+          await ProjectLib.unarchiveFromFile({ id }, req.body.archive)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
       case 'PUT':
         // Unarchive project from server
         try {

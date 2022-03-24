@@ -1,8 +1,8 @@
 /** @module Components.Administration.Users */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import { Badge, Table, Space, TableColumnsType } from 'antd'
+import { useState, useEffect, Dispatch, SetStateAction, useRef } from 'react'
+import { Badge, Table, Space, TableColumnsType, Button } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/database/index.d'
@@ -46,6 +46,8 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     IClientPlugin[],
     Dispatch<SetStateAction<IClientPlugin[]>>
   ] = useState()
+  const ref = useRef(null)
+  const [scroll, setScroll] = useState(null)
 
   // Data
   const authorizedpluginsRender = (authorizedplugins: string[]) => {
@@ -169,6 +171,14 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       })
   }, [])
 
+  useEffect(() => {
+    if (ref.current.clientHeight > 200) {
+      setScroll({ y: 200 })
+    } else {
+      setScroll(null)
+    }
+  }, [users])
+
   /**
    * Render
    */
@@ -191,6 +201,8 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         size="small"
         columns={columns}
         dataSource={users.map((u) => ({ ...u, key: u.id }))}
+        ref={ref}
+        scroll={scroll}
       />
     </Space>
   )

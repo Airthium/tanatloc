@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Tooltip, Typography } from 'antd'
+import { Button, Form, Tooltip, Typography } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
@@ -29,7 +29,8 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  archive: 'Unable to archive project'
+  archive: 'Unable to archive project',
+  unarchiveServer: 'Unable to unarchive project on server'
 }
 
 /**
@@ -72,6 +73,22 @@ export const onArchive = async (
   }
 }
 
+const onUnarchiveServer = async (workspace, project, swr) => {
+  try {
+    await ProjectAPI.unarchiveFromServer({ id: project.id })
+
+    swr.mutateOneProject({
+      ...project,
+      archived: false
+    })
+
+    // Mutate workspace
+    swr.mutateOneWorkspace(workspace)
+  } catch (err) {
+    ErrorNotification(errors.unarchiveServer, err)
+  }
+}
+
 /**
  * Archive
  * @param props Props
@@ -99,24 +116,49 @@ const Archive = ({
         loading={loading}
         title="Archive"
         onCancel={() => setVisible(false)}
-        onOk={async () => {
-          setLoading(true)
-          try {
-            await onArchive(workspace, project, swr)
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onOk={
+          !project.archived &&
+          (async () => {
+            setLoading(true)
+            try {
+              await onArchive(workspace, project, swr)
+              // Close
+              setLoading(false)
+              setVisible(false)
+            } catch (err) {
+              setLoading(false)
+              throw err
+            }
+          })
+        }
         okButtonText="Archive"
       >
-        <Typography.Text>
-          An archive will be downloaded and the project will not be editable
-          anymore, archive the project «{project.title}»?
-        </Typography.Text>
+        {project.archived ? (
+          <>
+            <Form.Item>
+              <Button danger>Delete archive from the server</Button>
+            </Form.Item>
+            <Form.Item>
+              <Button
+                onClick={async () => {
+                  setLoading(true)
+                  await onUnarchiveServer(workspace, project, swr)
+                  setLoading(false)
+                }}
+              >
+                Restore archive from the server
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <Button>Restore archive from upload</Button>
+            </Form.Item>
+          </>
+        ) : (
+          <Typography.Text>
+            An archive will be downloaded and the project will not be editable
+            anymore, archive the project «{project.title}»?
+          </Typography.Text>
+        )}
       </Dialog>
       <Tooltip title={project.archived ? 'Restore' : 'Archive'}>
         <Button

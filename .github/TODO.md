@@ -21,10 +21,12 @@
 
 - Table scroll
 
-- denso solderFilling, remove data/phi\*.mesh data/phi\*.data
-
 - add topics in help, what archive does, ...
 
 - Default enabled plugins dans admin / registration ?
 
 - check name / description length server side
+
+- archive UI upload
+
+- deleteArchiveFromServer / unarchiveFromServer / unarchiveFromFile (upload)

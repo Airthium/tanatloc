@@ -112,7 +112,8 @@ const copyDirectory = async (
   origin: string,
   destination: string
 ): Promise<void> => {
-  await fs.cp(origin, destination, { recursive: true })
+  await createPath(destination)
+  await fs.cp(origin, destination, { recursive: true, force: true })
 }
 
 /**
@@ -148,6 +149,13 @@ const archive = async (
     },
     [directory.path]
   )
+}
+
+const unarchive = async (
+  source: string,
+  directory: { C: string; path: string }
+): Promise<void> => {
+  await tar.x({ file: source, C: directory.C }, [directory.path])
 }
 
 /**
@@ -282,6 +290,7 @@ const Tools = {
   removeFile,
   removeDirectory,
   archive,
+  unarchive,
   readStream,
   writeStream,
   convert,

@@ -273,8 +273,7 @@ const ProjectList = ({
                 />,
                 <Archive
                   key="archive"
-                  // disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  disabled={true}
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   workspace={{
                     id: workspace.id
                   }}

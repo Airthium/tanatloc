@@ -6,5 +6,14 @@ import { add } from './add'
 import { update } from './update'
 import { del } from './del'
 import { archive } from './archive'
+import { unarchiveFromServer } from './unarchiveFromServer'
 
-export default { useProjects, useProject, add, update, del, archive }
+export default {
+  useProjects,
+  useProject,
+  add,
+  update,
+  del,
+  archive,
+  unarchiveFromServer
+}

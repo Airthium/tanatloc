@@ -6,7 +6,12 @@ import { ReadStream } from 'fs'
 import { IDataBaseEntry, IProject } from '@/database/index.d'
 import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
 
-import { STORAGE } from '@/config/storage'
+import {
+  AVATAR_RELATIVE,
+  GEOMETRY_RELATIVE,
+  SIMULATION_RELATIVE,
+  STORAGE
+} from '@/config/storage'
 
 import ProjectDB from '@/database/project'
 
@@ -318,30 +323,49 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
   await Tools.writeFile(temporaryPath, 'summary.txt', content)
 
   // Get avatar
-  if (data.avatar) await Avatar.archive({ id: data.avatar }, temporaryPath)
+  if (data.avatar)
+    try {
+      await Avatar.archive(
+        { id: data.avatar },
+        path.join(temporaryPath, AVATAR_RELATIVE)
+      )
+    } catch (err) {}
 
   // Archive geometries
   if (data.geometries)
     await Promise.all(
-      data.geometries.map(async (geometry) =>
-        Geometry.archive({ id: geometry }, temporaryPath)
-      )
+      data.geometries.map(async (geometry) => {
+        try {
+          await Geometry.archive(
+            { id: geometry },
+            path.join(temporaryPath, GEOMETRY_RELATIVE)
+          )
+        } catch (err) {}
+      })
     )
 
   // Archive simulations
   if (data.simulations)
     await Promise.all(
-      data.simulations.map(async (simulation) =>
-        Simulation.archive({ id: simulation }, temporaryPath)
-      )
+      data.simulations.map(async (simulation) => {
+        try {
+          await Simulation.archive(
+            { id: simulation },
+            path.join(temporaryPath, SIMULATION_RELATIVE)
+          )
+        } catch (err) {}
+      })
     )
 
   // Create archive
   const archiveFileName = temporaryPath + '.tgz'
-  Tools.archive(archiveFileName, {
+  await Tools.archive(archiveFileName, {
     C: STORAGE,
     path: '.archive-' + project.id
   })
+
+  // Remove temporary path
+  await Tools.removeDirectory(temporaryPath)
 
   // Update project
   await update(project, [
@@ -355,5 +379,35 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
   return Tools.readStream(archiveFileName)
 }
 
-const Project = { add, get, getWithData, update, del, archive }
+const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
+  // Temporary path
+  const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
+  const archiveFileName = temporaryPath + '.tgz'
+
+  // Check if the archive tgz exists
+  let directories = []
+  try {
+    await Tools.unarchive(archiveFileName, {
+      C: STORAGE,
+      path: '.archive-' + project.id
+    })
+
+    directories = await Tools.listDirectories(temporaryPath)
+  } catch (err) {
+    throw new Error('Archive not found')
+  }
+
+  // TODO continue
+  console.log(directories)
+}
+
+const Project = {
+  add,
+  get,
+  getWithData,
+  update,
+  del,
+  archive,
+  unarchiveFromServer
+}
 export default Project

@@ -116,17 +116,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     </Space>
   )
 
-  const onResize = useCallback(() => {
-    if (
-      refTable.current.clientHeight >
-      window.innerHeight - refTable.current.offsetTop - 59
-    ) {
-      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
-    } else {
-      setScroll(null)
-    }
-  }, [window.innerHeight])
-
   const columns: TableColumnsType = [
     {
       title: 'First name',
@@ -183,6 +172,20 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     }
   ]
 
+  // Update table scroll 
+  const onResize = useCallback(() => {
+    // Check if too many users to display
+    if (
+      refTable.current.clientHeight >
+      window.innerHeight - refTable.current.offsetTop - 59
+    ) {
+      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
+    } else {
+      // Scroll not needed
+      setScroll(null)
+    }
+  }, [])
+
   // Plugins list
   useEffect(() => {
     PluginsAPI.completeList()
@@ -205,7 +208,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   // Set Table Scroll Limit
   useEffect(() => {
     onResize()
-  }, [users, window.innerHeight])
+  }, [users, onResize])
 
   /**
    * Render

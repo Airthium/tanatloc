@@ -1,7 +1,14 @@
 /** @module Components.Administration.Users */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, Dispatch, SetStateAction, useRef } from 'react'
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  EffectCallback
+} from 'react'
 import { Badge, Table, Space, TableColumnsType, Button } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -50,6 +57,10 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     { y: number },
     Dispatch<SetStateAction<{ y: number }>>
   ] = useState(null)
+  const [windowHeight, setWindowHeight]: [
+    number,
+    Dispatch<SetStateAction<number>>
+  ] = useState(window.innerHeight)
 
   // Ref
   const refTable = useRef(null)
@@ -176,6 +187,18 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       })
   }, [])
 
+  // Handle window resize
+  useEffect((): (() => void) => {
+    function handleResize() {
+      setWindowHeight(window.innerHeight)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  })
+
   // Set Table Scroll Limit
   useEffect(() => {
     if (
@@ -186,7 +209,8 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     } else {
       setScroll(null)
     }
-  }, [users])
+    console.log(refTable)
+  }, [users, window.innerHeight])
 
   /**
    * Render

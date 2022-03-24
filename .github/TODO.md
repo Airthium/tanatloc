@@ -26,7 +26,3 @@
 - Default enabled plugins dans admin / registration ?
 
 - check name / description length server side
-
-- archive UI upload
-
-- deleteArchiveFromServer / unarchiveFromServer / unarchiveFromFile (upload)

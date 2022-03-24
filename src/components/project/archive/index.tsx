@@ -31,7 +31,8 @@ export interface IProps {
  */
 export const errors = {
   archive: 'Unable to archive project',
-  unarchiveServer: 'Unable to unarchive project on server'
+  unarchiveServer: 'Unable to unarchive project on server',
+  deleteArchive: 'Unable to delete archive'
 }
 
 /**
@@ -74,7 +75,17 @@ export const onArchive = async (
   }
 }
 
-const onUnarchiveServer = async (workspace, project, swr) => {
+/**
+ * Unarchive from server
+ * @param workspace Workspace
+ * @param project Project
+ * @param swr SWR
+ */
+const onUnarchiveServer = async (
+  workspace: IWorkspaceWithData,
+  project: IProjectWithData,
+  swr: IProps['swr']
+) => {
   try {
     await ProjectAPI.unarchiveFromServer({ id: project.id })
 
@@ -88,6 +99,18 @@ const onUnarchiveServer = async (workspace, project, swr) => {
   } catch (err) {
     ErrorNotification(errors.unarchiveServer, err)
     throw err
+  }
+}
+
+/**
+ * Delete archive
+ * @param project Project
+ */
+const onArchiveDelete = async (project: IProjectWithData) => {
+  try {
+    await ProjectAPI.deleteArchiveFile({ id: project.id })
+  } catch (err) {
+    ErrorNotification(errors.deleteArchive, err)
   }
 }
 
@@ -163,7 +186,7 @@ const Archive = ({
               label="Restore archive from local file"
               tooltip="This will restore the project from your local archive file (.tanatlocarchive file)."
             >
-              <Button>Restore archive from archive file</Button>
+              <Button disabled>Restore archive from archive file</Button>
             </Form.Item>
             <Form.Item
               label="Delete archive from the server"
@@ -174,7 +197,7 @@ const Archive = ({
                 bordered
                 title="Delete server archive"
                 text="Are you sure your want to delete the archive from the server?"
-                onDelete={async () => console.log('TODO')}
+                onDelete={async () => onArchiveDelete(project)}
               >
                 Delete server archive
               </DeleteButton>
@@ -187,7 +210,7 @@ const Archive = ({
           </Typography.Text>
         )}
       </Dialog>
-      <Tooltip title={project.archived ? 'Restore / Delete' : 'Archive'}>
+      <Tooltip title={project.archived ? 'Manage archive' : 'Archive'}>
         <Button
           disabled={disabled}
           type="link"

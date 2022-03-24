@@ -386,6 +386,8 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
 const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
   // Temporary path
   const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
+
+  // Archive file name
   const archiveFileName = temporaryPath + '.tgz'
 
   // Check if the archive tgz exists
@@ -470,7 +472,26 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
   await Tools.removeDirectory(temporaryPath)
 
   // Remove archive
-  await Tools.removeFile(archiveFileName)
+  await deleteArchiveFile(project)
+}
+
+/**
+ * Delete archive file
+ * @param project Project
+ */
+const deleteArchiveFile = async (project: { id: string }): Promise<void> => {
+  // Temporary path
+  const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
+
+  // Archive file name
+  const archiveFileName = temporaryPath + '.tgz'
+
+  // Remove archive
+  try {
+    await Tools.removeFile(archiveFileName)
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
+  }
 }
 
 const Project = {
@@ -480,6 +501,7 @@ const Project = {
   update,
   del,
   archive,
-  unarchiveFromServer
+  unarchiveFromServer,
+  deleteArchiveFile
 }
 export default Project

@@ -14,3 +14,10 @@ const archive = async (req: Request, res: Response): Promise<void> => {
 }
 
 export default archive
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '150mb'
+    }
+  }
+}

@@ -23,6 +23,8 @@ import Geometry from '../geometry'
 import Simulation from '../simulation'
 import Tools from '../tools'
 
+import tar from 'tar'
+
 /**
  * Add
  * @param user User
@@ -390,6 +392,8 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
   // Archive file name
   const archiveFileName = temporaryPath + '.tgz'
 
+  console.log(archiveFileName)
+
   // Check if the archive tgz exists
   let directories = []
   try {
@@ -494,6 +498,23 @@ const deleteArchiveFile = async (project: { id: string }): Promise<void> => {
   }
 }
 
+/**
+ * Unarchive from file
+ * @param project Project
+ * @param buffer Buffer
+ */
+const unarchiveFromFile = async (project: { id: string }, buffer: Buffer) => {
+  // Write archive
+  await Tools.writeFile(
+    STORAGE,
+    '.archive-' + project.id + '.tgz',
+    Buffer.from(buffer)
+  )
+
+  // Unarchive
+  await unarchiveFromServer(project)
+}
+
 const Project = {
   add,
   get,
@@ -502,6 +523,7 @@ const Project = {
   del,
   archive,
   unarchiveFromServer,
-  deleteArchiveFile
+  deleteArchiveFile,
+  unarchiveFromFile
 }
 export default Project

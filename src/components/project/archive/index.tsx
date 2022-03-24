@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Form, Tooltip, Typography } from 'antd'
+import { Button, Form, Tooltip, Typography, Upload } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
@@ -12,6 +12,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 import { DeleteButton } from '@/components/assets/button'
+import { UploadChangeParam } from 'antd/lib/upload'
 
 /**
  * Props
@@ -32,7 +33,9 @@ export interface IProps {
 export const errors = {
   archive: 'Unable to archive project',
   unarchiveServer: 'Unable to unarchive project on server',
-  deleteArchive: 'Unable to delete archive'
+  deleteArchive: 'Unable to delete archive',
+  badFormat: 'Bad archive format (supported format: .tanatlocarchive)',
+  upload: 'Unable to upload archive'
 }
 
 /**
@@ -81,7 +84,7 @@ export const onArchive = async (
  * @param project Project
  * @param swr SWR
  */
-const onUnarchiveServer = async (
+export const onUnarchiveServer = async (
   workspace: IWorkspaceWithData,
   project: IProjectWithData,
   swr: IProps['swr']
@@ -106,11 +109,68 @@ const onUnarchiveServer = async (
  * Delete archive
  * @param project Project
  */
-const onArchiveDelete = async (project: IProjectWithData) => {
+export const onArchiveDelete = async (project: IProjectWithData) => {
   try {
     await ProjectAPI.deleteArchiveFile({ id: project.id })
   } catch (err) {
     ErrorNotification(errors.deleteArchive, err)
+  }
+}
+
+/**
+ * Read file
+ * @param file File
+ */
+export const getFile = async (file: Blob): Promise<any> => {
+  const reader = new FileReader()
+  return new Promise((resolve) => {
+    reader.addEventListener('load', () => {
+      resolve(reader.result)
+    })
+    reader.readAsDataURL(file)
+  })
+}
+
+/**
+ * On upload
+ * @param workspace Workspace
+ * @param project Project
+ * @param info Info
+ * @param swr SWR
+ */
+export const onUpload = async (
+  workspace: IWorkspaceWithData,
+  project: IProjectWithData,
+  info: UploadChangeParam<any>,
+  swr: IProps['swr']
+): Promise<boolean> => {
+  if (info.file.status === 'uploading') {
+    return true
+  }
+
+  if (info.file.status === 'done') {
+    try {
+      // Archive
+      const archive = await getFile(info.file.originFileObj)
+
+      // Unarchive
+      await ProjectAPI.unarchiveFromFile(
+        { id: project.id },
+        Buffer.from(archive)
+      )
+
+      swr.mutateOneProject({
+        ...project,
+        archived: false
+      })
+
+      // Mutate workspace
+      swr.mutateOneWorkspace(workspace)
+    } catch (err) {
+      ErrorNotification(errors.upload, err)
+    }
+
+    return false
   }
 }
 
@@ -186,7 +246,18 @@ const Archive = ({
               label="Restore archive from local file"
               tooltip="This will restore the project from your local archive file (.tanatlocarchive file)."
             >
-              <Button disabled>Restore archive from archive file</Button>
+              <Upload
+                action={'/api/noop'}
+                accept={'.tanatlocarchive'}
+                showUploadList={false}
+                onChange={async (info) => {
+                  const load = await onUpload(workspace, project, info, swr)
+                  setLoading(load)
+                  setVisible(!load)
+                }}
+              >
+                <Button>Restore archive from archive file</Button>
+              </Upload>
             </Form.Item>
             <Form.Item
               label="Delete archive from the server"

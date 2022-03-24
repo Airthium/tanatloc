@@ -28,18 +28,38 @@ export default async (req: Request, res: Response) => {
     // Check authorization
     await checkProjectAuth({ id: sessionId }, { id })
 
-    if (req.method === 'GET')
-      // Archive project
-      try {
-        res.setHeader('Content-Type', 'application/x-tgz')
-        const archive = await ProjectLib.archive({ id })
-        archive.pipe(res)
-      } catch (err) {
-        throw error(500, err.message)
-      }
-    else {
-      // Unauthorized method
-      throw error(402, 'Method ' + req.method + ' not allowed')
+    switch (req.method) {
+      case 'GET':
+        // Archive project
+        try {
+          res.setHeader('Content-Type', 'application/x-tgz')
+          const archive = await ProjectLib.archive({ id })
+          archive.pipe(res)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
+        // Unarchive project from server
+        try {
+          await ProjectLib.unarchiveFromServer({ id })
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
+        // Delete archive file
+        try {
+          await ProjectLib.deleteArchiveFile({ id })
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
     res.status(err.status).json({ error: true, message: err.message })

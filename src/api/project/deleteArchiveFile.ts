@@ -1,18 +1,18 @@
-/** @module API.Project.UnarchiveFromServer */
+/** @module API.Project.DeleteArchive */
 
 import { ICallResponse } from '../index.d'
 
 import { call } from '@/api/call'
 
 /**
- * Unarchive from server
+ * Delete archive from server
  * @param project Project
  * @returns Response
  */
-export const unarchiveFromServer = async (project: {
+export const deleteArchiveFile = async (project: {
   id: string
 }): Promise<ICallResponse> => {
   return call('/api/project/' + project.id + '/archive', {
-    method: 'PUT'
+    method: 'DELETE'
   })
 }

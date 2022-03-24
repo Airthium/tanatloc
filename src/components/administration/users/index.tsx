@@ -46,8 +46,13 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     IClientPlugin[],
     Dispatch<SetStateAction<IClientPlugin[]>>
   ] = useState()
-  const ref = useRef(null)
-  const [scroll, setScroll] = useState(null)
+  const [scroll, setScroll]: [
+    { y: number },
+    Dispatch<SetStateAction<{ y: number }>>
+  ] = useState(null)
+
+  // Ref
+  const refTable = useRef(null)
 
   // Data
   const authorizedpluginsRender = (authorizedplugins: string[]) => {
@@ -171,9 +176,13 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       })
   }, [])
 
+  // Set Table Scroll Limit
   useEffect(() => {
-    if (ref.current.clientHeight > 200) {
-      setScroll({ y: 200 })
+    if (
+      refTable.current.clientHeight >
+      window.innerHeight - 2 * refTable.current.offsetTop
+    ) {
+      setScroll({ y: window.innerHeight - 2 * refTable.current.offsetTop })
     } else {
       setScroll(null)
     }
@@ -183,7 +192,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width" size={20}>
+    <Space direction="vertical" className="full-width full-height" size={20}>
       <Add
         plugins={
           plugins?.map((plugin) => ({
@@ -201,7 +210,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         size="small"
         columns={columns}
         dataSource={users.map((u) => ({ ...u, key: u.id }))}
-        ref={ref}
+        ref={refTable}
         scroll={scroll}
       />
     </Space>

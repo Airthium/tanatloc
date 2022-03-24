@@ -7,9 +7,9 @@ import {
   Dispatch,
   SetStateAction,
   useRef,
-  EffectCallback
+  useCallback
 } from 'react'
-import { Badge, Table, Space, TableColumnsType, Button } from 'antd'
+import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/database/index.d'
@@ -57,10 +57,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     { y: number },
     Dispatch<SetStateAction<{ y: number }>>
   ] = useState(null)
-  const [windowHeight, setWindowHeight]: [
-    number,
-    Dispatch<SetStateAction<number>>
-  ] = useState(window.innerHeight)
 
   // Ref
   const refTable = useRef(null)
@@ -119,6 +115,17 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       />
     </Space>
   )
+
+  const onResize = useCallback(() => {
+    if (
+      refTable.current.clientHeight >
+      window.innerHeight - refTable.current.offsetTop - 59
+    ) {
+      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
+    } else {
+      setScroll(null)
+    }
+  }, [window.innerHeight])
 
   const columns: TableColumnsType = [
     {
@@ -189,27 +196,15 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
 
   // Handle window resize
   useEffect((): (() => void) => {
-    function handleResize() {
-      setWindowHeight(window.innerHeight)
-    }
-
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', onResize)
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', onResize)
     }
   })
 
   // Set Table Scroll Limit
   useEffect(() => {
-    if (
-      refTable.current.clientHeight >
-      window.innerHeight - 2 * refTable.current.offsetTop
-    ) {
-      setScroll({ y: window.innerHeight - 2 * refTable.current.offsetTop })
-    } else {
-      setScroll(null)
-    }
-    console.log(refTable)
+    onResize()
   }, [users, window.innerHeight])
 
   /**

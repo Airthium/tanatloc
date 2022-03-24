@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Typography } from 'antd'
+import { Alert, Typography } from 'antd'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
@@ -87,6 +87,10 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
         <>
           Are you sure you want to delete the project{' '}
           <Typography.Text strong>{project.title}</Typography.Text>?
+          <Alert
+            type="error"
+            message="If you delete the project, you will no longer be able to restore the archive"
+          />
         </>
       }
       onDelete={async () => {

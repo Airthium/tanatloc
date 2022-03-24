@@ -69,7 +69,7 @@ const DeleteDialog = ({
       okButtonProps={{ danger: true }}
       confirmLoading={loading}
     >
-      <Space>
+      <Space align="start">
         <ExclamationCircleTwoTone twoToneColor="#ff4d4f" />
         <span style={{ wordBreak: 'break-word' }}>{children}</span>
       </Space>

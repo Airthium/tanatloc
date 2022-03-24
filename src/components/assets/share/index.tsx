@@ -214,6 +214,7 @@ const Share = ({
           .flatMap((g) => g)
       })
       .flatMap((o) => o)
+      .filter((o) => o)
 
     const uniqueUsersData = usersData.filter(
       (user, index, self) => self.findIndex((s) => s.key === user.key) === index

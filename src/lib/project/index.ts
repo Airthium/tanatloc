@@ -379,6 +379,10 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
   return Tools.readStream(archiveFileName)
 }
 
+/**
+ * Unarchive from server
+ * @param project Project
+ */
 const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
   // Temporary path
   const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
@@ -397,8 +401,76 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
     throw new Error('Archive not found')
   }
 
-  // TODO continue
-  console.log(directories)
+  // Avatar
+  if (directories.includes(AVATAR_RELATIVE)) {
+    const files = await Tools.listFiles(
+      path.join(temporaryPath, AVATAR_RELATIVE)
+    )
+
+    await Promise.all(
+      files.map(async (file) => {
+        await Tools.copyFile(
+          { path: path.join(temporaryPath, AVATAR_RELATIVE), file: file.name },
+          { path: path.join(STORAGE, AVATAR_RELATIVE), file: file.name }
+        )
+      })
+    )
+  }
+
+  // Geometry
+  if (directories.includes(GEOMETRY_RELATIVE)) {
+    const files = await Tools.listFiles(
+      path.join(temporaryPath, GEOMETRY_RELATIVE)
+    )
+
+    await Promise.all(
+      files.map(async (file) => {
+        if (file.isDirectory())
+          await Tools.copyDirectory(
+            path.join(temporaryPath, GEOMETRY_RELATIVE, file.name),
+            path.join(STORAGE, GEOMETRY_RELATIVE, file.name)
+          )
+        else if (file.isFile())
+          await Tools.copyFile(
+            {
+              path: path.join(temporaryPath, GEOMETRY_RELATIVE),
+              file: file.name
+            },
+            { path: path.join(STORAGE, GEOMETRY_RELATIVE), file: file.name }
+          )
+      })
+    )
+  }
+
+  // Simulation
+  if (directories.includes(SIMULATION_RELATIVE)) {
+    const simulationDirectories = await Tools.listDirectories(
+      path.join(temporaryPath, SIMULATION_RELATIVE)
+    )
+
+    await Promise.all(
+      simulationDirectories.map(async (simulation) => {
+        await Tools.copyDirectory(
+          path.join(temporaryPath, SIMULATION_RELATIVE, simulation),
+          path.join(STORAGE, SIMULATION_RELATIVE, simulation)
+        )
+      })
+    )
+  }
+
+  // Update project
+  await update(project, [
+    {
+      key: 'archived',
+      value: false
+    }
+  ])
+
+  // Remove temporyPath
+  await Tools.removeDirectory(temporaryPath)
+
+  // Remove archive
+  await Tools.removeFile(archiveFileName)
 }
 
 const Project = {

@@ -11,6 +11,7 @@ import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
+import { DeleteButton } from '@/components/assets/button'
 
 /**
  * Props
@@ -86,6 +87,7 @@ const onUnarchiveServer = async (workspace, project, swr) => {
     swr.mutateOneWorkspace(workspace)
   } catch (err) {
     ErrorNotification(errors.unarchiveServer, err)
+    throw err
   }
 }
 
@@ -117,40 +119,65 @@ const Archive = ({
         title="Archive"
         onCancel={() => setVisible(false)}
         onOk={
-          !project.archived &&
-          (async () => {
-            setLoading(true)
-            try {
-              await onArchive(workspace, project, swr)
-              // Close
-              setLoading(false)
-              setVisible(false)
-            } catch (err) {
-              setLoading(false)
-              throw err
-            }
-          })
+          project.archived
+            ? null
+            : async () => {
+                setLoading(true)
+                try {
+                  await onArchive(workspace, project, swr)
+                  // Close
+                  setLoading(false)
+                  setVisible(false)
+                } catch (err) {
+                  setLoading(false)
+                  throw err
+                }
+              }
         }
         okButtonText="Archive"
       >
         {project.archived ? (
           <>
-            <Form.Item>
-              <Button danger>Delete archive from the server</Button>
-            </Form.Item>
-            <Form.Item>
+            <Form.Item
+              label="Restore archive from the server"
+              tooltip="This will restore the project from the server archive file."
+            >
               <Button
+                loading={loading}
                 onClick={async () => {
                   setLoading(true)
-                  await onUnarchiveServer(workspace, project, swr)
-                  setLoading(false)
+                  try {
+                    await onUnarchiveServer(workspace, project, swr)
+
+                    setLoading(false)
+                    setVisible(false)
+                  } catch (err) {
+                    setLoading(false)
+                  }
                 }}
               >
                 Restore archive from the server
               </Button>
             </Form.Item>
-            <Form.Item>
-              <Button>Restore archive from upload</Button>
+            <Form.Item
+              label="Restore archive from local file"
+              tooltip="This will restore the project from your local archive file (.tanatlocarchive file)."
+            >
+              <Button>Restore archive from archive file</Button>
+            </Form.Item>
+            <Form.Item
+              label="Delete archive from the server"
+              tooltip="This will delete the archive file from the server, you will have to use a local copy to restore the project."
+            >
+              <DeleteButton
+                loading={loading}
+                bordered
+                title="Delete server archive"
+                text="Are you sure your want to delete the archive from the server?"
+                onDelete={async () => console.log('TODO')}
+              >
+                Delete server archive
+              </DeleteButton>
             </Form.Item>
           </>
         ) : (
@@ -160,7 +187,7 @@ const Archive = ({
           </Typography.Text>
         )}
       </Dialog>
-      <Tooltip title={project.archived ? 'Restore' : 'Archive'}>
+      <Tooltip title={project.archived ? 'Restore / Delete' : 'Archive'}>
         <Button
           disabled={disabled}
           type="link"

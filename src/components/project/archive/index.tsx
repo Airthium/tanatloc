@@ -127,7 +127,7 @@ export const getFile = async (file: Blob): Promise<any> => {
     reader.addEventListener('load', () => {
       resolve(reader.result)
     })
-    reader.readAsDataURL(file)
+    reader.readAsArrayBuffer(file)
   })
 }
 
@@ -253,7 +253,7 @@ const Archive = ({
                 onChange={async (info) => {
                   const load = await onUpload(workspace, project, info, swr)
                   setLoading(load)
-                  setVisible(!load)
+                  setVisible(load)
                 }}
               >
                 <Button>Restore archive from archive file</Button>

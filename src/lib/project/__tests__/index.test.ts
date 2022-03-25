@@ -59,11 +59,13 @@ const mockToolsCreatePath = jest.fn()
 const mockToolsWriteFile = jest.fn()
 const mockToolsArchive = jest.fn()
 const mockToolsReadStream = jest.fn()
+const mockToolsRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
   createPath: async () => mockToolsCreatePath(),
   writeFile: async () => mockToolsWriteFile(),
   archive: () => mockToolsArchive(),
-  readStream: async () => mockToolsReadStream()
+  readStream: async () => mockToolsReadStream(),
+  removeDirectory: async () => mockToolsRemoveDirectory()
 }))
 
 describe('lib/project', () => {
@@ -94,6 +96,7 @@ describe('lib/project', () => {
     mockToolsWriteFile.mockReset()
     mockToolsArchive.mockReset()
     mockToolsReadStream.mockReset()
+    mockToolsRemoveDirectory.mockReset()
   })
 
   test('add', async () => {

@@ -20,6 +20,7 @@ jest.mock('@/components/assets/notification', () => ({
 
 jest.mock('../users', () => () => <div />)
 jest.mock('../registration', () => () => <div />)
+jest.mock('../plugins', () => () => <div />)
 
 const mockUsers = jest.fn()
 const mockAddOneUser = jest.fn()

@@ -190,7 +190,7 @@ export interface ISystem {
     requireNumber: boolean
     requireSymbol: boolean
   }
-  defaultplugins: string[]
+  defaultplugins?: string[]
 }
 
 export interface INewUser {

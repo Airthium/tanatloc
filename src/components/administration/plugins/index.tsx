@@ -20,8 +20,9 @@ import SystemAPI from '@/api/system'
 /**
  * Errors
  */
-const errors = {
-  plugins: 'Unable to get plugins'
+export const errors = {
+  plugins: 'Unable to get plugins',
+  update: 'Unable to update system'
 }
 
 /**
@@ -63,7 +64,7 @@ export const onChange = async (
       defaultplugins
     })
   } catch (err) {
-    ErrorNotification(errors.plugins, err)
+    ErrorNotification(errors.update, err)
   }
 }
 
@@ -118,7 +119,7 @@ const Plugins = () => {
         const checked = system?.defaultplugins?.includes(plugin.key)
         return (
           <Checkbox
-            checked={!!checked}
+            checked={checked}
             onChange={async (e) =>
               onChange(system, plugin, e.target.checked, { mutateSystem })
             }

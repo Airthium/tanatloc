@@ -159,6 +159,9 @@ describe('components/account/information', () => {
     info = { file: { status: 'uploading' } }
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
 
+    info = { file: { status: 'other' } }
+    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+
     // Done
     info = {
       file: { status: 'done', name: 'name', uid: 'uid', originFileObj: {} }
@@ -202,21 +205,21 @@ describe('components/account/information', () => {
     fireEvent.click(submit)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
 
-    // Email
-    fireEvent.change(email, { target: { value: 'test1@tanatloc.com' } })
+    // Firstname
+    fireEvent.change(firstname, { target: { value: 'firstname1' } })
     fireEvent.click(submit)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
-        { key: 'email', value: 'test1@tanatloc.com' }
+        { key: 'firstname', value: 'firstname1' }
       ])
     )
     await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(0)
     )
 
-    // Firstname
-    fireEvent.change(firstname, { target: { value: 'firstname1' } })
+    // Email
+    fireEvent.change(email, { target: { value: 'test1@tanatloc.com' } })
     fireEvent.click(submit)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
@@ -226,7 +229,7 @@ describe('components/account/information', () => {
       ])
     )
     await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(2)
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
     )
 
     // Lastname
@@ -241,7 +244,7 @@ describe('components/account/information', () => {
       ])
     )
     await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(3)
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(2)
     )
 
     // Error

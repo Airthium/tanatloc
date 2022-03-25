@@ -32,3 +32,5 @@
 - section view fix
 
 - grid dynamic update
+
+- user selection in groups

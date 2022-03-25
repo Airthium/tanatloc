@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Form, Tooltip, Typography, Upload } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
+import { UploadChangeParam } from 'antd/lib/upload'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
+import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
-import { DeleteButton } from '@/components/assets/button'
-import { UploadChangeParam } from 'antd/lib/upload'
 
 /**
  * Props

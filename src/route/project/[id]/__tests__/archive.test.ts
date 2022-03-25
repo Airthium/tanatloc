@@ -20,8 +20,14 @@ jest.mock('../../../error', () => ({
 }))
 
 const mockArchive = jest.fn()
+const mockUnarchiveFromFile = jest.fn()
+const mockUnarchiveFromServer = jest.fn()
+const mockDeleteArchiveFile = jest.fn()
 jest.mock('@/lib/project', () => ({
-  archive: async () => mockArchive()
+  archive: async () => mockArchive(),
+  unarchiveFromFile: async () => mockUnarchiveFromFile(),
+  unarchiveFromServer: async () => mockUnarchiveFromServer(),
+  deleteArchiveFile: async () => mockDeleteArchiveFile()
 }))
 
 describe('route/project/[id]', () => {
@@ -55,6 +61,9 @@ describe('route/project/[id]', () => {
     mockArchive.mockImplementation(() => ({
       pipe: jest.fn()
     }))
+    mockUnarchiveFromFile.mockReset()
+    mockUnarchiveFromServer.mockReset()
+    mockDeleteArchiveFile.mockReset()
 
     resStatus = undefined
     resJson = undefined

@@ -108,7 +108,7 @@ describe('lib/group', () => {
     expect(mockUserGetWithData).toHaveBeenCalledTimes(1)
     expect(groups).toEqual([
       { users: [{ id: 'id', firstname: 'firstname' }] },
-      {}
+      { users: [] }
     ])
 
     // With data

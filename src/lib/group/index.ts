@@ -107,6 +107,21 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   // Get groups
   const groups = await GroupDB.getAll(data)
 
+  if (data.includes('users'))
+    groups.forEach((group) => {
+      if (!group.users) group.users = []
+    })
+
+  if (data.includes('workspaces'))
+    groups.forEach((group) => {
+      if (!group.workspaces) group.workspaces = []
+    })
+
+  if (data.includes('projects'))
+    groups.forEach((group) => {
+      if (!group.projects) group.projects = []
+    })
+
   const groupsData = groups.map((group) => {
     const { users, ...groupData } = { ...group }
     return groupData

@@ -114,7 +114,29 @@ const getBy = async (
  * @returns Users
  */
 const getAll = async (data: string[]): Promise<IUser[]> => {
-  return UserDB.getAll(data)
+  const users = await UserDB.getAll(data)
+
+  if (data.includes('organizations'))
+    users.forEach((user) => {
+      if (!user.organizations) user.organizations = []
+    })
+
+  if (data.includes('workspaces'))
+    users.forEach((user) => {
+      if (!user.workspaces) user.workspaces = []
+    })
+
+  if (data.includes('authorizedplugins'))
+    users.forEach((user) => {
+      if (!user.authorizedplugins) user.authorizedplugins = []
+    })
+
+  if (data.includes('plugins'))
+    users.forEach((user) => {
+      if (!user.plugins) user.plugins = []
+    })
+
+  return users
 }
 
 /**

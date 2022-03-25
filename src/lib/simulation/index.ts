@@ -65,7 +65,14 @@ const get = async (id: string, data: string[]): Promise<ISimulation> => {
  * @returns Simulations
  */
 const getAll = async (data: string[]): Promise<ISimulation[]> => {
-  return SimulationDB.getAll(data)
+  const simulations = await SimulationDB.getAll(data)
+
+  if (data.includes('tasks'))
+    simulations.forEach((simulation) => {
+      if (!simulation.tasks) simulation.tasks = []
+    })
+
+  return simulations
 }
 
 /**

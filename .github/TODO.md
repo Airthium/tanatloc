@@ -21,15 +21,9 @@
 
 - Table scroll
 
-- add topics in help, what archive does, ...
-
-- Default enabled plugins dans admin / registration ?
-
 - check name / description length server side
 
 - snapshot -> utiliser comme icon de projet ou download
-
-- dans initialization, marge entre les formula (?)
 
 - upload spin
 

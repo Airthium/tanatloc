@@ -482,20 +482,26 @@ const Initialization = ({
       children: IModelInitialization[]
     }
     if (direct.children) {
-      initializations[key] = direct.children.map((child, index) => {
-        if (dimension === 2 && child.only3D) return
-        return (
-          <Formula
-            key={index}
-            label={child.label}
-            defaultValue={(
-              initializationValue?.values?.[index] ?? child.default
-            ).toString()}
-            unit={child.unit}
-            onValueChange={(value) => onChange(simulation, index, value, swr)}
-          />
-        )
-      })
+      initializations[key] = (
+        <Space direction="vertical" className="full-width">
+          {direct.children.map((child, index) => {
+            if (dimension === 2 && child.only3D) return
+            return (
+              <Formula
+                key={index}
+                label={child.label}
+                defaultValue={(
+                  initializationValue?.values?.[index] ?? child.default
+                ).toString()}
+                unit={child.unit}
+                onValueChange={(value) =>
+                  onChange(simulation, index, value, swr)
+                }
+              />
+            )
+          })}
+        </Space>
+      )
     }
   })
 

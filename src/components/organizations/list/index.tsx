@@ -1,7 +1,14 @@
 /** @module Components.Organizations.List */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Avatar, Button, Space, Table } from 'antd'
 import { ControlOutlined } from '@ant-design/icons'
 
@@ -39,6 +46,15 @@ const List = ({
   swr,
   setOrganization
 }: IProps): JSX.Element => {
+  // State
+  const [scroll, setScroll]: [
+    { y: number },
+    Dispatch<SetStateAction<{ y: number }>>
+  ] = useState(null)
+
+  // Ref
+  const refTable = useRef(null)
+
   // Data
   const ownersRender = (owners: IUserWithData[]) => (
     <Avatar.Group maxCount={5}>
@@ -112,6 +128,33 @@ const List = ({
     }
   ]
 
+  // Update table scroll
+  const onResize = useCallback(() => {
+    // Check if too many users to display
+    if (
+      refTable.current.clientHeight >
+      window.innerHeight - refTable.current.offsetTop - 59
+    ) {
+      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
+    } else {
+      // Scroll not needed
+      setScroll(null)
+    }
+  }, [])
+
+  // Handle window resize
+  useEffect((): (() => void) => {
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [onResize])
+
+  // Set Table Scroll Limit
+  useEffect(() => {
+    onResize()
+  }, [organizations, onResize])
+
   /**
    * Render
    */
@@ -129,6 +172,8 @@ const List = ({
         users: organization.users,
         groups: organization.groups
       }))}
+      ref={refTable}
+      scroll={scroll}
     />
   )
 }

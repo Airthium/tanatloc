@@ -172,7 +172,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     }
   ]
 
-  // Update table scroll 
+  // Update table scroll
   const onResize = useCallback(() => {
     // Check if too many users to display
     if (
@@ -203,7 +203,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     return () => {
       window.removeEventListener('resize', onResize)
     }
-  })
+  }, [onResize])
 
   // Set Table Scroll Limit
   useEffect(() => {

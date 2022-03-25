@@ -29,11 +29,9 @@
 
 - snapshot -> utiliser comme icon de projet ou download
 
-- marge entre menus geometries / simus
-
 - dans initialization, marge entre les formula (?)
 
-- upload span
+- upload spin
 
 - no data -> disable button
 

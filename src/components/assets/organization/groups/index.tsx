@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.Groups */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction, useCallback, useRef } from 'react'
 import { Avatar, Space, Table } from 'antd'
 
 import {
@@ -48,6 +48,14 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
     { label: string; value: string }[],
     Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState([])
+
+  const [scroll, setScroll]: [
+    { y: number },
+    Dispatch<SetStateAction<{ y: number }>>
+  ] = useState(null)
+
+  // Ref
+  const refTableGroup = useRef(null)
 
   // Data
   const [
@@ -132,6 +140,33 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
+  // Update table scroll
+  const onResize = useCallback(() => {
+    // Check if too many groups to display
+    if (
+      refTableGroup.current.clientHeight >
+      window.innerHeight - refTableGroup.current.offsetTop - 59
+    ) {
+      setScroll({ y: window.innerHeight - refTableGroup.current.offsetTop - 59 })
+    } else {
+      // Scroll not needed
+      setScroll(null)
+    }
+  }, [])
+
+  // Handle window resize
+  useEffect((): (() => void) => {
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [onResize])
+
+  // Set Table Scroll Limit
+  useEffect(() => {
+    onResize()
+  }, [groups, onResize])
+
   /**
    * Render
    */
@@ -151,6 +186,8 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
         size="small"
         columns={columns}
         dataSource={groups.map((g) => ({ key: g.id, ...g }))}
+        scroll={scroll}
+        ref={refTableGroup}
       />
     </Space>
   )

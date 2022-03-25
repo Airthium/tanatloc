@@ -43,7 +43,12 @@ const HPC = (): JSX.Element => {
               ;
             </li>
             <li>Platform: the platform you use. USA, Europe or Japan;</li>
-            <li>[Optional] Organization name: the organization you ar in;</li>
+            <li>[Optional] Organization name: the organization you are in;</li>
+            <li>[Optional] Project id: the financial project identifier;</li>
+            <li>
+              [Optional] Default walltime: the default value for the run
+              walltime;
+            </li>
             <li>
               [Optional] Additional files: additional files you have to use with
               your simulations. Generally FreeFEM custom plugins.

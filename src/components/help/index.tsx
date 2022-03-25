@@ -2,6 +2,8 @@
 
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
+import Workspace from './doc/workspace'
+import Project from './doc/project'
 import HPC from './doc/hpc'
 import Administration from './doc/administration'
 import Organizations from './doc/organizations'
@@ -27,7 +29,9 @@ const Help = (): JSX.Element => {
         footer={<Divider />}
       />
       <Layout.Content className="scroll">
-        <Space direction="vertical" className="full-width">
+        <Space direction="vertical" className="full-width" size={20}>
+          <Workspace />
+          <Project />
           <HPC />
           <Organizations />
           <Administration />

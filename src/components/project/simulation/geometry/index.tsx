@@ -109,7 +109,7 @@ const Geometry = ({
       }}
       onClick={() => onSelect(simulation, geometries, g, setGeometry, swr)}
     >
-      <Typography.Text strong>{g.name}</Typography.Text>
+      <Typography.Text>{g.name}</Typography.Text>
     </div>
   ))
 

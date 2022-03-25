@@ -17,6 +17,7 @@ import { merge } from 'lodash'
 import { IClientPlugin } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
+import { LinkButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
@@ -92,8 +93,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           <Typography.Text>
             Your computational resource does not appear in this list? Create one
             in your
-            <Button
-              type="link"
+            <LinkButton
               onClick={() =>
                 router.push({
                   pathname: '/dashboard',
@@ -102,7 +102,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
               }
             >
               account settings
-            </Button>
+            </LinkButton>
           </Typography.Text>
           <Space align="start" direction="horizontal" wrap={true}>
             {plugins?.map((plugin) => {

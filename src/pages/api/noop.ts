@@ -12,3 +12,10 @@ const noop = async (req: Request, res: Response): Promise<void> => {
 }
 
 export default noop
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '150mb'
+    }
+  }
+}

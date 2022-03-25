@@ -26,3 +26,17 @@
 - Default enabled plugins dans admin / registration ?
 
 - check name / description length server side
+
+- snapshot -> utiliser comme icon de projet ou download
+
+- marge entre menus geometries / simus
+
+- dans initialization, marge entre les formula (?)
+
+- upload span
+
+- no data -> disable button
+
+- section view fix
+
+- grid dynamic update

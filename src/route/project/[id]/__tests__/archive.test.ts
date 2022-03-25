@@ -173,6 +173,130 @@ describe('route/project/[id]', () => {
     })
   })
 
+  test('POST', async () => {
+    // Normal
+    await archive(
+      {
+        ...req,
+        method: 'POST',
+        query: { id: 'id' } as Request['query'],
+        params: {},
+        body: {
+          archive: 'archive'
+        }
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
+    expect(mockUnarchiveFromFile).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockUnarchiveFromFile.mockImplementation(() => {
+      throw new Error('unarchiveFromFile error')
+    })
+    await archive(
+      {
+        ...req,
+        method: 'POST',
+        query: { id: 'id' } as Request['query'],
+        params: {},
+        body: { archive: 'archive' }
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
+    expect(mockUnarchiveFromFile).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'unarchiveFromFile error'
+    })
+  })
+
+  test('PUT', async () => {
+    // Normal
+    await archive(
+      {
+        ...req,
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
+    expect(mockUnarchiveFromServer).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockUnarchiveFromServer.mockImplementation(() => {
+      throw new Error('unarchiveFromFile error')
+    })
+    await archive(
+      {
+        ...req,
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
+    expect(mockUnarchiveFromServer).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'unarchiveFromFile error'
+    })
+  })
+
+  test('DELETE', async () => {
+    // Normal
+    await archive(
+      {
+        ...req,
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
+    expect(mockDeleteArchiveFile).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockDeleteArchiveFile.mockImplementation(() => {
+      throw new Error('deleteArchiveFile error')
+    })
+    await archive(
+      {
+        ...req,
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
+    expect(mockDeleteArchiveFile).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'deleteArchiveFile error'
+    })
+  })
+
   test('wrong method', async () => {
     await archive(
       {

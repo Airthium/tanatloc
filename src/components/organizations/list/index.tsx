@@ -130,7 +130,7 @@ const List = ({
 
   // Update table scroll
   const onResize = useCallback(() => {
-    // Check if too many users to display
+    // Check if too many organizations to display
     if (
       refTable.current.clientHeight >
       window.innerHeight - refTable.current.offsetTop - 59

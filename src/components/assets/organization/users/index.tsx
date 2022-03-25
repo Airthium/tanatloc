@@ -1,5 +1,13 @@
 /** @module Components.Assets.Organization.Users */
 
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import PropTypes from 'prop-types'
 import { Card, Space, Table } from 'antd'
 
@@ -30,6 +38,20 @@ export interface IProps {
  * @returns Users
  */
 const Users = ({ organization, swr }: IProps): JSX.Element => {
+  // State
+  const [scrollAdmin, setScrollAdmin]: [
+    { y: number },
+    Dispatch<SetStateAction<{ y: number }>>
+  ] = useState(null)
+  const [scrollUsers, setScrollUsers]: [
+    { y: number },
+    Dispatch<SetStateAction<{ y: number }>>
+  ] = useState(null)
+
+  // Ref
+  const refTableAdmin = useRef(null)
+  const refTableUsers = useRef(null)
+
   // Columns
   const avatarRender = (_: any, user: IUserWithData) => Utils.userToAvatar(user)
   const ownerActionsRender = (owner: IUserWithData) => (
@@ -108,6 +130,46 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
+  const onResize = useCallback(() => {
+    // Check if too many admins to display
+    if (
+      refTableAdmin.current.clientHeight >
+      (window.innerHeight - refTableAdmin.current.offsetTop - 59) / 2
+    ) {
+      setScrollAdmin({
+        y: (window.innerHeight - refTableAdmin.current.offsetTop - 59) / 2
+      })
+    } else {
+      // Scroll not needed
+      setScrollAdmin(null)
+    }
+    // Check if too many users to display
+    if (
+      refTableUsers.current.clientHeight >
+      (window.innerHeight - refTableUsers.current.offsetTop - 59) / 2
+    ) {
+      setScrollAdmin({
+        y: (window.innerHeight - refTableUsers.current.offsetTop - 59) / 2
+      })
+    } else {
+      // Scroll not needed
+      setScrollUsers(null)
+    }
+  }, [])
+
+  // Handle window resize
+  useEffect((): (() => void) => {
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [onResize])
+
+  // Set Table Scroll Limit
+  useEffect(() => {
+    onResize()
+  }, [organization.users, organization.owners, onResize])
+
   /**
    * Render
    */
@@ -135,6 +197,8 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               ...o,
               key: o.id || index
             }))}
+            scroll={scrollAdmin}
+            ref={refTableAdmin}
           />
         </Space>
       </Card>
@@ -160,6 +224,8 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               ...u,
               key: u.id || index
             }))}
+            scroll={scrollUsers}
+            ref={refTableUsers}
           />
         </Space>
       </Card>

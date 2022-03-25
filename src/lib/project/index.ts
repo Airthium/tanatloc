@@ -392,8 +392,6 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
   // Archive file name
   const archiveFileName = temporaryPath + '.tgz'
 
-  console.log(archiveFileName)
-
   // Check if the archive tgz exists
   let directories = []
   try {

@@ -32,7 +32,11 @@ export default async (req: Request, res: Response): Promise<void> => {
       case 'GET':
         try {
           // Get
-          const items = await SystemLib.get(['allowsignup', 'password'])
+          const items = await SystemLib.get([
+            'allowsignup',
+            'password',
+            'defaultplugins'
+          ])
           res.status(200).json({ system: items })
         } catch (err) {
           throw error(500, err.message)

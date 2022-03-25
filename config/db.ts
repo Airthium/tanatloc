@@ -105,6 +105,10 @@ export const schemas: Scheme = {
     {
       name: 'password',
       type: 'JSONB'
+    },
+    {
+      name: 'defaultplugins',
+      type: 'TEXT[]'
     }
   ],
   [tables.AVATARS]: [

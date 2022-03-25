@@ -8,6 +8,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import Users from './users'
 import Registration from './registration'
+import Plugins from './plugins'
 
 import UserAPI from '@/api/user'
 
@@ -22,6 +23,10 @@ export const tabItems = {
   registration: {
     label: 'Registration',
     key: 'registration'
+  },
+  plugins: {
+    label: 'Plugins',
+    key: 'plugins'
   }
 }
 
@@ -94,6 +99,9 @@ const Administration = (): JSX.Element => {
             key={tabItems.registration.key}
           >
             <Registration />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab={tabItems.plugins.label} key={tabItems.plugins.key}>
+            <Plugins />
           </Tabs.TabPane>
         </Tabs>
       </Layout.Content>

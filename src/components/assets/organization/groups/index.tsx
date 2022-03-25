@@ -55,7 +55,7 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
   ] = useState(null)
 
   // Ref
-  const refTable = useRef(null)
+  const refTableGroup = useRef(null)
 
   // Data
   const [
@@ -144,10 +144,10 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
   const onResize = useCallback(() => {
     // Check if too many groups to display
     if (
-      refTable.current.clientHeight >
-      window.innerHeight - refTable.current.offsetTop - 59
+      refTableGroup.current.clientHeight >
+      window.innerHeight - refTableGroup.current.offsetTop - 59
     ) {
-      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
+      setScroll({ y: window.innerHeight - refTableGroup.current.offsetTop - 59 })
     } else {
       // Scroll not needed
       setScroll(null)
@@ -187,7 +187,7 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
         columns={columns}
         dataSource={groups.map((g) => ({ key: g.id, ...g }))}
         scroll={scroll}
-        ref={refTable}
+        ref={refTableGroup}
       />
     </Space>
   )

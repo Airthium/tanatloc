@@ -134,10 +134,10 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     // Check if too many admins to display
     if (
       refTableAdmin.current.clientHeight >
-      (window.innerHeight - refTableAdmin.current.offsetTop - 59) / 2
+      (window.innerHeight - refTableAdmin.current.offsetTop) / 5
     ) {
       setScrollAdmin({
-        y: (window.innerHeight - refTableAdmin.current.offsetTop - 59) / 2
+        y: (window.innerHeight - refTableAdmin.current.offsetTop) / 5
       })
     } else {
       // Scroll not needed
@@ -146,10 +146,10 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     // Check if too many users to display
     if (
       refTableUsers.current.clientHeight >
-      (window.innerHeight - refTableUsers.current.offsetTop - 59) / 2
+      (window.innerHeight - refTableUsers.current.offsetTop) / 5
     ) {
-      setScrollAdmin({
-        y: (window.innerHeight - refTableUsers.current.offsetTop - 59) / 2
+      setScrollUsers({
+        y: (window.innerHeight - refTableUsers.current.offsetTop) / 5
       })
     } else {
       // Scroll not needed
@@ -168,7 +168,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Set Table Scroll Limit
   useEffect(() => {
     onResize()
-  }, [organization.users, organization.owners, onResize])
+  }, [organization, onResize])
 
   /**
    * Render

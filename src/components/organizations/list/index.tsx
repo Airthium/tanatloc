@@ -53,7 +53,7 @@ const List = ({
   ] = useState(null)
 
   // Ref
-  const refTable = useRef(null)
+  const refTableOrga = useRef(null)
 
   // Data
   const ownersRender = (owners: IUserWithData[]) => (
@@ -132,10 +132,10 @@ const List = ({
   const onResize = useCallback(() => {
     // Check if too many organizations to display
     if (
-      refTable.current.clientHeight >
-      window.innerHeight - refTable.current.offsetTop - 59
+      refTableOrga.current.clientHeight >
+      window.innerHeight - refTableOrga.current.offsetTop - 59
     ) {
-      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
+      setScroll({ y: window.innerHeight - refTableOrga.current.offsetTop - 59 })
     } else {
       // Scroll not needed
       setScroll(null)
@@ -172,7 +172,7 @@ const List = ({
         users: organization.users,
         groups: organization.groups
       }))}
-      ref={refTable}
+      ref={refTableOrga}
       scroll={scroll}
     />
   )

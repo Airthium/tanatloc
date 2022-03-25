@@ -43,7 +43,6 @@ export const onAdd = async (
 
     // Local
     organization.name = values.name
-    organization.owners = []
     swr.addOneOrganization(organization)
   } catch (err) {
     ErrorNotification(errors.add, err)

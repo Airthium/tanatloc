@@ -188,6 +188,21 @@ const getByUser = async (
 
   const organizations = await OrganizationDB.getAll(internalData)
 
+  if (data.includes('owners'))
+    organizations.forEach((organization) => {
+      if (!organization.owners) organization.owners = []
+    })
+
+  if (data.includes('users'))
+    organizations.forEach((organization) => {
+      if (!organization.users) organization.users = []
+    })
+
+  if (data.includes('groups'))
+    organizations.forEach((organization) => {
+      if (!organization.groups) organization.groups = []
+    })
+
   // Check user & data
   const userOrganizations = await Promise.all(
     organizations.map(async (organization) => {

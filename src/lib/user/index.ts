@@ -9,6 +9,7 @@ import Avatar from '../avatar'
 import Organization from '../organization'
 import Workspace from '../workspace'
 import Email from '../email'
+import System from '../system'
 
 /**
  * Add
@@ -23,6 +24,16 @@ const add = async (user: {
   if (!newUser.alreadyExists) {
     // Send email
     await Email.subscribe(user.email, newUser.id)
+  }
+
+  const system = await System.get(['defaultplugins'])
+  if (system.defaultplugins) {
+    await UserDB.update({ id: newUser.id }, [
+      {
+        key: 'authorizedplugins',
+        value: system.defaultplugins
+      }
+    ])
   }
 
   return newUser

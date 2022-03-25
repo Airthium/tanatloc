@@ -38,7 +38,17 @@ export const onChange = async (
   swr: { mutateSystem: (system: ISystem) => void }
 ) => {
   try {
-    // Update
+    // API
+    await SystemAPI.update([
+      {
+        key: 'defaultplugins',
+        type: 'array',
+        method: checked ? 'append' : 'remove',
+        value: plugin.key
+      }
+    ])
+
+    // Local
     const defaultplugins = system?.defaultplugins || []
     const index = defaultplugins.indexOf(plugin.key)
     if (checked && index === -1) {
@@ -47,14 +57,6 @@ export const onChange = async (
     if (!checked && index !== -1) {
       defaultplugins.splice(index, 1)
     }
-
-    // API
-    await SystemAPI.update([
-      {
-        key: 'defaultplugins',
-        value: defaultplugins
-      }
-    ])
 
     // Mutate
     swr.mutateSystem({
@@ -65,6 +67,10 @@ export const onChange = async (
   }
 }
 
+/**
+ * Plugins
+ * @returns Plugins
+ */
 const Plugins = () => {
   // Ref
   const tableRef = useRef(null)

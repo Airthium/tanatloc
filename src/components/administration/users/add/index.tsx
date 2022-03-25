@@ -13,6 +13,7 @@ import { PasswordItem } from '@/components/assets/input'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
+import SystemAPI from '@/api/system'
 
 /**
  * Props
@@ -107,6 +108,9 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
+  // Data
+  const [system] = SystemAPI.useSystem()
+
   /**
    * Render
    */
@@ -115,6 +119,9 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
       <Dialog
         title="New user"
         visible={visible}
+        initialValues={{
+          authorizedplugins: system?.defaultplugins
+        }}
         onCancel={() => setVisible(false)}
         onOk={async (values: IAddValues) => {
           setLoading(true)

@@ -264,8 +264,6 @@ const Selector = ({
                 />
               </Tooltip>
               {colors.map((color) => {
-                console.log('color', color)
-                console.log('hex', Utils.rgbToHex(color))
                 return (
                   <Tooltip title="Color" key={JSON.stringify(color)}>
                     <Button

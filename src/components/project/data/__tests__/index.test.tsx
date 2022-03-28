@@ -42,18 +42,6 @@ describe('components/project/data', () => {
     unmount()
   })
 
-  test('setVisible', () => {
-    const { unmount } = render(<Data simulation={simulation} />)
-
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
-
-    const drawer = screen.getByRole('button', { name: 'Close' })
-    fireEvent.click(drawer)
-
-    unmount()
-  })
-
   test('with data', () => {
     const data = {
       tasks: [

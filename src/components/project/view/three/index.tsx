@@ -778,7 +778,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           <div className="View-controls-first">
             <Tooltip title="Take snasphot" placement="right">
               <Dropdown
-                placement="bottomCenter"
+                placement="bottom"
                 overlay={
                   <Menu>
                     <Menu.Item key="project">

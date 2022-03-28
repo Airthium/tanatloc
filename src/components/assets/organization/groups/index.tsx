@@ -1,7 +1,14 @@
 /** @module Components.Assets.Organization.Groups */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, Dispatch, SetStateAction, useCallback, useRef } from 'react'
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useRef
+} from 'react'
 import { Avatar, Space, Table } from 'antd'
 
 import {
@@ -147,7 +154,9 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
       refTableGroup.current.clientHeight >
       window.innerHeight - refTableGroup.current.offsetTop - 59
     ) {
-      setScroll({ y: window.innerHeight - refTableGroup.current.offsetTop - 59 })
+      setScroll({
+        y: window.innerHeight - refTableGroup.current.offsetTop - 59
+      })
     } else {
       // Scroll not needed
       setScroll(null)

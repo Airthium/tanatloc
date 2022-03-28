@@ -25,10 +25,6 @@
 
 - snapshot -> utiliser comme icon de projet ou download
 
-- upload spin
-
-- no data -> disable button
-
 - section view fix
 
 - grid dynamic update

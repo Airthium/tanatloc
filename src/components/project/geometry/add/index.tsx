@@ -70,7 +70,8 @@ export const onUpload = async (
   project: IProps['project'],
   info: UploadChangeParam<any>,
   swr: IProps['swr']
-): Promise<void> => {
+): Promise<boolean> => {
+  if (info.file.status === 'uploading') return true
   if (info.file.status === 'done') {
     const buffer = await getFile(info.file.originFileObj)
 
@@ -112,6 +113,8 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       title="Upload geometry"
       visible={visible}
       onCancel={() => setVisible(false)}
+      cancelButtonProps={{ loading: loading }}
+      closable={!loading}
     >
       <Space direction="vertical" className="full-width">
         <Upload
@@ -122,12 +125,10 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
           listType="picture-card"
           beforeUpload={beforeUpload}
           onChange={async (info) => {
-            if (info.file.status === 'uploading') setLoading(true)
             try {
-              await onUpload(project, info, swr)
-              // Close
-              setLoading(false)
-              setVisible(false)
+              const load = await onUpload(project, info, swr)
+              setLoading(load)
+              setVisible(load)
             } catch (err) {
               setLoading(false)
             }

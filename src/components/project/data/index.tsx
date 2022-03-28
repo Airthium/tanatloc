@@ -286,10 +286,11 @@ const Data = ({ simulation }: IProps): JSX.Element => {
       <Layout.Content>
         <Tooltip title="Data visualization">
           <Button
+            disabled={!table?.data}
             type="primary"
             icon={
               <UpOutlined
-                style={{ fontSize: 24, position: 'absolute', top: 4, left: 28 }}
+                style={{ fontSize: 24, position: 'absolute', top: 2, left: 28 }}
               />
             }
             onClick={() => setVisible(true)}
@@ -297,8 +298,8 @@ const Data = ({ simulation }: IProps): JSX.Element => {
               width: 80,
               height: 80,
               border: '1ps solid gray',
-              borderRadius: 30,
-              marginBottom: -30
+              borderRadius: 40,
+              marginBottom: -40
             }}
           />
         </Tooltip>

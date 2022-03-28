@@ -18,9 +18,10 @@ export interface IProps {
   loading?: boolean
   title: string
   initialValues?: object
-  cancelButtonText?: string
   okButtonProps?: BaseButtonProps
   okButtonText?: string
+  cancelButtonProps?: BaseButtonProps
+  cancelButtonText?: string
   children: ReactChild | ReactChild[]
   onCancel?: () => void
   onOk?: (values: any) => Promise<void>
@@ -42,9 +43,10 @@ export const errors = {
  * - loading (boolean) Form loading
  * - title (string) Dialog title
  * - initialValues (Object) Form initial values
- * - cancelButtonText (string) Cancel button text
  * - okButtonProps (Object) Ok button props
  * - okButtonText (string) Ok button text
+ * - cancelButtonProps (Object) Cancel button props
+ * - cancelButtonText (string) Cancel button text
  * - children (React node) Form children
  * - onCancel (Function) Dialog cancel
  * - onOk (Function) Dialog ok
@@ -57,6 +59,7 @@ const Dialog = ({
   title,
   initialValues,
   cancelButtonText,
+  cancelButtonProps,
   okButtonProps,
   okButtonText,
   children,
@@ -91,6 +94,7 @@ const Dialog = ({
         })
       }
       cancelButtonProps={{
+        ...cancelButtonProps,
         style: { display: onCancel ? 'inline-block' : 'none' }
       }}
       cancelText={cancelButtonText}

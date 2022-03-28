@@ -243,9 +243,7 @@ export interface IPlugin {
       ) => Promise<{ data: IClientPlugin['data'] }>
       computeSimulation: (
         { id }: { id: string },
-        algorithm: string,
-        sequential: boolean,
-        configuration: IModel['configuration']
+        scheme: ISimulation['scheme']
       ) => Promise<void>
       stop: (
         id: string,

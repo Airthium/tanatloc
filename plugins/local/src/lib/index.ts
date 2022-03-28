@@ -6,7 +6,7 @@ import { clearIntervalAsync } from 'set-interval-async'
 
 import { SIMULATION } from '@/config/storage'
 
-import { ISimulationTask } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/index.d'
 import SimulationDB from '@/database/simulation'
 
 import Services from '@/services'
@@ -287,20 +287,20 @@ const computeMeshes = async (
 /**
  * Compute simulation
  * @param simulation Simulation
- * @param algorithm Algorithm
- * @param configuration Configuration
+ * @param scheme Simulation scheme
  */
 const computeSimulation = async (
   { id }: { id: string },
-  algorithm: string,
-  sequential: boolean,
-  configuration: any
+  scheme: ISimulation['scheme']
 ): Promise<void> => {
   // Time
   const start = Date.now()
 
   // Path
   const simulationPath = path.join(SIMULATION, id)
+
+  // Configuration
+  const configuration = scheme.configuration
 
   // Clean previous simulation
   await clean(simulationPath)
@@ -331,7 +331,7 @@ const computeSimulation = async (
   try {
     // Build the simulation script
     await Template.render(
-      algorithm,
+      scheme.algorithm,
       {
         ...configuration,
         run: {

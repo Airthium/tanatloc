@@ -1,3 +1,5 @@
+import { ISimulation } from '@/database/index.d'
+
 import Local from '..'
 
 const mockPath = jest.fn()
@@ -292,7 +294,9 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
 
     // Empty
-    await Local.computeSimulation({ id: 'id' }, 'algorithm', {})
+    await Local.computeSimulation({ id: 'id' }, {
+      algorithm: 'algorithm'
+    } as ISimulation['scheme'])
 
     // Simulation error
     mockFreefem.mockImplementation((_, __, callback) => {
@@ -300,7 +304,9 @@ describe('plugins/local/src/lib', () => {
       return 1
     })
     try {
-      await Local.computeSimulation({ id: 'id' }, 'algorithm', {})
+      await Local.computeSimulation({ id: 'id' }, {
+        algorithm: 'algorithm'
+      } as ISimulation['scheme'])
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
@@ -318,66 +324,103 @@ describe('plugins/local/src/lib', () => {
       return 0
     })
     mockConvert.mockImplementation(() => ({}))
-    await Local.computeSimulation({ id: 'id' }, 'algorithm', {
-      geometry: {
-        meshable: true,
+    await Local.computeSimulation(
+      { id: 'id' },
+      {
+        category: 'category',
         name: 'name',
-        path: 'path',
-        file: 'file'
-      },
-      geometry2: {
-        meshable: false,
-        name: 'name',
-        path: 'path',
-        file: 'file'
-      },
-      boundaryConditions: {
-        index: 0,
-        key1: {},
-        key2: {
-          values: [
-            {
-              selected: [1]
+        code: 'code',
+        version: 'version',
+        description: 'description',
+        algorithm: 'algorithm',
+        configuration: {
+          geometry: {
+            index: 1,
+            title: 'Geometry',
+            meshable: true,
+            name: 'name',
+            path: 'path',
+            file: 'file'
+          },
+          boundaryConditions: {
+            index: 0,
+            title: 'Boundary conditions',
+            key1: {
+              label: 'key1'
+            },
+            key2: {
+              label: 'key2',
+              values: [
+                {
+                  uuid: 'uuid',
+                  name: 'name',
+                  type: {
+                    key: 'key',
+                    label: 'label'
+                  },
+                  selected: [{ uuid: 'uuid', label: 1 }]
+                }
+              ],
+              refineFactor: 5
             }
-          ],
-          refineFactor: 5
+          }
         }
       }
-    })
+    )
 
     // Coupling
     Date.now = () => 0
-    await Local.computeSimulation({ id: 'id' }, 'algorithm', {
-      geometry: {
-        meshable: true,
+    await Local.computeSimulation(
+      { id: 'id' },
+      {
+        category: 'category',
         name: 'name',
-        path: 'path',
-        file: 'file'
-      },
-      geometry2: {
-        meshable: false,
-        name: 'name',
-        path: 'path',
-        file: 'file'
-      },
-      initialization: {
-        value: {
-          type: 'coupling'
-        }
-      },
-      boundaryConditions: {
-        index: 0,
-        key1: {},
-        key2: {
-          values: [
-            {
-              selected: [1]
+        code: 'code',
+        version: 'version',
+        description: 'description',
+        algorithm: 'algorithm',
+        configuration: {
+          geometry: {
+            index: 1,
+            title: 'Geometry',
+            meshable: true,
+            name: 'name',
+            path: 'path',
+            file: 'file'
+          },
+          initialization: {
+            index: 1,
+            title: 'Initialization',
+            value: {
+              type: 'coupling'
             }
-          ],
-          refineFactor: 5
+          },
+          boundaryConditions: {
+            index: 0,
+            title: 'Boundary conditions',
+            key1: {
+              label: 'key1'
+            },
+            key2: {
+              label: 'key2',
+
+              values: [
+                {
+                  uuid: 'uuid',
+                  name: 'name',
+                  type: {
+                    key: 'key',
+                    label: 'label'
+                  },
+                  selected: [{ uuid: 'uuid', label: 1 }]
+                }
+              ],
+              refineFactor: 5
+            }
+          }
         }
       }
-    })
+    )
 
     // Meshing error
     mockGmsh.mockImplementation((_, __, ___, callback) => {
@@ -387,30 +430,47 @@ describe('plugins/local/src/lib', () => {
       return 1
     })
     try {
-      await Local.computeSimulation({ id: 'id' }, 'algorithm', {
-        geometry: {
-          meshable: true,
-          file: {
-            originPath: 'originPath',
-            fileName: 'fileName'
-          }
-        },
-        geometry2: {
-          meshable: false
-        },
-        boundaryConditions: {
-          index: 0,
-          key1: {},
-          key2: {
-            values: [
-              {
-                selected: [1]
+      await Local.computeSimulation(
+        { id: 'id' },
+        {
+          algorithm: 'algorithm',
+          configuration: {
+            geometry: {
+              meshable: true,
+              //@ts-ignore
+              file: {
+                originPath: 'originPath',
+                fileName: 'fileName'
               }
-            ],
-            refineFactor: 5
+            },
+            geometry2: {
+              meshable: false
+            },
+            boundaryConditions: {
+              index: 0,
+              title: 'Boundary conditions',
+              key1: {
+                label: 'label'
+              },
+              key2: {
+                label: 'label',
+                values: [
+                  {
+                    uuid: 'uuid',
+                    name: 'name',
+                    type: {
+                      key: 'key',
+                      label: 'label'
+                    },
+                    selected: [{ uuid: 'uuid', label: 1 }]
+                  }
+                ],
+                refineFactor: 5
+              }
+            }
           }
         }
-      })
+      )
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
@@ -429,7 +489,9 @@ describe('plugins/local/src/lib', () => {
         return 'id'
       })
 
-    await Local.computeSimulation({ id: 'id' }, 'algorithm', {})
+    await Local.computeSimulation({ id: 'id' }, {
+      algorithm: 'algorithm'
+    } as ISimulation['scheme'])
   })
 
   test('monitoring', async () => {

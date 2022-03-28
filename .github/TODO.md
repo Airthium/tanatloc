@@ -35,8 +35,6 @@
 
 - user selection in groups
 
-- review org, stay user/owner pending
+- review org, check user add/del (pending not managed), check duplicate, accept invit
 
 - open project on create ?
-
-- computeSimulation, pass entire scheme ? (to have sequential and algorithm ?)

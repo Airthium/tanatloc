@@ -131,8 +131,6 @@ const run = async (
 
   // Global
   const configuration = simulationData.scheme.configuration
-  const algorithm = simulationData.scheme.algorithm
-  const sequential = simulationData.scheme.sequential
 
   // Update status
   configuration.run = {
@@ -268,7 +266,7 @@ const run = async (
 
   // Compute
   plugin.lib
-    .computeSimulation(simulation, algorithm, sequential, configuration)
+    .computeSimulation(simulation, simulationData.scheme)
     .then(() => {
       configuration.run = {
         ...configuration.run,

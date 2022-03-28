@@ -19,7 +19,7 @@
 
 ## Misc
 
-- Table scroll
+- Table scroll, hard cases to manage better
 
 - check name / description length server side
 

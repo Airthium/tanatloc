@@ -11,7 +11,17 @@ import {
   useCallback,
   useContext
 } from 'react'
-import { Button, Divider, Layout, Radio, Spin, Switch, Tooltip } from 'antd'
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Layout,
+  Menu,
+  Radio,
+  Spin,
+  Switch,
+  Tooltip
+} from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
@@ -767,23 +777,41 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         <div className="View-controls-main">
           <div className="View-controls-first">
             <Tooltip title="Take snasphot" placement="right">
-              <Button
-                loading={screenshot}
-                icon={<FundProjectionScreenOutlined />}
-                onClick={async () => {
-                  setScreenshot(true)
-                  try {
-                    await takeScreenshot(
-                      project,
-                      scene.current,
-                      camera.current,
-                      renderer.current
-                    )
-                  } finally {
-                    setScreenshot(false)
-                  }
-                }}
-              />
+              <Dropdown
+                placement="bottomCenter"
+                overlay={
+                  <Menu>
+                    <Menu.Item key="project">
+                      <Button
+                        type="text"
+                        loading={screenshot}
+                        onClick={async () => {
+                          setScreenshot(true)
+                          try {
+                            await takeScreenshot(
+                              project,
+                              scene.current,
+                              camera.current,
+                              renderer.current
+                            )
+                          } finally {
+                            setScreenshot(false)
+                          }
+                        }}
+                      >
+                        Project snapshot
+                      </Button>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Button type="text" disabled={true}>
+                        Export image
+                      </Button>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <Button icon={<FundProjectionScreenOutlined />} />
+              </Dropdown>
             </Tooltip>
 
             <Divider className="no-margin" />

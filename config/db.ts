@@ -217,7 +217,15 @@ export const schemas: Scheme = {
       constraint: 'NOT NULL'
     },
     {
+      name: 'pendingowners',
+      type: 'UUID[]'
+    },
+    {
       name: 'users',
+      type: 'UUID[]'
+    },
+    {
+      name: 'pendingusers',
       type: 'UUID[]'
     },
     {

@@ -293,6 +293,7 @@ const computeMeshes = async (
 const computeSimulation = async (
   { id }: { id: string },
   algorithm: string,
+  sequential: boolean,
   configuration: any
 ): Promise<void> => {
   // Time

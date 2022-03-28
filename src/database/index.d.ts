@@ -242,6 +242,7 @@ export interface IPlugin {
       computeSimulation: (
         { id }: { id: string },
         algorithm: string,
+        sequential: boolean,
         configuration: IModel['configuration']
       ) => Promise<void>
       stop: (

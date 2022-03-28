@@ -25,7 +25,7 @@ jest.mock('@/api/organization', () => ({
 describe('componenets/assets/organization/users/add', () => {
   const title = 'title'
   const organization = { id: 'id' }
-  const dBkey = 'users'
+  const dBkey = 'pendingusers'
   const swr = {
     mutateOneOrganization: jest.fn()
   }

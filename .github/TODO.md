@@ -30,3 +30,7 @@
 - grid dynamic update
 
 - user selection in groups
+
+- review org, stay user/owner pending
+
+- open project on create ?

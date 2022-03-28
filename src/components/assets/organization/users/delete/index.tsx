@@ -18,7 +18,7 @@ export interface IProps {
   disabled?: boolean
   user: IUserWithData
   organization: IOrganizationWithData
-  dBkey: 'owners' | 'users'
+  dBkey: 'pendingowners' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IOrganizationWithData) => void
   }
@@ -41,7 +41,7 @@ export const errors = {
 export const onDelete = async (
   organization: IOrganizationWithData,
   user: IUserWithData,
-  dBkey: 'owners' | 'users',
+  dBkey: 'pendingowners' | 'pendingusers',
   swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
   try {
@@ -139,7 +139,7 @@ Delete.propTypes = {
     owners: PropTypes.array,
     users: PropTypes.array
   }),
-  dBkey: PropTypes.oneOf(['owners', 'users']),
+  dBkey: PropTypes.oneOf(['pendingowners', 'pendingusers']),
   swr: PropTypes.exact({
     mutateOneOrganization: PropTypes.func.isRequired
   }).isRequired

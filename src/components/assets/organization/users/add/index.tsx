@@ -18,7 +18,7 @@ import OrganizationAPI from '@/api/organization'
 export interface IProps {
   title: string
   organization: IOrganizationWithData
-  dBkey: 'owners' | 'users'
+  dBkey: 'pendingowners' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IOrganizationWithData) => void
   }
@@ -40,7 +40,7 @@ export const errors = {
  */
 export const onFinish = async (
   organization: IOrganizationWithData,
-  dBkey: 'owners' | 'users',
+  dBkey: 'pendingowners' | 'pendingusers',
   values: { email: string },
   swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
@@ -75,7 +75,7 @@ export const onFinish = async (
  * Props:
  * - title (string) Title
  * - organization (Object) Organization `{ id, [dBkey] }`
- * - dBkey (string) Database key, must be `owners` or `users`
+ * - dBkey (string) Database key, must be `pendingowners` or `pendingusers`
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Add
  */
@@ -131,7 +131,7 @@ Add.propTypes = {
     owners: PropTypes.array,
     users: PropTypes.array
   }).isRequired,
-  dBkey: PropTypes.oneOf(['owners', 'users']),
+  dBkey: PropTypes.oneOf(['pendingowners', 'pendingusers']),
   swr: PropTypes.exact({
     mutateOneOrganization: PropTypes.func.isRequired
   }).isRequired

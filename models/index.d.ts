@@ -107,6 +107,7 @@ export interface IModel {
   name: string
   algorithm: string
   code: string
+  sequential?: boolean
   version: string
   description: string
   configuration: {

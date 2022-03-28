@@ -49,6 +49,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   ] = useState(null)
 
   // Ref
+  const refWrapper = useRef(null)
   const refTableAdmin = useRef(null)
   const refTableUsers = useRef(null)
 
@@ -131,25 +132,26 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   ]
 
   const onResize = useCallback(() => {
+    const wrapperHeight = refWrapper.current.clientHeight - 15
+    const eachSpace = wrapperHeight / 2 - 39 - 12 - 32 - 20 - 75
+
+    const tableAdminHeight = refTableAdmin.current.clientHeight
+    const tableUsersHeight = refTableUsers.current.clientHeight
+
     // Check if too many admins to display
-    if (
-      refTableAdmin.current.clientHeight >
-      (window.innerHeight - refTableAdmin.current.offsetTop) / 5
-    ) {
+    if (tableAdminHeight > eachSpace) {
       setScrollAdmin({
-        y: (window.innerHeight - refTableAdmin.current.offsetTop) / 5
+        y: eachSpace
       })
     } else {
       // Scroll not needed
       setScrollAdmin(null)
     }
+
     // Check if too many users to display
-    if (
-      refTableUsers.current.clientHeight >
-      (window.innerHeight - refTableUsers.current.offsetTop) / 5
-    ) {
+    if (tableUsersHeight > eachSpace) {
       setScrollUsers({
-        y: (window.innerHeight - refTableUsers.current.offsetTop) / 5
+        y: eachSpace
       })
     } else {
       // Scroll not needed
@@ -174,62 +176,64 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width" size={20}>
-      <Card title="Administrators">
-        <Space direction="vertical" className="full-width" size={20}>
-          <Add
-            title="New administrator"
-            organization={{
-              id: organization.id,
-              owners: organization.owners
-            }}
-            dBkey="owners"
-            swr={{
-              mutateOneOrganization: swr.mutateOneOrganization
-            }}
-          />
-          <Table
-            loading={swr.loadingOrganizations}
-            pagination={false}
-            size="small"
-            columns={ownersColumns}
-            dataSource={organization.owners.map((o, index) => ({
-              ...o,
-              key: o.id || index
-            }))}
-            scroll={scrollAdmin}
-            ref={refTableAdmin}
-          />
-        </Space>
-      </Card>
-      <Card title="Users">
-        <Space direction="vertical" className="full-width" size={20}>
-          <Add
-            title="New user"
-            organization={{
-              id: organization.id,
-              users: organization.users
-            }}
-            dBkey="users"
-            swr={{
-              mutateOneOrganization: swr.mutateOneOrganization
-            }}
-          />
-          <Table
-            loading={swr?.loadingOrganizations}
-            pagination={false}
-            size="small"
-            columns={usersColumns}
-            dataSource={organization.users?.map((u, index) => ({
-              ...u,
-              key: u.id || index
-            }))}
-            scroll={scrollUsers}
-            ref={refTableUsers}
-          />
-        </Space>
-      </Card>
-    </Space>
+    <div ref={refWrapper} style={{ height: 'calc(100vh - 228px)' }}>
+      <Space direction="vertical" className="full-width" size={20}>
+        <Card title="Administrators" size="small">
+          <Space direction="vertical" className="full-width" size={20}>
+            <Add
+              title="New administrator"
+              organization={{
+                id: organization.id,
+                owners: organization.owners
+              }}
+              dBkey="owners"
+              swr={{
+                mutateOneOrganization: swr.mutateOneOrganization
+              }}
+            />
+            <Table
+              loading={swr.loadingOrganizations}
+              pagination={false}
+              size="small"
+              columns={ownersColumns}
+              dataSource={organization.owners.map((o, index) => ({
+                ...o,
+                key: o.id || index
+              }))}
+              scroll={scrollAdmin}
+              ref={refTableAdmin}
+            />
+          </Space>
+        </Card>
+        <Card title="Users" size="small">
+          <Space direction="vertical" className="full-width" size={20}>
+            <Add
+              title="New user"
+              organization={{
+                id: organization.id,
+                users: organization.users
+              }}
+              dBkey="users"
+              swr={{
+                mutateOneOrganization: swr.mutateOneOrganization
+              }}
+            />
+            <Table
+              loading={swr?.loadingOrganizations}
+              pagination={false}
+              size="small"
+              columns={usersColumns}
+              dataSource={organization.users?.map((u, index) => ({
+                ...u,
+                key: u.id || index
+              }))}
+              scroll={scrollUsers}
+              ref={refTableUsers}
+            />
+          </Space>
+        </Card>
+      </Space>
+    </div>
   )
 }
 

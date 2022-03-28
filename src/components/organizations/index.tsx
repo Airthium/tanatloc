@@ -64,40 +64,38 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
         }
         footer={<Divider />}
       />
-      <Layout.Content>
-        <Space direction="vertical" className="full-width" size={20}>
-          {organization ? (
-            <Organization
-              organization={{
-                id: organization.id,
-                name: organization.name,
-                owners: organization.owners,
-                users: organization.users,
-                groups: organization.groups
+      <Layout.Content className="no-scroll">
+        {organization ? (
+          <Organization
+            organization={{
+              id: organization.id,
+              name: organization.name,
+              owners: organization.owners,
+              users: organization.users,
+              groups: organization.groups
+            }}
+            swr={{
+              mutateOneOrganization: swr.mutateOneOrganization,
+              loadingOrganizations: swr.loadingOrganizations
+            }}
+            onClose={() => setOrganization(null)}
+          />
+        ) : (
+          <>
+            <Add swr={{ addOneOrganization: swr.addOneOrganization }} />
+            <List
+              user={{
+                id: user.id
               }}
+              organizations={organizations}
               swr={{
-                mutateOneOrganization: swr.mutateOneOrganization,
+                delOneOrganization: swr.delOneOrganization,
                 loadingOrganizations: swr.loadingOrganizations
               }}
-              onClose={() => setOrganization(null)}
+              setOrganization={setOrganization}
             />
-          ) : (
-            <>
-              <Add swr={{ addOneOrganization: swr.addOneOrganization }} />
-              <List
-                user={{
-                  id: user.id
-                }}
-                organizations={organizations}
-                swr={{
-                  delOneOrganization: swr.delOneOrganization,
-                  loadingOrganizations: swr.loadingOrganizations
-                }}
-                setOrganization={setOrganization}
-              />
-            </>
-          )}
-        </Space>
+          </>
+        )}
       </Layout.Content>
     </Layout>
   )

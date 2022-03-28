@@ -100,9 +100,11 @@ export interface INewOrganization {
 export interface IOrganization {
   id: string
   name?: string
-  owners?: Array<string>
-  users?: Array<string>
-  groups?: Array<string>
+  owners?: string[]
+  pendingowners?: string[]
+  users?: string[]
+  pendingusers?: string[]
+  groups?: string[]
 }
 
 export interface INewProject {

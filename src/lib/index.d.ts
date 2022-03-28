@@ -46,9 +46,14 @@ export interface IGroupWithData extends Omit<IGroup, 'users'> {
 }
 
 export interface IOrganizationWithData
-  extends Omit<IOrganization, 'owners' | 'users' | 'groups'> {
+  extends Omit<
+    IOrganization,
+    'owners' | 'pendingowners' | 'users' | 'pendingusers' | 'groups'
+  > {
   owners?: IUserWithData[]
+  pendingowners?: IUserWithData[]
   users?: IUserWithData[]
+  pendingusers?: IUserWithData[]
   groups?: IGroupWithData[]
 }
 

@@ -60,8 +60,14 @@ const get = async (id: string, data: string[]): Promise<IOrganization> => {
   if (data.includes('owners') && !organizationData.owners)
     organizationData.owners = []
 
+  if (data.includes('pendingowners') && !organizationData.pendingowners)
+    organizationData.pendingowners = []
+
   if (data.includes('users') && !organizationData.users)
     organizationData.users = []
+
+  if (data.includes('pendingusers') && !organizationData.pendingusers)
+    organizationData.pendingusers = []
 
   if (data.includes('groups') && !organizationData.groups)
     organizationData.groups = []
@@ -72,18 +78,20 @@ const get = async (id: string, data: string[]): Promise<IOrganization> => {
 /**
  * Get owners data
  * @param organization Organization
+ * @param partial Partial data for pending owners
  * @returns Owners data
  */
 const getOwnersData = async (
-  organization: IOrganization | { owners: string[] }
+  organization: IOrganization | { owners: string[] },
+  partial?: boolean
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     organization.owners.map(async (owner) => {
       const ownerData = await User.getWithData(owner, [
-        'firstname',
-        'lastname',
+        !partial && 'firstname',
+        !partial && 'lastname',
         'email',
-        'avatar'
+        !partial && 'avatar'
       ])
 
       return {
@@ -97,18 +105,20 @@ const getOwnersData = async (
 /**
  * Get users data
  * @param organization Organization
+ * @param partial Partial data for pending users
  * @returns Users data
  */
 const getUsersData = async (
-  organization: IOrganization | { users: string[] }
+  organization: IOrganization | { users: string[] },
+  partial?: boolean
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     organization.users.map(async (user) => {
       const userData = await User.getWithData(user, [
-        'firstname',
-        'lastname',
+        !partial && 'firstname',
+        !partial && 'lastname',
         'email',
-        'avatar'
+        !partial && 'avatar'
       ])
 
       return {
@@ -151,7 +161,14 @@ const getWithData = async (
 ): Promise<IOrganizationWithData> => {
   const organization = await get(id, data)
 
-  const { owners, users, groups, ...organizationData } = { ...organization }
+  const {
+    owners,
+    pendingowners,
+    users,
+    pendingusers,
+    groups,
+    ...organizationData
+  } = { ...organization }
   const organizationWithData: IOrganizationWithData = { ...organizationData }
 
   // Owners
@@ -159,9 +176,23 @@ const getWithData = async (
     organizationWithData.owners = await getOwnersData(organization)
   }
 
+  if (pendingowners) {
+    organizationWithData.pendingowners = await getOwnersData(
+      { owners: organization.pendingowners },
+      true
+    )
+  }
+
   // Users
   if (users) {
     organizationWithData.users = await getUsersData(organization)
+  }
+
+  if (pendingusers) {
+    organizationWithData.pendingusers = await getUsersData(
+      { users: organization.pendingusers },
+      true
+    )
   }
 
   // Groups
@@ -193,9 +224,19 @@ const getByUser = async (
       if (!organization.owners) organization.owners = []
     })
 
+  if (data.includes('pendingowners'))
+    organizations.forEach((organization) => {
+      if (!organization.pendingowners) organization.pendingowners = []
+    })
+
   if (data.includes('users'))
     organizations.forEach((organization) => {
       if (!organization.users) organization.users = []
+    })
+
+  if (data.includes('pendingusers'))
+    organizations.forEach((organization) => {
+      if (!organization.pendingusers) organization.pendingusers = []
     })
 
   if (data.includes('groups'))
@@ -213,7 +254,14 @@ const getByUser = async (
       )
         return
 
-      const { owners, users, groups, ...organizationData } = { ...organization }
+      const {
+        owners,
+        pendingowners,
+        users,
+        pendingusers,
+        groups,
+        ...organizationData
+      } = { ...organization }
 
       const organizationWithData: IOrganizationWithData = {
         ...organizationData
@@ -223,10 +271,22 @@ const getByUser = async (
       if (data.includes('owners') && owners)
         organizationWithData.owners = await getOwnersData({ owners })
 
-      if (data.includes('groups') && users)
+      if (data.includes('pendingowners') && pendingowners)
+        organizationWithData.pendingowners = await getOwnersData(
+          { owners: pendingowners },
+          true
+        )
+
+      if (data.includes('users') && users)
         organizationWithData.users = await getUsersData({ users })
 
-      if (groups) organizationWithData.groups = await getGroupsData({ groups })
+      if (data.includes('pendingusers') && pendingusers)
+        organizationWithData.pendingusers = await getUsersData({
+          users: pendingusers
+        })
+
+      if (data.includes('groups') && groups)
+        organizationWithData.groups = await getGroupsData({ groups })
 
       return organizationWithData
     })

@@ -13,6 +13,10 @@
 - Apple sign
 - Local freefem (only for electron) plugin
 
+## Postprocessing
+
+- pvserver
+
 ## ThreeJS
 
 - faces disapear when speed click on different faces, visible is set to false by something ?
@@ -34,3 +38,5 @@
 - review org, stay user/owner pending
 
 - open project on create ?
+
+- computeSimulation, pass entire scheme ? (to have sequential and algorithm ?)

@@ -36,9 +36,9 @@ const componentToHex = (c: number): string => {
 const rgbToHex = (color: { r: number; g: number; b: number }): string => {
   return (
     '#' +
-    componentToHex(color.r * 255) +
-    componentToHex(color.g * 255) +
-    componentToHex(color.b * 255)
+    componentToHex(Math.floor(color.r * 255)) +
+    componentToHex(Math.floor(color.g * 255)) +
+    componentToHex(Math.floor(color.b * 255))
   )
 }
 

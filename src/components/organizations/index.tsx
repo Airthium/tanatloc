@@ -1,8 +1,9 @@
 /** @module Components.Organizations */
 
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
+import { Divider, Layout, PageHeader, Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 import { INewOrganization } from '@/database/index.d'
@@ -37,6 +38,20 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
     IOrganizationWithData,
     Dispatch<SetStateAction<IOrganizationWithData>>
   ] = useState()
+
+  // Data
+  const router = useRouter()
+  const { organizationId } = router.query
+
+  // Organization selected
+  useEffect(() => {
+    if (organizationId) {
+      const currentOrganization = organizations.find(
+        (o) => o.id === organizationId
+      )
+      setOrganization(currentOrganization)
+    }
+  }, [organizationId])
 
   // Organization update
   useEffect(() => {
@@ -78,7 +93,15 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
               mutateOneOrganization: swr.mutateOneOrganization,
               loadingOrganizations: swr.loadingOrganizations
             }}
-            onClose={() => setOrganization(null)}
+            onClose={() => {
+              router.push({
+                pathname: 'dashboard',
+                query: {
+                  page: 'organizations'
+                }
+              })
+              setOrganization(null)
+            }}
           />
         ) : (
           <>
@@ -92,7 +115,16 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
                 delOneOrganization: swr.delOneOrganization,
                 loadingOrganizations: swr.loadingOrganizations
               }}
-              setOrganization={setOrganization}
+              setOrganization={(org) => {
+                router.push({
+                  pathname: 'dashboard',
+                  query: {
+                    page: 'organizations',
+                    organizationId: org.id
+                  }
+                })
+                setOrganization(org)
+              }}
             />
           </>
         )}

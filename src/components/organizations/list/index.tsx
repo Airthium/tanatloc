@@ -32,7 +32,7 @@ export interface IProps {
     delOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
-  setOrganization: Dispatch<SetStateAction<IOrganizationWithData>>
+  setOrganization: (organization: IOrganizationWithData) => void
 }
 
 /**
@@ -128,7 +128,9 @@ const List = ({
     }
   ]
 
-  // Update table scroll
+  /**
+   * On resize
+   */
   const onResize = useCallback(() => {
     // Check if too many organizations to display
     if (
@@ -143,7 +145,7 @@ const List = ({
   }, [])
 
   // Handle window resize
-  useEffect((): (() => void) => {
+  useEffect(() => {
     window.addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)

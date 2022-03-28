@@ -18,7 +18,7 @@ export interface IProps {
   disabled?: boolean
   user: IUserWithData
   organization: IOrganizationWithData
-  dBkey: 'pendingowners' | 'pendingusers'
+  dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IOrganizationWithData) => void
   }
@@ -41,7 +41,7 @@ export const errors = {
 export const onDelete = async (
   organization: IOrganizationWithData,
   user: IUserWithData,
-  dBkey: 'pendingowners' | 'pendingusers',
+  dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers',
   swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
   try {
@@ -75,7 +75,7 @@ export const onDelete = async (
  * - disabled (boolean) Set disabled state
  * - user (Object) User `{ id, email, [firstname], [lastname] }`
  * - organization (Object) Organization `{ id, [dBkey] }`
- * - dbKey (string) Database key, must be `owners` or `users`
+ * - dbKey (string) Database key, must be `owners`, `pendingowners`, `users` or `pendingusers`
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Delete
  */
@@ -139,7 +139,7 @@ Delete.propTypes = {
     owners: PropTypes.array,
     users: PropTypes.array
   }),
-  dBkey: PropTypes.oneOf(['pendingowners', 'pendingusers']),
+  dBkey: PropTypes.oneOf(['owners', 'pendingowners', 'users', 'pendingusers']),
   swr: PropTypes.exact({
     mutateOneOrganization: PropTypes.func.isRequired
   }).isRequired

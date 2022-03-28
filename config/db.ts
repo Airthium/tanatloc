@@ -187,6 +187,10 @@ export const schemas: Scheme = {
       type: 'UUID[]'
     },
     {
+      name: 'pendingorganizations',
+      type: 'UUID[]'
+    },
+    {
       name: 'workspaces',
       type: 'UUID[]'
     },

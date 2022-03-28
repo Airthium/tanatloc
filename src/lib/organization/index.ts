@@ -339,12 +339,14 @@ const update = async (
 
         await User.update({ id: user.id }, [
           {
-            key: 'organizations',
+            key: 'pendingorganizations',
             type: 'array',
             method: 'append',
             value: organization.id
           }
         ])
+
+        d.key = 'pending' + d.key
       }
     }
   }

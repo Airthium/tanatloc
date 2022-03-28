@@ -10,6 +10,7 @@ import Organization from '../organization'
 import Workspace from '../workspace'
 import Email from '../email'
 import System from '../system'
+import Group from '../group'
 
 /**
  * Add
@@ -50,6 +51,9 @@ const get = async (id: string, data: Array<string>): Promise<IUser> => {
 
   if (data.includes('organizations') && !userData.organizations)
     userData.organizations = []
+
+  if (data.includes('pendingorganizations') && !userData.pendingorganizations)
+    userData.pendingorganizations = []
 
   if (data.includes('workspaces') && !userData.workspaces)
     userData.workspaces = []
@@ -119,6 +123,11 @@ const getAll = async (data: string[]): Promise<IUser[]> => {
   if (data.includes('organizations'))
     users.forEach((user) => {
       if (!user.organizations) user.organizations = []
+    })
+
+  if (data.includes('pendingorganizations'))
+    users.forEach((user) => {
+      if (!user.pendingorganizations) user.pendingorganizations = []
     })
 
   if (data.includes('workspaces'))
@@ -191,15 +200,70 @@ const update = async (
  */
 const del = async (user: { id: string }): Promise<void> => {
   // Get data
-  const data = await get(user.id, ['workspaces', 'organizations', 'avatar'])
+  const data = await get(user.id, [
+    'workspaces',
+    'organizations',
+    'pendingorganizations',
+    'avatar'
+  ])
 
   // Delete from organization
   if (data.organizations) {
     await Promise.all(
-      data.organizations.map(async (group) => {
-        await Organization.update({ id: group }, [
+      data.organizations.map(async (organization) => {
+        await Organization.update({ id: organization }, [
+          {
+            key: 'owners',
+            type: 'array',
+            method: 'remove',
+            value: user.id
+          }
+        ])
+        await Organization.update({ id: organization }, [
           {
             key: 'users',
+            type: 'array',
+            method: 'remove',
+            value: user.id
+          }
+        ])
+
+        const organizationData = await Organization.get(organization, [
+          'groups'
+        ])
+        if (organizationData.groups) {
+          await Promise.all(
+            organizationData.groups.map(async (group) => {
+              await Group.update({ id: group }, [
+                {
+                  key: 'users',
+                  type: 'array',
+                  method: 'remove',
+                  value: user.id
+                }
+              ])
+            })
+          )
+        }
+      })
+    )
+  }
+
+  // Delete from pengind organization
+  if (data.pendingorganizations) {
+    await Promise.all(
+      data.pendingorganizations.map(async (organization) => {
+        await Organization.update({ id: organization }, [
+          {
+            key: 'pendingowners',
+            type: 'array',
+            method: 'remove',
+            value: user.id
+          }
+        ])
+        await Organization.update({ id: organization }, [
+          {
+            key: 'pendingusers',
             type: 'array',
             method: 'remove',
             value: user.id

@@ -66,7 +66,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
         id: organization.id,
         owners: organization.owners
       }}
-      dBkey="pendingowners"
+      dBkey="owners"
       swr={{
         mutateOneOrganization: swr.mutateOneOrganization
       }}
@@ -84,7 +84,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
         id: organization.id,
         users: organization.users
       }}
-      dBkey="pendingusers"
+      dBkey="users"
       swr={{
         mutateOneOrganization: swr.mutateOneOrganization
       }}
@@ -186,7 +186,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                 id: organization.id,
                 owners: organization.owners
               }}
-              dBkey="pendingowners"
+              dBkey="owners"
               swr={{
                 mutateOneOrganization: swr.mutateOneOrganization
               }}
@@ -213,7 +213,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                 id: organization.id,
                 users: organization.users
               }}
-              dBkey="pendingusers"
+              dBkey="users"
               swr={{
                 mutateOneOrganization: swr.mutateOneOrganization
               }}

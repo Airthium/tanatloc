@@ -196,10 +196,17 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               pagination={false}
               size="small"
               columns={ownersColumns}
-              dataSource={organization.owners.map((o, index) => ({
-                ...o,
-                key: o.id || index
-              }))}
+              dataSource={[
+                ...organization.owners.map((o, index) => ({
+                  ...o,
+                  key: o.id || index
+                })),
+                ...(organization.pendingowners?.map((o, index) => ({
+                  ...o,
+                  pending: true,
+                  key: o.id || organization.owners.length + index
+                })) || [])
+              ]}
               scroll={scrollAdmin}
               ref={refTableAdmin}
             />
@@ -223,10 +230,17 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               pagination={false}
               size="small"
               columns={usersColumns}
-              dataSource={organization.users?.map((u, index) => ({
-                ...u,
-                key: u.id || index
-              }))}
+              dataSource={[
+                ...(organization.users?.map((u, index) => ({
+                  ...u,
+                  key: u.id || index
+                })) || []),
+                ...(organization.pendingusers?.map((u, index) => ({
+                  ...u,
+                  pending: true,
+                  key: u.id || organization.users?.length + index
+                })) || [])
+              ]}
               scroll={scrollUsers}
               ref={refTableUsers}
             />
@@ -241,7 +255,9 @@ Users.popTypes = {
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
     owners: PropTypes.array.isRequired,
-    users: PropTypes.array
+    pendingowners: PropTypes.array,
+    users: PropTypes.array,
+    pendingusers: PropTypes.array
   }).isRequired,
   swr: PropTypes.exact({
     mutateOneOrganization: PropTypes.func.isRequired,

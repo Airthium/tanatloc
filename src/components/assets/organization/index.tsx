@@ -103,7 +103,9 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
               id: organization.id,
               name: organization.name,
               owners: organization.owners,
-              users: organization.users
+              pendingowners: organization.pendingowners,
+              users: organization.users,
+              pendingusers: organization.pendingusers
             }}
             swr={{
               mutateOneOrganization: swr.mutateOneOrganization,
@@ -134,7 +136,9 @@ Organization.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     owners: PropTypes.array.isRequired,
+    pendingowners: PropTypes.array,
     users: PropTypes.array,
+    pendingusers: PropTypes.array,
     groups: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.exact({

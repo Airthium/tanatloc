@@ -189,7 +189,9 @@ List.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string,
       owners: PropTypes.array.isRequired,
+      pendingowners: PropTypes.array,
       users: PropTypes.array,
+      pendingusers: PropTypes.array,
       groups: PropTypes.array
     })
   ).isRequired,

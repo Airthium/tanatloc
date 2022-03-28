@@ -86,7 +86,9 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
               id: organization.id,
               name: organization.name,
               owners: organization.owners,
+              pendingowners: organization.pendingowners,
               users: organization.users,
+              pendingusers: organization.pendingusers,
               groups: organization.groups
             }}
             swr={{
@@ -142,7 +144,9 @@ Organizations.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string,
       owners: PropTypes.array.isRequired,
+      pendingowners: PropTypes.array,
       users: PropTypes.array,
+      pendingusers: PropTypes.array,
       groups: PropTypes.array
     })
   ).isRequired,

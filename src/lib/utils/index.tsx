@@ -1,6 +1,6 @@
 /** @module Lib.Utils */
 
-import { Avatar, Spin, Tooltip } from 'antd'
+import { Avatar, Badge, Spin, Tooltip, Typography } from 'antd'
 import { parseOneAddress } from 'email-addresses'
 
 /**
@@ -73,6 +73,7 @@ const rgbToRgba = (
  */
 const userToAvatar = (user: {
   id?: string
+  pending?: boolean
   email?: string
   firstname?: string
   lastname?: string
@@ -92,10 +93,19 @@ const userToAvatar = (user: {
     abbrev = user.email[0]
   }
   return (
-    <Tooltip key={user.id || JSON.stringify(user)} title={name}>
-      <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
-        {abbrev.toUpperCase() || <Spin />}
-      </Avatar>
+    <Tooltip
+      key={user.id || JSON.stringify(user)}
+      title={name + (user.pending && ' (Invite pending)')}
+    >
+      <Badge
+        count={user.pending && 'Pending...'}
+        offset={[30, 5]}
+        style={{ backgroundColor: '#ff4d4f', zIndex: 10 }}
+      >
+        <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
+          {abbrev.toUpperCase() || <Spin />}
+        </Avatar>
+      </Badge>
     </Tooltip>
   )
 }

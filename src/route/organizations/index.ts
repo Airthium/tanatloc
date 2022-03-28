@@ -21,7 +21,15 @@ export default async (req: Request, res: Response) => {
       try {
         const organizations = await OrganizationLib.getByUser(
           { id: sessionId },
-          ['id', 'name', 'owners', 'users', 'groups']
+          [
+            'id',
+            'name',
+            'owners',
+            'pendingowners',
+            'users',
+            'pendingusers',
+            'groups'
+          ]
         )
         res.status(200).json({ organizations })
       } catch (err) {

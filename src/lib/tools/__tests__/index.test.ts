@@ -34,9 +34,11 @@ jest.mock('fs', () => ({
   }
 }))
 
-const mockTar = jest.fn()
+const mockTarC = jest.fn()
+const mockTarX = jest.fn()
 jest.mock('tar', () => ({
-  c: () => mockTar()
+  c: () => mockTarC(),
+  x: () => mockTarX()
 }))
 
 const mockThreeToGLB = jest.fn()
@@ -65,7 +67,8 @@ describe('lib/tools', () => {
     mockUnlink.mockReset()
     mockRmdir.mockReset()
 
-    mockTar.mockReset()
+    mockTarC.mockReset()
+    mockTarX.mockReset()
 
     mockThreeToGLB.mockReset()
     mockThreeToGLB.mockImplementation(() => ({}))
@@ -154,7 +157,12 @@ describe('lib/tools', () => {
 
   test('archive', async () => {
     await Tools.archive('target', { C: 'C', path: 'path' })
-    expect(mockTar).toHaveBeenCalledTimes(1)
+    expect(mockTarC).toHaveBeenCalledTimes(1)
+  })
+
+  test('unarchive', async () => {
+    await Tools.unarchive('source', { C: 'C', path: 'path' })
+    expect(mockTarX).toHaveBeenCalledTimes(1)
   })
 
   test('readStream', () => {

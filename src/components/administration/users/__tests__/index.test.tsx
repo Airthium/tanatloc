@@ -96,4 +96,16 @@ describe('components/administration/users', () => {
 
     unmount()
   })
+
+  test('onResize', async () => {
+    Object.defineProperty(Element.prototype, 'clientHeight', {
+      value: '1000'
+    })
+
+    const { unmount } = render(<Users users={users} swr={swr} />)
+
+    await waitFor(() => screen.getByText('email1'))
+
+    unmount()
+  })
 })

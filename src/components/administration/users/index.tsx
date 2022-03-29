@@ -198,7 +198,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   }, [])
 
   // Handle window resize
-  useEffect((): (() => void) => {
+  useEffect(() => {
     window.addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)

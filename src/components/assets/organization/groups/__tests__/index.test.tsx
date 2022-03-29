@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
 import Groups, { errors } from '..'
 
@@ -44,7 +44,8 @@ jest.mock('@/api/group', () => ({
 describe('components/assets/organization/groups', () => {
   const organization = {
     id: 'id',
-    owners: []
+    owners: [],
+    groups: []
   }
   const swr = {
     mutateOneOrganization: jest.fn()
@@ -56,13 +57,14 @@ describe('components/assets/organization/groups', () => {
     mockUserToAvatar.mockReset()
 
     mockGroups.mockReset()
-    mockGroups.mockImplementation(() => [
+    const groups = [
       {
         id: 'id',
         name: 'name',
         users: [{}]
       }
-    ])
+    ]
+    mockGroups.mockImplementation(() => groups)
   })
 
   test('render', () => {
@@ -92,6 +94,18 @@ describe('components/assets/organization/groups', () => {
         swr={swr}
       />
     )
+
+    unmount()
+  })
+
+  test('onResize', async () => {
+    Object.defineProperty(Element.prototype, 'clientHeight', {
+      value: '1000'
+    })
+
+    const { unmount } = render(<Groups organization={organization} swr={swr} />)
+
+    await waitFor(() => screen.getByText('name'))
 
     unmount()
   })

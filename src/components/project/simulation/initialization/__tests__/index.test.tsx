@@ -1,5 +1,5 @@
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -68,7 +68,11 @@ describe('components/project/simulation/initialization', () => {
                   htmlEntity: 'label',
                   default: 0
                 },
-                { label: 'label', htmlEntity: 'label', default: 1 }
+                {
+                  label: 'label',
+                  htmlEntity: 'label',
+                  default: 1
+                }
               ]
             }
           },
@@ -169,6 +173,7 @@ describe('components/project/simulation/initialization', () => {
                 unit: '\\(m.s^{-1}\\)'
               },
               {
+                only3D: true,
                 label: 'Uz',
                 htmlEntity: 'formula',
                 default: 0,
@@ -220,6 +225,27 @@ describe('components/project/simulation/initialization', () => {
       <Initialization
         simulations={simulations}
         simulation={simulation}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('render 2d', () => {
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              dimension: 2
+            }
+          }
+        }}
         swr={swr}
       />
     )
@@ -420,26 +446,24 @@ describe('components/project/simulation/initialization', () => {
     const resultSelect = newSelects[2]
     fireEvent.mouseDown(resultSelect)
 
-    const resultOptions0 = screen.getAllByText('result.vtu')
-    const resultOption0 = resultOptions0[0]
     const resultOptions1 = screen.getAllByText('0')
     const resultOption1 = resultOptions1[0]
 
     // Error
+
+    fireEvent.click(resultOption1)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(4)
+    )
+
+    // Normal
     mockUpdate.mockImplementation(() => {
       throw new Error('Update error')
     })
     fireEvent.click(resultOption1)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-
-    // Normal
-    mockUpdate.mockReset()
-    fireEvent.click(resultOption0)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
-    )
 
     unmount()
   })
@@ -586,6 +610,46 @@ describe('components/project/simulation/initialization', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
+
+    unmount()
+  })
+
+  test('onCouplingChange - error', async () => {
+    mockGetFilesNumbers.mockImplementation(() => [
+      {
+        type: 'result',
+        number: 0,
+        fileName: 'result_0.vtu'
+      },
+      {
+        type: 'result',
+        number: 1,
+        fileName: 'result_1.vtu'
+      }
+    ])
+    mockGetMultiplcator.mockImplementation(() => 1)
+    setTasksResults()
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={simulation}
+        swr={swr}
+      />
+    )
+
+    // Open coupling
+    const select = screen.getAllByRole('combobox')
+    fireEvent.mouseDown(select[1])
+
+    const options1 = screen.getAllByText('Simulation 1')
+    const option1 = options1[0]
+
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    fireEvent.click(option1)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })

@@ -65,15 +65,56 @@ describe('lib/organization', () => {
 
   test('get', async () => {
     mockGet.mockImplementation(() => ({ name: 'name' }))
-    const organization = await Organization.get('id', ['data'])
+    let organization = await Organization.get('id', ['data'])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(organization).toEqual({ name: 'name' })
+
+    // With data
+    organization = await Organization.get('id', [
+      'owners',
+      'pendingowners',
+      'users',
+      'pendingusers'
+    ])
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(organization).toEqual({
+      name: 'name',
+      owners: [],
+      pendingowners: [],
+      users: [],
+      pendingusers: []
+    })
+
+    // With values
+    mockGet.mockImplementation(() => ({
+      name: 'name',
+      owners: [],
+      pendingowners: [],
+      users: [],
+      pendingusers: []
+    }))
+    organization = await Organization.get('id', [
+      'owners',
+      'pendingowners',
+      'users',
+      'pendingusers'
+    ])
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(organization).toEqual({
+      name: 'name',
+      owners: [],
+      pendingowners: [],
+      users: [],
+      pendingusers: []
+    })
   })
 
   test('getWithData', async () => {
     mockGet.mockImplementation(() => ({
       users: ['id'],
+      pendingusers: ['id'],
       owners: ['id'],
+      pendingowners: ['id'],
       groups: ['id']
     }))
     mockUserGetWithData.mockImplementation(() => ({
@@ -86,7 +127,9 @@ describe('lib/organization', () => {
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(organization).toEqual({
       owners: [{ id: 'id' }],
+      pendingowners: [{ id: 'id' }],
       users: [{ id: 'id' }],
+      pendingusers: [{ id: 'id' }],
       groups: [{ id: 'id' }]
     })
 
@@ -98,26 +141,63 @@ describe('lib/organization', () => {
   })
 
   test('getByUsers', async () => {
-    let organizations
+    let organizations: any
 
     // Minimal
     mockGetAll.mockImplementation(() => [
       {
-        name: 'name',
-        owners: ['id1'],
-        users: ['id2']
+        name: 'name'
       },
       {
-        name: 'name2',
-        owners: ['id'],
-        users: ['id']
+        name: 'name2'
       }
     ])
     organizations = await Organization.getByUser({ id: 'id1' }, ['name'])
     expect(mockGetAll).toHaveBeenCalledTimes(1)
+    expect(organizations).toEqual([])
+
+    organizations = await Organization.getByUser({ id: 'id1' }, [
+      'name',
+      'owners',
+      'pendingowners',
+      'users',
+      'pendingusers',
+      'groups'
+    ])
+    expect(mockGetAll).toHaveBeenCalledTimes(2)
+    expect(organizations).toEqual([])
+
+    // With owners, users
+    mockGetAll.mockImplementation(() => [
+      {
+        name: 'name',
+        owners: ['id1'],
+        pendingowners: [],
+        users: [],
+        pendingusers: [],
+        groups: []
+      },
+      {
+        name: 'name2'
+      }
+    ])
+    organizations = await Organization.getByUser({ id: 'id1' }, [
+      'name',
+      'owners',
+      'pendingowners',
+      'users',
+      'pendingusers',
+      'groups'
+    ])
+    expect(mockGetAll).toHaveBeenCalledTimes(3)
     expect(organizations).toEqual([
       {
-        name: 'name'
+        name: 'name',
+        owners: [{ id: 'id1' }],
+        pendingowners: [],
+        users: [],
+        pendingusers: [],
+        groups: []
       }
     ])
 
@@ -138,8 +218,8 @@ describe('lib/organization', () => {
       'users',
       'groups'
     ])
-    expect(mockGetAll).toHaveBeenCalledTimes(2)
-    expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
+    expect(mockGetAll).toHaveBeenCalledTimes(4)
+    expect(mockUserGetWithData).toHaveBeenCalledTimes(3)
     expect(mockGroupGetWithData).toHaveBeenCalledTimes(1)
     expect(organizations).toEqual([
       {
@@ -192,7 +272,6 @@ describe('lib/organization', () => {
       'id'
     )
     expect(mockUpdate).toHaveBeenCalledTimes(3)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
 
     // With non-existing users
     mockUserAdd.mockImplementation(() => ({}))
@@ -209,7 +288,6 @@ describe('lib/organization', () => {
     )
     expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockUserAdd).toHaveBeenCalledTimes(2)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(4)
   })
 
   test('del', async () => {
@@ -231,5 +309,75 @@ describe('lib/organization', () => {
     expect(mockUserUpdate).toHaveBeenCalledTimes(2)
     expect(mockGroupDel).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(2)
+  })
+
+  test('accept', async () => {
+    // pending owner
+    mockGet.mockImplementation(() => ({
+      pendingowners: ['id'],
+      pendingusers: []
+    }))
+    await Organization.accept({ id: 'id' }, { id: 'id' })
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    // pending user
+    mockGet.mockImplementation(() => ({
+      pendingowners: [],
+      pendingusers: ['id']
+    }))
+    await Organization.accept({ id: 'id' }, { id: 'id' })
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+
+    // No invatation
+    mockGet.mockImplementation(() => ({}))
+    try {
+      await Organization.accept({ id: 'id' }, { id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('User has no invitation in this organization')
+    }
+  })
+
+  test('decline', async () => {
+    // pending owner
+    mockGet.mockImplementation(() => ({
+      pendingowners: ['id'],
+      pendingusers: []
+    }))
+    await Organization.decline({ id: 'id' }, { id: 'id' })
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    // pending user
+    mockGet.mockImplementation(() => ({
+      pendingowners: [],
+      pendingusers: ['id']
+    }))
+    await Organization.decline({ id: 'id' }, { id: 'id' })
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+
+    // No invatation
+    mockGet.mockImplementation(() => ({}))
+    try {
+      await Organization.decline({ id: 'id' }, { id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('User has no invitation in this organization')
+    }
+  })
+
+  test('quit', async () => {
+    // No user
+    mockGet.mockImplementation(() => ({}))
+    try {
+      await Organization.quit({ id: 'id' }, { id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('User is not in this organization')
+    }
+
+    // User
+    mockGet.mockImplementation(() => ({ users: ['id'] }))
+    await Organization.quit({ id: 'id' }, { id: 'id' })
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 })

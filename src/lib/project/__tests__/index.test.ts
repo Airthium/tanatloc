@@ -1,7 +1,10 @@
 import Project from '../'
 
 jest.mock('@/config/storage', () => ({
-  STORAGE: 'storage'
+  STORAGE: 'storage',
+  AVATAR_RELATIVE: 'avatar',
+  GEOMETRY_RELATIVE: 'geometries',
+  SIMULATION_RELATIVE: 'simulations'
 }))
 
 const mockAdd = jest.fn()
@@ -60,12 +63,24 @@ const mockToolsWriteFile = jest.fn()
 const mockToolsArchive = jest.fn()
 const mockToolsReadStream = jest.fn()
 const mockToolsRemoveDirectory = jest.fn()
+const mockToolsUnarchive = jest.fn()
+const mockToolsListDirectories = jest.fn()
+const mockToolsRemoveFile = jest.fn()
+const mockToolsListFiles = jest.fn()
+const mockToolsCopyFile = jest.fn()
+const mockToolsCopyDirectory = jest.fn()
 jest.mock('../../tools', () => ({
   createPath: async () => mockToolsCreatePath(),
   writeFile: async () => mockToolsWriteFile(),
   archive: () => mockToolsArchive(),
   readStream: async () => mockToolsReadStream(),
-  removeDirectory: async () => mockToolsRemoveDirectory()
+  removeDirectory: async () => mockToolsRemoveDirectory(),
+  unarchive: async () => mockToolsUnarchive(),
+  listDirectories: async () => mockToolsListDirectories(),
+  removeFile: async () => mockToolsRemoveFile(),
+  listFiles: async () => mockToolsListFiles(),
+  copyFile: async () => mockToolsCopyFile(),
+  copyDirectory: async () => mockToolsCopyDirectory()
 }))
 
 describe('lib/project', () => {
@@ -97,6 +112,12 @@ describe('lib/project', () => {
     mockToolsArchive.mockReset()
     mockToolsReadStream.mockReset()
     mockToolsRemoveDirectory.mockReset()
+    mockToolsUnarchive.mockReset()
+    mockToolsListDirectories.mockReset()
+    mockToolsRemoveFile.mockReset()
+    mockToolsListFiles.mockReset()
+    mockToolsCopyFile.mockReset()
+    mockToolsCopyDirectory.mockReset()
   })
 
   test('add', async () => {
@@ -274,5 +295,79 @@ describe('lib/project', () => {
     expect(mockToolsArchive).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsReadStream).toHaveBeenCalledTimes(2)
+  })
+
+  test('unarchiveFromServer', async () => {
+    // Minimal
+    mockToolsListDirectories.mockImplementation(() => [])
+    await Project.unarchiveFromServer({ id: 'id' })
+    expect(mockToolsUnarchive).toHaveBeenCalledTimes(1)
+    expect(mockToolsListDirectories).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
+
+    // With avatar, geometries & simulations
+    mockToolsListDirectories.mockImplementation(() => [
+      'avatar',
+      'geometries',
+      'simulations'
+    ])
+    mockToolsListFiles.mockImplementation(() => [
+      { isDirectory: () => true, name: 'directory' },
+      { isDirectory: () => false, isFile: () => true, name: 'file' },
+      { isDirectory: () => false, isFile: () => false, name: 'other' }
+    ])
+    await Project.unarchiveFromServer({ id: 'id' })
+    expect(mockToolsUnarchive).toHaveBeenCalledTimes(2)
+    expect(mockToolsListDirectories).toHaveBeenCalledTimes(3)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(4)
+    expect(mockToolsCopyDirectory).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(2)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
+
+    // No archive
+    mockToolsUnarchive.mockImplementation(() => {
+      throw new Error('no archive')
+    })
+    try {
+      await Project.unarchiveFromServer({ id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Archive not found')
+    }
+    expect(mockToolsUnarchive).toHaveBeenCalledTimes(3)
+  })
+
+  test('deleteArchiveFile', async () => {
+    // Normal
+    await Project.deleteArchiveFile({ id: 'id' })
+
+    // ENOENT
+    mockToolsRemoveFile.mockImplementation(() => {
+      const err = new Error() as Error & { code: string }
+      err.code = 'ENOENT'
+      throw err
+    })
+    await Project.deleteArchiveFile({ id: 'id' })
+
+    // Error
+    mockToolsRemoveFile.mockImplementation(() => {
+      throw new Error('remove file error')
+    })
+    try {
+      await Project.deleteArchiveFile({ id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('remove file error')
+    }
+  })
+
+  test('unarchiveFromFile', async () => {
+    try {
+      await Project.unarchiveFromFile({ id: 'id' }, Buffer.from('buffer'))
+    } catch (err) {}
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
   })
 })

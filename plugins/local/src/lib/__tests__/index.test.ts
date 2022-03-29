@@ -295,7 +295,8 @@ describe('plugins/local/src/lib', () => {
 
     // Empty
     await Local.computeSimulation({ id: 'id' }, {
-      algorithm: 'algorithm'
+      algorithm: 'algorithm',
+      configuration: {}
     } as ISimulation['scheme'])
 
     // Simulation error
@@ -490,7 +491,8 @@ describe('plugins/local/src/lib', () => {
       })
 
     await Local.computeSimulation({ id: 'id' }, {
-      algorithm: 'algorithm'
+      algorithm: 'algorithm',
+      configuration: {}
     } as ISimulation['scheme'])
   })
 

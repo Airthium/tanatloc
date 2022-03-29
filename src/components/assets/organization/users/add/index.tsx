@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { IOrganizationWithData } from '@/lib/index.d'
+import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -40,13 +40,13 @@ export const errors = {
 export const checkAlreadyAdded = (
   user: { email: string },
   organization: IOrganizationWithData
-): boolean => {
-  const inOwners = !organization.owners.find((o) => o.email === user.email)
-  const inPendingowners = !organization.pendingowners.find(
+): IUserWithData => {
+  const inOwners = organization.owners.find((o) => o.email === user.email)
+  const inPendingowners = organization.pendingowners.find(
     (po) => po.email === user.email
   )
-  const inUsers = !organization.users.find((u) => u.email === user.email)
-  const inPendingusers = !organization.pendingusers.find(
+  const inUsers = organization.users.find((u) => u.email === user.email)
+  const inPendingusers = organization.pendingusers.find(
     (pu) => pu.email === user.email
   )
 

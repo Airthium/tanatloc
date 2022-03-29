@@ -9,7 +9,7 @@ import {
   useRef,
   useState
 } from 'react'
-import { Avatar, Button, Space, Table } from 'antd'
+import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -37,6 +37,7 @@ export interface IProps {
   user: IUserWithData
   organizations: IOrganizationWithData[]
   swr: {
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
     delOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
@@ -53,13 +54,23 @@ export const errors = {
  * On quit
  * @param organization Organization
  * @param user User
+ * @parm swr SWR
  */
 const onQuit = async (
-  organization: { id: string },
-  user: { id: string }
+  organization: IOrganizationWithData,
+  user: IUserWithData,
+  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
   try {
-    await OrganizationAPI.quit(organization, user)
+    // API
+    await OrganizationAPI.quit({ id: organization.id })
+
+    // Local
+    const newOrganization = { ...organization }
+    const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
+    newOrganization.users.splice(userIndex, 1)
+
+    swr.mutateOneOrganization(newOrganization)
   } catch (err) {
     ErrorNotification(errors.quit, err)
   }
@@ -69,13 +80,35 @@ const onQuit = async (
  * On accept
  * @param organization Organization
  * @param user User
+ * @param swr SWR
  */
 const onAccept = async (
-  organization: { id: string },
-  user: { id: string }
+  organization: IOrganizationWithData,
+  user: IUserWithData,
+  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
   try {
-    await OrganizationAPI.accept(organization, user)
+    // API
+    await OrganizationAPI.accept(organization)
+
+    // Local
+    const newOrganization = { ...organization }
+    const ownerIndex = newOrganization.pendingowners.findIndex(
+      (o) => o.id === user.id
+    )
+    const userIndex = newOrganization.pendingusers?.findIndex(
+      (u) => u.id === user.id
+    )
+    if (ownerIndex) {
+      newOrganization.pendingowners.splice(ownerIndex, 1)
+      newOrganization.owners.push(user)
+    } else {
+      newOrganization.pendingusers?.splice(userIndex, 1)
+      if (!newOrganization.users) newOrganization.users = []
+      newOrganization.users.push(user)
+    }
+
+    swr.mutateOneOrganization(newOrganization)
   } catch (err) {
     ErrorNotification(errors.accept, err)
   }
@@ -87,11 +120,26 @@ const onAccept = async (
  * @param user User
  */
 const onDecline = async (
-  organization: { id: string },
-  user: { id: string }
+  organization: IOrganizationWithData,
+  user: IUserWithData,
+  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
   try {
-    await OrganizationAPI.decline(organization, user)
+    // API
+    await OrganizationAPI.decline(organization)
+
+    // Local
+    const newOrganization = { ...organization }
+    const ownerIndex = newOrganization.pendingowners.findIndex(
+      (o) => o.id === user.id
+    )
+    const userIndex = newOrganization.pendingusers?.findIndex(
+      (u) => u.id === user.id
+    )
+    if (ownerIndex) newOrganization.pendingowners.splice(ownerIndex, 1)
+    else newOrganization.pendingusers.splice(userIndex, 1)
+
+    swr.mutateOneOrganization(newOrganization)
   } catch (err) {
     ErrorNotification(errors.decline, err)
   }
@@ -158,7 +206,13 @@ const List = ({
           <Button
             danger
             icon={<LeftSquareOutlined />}
-            onClick={() => onQuit({ id: org.id }, { id: user.id })}
+            onClick={() =>
+              onQuit(
+                { id: org.id, users: org.users },
+                { id: user.id },
+                { mutateOneOrganization: swr.mutateOneOrganization }
+              )
+            }
           >
             Quit
           </Button>
@@ -173,21 +227,41 @@ const List = ({
           <Button
             type="primary"
             icon={<CheckCircleOutlined />}
-            onClick={async () => onAccept({ id: org.id }, { id: user.id })}
+            onClick={async () =>
+              onAccept(
+                {
+                  id: org.id,
+                  pendingowners: org.pendingowners,
+                  pendingusers: org.pendingusers
+                },
+                { id: user.id },
+                { mutateOneOrganization: swr.mutateOneOrganization }
+              )
+            }
           >
             Accept invitation
           </Button>
           <Button
             danger
             icon={<CloseCircleOutlined />}
-            onClick={() => onDecline({ id: org.id }, { id: user.id })}
+            onClick={() =>
+              onDecline(
+                {
+                  id: org.id,
+                  pendingowners: org.pendingowners,
+                  pendingusers: org.pendingusers
+                },
+                { id: user.id },
+                { mutateOneOrganization: swr.mutateOneOrganization }
+              )
+            }
           >
             Decline
           </Button>
         </Space>
       )
   }
-  const columns = [
+  const columns: TableColumnsType = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -294,6 +368,7 @@ List.propTypes = {
     })
   ).isRequired,
   swr: PropTypes.exact({
+    mutateOneOrganization: PropTypes.func.isRequired,
     delOneOrganization: PropTypes.func.isRequired,
     loadingOrganizations: PropTypes.bool.isRequired
   }).isRequired,

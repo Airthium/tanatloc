@@ -52,14 +52,10 @@ export const errors = {
 /**
  * On quit
  * @param organization Organization
- * @param user User
  */
-const onQuit = async (
-  organization: { id: string },
-  user: { id: string }
-): Promise<void> => {
+const onQuit = async (organization: { id: string }): Promise<void> => {
   try {
-    await OrganizationAPI.quit(organization, user)
+    await OrganizationAPI.quit(organization)
   } catch (err) {
     ErrorNotification(errors.quit, err)
   }
@@ -68,14 +64,10 @@ const onQuit = async (
 /**
  * On accept
  * @param organization Organization
- * @param user User
  */
-const onAccept = async (
-  organization: { id: string },
-  user: { id: string }
-): Promise<void> => {
+const onAccept = async (organization: { id: string }): Promise<void> => {
   try {
-    await OrganizationAPI.accept(organization, user)
+    await OrganizationAPI.accept(organization)
   } catch (err) {
     ErrorNotification(errors.accept, err)
   }
@@ -86,12 +78,9 @@ const onAccept = async (
  * @param organization Organization
  * @param user User
  */
-const onDecline = async (
-  organization: { id: string },
-  user: { id: string }
-): Promise<void> => {
+const onDecline = async (organization: { id: string }): Promise<void> => {
   try {
-    await OrganizationAPI.decline(organization, user)
+    await OrganizationAPI.decline(organization)
   } catch (err) {
     ErrorNotification(errors.decline, err)
   }
@@ -158,7 +147,7 @@ const List = ({
           <Button
             danger
             icon={<LeftSquareOutlined />}
-            onClick={() => onQuit({ id: org.id }, { id: user.id })}
+            onClick={() => onQuit({ id: org.id })}
           >
             Quit
           </Button>
@@ -173,14 +162,14 @@ const List = ({
           <Button
             type="primary"
             icon={<CheckCircleOutlined />}
-            onClick={async () => onAccept({ id: org.id }, { id: user.id })}
+            onClick={async () => onAccept({ id: org.id })}
           >
             Accept invitation
           </Button>
           <Button
             danger
             icon={<CloseCircleOutlined />}
-            onClick={() => onDecline({ id: org.id }, { id: user.id })}
+            onClick={() => onDecline({ id: org.id })}
           >
             Decline
           </Button>

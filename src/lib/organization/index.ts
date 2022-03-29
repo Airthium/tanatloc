@@ -418,5 +418,105 @@ const del = async (organization: { id: string }): Promise<void> => {
   await OrganizationDB.del(organization)
 }
 
-const Organization = { add, get, getWithData, getByUser, update, del }
+/**
+ * Accept invitation
+ * @param organization Organization
+ * @param user User
+ */
+const accept = async (organization: { id: string }, user: { id: string }) => {
+  // Data
+  const organizationData = await get(organization.id, [
+    'pendingowners',
+    'pendingusers'
+  ])
+
+  // Check if user is pending
+  const pendingOwner = organizationData.pendingowners.find((o) => o === user.id)
+  const pendingUser = organizationData.pendingusers.find((u) => u === user.id)
+
+  if (!pendingOwner && !pendingUser)
+    throw new Error('User has no invitation in this organization')
+
+  // Update organization
+  await update(organization, [
+    {
+      key: !!pendingOwner ? 'pendingowners' : 'pendingusers',
+      type: 'array',
+      method: 'remove',
+      value: user.id
+    },
+    {
+      key: !!pendingOwner ? 'owners' : 'users',
+      type: 'array',
+      method: 'append',
+      value: user.id
+    }
+  ])
+}
+
+/**
+ * Decline invitation
+ * @param organization Organization
+ * @param user User
+ */
+const decline = async (organization: { id: string }, user: { id: string }) => {
+  // Data
+  const organizationData = await get(organization.id, [
+    'pendingowners',
+    'pendingusers'
+  ])
+
+  // Check if user is pending
+  const pendingOwner = organizationData.pendingowners.find((o) => o === user.id)
+  const pendingUser = organizationData.pendingusers.find((u) => u === user.id)
+
+  if (!pendingOwner && !pendingUser)
+    throw new Error('User has no invitation in this organization')
+
+  // Update organization
+  await update(organization, [
+    {
+      key: !!pendingOwner ? 'pendingowners' : 'pendingusers',
+      type: 'array',
+      method: 'remove',
+      value: user.id
+    }
+  ])
+}
+
+/**
+ * Quit organization
+ * @param organization Organization
+ * @param user User
+ */
+const quit = async (organization: { id: string }, user: { id: string }) => {
+  // Data
+  const organizationData = await get(organization.id, ['users'])
+
+  // Check user
+  if (!organizationData.users.includes(user.id))
+    throw new Error('User is not in this organization')
+
+  // Update organization
+  await update(organization, [
+    {
+      key: 'users',
+      type: 'array',
+      method: 'remove',
+      value: user.id
+    }
+  ])
+}
+
+const Organization = {
+  add,
+  get,
+  getWithData,
+  getByUser,
+  update,
+  del,
+  accept,
+  decline,
+  quit
+}
 export default Organization

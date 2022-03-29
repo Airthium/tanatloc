@@ -9,7 +9,7 @@ import {
   useState
 } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Space, Table } from 'antd'
+import { Card, Space, Table, TableColumnsType } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 import Utils from '@/lib/utils'
@@ -90,7 +90,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
       }}
     />
   )
-  const columns = [
+  const columns: TableColumnsType = [
     {
       key: 'avatar',
       dataIndex: 'avatar',
@@ -113,20 +113,26 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  const ownersColumns = [
+  const ownersColumns: TableColumnsType = [
     ...columns,
     {
       key: 'actions',
       title: 'Actions',
+      align: 'center',
+      fixed: 'right',
+      width: 75,
       render: ownerActionsRender
     }
   ]
 
-  const usersColumns = [
+  const usersColumns: TableColumnsType = [
     ...columns,
     {
       key: 'actions',
       title: 'Actions',
+      align: 'center',
+      fixed: 'right',
+      width: 75,
       render: userActionsRender
     }
   ]

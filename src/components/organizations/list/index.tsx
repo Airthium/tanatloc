@@ -9,7 +9,7 @@ import {
   useRef,
   useState
 } from 'react'
-import { Avatar, Button, Space, Table } from 'antd'
+import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -261,7 +261,7 @@ const List = ({
         </Space>
       )
   }
-  const columns = [
+  const columns: TableColumnsType = [
     {
       title: 'Name',
       dataIndex: 'name',

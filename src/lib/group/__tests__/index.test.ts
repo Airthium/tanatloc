@@ -118,11 +118,37 @@ describe('lib/group', () => {
         users: ['id']
       }
     ])
-    groups = await Group.getAll(['data'])
+    groups = await Group.getAll(['data', 'workspaces', 'projects'])
     expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
     expect(groups).toEqual([
-      { name: 'name', users: [{ id: 'id', firstname: 'firstname' }] }
+      {
+        name: 'name',
+        users: [{ id: 'id', firstname: 'firstname' }],
+        workspaces: [],
+        projects: []
+      }
+    ])
+
+    // With all data
+    mockGetAll.mockImplementation(() => [
+      {
+        name: 'name',
+        users: ['id'],
+        workspaces: [],
+        projects: []
+      }
+    ])
+    groups = await Group.getAll(['data', 'workspaces', 'projects'])
+    expect(mockGetAll).toHaveBeenCalledTimes(3)
+    expect(mockUserGetWithData).toHaveBeenCalledTimes(3)
+    expect(groups).toEqual([
+      {
+        name: 'name',
+        users: [{ id: 'id', firstname: 'firstname' }],
+        workspaces: [],
+        projects: []
+      }
     ])
   })
 

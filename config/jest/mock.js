@@ -161,6 +161,7 @@ class MockOrthographicCamera {
 class MockPerspectiveCamera {
   constructor() {
     this.add = jest.fn
+    this.up = new MockVector3()
     this.position = new MockVector3()
     this.updateProjectionMatrix = jest.fn()
   }
@@ -242,6 +243,7 @@ class MockVector3 {
     this.y = global.MockVector3.y
     this.z = global.MockVector3.z
     this.distanceTo = jest.fn()
+    this.clone = () => new MockVector3()
     this.applyQuaternion = () => new MockVector3()
     this.unproject = () => new MockVector3()
     this.set = () => new MockVector3()

@@ -381,29 +381,28 @@ describe('components/project/view/three', () => {
     buttons.forEach((button) => fireEvent.click(button))
 
     // // Avatar
-    // const snapshot = screen.getByRole('button', {
-    //   name: 'fund-projection-screen'
-    // })
-    // fireEvent.mouseOver(snapshot)
-    // const projectSnapshot = screen.getByRole('button', {
-    //   name: 'Project snapshot'
-    // })
-    // await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
+    const snapshot = screen.getByRole('button', {
+      name: 'fund-projection-screen'
+    })
+    fireEvent.mouseEnter(snapshot)
+    await waitFor(() => screen.getByText('Project snapshot'))
+    const projectSnapshot = screen.getByText('Project snapshot')
+    fireEvent.click(projectSnapshot)
+    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
 
-    // // Avatar error
-    // mockAvatarAdd.mockImplementation(() => {
-    //   throw new Error('avatar add error')
-    // })
-    // const add = screen.getByRole('button', { name: 'fund-projection-screen' })
-    // fireEvent.click(add)
-    // await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
-    // await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    // await waitFor(() =>
-    //   expect(mockErroNotification).toHaveBeenLastCalledWith(
-    //     errors.snapshot,
-    //     new Error('avatar add error')
-    //   )
-    // )
+    // Avatar error
+    mockAvatarAdd.mockImplementation(() => {
+      throw new Error('avatar add error')
+    })
+    fireEvent.click(projectSnapshot)
+    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.snapshot,
+        new Error('avatar add error')
+      )
+    )
 
     // Zoom
     const zoomIn = screen.getByRole('button', { name: 'zoom-in' })
@@ -479,6 +478,22 @@ describe('components/project/view/three', () => {
 
     const selection = screen.getByRole('button', { name: 'select' })
     fireEvent.click(selection)
+
+    unmount()
+  })
+
+  test('dimension 2', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView
+          loading={loading}
+          project={project}
+          part={{ ...part, dimension: 2 }}
+        />
+      </SelectContext.Provider>
+    )
 
     unmount()
   })

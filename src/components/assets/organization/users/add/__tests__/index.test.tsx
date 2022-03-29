@@ -75,7 +75,7 @@ describe('componenets/assets/organization/users/add', () => {
         role="Dialog"
         onClick={async () => {
           try {
-            await props.onOk({})
+            await props.onOk({ email: 'email' })
           } catch (err) {}
         }}
       />
@@ -116,7 +116,7 @@ describe('componenets/assets/organization/users/add', () => {
         role="Dialog"
         onClick={async () => {
           try {
-            await props.onOk({ id: 'idpu' })
+            await props.onOk({ email: 'email' })
           } catch (err) {}
         }}
       />
@@ -127,7 +127,7 @@ describe('componenets/assets/organization/users/add', () => {
         organization={{
           id: 'id',
           owners: [{ id: 'ido' }],
-          pendingowners: [{ id: 'idpo' }],
+          pendingowners: [{ id: 'idpo', email: 'email' }],
           users: [{ id: 'idu' }],
           pendingusers: [{ id: 'idpu' }]
         }}

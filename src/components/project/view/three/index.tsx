@@ -802,7 +802,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                         Project snapshot
                       </Button>
                     </Menu.Item>
-                    <Menu.Item>
+                    <Menu.Item key="image">
                       <Button type="text" disabled={true}>
                         Export image
                       </Button>

@@ -51,7 +51,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
       )
       setOrganization(currentOrganization)
     }
-  }, [organizationId])
+  }, [organizationId, organizations])
 
   // Organization update
   useEffect(() => {

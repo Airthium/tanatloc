@@ -39,4 +39,32 @@ describe('components/assets/organization/users', () => {
 
     unmount()
   })
+
+  test('with pendings', () => {
+    const { unmount } = render(
+      <Users
+        organization={{
+          ...organization,
+          pendingowners: [{}],
+          users: [{}],
+          pendingusers: [{}]
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('onResize', async () => {
+    jest
+      .spyOn(Element.prototype, 'clientHeight', 'get')
+      .mockImplementationOnce(() => 1000)
+      .mockImplementationOnce(() => 250)
+      .mockImplementationOnce(() => 250)
+
+    const { unmount } = render(<Users organization={organization} swr={swr} />)
+
+    unmount()
+  })
 })

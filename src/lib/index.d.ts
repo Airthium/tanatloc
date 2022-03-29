@@ -67,6 +67,7 @@ export interface IProjectWithData
 
 export interface IUserWithData extends Omit<IUser, 'avatar'> {
   avatar?: Buffer
+  pending?: boolean
 }
 
 export interface IWorkspaceWithData

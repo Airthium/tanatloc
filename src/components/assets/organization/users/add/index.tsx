@@ -34,33 +34,23 @@ export const errors = {
 
 /**
  * CheckAlreadyAdded
- * @param value Value
+ * @param user User
  * @param organization Organization
  */
-
 export const checkAlreadyAdded = (
-  value: { email: string },
+  user: { email: string },
   organization: IOrganizationWithData
 ): boolean => {
-  let currentlyOwner = !organization.owners.find(
-    (owner) => owner.email === value.email
+  const inOwners = !organization.owners.find((o) => o.email === user.email)
+  const inPendingowners = !organization.pendingowners.find(
+    (po) => po.email === user.email
   )
-  let currentlyPendingOwner = !organization.pendingowners.find(
-    (pendingowner) => pendingowner.email === value.email
-  )
-  let currentlyUser = !organization.users.find(
-    (user) => user.email === value.email
-  )
-  let currentlyPendingUser = !organization.pendingusers.find(
-    (pendinguser) => pendinguser.email === value.email
+  const inUsers = !organization.users.find((u) => u.email === user.email)
+  const inPendingusers = !organization.pendingusers.find(
+    (pu) => pu.email === user.email
   )
 
-  return (
-    currentlyOwner &&
-    currentlyPendingOwner &&
-    currentlyUser &&
-    currentlyPendingUser
-  )
+  return inOwners || inPendingowners || inUsers || inPendingusers
 }
 
 /**
@@ -76,32 +66,34 @@ export const onFinish = async (
   values: { email: string },
   swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
-  let checked = checkAlreadyAdded(values, organization)
-  if (checked) {
-    try {
-      // API
-      await OrganizationAPI.update(organization, [
-        {
-          key: dBkey,
-          type: 'array',
-          method: 'append',
-          value: values.email
-        }
-      ])
-
-      // Local
-      const newOrganization = { ...organization }
-      newOrganization[dBkey] = [
-        ...(newOrganization[dBkey] || []),
-        { email: values.email }
-      ]
-      swr.mutateOneOrganization(newOrganization)
-    } catch (err) {
-      ErrorNotification(errors.add, err)
-      throw err
-    }
-  } else {
+  // Check
+  const exists = checkAlreadyAdded(values, organization)
+  if (exists) {
     ErrorNotification(errors.existing)
+    throw new Error(errors.existing)
+  }
+
+  try {
+    // API
+    await OrganizationAPI.update(organization, [
+      {
+        key: dBkey,
+        type: 'array',
+        method: 'append',
+        value: values.email
+      }
+    ])
+
+    // Local
+    const newOrganization = { ...organization }
+    newOrganization[dBkey] = [
+      ...(newOrganization[dBkey] || []),
+      { email: values.email }
+    ]
+    swr.mutateOneOrganization(newOrganization)
+  } catch (err) {
+    ErrorNotification(errors.add, err)
+    throw err
   }
 }
 
@@ -112,7 +104,7 @@ export const onFinish = async (
  * Props:
  * - title (string) Title
  * - organization (Object) Organization `{ id, [dBkey] }`
- * - dBkey (string) Database key, must be `pendingowners` or `pendingusers`
+ * - dBkey (string) Database key, must be `owners`, `pendingowners`, `user` or `pendingusers`
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Add
  */
@@ -166,8 +158,8 @@ Add.propTypes = {
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
     owners: PropTypes.array,
-    users: PropTypes.array,
     pendingowners: PropTypes.array,
+    users: PropTypes.array,
     pendingusers: PropTypes.array
   }).isRequired,
   dBkey: PropTypes.oneOf(['owners', 'users']),

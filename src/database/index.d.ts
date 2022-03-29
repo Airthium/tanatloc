@@ -283,7 +283,6 @@ export interface IUser {
   superuser?: boolean
   passwordlastchanged?: Date
   organizations?: Array<string>
-  pendingorganizations?: Array<string>
   workspaces?: Array<string>
   authorizedplugins?: Array<string>
   plugins?: Array<IPlugin>

@@ -346,15 +346,6 @@ const update = async (
           lastname: owner.lastname
         })
 
-        await User.update({ id: user.id }, [
-          {
-            key: 'pendingorganizations',
-            type: 'array',
-            method: 'append',
-            value: organization.id
-          }
-        ])
-
         d.key = 'pending' + d.key
       }
     }

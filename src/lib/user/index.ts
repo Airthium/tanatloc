@@ -52,9 +52,6 @@ const get = async (id: string, data: Array<string>): Promise<IUser> => {
   if (data.includes('organizations') && !userData.organizations)
     userData.organizations = []
 
-  if (data.includes('pendingorganizations') && !userData.pendingorganizations)
-    userData.pendingorganizations = []
-
   if (data.includes('workspaces') && !userData.workspaces)
     userData.workspaces = []
 
@@ -123,11 +120,6 @@ const getAll = async (data: string[]): Promise<IUser[]> => {
   if (data.includes('organizations'))
     users.forEach((user) => {
       if (!user.organizations) user.organizations = []
-    })
-
-  if (data.includes('pendingorganizations'))
-    users.forEach((user) => {
-      if (!user.pendingorganizations) user.pendingorganizations = []
     })
 
   if (data.includes('workspaces'))
@@ -200,12 +192,7 @@ const update = async (
  */
 const del = async (user: { id: string }): Promise<void> => {
   // Get data
-  const data = await get(user.id, [
-    'workspaces',
-    'organizations',
-    'pendingorganizations',
-    'avatar'
-  ])
+  const data = await get(user.id, ['workspaces', 'organizations', 'avatar'])
 
   // Delete from organization
   if (data.organizations) {
@@ -245,30 +232,6 @@ const del = async (user: { id: string }): Promise<void> => {
             })
           )
         }
-      })
-    )
-  }
-
-  // Delete from pengind organization
-  if (data.pendingorganizations) {
-    await Promise.all(
-      data.pendingorganizations.map(async (organization) => {
-        await Organization.update({ id: organization }, [
-          {
-            key: 'pendingowners',
-            type: 'array',
-            method: 'remove',
-            value: user.id
-          }
-        ])
-        await Organization.update({ id: organization }, [
-          {
-            key: 'pendingusers',
-            type: 'array',
-            method: 'remove',
-            value: user.id
-          }
-        ])
       })
     )
   }

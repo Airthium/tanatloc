@@ -137,7 +137,9 @@ Delete.propTypes = {
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
     owners: PropTypes.array,
-    users: PropTypes.array
+    users: PropTypes.array,
+    pendingowners: PropTypes.array,
+    pendingusers: PropTypes.array
   }),
   dBkey: PropTypes.oneOf(['owners', 'pendingowners', 'users', 'pendingusers']),
   swr: PropTypes.exact({

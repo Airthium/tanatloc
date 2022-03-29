@@ -34,8 +34,8 @@ export const errors = {
 
 /**
  * CheckAlreadyAdded
- * @param userType UserType
  * @param value Value
+ * @param organization Organization
  */
 
 export const checkAlreadyAdded = (
@@ -166,7 +166,9 @@ Add.propTypes = {
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
     owners: PropTypes.array,
-    users: PropTypes.array
+    users: PropTypes.array,
+    pendingowners: PropTypes.array,
+    pendingusers: PropTypes.array
   }).isRequired,
   dBkey: PropTypes.oneOf(['owners', 'users']),
   swr: PropTypes.exact({

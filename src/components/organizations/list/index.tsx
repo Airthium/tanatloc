@@ -328,7 +328,7 @@ const List = ({
   // Set Table Scroll Limit
   useEffect(() => {
     onResize()
-  }, [organizations, onResize])
+  }, [organizations, onResize, refTableOrga.current?.offsetTop])
 
   /**
    * Render

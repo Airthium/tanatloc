@@ -23,8 +23,6 @@ import Geometry from '../geometry'
 import Simulation from '../simulation'
 import Tools from '../tools'
 
-import tar from 'tar'
-
 /**
  * Add
  * @param user User

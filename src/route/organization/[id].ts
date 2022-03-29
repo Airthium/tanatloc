@@ -37,6 +37,7 @@ export default async (req: Request, res: Response): Promise<void> => {
         } catch (err) {
           throw error(500, err.message)
         }
+        break
       case 'DELETE':
         // Quit
         try {
@@ -45,6 +46,10 @@ export default async (req: Request, res: Response): Promise<void> => {
         } catch (err) {
           throw error(500, err.message)
         }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
     res.status(err.status).json({ error: true, message: err.message })

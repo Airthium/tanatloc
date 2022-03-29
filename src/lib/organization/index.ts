@@ -422,8 +422,8 @@ const accept = async (organization: { id: string }, user: { id: string }) => {
   ])
 
   // Check if user is pending
-  const pendingOwner = organizationData.pendingowners.find((o) => o === user.id)
-  const pendingUser = organizationData.pendingusers.find((u) => u === user.id)
+  const pendingOwner = organizationData.pendingowners.includes(user.id)
+  const pendingUser = organizationData.pendingusers.includes(user.id)
 
   if (!pendingOwner && !pendingUser)
     throw new Error('User has no invitation in this organization')
@@ -458,8 +458,8 @@ const decline = async (organization: { id: string }, user: { id: string }) => {
   ])
 
   // Check if user is pending
-  const pendingOwner = organizationData.pendingowners.find((o) => o === user.id)
-  const pendingUser = organizationData.pendingusers.find((u) => u === user.id)
+  const pendingOwner = organizationData.pendingowners.includes(user.id)
+  const pendingUser = organizationData.pendingusers.includes(user.id)
 
   if (!pendingOwner && !pendingUser)
     throw new Error('User has no invitation in this organization')

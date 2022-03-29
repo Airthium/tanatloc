@@ -1,9 +1,22 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import List from '..'
+import List, { errors } from '..'
 
-jest.mock('../../delete', () => () => <div />)
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
+
+const mockOrganizationQuit = jest.fn()
+const mockOrganizationAccept = jest.fn()
+const mockOrganizationDecline = jest.fn()
+jest.mock('@/api/organization', () => ({
+  quit: async () => mockOrganizationQuit(),
+  accept: async () => mockOrganizationAccept(),
+  decline: async () => mockOrganizationDecline()
+}))
 
 const mockUserToAvatar = jest.fn()
 const mockGroupToAvatar = jest.fn()
@@ -12,13 +25,15 @@ jest.mock('@/lib/utils', () => ({
   groupToAvatar: () => mockGroupToAvatar()
 }))
 
+jest.mock('../../delete', () => () => <div />)
+
 describe('components/organizations/list', () => {
-  const user = { id: 'id1' }
+  const user = { id: 'idu' }
   const organizations = [
     {
       id: 'id1',
       name: 'Name1',
-      owners: [{ id: 'id1' }],
+      owners: [{ id: 'idu' }],
       users: [{ id: 'id1' }],
       groups: [{ id: 'id1' }]
     },
@@ -38,9 +53,16 @@ describe('components/organizations/list', () => {
   const setOrganization = jest.fn()
 
   beforeEach(() => {
+    mockErrorNotification.mockReset()
+
+    mockOrganizationQuit.mockReset()
+    mockOrganizationAccept.mockReset()
+    mockOrganizationDecline.mockReset()
+
     mockUserToAvatar.mockReset()
     mockGroupToAvatar.mockReset()
 
+    swr.mutateOneOrganization.mockReset()
     swr.delOneOrganization.mockReset()
     setOrganization.mockReset()
   })
@@ -91,7 +113,7 @@ describe('components/organizations/list', () => {
           {
             id: 'id1',
             name: undefined,
-            owners: [{ id: 'id1' }],
+            owners: [{ id: 'idu' }],
             users: [{ id: 'id1' }],
             groups: [{ id: 'id1' }]
           },
@@ -116,6 +138,290 @@ describe('components/organizations/list', () => {
     // Sorter
     const sorter = screen.getByText('Name')
     fireEvent.click(sorter)
+
+    unmount()
+  })
+
+  test('quit', async () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [{ id: 'id1' }],
+            users: [{ id: 'idu' }],
+            groups: [{ id: 'id1' }]
+          }
+        ]}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    const button = screen.getByRole('button')
+
+    // Normal
+    fireEvent.click(button)
+    await waitFor(() => expect(mockOrganizationQuit).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockOrganizationQuit.mockImplementation(() => {
+      throw new Error('quit error')
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockOrganizationQuit).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.quit,
+        new Error('quit error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('accept (owner)', async () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [{ id: 'id1' }],
+            pendingowners: [{ id: 'idu' }],
+            users: [{ id: 'id1' }],
+            pendingusers: [{ id: 'id1' }],
+            groups: [{ id: 'id1' }]
+          }
+        ]}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    const buttons = screen.getAllByRole('button')
+
+    // Normal
+    fireEvent.click(buttons[0])
+    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockOrganizationAccept.mockImplementation(() => {
+      throw new Error('accept error')
+    })
+    fireEvent.click(buttons[0])
+    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.accept,
+        new Error('accept error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('decline (owner)', async () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [{ id: 'id1' }],
+            pendingowners: [{ id: 'idu' }],
+            users: [{ id: 'id1' }],
+            pendingusers: [{ id: 'id1' }],
+            groups: [{ id: 'id1' }]
+          }
+        ]}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    const buttons = screen.getAllByRole('button')
+
+    // Normal
+    fireEvent.click(buttons[1])
+    await waitFor(() =>
+      expect(mockOrganizationDecline).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockOrganizationDecline.mockImplementation(() => {
+      throw new Error('decline error')
+    })
+    fireEvent.click(buttons[1])
+    await waitFor(() =>
+      expect(mockOrganizationDecline).toHaveBeenCalledTimes(2)
+    )
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.decline,
+        new Error('decline error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('accept (user)', async () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [{ id: 'id1' }],
+            pendingowners: [{ id: 'id1' }],
+            users: [{ id: 'id1' }],
+            pendingusers: [{ id: 'idu' }],
+            groups: [{ id: 'id1' }]
+          }
+        ]}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    const buttons = screen.getAllByRole('button')
+
+    // Normal
+    fireEvent.click(buttons[0])
+    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockOrganizationAccept.mockImplementation(() => {
+      throw new Error('accept error')
+    })
+    fireEvent.click(buttons[0])
+    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.accept,
+        new Error('accept error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('decline (user)', async () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [{ id: 'id1' }],
+            pendingowners: [{ id: 'id1' }],
+            users: [{ id: 'id1' }],
+            pendingusers: [{ id: 'idu' }],
+            groups: [{ id: 'id1' }]
+          }
+        ]}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    const buttons = screen.getAllByRole('button')
+
+    // Normal
+    fireEvent.click(buttons[1])
+    await waitFor(() =>
+      expect(mockOrganizationDecline).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockOrganizationDecline.mockImplementation(() => {
+      throw new Error('decline error')
+    })
+    fireEvent.click(buttons[1])
+    await waitFor(() =>
+      expect(mockOrganizationDecline).toHaveBeenCalledTimes(2)
+    )
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.decline,
+        new Error('decline error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('accept (user, no users)', async () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [{ id: 'id1' }],
+            pendingowners: [{ id: 'id1' }],
+            pendingusers: [{ id: 'idu' }],
+            groups: [{ id: 'id1' }]
+          }
+        ]}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    const buttons = screen.getAllByRole('button')
+
+    // Normal
+    fireEvent.click(buttons[0])
+    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
+
+    unmount()
+  })
+
+  test('onResize', async () => {
+    Object.defineProperty(Element.prototype, 'clientHeight', {
+      value: '1000'
+    })
+
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={organizations}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
 
     unmount()
   })

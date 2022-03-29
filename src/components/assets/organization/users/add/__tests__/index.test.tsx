@@ -24,7 +24,7 @@ jest.mock('@/api/organization', () => ({
 
 describe('componenets/assets/organization/users/add', () => {
   const title = 'title'
-  const organization = { id: 'id' }
+  const organization = { id: 'id', owners: [] }
   const dBkey = 'users'
   const swr = {
     mutateOneOrganization: jest.fn()
@@ -104,6 +104,47 @@ describe('componenets/assets/organization/users/add', () => {
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('update error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('onFinish, exists', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({ id: 'idpu' })
+          } catch (err) {}
+        }}
+      />
+    ))
+    const { unmount } = render(
+      <Add
+        title={title}
+        organization={{
+          id: 'id',
+          owners: [{ id: 'ido' }],
+          pendingowners: [{ id: 'idpo' }],
+          users: [{ id: 'idu' }],
+          pendingusers: [{ id: 'idpu' }]
+        }}
+        dBkey={dBkey}
+        swr={swr}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.existing,
+        undefined
       )
     )
 

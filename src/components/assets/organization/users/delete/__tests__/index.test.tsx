@@ -22,7 +22,7 @@ jest.mock('@/api/organization', () => ({
 describe('componenets/assets/organization/users/delete', () => {
   const disabled = false
   const user = { id: 'id', email: 'email' }
-  const organization = { id: 'id', users: [{ id: 'id' }] }
+  const organization = { id: 'id', pendingusers: [{ id: 'id' }] }
   const dBkey = 'pendingusers'
   const swr = {
     mutateOneOrganization: jest.fn()

@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import { Divider, Layout, PageHeader, Typography } from 'antd'
+import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 import { INewOrganization } from '@/database/index.d'
@@ -106,7 +106,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
             }}
           />
         ) : (
-          <>
+          <Space direction="vertical" className="full-width" size={20}>
             <Add swr={{ addOneOrganization: swr.addOneOrganization }} />
             <List
               user={{
@@ -129,7 +129,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
                 setOrganization(org)
               }}
             />
-          </>
+          </Space>
         )}
       </Layout.Content>
     </Layout>

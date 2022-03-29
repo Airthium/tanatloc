@@ -10,7 +10,12 @@ import {
   useState
 } from 'react'
 import { Avatar, Button, Space, Table } from 'antd'
-import { ControlOutlined } from '@ant-design/icons'
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ControlOutlined,
+  LeftSquareOutlined
+} from '@ant-design/icons'
 
 import {
   IGroupWithData,
@@ -21,6 +26,9 @@ import {
 import Utils from '@/lib/utils'
 
 import Delete from '../delete'
+
+import OrganizationAPI from '@/api/organization'
+import { ErrorNotification } from '@/components/assets/notification'
 
 /**
  * Props
@@ -33,6 +41,60 @@ export interface IProps {
     loadingOrganizations: boolean
   }
   setOrganization: (organization: IOrganizationWithData) => void
+}
+
+export const errors = {
+  quit: 'Unable to quit organization',
+  accept: 'Unable to accept invitation',
+  decline: 'Unable to decline invitation'
+}
+
+/**
+ * On quit
+ * @param organization Organization
+ * @param user User
+ */
+const onQuit = async (
+  organization: { id: string },
+  user: { id: string }
+): Promise<void> => {
+  try {
+    await OrganizationAPI.quit(organization, user)
+  } catch (err) {
+    ErrorNotification(errors.quit, err)
+  }
+}
+
+/**
+ * On accept
+ * @param organization Organization
+ * @param user User
+ */
+const onAccept = async (
+  organization: { id: string },
+  user: { id: string }
+): Promise<void> => {
+  try {
+    await OrganizationAPI.accept(organization, user)
+  } catch (err) {
+    ErrorNotification(errors.accept, err)
+  }
+}
+
+/**
+ * On decline
+ * @param organization Organization
+ * @param user User
+ */
+const onDecline = async (
+  organization: { id: string },
+  user: { id: string }
+): Promise<void> => {
+  try {
+    await OrganizationAPI.decline(organization, user)
+  } catch (err) {
+    ErrorNotification(errors.decline, err)
+  }
 }
 
 /**
@@ -74,7 +136,7 @@ const List = ({
   const actionsRender = (org: IOrganizationWithData) => {
     if (org.owners.find((o) => o.id === user.id))
       return (
-        <Space wrap={true}>
+        <Space wrap>
           <Button
             icon={<ControlOutlined />}
             onClick={() => setOrganization(org)}
@@ -88,6 +150,40 @@ const List = ({
             }}
             swr={{ delOneOrganization: swr.delOneOrganization }}
           />
+        </Space>
+      )
+    else if (org.users?.find((u) => u.id === user.id))
+      return (
+        <Space wrap>
+          <Button
+            danger
+            icon={<LeftSquareOutlined />}
+            onClick={() => onQuit({ id: org.id }, { id: user.id })}
+          >
+            Quit
+          </Button>
+        </Space>
+      )
+    else if (
+      org.pendingowners?.find((o) => o.id === user.id) ||
+      org.pendingusers?.find((u) => u.id === user.id)
+    )
+      return (
+        <Space wrap>
+          <Button
+            type="primary"
+            icon={<CheckCircleOutlined />}
+            onClick={async () => onAccept({ id: org.id }, { id: user.id })}
+          >
+            Accept invitation
+          </Button>
+          <Button
+            danger
+            icon={<CloseCircleOutlined />}
+            onClick={() => onDecline({ id: org.id }, { id: user.id })}
+          >
+            Decline
+          </Button>
         </Space>
       )
   }
@@ -171,7 +267,9 @@ const List = ({
         id: organization.id,
         name: organization.name,
         owners: organization.owners,
+        pendingowners: organization.pendingowners,
         users: organization.users,
+        pendingusers: organization.pendingusers,
         groups: organization.groups
       }))}
       ref={refTableOrga}

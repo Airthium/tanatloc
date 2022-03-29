@@ -6,7 +6,7 @@ import { call } from '@/api/call'
 
 /**
  * Update
- * @param Organization Organization
+ * @param organization Organization
  * @param data Data
  */
 export const update = async (

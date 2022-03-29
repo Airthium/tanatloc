@@ -3,16 +3,25 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Organizations from '..'
 
-jest.mock('../add', () => () => <div />)
-
-const mockList = jest.fn()
-jest.mock('../list', () => (props) => mockList(props))
+const mockPush = jest.fn()
+const mockQuery = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: mockPush,
+    query: mockQuery()
+  })
+}))
 
 const mockOrganization = jest.fn()
 jest.mock(
   '@/components/assets/organization',
-  () => (props) => mockOrganization(props)
+  () => (props: any) => mockOrganization(props)
 )
+
+jest.mock('../add', () => () => <div />)
+
+const mockList = jest.fn()
+jest.mock('../list', () => (props) => mockList(props))
 
 describe('components/organizations', () => {
   const user = { id: 'id' }
@@ -26,16 +35,46 @@ describe('components/organizations', () => {
   }
 
   beforeEach(() => {
-    mockList.mockReset()
-    mockList.mockImplementation(() => <div />)
+    mockPush.mockReset()
+    mockQuery.mockReset()
+    mockQuery.mockImplementation(() => ({}))
 
     mockOrganization.mockReset()
     mockOrganization.mockImplementation(() => <div />)
+
+    mockList.mockReset()
+    mockList.mockImplementation(() => <div />)
   })
 
   test('render', () => {
     const { unmount } = render(
       <Organizations user={user} organizations={organizations} swr={swr} />
+    )
+
+    unmount()
+  })
+
+  test('with query', () => {
+    mockQuery.mockImplementation(() => ({
+      organizationId: 'id'
+    }))
+    const { unmount } = render(
+      <Organizations user={user} organizations={organizations} swr={swr} />
+    )
+
+    unmount()
+  })
+
+  test('with query, with organization', () => {
+    mockQuery.mockImplementation(() => ({
+      organizationId: 'id'
+    }))
+    const { unmount } = render(
+      <Organizations
+        user={user}
+        organizations={[{ id: 'id', owners: [] }]}
+        swr={swr}
+      />
     )
 
     unmount()

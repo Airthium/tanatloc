@@ -23,12 +23,13 @@ import {
   IUserWithData
 } from '@/lib/index.d'
 
+import { ErrorNotification } from '@/components/assets/notification'
+
+import OrganizationAPI from '@/api/organization'
+
 import Utils from '@/lib/utils'
 
 import Delete from '../delete'
-
-import OrganizationAPI from '@/api/organization'
-import { ErrorNotification } from '@/components/assets/notification'
 
 /**
  * Props
@@ -93,13 +94,13 @@ const onAccept = async (
 
     // Local
     const newOrganization = { ...organization }
-    const ownerIndex = newOrganization.pendingowners.findIndex(
+    const ownerIndex = newOrganization.pendingowners?.findIndex(
       (o) => o.id === user.id
     )
     const userIndex = newOrganization.pendingusers?.findIndex(
       (u) => u.id === user.id
     )
-    if (ownerIndex) {
+    if (ownerIndex !== -1) {
       newOrganization.pendingowners.splice(ownerIndex, 1)
       newOrganization.owners.push(user)
     } else {
@@ -130,13 +131,13 @@ const onDecline = async (
 
     // Local
     const newOrganization = { ...organization }
-    const ownerIndex = newOrganization.pendingowners.findIndex(
+    const ownerIndex = newOrganization.pendingowners?.findIndex(
       (o) => o.id === user.id
     )
     const userIndex = newOrganization.pendingusers?.findIndex(
       (u) => u.id === user.id
     )
-    if (ownerIndex) newOrganization.pendingowners.splice(ownerIndex, 1)
+    if (ownerIndex !== -1) newOrganization.pendingowners.splice(ownerIndex, 1)
     else newOrganization.pendingusers.splice(userIndex, 1)
 
     swr.mutateOneOrganization(newOrganization)
@@ -231,7 +232,9 @@ const List = ({
               onAccept(
                 {
                   id: org.id,
+                  owners: org.owners,
                   pendingowners: org.pendingowners,
+                  users: org.users,
                   pendingusers: org.pendingusers
                 },
                 { id: user.id },

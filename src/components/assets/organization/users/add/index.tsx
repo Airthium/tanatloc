@@ -42,11 +42,11 @@ export const checkAlreadyAdded = (
   organization: IOrganizationWithData
 ): IUserWithData => {
   const inOwners = organization.owners.find((o) => o.email === user.email)
-  const inPendingowners = organization.pendingowners.find(
+  const inPendingowners = organization.pendingowners?.find(
     (po) => po.email === user.email
   )
-  const inUsers = organization.users.find((u) => u.email === user.email)
-  const inPendingusers = organization.pendingusers.find(
+  const inUsers = organization.users?.find((u) => u.email === user.email)
+  const inPendingusers = organization.pendingusers?.find(
     (pu) => pu.email === user.email
   )
 
@@ -157,7 +157,7 @@ Add.propTypes = {
   title: PropTypes.string.isRequired,
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
-    owners: PropTypes.array,
+    owners: PropTypes.array.isRequired,
     pendingowners: PropTypes.array,
     users: PropTypes.array,
     pendingusers: PropTypes.array

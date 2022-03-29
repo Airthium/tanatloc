@@ -268,7 +268,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   )
 }
 
-Users.popTypes = {
+Users.propTypes = {
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired,
     owners: PropTypes.array.isRequired,

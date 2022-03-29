@@ -80,7 +80,7 @@ export const onFinish = async (
         key: dBkey,
         type: 'array',
         method: 'append',
-        value: values.email
+        value: values.email.trim()
       }
     ])
 

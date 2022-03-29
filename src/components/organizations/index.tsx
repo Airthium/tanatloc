@@ -114,6 +114,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
               }}
               organizations={organizations}
               swr={{
+                mutateOneOrganization: swr.mutateOneOrganization,
                 delOneOrganization: swr.delOneOrganization,
                 loadingOrganizations: swr.loadingOrganizations
               }}

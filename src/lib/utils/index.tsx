@@ -95,7 +95,7 @@ const userToAvatar = (user: {
   return (
     <Tooltip
       key={user.id || JSON.stringify(user)}
-      title={name + (user.pending && ' (Invite pending)')}
+      title={name + (user.pending ? ' (Invite pending)' : '')}
     >
       <Badge
         count={user.pending && 'Pending...'}

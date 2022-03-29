@@ -184,7 +184,10 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               title="New administrator"
               organization={{
                 id: organization.id,
-                owners: organization.owners
+                owners: organization.owners,
+                pendingowners: organization.pendingowners,
+                pendingusers: organization.pendingusers,
+                users: organization.users
               }}
               dBkey="owners"
               swr={{
@@ -218,6 +221,9 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               title="New user"
               organization={{
                 id: organization.id,
+                owners: organization.owners,
+                pendingowners: organization.pendingowners,
+                pendingusers: organization.pendingusers,
                 users: organization.users
               }}
               dBkey="users"

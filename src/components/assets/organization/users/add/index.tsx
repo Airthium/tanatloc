@@ -28,7 +28,39 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  add: 'Unable to add user'
+  add: 'Unable to add user',
+  existing: 'This user already exists or its invite is pending'
+}
+
+/**
+ * CheckAlreadyAdded
+ * @param userType UserType
+ * @param value Value
+ */
+
+export const checkAlreadyAdded = (
+  value: { email: string },
+  organization: IOrganizationWithData
+): boolean => {
+  let currentlyOwner = !organization.owners.find(
+    (owner) => owner.email === value.email
+  )
+  let currentlyPendingOwner = !organization.pendingowners.find(
+    (pendingowner) => pendingowner.email === value.email
+  )
+  let currentlyUser = !organization.users.find(
+    (user) => user.email === value.email
+  )
+  let currentlyPendingUser = !organization.pendingusers.find(
+    (pendinguser) => pendinguser.email === value.email
+  )
+
+  return (
+    currentlyOwner &&
+    currentlyPendingOwner &&
+    currentlyUser &&
+    currentlyPendingUser
+  )
 }
 
 /**
@@ -44,27 +76,32 @@ export const onFinish = async (
   values: { email: string },
   swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
 ): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.update(organization, [
-      {
-        key: dBkey,
-        type: 'array',
-        method: 'append',
-        value: values.email
-      }
-    ])
+  let checked = checkAlreadyAdded(values, organization)
+  if (checked) {
+    try {
+      // API
+      await OrganizationAPI.update(organization, [
+        {
+          key: dBkey,
+          type: 'array',
+          method: 'append',
+          value: values.email
+        }
+      ])
 
-    // Local
-    const newOrganization = { ...organization }
-    newOrganization[dBkey] = [
-      ...(newOrganization[dBkey] || []),
-      { email: values.email }
-    ]
-    swr.mutateOneOrganization(newOrganization)
-  } catch (err) {
-    ErrorNotification(errors.add, err)
-    throw err
+      // Local
+      const newOrganization = { ...organization }
+      newOrganization[dBkey] = [
+        ...(newOrganization[dBkey] || []),
+        { email: values.email }
+      ]
+      swr.mutateOneOrganization(newOrganization)
+    } catch (err) {
+      ErrorNotification(errors.add, err)
+      throw err
+    }
+  } else {
+    ErrorNotification(errors.existing)
   }
 }
 

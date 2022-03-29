@@ -101,7 +101,6 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
           <Users
             organization={{
               id: organization.id,
-              name: organization.name,
               owners: organization.owners,
               pendingowners: organization.pendingowners,
               users: organization.users,

@@ -31,6 +31,7 @@ describe('components/organizations/list', () => {
     }
   ]
   const swr = {
+    mutateOneOrganization: jest.fn(),
     delOneOrganization: jest.fn(),
     loadingOrganizations: false
   }

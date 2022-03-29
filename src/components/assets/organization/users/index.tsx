@@ -66,30 +66,32 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
         id: organization.id,
         owners: organization.owners
       }}
-      dBkey="owners"
+      dBkey={owner.pending ? 'pendingowners' : 'owners'}
       swr={{
         mutateOneOrganization: swr.mutateOneOrganization
       }}
     />
   )
-  const userActionsRender = (user: IUserWithData) => (
-    <Delete
-      user={{
-        id: user.id,
-        email: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname
-      }}
-      organization={{
-        id: organization.id,
-        users: organization.users
-      }}
-      dBkey="users"
-      swr={{
-        mutateOneOrganization: swr.mutateOneOrganization
-      }}
-    />
-  )
+  const userActionsRender = (user: IUserWithData) => {
+    return (
+      <Delete
+        user={{
+          id: user.id,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname
+        }}
+        organization={{
+          id: organization.id,
+          users: organization.users
+        }}
+        dBkey={user.pending ? 'pendingusers' : 'users'}
+        swr={{
+          mutateOneOrganization: swr.mutateOneOrganization
+        }}
+      />
+    )
+  }
   const columns = [
     {
       key: 'avatar',

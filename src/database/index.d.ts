@@ -277,6 +277,7 @@ export interface IUser {
   lastname?: string
   firstname?: string
   email?: string
+  pending?: boolean
   avatar?: string
   isvalidated?: boolean
   lastmodificationdate?: Date

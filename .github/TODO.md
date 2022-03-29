@@ -23,8 +23,6 @@
 
 ## Misc (Debug)
 
-- Table scroll, hard cases to manage better
-
 - check name / description length server side
 
 - snapshot -> utiliser comme icon de projet ou download
@@ -32,8 +30,6 @@
 - section view fix
 
 - grid dynamic update
-
-- user selection in groups
 
 - review org, check user add/del (pending not managed), check duplicate, accept invit
   ensure email is trimmed, comparison in dB is strict

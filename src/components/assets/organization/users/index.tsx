@@ -181,7 +181,12 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Set Table Scroll Limit
   useEffect(() => {
     onResize()
-  }, [organization, onResize])
+  }, [
+    organization,
+    onResize,
+    refTableAdmin.current?.clientHeight,
+    refTableUsers.current?.clientHeight
+  ])
 
   /**
    * Render

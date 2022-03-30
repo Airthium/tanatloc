@@ -56,7 +56,6 @@ module.exports = {
     '<rootDir>/config/jest/',
     '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
-    '<rootDir>/tests/',
-    '<rootDir>/src/components/editor/prism/'
+    '<rootDir>/tests/'
   ]
 }

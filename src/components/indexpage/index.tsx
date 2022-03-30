@@ -197,18 +197,6 @@ const Index = (): JSX.Element => {
           </div>
           <div className="Index-row">
             <Card
-              className="Index-card coming-soon"
-              hoverable
-              cover={
-                <MathJax.Formula text={'\\int_{\\Omega}\\nabla u\\nabla v'} />
-              }
-            >
-              <Card.Meta
-                title={<Typography.Text>Custom model editor!</Typography.Text>}
-                description={<Typography.Text>Coming soon</Typography.Text>}
-              />
-            </Card>
-            <Card
               className="Index-card"
               hoverable
               cover={

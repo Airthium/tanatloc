@@ -31,8 +31,7 @@
     "**/.next/**",
     "**/public/**",
     "**/config/depcheck/**",
-    "**/config/jest/**",
-    "**/src/components/editor/**/*"
+    "**/config/jest/**"
   ],
   "plugin": "typedoc-plugin-airthium",
   "theme": "airthium",

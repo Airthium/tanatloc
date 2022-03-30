@@ -18,10 +18,7 @@ module.exports = {
     '<rootDir>/**/*.test.ts',
     '<rootDir>/**/*.test.tsx'
   ],
-  testPathIgnorePatterns: [
-    '<rootDir>/dist-install/',
-    '<rootDir>/src/components/editor/'
-  ],
+  testPathIgnorePatterns: ['<rootDir>/dist-install/'],
   modulePathIgnorePatterns: ['<rootDir>/.yarn', '<rootDir>/tests'],
   transform: {
     '^.+\\.(t|j)sx?$': ['babel-jest', { presets: ['next/babel'] }],
@@ -63,7 +60,6 @@ module.exports = {
     '<rootDir>/config/jest/',
     '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
-    '<rootDir>/tests/',
-    '<rootDir>/src/components/editor/'
+    '<rootDir>/tests/'
   ]
 }

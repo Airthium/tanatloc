@@ -9,6 +9,8 @@ import {
 } from '@/database/index.d'
 import { IWorkspaceWithData } from '../index.d'
 
+import { LIMIT } from '@/config/string'
+
 import WorkspaceDB from '@/database/workspace'
 
 import User from '../user'
@@ -26,6 +28,9 @@ const add = async (
   user: { id: string },
   workspace: { name: string }
 ): Promise<INewWorkspace> => {
+  // Check name
+  workspace.name = workspace.name.substring(0, LIMIT).trim()
+
   // Add workspace
   const newWorkspace = await WorkspaceDB.add(user, workspace)
 
@@ -341,6 +346,12 @@ const update = async (
         await addToGroup({ id: group }, workspace)
       })
     )
+  }
+
+  // Check name
+  const nameUpdate = data.find((d) => d.key === 'name')
+  if (nameUpdate) {
+    nameUpdate.value = nameUpdate.value.substring(0, LIMIT).trim()
   }
 
   // Update workspace

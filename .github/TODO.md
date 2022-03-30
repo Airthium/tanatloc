@@ -23,8 +23,6 @@
 
 ## Misc (Debug)
 
-- check name / description length server side
-
 - snapshot -> utiliser comme icon de projet ou download
 
 - section view fix

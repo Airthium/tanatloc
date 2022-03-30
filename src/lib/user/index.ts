@@ -3,6 +3,8 @@
 import { IDataBaseEntry, INewUser, IUser, IUserCheck } from '@/database/index.d'
 import { IUserWithData } from '../index.d'
 
+import { LIMIT } from '@/config/string'
+
 import UserDB from '@/database/user'
 
 import Avatar from '../avatar'
@@ -21,6 +23,10 @@ const add = async (user: {
   email: string
   password: string
 }): Promise<INewUser> => {
+  // Check email
+  user.email = user.email.substring(0, LIMIT).trim()
+
+  // Add
   const newUser = await UserDB.add(user)
   if (!newUser.alreadyExists) {
     // Send email
@@ -173,6 +179,8 @@ const update = async (
   // Check email change
   const emailData = data.find((d) => d.key === 'email')
   if (emailData) {
+    emailData.value = emailData.value.substring(0, LIMIT).trim()
+
     // Revalidate email
     const valid = await Email.revalidate(emailData.value, user.id)
 

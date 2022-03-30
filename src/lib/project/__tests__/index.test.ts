@@ -255,6 +255,14 @@ describe('lib/project', () => {
     await Project.update({ id: 'id' }, [{ key: 'groups', value: ['id'] }])
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
+
+    // Update title
+    await Project.update({ id: 'id' }, [{ key: 'title', value: 'title' }])
+
+    // Update description
+    await Project.update({ id: 'id' }, [
+      { key: 'description', value: 'description' }
+    ])
   })
 
   test('delete', async () => {

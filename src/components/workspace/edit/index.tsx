@@ -6,6 +6,8 @@ import { Form, Input } from 'antd'
 
 import { IWorkspaceWithData } from '@/lib/index.d'
 
+import { LIMIT } from '@/config/string'
+
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -103,8 +105,8 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
           rules={[
             { required: true, message: 'Name is required' },
             {
-              max: 50,
-              message: 'Max 50 characters'
+              max: LIMIT,
+              message: 'Max ' + LIMIT + ' characters'
             }
           ]}
         >

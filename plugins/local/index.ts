@@ -1,5 +1,7 @@
 /** @module Plugins.Local */
 
+import { LIMIT } from '@/config/string'
+
 import { IPlugin } from '@/database/index.d'
 
 import Lib from './src/lib'
@@ -19,7 +21,7 @@ const Local: IPlugin = {
         type: 'input',
         rules: [
           { required: true, message: 'Name is required' },
-          { max: 50, message: 'Max 50 characters' }
+          { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
         ]
       }
     },

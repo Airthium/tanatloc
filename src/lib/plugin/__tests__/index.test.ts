@@ -47,6 +47,15 @@ describe('lib/plugin', () => {
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mockInit).toHaveBeenCalledTimes(1)
+
+    // Name
+    await Plugin.add(
+      { id: 'id' },
+      {
+        key: 'key',
+        configuration: { name: { label: 'name', type: 'type', value: 'name' } }
+      }
+    )
   })
 
   test('getByUser', async () => {
@@ -97,6 +106,15 @@ describe('lib/plugin', () => {
     )
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
+
+    // Name
+    await Plugin.update(
+      { id: 'id' },
+      {
+        uuid: 'uuid',
+        configuration: { name: { label: 'name', type: 'type', value: 'name' } }
+      }
+    )
   })
 
   test('del', async () => {

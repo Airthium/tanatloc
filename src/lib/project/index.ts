@@ -6,6 +6,8 @@ import { ReadStream } from 'fs'
 import { IDataBaseEntry, IProject } from '@/database/index.d'
 import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
 
+import { LIMIT } from '@/config/string'
+
 import {
   AVATAR_RELATIVE,
   GEOMETRY_RELATIVE,
@@ -35,6 +37,11 @@ const add = async (
   workspace: { id: string },
   project: { title: string; description?: string }
 ): Promise<IProject> => {
+  // Check title & description
+  project.title = project.title.substring(0, LIMIT).trim()
+  project.description = project.description.substring(0, LIMIT).trim()
+
+  // Add
   const newProject = await ProjectDB.add(user, workspace, project)
 
   // Add project reference in workspace
@@ -256,6 +263,16 @@ const update = async (
       })
     )
   }
+
+  // Check title
+  const titleUpdate = data.find((d) => d.key === 'title')
+  if (titleUpdate)
+    titleUpdate.value = titleUpdate.value.substring(0, LIMIT).trim()
+
+  // Check description
+  const descriptionUpdate = data.find((d) => d.key === 'description')
+  if (descriptionUpdate)
+    descriptionUpdate.value = descriptionUpdate.value.substring(0, LIMIT).trim()
 
   await ProjectDB.update(project, data)
 }

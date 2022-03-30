@@ -8,6 +8,8 @@ import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
 import { IUserWithData } from '@/lib/index.d'
 
+import { LIMIT } from '@/config/string'
+
 import {
   SuccessNotification,
   ErrorNotification,
@@ -247,7 +249,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               name="email"
               rules={[
                 { type: 'email', message: 'This is not a valid email' },
-                { max: 50, message: 'Max 50 characters' }
+                { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
               ]}
             >
               <Input />
@@ -256,7 +258,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             <Form.Item
               label="First name"
               name="firstname"
-              rules={[{ max: 50, message: 'Max 50 characters' }]}
+              rules={[{ max: LIMIT, message: 'Max ' + LIMIT + ' characters' }]}
             >
               <Input />
             </Form.Item>
@@ -264,7 +266,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             <Form.Item
               label="Last name"
               name="lastname"
-              rules={[{ max: 50, message: 'Max 50 characters' }]}
+              rules={[{ max: LIMIT, message: 'Max ' + LIMIT + ' characters' }]}
             >
               <Input />
             </Form.Item>

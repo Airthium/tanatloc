@@ -21,6 +21,8 @@ import {
 } from '@/lib/index.d'
 import { INewWorkspace } from '@/database/index.d'
 
+import { LIMIT } from '@/config/string'
+
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -144,8 +146,8 @@ const WorkspacesList = ({
                 rules={[
                   { required: true, message: 'Name is required' },
                   {
-                    max: 50,
-                    message: 'Max 50 characters'
+                    max: LIMIT,
+                    message: 'Max ' + LIMIT + ' characters'
                   }
                 ]}
               >

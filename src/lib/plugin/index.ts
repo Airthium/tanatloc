@@ -3,6 +3,8 @@
 import { merge } from 'lodash'
 import { v4 as uuid } from 'uuid'
 
+import { LIMIT } from '@/config/string'
+
 import { IClientPlugin } from '@/database/index.d'
 
 import User from '../user'
@@ -19,6 +21,13 @@ const add = async (
 ): Promise<void> => {
   // Set uuid
   plugin.uuid = uuid()
+
+  // Check name
+  if (plugin.configuration?.name?.value)
+    plugin.configuration.name.value = plugin.configuration.name.value.substring(
+      0,
+      LIMIT
+    )
 
   // Get
   const userData = await User.get(user.id, ['plugins'])
@@ -61,6 +70,13 @@ const update = async (
   user: { id: string },
   plugin: IClientPlugin
 ): Promise<void> => {
+  // Check name
+  if (plugin.configuration?.name?.value)
+    plugin.configuration.name.value = plugin.configuration.name.value.substring(
+      0,
+      LIMIT
+    )
+
   // Get
   const userData = await User.get(user.id, ['plugins'])
 

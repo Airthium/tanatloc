@@ -321,6 +321,9 @@ describe('lib/workspace', () => {
       groups: ['groupid']
     }))
     await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
+
+    // Update name
+    await Workspace.update({ id: 'id' }, [{ key: 'name', value: 'name' }])
   })
 
   test('del', async () => {

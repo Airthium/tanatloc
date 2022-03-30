@@ -1,10 +1,12 @@
 import { mathjaxInit, mathjaxRefresh } from '..'
 
 describe('lib/mathjax', () => {
+  const { window } = global
   test('mathjaxInit', () => {
     // No window
-    window = undefined
+    delete global.window
     mathjaxInit()
+    global.window = window
 
     // Normal
     window.MathJax = undefined

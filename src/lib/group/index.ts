@@ -131,10 +131,8 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   // Users data
   await Promise.all(
     groups.map(async (group, index) => {
-      if (group.users) {
-        const users = await getUsersData(group)
-        groupsWithData[index].users = users
-      }
+      const users = await getUsersData(group)
+      groupsWithData[index].users = users
     })
   )
 

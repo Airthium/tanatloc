@@ -612,6 +612,20 @@ describe('components/project/simulation/initialization', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
 
+    // Click simulation select
+    const selects = screen.getAllByRole('combobox')
+    fireEvent.mouseDown(selects[1])
+
+    const options1 = screen.getAllByText('Simulation 1')
+    const option1 = options1[0]
+
+    fireEvent.click(option1)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+    )
+    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(2))
+
     unmount()
   })
 
@@ -638,9 +652,29 @@ describe('components/project/simulation/initialization', () => {
       />
     )
 
-    // Open coupling
+    // Open
     const select = screen.getAllByRole('combobox')
-    fireEvent.mouseDown(select[1])
+    fireEvent.mouseDown(select[0])
+
+    const velocity = screen.getByText('Velocity')
+    fireEvent.click(velocity)
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+
+    const coupling = screen.getByText('Coupling')
+    fireEvent.click(coupling)
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
+    )
+
+    // Click simulation select
+    const selects = screen.getAllByRole('combobox')
+    fireEvent.mouseDown(selects[1])
 
     const options1 = screen.getAllByText('Simulation 1')
     const option1 = options1[0]
@@ -649,7 +683,7 @@ describe('components/project/simulation/initialization', () => {
       throw new Error('update error')
     })
     fireEvent.click(option1)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()

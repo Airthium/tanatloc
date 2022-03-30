@@ -244,6 +244,26 @@ describe('lib/organization', () => {
         ]
       }
     ])
+
+    // With pending users only
+    mockGetAll.mockImplementation(() => [
+      {
+        name: 'name',
+        pendingusers: ['id1']
+      }
+    ])
+    mockUserGetWithData.mockImplementation(() => ({ id: 'id1' }))
+    organizations = await Organization.getByUser({ id: 'id1' }, [
+      'name',
+      'pendingusers'
+    ])
+    expect(mockGetAll).toHaveBeenCalledTimes(5)
+    expect(organizations).toEqual([
+      {
+        name: 'name',
+        pendingusers: [{ id: 'id1' }]
+      }
+    ])
   })
 
   test('update', async () => {

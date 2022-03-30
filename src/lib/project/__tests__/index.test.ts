@@ -249,6 +249,12 @@ describe('lib/project', () => {
     await Project.update({ id: 'id' }, [])
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
+
+    // Already in group
+    mockGroupGet.mockImplementation(() => ({ projects: ['id'] }))
+    await Project.update({ id: 'id' }, [{ key: 'groups', value: ['id'] }])
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
   })
 
   test('delete', async () => {
@@ -289,9 +295,9 @@ describe('lib/project', () => {
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockToolsCreatePath).toHaveBeenCalledTimes(2)
     expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
-    // expect(mockAvatarArchive).toHaveBeenCalledTimes(1)
-    // expect(mockGeometryArchive).toHaveBeenCalledTimes(1)
-    // expect(mockSimulationArchive).toHaveBeenCalledTimes(1)
+    expect(mockAvatarArchive).toHaveBeenCalledTimes(1)
+    expect(mockGeometryArchive).toHaveBeenCalledTimes(1)
+    expect(mockSimulationArchive).toHaveBeenCalledTimes(1)
     expect(mockToolsArchive).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsReadStream).toHaveBeenCalledTimes(2)

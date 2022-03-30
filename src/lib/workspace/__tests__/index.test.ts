@@ -311,6 +311,16 @@ describe('lib/workspace', () => {
       groups: ['groupid']
     }))
     await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
+
+    // Already in group
+    mockGroupGet.mockImplementation(() => ({
+      workspaces: ['id'],
+      projects: []
+    }))
+    mockGet.mockImplementation(() => ({
+      groups: ['groupid']
+    }))
+    await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
   })
 
   test('del', async () => {

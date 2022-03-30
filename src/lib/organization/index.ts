@@ -270,22 +270,22 @@ const getByUser = async (
       }
 
       // Owners data
-      if (data.includes('owners') && owners)
+      if (data.includes('owners'))
         organizationWithData.owners = await getOwnersData({ owners })
 
       // Pending owners data (partial)
-      if (data.includes('pendingowners') && pendingowners)
+      if (data.includes('pendingowners'))
         organizationWithData.pendingowners = await getOwnersData(
           { owners: pendingowners },
           true
         )
 
       // Users data
-      if (data.includes('users') && users)
+      if (data.includes('users'))
         organizationWithData.users = await getUsersData({ users })
 
       // Pending users data (partial)
-      if (data.includes('pendingusers') && pendingusers)
+      if (data.includes('pendingusers'))
         organizationWithData.pendingusers = await getUsersData(
           {
             users: pendingusers
@@ -294,7 +294,7 @@ const getByUser = async (
         )
 
       // Group data
-      if (data.includes('groups') && groups)
+      if (data.includes('groups'))
         organizationWithData.groups = await getGroupsData({ groups })
 
       return organizationWithData

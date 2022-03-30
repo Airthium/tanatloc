@@ -13,7 +13,7 @@ describe('lib/utils', () => {
   })
 
   test('stringToColor', () => {
-    let color
+    let color: any
 
     // Empty
     color = Utils.stringToColor()
@@ -38,7 +38,7 @@ describe('lib/utils', () => {
   })
 
   test('userToAvatar', () => {
-    let res
+    let res: any
 
     // Empty
     res = Utils.userToAvatar({})
@@ -58,6 +58,28 @@ describe('lib/utils', () => {
       unmount()
     }
 
+    // With firstname
+    res = Utils.userToAvatar({
+      email: 'email',
+      firstname: 'firstname'
+    })
+    {
+      const { unmount } = render(res)
+      expect(screen.getByText('F'))
+      unmount()
+    }
+
+    // With lastname
+    res = Utils.userToAvatar({
+      email: 'email',
+      lastname: 'lastname'
+    })
+    {
+      const { unmount } = render(res)
+      expect(screen.getByText('L'))
+      unmount()
+    }
+
     // With firstname & lastname
     res = Utils.userToAvatar({
       email: 'email',
@@ -69,10 +91,23 @@ describe('lib/utils', () => {
       expect(screen.getByText('FL'))
       unmount()
     }
+
+    // Pending
+    res = Utils.userToAvatar({
+      email: 'email',
+      firstname: 'firstname',
+      lastname: 'lastname',
+      pending: true
+    })
+    {
+      const { unmount } = render(res)
+      expect(screen.getByText('FL'))
+      unmount()
+    }
   })
 
   test('groupToAvatar', () => {
-    let res
+    let res: any
 
     // Empty
     res = Utils.groupToAvatar({})

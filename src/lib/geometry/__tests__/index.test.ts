@@ -149,6 +149,61 @@ describe('lib/geometry', () => {
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 
+  test('add 2d', async () => {
+    mockAdd.mockImplementation(() => ({
+      id: 'id'
+    }))
+    mockGet.mockImplementation(() => ({}))
+    mockToolsConvert.mockImplementation(() => ({
+      json: 'json',
+      glb: 'glb'
+    }))
+    const summary = {
+      faces: [{}, {}],
+      edges: [{}, {}]
+    }
+    const face = {}
+    const faceColor = {
+      data: {
+        attributes: {
+          color: { itemSize: 3, array: [0, 0.5, 1] }
+        }
+      }
+    }
+    const edge = {}
+    const edgeColor = {
+      data: {
+        attributes: {
+          color: { itemSize: 3, array: [0, 0.5, 1] }
+        }
+      }
+    }
+    mockToolsReadJSONFile
+      .mockImplementationOnce(() => summary)
+      .mockImplementationOnce(() => face)
+      .mockImplementationOnce(() => faceColor)
+      .mockImplementationOnce(() => edge)
+      .mockImplementationOnce(() => edgeColor)
+
+    // Normal
+    const geometry = await Geometry.add(
+      { id: 'id' },
+      { name: 'name.step', uid: 'test', buffer: Buffer.from('buffer') }
+    )
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsConvert).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(5)
+    expect(geometry).toEqual({
+      dimension: 2,
+      id: 'id',
+      json: 'json',
+      glb: 'glb',
+      summary: summary
+    })
+  })
+
   test('get', async () => {
     mockGet.mockImplementation(() => ({}))
     const geometry = await Geometry.get('id', [])

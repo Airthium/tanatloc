@@ -200,10 +200,9 @@ const getByUser = async ({
   const workspaces = []
 
   // Get local workspaces
-  if (user.workspaces) {
-    const localWorkspaces = await getUserWorkspaces(user)
-    workspaces.push(...localWorkspaces)
-  }
+
+  const localWorkspaces = await getUserWorkspaces(user)
+  workspaces.push(...localWorkspaces)
 
   // Get organizations workspaces & projects
   if (user.organizations) {
@@ -361,22 +360,18 @@ const del = async (
   const data = await getWithData(workspace.id, ['groups', 'projects'])
 
   // Delete from groups
-  if (data.groups) {
-    await Promise.all(
-      data.groups.map(async (group) => {
-        await deleteFromGroup(group, workspace)
-      })
-    )
-  }
+  await Promise.all(
+    data.groups.map(async (group) => {
+      await deleteFromGroup(group, workspace)
+    })
+  )
 
   // Delete projects
-  if (data.projects) {
-    await Promise.all(
-      data.projects.map(async (project) => {
-        await Project.del(workspace, { id: project })
-      })
-    )
-  }
+  await Promise.all(
+    data.projects.map(async (project) => {
+      await Project.del(workspace, { id: project })
+    })
+  )
 
   // Delete workspace
   await WorkspaceDB.del(workspace)

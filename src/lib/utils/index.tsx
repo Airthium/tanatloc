@@ -1,6 +1,6 @@
 /** @module Lib.Utils */
 
-import { Avatar, Badge, Spin, Tooltip, Typography } from 'antd'
+import { Avatar, Badge, Spin, Tooltip } from 'antd'
 import { parseOneAddress } from 'email-addresses'
 
 /**

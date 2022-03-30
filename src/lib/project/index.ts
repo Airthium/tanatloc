@@ -273,22 +273,20 @@ const del = async (
   const data = await get(project.id, ['groups', 'simulations'])
 
   // Delete from groups
-  if (data.groups) {
-    await Promise.all(
-      data.groups.map(async (group) => {
-        await deleteFromGroup({ id: group }, project)
-      })
-    )
-  }
+
+  await Promise.all(
+    data.groups.map(async (group) => {
+      await deleteFromGroup({ id: group }, project)
+    })
+  )
 
   // Delete simulation
-  if (data.simulations) {
-    await Promise.all(
-      data.simulations.map(async (simulation) => {
-        await Simulation.del({ id: simulation })
-      })
-    )
-  }
+
+  await Promise.all(
+    data.simulations.map(async (simulation) => {
+      await Simulation.del({ id: simulation })
+    })
+  )
 
   // Delete project
   await ProjectDB.del(project)
@@ -332,30 +330,28 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
     } catch (err) {}
 
   // Archive geometries
-  if (data.geometries)
-    await Promise.all(
-      data.geometries.map(async (geometry) => {
-        try {
-          await Geometry.archive(
-            { id: geometry },
-            path.join(temporaryPath, GEOMETRY_RELATIVE)
-          )
-        } catch (err) {}
-      })
-    )
+  await Promise.all(
+    data.geometries.map(async (geometry) => {
+      try {
+        await Geometry.archive(
+          { id: geometry },
+          path.join(temporaryPath, GEOMETRY_RELATIVE)
+        )
+      } catch (err) {}
+    })
+  )
 
   // Archive simulations
-  if (data.simulations)
-    await Promise.all(
-      data.simulations.map(async (simulation) => {
-        try {
-          await Simulation.archive(
-            { id: simulation },
-            path.join(temporaryPath, SIMULATION_RELATIVE)
-          )
-        } catch (err) {}
-      })
-    )
+  await Promise.all(
+    data.simulations.map(async (simulation) => {
+      try {
+        await Simulation.archive(
+          { id: simulation },
+          path.join(temporaryPath, SIMULATION_RELATIVE)
+        )
+      } catch (err) {}
+    })
+  )
 
   // Create archive
   const archiveFileName = temporaryPath + '.tgz'

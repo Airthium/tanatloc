@@ -218,7 +218,7 @@ const loadResults = async (
   simulations: ISimulation[],
   id: string
 ): Promise<{ label: string; value: string; file: string }[]> => {
-  const tasks = (await SimulationAPI.tasks({ id })) as ISimulationTask[]
+  const tasks: ISimulationTask[] = await SimulationAPI.tasks({ id })
 
   const currentSimulation = simulations.find((s) => s.id === id)
   const configuration = currentSimulation.scheme.configuration

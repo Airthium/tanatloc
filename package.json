@@ -24,6 +24,7 @@
     "prettier": "prettier -l '**/*.{js,jsx,ts,tsx,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,css}'",
     "prestart": "yarn run prestartconfig && yarn run prestartinstall && yarn run prestartdatabase && yarn run prestartrun",
+    "sonar": ".github/workflows/sonar.local.sh",
     "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
     "test": "jest --config config/jest/jest.config.js --coverage --silent",
     "preteste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn run prestart",

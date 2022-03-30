@@ -195,55 +195,50 @@ const del = async (user: { id: string }): Promise<void> => {
   const data = await get(user.id, ['workspaces', 'organizations', 'avatar'])
 
   // Delete from organization
-  if (data.organizations) {
-    await Promise.all(
-      data.organizations.map(async (organization) => {
-        await Organization.update({ id: organization }, [
-          {
-            key: 'owners',
-            type: 'array',
-            method: 'remove',
-            value: user.id
-          }
-        ])
-        await Organization.update({ id: organization }, [
-          {
-            key: 'users',
-            type: 'array',
-            method: 'remove',
-            value: user.id
-          }
-        ])
 
-        const organizationData = await Organization.get(organization, [
-          'groups'
-        ])
-        if (organizationData.groups) {
-          await Promise.all(
-            organizationData.groups.map(async (group) => {
-              await Group.update({ id: group }, [
-                {
-                  key: 'users',
-                  type: 'array',
-                  method: 'remove',
-                  value: user.id
-                }
-              ])
-            })
-          )
+  await Promise.all(
+    data.organizations.map(async (organization) => {
+      await Organization.update({ id: organization }, [
+        {
+          key: 'owners',
+          type: 'array',
+          method: 'remove',
+          value: user.id
         }
-      })
-    )
-  }
+      ])
+      await Organization.update({ id: organization }, [
+        {
+          key: 'users',
+          type: 'array',
+          method: 'remove',
+          value: user.id
+        }
+      ])
+
+      const organizationData = await Organization.get(organization, ['groups'])
+
+      await Promise.all(
+        organizationData.groups.map(async (group) => {
+          await Group.update({ id: group }, [
+            {
+              key: 'users',
+              type: 'array',
+              method: 'remove',
+              value: user.id
+            }
+          ])
+        })
+      )
+    })
+  )
 
   // Delete workspaces
-  if (data.workspaces) {
-    await Promise.all(
-      data.workspaces.map(async (workspace) => {
-        await Workspace.del(user, { id: workspace })
-      })
-    )
-  }
+
+  await Promise.all(
+    data.workspaces.map(async (workspace) => {
+      await Workspace.del(user, { id: workspace })
+    })
+  )
 
   // Delete avatar
   if (data.avatar) {

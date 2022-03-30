@@ -24,7 +24,7 @@ describe('components/assets/button/add', () => {
     const { unmount } = render(
       <AddButton
         disabled={mockDisabled()}
-        primary
+        primary={false}
         light
         dark
         fullWidth

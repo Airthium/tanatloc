@@ -52,6 +52,28 @@ export const errors = {
 }
 
 /**
+ * Plugins list
+ * @param user User
+ * @param setModels Set models
+ */
+export const pluginsList = (
+  user: IUserWithData,
+  setModels: Dispatch<SetStateAction<IModel[]>>
+) => {
+  if (!user) return
+
+  PluginsAPI.list()
+    .then((plugins) => {
+      const allModels = loadModels(user, Models, plugins)
+
+      setModels(allModels)
+    })
+    .catch((err) => {
+      ErrorNotification(errors.plugins, err)
+    })
+}
+
+/**
  * Load models
  * @param user User
  * @param models Models
@@ -102,17 +124,7 @@ const Selector = ({
 
   // Models
   useEffect(() => {
-    if (!user) return
-
-    PluginsAPI.list()
-      .then((plugins) => {
-        const allModels = loadModels(user, Models, plugins)
-
-        setModels(allModels)
-      })
-      .catch((err) => {
-        ErrorNotification(errors.plugins, err)
-      })
+    pluginsList(user, setModels)
   }, [user])
 
   // Categories
@@ -264,16 +276,7 @@ const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
 
   // Models
   useEffect(() => {
-    if (!user) return
-
-    PluginsAPI.list()
-      .then((plugins) => {
-        const allModels = loadModels(user, Models, plugins)
-        setModels(allModels)
-      })
-      .catch((err) => {
-        ErrorNotification(errors.plugins, err)
-      })
+    pluginsList(user, setModels)
   }, [user])
 
   // Check model update

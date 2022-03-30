@@ -145,6 +145,9 @@ describe('components/project/geometry/add', () => {
     info = { file: { status: 'uploading' } }
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
 
+    info = { file: { status: 'other' } }
+    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+
     // Done
     info = { file: { status: 'done', originFileObj: {} } }
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })

@@ -24,7 +24,11 @@ describe('components/project/simulation/run/log', () => {
     {
       label: 'label 1',
       status: 'finish',
-      systemLog: 'log'
+      systemLog: 'log',
+      link: {
+        label: 'link',
+        href: '#'
+      }
     },
     {
       label: 'label 2',

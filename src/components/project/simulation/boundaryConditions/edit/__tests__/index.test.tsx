@@ -316,4 +316,33 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
 
     unmount()
   })
+
+  test('onEdit (different old type) - without values', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    oldBoundaryCondition.type.key = 'otherKey'
+    simulation.scheme.configuration.boundaryConditions.key.values = null
+    const { unmount } = render(
+      <Edit
+        simulation={simulation}
+        boundaryCondition={boundaryCondition}
+        oldBoundaryCondition={oldBoundaryCondition}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('EditButton')
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

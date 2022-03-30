@@ -65,4 +65,47 @@ describe('components/account/hpc/list', () => {
 
     unmount()
   })
+
+  test('plugins - empty configuration', () => {
+    const { unmount } = render(
+      <List
+        plugin={plugin}
+        plugins={[
+          {
+            uuid: '0',
+            key: 'key',
+            name: '0',
+            configuration: {}
+          },
+          {
+            uuid: 'uuid',
+            key: '0',
+            name: 'name',
+            configuration: {
+              name: {
+                label: 'Name',
+                type: 'input',
+                value: 'name'
+              },
+              password: {
+                label: 'Password',
+                type: 'password',
+                value: 'password'
+              },
+              textarea: {
+                label: 'Textarea',
+                type: 'textarea',
+                value: 'code'
+              },
+              //@ts-ignore
+              item: { value: 'item' }
+            }
+          }
+        ]}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
 })

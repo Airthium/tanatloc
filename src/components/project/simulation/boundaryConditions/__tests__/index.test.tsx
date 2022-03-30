@@ -119,6 +119,29 @@ describe('components/project/simulation/boundaryConditions', () => {
     unmount()
   })
 
+  test('render - 2D', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <BoundaryConditions
+          geometry={{
+            ...geometry,
+            dimension: 2
+          }}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
+    )
+
+    expect(mockSetPart).toHaveBeenCalledTimes(1)
+    expect(mockSetType).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
   test('onAdd', () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />

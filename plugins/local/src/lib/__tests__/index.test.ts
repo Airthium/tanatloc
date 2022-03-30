@@ -306,7 +306,8 @@ describe('plugins/local/src/lib', () => {
     })
     try {
       await Local.computeSimulation({ id: 'id' }, {
-        algorithm: 'algorithm'
+        algorithm: 'algorithm',
+        configuration: {}
       } as ISimulation['scheme'])
       expect(true).toBe(false)
     } catch (err) {

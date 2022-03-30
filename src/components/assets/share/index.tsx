@@ -25,12 +25,12 @@ import {
   IWorkspaceWithData
 } from '@/lib/index.d'
 
+import { LinkButton } from '../button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
-import { LinkButton } from '../button'
 
 /**
  * Props

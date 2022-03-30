@@ -3,6 +3,18 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Share, { errors } from '..'
 
+const mockPush = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: mockPush
+  })
+}))
+
+const mockLinkButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  LinkButton: (props: any) => mockLinkButton(props)
+}))
+
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
@@ -56,6 +68,11 @@ describe('components/assets/share', () => {
   const workspaceSwr = { mutateOneWorkspace: jest.fn() }
 
   beforeEach(() => {
+    mockPush.mockReset()
+
+    mockLinkButton.mockReset()
+    mockLinkButton.mockImplementation(() => <div />)
+
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
@@ -116,7 +133,24 @@ describe('components/assets/share', () => {
     unmount()
   })
 
-  test('onSelectChange', async () => {
+  test('empty organizations', () => {
+    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+    mockLinkButton.mockImplementation((props) => (
+      <div role="LinkButton" onClick={props.onClick} />
+    ))
+    const { unmount } = render(
+      <Share project={project} organizations={[]} swr={projectSwr} />
+    )
+
+    const button = screen.getByRole('LinkButton')
+    fireEvent.click(button)
+
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('onChange', async () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />

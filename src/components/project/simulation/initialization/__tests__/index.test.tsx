@@ -366,6 +366,7 @@ describe('components/project/simulation/initialization', () => {
       {
         files: [
           { type: 'mesh' },
+          { type: 'result' },
           {
             type: 'result',
             number: 0,

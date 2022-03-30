@@ -1,3 +1,5 @@
+/** @module Components.Assets.Button.Link */
+
 import { ReactNode } from 'react'
 import { Button } from 'antd'
 

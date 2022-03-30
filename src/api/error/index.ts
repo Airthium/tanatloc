@@ -1,3 +1,5 @@
+/** @module API.Error */
+
 import { ICallError } from '../index.d'
 
 /**

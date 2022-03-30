@@ -1,3 +1,5 @@
+/** @module Context.Select.Actions */
+
 import { actionTypes, ISelect, ISelectAction } from '.'
 
 /**

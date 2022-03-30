@@ -1,3 +1,5 @@
+/** @module Context.Select */
+
 import { createContext, Dispatch, ReactNode, useReducer } from 'react'
 
 /**

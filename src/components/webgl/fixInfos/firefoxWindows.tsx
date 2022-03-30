@@ -1,3 +1,5 @@
+/** @module Components.WebGL.FixInfos.Windows */
+
 import { Layout, Typography } from 'antd'
 
 /**

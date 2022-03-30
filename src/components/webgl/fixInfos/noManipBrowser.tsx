@@ -1,3 +1,5 @@
+/** @module Components.WebGL.FixInfos.NoManipBrowser */
+
 import { Layout, Typography } from 'antd'
 
 /**

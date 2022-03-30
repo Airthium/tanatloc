@@ -1,3 +1,5 @@
+/** @module Components.WebGL.FixInfos.SafariMac */
+
 import { Layout, Typography } from 'antd'
 
 /**

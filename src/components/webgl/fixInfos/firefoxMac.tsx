@@ -1,4 +1,4 @@
-/** @module Components.WebGL.FirefoxMac */
+/** @module Components.WebGL.FixInfos.FirefoxMac */
 
 import { Layout, Typography } from 'antd'
 

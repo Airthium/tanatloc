@@ -204,6 +204,41 @@ const getWithData = async (
 }
 
 /**
+ * Set missing data
+ * @param organizations Organizations
+ * @param data Data
+ */
+const setMissingData = (
+  organizations: IOrganization[],
+  data: string[]
+): void => {
+  if (data.includes('owners'))
+    organizations.forEach((organization) => {
+      !organization.owners && (organization.owners = [])
+    })
+
+  if (data.includes('pendingowners'))
+    organizations.forEach((organization) => {
+      !organization.pendingowners && (organization.pendingowners = [])
+    })
+
+  if (data.includes('users'))
+    organizations.forEach((organization) => {
+      !organization.users && (organization.users = [])
+    })
+
+  if (data.includes('pendingusers'))
+    organizations.forEach((organization) => {
+      !organization.pendingusers && (organization.pendingusers = [])
+    })
+
+  if (data.includes('groups'))
+    organizations.forEach((organization) => {
+      !organization.groups && (organization.groups = [])
+    })
+}
+
+/**
  * Get by user
  * @param user User
  * @param data Data
@@ -219,30 +254,7 @@ const getByUser = async (
 
   const organizations = await OrganizationDB.getAll(internalData)
 
-  if (data.includes('owners'))
-    organizations.forEach((organization) => {
-      if (!organization.owners) organization.owners = []
-    })
-
-  if (data.includes('pendingowners'))
-    organizations.forEach((organization) => {
-      if (!organization.pendingowners) organization.pendingowners = []
-    })
-
-  if (data.includes('users'))
-    organizations.forEach((organization) => {
-      if (!organization.users) organization.users = []
-    })
-
-  if (data.includes('pendingusers'))
-    organizations.forEach((organization) => {
-      if (!organization.pendingusers) organization.pendingusers = []
-    })
-
-  if (data.includes('groups'))
-    organizations.forEach((organization) => {
-      if (!organization.groups) organization.groups = []
-    })
+  setMissingData(organizations, data)
 
   // Check user & data
   const userOrganizations = await Promise.all(

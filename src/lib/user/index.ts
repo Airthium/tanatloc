@@ -119,22 +119,22 @@ const getAll = async (data: string[]): Promise<IUser[]> => {
 
   if (data.includes('organizations'))
     users.forEach((user) => {
-      if (!user.organizations) user.organizations = []
+      !user.organizations && (user.organizations = [])
     })
 
   if (data.includes('workspaces'))
     users.forEach((user) => {
-      if (!user.workspaces) user.workspaces = []
+      !user.workspaces && (user.workspaces = [])
     })
 
   if (data.includes('authorizedplugins'))
     users.forEach((user) => {
-      if (!user.authorizedplugins) user.authorizedplugins = []
+      !user.authorizedplugins && (user.authorizedplugins = [])
     })
 
   if (data.includes('plugins'))
     users.forEach((user) => {
-      if (!user.plugins) user.plugins = []
+      !user.plugins && (user.plugins = [])
     })
 
   return users

@@ -383,24 +383,22 @@ const PartLoader = (
 
     // Search in solids
     const solids = part.children[0]
-    if (solids)
-      for (const solid of solids.children) {
-        if (solid.userData.uuid === uuid) return solid
-      }
+
+    for (const solid of solids?.children || []) {
+      if (solid.userData.uuid === uuid) return solid
+    }
 
     // Search in faces
     const faces = part.children[1]
-    if (faces)
-      for (const face of faces.children) {
-        if (face.userData.uuid === uuid) return face
-      }
+    for (const face of faces?.children || []) {
+      if (face.userData.uuid === uuid) return face
+    }
 
     // Search in edges
     const edges = part.children[2]
-    if (edges)
-      for (const edge of edges.children) {
-        if (edge.userData.uuid === uuid) return edge
-      }
+    for (const edge of edges?.children || []) {
+      if (edge.userData.uuid === uuid) return edge
+    }
   }
 
   /**

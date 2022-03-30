@@ -248,9 +248,11 @@ export const loadPart = async (
   scene: Scene & { boundingSphere: Sphere },
   camera: PerspectiveCamera,
   controls: TrackballControls,
-  gridHelper: IGridHelper,
-  sectionViewHelper: ISectionViewHelper,
-  colorbarHelper: IColorbarHelper,
+  helpers: {
+    gridHelper: IGridHelper
+    sectionViewHelper: ISectionViewHelper
+    colorbarHelper: IColorbarHelper
+  },
   dispatch: Dispatch<any>
 ): Promise<void> => {
   // Events
@@ -282,7 +284,7 @@ export const loadPart = async (
   const mesh = await loader.load(
     part,
     transparent,
-    sectionViewHelper.getClippingPlane()
+    helpers.sectionViewHelper.getClippingPlane()
   )
 
   // Scene
@@ -290,22 +292,22 @@ export const loadPart = async (
   computeSceneBoundingSphere(scene)
 
   // Grid
-  gridHelper.update()
+  helpers.gridHelper.update()
 
   // Zoom
   zoomToFit(scene, camera, controls)
 
   // Colorbar
   if (mesh?.children[1]?.children[0]?.userData.lut) {
-    colorbarHelper.setLUT(mesh.children[1].children[0].userData.lut)
-    colorbarHelper.setVisible(true)
+    helpers.colorbarHelper.setLUT(mesh.children[1].children[0].userData.lut)
+    helpers.colorbarHelper.setVisible(true)
   } else {
-    colorbarHelper.setVisible(false)
+    helpers.colorbarHelper.setVisible(false)
   }
 
-  gridHelper.update()
-  gridHelper.setVisible(true)
-  gridHelper.dispose()
+  helpers.gridHelper.update()
+  helpers.gridHelper.setVisible(true)
+  helpers.gridHelper.dispose()
 }
 
 /**
@@ -642,9 +644,11 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         scene.current,
         camera.current,
         controls.current,
-        gridHelper.current,
-        sectionViewHelper.current,
-        colorbarHelper.current,
+        {
+          gridHelper: gridHelper.current,
+          sectionViewHelper: sectionViewHelper.current,
+          colorbarHelper: colorbarHelper.current
+        },
         dispatch
       )
         .then(() => {

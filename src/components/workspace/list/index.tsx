@@ -205,7 +205,6 @@ const WorkspacesList = ({
   )
 }
 
-// TODO propTypes
 WorkspacesList.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired
@@ -220,7 +219,17 @@ WorkspacesList.propTypes = {
       groups: PropTypes.array
     }).isRequired
   ).isRequired,
-  organizations: PropTypes.array.isRequired,
+  organizations: PropTypes.arrayOf(
+    PropTypes.shape({
+      groups: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          users: PropTypes.array
+        })
+      )
+    })
+  ).isRequired,
   swr: PropTypes.exact({
     addOneWorkspace: PropTypes.func.isRequired,
     mutateOneWorkspace: PropTypes.func.isRequired,

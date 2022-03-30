@@ -250,9 +250,9 @@ const loadResults = async (
       } else {
         // Pattern filter
         const pattern = new RegExp(filter.pattern)
-        const notFilteredFiles = task.files.filter(
-          (file) => !pattern.test(file.fileName)
-        )
+        const notFilteredFiles = task.files
+          .filter((file) => !pattern.test(file.fileName))
+          .filter((file) => file.type === 'result')
         const files = task.files.filter((file) => pattern.test(file.fileName))
 
         // Numbering
@@ -289,12 +289,11 @@ const loadResults = async (
         results.push(
           ...notFilteredFiles
             .map((file) => {
-              if (file.type === 'result')
-                results.push({
-                  label: file.fileName,
-                  value: file.fileName,
-                  file: file.fileName
-                })
+              results.push({
+                label: file.fileName,
+                value: file.fileName,
+                file: file.fileName
+              })
             })
             .filter((f) => f)
         )
@@ -400,6 +399,83 @@ const Initialization = ({
   // Build initialization
   const initializationValue = subScheme.value
   const initializations = {}
+
+  // Render coupling
+  const renderCoupling = (
+    options: { label: string; value: string; disabled: boolean }[],
+    filter?: any
+  ) => (
+    <>
+      <Typography.Text>
+        If you use coupling, the selected simulation mesh will be used, at least
+        for the first iteration.
+      </Typography.Text>
+      <Space direction="vertical" className="full-width marginTop-10">
+        <Select
+          className="full-width"
+          options={options}
+          placeholder="Select a simulation"
+          value={initializationValue?.simulation}
+          onChange={async (value: string) => {
+            setLoading(true)
+            try {
+              await onCouplingChange(simulations, simulation, value, swr)
+              setSimulation(value)
+            } catch (err) {
+            } finally {
+              setLoading(false)
+            }
+          }}
+        />
+        {loading && <Spin />}
+        {couplingResults?.length ? (
+          <>
+            <Typography.Text key={'simulation'}>
+              {filter?.name}:
+            </Typography.Text>
+            <Select
+              className="full-width"
+              options={couplingResults}
+              placeholder={'Select a ' + filter.name}
+              value={initializationValue?.result}
+              onChange={async (
+                value: string,
+                option: { label: string; value: string; file: string }
+              ) => onCouplingResultChange(simulation, value, option, swr)}
+            />
+          </>
+        ) : (
+          <Typography.Text type="danger">
+            No results, please select an other simulation.
+          </Typography.Text>
+        )}
+      </Space>
+    </>
+  )
+
+  // Render direct
+  const renderDirect = (direct: {
+    label: string
+    children: IModelInitialization[]
+  }) => (
+    <Space direction="vertical" className="full-width">
+      {direct.children.map((child, index) => {
+        if (dimension === 2 && child.only3D) return
+        return (
+          <Formula
+            key={index}
+            label={child.label}
+            defaultValue={(
+              initializationValue?.values?.[index] ?? child.default
+            ).toString()}
+            unit={child.unit}
+            onValueChange={(value) => onChange(simulation, index, value, swr)}
+          />
+        )
+      })}
+    </Space>
+  )
+
   Object.keys(subScheme).forEach((key) => {
     if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
       return
@@ -426,54 +502,7 @@ const Initialization = ({
       // Filter
       const filter = compatibility?.filter
 
-      initializations[key] = (
-        <>
-          <Typography.Text>
-            If you use coupling, the selected simulation mesh will be used, at
-            least for the first iteration.
-          </Typography.Text>
-          <Space direction="vertical" className="full-width marginTop-10">
-            <Select
-              className="full-width"
-              options={simulationsOptions}
-              placeholder="Select a simulation"
-              value={initializationValue?.simulation}
-              onChange={async (value: string) => {
-                setLoading(true)
-                try {
-                  await onCouplingChange(simulations, simulation, value, swr)
-                  setSimulation(value)
-                } catch (err) {
-                } finally {
-                  setLoading(false)
-                }
-              }}
-            />
-            {loading && <Spin />}
-            {couplingResults?.length ? (
-              <>
-                <Typography.Text key={'simulation'}>
-                  {filter?.name}:
-                </Typography.Text>
-                <Select
-                  className="full-width"
-                  options={couplingResults}
-                  placeholder={'Select a ' + filter.name}
-                  value={initializationValue?.result}
-                  onChange={async (
-                    value: string,
-                    option: { label: string; value: string; file: string }
-                  ) => onCouplingResultChange(simulation, value, option, swr)}
-                />
-              </>
-            ) : (
-              <Typography.Text type="danger">
-                No results, please select an other simulation.
-              </Typography.Text>
-            )}
-          </Space>
-        </>
-      )
+      initializations[key] = renderCoupling(simulationsOptions, filter)
     }
 
     // Direct
@@ -482,26 +511,7 @@ const Initialization = ({
       children: IModelInitialization[]
     }
     if (direct.children) {
-      initializations[key] = (
-        <Space direction="vertical" className="full-width">
-          {direct.children.map((child, index) => {
-            if (dimension === 2 && child.only3D) return
-            return (
-              <Formula
-                key={index}
-                label={child.label}
-                defaultValue={(
-                  initializationValue?.values?.[index] ?? child.default
-                ).toString()}
-                unit={child.unit}
-                onValueChange={(value) =>
-                  onChange(simulation, index, value, swr)
-                }
-              />
-            )
-          })}
-        </Space>
-      )
+      initializations[key] = renderDirect(direct)
     }
   })
 

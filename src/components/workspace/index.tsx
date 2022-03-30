@@ -205,7 +205,17 @@ Workspace.propTypes = {
     users: PropTypes.array,
     groups: PropTypes.array
   }).isRequired,
-  organizations: PropTypes.array.isRequired,
+  organizations: PropTypes.arrayOf(
+    PropTypes.shape({
+      groups: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          users: PropTypes.array
+        })
+      )
+    })
+  ).isRequired,
   swr: PropTypes.exact({
     delOneWorkspace: PropTypes.func.isRequired,
     mutateOneWorkspace: PropTypes.func.isRequired

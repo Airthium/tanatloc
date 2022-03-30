@@ -19,7 +19,10 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/geometry', () => {
-  const geometries = [{ id: 'id', name: 'geometry' }]
+  const geometries = [
+    { id: 'id', name: 'geometry' },
+    { id: 'id2', name: 'other geometry' }
+  ]
   const geometry = { id: 'id' }
   const simulation: ISimulation = {
     id: 'id',

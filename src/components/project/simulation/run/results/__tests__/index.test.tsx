@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Results from '..'
 
-import { ISimulation, ISimulationTask } from '@/database/index.d'
+import { ISimulation } from '@/database/index.d'
 
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplicator = jest.fn()
@@ -19,7 +19,7 @@ const mockArchive = jest.fn()
 jest.mock('../archive', () => (props: any) => mockArchive(props))
 
 describe('components/project/simulation/run/results', () => {
-  const currentSimulation: ISimulation = {
+  const simulation: ISimulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -76,8 +76,19 @@ describe('components/project/simulation/run/results', () => {
 
   test('render', () => {
     const { unmount } = render(
+      <Results simulation={simulation} result={result} setResult={setResult} />
+    )
+
+    unmount()
+  })
+
+  test('render - empty tasks', () => {
+    const { unmount } = render(
       <Results
-        simulation={currentSimulation}
+        simulation={{
+          ...simulation,
+          tasks: [{ label: 'label', status: 'finish', file: null, files: null }]
+        }}
         result={result}
         setResult={setResult}
       />
@@ -102,11 +113,7 @@ describe('components/project/simulation/run/results', () => {
 
   test('setResult', () => {
     const { unmount } = render(
-      <Results
-        simulation={currentSimulation}
-        result={result}
-        setResult={setResult}
-      />
+      <Results simulation={simulation} result={result} setResult={setResult} />
     )
 
     const eyeOpen = screen.getByRole('button', { name: 'eye' })
@@ -139,7 +146,7 @@ describe('components/project/simulation/run/results', () => {
     const { unmount } = render(
       <Results
         simulation={{
-          ...currentSimulation,
+          ...simulation,
           scheme: {
             category: 'category',
             name: 'name',
@@ -207,7 +214,7 @@ describe('components/project/simulation/run/results', () => {
     const { unmount } = render(
       <Results
         simulation={{
-          ...currentSimulation,
+          ...simulation,
           scheme: {
             category: 'category',
             name: 'name',
@@ -276,7 +283,7 @@ describe('components/project/simulation/run/results', () => {
     const { unmount } = render(
       <Results
         simulation={{
-          ...currentSimulation,
+          ...simulation,
           scheme: {
             category: 'category',
             name: 'name',

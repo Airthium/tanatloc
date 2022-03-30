@@ -92,6 +92,11 @@ describe('install/dB', () => {
         if (query.includes('ALTER COLUMN') && query.includes('TEXT')) {
           if (fixConstraint) return {}
           else throw new Error()
+        } else if (
+          query.includes('DROP COLUMN') &&
+          query.includes('tanatloc_links')
+        ) {
+          return {}
         } else {
           if (fix) return {}
           else throw new Error()

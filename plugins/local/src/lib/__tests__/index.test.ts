@@ -342,7 +342,11 @@ describe('plugins/local/src/lib', () => {
             meshable: true,
             name: 'name',
             path: 'path',
-            file: 'file'
+            file: 'file',
+            meshParameters: {
+              type: 'auto',
+              value: 'normal'
+            }
           },
           boundaryConditions: {
             index: 0,

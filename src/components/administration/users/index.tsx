@@ -63,28 +63,26 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
 
   // Data
   const authorizedpluginsRender = (authorizedplugins: string[]) => {
-    if (authorizedplugins) {
-      authorizedplugins.sort()
-      return (
-        <Space wrap={true}>
-          {authorizedplugins.map((authorizedplugin) => {
-            const plugin = plugins?.find((p) => p.key === authorizedplugin)
-            if (!plugin) return
-            else
-              return (
-                <Badge
-                  key={authorizedplugin}
-                  size="small"
-                  count={plugin.category}
-                  offset={[5, -5]}
-                >
-                  {plugin.name}
-                </Badge>
-              )
-          })}
-        </Space>
-      )
-    }
+    authorizedplugins.sort()
+    return (
+      <Space wrap={true}>
+        {authorizedplugins.map((authorizedplugin) => {
+          const plugin = plugins?.find((p) => p.key === authorizedplugin)
+          if (!plugin) return
+          else
+            return (
+              <Badge
+                key={authorizedplugin}
+                size="small"
+                count={plugin.category}
+                offset={[5, -5]}
+              >
+                {plugin.name}
+              </Badge>
+            )
+        })}
+      </Space>
+    )
   }
 
   const superuserRender = (superuser: boolean) =>

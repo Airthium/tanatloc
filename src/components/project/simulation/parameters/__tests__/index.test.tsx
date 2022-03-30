@@ -107,6 +107,29 @@ describe('components/project/simulation/parameters', () => {
     unmount()
   })
 
+  test('render - done', () => {
+    const { unmount } = render(
+      <Parameters
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              parameters: {
+                ...simulation.scheme.configuration.parameters,
+                done: true
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
   test('onDone error', async () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()

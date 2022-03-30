@@ -178,7 +178,7 @@ const PartLoader = (
 
     // Solids
     const solids = part.children[0]
-    solids.children?.forEach((solid) => {
+    solids?.children?.forEach((solid) => {
       const childBox = solid.geometry.boundingBox
       mergeBox(box, childBox)
     })
@@ -186,7 +186,7 @@ const PartLoader = (
     if (box.isEmpty()) {
       // Try faces
       const faces = part.children[1]
-      faces.children?.forEach((face) => {
+      faces?.children?.forEach((face) => {
         mergeBox(box, face.geometry.boundingBox)
       })
     }
@@ -241,7 +241,7 @@ const PartLoader = (
    */
   const setTransparent = (part: IPart, transparent: boolean): void => {
     part.children.forEach((group) => {
-      group.children &&
+      group?.children &&
         group.children.forEach((child) => {
           child.material.transparent = transparent
           child.material.opacity = transparent ? 0.5 : 1
@@ -256,7 +256,7 @@ const PartLoader = (
    * @param visible Visible
    */
   const setSolidsVisible = (part: IPart, visible: boolean): void => {
-    part.children[0].children.forEach((solid) => {
+    part.children[0]?.children.forEach((solid) => {
       solid.visible = visible
     })
   }
@@ -267,7 +267,7 @@ const PartLoader = (
    * @param visible Visible
    */
   const setFacesVisible = (part: IPart, visible: boolean): void => {
-    part.children[1].children.forEach((face) => {
+    part.children[1]?.children.forEach((face) => {
       face.visible = visible
     })
   }
@@ -383,15 +383,17 @@ const PartLoader = (
 
     // Search in solids
     const solids = part.children[0]
-    for (const solid of solids.children) {
-      if (solid.userData.uuid === uuid) return solid
-    }
+    if (solids)
+      for (const solid of solids.children) {
+        if (solid.userData.uuid === uuid) return solid
+      }
 
     // Search in faces
     const faces = part.children[1]
-    for (const face of faces.children) {
-      if (face.userData.uuid === uuid) return face
-    }
+    if (faces)
+      for (const face of faces.children) {
+        if (face.userData.uuid === uuid) return face
+      }
 
     // Search in edges
     const edges = part.children[2]

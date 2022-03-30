@@ -31,7 +31,4 @@
 
 - grid dynamic update
 
-- review org, check user add/del (pending not managed), check duplicate, accept invit
-  ensure email is trimmed, comparison in dB is strict
-
 - open project on create ?

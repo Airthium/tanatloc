@@ -62,7 +62,9 @@ jest.mock('../simulation', () => {
     BoundaryConditions: (props: any) => (
       <div role="Simulation.BoundaryCondition" onClick={props.setVisible} />
     ),
-    Run: () => <div />
+    Run: (props: any) => (
+      <div role="Simulation.Run" onClick={() => props.setResult({})} />
+    )
   }
 })
 
@@ -170,6 +172,7 @@ describe('components/project', () => {
       name: 'Simulation 1',
       scheme: {
         configuration: {
+          dimension: 2,
           geometry: {
             index: 0,
             title: 'Simulation 1 Geometry'
@@ -611,6 +614,31 @@ describe('components/project', () => {
 
     const panel = screen.getByRole('Panel')
     fireEvent.click(panel)
+
+    unmount()
+  })
+
+  test('result', () => {
+    mockPanel.mockImplementation((props) => <div>{props.children}</div>)
+    const { unmount } = render(<Project />)
+
+    const simulations = screen.getByRole('menuitem', {
+      name: 'code-sandbox SIMULATIONS (3)'
+    })
+    fireEvent.click(simulations)
+
+    const simulation1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
+    fireEvent.click(simulation1)
+
+    const simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Run'
+    })
+    fireEvent.click(simulationItem)
+
+    const run = screen.getByRole('Simulation.Run')
+    fireEvent.click(run)
 
     unmount()
   })

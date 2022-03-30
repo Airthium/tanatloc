@@ -86,6 +86,10 @@ describe('components/project/data', () => {
     fireEvent.click(checkboxes[1])
     fireEvent.click(checkboxes[0])
 
+    // Close
+    const closeButton = screen.getByRole('button', { name: 'Close' })
+    fireEvent.click(closeButton)
+
     unmount()
   })
 

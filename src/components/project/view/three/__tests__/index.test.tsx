@@ -170,7 +170,7 @@ describe('components/project/view/three', () => {
       )
       mouseDown(
         {
-          getSelected: () => ['uuid'],
+          getSelected: () => [{ uuid: 'uuid', label: 1 }],
           select: jest.fn(),
           unselect: jest.fn()
         },
@@ -178,7 +178,7 @@ describe('components/project/view/three', () => {
       )
       mouseDown(
         {
-          getSelected: () => ['uuid2'],
+          getSelected: () => [{ uuid: 'uuid2', label: 2 }],
           select: jest.fn()
         },
         'uuid'
@@ -438,7 +438,11 @@ describe('components/project/view/three', () => {
   test('selection enabled', async () => {
     const { unmount } = render(
       <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+        value={{
+          enabled: true,
+          selected: [{ uuid: 'uuid', label: 1 }],
+          dispatch: jest.fn
+        }}
       >
         <ThreeView loading={loading} project={project} part={part} />
       </SelectContext.Provider>

@@ -572,13 +572,12 @@ const Project = (): JSX.Element => {
 
     if (menuKey.key === menuItems.geometries.key) {
       setGeometryPanel(menuKey.id)
-    } else if (menuKey.key === menuItems.simulations.key) {
+    } else {
+      //menuKey.key === menuItems.simulations.key)
       setSimulationPanel(menuKey.id, menuKey.item)
 
       // Force geometry
       if (menuKey.item !== 'run') setResult(null)
-    } else {
-      onPanelClose()
     }
   }, [menuKey, setGeometryPanel, setSimulationPanel, onPanelClose])
 

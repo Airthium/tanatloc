@@ -1,6 +1,7 @@
 /** @module Components.Project.Add */
 
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
@@ -49,7 +50,7 @@ export const onAdd = async (
     addOneProject: (project: INewProject) => void
     mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
-): Promise<void> => {
+): Promise<INewProject> => {
   try {
     // Add
     const project = await ProjectAPI.add({ id: workspace.id }, values)
@@ -62,6 +63,8 @@ export const onAdd = async (
       ...workspace,
       projects: [...(workspace.projects || []), project.id]
     })
+
+    return project
   } catch (err) {
     ErrorNotification(errors.add, err)
     throw err
@@ -80,6 +83,9 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
+  // Data
+  const router = useRouter()
+
   /**
    * Render
    */
@@ -95,11 +101,21 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         onOk={async (values) => {
           setLoading(true)
           try {
-            await onAdd(workspace, values, swr)
+            const newProject = await onAdd(workspace, values, swr)
 
             // Close
             setLoading(false)
             setVisible(false)
+
+            // Open project
+            router.push({
+              pathname: '/project',
+              query: {
+                page: 'workspaces',
+                workspaceId: workspace.id,
+                projectId: newProject.id
+              }
+            })
           } catch (err) {
             setLoading(false)
             throw err

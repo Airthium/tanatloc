@@ -3,6 +3,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add, { errors } from '..'
 
+const mockPush = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: mockPush
+  })
+}))
+
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   AddButton: (props: any) => mockAddButton(props)
@@ -86,6 +93,7 @@ describe('components/project/add', () => {
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.addOneProject).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {

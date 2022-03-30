@@ -39,7 +39,7 @@ const add = async (
 ): Promise<IProject> => {
   // Check title & description
   project.title = project.title.substring(0, LIMIT).trim()
-  project.description = project.description.substring(0, LIMIT).trim()
+  project.description = project.description?.substring(0, LIMIT).trim()
 
   // Add
   const newProject = await ProjectDB.add(user, workspace, project)

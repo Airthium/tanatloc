@@ -23,10 +23,8 @@
 
 ## Misc (Debug)
 
-- snapshot -> utiliser comme icon de projet ou download
+- snapshot -> use as project icon or download
 
 - section view fix
 
 - grid dynamic update
-
-- open project on create ?

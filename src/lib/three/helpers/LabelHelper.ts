@@ -1,6 +1,6 @@
 /** @module Lib.Three.Helpers.LabelHelper */
 
-import { Sprite, SpriteMaterial, Texture } from 'three'
+import { Sprite, SpriteMaterial, Texture, Vector3, WebGLRenderer } from 'three'
 
 export interface ILabelHelper extends Omit<Sprite, 'type'> {
   type: Sprite['type'] | 'LabelHelper'
@@ -9,42 +9,51 @@ export interface ILabelHelper extends Omit<Sprite, 'type'> {
 
 /**
  * LabelHelper
+ * @param renderer Renderer
  * @param text Text
- * @param size Size
- * @param fontColor Font color
- * @param fontSize Font size
- * @param align Align
+ * @param parameters Parameters
  */
 const LabelHelper = (
+  renderer: WebGLRenderer,
   text: string,
-  size: number = 512,
-  fontColor: string = 'black',
-  fontSize: number = 512,
-  align: CanvasTextAlign = 'center'
+  parameters?: {
+    position?: Vector3
+    scale?: number
+    align?: CanvasTextAlign
+  }
 ): ILabelHelper => {
   // Canvas
   const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
+  canvas.width = 256
+  canvas.height = 256
   const context = canvas.getContext('2d')
-  context.fillStyle = fontColor
-  context.font = fontSize + 'px sans-serif'
-  context.textAlign = align
+  context.fillStyle = 'grey'
+  context.font = '50px sans-serif'
+  context.textAlign = parameters?.align || 'center'
   context.textBaseline = 'middle'
   context.fillText(text, canvas.width / 2, canvas.height / 2)
 
   // Texture
   const texture = new Texture(canvas)
+  texture.flipY = true
   texture.needsUpdate = true
 
-  // Label
+  // Material
   const material = new SpriteMaterial({
     map: texture,
-    transparent: true,
-    depthWrite: false
+    transparent: true
   })
+  material.map.anisotropy = renderer.capabilities.getMaxAnisotropy()
+
+  // Label
   const label = new Sprite(material) as ILabelHelper
   label.type = 'LabelHelper'
+
+  // Position
+  if (parameters?.position) label.position.copy(parameters.position)
+
+  // Scale
+  if (parameters?.scale) label.scale.setScalar(parameters.scale)
 
   /**
    * Dispose
@@ -59,4 +68,4 @@ const LabelHelper = (
   return label
 }
 
-export default LabelHelper
+export { LabelHelper }

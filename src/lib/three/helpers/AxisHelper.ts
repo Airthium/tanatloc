@@ -12,7 +12,7 @@ import {
 } from 'three'
 
 import Arrow, { IArrowHelper } from './ArrowHelper'
-import Label, { ILabelHelper } from './LabelHelper'
+import { LabelHelper, ILabelHelper } from './LabelHelper'
 
 export interface IAxisHelper {
   dispose: () => void
@@ -77,20 +77,20 @@ const AxisHelper = (
   // X
   const x = Arrow(xColor)
   x.rotateZ(-Math.PI / 2)
-  const xLabel = Label('X')
+  const xLabel = LabelHelper(renderer, 'X')
   xLabel.scale.setScalar(0.2)
   xLabel.position.set(1.1, 0, 0)
 
   // Y
   const y = Arrow(yColor)
-  const yLabel = Label('Y')
+  const yLabel = LabelHelper(renderer, 'Y')
   yLabel.scale.setScalar(0.2)
   yLabel.position.set(0, 1.1, 0)
 
   // Z
   const z = Arrow(zColor)
   z.rotateX(Math.PI / 2)
-  const zLabel = Label('Z')
+  const zLabel = LabelHelper(renderer, 'Z')
   zLabel.scale.setScalar(0.2)
   zLabel.position.set(0, 0, 1.1)
 

@@ -10,7 +10,7 @@ import {
 } from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
-import Label from './LabelHelper'
+import { LabelHelper } from './LabelHelper'
 import NumberHelper from './NumberHelper'
 
 export interface IColorbarHelper {
@@ -88,11 +88,11 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     let min = NumberHelper(lut.minV)
     let max = NumberHelper(lut.maxV)
 
-    const minLabel = Label(String(min), 768, 'gray', 96, 'right')
+    const minLabel = LabelHelper(renderer, String(min), { align: 'right' })
     minLabel.scale.x = 0.5
     minLabel.scale.y = 4.5
     minLabel.position.set(-0.72, 0, 0)
-    const maxLabel = Label(String(max), 768, 'gray', 96, 'left')
+    const maxLabel = LabelHelper(renderer, String(max), { align: 'left' })
     maxLabel.scale.x = 0.5
     maxLabel.scale.y = 4.5
     maxLabel.position.set(0.72, 0, 0)

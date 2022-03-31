@@ -222,6 +222,8 @@ export const zoomToFit = (
 
   // Controls
   controls.target.copy(center)
+  controls.minDistance = distance / 10
+  controls.maxDistance = distance * 10
 
   // Camera
   camera.position.copy(center).sub(direction)
@@ -503,7 +505,12 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     )
 
     // GridHelper
-    gridHelper.current = GridHelper(scene.current)
+    gridHelper.current = GridHelper(
+      renderer.current,
+      scene.current,
+      camera.current,
+      controls.current
+    )
 
     // SelectionHelper
     selectionHelper.current = SelectionHelper(
@@ -533,6 +540,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
       renderer.current.setViewport(0, 0, width, height)
       renderer.current.render(scene.current, camera.current)
+
+      gridHelper.current.update()
 
       effectComposer.current.render()
 

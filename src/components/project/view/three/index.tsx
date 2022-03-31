@@ -94,7 +94,8 @@ export interface IProps {
  */
 export const errors = {
   load: 'Load part error',
-  snapshot: 'Snapshot error'
+  snapshot: 'Snapshot error',
+  saveScreenshot: 'Unable to save screenshot'
 }
 
 /**
@@ -388,18 +389,22 @@ export const downloadScreenshot = (
   camera: PerspectiveCamera,
   renderer: WebGLRenderer
 ) => {
-  const initialWidth = renderer.domElement.width
-  const initialHeight = renderer.domElement.height
-  renderer.clear()
-  renderer.setViewport(0, 0, initialWidth, initialHeight)
-  renderer.render(scene, camera)
+  try {
+    const initialWidth = renderer.domElement.width
+    const initialHeight = renderer.domElement.height
+    renderer.clear()
+    renderer.setViewport(0, 0, initialWidth, initialHeight)
+    renderer.render(scene, camera)
 
-  const image = renderer.domElement.toDataURL()
+    const image = renderer.domElement.toDataURL()
 
-  var a = document.createElement('a')
-  a.href = image.replace('image/png', 'image/octet-stream')
-  a.download = project.title + '_' + new Date().toLocaleDateString() + '.png'
-  a.click()
+    var a = document.createElement('a')
+    a.href = image.replace('image/png', 'image/octet-stream')
+    a.download = project.title + '_' + new Date().toLocaleDateString() + '.png'
+    a.click()
+  } catch (err) {
+    ErrorNotification(errors.saveScreenshot, err)
+  }
 }
 
 /**
@@ -433,6 +438,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   const [transform, setTransform]: [string, Dispatch<SetStateAction<string>>] =
     useState('translate')
   const [screenshot, setScreenshot]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [savingScreenshot, setSavingScreenshot]: [
     boolean,
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
@@ -836,7 +845,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                     <Menu.Item key="image">
                       <Button
                         type="text"
+                        loading={savingScreenshot}
                         onClick={() => {
+                          setSavingScreenshot(true)
                           try {
                             downloadScreenshot(
                               project,
@@ -844,7 +855,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                               camera.current,
                               renderer.current
                             )
-                          } catch (err) {}
+                          } finally {
+                            setSavingScreenshot(false)
+                          }
                         }}
                       >
                         Export image

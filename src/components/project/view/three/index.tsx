@@ -376,6 +376,33 @@ export const takeScreenshot = async (
 }
 
 /**
+ * Export screenshot
+ * @param project Project
+ * @param scene Scene
+ * @param camera Camera
+ * @param renderer Renderer
+ */
+export const downloadScreenshot = (
+  project: IProps['project'],
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer
+) => {
+  const initialWidth = renderer.domElement.width
+  const initialHeight = renderer.domElement.height
+  renderer.clear()
+  renderer.setViewport(0, 0, initialWidth, initialHeight)
+  renderer.render(scene, camera)
+
+  const image = renderer.domElement.toDataURL()
+
+  var a = document.createElement('a')
+  a.href = image.replace('image/png', 'image/octet-stream')
+  a.download = project.title + '_' + new Date().toLocaleDateString() + '.png'
+  a.click()
+}
+
+/**
  * Three view
  * @param props Props
  * @returns ThreeView
@@ -807,7 +834,19 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                       </Button>
                     </Menu.Item>
                     <Menu.Item key="image">
-                      <Button type="text" disabled={true}>
+                      <Button
+                        type="text"
+                        onClick={() => {
+                          try {
+                            downloadScreenshot(
+                              project,
+                              scene.current,
+                              camera.current,
+                              renderer.current
+                            )
+                          } catch (err) {}
+                        }}
+                      >
                         Export image
                       </Button>
                     </Menu.Item>
@@ -982,7 +1021,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 ThreeView.propTypes = {
   loading: PropTypes.bool,
   project: PropTypes.exact({
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired
   }).isRequired,
   part: PropTypes.exact({
     uuid: PropTypes.string.isRequired,

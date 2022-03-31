@@ -8,6 +8,7 @@ import {
   PerspectiveCamera,
   Scene,
   SphereGeometry,
+  Vector3,
   WebGLRenderer
 } from 'three'
 
@@ -77,22 +78,22 @@ const AxisHelper = (
   // X
   const x = Arrow(xColor)
   x.rotateZ(-Math.PI / 2)
-  const xLabel = LabelHelper(renderer, 'X')
-  xLabel.scale.setScalar(0.2)
-  xLabel.position.set(1.1, 0, 0)
+  const xLabel = LabelHelper(renderer, 'X', {
+    position: new Vector3(1.1, 0, 0)
+  })
 
   // Y
   const y = Arrow(yColor)
-  const yLabel = LabelHelper(renderer, 'Y')
-  yLabel.scale.setScalar(0.2)
-  yLabel.position.set(0, 1.1, 0)
+  const yLabel = LabelHelper(renderer, 'Y', {
+    position: new Vector3(0, 1.1, 0)
+  })
 
   // Z
   const z = Arrow(zColor)
   z.rotateX(Math.PI / 2)
-  const zLabel = LabelHelper(renderer, 'Z')
-  zLabel.scale.setScalar(0.2)
-  zLabel.position.set(0, 0, 1.1)
+  const zLabel = LabelHelper(renderer, 'Z', {
+    position: new Vector3(0, 0, 1.1)
+  })
 
   // Sphere
   const sphereGeometry = new SphereGeometry(0.05, 50, 50)

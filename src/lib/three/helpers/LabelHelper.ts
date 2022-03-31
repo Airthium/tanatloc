@@ -41,7 +41,8 @@ const LabelHelper = (
   // Material
   const material = new SpriteMaterial({
     map: texture,
-    transparent: true
+    transparent: true,
+    depthWrite: false
   })
   material.map.anisotropy = renderer.capabilities.getMaxAnisotropy()
 

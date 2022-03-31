@@ -123,7 +123,8 @@ const View = ({
     <ThreeView
       loading={loading}
       project={{
-        id: project.id
+        id: project.id,
+        title: project.title
       }}
       part={part}
     />

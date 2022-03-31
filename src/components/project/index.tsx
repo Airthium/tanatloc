@@ -839,7 +839,8 @@ const Project = (): JSX.Element => {
 
             <View
               project={{
-                id: project.id
+                id: project.id,
+                title: project.title
               }}
               simulation={
                 simulation && {

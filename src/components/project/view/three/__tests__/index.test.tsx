@@ -149,7 +149,8 @@ Object.defineProperty(window, 'requestAnimationFrame', {
 describe('components/project/view/three', () => {
   const loading = false
   const project = {
-    id: 'id'
+    id: 'id',
+    title: 'title'
   }
   const part = {
     uuid: 'uuid',
@@ -361,6 +362,7 @@ describe('components/project/view/three', () => {
   })
 
   test('switches & buttons', async () => {
+    global.MockWebGLRenderer.toDataURL = () => ''
     const { unmount } = render(
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
@@ -404,6 +406,21 @@ describe('components/project/view/three', () => {
       )
     )
 
+    // Screnshot
+    const exportImage = screen.getByText('Export image')
+    fireEvent.click(exportImage)
+
+    // Screenshot error
+    // TODO
+    // fireEvent.click(exportImage)
+    // await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
+    // await waitFor(() =>
+    //   expect(mockErroNotification).toHaveBeenLastCalledWith(
+    //     errors.saveScreenshot,
+    //     new Error('toDataURL error')
+    //   )
+    // )
+
     // Zoom
     const zoomIn = screen.getByRole('button', { name: 'zoom-in' })
     fireEvent.mouseDown(zoomIn)
@@ -414,9 +431,6 @@ describe('components/project/view/three', () => {
     fireEvent.mouseUp(zoomOut)
 
     // Section view buttons
-    const radios = screen.getAllByRole('radio')
-    radios.forEach((radio) => fireEvent.click(radio))
-
     const hide = screen.getByRole('button', { name: 'eye-invisible' })
     fireEvent.click(hide)
 

@@ -262,13 +262,16 @@ class MockVector3 {
   }
 }
 
+global.MockWebGLRenderer = {
+  toDataURL: jest.fn
+}
 class MockWebGLRenderer {
   constructor() {
     this.domElement = document.createElement('div')
     this.shadowMap = {
       enabled: false
     }
-    this.domElement.toDataURL = jest.fn
+    this.domElement.toDataURL = global.MockWebGLRenderer.toDataURL
     this.setClearColor = jest.fn()
     this.setSize = jest.fn()
     this.setPixelRatio = jest.fn()

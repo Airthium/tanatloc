@@ -4,10 +4,10 @@ import { Request, Response } from 'express'
 
 /**
  * Noop
- * @param req Request
+ * @param _ Request
  * @param res Response
  */
-const noop = async (req: Request, res: Response): Promise<void> => {
+const noop = async (_: Request, res: Response): Promise<void> => {
   res.status(200).end()
 }
 

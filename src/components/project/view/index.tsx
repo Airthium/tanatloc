@@ -133,7 +133,8 @@ const View = ({
 
 View.propTypes = {
   project: PropTypes.exact({
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired
   }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired

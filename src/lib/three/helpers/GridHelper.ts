@@ -180,8 +180,8 @@ const GridHelper = (
       size.y,
       axisDivs.x,
       axisDivs.y,
-      (grid: Object3D) => {
-        grid.rotateX(Math.PI / 2)
+      (g: Object3D) => {
+        g.rotateX(Math.PI / 2)
       }
     )
     const gridYZ = createGrid(
@@ -189,8 +189,8 @@ const GridHelper = (
       size.z,
       axisDivs.y,
       axisDivs.z,
-      (grid: Object3D) => {
-        grid.rotateZ(-Math.PI / 2)
+      (g: Object3D) => {
+        g.rotateZ(-Math.PI / 2)
       }
     )
 
@@ -284,6 +284,7 @@ const GridHelper = (
     const scaleFactor = distanceToTarget / 10 / (controls.minDistance + 1e-3)
 
     // Grids
+
     const gridXZ = gridHelper.children[0]
     const gridXY = gridHelper.children[1]
     const gridYZ = gridHelper.children[2]

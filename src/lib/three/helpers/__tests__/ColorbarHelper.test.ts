@@ -2,11 +2,13 @@ import { WebGLRenderer } from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 import { ColorbarHelper } from '../ColorbarHelper'
 
-jest.mock('../LabelHelper', () => () => ({
-  scale: {},
-  position: {
-    set: jest.fn()
-  }
+jest.mock('../LabelHelper', () => ({
+  LabelHelper: () => ({
+    scale: {},
+    position: {
+      set: jest.fn()
+    }
+  })
 }))
 
 jest.mock('three/examples/jsm/math/Lut', () => ({

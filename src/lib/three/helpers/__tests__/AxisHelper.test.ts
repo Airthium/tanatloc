@@ -6,13 +6,15 @@ jest.mock('../ArrowHelper', () => () => ({
   rotateZ: jest.fn
 }))
 
-jest.mock('../LabelHelper', () => () => ({
-  scale: {
-    setScalar: jest.fn
-  },
-  position: {
-    set: jest.fn
-  }
+jest.mock('../LabelHelper', () => ({
+  LabelHelper: () => ({
+    scale: {
+      setScalar: jest.fn
+    },
+    position: {
+      set: jest.fn
+    }
+  })
 }))
 
 describe('lib/three/helpers/AxisHelper', () => {

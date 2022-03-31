@@ -40,6 +40,9 @@ class MockBufferAttribute {}
 
 class MockMaterial {
   constructor() {
+    this.map = {
+      anisotropy: 1
+    }
     this.dispose = jest.fn()
   }
 }
@@ -103,15 +106,18 @@ class MockCylinderGeometry extends MockBufferGeometry {}
 class MockEdgesGeometry extends MockBufferGeometry {}
 
 global.MockGroup = {
-  children: []
+  children: [],
+  traverseChild: {}
 }
 class MockGroup {
   constructor() {
     this.add = jest.fn()
     this.lookAt = jest.fn()
+    this.position = new MockVector3()
     this.translateX = jest.fn()
     this.translateY = jest.fn()
     this.translateZ = jest.fn()
+    this.traverse = (callback) => callback(global.MockGroup.traverseChild)
     this.rotateX = jest.fn()
     this.rotateY = jest.fn()
     this.rotateZ = jest.fn()

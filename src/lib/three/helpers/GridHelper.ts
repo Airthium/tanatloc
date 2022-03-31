@@ -254,8 +254,10 @@ const GridHelper = (
       boundingBox.max.z - boundingBox.min.z
     )
 
+    let currentlyVisible: boolean
     scene.children.forEach((child: IGridHelperGroup) => {
       if (child.type === 'GridHelper') {
+        currentlyVisible = child.visible
         scene.remove(child)
         child.dispose()
       }
@@ -345,6 +347,8 @@ const GridHelper = (
     labelsZ.visible =
       Math.abs(camFwd.x) > horizontalVisibilityThreshold ||
       Math.abs(camFwd.y) > verticalVisibilityThreshold
+
+    gridHelper.visible = currentlyVisible
 
     scene.add(gridHelper)
   }

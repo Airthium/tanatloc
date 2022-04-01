@@ -4,11 +4,11 @@ import {
   Color,
   Curve,
   DoubleSide,
+  Euler,
   Group,
   Line3,
   Mesh,
   MeshBasicMaterial,
-  Object3D,
   PerspectiveCamera,
   Plane,
   PlaneGeometry,
@@ -63,6 +63,12 @@ const SectionViewHelper = (
   // Clipping plane
   const clippingPlane = new Plane(defaultNormal)
 
+  // Dome rotation speed
+  const domeRotationSpeed = 5
+
+  // Arc rotation speed
+  const arcRotationSpeed = 1
+
   // Camera directions
   const cameraDirections = {
     up: new Vector3(),
@@ -73,11 +79,17 @@ const SectionViewHelper = (
   // Initial position
   const initialPosition = new Vector3()
 
-  // Initial intersection point
-  const initialIntersection = new Vector3()
-
   // Control intersection
   const controlIntersection = new Vector3()
+
+  // Control rotation
+  const controlRotation = new Euler()
+
+  // Control rotation axis
+  const controlRotationAxis = new Vector3()
+
+  // Control mouse
+  const controlMouse = new Vector2()
 
   // Control plane
   const controlPlane = new Plane()
@@ -90,6 +102,13 @@ const SectionViewHelper = (
 
   // Control line
   const controlLine = new Line3()
+
+  // Control line direction
+  const controlLineDirections = {
+    up: new Vector3(),
+    forward: new Vector3(),
+    right: new Vector3()
+  }
 
   // Raycaster
   const raycaster = new Raycaster()
@@ -147,7 +166,7 @@ const SectionViewHelper = (
    * Build arcs
    */
   const buildArcs = (): void => {
-    const radius = 0.3
+    const radius = 0.2
 
     // Arc curve
     class ArcCurve extends Curve<Vector3> {
@@ -404,6 +423,8 @@ const SectionViewHelper = (
       raycaster.ray.intersectPlane(controlPlane, intersection)
 
       if (control.type === 'Plane') planeMove(intersection)
+      else if (control.type === 'Dome') domeMove(mouse)
+      else arcMove(intersection)
 
       updateClippingPlane()
     } else {
@@ -425,6 +446,9 @@ const SectionViewHelper = (
     }
   }
 
+  /**
+   * Plane control
+   */
   const planeControl = () => {
     // Control plane
     controlPlane.setFromNormalAndCoplanarPoint(
@@ -436,10 +460,11 @@ const SectionViewHelper = (
     initialPosition.copy(controller.position)
 
     // Initial intersection
-    raycaster.ray.intersectPlane(controlPlane, initialIntersection)
+    const intersection = new Vector3()
+    raycaster.ray.intersectPlane(controlPlane, intersection)
 
     // Control offset
-    controlOffset.copy(initialIntersection).sub(initialPosition)
+    controlOffset.copy(intersection).sub(initialPosition)
 
     // Control normal
     controlNormal.copy(controlOffset).normalize()
@@ -451,40 +476,147 @@ const SectionViewHelper = (
     )
   }
 
+  /**
+   * Plane move
+   * @param point Point
+   */
   const planeMove = (point: Vector3): void => {
+    // Translate
     point.sub(controlOffset)
     const controlPoint = new Vector3()
     controlLine.closestPointToPoint(point, false, controlPoint)
     controller.position.copy(controlPoint)
   }
 
-  const domeControl = () => {}
+  /**
+   * Dome control
+   * @param mouse Mouse
+   */
+  const domeControl = (mouse: Vector2): void => {
+    // Rotation
+    controlRotation.copy(controller.rotation)
 
-  const arcControl = () => {}
+    // Mouse
+    controlMouse.copy(mouse)
+  }
 
-  const setControl = (): void => {
+  /**
+   * Dome move
+   * @param mouse Mouse
+   */
+  const domeMove = (mouse: Vector2): void => {
+    // Rotation
+    controller.rotation.copy(controlRotation)
+    controller.rotateOnWorldAxis(
+      cameraDirections.up,
+      -(controlMouse.x - mouse.x) * domeRotationSpeed
+    )
+    controller.rotateOnWorldAxis(
+      cameraDirections.right,
+      -(controlMouse.y - mouse.y) * domeRotationSpeed
+    )
+  }
+
+  /**
+   * Arc control
+   */
+  const arcControl = (): void => {
+    // Rotation axis
+    control.getWorldDirection(controlRotationAxis)
+
+    // Rotation
+    controlRotation.copy(controller.rotation)
+
+    // Control offset
+    controlOffset.copy(controlIntersection).sub(controller.position)
+
+    // Control normal
+    controlNormal.copy(controlOffset).normalize()
+
+    // Control line directions
+    controlLineDirections.up.copy(controlNormal)
+    controlLineDirections.right.copy(controlRotationAxis)
+    controlLineDirections.forward.crossVectors(
+      controlLineDirections.right,
+      controlLineDirections.up
+    )
+
+    // Control line
+    controlLine.set(
+      controlIntersection,
+      new Vector3().copy(controlIntersection).add(controlLineDirections.forward)
+    )
+
+    // Control plane
+    controlPlane.setFromNormalAndCoplanarPoint(
+      cameraDirections.forward,
+      controlIntersection
+    )
+  }
+
+  /**
+   * Arc move
+   * @param point Point
+   */
+  const arcMove = (point: Vector3): void => {
+    // Distance to target
+    const distanceToTarget = controls.object.position.distanceTo(
+      controls.target
+    )
+
+    const controlPoint = new Vector3()
+    controlLine.closestPointToPoint(point, false, controlPoint)
+
+    const distance = controlIntersection.distanceTo(controlPoint)
+
+    controlPoint.sub(controlIntersection)
+    const controlCross = new Vector3()
+      .copy(controlNormal)
+      .cross(controlPoint)
+      .normalize()
+    const sign = Math.sign(controlRotationAxis.dot(controlCross))
+
+    const rotation =
+      (sign * distance * arcRotationSpeed) / (distanceToTarget / 100)
+
+    controller.rotation.copy(controlRotation)
+    controller.rotateOnWorldAxis(controlRotationAxis, rotation)
+  }
+
+  /**
+   * Set control
+   * @param mouse Mouse
+   */
+  const setControl = (mouse: Vector2): void => {
     switch (control.type) {
       case 'Plane':
         planeControl()
         break
       case 'Dome':
-        domeControl()
+        domeControl(mouse)
         break
       case 'ArcX':
         arcControl()
+        break
+      case 'ArcY':
+        arcControl()
+        break
+      default:
+        break
     }
   }
 
   /**
    * On mouse down
    */
-  const onMouseDown = (): void => {
+  const onMouseDown = (event: MouseEvent): void => {
     if (!controller.visible) return
 
     if (control) {
       isDown = true
 
-      setControl()
+      const mouse = globalToLocal(event)
+      setControl(mouse)
     }
   }
 

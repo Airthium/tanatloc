@@ -23,8 +23,6 @@
 
 ## Misc (Debug)
 
-- snapshot -> use as project icon or download
-
 - section view fix
 
 - grid dynamic update

@@ -62,11 +62,6 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     sectionView.flip()
   })
 
-  test('setMode', () => {
-    const sectionView = SectionViewHelper(renderer, scene, camera, controls)
-    sectionView.setMode('rotate')
-  })
-
   test('mouse', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     mouseDown({})

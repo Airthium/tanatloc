@@ -22,7 +22,3 @@
 - faces disapear when speed click on different faces, visible is set to false by something ?
 
 ## Misc (Debug)
-
-- section view fix
-
-- grid dynamic update

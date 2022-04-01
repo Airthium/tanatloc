@@ -310,7 +310,6 @@ export const loadPart = async (
 
   helpers.gridHelper.update()
   helpers.gridHelper.setVisible(true)
-  helpers.gridHelper.dispose()
 }
 
 /**

@@ -171,6 +171,8 @@ describe('components/project/archive', () => {
     await waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
 
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Error
     mockProjectUnarchiveFromServer.mockImplementation(() => {
       throw new Error('unarchiveFromServer error')

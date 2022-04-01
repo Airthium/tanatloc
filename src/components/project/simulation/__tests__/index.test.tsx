@@ -301,7 +301,7 @@ describe('components/project/simulation.Updater', () => {
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    await new Promise((resolve) => setTimeout(resolve, 200))
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     unmount()
   })
@@ -353,12 +353,23 @@ describe('components/project/simulation.Updater', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
 
-    // Error
+    unmount()
+  })
+
+  test('update - error', async () => {
+    mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
+    const { unmount } = render(
+      <Simulation.Updater user={user} simulation={simulation} swr={swr} />
+    )
+
+    await waitFor(() => screen.getByRole('button', { name: 'OK' }))
+
+    const yes = screen.getByRole('button', { name: 'OK' })
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(yes)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

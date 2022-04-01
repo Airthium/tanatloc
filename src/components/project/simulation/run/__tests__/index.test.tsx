@@ -345,6 +345,8 @@ describe('components/project/simulation/run', () => {
       )
     )
 
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Normal
     mockRun.mockImplementation(() => {
       // mock

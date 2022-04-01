@@ -54,6 +54,8 @@ describe('components/project/simulation/run/results/archive', () => {
       )
     )
 
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Normal
     window.URL.createObjectURL = jest.fn()
     mockResultArchive.mockImplementation(() => ({

@@ -19,9 +19,9 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     //@ts-ignore
     domElement: {
       addEventListener: (type, callback) => {
-        if (type === 'mousedown') mouseDown = callback
-        else if (type === 'mousemove') mouseMove = callback
-        else if (type === 'mouseup') mouseUp = callback
+        if (type === 'pointerdown') mouseDown = callback
+        else if (type === 'pointermove') mouseMove = callback
+        else if (type === 'pointerup') mouseUp = callback
       },
       removeEventListener: jest.fn
     },
@@ -30,6 +30,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   const scene = new Scene() as Scene & { boundingBox: Box3 }
   scene.boundingBox = new Box3()
   const camera = {} as PerspectiveCamera
+  camera.getWorldDirection = jest.fn()
   const controls = {} as TrackballControls
   test('call', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)

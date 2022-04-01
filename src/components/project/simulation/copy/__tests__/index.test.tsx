@@ -73,6 +73,8 @@ describe('components/project/simulation/copy', () => {
     await waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')

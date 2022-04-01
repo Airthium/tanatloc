@@ -382,7 +382,7 @@ describe('components/project/view/three', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    // // Avatar
+    // Avatar
     const snapshot = screen.getByRole('button', {
       name: 'fund-projection-screen'
     })
@@ -391,6 +391,8 @@ describe('components/project/view/three', () => {
     const projectSnapshot = screen.getByText('Project snapshot')
     fireEvent.click(projectSnapshot)
     await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Avatar error
     mockAvatarAdd.mockImplementation(() => {

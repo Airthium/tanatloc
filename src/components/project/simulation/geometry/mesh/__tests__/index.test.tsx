@@ -109,6 +109,8 @@ describe('components/project/simulation/geometry/mesh', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
 
+    await waitFor(() => screen.getByRole('Formula'))
+
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
@@ -155,6 +157,8 @@ describe('components/project/simulation/geometry/mesh', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
+
+    await waitFor(() => screen.getByRole('Formula'))
 
     // Formula
     const formula = screen.getByRole('Formula')

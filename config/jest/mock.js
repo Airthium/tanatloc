@@ -101,6 +101,8 @@ class MockColor {
 
 class MockConeGeometry extends MockBufferGeometry {}
 
+class MockCurve {}
+
 class MockCylinderGeometry extends MockBufferGeometry {}
 
 class MockEdgesGeometry extends MockBufferGeometry {}
@@ -129,6 +131,8 @@ class MockGroup {
 }
 
 class MockLine {}
+
+class MockLine3 {}
 
 class MockWireframeGeometry extends MockBufferGeometry {}
 
@@ -227,6 +231,8 @@ class MockSpriteMaterial extends MockMaterial {}
 
 class MockTetrahedronGeometry extends MockBufferGeometry {}
 
+class MockTubeGeometry extends MockBufferGeometry {}
+
 class MockTexture {
   constructor() {
     this.dispose = jest.fn()
@@ -249,6 +255,7 @@ class MockVector3 {
     this.y = global.MockVector3.y
     this.z = global.MockVector3.z
     this.distanceTo = jest.fn()
+    this.equals = jest.fn()
     this.clone = () => new MockVector3()
     this.applyQuaternion = () => new MockVector3()
     this.unproject = () => new MockVector3()
@@ -259,6 +266,7 @@ class MockVector3 {
     this.add = () => new MockVector3()
     this.copy = () => new MockVector3()
     this.setScalar = () => new MockVector3()
+    this.crossVectors = () => new MockVector3()
   }
 }
 
@@ -297,6 +305,8 @@ class MockLut {
   }
 }
 
+class MockEuler {}
+
 const MockBufferGeometryUtils = {
   mergeVertices: jest.fn()
 }
@@ -315,10 +325,13 @@ export const MockThree = {
   CanvasTexture: MockCanvasTexture,
   Color: MockColor,
   ConeGeometry: MockConeGeometry,
+  Curve: MockCurve,
   CylinderGeometry: MockCylinderGeometry,
   EdgesGeometry: MockEdgesGeometry,
+  Euler: MockEuler,
   Group: MockGroup,
   Line: MockLine,
+  Line3: MockLine3,
   LineBasicMaterial: MockLineBasicMaterial,
   LineSegments: MockLineSegments,
   Mesh: MockMesh,
@@ -339,6 +352,7 @@ export const MockThree = {
   TetrahedronGeometry: MockTetrahedronGeometry,
   Texture: MockTexture,
   TorusGeometry: MockTorusGeometry,
+  TubeGeometry: MockTubeGeometry,
   Vector2: MockVector2,
   Vector3: MockVector3,
   WebGLRenderer: MockWebGLRenderer,

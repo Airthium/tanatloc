@@ -412,16 +412,21 @@ describe('components/project/view/three', () => {
     const exportImage = screen.getByText('Export image')
     fireEvent.click(exportImage)
 
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Screenshot error
-    // TODO
-    // fireEvent.click(exportImage)
-    // await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
-    // await waitFor(() =>
-    //   expect(mockErroNotification).toHaveBeenLastCalledWith(
-    //     errors.saveScreenshot,
-    //     new Error('toDataURL error')
-    //   )
-    // )
+    //@ts-ignore
+    global.Date = jest.fn(() => {
+      throw new Error('Date error')
+    })
+    fireEvent.click(exportImage)
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.saveScreenshot,
+        new Error('Date error')
+      )
+    )
 
     // Zoom
     const zoomIn = screen.getByRole('button', { name: 'zoom-in' })

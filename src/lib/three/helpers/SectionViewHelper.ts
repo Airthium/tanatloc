@@ -416,8 +416,6 @@ const SectionViewHelper = (
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, camera)
     if (isDown) {
-      if (!control) return
-
       // Move
       const intersection = new Vector3()
       raycaster.ray.intersectPlane(controlPlane, intersection)

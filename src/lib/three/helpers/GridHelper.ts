@@ -374,7 +374,7 @@ const GridHelper = (
           geometry.dispose()
           const material = line.material as Material
           material.dispose()
-        } else if (child.type === 'LabelHelper') {
+        } else {
           const label = child as ILabelHelper
           label.dispose()
         }

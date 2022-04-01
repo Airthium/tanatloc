@@ -123,11 +123,14 @@ describe('components/project/geometry/add', () => {
     let info
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     mockUpload.mockImplementation((props) => (
-      <input
-        role="Upload"
-        //@ts-ignore
-        onClick={(e) => props.onChange(JSON.parse(e.target.value))}
-      />
+      <>
+        <input
+          role="Upload"
+          //@ts-ignore
+          onClick={(e) => props.onChange(JSON.parse(e.target.value))}
+        />
+        {props.children}
+      </>
     ))
 
     const { unmount } = render(
@@ -144,6 +147,8 @@ describe('components/project/geometry/add', () => {
     // Uploading
     info = { file: { status: 'uploading' } }
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+
+    await waitFor(() => screen.getByRole('img', { name: 'loading' }))
 
     info = { file: { status: 'other' } }
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })

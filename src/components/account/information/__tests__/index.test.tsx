@@ -202,8 +202,10 @@ describe('components/account/information', () => {
     const lastname = screen.getByRole('textbox', { name: 'Last name' })
 
     // Not changed
+
     fireEvent.click(submit)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Firstname
     fireEvent.change(firstname, { target: { value: 'firstname1' } })

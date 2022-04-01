@@ -101,7 +101,11 @@ class MockColor {
 
 class MockConeGeometry extends MockBufferGeometry {}
 
-class MockCurve {}
+class MockCurve {
+  constructor() {
+    this.getPoint(0)
+  }
+}
 
 class MockCylinderGeometry extends MockBufferGeometry {}
 
@@ -123,16 +127,23 @@ class MockGroup {
     this.rotateX = jest.fn()
     this.rotateY = jest.fn()
     this.rotateZ = jest.fn()
+    this.rotateOnWorldAxis = jest.fn()
 
     this.children = global.MockGroup.children
     this.position = new MockVector3()
+    this.rotation = new MockEuler()
     this.scale = new MockVector3()
   }
 }
 
 class MockLine {}
 
-class MockLine3 {}
+class MockLine3 {
+  constructor() {
+    this.set = jest.fn()
+    this.closestPointToPoint = jest.fn()
+  }
+}
 
 class MockWireframeGeometry extends MockBufferGeometry {}
 
@@ -194,12 +205,16 @@ class MockPointLight {
 
 global.MockRaycaster = {
   intersectObjects: [],
-  intersectObject: []
+  intersectObject: [],
+  intersectPlane: []
 }
 class MockRaycaster {
   constructor() {
     this.set = jest.fn()
     this.setFromCamera = jest.fn()
+    this.ray = {
+      intersectPlane: () => global.MockRaycaster.intersectPlane
+    }
     this.intersectObjects = () => global.MockRaycaster.intersectObjects
     this.intersectObject = () => global.MockRaycaster.intersectObject
   }
@@ -245,17 +260,18 @@ class MockVector2 {
   constructor() {
     this.x = 0
     this.y = 0
+    this.copy = jest.fn()
   }
 }
 
-global.MockVector3 = { x: 0, y: 0, z: 0 }
+global.MockVector3 = { x: 0, y: 0, z: 0, equals: jest.fn() }
 class MockVector3 {
   constructor() {
     this.x = global.MockVector3.x
     this.y = global.MockVector3.y
     this.z = global.MockVector3.z
     this.distanceTo = jest.fn()
-    this.equals = jest.fn()
+    this.equals = global.MockVector3.equals
     this.clone = () => new MockVector3()
     this.applyQuaternion = () => new MockVector3()
     this.unproject = () => new MockVector3()
@@ -266,7 +282,9 @@ class MockVector3 {
     this.add = () => new MockVector3()
     this.copy = () => new MockVector3()
     this.setScalar = () => new MockVector3()
+    this.cross = () => new MockVector3()
     this.crossVectors = () => new MockVector3()
+    this.dot = () => new MockVector3()
   }
 }
 
@@ -305,7 +323,11 @@ class MockLut {
   }
 }
 
-class MockEuler {}
+class MockEuler {
+  constructor() {
+    this.copy = jest.fn()
+  }
+}
 
 const MockBufferGeometryUtils = {
   mergeVertices: jest.fn()

@@ -1,4 +1,11 @@
-import { Box3, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
+import {
+  Box3,
+  Mesh,
+  PerspectiveCamera,
+  Scene,
+  Vector3,
+  WebGLRenderer
+} from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { SectionViewHelper } from '../SectionViewHelper'
 
@@ -32,6 +39,10 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   const camera = {} as PerspectiveCamera
   camera.getWorldDirection = jest.fn()
   const controls = {} as TrackballControls
+  //@ts-ignore
+  controls.object = {
+    position: new Vector3()
+  }
   test('call', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     expect(sectionView).toBeDefined()
@@ -55,34 +66,19 @@ describe('lib/three/helpers/SectionViewHelper', () => {
 
   test('toAxis', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
-    sectionView.toAxis(new Vector3())
+    sectionView.toAxis(new Vector3(1, 0, 0))
+    sectionView.toAxis(new Vector3(1, 0, 0))
+  })
+
+  test('toAxis - equal', () => {
+    global.MockVector3.equals = () => true
+    const sectionView = SectionViewHelper(renderer, scene, camera, controls)
+    sectionView.toAxis(new Vector3(1, 0, 0))
   })
 
   test('flip', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.flip()
-  })
-
-  test('mouse', () => {
-    const sectionView = SectionViewHelper(renderer, scene, camera, controls)
-    mouseDown({})
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    mouseUp({})
-
-    sectionView.start()
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-    global.MockRaycaster.intersectObject = [{}]
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-    mouseDown({})
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    mouseUp({})
-
-    global.MockRaycaster.intersectObject = []
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    mouseUp({})
   })
 
   test('stop', () => {
@@ -91,17 +87,227 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   })
 
   test('dispose', () => {
-    global.MockGroup.children = [
-      {
-        geometry: {
-          dispose: jest.fn
-        },
-        material: {
-          dispose: jest.fn
-        }
+    global.MockGroup.traverseChild = {
+      type: 'Plane',
+      geometry: {
+        dispose: jest.fn
+      },
+      material: {
+        dispose: jest.fn
       }
-    ]
+    }
+
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.dispose()
+  })
+
+  test('dispose - other child', () => {
+    global.MockGroup.traverseChild = {
+      type: 'Other'
+    }
+
+    const sectionView = SectionViewHelper(renderer, scene, camera, controls)
+    sectionView.dispose()
+  })
+
+  test('mouse', () => {
+    const sectionView = SectionViewHelper(renderer, scene, camera, controls)
+
+    mouseMove({})
+    mouseDown({})
+    mouseMove({})
+    mouseUp({})
+
+    sectionView.start()
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // With intersect (Plane)
+    global.MockRaycaster.intersectObject = [
+      {
+        object: {
+          type: 'Plane',
+          material: { color: { set: jest.fn() } }
+        },
+        point: {}
+      }
+    ]
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // highlight again
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Down
+    mouseDown({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Plane move
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Up
+    mouseUp()
+
+    // With intersect (Dome)
+    global.MockRaycaster.intersectObject = [
+      {
+        object: {
+          type: 'Dome',
+          material: { color: { set: jest.fn() } }
+        },
+        point: {}
+      }
+    ]
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    mouseDown({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Dome move
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Up
+    mouseUp()
+
+    // With intersect (Arc)
+    global.MockRaycaster.intersectObject = [
+      {
+        object: {
+          type: 'ArcX',
+          material: { color: { set: jest.fn() } },
+          getWorldDirection: jest.fn()
+        },
+        point: {}
+      }
+    ]
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    mouseDown({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Arc move
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    // Up
+    mouseUp()
+
+    // With intersect (ArcY)
+    global.MockRaycaster.intersectObject = [
+      {
+        object: {
+          type: 'ArcY',
+          material: { color: { set: jest.fn() } },
+          getWorldDirection: jest.fn()
+        },
+        point: {}
+      }
+    ]
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    mouseDown({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    mouseUp()
+
+    // With intersect (Other)
+    global.MockRaycaster.intersectObject = [
+      {
+        object: {
+          type: 'Other',
+          material: { color: { set: jest.fn() } },
+          getWorldDirection: jest.fn()
+        },
+        point: {}
+      }
+    ]
+    mouseMove({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    mouseDown({
+      clientX: 0.75,
+      clientY: 0.25,
+      target: {
+        getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
+      }
+    })
+
+    mouseUp()
   })
 })

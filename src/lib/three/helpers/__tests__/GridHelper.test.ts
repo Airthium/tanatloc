@@ -34,7 +34,8 @@ describe('lib/three/helpers/GridHelper', () => {
         type: 'GridHelper',
         children: [{}, {}, {}, {}, {}, {}],
         dispose: jest.fn
-      }
+      },
+      { type: 'other' }
     ],
     boundingBox: {
       min: { x: -1e-5, y: -3, z: -1e-13 },

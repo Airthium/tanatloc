@@ -17,7 +17,6 @@ import {
   Dropdown,
   Layout,
   Menu,
-  Radio,
   Spin,
   Switch,
   Tooltip
@@ -25,7 +24,6 @@ import {
 import {
   BorderlessTableOutlined,
   CompressOutlined,
-  DragOutlined,
   EyeInvisibleOutlined,
   FundProjectionScreenOutlined,
   LoadingOutlined,
@@ -35,7 +33,6 @@ import {
   RadiusUprightOutlined,
   ScissorOutlined,
   StopOutlined,
-  SyncOutlined,
   RetweetOutlined
 } from '@ant-design/icons'
 import {

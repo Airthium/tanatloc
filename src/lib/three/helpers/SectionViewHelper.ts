@@ -5,6 +5,7 @@ import {
   Curve,
   DoubleSide,
   Group,
+  Line3,
   Mesh,
   MeshBasicMaterial,
   Object3D,
@@ -62,12 +63,42 @@ const SectionViewHelper = (
   // Clipping plane
   const clippingPlane = new Plane(defaultNormal)
 
+  // Camera directions
+  const cameraDirections = {
+    up: new Vector3(),
+    forward: new Vector3(),
+    right: new Vector3()
+  }
+
+  // Initial position
+  const initialPosition = new Vector3()
+
+  // Initial intersection point
+  const initialIntersection = new Vector3()
+
+  // Control intersection
+  const controlIntersection = new Vector3()
+
+  // Control plane
+  const controlPlane = new Plane()
+
+  // Control offset
+  const controlOffset = new Vector3()
+
+  // Control normal
+  const controlNormal = new Vector3()
+
+  // Control line
+  const controlLine = new Line3()
+
   // Raycaster
   const raycaster = new Raycaster()
 
   // Variables
   let lastAxis = defaultNormal
   let highlighted: Mesh<BufferGeometry, MeshBasicMaterial> | undefined
+  let isDown: boolean
+  let control: Mesh
 
   // Controller
   const controller: IController = new Group()
@@ -325,7 +356,6 @@ const SectionViewHelper = (
    */
   const enableControls = (): void => {
     controls.enabled = true
-    // controls.reset()
   }
 
   /**
@@ -333,6 +363,28 @@ const SectionViewHelper = (
    */
   const disableControls = (): void => {
     controls.enabled = false
+  }
+
+  /**
+   * Set camera directions
+   */
+  const setCameraDirections = (): void => {
+    camera.getWorldDirection(cameraDirections.forward)
+    cameraDirections.forward.normalize()
+    cameraDirections.up.copy(camera.up).normalize()
+    cameraDirections.right
+      .crossVectors(cameraDirections.up, cameraDirections.forward)
+      .normalize()
+  }
+
+  /**
+   * Update clipping plane
+   */
+  const updateClippingPlane = () => {
+    const normal = new Vector3(0, 0, 1)
+      .applyQuaternion(controller.quaternion)
+      .multiplyScalar(-1)
+    clippingPlane.setFromNormalAndCoplanarPoint(normal, controller.position)
   }
 
   /**
@@ -344,13 +396,82 @@ const SectionViewHelper = (
 
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, camera)
-    const intersects = raycaster.intersectObject(controller)
-    if (intersects.length) {
-      highlight(intersects[0].object as Mesh<BufferGeometry, MeshBasicMaterial>)
-      disableControls()
+    if (isDown) {
+      if (!control) return
+
+      // Move
+      const intersection = new Vector3()
+      raycaster.ray.intersectPlane(controlPlane, intersection)
+
+      if (control.type === 'Plane') planeMove(intersection)
+
+      updateClippingPlane()
     } else {
-      highlight()
-      enableControls()
+      // Highlight
+      const intersects = raycaster.intersectObject(controller)
+      if (intersects.length) {
+        disableControls()
+
+        control = intersects[0].object as Mesh
+        highlight(control as Mesh<BufferGeometry, MeshBasicMaterial>)
+
+        controlIntersection.copy(intersects[0].point)
+        setCameraDirections()
+      } else {
+        control = null
+        highlight()
+        enableControls()
+      }
+    }
+  }
+
+  const planeControl = () => {
+    // Control plane
+    controlPlane.setFromNormalAndCoplanarPoint(
+      cameraDirections.forward,
+      controlIntersection
+    )
+
+    // Position
+    initialPosition.copy(controller.position)
+
+    // Initial intersection
+    raycaster.ray.intersectPlane(controlPlane, initialIntersection)
+
+    // Control offset
+    controlOffset.copy(initialIntersection).sub(initialPosition)
+
+    // Control normal
+    controlNormal.copy(controlOffset).normalize()
+
+    // Control line
+    controlLine.set(
+      initialPosition,
+      new Vector3().copy(initialPosition).add(clippingPlane.normal)
+    )
+  }
+
+  const planeMove = (point: Vector3): void => {
+    point.sub(controlOffset)
+    const controlPoint = new Vector3()
+    controlLine.closestPointToPoint(point, false, controlPoint)
+    controller.position.copy(controlPoint)
+  }
+
+  const domeControl = () => {}
+
+  const arcControl = () => {}
+
+  const setControl = (): void => {
+    switch (control.type) {
+      case 'Plane':
+        planeControl()
+        break
+      case 'Dome':
+        domeControl()
+        break
+      case 'ArcX':
+        arcControl()
     }
   }
 
@@ -360,9 +481,10 @@ const SectionViewHelper = (
   const onMouseDown = (): void => {
     if (!controller.visible) return
 
-    if (highlighted) {
-      const type = highlighted.type
-      console.log(type)
+    if (control) {
+      isDown = true
+
+      setControl()
     }
   }
 
@@ -371,6 +493,9 @@ const SectionViewHelper = (
    */
   const onMouseUp = (): void => {
     if (!controller.visible) return
+
+    isDown = false
+    highlight()
   }
 
   renderer.domElement.addEventListener('pointermove', onMouseMove)

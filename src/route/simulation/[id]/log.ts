@@ -48,7 +48,7 @@ const log = async (req: Request, res: Response): Promise<void> => {
       // Log
       try {
         const logContent = await SimulationLib.getLog({ id }, req.body.file)
-        res.status(200).json({ logContent })
+        res.status(200).json({ log: logContent })
       } catch (err) {
         throw error(500, err.message)
       }

@@ -126,6 +126,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
         getBoundingClientRect: () => ({ width: 1, height: 1, left: 0, top: 0 })
       }
     })
+    mouseDown({})
 
     // With intersect (Plane)
     global.MockRaycaster.intersectObject = [

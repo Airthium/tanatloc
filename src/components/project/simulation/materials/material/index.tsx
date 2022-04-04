@@ -103,7 +103,7 @@ const Material = ({
 
   /**
    * On material select
-   * @param {Object} currentMaterial Current material
+   * @param currentMaterial Current material
    */
   const onMaterialSelect = useCallback(
     (currentMaterial: IMaterialDatabase['key']['children'][0]) => {
@@ -117,7 +117,7 @@ const Material = ({
 
   /**
    * On select
-   * @param {Object} selected Selected
+   * @param selected Selected
    */
   const onSelected = useCallback((selected: ISelect[]) => {
     setCurrent((prevCurrent) => ({

@@ -173,8 +173,8 @@ const onCouplingResultChange = async (
 
 /**
  * On parameter change
- * @param {number} index Children index
- * @param {string} value Value
+ * @param index Child index
+ * @param value Value
  */
 const onChange = async (
   simulation: ISimulation,

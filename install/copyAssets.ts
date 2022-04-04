@@ -4,8 +4,7 @@ import { promises as fs } from 'fs'
 
 /**
  * Copy threejs assets
- * @description Copy threejs assets in `public/three/libs`:
- * - `draco` libraries
+ * @description Copy threejs assets in `public/three/libs`
  */
 const copyThreeAssets = async (): Promise<void> => {
   // Create path
@@ -25,7 +24,7 @@ const copyThreeAssets = async (): Promise<void> => {
 
 /**
  * Copy MathJax assets
- * @description Copy MathJax assets in `public/mathjax`:
+ * @description Copy MathJax assets in `public/mathjax`
  */
 const copyMathjaxAssets = async (): Promise<void> => {
   // Create path

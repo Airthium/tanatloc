@@ -8,7 +8,7 @@ const validUUID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
 
 /**
  * Initialize
- * @returns {string} Administrator id
+ * @returns Administrator id
  */
 const initialize = async () => {
   const admin = await UserDB.get('admin', ['id'], 'email')

@@ -47,7 +47,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
 
   /**
    * Highlight current
-   * @param {number} index Index
+   * @param index Index
    */
   const highlight = useCallback(
     (index: number): void => {

@@ -5,8 +5,8 @@ import { parseOneAddress } from 'email-addresses'
 
 /**
  * String to color
- * @param {string} str String
- * @returns {string} HSL color
+ * @param str String
+ * @returns HSL color
  */
 const stringToColor = (str?: string): string => {
   if (!str) return '#FFFFFF'
@@ -20,8 +20,8 @@ const stringToColor = (str?: string): string => {
 
 /**
  * Component to Hex
- * @param {number} c Color
- * @returns {string} Hex
+ * @param c Color
+ * @returns Hex
  */
 const componentToHex = (c: number): string => {
   const hex = c.toString(16)
@@ -30,8 +30,8 @@ const componentToHex = (c: number): string => {
 
 /**
  * RGB to Hex
- * @param {Object} color Color `{r, g, b}`
- * @returns {string} Hex
+ * @param color Color `{r, g, b}`
+ * @returns Hex
  */
 const rgbToHex = (color: { r: number; g: number; b: number }): string => {
   return (
@@ -44,9 +44,9 @@ const rgbToHex = (color: { r: number; g: number; b: number }): string => {
 
 /**
  * rgb to CSS rgba
- * @param {Object} color Color `{r, g, b}`
- * @param {number} alpha Alpha
- * @returns {string} rgba
+ * @param color Color `{r, g, b}`
+ * @param alpha Alpha
+ * @returns rgba
  */
 const rgbToRgba = (
   color?: { r: number; g: number; b: number },
@@ -68,8 +68,8 @@ const rgbToRgba = (
 
 /**
  * User to avatar
- * @param {Object} user User
- * @returns {jsx} Avatar
+ * @param user User
+ * @returns Avatar
  */
 const userToAvatar = (user: {
   id?: string
@@ -112,8 +112,8 @@ const userToAvatar = (user: {
 
 /**
  * Group to avatar
- * @param {Object} group Group
- * @returns {jsx} Avatar
+ * @param group Group
+ * @returns Avatar
  */
 const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
   let name = group.name
@@ -130,8 +130,8 @@ const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
 
 /**
  * Validate email
- * @param {string} email Email
- * @returns {bool} Valid
+ * @param email Email
+ * @returns Valid
  */
 const validateEmail = (email: string): boolean => {
   return !!parseOneAddress(email)

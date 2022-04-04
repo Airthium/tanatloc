@@ -1,3 +1,5 @@
+/** @module Lib.Three.Helpers.SectionViewHelper */
+
 import {
   Box3,
   BufferGeometry,

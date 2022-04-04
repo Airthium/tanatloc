@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import { Button, Typography, Space } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
+/**
+ * Props
+ */
 export interface IProps {
   onSelect: () => void
 }
@@ -11,7 +14,7 @@ export interface IProps {
 /**
  * Local
  * @param props Props
- * @returns Render
+ * @returns Local
  */
 const Local = ({ onSelect }: IProps): JSX.Element => {
   /**

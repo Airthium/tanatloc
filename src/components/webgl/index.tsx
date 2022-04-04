@@ -29,124 +29,132 @@ const WebGLError = (): JSX.Element => {
    */
   return (
     <Layout>
-      <Layout.Content>
+      <Layout.Header className="Index-header">
         <div className="logo">
           <img src="/images/logo.svg" alt="Tanatloc" />
         </div>
-        <Card title="WebGL Error">
-          <Space direction="vertical">
-            <Typography.Text>
-              <AlertOutlined style={{ color: 'red' }} /> {errors.webGL}
-            </Typography.Text>
-            <Typography.Text>
-              <Button type="link" onClick={() => router.back()}>
-                Return to the previous page
-              </Button>
-            </Typography.Text>
-          </Space>
-        </Card>
-        <Card title="How to enable WebGL">
-          <Space className="webgl-Space">
-            <Card title="Windows">
-              <ul>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() =>
-                      Modal.info({
-                        title: 'Google Chrome (Windows)',
-                        content: <NoManipBrowser />
-                      })
-                    }
-                  >
-                    Google Chrome
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() =>
-                      Modal.info({
-                        title: 'Firefox (Windows)',
-                        content: <FirefoxWindows />
-                      })
-                    }
-                  >
-                    Mozilla Firefox
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() =>
-                      Modal.info({
-                        title: 'Microsoft Edge (Windows)',
-                        content: <NoManipBrowser />
-                      })
-                    }
-                  >
-                    Microsoft Edge
-                  </Button>
-                </li>
-              </ul>
-            </Card>
-            <Card title="MacOS / Linux">
-              <ul>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() =>
-                      Modal.info({
-                        title: 'Google Chrome (MacOS / Linux)',
-                        content: <NoManipBrowser />
-                      })
-                    }
-                  >
-                    Google Chrome
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() =>
-                      Modal.info({
-                        title: 'Firefox (MacOS / Linux)',
-                        content: <FirefoxMac />
-                      })
-                    }
-                  >
-                    Mozilla Firefox
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() =>
-                      Modal.info({
-                        title: 'Safari (MacOS)',
-                        content: <SafariMac />
-                      })
-                    }
-                  >
-                    Safari
-                  </Button>
-                </li>
-              </ul>
-            </Card>
-          </Space>
-        </Card>
-        <Card title="WebGL Check">
-          <Space direction="vertical">
-            <Typography.Text>
-              Visit{' '}
-              <a href="https://get.webgl.org" target="_blank" rel="noreferrer">
-                {' '}
-                this website
-              </a>{' '}
-              to check if WebGL is enabled on your device
-            </Typography.Text>
-          </Space>
-        </Card>
+      </Layout.Header>
+      <Layout.Content style={{ padding: '0 20px' }}>
+        <Space direction="vertical" size={20} className="full-width">
+          <Card title="WebGL Error">
+            <Space direction="vertical">
+              <Typography.Text>
+                <AlertOutlined style={{ color: 'red' }} /> {errors.webGL}
+              </Typography.Text>
+              <Typography.Text>
+                <Button type="link" onClick={() => router.back()}>
+                  Return to the previous page
+                </Button>
+              </Typography.Text>
+            </Space>
+          </Card>
+          <Card title="How to enable WebGL">
+            <Space className="webgl-Space">
+              <Card title="Windows">
+                <ul>
+                  <li>
+                    <Button
+                      type="text"
+                      onClick={() =>
+                        Modal.info({
+                          title: 'Google Chrome (Windows)',
+                          content: <NoManipBrowser />
+                        })
+                      }
+                    >
+                      Google Chrome
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      type="text"
+                      onClick={() =>
+                        Modal.info({
+                          title: 'Firefox (Windows)',
+                          content: <FirefoxWindows />
+                        })
+                      }
+                    >
+                      Mozilla Firefox
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      type="text"
+                      onClick={() =>
+                        Modal.info({
+                          title: 'Microsoft Edge (Windows)',
+                          content: <NoManipBrowser />
+                        })
+                      }
+                    >
+                      Microsoft Edge
+                    </Button>
+                  </li>
+                </ul>
+              </Card>
+              <Card title="MacOS / Linux">
+                <ul>
+                  <li>
+                    <Button
+                      type="text"
+                      onClick={() =>
+                        Modal.info({
+                          title: 'Google Chrome (MacOS / Linux)',
+                          content: <NoManipBrowser />
+                        })
+                      }
+                    >
+                      Google Chrome
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      type="text"
+                      onClick={() =>
+                        Modal.info({
+                          title: 'Firefox (MacOS / Linux)',
+                          content: <FirefoxMac />
+                        })
+                      }
+                    >
+                      Mozilla Firefox
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      type="text"
+                      onClick={() =>
+                        Modal.info({
+                          title: 'Safari (MacOS)',
+                          content: <SafariMac />
+                        })
+                      }
+                    >
+                      Safari
+                    </Button>
+                  </li>
+                </ul>
+              </Card>
+            </Space>
+          </Card>
+          <Card title="WebGL Check">
+            <Space direction="vertical">
+              <Typography.Text>
+                Visit{' '}
+                <a
+                  href="https://get.webgl.org"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {' '}
+                  this website
+                </a>{' '}
+                to check if WebGL is enabled on your device
+              </Typography.Text>
+            </Space>
+          </Card>
+        </Space>
       </Layout.Content>
     </Layout>
   )

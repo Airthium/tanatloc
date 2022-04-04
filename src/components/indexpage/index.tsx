@@ -121,7 +121,7 @@ const Index = (): JSX.Element => {
       </Layout.Header>
       <Divider
         style={{
-          margin: '24px 10px',
+          margin: '12px 10px 24px 10px',
           borderColor: 'grey',
           borderWidth: '2px',
           width: 'unset',

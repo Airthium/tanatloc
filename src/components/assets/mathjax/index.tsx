@@ -1,21 +1,19 @@
 /** @module Components.Assets.Mathjax */
 
 import { useEffect } from 'react'
+import Script from 'next/script'
 import parse from 'html-react-parser'
 
-import { mathjaxInit, mathjaxRefresh } from '@/lib/mathjax'
+import { mathjaxRefresh } from '@/lib/mathjax'
 
 /**
  * Head
  */
 const Head = (): JSX.Element => {
-  // MathJax init
-  mathjaxInit()
-
   /**
    * Render
    */
-  return <></>
+  return <Script src="/mathjax/tex-mml-chtml.js" />
 }
 
 export interface IPropsInline {

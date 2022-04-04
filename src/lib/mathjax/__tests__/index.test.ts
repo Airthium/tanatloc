@@ -1,46 +1,6 @@
-import { mathjaxInit, mathjaxRefresh } from '..'
+import { mathjaxRefresh } from '..'
 
 describe('lib/mathjax', () => {
-  const { window } = global
-  test('mathjaxInit', () => {
-    // No window
-    delete global.window
-    mathjaxInit()
-    global.window = window
-
-    // Normal
-    window.MathJax = undefined
-    document.getElementsByTagName = () => [
-      //@ts-ignore
-      {
-        children: [],
-        appendChild: jest.fn
-      }
-    ]
-    mathjaxInit()
-
-    // Already exists
-    window.MathJax = undefined
-    document.getElementsByTagName = () => [
-      //@ts-ignore
-      {
-        children: [
-          undefined,
-          { src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js' }
-        ]
-      }
-    ]
-    mathjaxInit()
-
-    // Already loaded
-    window.MathJax = {
-      typesetPromise: async () => {
-        // Ok
-      }
-    }
-    mathjaxInit()
-  })
-
   test('mathjaxRefresh', () => {
     // No mathjax
     window.MathJax = undefined

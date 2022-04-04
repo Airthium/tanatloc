@@ -10,7 +10,7 @@ import { unarchiveFromServer } from './unarchiveFromServer'
 import { deleteArchiveFile } from './deleteArchiveFile'
 import { unarchiveFromFile } from './unarchiveFromFile'
 
-export default {
+const Project = {
   useProjects,
   useProject,
   add,
@@ -21,3 +21,5 @@ export default {
   deleteArchiveFile,
   unarchiveFromFile
 }
+
+export default Project

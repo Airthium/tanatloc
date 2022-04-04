@@ -5,4 +5,5 @@ import { add } from './add'
 import { update } from './update'
 import { del } from './del'
 
-export default { useGroups, add, update, del }
+const Group = { useGroups, add, update, del }
+export default Group

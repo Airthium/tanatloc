@@ -9,4 +9,13 @@ import { accept } from './accept'
 import { decline } from './decline'
 import { quit } from './quit'
 
-export default { useOrganizations, add, update, del, accept, decline, quit }
+const Organization = {
+  useOrganizations,
+  add,
+  update,
+  del,
+  accept,
+  decline,
+  quit
+}
+export default Organization

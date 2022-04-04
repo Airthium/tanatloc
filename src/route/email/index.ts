@@ -37,7 +37,7 @@ const checkSendBody = (body: ICheckBody): void => {
  * @param req Request
  * @param res Result
  */
-export default async (req: Request, res: Response): Promise<void> => {
+const route = async (req: Request, res: Response): Promise<void> => {
   try {
     if (req.method === 'PUT') {
       // Check
@@ -68,3 +68,5 @@ export default async (req: Request, res: Response): Promise<void> => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default route

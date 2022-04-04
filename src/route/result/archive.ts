@@ -36,7 +36,7 @@ const checkArchiveBody = (body: IArchiveBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (req: Request, res: Response): Promise<void> => {
+const archive = async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -53,8 +53,8 @@ export default async (req: Request, res: Response): Promise<void> => {
       try {
         // Archive
         res.setHeader('Content-Type', 'application/zip')
-        const archive = await ResultLib.archive(simulation)
-        archive.pipe(res)
+        const archiveStream = await ResultLib.archive(simulation)
+        archiveStream.pipe(res)
       } catch (err) {
         throw error(500, err.message)
       }
@@ -66,3 +66,5 @@ export default async (req: Request, res: Response): Promise<void> => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default archive

@@ -7,4 +7,5 @@ import { getByUsernameAndPassword } from './getByUsernameAndPassword'
 import { update } from './update'
 import { del } from './del'
 
-export default { add, get, getAll, getByUsernameAndPassword, update, del }
+const User = { add, get, getAll, getByUsernameAndPassword, update, del }
+export default User

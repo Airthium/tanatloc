@@ -6,4 +6,5 @@ import { update } from './update'
 import { del } from './del'
 import { getAll } from './getAll'
 
-export default { add, get, update, del, getAll }
+const Simulation = { add, get, update, del, getAll }
+export default Simulation

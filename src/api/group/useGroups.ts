@@ -26,9 +26,11 @@ export const useGroups = (
     loadingGroups: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR('/api/groups/' + id, fetcher)
   const loading = !data
-  const groups = data?.groups || []
+  const groups = data?.groups || defaultData
 
   /**
    * Add one
@@ -40,7 +42,7 @@ export const useGroups = (
       //@ts-ignore
       mutate({ groups: newGroups })
     },
-    [groups]
+    [groups, mutate]
   )
 
   /**
@@ -52,7 +54,7 @@ export const useGroups = (
       const filteredGroups = groups.filter((g) => g.id !== group.id)
       mutate({ groups: filteredGroups })
     },
-    [groups]
+    [groups, mutate]
   )
 
   /**
@@ -67,7 +69,7 @@ export const useGroups = (
       })
       mutate({ groups: mutatedGroups })
     },
-    [groups]
+    [groups, mutate]
   )
 
   return [

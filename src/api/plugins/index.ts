@@ -3,4 +3,5 @@
 import { list } from './list'
 import { completeList } from './completeList'
 
-export default { list, completeList }
+const Plugins = { list, completeList }
+export default Plugins

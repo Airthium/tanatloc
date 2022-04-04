@@ -22,12 +22,14 @@ export const useProject = (
     loadingProject: boolean
   }
 ] => {
+  const defaultData = { id: '0' }
+
   const { data, error, mutate } = useSWR(
     '/api/project' + (id ? '/' + id : ''),
     fetcher
   )
   const loading = !data
-  const project = data?.project || { id: '0' }
+  const project = data?.project || defaultData
 
   /**
    * Mutate
@@ -41,7 +43,7 @@ export const useProject = (
       }
       mutate({ project: mutatedProject })
     },
-    [project]
+    [project, mutate]
   )
 
   return [

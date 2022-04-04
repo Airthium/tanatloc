@@ -4,4 +4,5 @@ import { load } from './load'
 import { download } from './download'
 import { archive } from './archive'
 
-export default { load, download, archive }
+const Result = { load, download, archive }
+export default Result

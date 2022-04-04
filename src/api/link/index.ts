@@ -3,4 +3,5 @@
 import { get } from './get'
 import { process } from './process'
 
-export default { get, process }
+const Link = { get, process }
+export default Link

@@ -13,7 +13,7 @@ import GeometryLib from '@/lib/geometry'
  * @param req Request
  * @param res Response
  */
-export default async (req: Request, res: Response) => {
+const part = async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -31,8 +31,8 @@ export default async (req: Request, res: Response) => {
     if (req.method === 'GET') {
       try {
         // Download
-        const part = await GeometryLib.readPart({ id })
-        res.status(200).json(part)
+        const partContent = await GeometryLib.readPart({ id })
+        res.status(200).json(partContent)
       } catch (err) {
         throw error(500, err.message)
       }
@@ -44,3 +44,5 @@ export default async (req: Request, res: Response) => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default part

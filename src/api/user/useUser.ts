@@ -37,12 +37,12 @@ export const useUser = (): [
         }
       })
     },
-    [user]
+    [user, mutate]
   )
 
   const clear = useCallback(() => {
     mutate({ user: null })
-  }, [])
+  }, [mutate])
 
   return [
     user,

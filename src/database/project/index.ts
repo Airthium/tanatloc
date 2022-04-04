@@ -5,4 +5,5 @@ import { add } from './add'
 import { update } from './update'
 import { del } from './del'
 
-export default { get, add, update, del }
+const Project = { get, add, update, del }
+export default Project

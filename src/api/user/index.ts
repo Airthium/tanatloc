@@ -10,7 +10,7 @@ import { delById } from './delById'
 
 import { check } from './check'
 
-export default {
+const User = {
   useUser,
   useUsers,
   add,
@@ -20,3 +20,5 @@ export default {
   delById,
   check
 }
+
+export default User

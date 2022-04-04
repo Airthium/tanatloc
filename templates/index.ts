@@ -1,6 +1,6 @@
 /** @module Templates */
 
-export default {
+const Templates = {
   gmsh2D: 'gmsh2D.geo.ejs',
   gmsh3D: 'gmsh3D.geo.ejs',
   poisson: 'poisson.edp.ejs',
@@ -10,3 +10,5 @@ export default {
   navierStokesTime: 'navierStokesTime.edp.ejs',
   thermicDiffusion: 'thermicDiffusion.edp.ejs'
 }
+
+export default Templates

@@ -25,12 +25,14 @@ export const useGeometries = (
     loadingGeometries: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
     fetcher
   )
   const loading = !data
-  const geometries = data?.geometries || []
+  const geometries = data?.geometries || defaultData
 
   /**
    * Add one (useGeometries)
@@ -41,7 +43,7 @@ export const useGeometries = (
       const newGeometries = [...geometries, geometry]
       mutate({ geometries: newGeometries })
     },
-    [geometries]
+    [geometries, mutate]
   )
 
   /**
@@ -53,7 +55,7 @@ export const useGeometries = (
       const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
       mutate({ geometries: filteredGeometries })
     },
-    [geometries]
+    [geometries, mutate]
   )
 
   /**
@@ -68,7 +70,7 @@ export const useGeometries = (
       })
       mutate({ geometries: mutatedGeometries })
     },
-    [geometries]
+    [geometries, mutate]
   )
 
   return [

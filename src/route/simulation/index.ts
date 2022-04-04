@@ -47,7 +47,7 @@ const checkAddBody = (body: IAddBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (req: Request, res: Response): Promise<void> => {
+const route = async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -82,3 +82,5 @@ export default async (req: Request, res: Response): Promise<void> => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default route

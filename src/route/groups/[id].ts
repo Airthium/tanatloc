@@ -13,7 +13,7 @@ import GroupLib from '@/lib/group'
  * @param req Request
  * @param res Response
  */
-export default async (req: Request, res: Response) => {
+const route = async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -48,3 +48,5 @@ export default async (req: Request, res: Response) => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default route

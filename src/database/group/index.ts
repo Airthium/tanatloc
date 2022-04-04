@@ -6,4 +6,5 @@ import { getAll } from './getAll'
 import { update } from './update'
 import { del } from './del'
 
-export default { add, get, getAll, update, del }
+const Group = { add, get, getAll, update, del }
+export default Group

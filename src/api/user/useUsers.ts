@@ -22,9 +22,11 @@ export const useUsers = (): [
     loadingUsers: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR('/api/users', fetcher)
   const loading = !data
-  const users = data?.users || []
+  const users = data?.users || defaultData
 
   /**
    * Add one
@@ -35,7 +37,7 @@ export const useUsers = (): [
       const newUsers = [...users, user]
       mutate({ users: newUsers })
     },
-    [users]
+    [users, mutate]
   )
 
   /**
@@ -47,7 +49,7 @@ export const useUsers = (): [
       const filteredUsers = users.filter((u) => u.id !== user.id)
       mutate({ users: filteredUsers })
     },
-    [users]
+    [users, mutate]
   )
 
   /**
@@ -62,7 +64,7 @@ export const useUsers = (): [
       })
       mutate({ users: mutatedUsers })
     },
-    [users]
+    [users, mutate]
   )
 
   return [

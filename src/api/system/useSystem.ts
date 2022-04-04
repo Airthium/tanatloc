@@ -36,7 +36,7 @@ export const useSystem = (): [
         }
       })
     },
-    [system]
+    [system, mutate]
   )
 
   return [

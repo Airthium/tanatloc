@@ -2,4 +2,5 @@
 
 import { add } from './add'
 
-export default { add }
+const Avatar = { add }
+export default Avatar

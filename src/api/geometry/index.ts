@@ -8,4 +8,5 @@ import { del } from './del'
 import { download } from './download'
 import { getPart } from './getPart'
 
-export default { useGeometries, add, update, del, download, getPart }
+const Geometry = { useGeometries, add, update, del, download, getPart }
+export default Geometry

@@ -25,9 +25,11 @@ export const useOrganizations = (): [
     loadingOrganizations: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR('/api/organizations', fetcher)
   const loading = !data
-  const organizations = data?.organizations || []
+  const organizations = data?.organizations || defaultData
 
   /**
    * Add one
@@ -39,7 +41,7 @@ export const useOrganizations = (): [
       //@ts-ignore
       mutate({ organizations: newOrganizations })
     },
-    [organizations]
+    [organizations, mutate]
   )
 
   /**
@@ -53,7 +55,7 @@ export const useOrganizations = (): [
       )
       mutate({ organizations: filteredOrganizations })
     },
-    [organizations]
+    [organizations, mutate]
   )
 
   /**
@@ -68,7 +70,7 @@ export const useOrganizations = (): [
       })
       mutate({ organizations: mutatedOrganizations })
     },
-    [organizations]
+    [organizations, mutate]
   )
 
   return [

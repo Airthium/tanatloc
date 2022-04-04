@@ -7,7 +7,9 @@ import { Request, Response } from 'express'
  * @param _ Request
  * @param res Response
  */
-export default async (_: Request, res: Response) => {
+const route = async (_: Request, res: Response) => {
   // Empty route
   res.status(200).json({ groups: [] })
 }
+
+export default route

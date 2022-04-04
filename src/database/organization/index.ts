@@ -6,4 +6,5 @@ import { get } from './get'
 import { update } from './update'
 import { del } from './del'
 
-export default { add, getAll, get, update, del }
+const Organization = { add, getAll, get, update, del }
+export default Organization

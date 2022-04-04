@@ -26,7 +26,7 @@ const checkLogBody = (body: ILogBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (req: Request, res: Response): Promise<void> => {
+const log = async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -47,8 +47,8 @@ export default async (req: Request, res: Response): Promise<void> => {
 
       // Log
       try {
-        const log = await SimulationLib.getLog({ id }, req.body.file)
-        res.status(200).json({ log })
+        const logContent = await SimulationLib.getLog({ id }, req.body.file)
+        res.status(200).json({ logContent })
       } catch (err) {
         throw error(500, err.message)
       }
@@ -60,3 +60,5 @@ export default async (req: Request, res: Response): Promise<void> => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default log

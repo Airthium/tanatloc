@@ -2,4 +2,5 @@
 
 import { recover } from './recover'
 
-export default { recover }
+const Email = { recover }
+export default Email

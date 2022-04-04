@@ -22,16 +22,18 @@ export const usePlugins = (): [
     loadingPlugins: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR('/api/plugin', fetcher)
   const loading = !data
-  const plugins = data?.plugins || []
+  const plugins = data?.plugins || defaultData
 
   const addOne = useCallback(
     (plugin: IClientPlugin): void => {
       const newPlugins = [...plugins, plugin]
       mutate({ plugins: newPlugins })
     },
-    [plugins]
+    [plugins, mutate]
   )
 
   const delOne = useCallback(
@@ -39,7 +41,7 @@ export const usePlugins = (): [
       const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
       mutate({ plugins: filteredPlugins })
     },
-    [plugins]
+    [plugins, mutate]
   )
 
   const mutateOne = useCallback(
@@ -50,7 +52,7 @@ export const usePlugins = (): [
       })
       mutate({ plugins: mutatedPlugin })
     },
-    [plugins]
+    [plugins, mutate]
   )
 
   return [

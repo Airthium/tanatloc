@@ -10,7 +10,7 @@ import { stop } from './stop'
 import { tasks } from './tasks'
 import { log } from './log'
 
-export default {
+const Simulation = {
   useSimulations,
   useSimulation,
   add,
@@ -21,3 +21,5 @@ export default {
   tasks,
   log
 }
+
+export default Simulation

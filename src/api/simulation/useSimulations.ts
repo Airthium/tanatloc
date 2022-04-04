@@ -25,12 +25,14 @@ export const useSimulations = (
     loadingSimulations: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR(
     ['/api/simulations', JSON.stringify({ ids })],
     fetcher
   )
   const loading = !data
-  const simulations = data?.simulations || []
+  const simulations = data?.simulations || defaultData
 
   /**
    * Add one (useSimulations)
@@ -41,7 +43,7 @@ export const useSimulations = (
       const newSimulations = [...simulations, simulation]
       mutate({ simulations: newSimulations })
     },
-    [simulations]
+    [simulations, mutate]
   )
 
   /**
@@ -55,7 +57,7 @@ export const useSimulations = (
       )
       mutate({ simulations: filteredSimulations })
     },
-    [simulations]
+    [simulations, mutate]
   )
 
   /**
@@ -70,7 +72,7 @@ export const useSimulations = (
       })
       mutate({ simulations: mutatedSimulations }, revalidate)
     },
-    [simulations]
+    [simulations, mutate]
   )
 
   return [

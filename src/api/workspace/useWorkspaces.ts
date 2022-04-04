@@ -23,9 +23,11 @@ export const useWorkspaces = (): [
     loadingWorkspaces: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
-  const workspaces = data?.workspaces || []
+  const workspaces = data?.workspaces || defaultData
 
   /**
    * Add one (useWorkspaces)
@@ -37,7 +39,7 @@ export const useWorkspaces = (): [
       //@ts-ignore
       mutate({ workspaces: newWorkspaces })
     },
-    [workspaces]
+    [workspaces, mutate]
   )
 
   /**
@@ -49,7 +51,7 @@ export const useWorkspaces = (): [
       const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
       mutate({ workspaces: filteredWorkspaces })
     },
-    [workspaces]
+    [workspaces, mutate]
   )
 
   /**
@@ -64,7 +66,7 @@ export const useWorkspaces = (): [
       })
       mutate({ workspaces: mutatedWorkspaces })
     },
-    [workspaces]
+    [workspaces, mutate]
   )
 
   return [

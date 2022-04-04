@@ -13,7 +13,7 @@ import ProjectLib from '@/lib/project'
  * @param req Request
  * @param res Response
  */
-export default async (req: Request, res: Response) => {
+const archive = async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -33,8 +33,8 @@ export default async (req: Request, res: Response) => {
         // Archive project
         try {
           res.setHeader('Content-Type', 'application/x-tgz')
-          const archive = await ProjectLib.archive({ id })
-          archive.pipe(res)
+          const archiveStream = await ProjectLib.archive({ id })
+          archiveStream.pipe(res)
         } catch (err) {
           throw error(500, err.message)
         }
@@ -73,3 +73,5 @@ export default async (req: Request, res: Response) => {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }
+
+export default archive

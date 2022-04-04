@@ -25,12 +25,14 @@ export const useProjects = (
     loadingProjects: boolean
   }
 ] => {
+  const defaultData = []
+
   const { data, error, mutate } = useSWR(
     ['/api/projects', JSON.stringify({ ids })],
     fetcher
   )
   const loading = !data
-  const projects = data?.projects || []
+  const projects = data?.projects || defaultData
 
   /**
    * Add one (useProjects)
@@ -42,7 +44,7 @@ export const useProjects = (
       //@ts-ignore
       mutate({ projects: newProjects })
     },
-    [projects]
+    [projects, mutate]
   )
 
   /**
@@ -54,7 +56,7 @@ export const useProjects = (
       const filteredProjects = projects.filter((p) => p.id !== project.id)
       mutate({ projects: filteredProjects })
     },
-    [projects]
+    [projects, mutate]
   )
 
   /**
@@ -69,7 +71,7 @@ export const useProjects = (
       })
       mutate({ projects: mutatedProjects })
     },
-    [projects]
+    [projects, mutate]
   )
 
   return [

@@ -11,6 +11,7 @@
 ## Electron (Long term)
 
 - Apple sign
+
 - Local freefem (only for electron) plugin
 
 ## Postprocessing (Long term)
@@ -22,3 +23,7 @@
 - faces disapear when speed click on different faces, visible is set to false by something ?
 
 ## Misc (Debug)
+
+- results disapear after relaunch simu
+
+- threejs resize low def

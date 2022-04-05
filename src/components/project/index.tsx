@@ -528,6 +528,12 @@ const Project = (): JSX.Element => {
 
       setSimulation(current)
 
+      const geometryId = current.scheme?.configuration?.geometry?.value
+      if (geometryId && geometry?.id !== geometryId) {
+        const currentGeometry = geometries.find((g) => g.id === geometryId)
+        if (currentGeometry) setGeometry(currentGeometry)
+      }
+
       switch (item) {
         case 'about':
           setSimulationPanelAbout(current)
@@ -555,6 +561,8 @@ const Project = (): JSX.Element => {
       }
     },
     [
+      geometry,
+      geometries,
       simulations,
       setSimulationPanelAbout,
       setSimulationPanelGeometry,

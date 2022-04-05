@@ -70,7 +70,11 @@ export const build2DSelect = (
           label: option.label,
           value: option.value2D ?? option.value
         }))}
-        defaultValue={(child.value as string) || (child.default as string)}
+        defaultValue={
+          (child.value as string) ||
+          (child.default2D as string) ||
+          (child.default as string)
+        }
         onChange={onValueChange}
       />
     </Form.Item>

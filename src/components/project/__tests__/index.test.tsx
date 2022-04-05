@@ -373,6 +373,171 @@ describe('components/project', () => {
     unmount()
   })
 
+  test('Simulation with geometry value', () => {
+    mockPanel.mockImplementation((props) => (
+      <div role="Panel" onClick={props.onClose} />
+    ))
+
+    const geometry1 = { id: 'idg1', name: 'Geometry 1' }
+    const geometry2 = { id: 'idg2', name: 'Geometry 2' }
+    const geometries = [geometry1, geometry2]
+    mockGeometries.mockImplementation(() => geometries)
+
+    const simulation1 = {
+      id: 'ids1',
+      name: 'Simulation 1',
+      scheme: {
+        configuration: {
+          dimension: 2,
+          geometry: {
+            index: 0,
+            title: 'Simulation 1 Geometry',
+            value: 'idg2'
+          },
+          parameters: {
+            index: 1,
+            title: 'Simulation 1 Parameters',
+            done: true
+          },
+          materials: {
+            index: 2,
+            title: 'Simulation 1 Materials'
+          },
+          boundaryConditions: {
+            index: 3,
+            title: 'Simulation 1 BC'
+          },
+          initialization: {
+            index: 4,
+            title: 'Simulation 1 Initialization'
+          },
+          run: {
+            index: 5,
+            title: 'Simulation 1 Run',
+            error: true
+          },
+          unknown: {
+            index: 6,
+            title: 'Simulation 1 Unknown'
+          }
+        }
+      }
+    }
+    const simulations = [simulation1]
+    mockSimulations.mockImplementation(() => simulations)
+
+    const { unmount } = render(<Project />)
+
+    const geometriesItem = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (2)'
+    })
+    fireEvent.click(geometriesItem)
+
+    const geometryItem1 = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry 1'
+    })
+    fireEvent.click(geometryItem1)
+
+    const simulationsItem = screen.getByRole('menuitem', {
+      name: 'code-sandbox SIMULATIONS (1)'
+    })
+    fireEvent.click(simulationsItem)
+
+    const simulationItem1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
+    fireEvent.click(simulationItem1)
+
+    const simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle About'
+    })
+    fireEvent.click(simulationItem)
+
+    unmount()
+  })
+
+  test('Simulation with wrong geometry value', () => {
+    mockPanel.mockImplementation((props) => (
+      <div role="Panel" onClick={props.onClose} />
+    ))
+
+    const geometry1 = { id: 'idg1', name: 'Geometry 1' }
+    const geometries = [geometry1]
+    mockGeometries.mockImplementation(() => geometries)
+
+    const simulation1 = {
+      id: 'ids1',
+      name: 'Simulation 1',
+      scheme: {
+        configuration: {
+          dimension: 2,
+          geometry: {
+            index: 0,
+            title: 'Simulation 1 Geometry',
+            value: 'idg2'
+          },
+          parameters: {
+            index: 1,
+            title: 'Simulation 1 Parameters',
+            done: true
+          },
+          materials: {
+            index: 2,
+            title: 'Simulation 1 Materials'
+          },
+          boundaryConditions: {
+            index: 3,
+            title: 'Simulation 1 BC'
+          },
+          initialization: {
+            index: 4,
+            title: 'Simulation 1 Initialization'
+          },
+          run: {
+            index: 5,
+            title: 'Simulation 1 Run',
+            error: true
+          },
+          unknown: {
+            index: 6,
+            title: 'Simulation 1 Unknown'
+          }
+        }
+      }
+    }
+    const simulations = [simulation1]
+    mockSimulations.mockImplementation(() => simulations)
+
+    const { unmount } = render(<Project />)
+
+    const geometriesItem = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
+    fireEvent.click(geometriesItem)
+
+    const geometryItem1 = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry 1'
+    })
+    fireEvent.click(geometryItem1)
+
+    const simulationsItem = screen.getByRole('menuitem', {
+      name: 'code-sandbox SIMULATIONS (1)'
+    })
+    fireEvent.click(simulationsItem)
+
+    const simulationItem1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
+    fireEvent.click(simulationItem1)
+
+    const simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle About'
+    })
+    fireEvent.click(simulationItem)
+
+    unmount()
+  })
+
   test('Update simulation', () => {
     const simulation = {
       id: 'ids1',

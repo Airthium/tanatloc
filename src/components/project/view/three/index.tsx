@@ -588,9 +588,12 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     const handleResize = (): void => {
       width = currentMount.clientWidth
       height = currentMount.clientHeight
-      renderer.current.setSize(width, height)
       camera.current.aspect = width / height
       camera.current.updateProjectionMatrix()
+
+      renderer.current.setSize(width, height)
+
+      effectComposer.current.setSize(width, height)
 
       axisHelper.resize({
         newOffsetWidth: width - 155,

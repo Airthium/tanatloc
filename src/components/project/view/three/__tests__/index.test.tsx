@@ -49,7 +49,8 @@ jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
 jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
   EffectComposer: jest.fn().mockImplementation(() => ({
     addPass: jest.fn(),
-    render: jest.fn()
+    render: jest.fn(),
+    setSize: jest.fn()
   }))
 }))
 

@@ -23,7 +23,3 @@
 - faces disapear when speed click on different faces, visible is set to false by something ?
 
 ## Misc (Debug)
-
-- results disapear after relaunch simu
-
-- threejs resize low def

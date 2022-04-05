@@ -455,7 +455,10 @@ const stopProcess = async (
   task: ISimulationTask,
   update: () => void
 ): Promise<void> => {
-  interval[id] && clearIntervalAsync(interval[id])
+  if (interval[id]) {
+    clearIntervalAsync(interval[id])
+    interval[id] = undefined
+  }
 
   await processOutput(id, simulationPath, task, update)
 }
@@ -636,7 +639,10 @@ const processData = async (
  * @param tasks Tasks
  */
 const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
-  interval[id] && clearIntervalAsync(interval[id])
+  if (interval[id]) {
+    clearIntervalAsync(interval[id])
+    interval[id] = undefined
+  }
 
   tasks?.forEach((task) => {
     if (task?.status === 'wait' || task?.status === 'process')

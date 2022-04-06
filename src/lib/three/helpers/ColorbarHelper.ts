@@ -93,14 +93,14 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
       position: new Vector3(-0.72, 0, 0),
       align: 'right'
     })
-    minLabel.scale.x = 0.5
-    minLabel.scale.y = 4.5
+    minLabel.scale.x = 0.25
+    minLabel.scale.y = 2.5
     const maxLabel = LabelHelper(renderer, String(max), {
       position: new Vector3(0.72, 0, 0),
       align: 'left'
     })
-    maxLabel.scale.x = 0.5
-    maxLabel.scale.y = 4.5
+    maxLabel.scale.x = 0.25
+    maxLabel.scale.y = 2.5
 
     colorScene.add(minLabel)
     colorScene.add(maxLabel)

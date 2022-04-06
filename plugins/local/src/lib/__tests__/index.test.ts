@@ -1,4 +1,4 @@
-import { ISimulation } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/index.d'
 
 import Local from '..'
 
@@ -516,5 +516,17 @@ describe('plugins/local/src/lib', () => {
       { label: 'label', pid: '0', status: 'process' }
     ])
     expect(mockKill).toHaveBeenCalledTimes(2)
+
+    // Start process
+    mockSetInterval.mockImplementation((callback) => {
+      callback()
+      return 'interval'
+    })
+    const id = Local.startProcess('id', '_', {} as ISimulationTask, jest.fn)
+    await Local.stop('id', [
+      { label: 'label', status: 'finish' },
+      { label: 'label', status: 'wait' },
+      { label: 'label', pid: '0', status: 'process' }
+    ])
   })
 })

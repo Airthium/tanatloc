@@ -4,8 +4,10 @@
 
 import { createDatabase } from '../createDatabase'
 
+const mockCheckdB = jest.fn()
 const mockQuery = jest.fn()
 jest.mock('@/database', () => ({
+  checkdB: async () => mockCheckdB(),
   query: async (query: string) => mockQuery(query)
 }))
 
@@ -25,7 +27,14 @@ describe('install/dB', () => {
       }),
       release: jest.fn()
     }))
+    mockCheckdB.mockReset()
+    mockCheckdB.mockImplementation(() => true)
     mockQuery.mockImplementation(() => ({ rows: [{}] }))
+  })
+
+  test('Database not found', async () => {
+    mockCheckdB.mockImplementation(() => false)
+    await createDatabase()
   })
 
   test('alreadyExists', async () => {

@@ -17,7 +17,7 @@ import {
   tables,
   schemas
 } from '@/config/db'
-import { query } from '@/database'
+import { checkdB, query } from '@/database'
 
 /**
  * Create database
@@ -28,6 +28,9 @@ export const createDatabase = async (): Promise<void> => {
   try {
     let pool: Pool
     let client: PoolClient
+
+    // Check
+    if (!(await checkdB())) throw new Error('Database not found')
 
     // Pool
     pool = new Pool({

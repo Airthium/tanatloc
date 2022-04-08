@@ -4,6 +4,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import ThreeView, { errors } from '@/components/project/view/three'
 import { SelectContext } from '@/context/select'
 
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: jest.fn
+  })
+}))
+
 const mockErroNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   ErrorNotification: (title: string, err: Error) =>
@@ -54,7 +60,7 @@ jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
   }))
 }))
 
-const mockWebGLAvailable = jest.fn(() => true)
+const mockWebGLAvailable = jest.fn()
 jest.mock('three/examples/jsm/capabilities/WebGL', () => ({
   isWebGLAvailable: () => mockWebGLAvailable()
 }))
@@ -168,6 +174,9 @@ describe('components/project/view/three', () => {
 
     mockAvatarAdd.mockReset()
 
+    mockWebGLAvailable.mockReset()
+    mockWebGLAvailable.mockImplementation(() => true)
+
     mockPartLoader.mockImplementation((mouseMove, mouseDown, count) => {
       mouseMove(
         {
@@ -264,6 +273,19 @@ describe('components/project/view/three', () => {
   })
 
   test('render', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('No WebGL', () => {
+    mockWebGLAvailable.mockImplementation(() => false)
     const { unmount } = render(
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}

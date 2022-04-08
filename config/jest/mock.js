@@ -229,6 +229,7 @@ class MockScene {
     this.clear = jest.fn()
     this.remove = jest.fn()
     this.children = global.MockScene.children
+    this.boundingSphere = {}
   }
 }
 

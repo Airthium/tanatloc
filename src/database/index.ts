@@ -64,14 +64,13 @@ let pool: Pool
  * @returns Pool
  */
 export const startdB = (): void => {
-  if (!pool)
-    pool = new Pool({
-      user: USER,
-      host: process.env.DB_HOST || HOST,
-      database: DATABASE,
-      password: PASSWORD,
-      port: PORT
-    })
+  pool = new Pool({
+    user: USER,
+    host: process.env.DB_HOST || HOST,
+    database: DATABASE,
+    password: PASSWORD,
+    port: PORT
+  })
 }
 
 checkdB().then((res) => {

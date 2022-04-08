@@ -1,6 +1,7 @@
 /** @module Components.Project.View.Three */
 
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import {
   useRef,
   useState,
@@ -56,6 +57,7 @@ import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
 import { AxisHelper } from '@/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '@/lib/three/helpers/NavigationHelper'
@@ -442,6 +444,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
 
+  // Data
+  const router = useRouter()
+
   // Context
   const {
     enabled: selectEnabled,
@@ -454,6 +459,11 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   // Mount
   useEffect(() => {
+    if (!WebGL.isWebGLAvailable()) {
+      router.push('/webgl')
+      return
+    }
+
     const currentMount = mount.current
 
     let width = currentMount.clientWidth
@@ -661,9 +671,11 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       sectionViewHelper.current.dispose()
       selectionHelper.current.dispose()
     }
-  }, [])
+  }, [router])
 
   useEffect(() => {
+    if (!scene.current) return
+
     // Check part update
     const currentPart = scene.current.children.find(
       (child: IPart) => child.type === 'Part' && child.uuid === part?.uuid
@@ -734,6 +746,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   // Enable / disable selection
   useEffect(() => {
+    if (!scene.current) return
+
     scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part' && child.uuid === selectPart) {
         if (selectEnabled)
@@ -751,6 +765,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   }, [selectEnabled, selectPart, selectType])
 
   useEffect(() => {
+    if (!scene.current) return
+
     scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part' && child.uuid === selectPart) {
         // Highlight

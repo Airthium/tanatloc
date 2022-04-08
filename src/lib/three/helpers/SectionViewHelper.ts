@@ -228,7 +228,8 @@ const SectionViewHelper = (
     const size = new Vector3()
     scene.boundingBox.getSize(size)
     size.multiplyScalar(1.2)
-    controller.scale.copy(size)
+    const maxSize = Math.max(Math.max(size.x, size.y), size.z)
+    controller.scale.setScalar(maxSize)
   }
 
   /**

@@ -54,6 +54,11 @@ jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
   }))
 }))
 
+const mockWebGLAvailable = jest.fn(() => true)
+jest.mock('three/examples/jsm/capabilities/WebGL', () => ({
+  isWebGLAvailable: () => mockWebGLAvailable()
+}))
+
 jest.mock('@/lib/three/helpers/AxisHelper', () => ({
   AxisHelper: () => ({
     render: jest.fn(),

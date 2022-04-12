@@ -9,7 +9,7 @@ import Plugins from '../plugins'
 
 import Templates from '@/templates'
 
-import init from 'src/init'
+import init from '../../init'
 
 let templates: { [key: string]: (parameters: object) => Promise<string> }
 

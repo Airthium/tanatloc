@@ -7,7 +7,7 @@ import { IClientPlugin, IPlugin, IServerPlugin } from '@/database/index.d'
 import Simulation from '../simulation'
 import Tools from '../tools'
 
-import init from 'src/init'
+import init from '../../init'
 
 let plugins: IPlugin[]
 

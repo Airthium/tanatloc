@@ -16,7 +16,7 @@ import {
   PORT
 } from '@/config/db'
 
-import init from 'src/init'
+import init from '../init'
 
 export const checkdB = async (): Promise<boolean> => {
   console.info('Check database...')

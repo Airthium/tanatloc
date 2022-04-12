@@ -25,7 +25,7 @@ const route = async (req: Request, res: Response) => {
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
 
         // Get list
-        const list = PluginsLib.clientList(user)
+        const list = await PluginsLib.clientList(user)
         res.status(200).json(list)
       } catch (err) {
         throw error(500, err.message)
@@ -34,7 +34,7 @@ const route = async (req: Request, res: Response) => {
       // Get complete
       try {
         // Get complete list
-        const list = PluginsLib.clientList(null, true)
+        const list = await PluginsLib.clientList(null, true)
         res.status(200).json(list)
       } catch (err) {
         throw error(500, err.message)

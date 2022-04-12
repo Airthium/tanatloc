@@ -9,10 +9,16 @@ import Plugins from '../plugins'
 
 import Templates from '@/templates'
 
+import init from 'src/init'
+
+let templates: { [key: string]: (parameters: object) => Promise<string> }
+
 /**
  * Load templates
  */
-const loadTemplates = async () => {
+export const loadTemplates = async (): Promise<void> => {
+  if (templates) return
+
   const templatesList = {}
   // Base templates
   await Promise.all(
@@ -35,7 +41,7 @@ const loadTemplates = async () => {
   )
 
   // Plugin templates
-  const plugins = Plugins.serverList()
+  const plugins = await Plugins.serverList()
   await Promise.all(
     plugins.map(async (plugin) => {
       if (plugin.category === 'Model')
@@ -61,13 +67,15 @@ const loadTemplates = async () => {
     })
   )
 
-  return templatesList
+  templates = templatesList
+
+  global.initialization = {
+    ...(global.initialization || {}),
+    templates: true
+  }
 }
 
-let templates = {}
-loadTemplates()
-  .then((res) => (templates = res))
-  .catch((err) => console.warn(err))
+init()
 
 /**
  * Render
@@ -81,6 +89,9 @@ const render = async (
   parameters: object,
   save?: { location: string; name: string }
 ): Promise<string> => {
+  // Check
+  while (!templates) await new Promise((resolve) => setTimeout(resolve, 10))
+
   // Compile
   const template = templates[key]
   if (!template) throw new Error('Unable to find the model!')

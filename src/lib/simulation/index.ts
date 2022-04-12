@@ -153,7 +153,7 @@ const run = async (
   ])
 
   // Find plugin
-  const plugins = Plugins.serverList()
+  const plugins = await Plugins.serverList()
   const plugin = plugins.find(
     (p) => p.key === configuration.run.cloudServer.key
   )
@@ -319,7 +319,7 @@ const stop = async (simulation: { id: string }): Promise<void> => {
   const tasks = simulationData.tasks
 
   // Find plugin
-  const pluginsLibs = Plugins.serverList()
+  const pluginsLibs = await Plugins.serverList()
   const pluginLib = pluginsLibs.find(
     (p) => p.key === configuration.run.cloudServer.key
   )?.lib

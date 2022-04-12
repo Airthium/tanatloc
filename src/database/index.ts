@@ -16,7 +16,11 @@ import {
   PORT
 } from '@/config/db'
 
+import init from 'src/init'
+
 export const checkdB = async (): Promise<boolean> => {
+  console.info('Check database...')
+
   // Legacy postgres
   try {
     const checkPool = new Pool({
@@ -64,6 +68,7 @@ let pool: Pool
  * @returns Pool
  */
 export const startdB = (): void => {
+  console.info('Start database...')
   pool = new Pool({
     user: USER,
     host: process.env.DB_HOST || HOST,
@@ -71,12 +76,14 @@ export const startdB = (): void => {
     password: PASSWORD,
     port: PORT
   })
+
+  global.initialization = {
+    ...(global.initialization || {}),
+    database: true
+  }
 }
 
-checkdB().then((res) => {
-  if (!res) console.error('Database not found')
-  else startdB()
-})
+init()
 
 /**
  * PostgreSQL query
@@ -88,7 +95,7 @@ export const query = async (
   command: string,
   args: Array<boolean | number | string | Array<string> | object>
 ): Promise<IDataBaseResponse> => {
-  // Wait for pool
+  // Check
   while (!pool) await new Promise((resolve) => setTimeout(resolve, 10))
 
   // Query

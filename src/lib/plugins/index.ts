@@ -2,52 +2,52 @@
 
 import isElectron from 'is-electron'
 
-import { IClientPlugin, IServerPlugin } from '@/database/index.d'
+import { IClientPlugin, IPlugin, IServerPlugin } from '@/database/index.d'
 
 import Simulation from '../simulation'
 import Tools from '../tools'
 
-const plugins = []
+import init from 'src/init'
+
+let plugins: IPlugin[]
 
 /**
  * Load
  */
-const load = async (): Promise<void> => {
+export const loadPlugins = async (): Promise<void> => {
+  console.info('Load plugins...')
+
   // Available directories
   const availables = await Tools.listDirectories(
     isElectron() ? `${process.resourcesPath}/plugins` : './plugins'
   )
 
-  await Promise.all(
+  plugins = await Promise.all(
     availables.map(async (available) => {
       try {
         // Import
         const plugin = isElectron()
           ? await require(`/plugins/${available}`)
           : await import(`/plugins/${available}`)
-        plugins.push(plugin.default)
-        console.info(`Plugin ${available} loaded!`)
+        console.info(` - Plugin ${available} loaded!`)
+        return plugin.default
       } catch (err) {
-        console.error(`Plugin ${available} NOT loaded!`)
+        console.error(` - Plugin ${available} NOT loaded!`)
       }
     })
   )
-}
 
-load()
-  .then(() => {
-    restartJobs().catch(() => {
-      console.error('Restart jobs failed!')
-    })
-  })
-  .catch((_err) => {
-    console.error('Plugins load failed!')
-  })
+  global.initialization = {
+    ...(global.initialization || {}),
+    plugins: true
+  }
+}
 
 /**
  * Restart jobs
  */
-const restartJobs = async (): Promise<void> => {
+export const restartJobs = async (): Promise<void> => {
+  console.info('Restart jobs...')
   const simulations = await Simulation.getAll(['id', 'scheme', 'tasks'])
 
   // Check waiting or processing tasks
@@ -55,7 +55,7 @@ const restartJobs = async (): Promise<void> => {
     try {
       for (let task of simulation.tasks || []) {
         if (task?.status === 'wait' || task?.status === 'process') {
-          console.info('Restart simulation ' + simulation.id)
+          console.info(' - Restart simulation ' + simulation.id)
           const pluginKey = task.plugin
           const plugin = plugins.find((p) => p.key === pluginKey)
           if (plugin && plugin.server.lib.monitoring) {
@@ -72,16 +72,21 @@ const restartJobs = async (): Promise<void> => {
         }
       }
     } catch (err) {
-      console.warn('Simulation ' + simulation.id + ' restart failed!')
+      console.warn(' ⚠ Simulation ' + simulation.id + ' restart failed!')
     }
   }
 }
+
+init()
 
 /**
  * Server list
  * @returns List
  */
-const serverList = (): IServerPlugin[] => {
+const serverList = async (): Promise<IServerPlugin[]> => {
+  // Check
+  while (!plugins) await new Promise((resolve) => setTimeout(resolve, 10))
+
   return plugins.map((plugin) => {
     return {
       category: plugin.category,
@@ -97,10 +102,13 @@ const serverList = (): IServerPlugin[] => {
  * @param complete Complete or filtered by user.authorizedplugins
  * @returns List
  */
-const clientList = (
+const clientList = async (
   user: { authorizedplugins?: string[] },
   complete?: boolean
-): IClientPlugin[] => {
+): Promise<IClientPlugin[]> => {
+  // Check
+  while (!plugins) await new Promise((resolve) => setTimeout(resolve, 10))
+
   if (complete) {
     return plugins.map((plugin) => ({
       category: plugin.category,

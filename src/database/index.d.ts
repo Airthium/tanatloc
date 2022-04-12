@@ -245,6 +245,13 @@ export interface IPlugin {
         { id }: { id: string },
         scheme: ISimulation['scheme']
       ) => Promise<void>
+      monitoring: (
+        id: string,
+        pid: number | string,
+        tasks: ISimulationTask[],
+        task: ISimulationTask,
+        configuration: IClientPlugin['configuration']
+      ) => Promise<void>
       stop: (
         id: string,
         tasks: ISimulationTask[],

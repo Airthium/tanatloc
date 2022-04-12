@@ -11,8 +11,9 @@ const init = async () => {
 
   // Load plugins
   if (!global.initialization?.plugins) {
-    const { loadPlugins, restartJobs } = await import('@/lib/plugins')
     try {
+      const { loadPlugins, restartJobs } = await import('@/lib/plugins')
+
       await loadPlugins()
 
       try {
@@ -29,8 +30,9 @@ const init = async () => {
 
   // Load templates
   if (!global.initialization?.templates) {
-    const { loadTemplates } = await import('@/lib/template')
     try {
+      const { loadTemplates } = await import('@/lib/template')
+
       await loadTemplates()
     } catch (err) {
       console.error('Templates load failed!')

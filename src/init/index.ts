@@ -12,7 +12,7 @@ const init = async () => {
   // Load plugins
   if (!global.initialization?.plugins) {
     try {
-      const { loadPlugins, restartJobs } = await import('@/lib/plugins')
+      const { loadPlugins, restartJobs } = await import('@/lib/plugins/index')
 
       await loadPlugins()
 
@@ -31,7 +31,7 @@ const init = async () => {
   // Load templates
   if (!global.initialization?.templates) {
     try {
-      const { loadTemplates } = await import('@/lib/template')
+      const { loadTemplates } = await import('@/lib/template/index')
 
       await loadTemplates()
     } catch (err) {

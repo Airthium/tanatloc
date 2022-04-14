@@ -1,19 +1,14 @@
-import { checkdB, startdB } from '@/database'
-
 import { loadPlugins, restartJobs } from '@/lib/plugins'
 import { loadTemplates } from '@/lib/template'
 
-const init = async () => {
+import { initDatabase } from './init/database'
+
+/**
+ * Init plugins
+ */
+export const initPlugins = async (): Promise<void> => {
   !tanatloc && (tanatloc = {})
 
-  // Start database
-  if (!tanatloc?.pool) {
-    const check = await checkdB()
-    if (!check) throw new Error('Database not found')
-    tanatloc.pool = startdB()
-  }
-
-  // Load plugins
   if (!tanatloc?.plugins) {
     try {
       tanatloc.plugins = await loadPlugins()
@@ -29,8 +24,14 @@ const init = async () => {
       console.error(err)
     }
   }
+}
 
-  // Load templates
+/**
+ * Init templates
+ */
+export const initTemplates = async (): Promise<void> => {
+  !tanatloc && (tanatloc = {})
+
   if (!tanatloc?.templates) {
     try {
       tanatloc.templates = await loadTemplates()
@@ -39,6 +40,20 @@ const init = async () => {
       console.error(err)
     }
   }
+}
+
+/**
+ * Init
+ */
+const init = async (): Promise<void> => {
+  // Start database
+  await initDatabase()
+
+  // Load plugins
+  await initPlugins()
+
+  // Load templates
+  await initTemplates()
 }
 
 export default init

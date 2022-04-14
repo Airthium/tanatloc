@@ -1,4 +1,5 @@
 {
+  "exclude": ["__tests__", "config/jest", "config/depcheck"],
   "minify": true,
   "jsc": {
     "parser": {
@@ -33,6 +34,8 @@
       "@/pages/*": ["src/pages/*"],
       "@/route": ["src/route"],
       "@/route/*": ["src/route/*"],
+      "@/server": ["src/server"],
+      "@/server/*": ["src/server/*"],
       "@/services": ["src/services"],
       "@/services/*": ["src/services/*"],
       "@/styles": ["src/styles"],

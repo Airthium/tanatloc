@@ -146,7 +146,7 @@ export const selectItem = (
 export const onFinish = async (
   plugin: IClientPlugin,
   edit: boolean,
-  values: object,
+  values: JSON,
   swr: {
     addOnePlugin?: (plugin: IClientPlugin) => void
     mutateOnePlugin?: (plugin: IClientPlugin) => void

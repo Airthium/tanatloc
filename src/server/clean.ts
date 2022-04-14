@@ -1,6 +1,9 @@
 import { stopdB } from '@/database'
 
-const clean = async () => {
+/**
+ * Clean
+ */
+const clean = async (): Promise<void> => {
   await stopdB()
 }
 

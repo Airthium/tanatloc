@@ -1,5 +1,5 @@
 {
   "watch": ["src", "config", "plugins", "templates"],
-  "exec": "yarn swc src --out-dir dist/src && yarn swc config --out-dir dist/config && yarn swc plugins --out-dir dist/plugins && yarn swc templates --out-dir dist/templates --copy-files && node dist/src/server/index.js",
+  "exec": "yarn build server && node dist/src/server/index.js",
   "ext": "js ts"
 }

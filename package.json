@@ -11,8 +11,15 @@
     "url": "https://github.com/orgs/Airthium/people"
   },
   "scripts": {
-    "build": "NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) next build",
     "depcheck": "node config/depcheck/depcheckrc.js",
+    "build": "yarn build:server && yarn build:client",
+    "build:server": "rm -rf dist && yarn build:server:config && yarn build:server:models && yarn build:server:plugins && yarn build:server:src && yarn build:server:templates",
+    "build:server:config": "swc config/*.ts --out-dir dist/config",
+    "build:server:models": "swc models/*.ts --out-dir dist/models",
+    "build:server:plugins": "yarn swc plugins --copy-files --ignore plugins/**/__tests__ --out-dir dist/plugins",
+    "build:server:src": "swc src --out-dir dist/src",
+    "build:server:templates": "yarn swc templates --out-dir dist/templates --copy-files",
+    "build:client": "NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) next build",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) nodemon",
     "doc": "typedoc --options config/typedoc/config.json",
     "export": "yarn build && next export",

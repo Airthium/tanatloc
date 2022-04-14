@@ -4,7 +4,7 @@
     "target": "esnext",
     "lib": ["dom", "es2017"],
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,

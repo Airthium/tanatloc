@@ -83,9 +83,7 @@ export const onChange = async (
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') {
     return true
-  }
-
-  if (info.file.status === 'done') {
+  } else if (info.file.status === 'done') {
     try {
       // Read image
       const img = await getBase64(info.file.originFileObj)
@@ -106,6 +104,8 @@ export const onChange = async (
       ErrorNotification(errors.upload, err)
     }
 
+    return false
+  } else {
     return false
   }
 }
@@ -177,16 +177,9 @@ export const onFinish = async (
  */
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
-  const [uploading, setUploading]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [formError, setFormError]: [
-    APIError,
-    Dispatch<SetStateAction<APIError>>
-  ] = useState()
+  const [uploading, setUploading]= useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [formError, setFormError] = useState<APIError | null>()
 
   // Layout
   const layout = {
@@ -237,7 +230,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               try {
                 await onFinish(user, values, swr)
                 setFormError(null)
-              } catch (err) {
+              } catch (err: any) {
                 setFormError(err)
               } finally {
                 setLoading(false)

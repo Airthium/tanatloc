@@ -44,7 +44,7 @@ export const onDelete = async (swr: {
 
     // Mutate
     swr.mutateUser({})
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }
@@ -58,7 +58,7 @@ export const onDelete = async (swr: {
 const Delete = ({ swr }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+    useState<boolean>(false)
 
   /**
    * Render

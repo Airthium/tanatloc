@@ -43,7 +43,7 @@ export const onDelete = async (
 
     // Mutate
     swr.delOnePlugin(plugin)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }
@@ -57,7 +57,7 @@ export const onDelete = async (
 const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+    useState<boolean>(false)
 
   /**
    * Render

@@ -44,7 +44,7 @@ export const onDelete = async (swr: {
 
     // Mutate
     swr.mutateUser({})
-  } catch (err: any) {
+  } catch (err) {
     ErrorNotification(errors.del, err)
     throw err
   }

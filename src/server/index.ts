@@ -1,7 +1,9 @@
 import { createServer } from 'http'
 import { parse } from 'url'
 import next from 'next'
-import init from '../init'
+
+import init from './init'
+import clean from './clean'
 
 const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'
@@ -30,3 +32,20 @@ app.prepare().then(() => {
     }`
   )
 })
+
+// Clean
+const handleExit = (code: number): void => {
+  console.info('> Server stopped')
+  clean()
+    .then(() => {
+      process.exit(code)
+    })
+    .catch((err) => {
+      console.error('Clean failed!')
+      console.error(err)
+
+      process.exit(1)
+    })
+}
+
+process.on('exit', (code) => handleExit(code))

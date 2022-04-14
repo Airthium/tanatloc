@@ -81,7 +81,7 @@ export const startdB = (): Pool => {
 /**
  * Stop database
  */
-export const stopDatabase = async (): Promise<void> => {
+export const stopdB = async (): Promise<void> => {
   console.info('Stop database...')
   if (tanatloc?.pool) await tanatloc.pool.end()
 }

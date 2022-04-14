@@ -30,6 +30,8 @@ jest.mock('@/templates', () => ({
   key: 'file'
 }))
 
+global.tanatloc = {}
+
 describe('lib/template', () => {
   beforeEach(() => {
     mockWriteFile.mockReset()

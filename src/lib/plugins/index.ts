@@ -8,7 +8,8 @@ import Simulation from '../simulation'
 import Tools from '../tools'
 
 /**
- * Load
+ * Load plugins
+ * @return Plugins
  */
 export const loadPlugins = async (): Promise<IPlugin[]> => {
   console.info('Load plugins...')

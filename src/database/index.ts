@@ -96,10 +96,6 @@ export const query = async (
   command: string,
   args: Array<boolean | number | string | Array<string> | object>
 ): Promise<IDataBaseResponse> => {
-  // Check
-  while (!tanatloc?.pool)
-    await new Promise((resolve) => setTimeout(resolve, 10))
-
   // Query
   const client = await tanatloc.pool.connect()
   const res = await client.query(command, args)
@@ -135,7 +131,7 @@ export const getter = async (
  */
 export const updater = async (
   db: string,
-  id: string,
+  id: string | undefined,
   data: Array<IDataBaseEntry>
 ): Promise<void> => {
   // Begin / end text

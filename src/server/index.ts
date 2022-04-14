@@ -11,7 +11,7 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 
 // Initialize
-global.tanatloc = {}
+Object.defineProperty(global, 'tanatloc', { value: {} })
 init().catch((err) => {
   console.error('Initialize failed!')
   console.error(err)

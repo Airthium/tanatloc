@@ -1,14 +1,12 @@
 import { loadPlugins, restartJobs } from '@/lib/plugins'
 import { loadTemplates } from '@/lib/template'
 
-import { initDatabase } from './init/database'
+import { initDatabase } from './database'
 
 /**
  * Init plugins
  */
 export const initPlugins = async (): Promise<void> => {
-  !tanatloc && (tanatloc = {})
-
   if (!tanatloc?.plugins) {
     try {
       tanatloc.plugins = await loadPlugins()
@@ -30,8 +28,6 @@ export const initPlugins = async (): Promise<void> => {
  * Init templates
  */
 export const initTemplates = async (): Promise<void> => {
-  !tanatloc && (tanatloc = {})
-
   if (!tanatloc?.templates) {
     try {
       tanatloc.templates = await loadTemplates()

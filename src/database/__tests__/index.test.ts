@@ -1,28 +1,109 @@
-import { query, getter, updater, deleter } from '..'
+import { query, getter, updater, deleter, checkdB, startdB, stopdB } from '..'
 
+const mockExecSync = jest.fn()
 jest.mock('child_process', () => ({
-  execSync: () => ''
+  execSync: () => mockExecSync()
 }))
 
-const mockQuery = jest.fn(() => 'query')
+const mockQuery = jest.fn()
+const mockPool = {
+  connect: async () => ({
+    query: async () => mockQuery(),
+    release: jest.fn()
+  }),
+  query: async () => mockQuery(),
+  end: jest.fn()
+}
+
 jest.mock('pg', () => {
   return {
-    Pool: jest.fn().mockImplementation(() => ({
-      connect: async () => ({
-        query: async () => mockQuery(),
-        release: jest.fn()
-      }),
-      query: async () => 'query',
-      end: jest.fn()
-    }))
+    Pool: jest.fn().mockImplementation(() => mockPool)
   }
 })
 
-jest.mock('@/config/db', () => {
-  return {}
-})
-
 describe('database', () => {
+  beforeEach(() => {
+    global.tanatloc = {
+      //@ts-ignore
+      pool: mockPool
+    }
+
+    mockExecSync.mockReset()
+
+    mockQuery.mockReset()
+    mockQuery.mockImplementation(() => 'query')
+  })
+
+  test('checkdB', async () => {
+    // First good
+    mockQuery.mockImplementation(() => true)
+    let res = await checkdB()
+    expect(res).toBe(true)
+
+    // First wrong
+    mockQuery.mockImplementation(() => {
+      throw new Error('query error')
+    })
+    res = await checkdB()
+    expect(res).toBe(false)
+
+    // Second wrong, no id
+    mockExecSync.mockImplementation(() => '')
+    res = await checkdB()
+    expect(res).toBe(false)
+
+    // Second wrong, no docker
+    mockExecSync
+      .mockImplementation(() => 'id')
+      .mockImplementation(() => {
+        throw new Error('execSync error')
+      })
+    res = await checkdB()
+    expect(res).toBe(false)
+
+    // Second wrong, docker inspect error
+    mockExecSync
+      .mockImplementation(() => 'id')
+      .mockImplementation(() => true)
+      .mockImplementation(() => {
+        throw new Error('execSync error')
+      })
+    res = await checkdB()
+    expect(res).toBe(false)
+
+    // Second true
+    mockExecSync
+      .mockImplementation(() => 'id')
+      .mockImplementation(() => true)
+      .mockImplementation(() => 'host')
+    res = await checkdB()
+    expect(res).toBe(true)
+  })
+
+  test('startdB', async () => {
+    Object.defineProperty(process.env, 'DB_HOST', {
+      value: null,
+      configurable: true
+    })
+    let pool = startdB()
+    expect(pool).toBe(mockPool)
+
+    Object.defineProperty(process.env, 'DB_HOST', {
+      value: 'host',
+      configurable: true
+    })
+    pool = startdB()
+    expect(pool).toBe(mockPool)
+  })
+
+  test('stopdB', async () => {
+    await stopdB()
+
+    //@ts-ignore
+    global.tanatloc.pool = undefined
+    await stopdB()
+  })
+
   test('query', async () => {
     const res = await query('', [])
     expect(res).toBe('query')
@@ -56,7 +137,7 @@ describe('database', () => {
       { key: 'key7', type: 'date', value: 123 }
     ])
 
-    await updater('db', null, [{ key: 'key', value: '' }])
+    await updater('db', undefined, [{ key: 'key', value: '' }])
 
     try {
       await updater('db', 'id', [

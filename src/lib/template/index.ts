@@ -88,12 +88,8 @@ const render = async (
   parameters: object,
   save?: { location: string; name: string }
 ): Promise<string> => {
-  // Check
-  while (!tanatloc.templates)
-    await new Promise((resolve) => setTimeout(resolve, 10))
-
   // Compile
-  const template = tanatloc.templates[key]
+  const template = tanatloc?.templates?.[key]
   if (!template) throw new Error('Unable to find the model!')
   const script = await template(parameters)
 

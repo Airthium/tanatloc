@@ -9,17 +9,15 @@ import Plugins from '../plugins'
 
 import Templates from '@/templates'
 
-import init from '../../init'
-
-let templates: { [key: string]: (parameters: object) => Promise<string> }
-
 /**
  * Load templates
  */
-export const loadTemplates = async (): Promise<void> => {
-  if (templates) return
+export const loadTemplates = async (): Promise<{
+  [key: string]: (parameters: object) => Promise<string>
+}> => {
+  console.info('Loading templates...')
 
-  const templatesList = {}
+  const templates = {}
   // Base templates
   await Promise.all(
     Object.keys(Templates).map(async (key) => {
@@ -36,7 +34,8 @@ export const loadTemplates = async (): Promise<void> => {
           'templates'
         )
       })
-      templatesList[key] = func
+      templates[key] = func
+      console.info(' - Template ' + key + ' loaded')
     })
   )
 
@@ -61,21 +60,21 @@ export const loadTemplates = async (): Promise<void> => {
                 'templates'
               )
             })
-            templatesList[template.key] = func
+            templates[template.key] = func
+            console.info(
+              ' - Template ' +
+                template.key +
+                ' loaded (from ' +
+                plugin.key +
+                ')'
+            )
           })
         )
     })
   )
 
-  templates = templatesList
-
-  global.initialization = {
-    ...(global.initialization || {}),
-    templates: true
-  }
+  return templates
 }
-
-init()
 
 /**
  * Render
@@ -90,10 +89,11 @@ const render = async (
   save?: { location: string; name: string }
 ): Promise<string> => {
   // Check
-  while (!templates) await new Promise((resolve) => setTimeout(resolve, 10))
+  while (!tanatloc.templates)
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
   // Compile
-  const template = templates[key]
+  const template = tanatloc.templates[key]
   if (!template) throw new Error('Unable to find the model!')
   const script = await template(parameters)
 

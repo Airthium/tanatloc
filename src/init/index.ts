@@ -1,20 +1,22 @@
+import { checkdB, startdB } from '@/database'
+
+import { loadPlugins, restartJobs } from '@/lib/plugins'
+import { loadTemplates } from '@/lib/template'
+
 const init = async () => {
-  console.info('Initializing back-end...')
+  !tanatloc && (tanatloc = {})
 
   // Start database
-  if (!global.initialization?.database) {
-    const { checkdB, startdB } = await import('@/database')
+  if (!tanatloc?.pool) {
     const check = await checkdB()
     if (!check) throw new Error('Database not found')
-    startdB()
+    tanatloc.pool = startdB()
   }
 
   // Load plugins
-  if (!global.initialization?.plugins) {
+  if (!tanatloc?.plugins) {
     try {
-      const { loadPlugins, restartJobs } = await import('@/lib/plugins')
-
-      await loadPlugins()
+      tanatloc.plugins = await loadPlugins()
 
       try {
         await restartJobs()
@@ -29,11 +31,9 @@ const init = async () => {
   }
 
   // Load templates
-  if (!global.initialization?.templates) {
+  if (!tanatloc?.templates) {
     try {
-      const { loadTemplates } = await import('@/lib/template')
-
-      await loadTemplates()
+      tanatloc.templates = await loadTemplates()
     } catch (err) {
       console.error('Templates load failed!')
       console.error(err)

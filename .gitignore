@@ -26,6 +26,7 @@ dist-install
 /public/mathjax
 
 # production
+/dist
 /build
 
 # misc

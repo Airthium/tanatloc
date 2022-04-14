@@ -9,7 +9,7 @@
  */
 export const ADMIN: string =
   process.env.DB_ADMIN ||
-  (process.platform === 'darwin' ? process.env.USER : 'postgres')
+  (process.platform === 'darwin' ? process.env.USER || 'postgres' : 'postgres')
 
 /**
  * Admin database
@@ -40,7 +40,9 @@ export const HOST: string = process.env.DB_HOST || 'localhost'
  * Port
  * @description Set by `DB_PORT` environment variable or `5432`
  */
-export const PORT: number = parseInt(process.env.DB_PORT) || 5432
+export const PORT: number = process.env.DB_PORT
+  ? parseInt(process.env.DB_PORT)
+  : 5432
 
 /**
  * Database

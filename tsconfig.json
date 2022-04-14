@@ -15,6 +15,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "sourceMap": true,
     "paths": {
       "@/config": ["config"],
       "@/config/*": ["config/*"],
@@ -47,5 +53,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["dist", ".next", "out", "next.config.js"]
 }

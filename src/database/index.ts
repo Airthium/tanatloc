@@ -16,8 +16,10 @@ import {
   PORT
 } from '@/config/db'
 
-import init from '../init'
-
+/**
+ * Check database
+ * @returns Valid
+ */
 export const checkdB = async (): Promise<boolean> => {
   console.info('Check database...')
 
@@ -61,29 +63,28 @@ export const checkdB = async (): Promise<boolean> => {
   return false
 }
 
-let pool: Pool
-
 /**
  * Start database
  * @returns Pool
  */
-export const startdB = (): void => {
+export const startdB = (): Pool => {
   console.info('Start database...')
-  pool = new Pool({
+  return new Pool({
     user: USER,
     host: process.env.DB_HOST || HOST,
     database: DATABASE,
     password: PASSWORD,
     port: PORT
   })
-
-  global.initialization = {
-    ...(global.initialization || {}),
-    database: true
-  }
 }
 
-init()
+/**
+ * Stop database
+ */
+export const stopDatabase = async (): Promise<void> => {
+  console.info('Stop database...')
+  if (tanatloc?.pool) await tanatloc.pool.end()
+}
 
 /**
  * PostgreSQL query
@@ -96,10 +97,11 @@ export const query = async (
   args: Array<boolean | number | string | Array<string> | object>
 ): Promise<IDataBaseResponse> => {
   // Check
-  while (!pool) await new Promise((resolve) => setTimeout(resolve, 10))
+  while (!tanatloc?.pool)
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
   // Query
-  const client = await pool.connect()
+  const client = await tanatloc.pool.connect()
   const res = await client.query(command, args)
   client.release()
   return res
@@ -142,7 +144,7 @@ export const updater = async (
   const args = id ? [id] : []
 
   // Check that keys are uniques
-  const keys = []
+  const keys: string[] = []
   data.forEach((d) => {
     if (keys.includes(d.key))
       throw new Error('Duplicate key in update query (key=' + d.key + ')')
@@ -150,7 +152,7 @@ export const updater = async (
   })
 
   // Set query text & args
-  const queryTextMiddle = []
+  const queryTextMiddle: string[] = []
   data.forEach((d) => {
     switch (d.type) {
       case 'crypt':
@@ -253,7 +255,7 @@ const jsonUpdater = (
           ' = jsonb_set(' +
           data.key +
           ", '{" +
-          data.path.join(',') +
+          data.path?.join(',') +
           "}', $" +
           args.length +
           ')'
@@ -265,7 +267,7 @@ const jsonUpdater = (
           ' = jsonb_set(' +
           data.key +
           ", '{" +
-          data.path.join(',') +
+          data.path?.join(',') +
           "}', 'null'" +
           ')'
       )

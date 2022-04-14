@@ -1,0 +1,32 @@
+import { createServer } from 'http'
+import { parse } from 'url'
+import next from 'next'
+import init from '../init'
+
+const port = parseInt(process.env.PORT || '3000', 10)
+const dev = process.env.NODE_ENV !== 'production'
+const app = next({ dev })
+const handle = app.getRequestHandler()
+
+// Initialize
+global.tanatloc = {}
+init().catch((err) => {
+  console.error('Initialize failed!')
+  console.error(err)
+
+  process.exit(1)
+})
+
+// Server
+app.prepare().then(() => {
+  createServer((req, res) => {
+    const parsedUrl = parse(req.url!, true)
+    handle(req, res, parsedUrl)
+  }).listen(port)
+
+  console.info(
+    `> Server listening at http://localhost:${port} as ${
+      dev ? 'development' : process.env.NODE_ENV
+    }`
+  )
+})

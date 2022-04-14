@@ -18,7 +18,7 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
     isElectron() ? `${process.resourcesPath}/plugins` : './plugins'
   )
 
-  return await Promise.all(
+  const plugins = await Promise.all(
     availables.map(async (available) => {
       try {
         // Import
@@ -29,9 +29,12 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
         return plugin.default
       } catch (err) {
         console.error(` - Plugin ${available} NOT loaded!`)
+        console.error(err)
       }
     })
   )
+
+  return plugins.filter((p) => p)
 }
 
 /**
@@ -73,13 +76,15 @@ export const restartJobs = async (): Promise<void> => {
  * @returns List
  */
 const serverList = async (): Promise<IServerPlugin[]> => {
-  return tanatloc.plugins.map((plugin) => {
-    return {
-      category: plugin.category,
-      key: plugin.key,
-      ...plugin.server
-    }
-  })
+  return (
+    tanatloc.plugins?.map((plugin) => {
+      return {
+        category: plugin.category,
+        key: plugin.key,
+        ...plugin.server
+      }
+    }) || []
+  )
 }
 
 /**
@@ -93,22 +98,24 @@ const clientList = async (
   complete?: boolean
 ): Promise<IClientPlugin[]> => {
   if (complete) {
-    return tanatloc.plugins.map((plugin) => ({
-      category: plugin.category,
-      key: plugin.key,
-      ...plugin.client
-    }))
+    return (
+      tanatloc.plugins?.map((plugin) => ({
+        category: plugin.category,
+        key: plugin.key,
+        ...plugin.client
+      })) || []
+    )
   } else {
-    return tanatloc.plugins
-      .map((plugin) => {
+    return (
+      tanatloc.plugins?.map((plugin) => {
         if (user.authorizedplugins?.includes(plugin.key))
           return {
             category: plugin.category,
             key: plugin.key,
             ...plugin.client
           }
-      })
-      .filter((p) => p)
+      }) || []
+    ).filter((p) => p)
   }
 }
 

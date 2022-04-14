@@ -23,14 +23,14 @@ export const loadTemplates = async (): Promise<{
     Object.keys(Templates).map(async (key) => {
       const content = await Tools.readFile(
         path.join(
-          isElectron() ? process.resourcesPath : './',
+          isElectron() ? process.resourcesPath : './dist',
           'templates',
           Templates[key]
         )
       )
       const func = ejs.compile(content.toString(), {
         root: path.join(
-          isElectron() ? process.resourcesPath : './',
+          isElectron() ? process.resourcesPath : './dist',
           'templates'
         )
       })

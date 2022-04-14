@@ -15,7 +15,7 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
 
   // Available directories
   const availables = await Tools.listDirectories(
-    isElectron() ? `${process.resourcesPath}/plugins` : './plugins'
+    isElectron() ? `${process.resourcesPath}/plugins` : './dist/plugins'
   )
 
   const plugins = await Promise.all(
@@ -24,7 +24,7 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
         // Import
         const plugin = isElectron()
           ? await require(`/plugins/${available}`)
-          : await import(`/plugins/${available}`)
+          : await require(`../../../plugins/${available}`)
         console.info(` - Plugin ${available} loaded!`)
         return plugin.default
       } catch (err) {

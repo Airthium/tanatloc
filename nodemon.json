@@ -1,5 +1,5 @@
 {
   "watch": ["src", "config", "plugins", "templates"],
-  "exec": "swc src --out-dir dist/src && swc config --out-dir dist/config && swc plugins --out-dir dist/plugins && swc templates --out-dir dist/templates && node dist/src/server/index.js",
+  "exec": "swc src --out-dir dist/src && swc config --out-dir dist/config && swc plugins --out-dir dist/plugins && swc templates --out-dir dist/templates --copy-files && node dist/src/server/index.js",
   "ext": "js ts"
 }

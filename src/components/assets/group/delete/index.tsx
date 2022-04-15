@@ -1,7 +1,7 @@
 /** @module Components.Assets.Group.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
 import { IGroupWithData } from '@/lib/index.d'
 
@@ -60,8 +60,7 @@ export const onDelete = async (
  */
 const Delete = ({ group, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render

@@ -70,7 +70,10 @@ export const onAdd = async (
 
     swr.mutateOneOrganization({
       id: organization.id,
-      groups: [...organization.groups, newGroup as IGroupWithData]
+      groups: [
+        ...(organization.groups as IGroupWithData[]),
+        newGroup as IGroupWithData
+      ]
     })
   } catch (err) {
     ErrorNotification(errors.add, err)
@@ -109,7 +112,7 @@ export const onUpdate = async (
       })
 
     // Users
-    if (group.users.map((u) => u.id).toString() !== values.users.toString())
+    if (group.users?.map((u) => u.id).toString() !== values.users.toString())
       toUpdate.push({
         key: 'users',
         value: values.users
@@ -129,13 +132,15 @@ export const onUpdate = async (
       }
     )
 
-    const groupIndex = organization.groups.findIndex((g) => g.id === group.id)
+    const groupIndex = organization.groups?.findIndex((g) => g.id === group.id)
     swr.mutateOneOrganization({
       id: organization.id,
       groups: [
-        ...organization.groups.slice(0, groupIndex),
+        ...(organization.groups?.slice(0, groupIndex) as IGroupWithData[]),
         group,
-        ...organization.groups.slice(groupIndex + 1)
+        ...(organization.groups?.slice(
+          (groupIndex as number) + 1
+        ) as IGroupWithData[])
       ]
     })
   } catch (err) {
@@ -161,10 +166,8 @@ const Group = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -177,7 +180,7 @@ const Group = ({
         initialValues={
           group && {
             name: group.name,
-            users: group.users.map((u) => u.id)
+            users: group.users?.map((u) => u.id)
           }
         }
         onCancel={() => setVisible(false)}

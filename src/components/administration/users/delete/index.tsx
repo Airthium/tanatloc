@@ -1,7 +1,7 @@
 /** @module Components.Administration.User.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Typography } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
@@ -42,7 +42,7 @@ export const onDelete = async (
 ): Promise<void> => {
   try {
     // Delete
-    await UserAPI.delById(user.id)
+    await UserAPI.delById(user.id as string)
 
     // Mutate
     swr.delOneUser({ id: user.id })
@@ -59,8 +59,7 @@ export const onDelete = async (
  */
 const Delete = ({ user, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render

@@ -1,7 +1,7 @@
 /** @module Components.Administration.User.Add */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Checkbox, Form, Input, Select } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'
@@ -62,7 +62,7 @@ export const onAdd = async (
     if (newUser.alreadyExists) throw new Error('User already exists')
 
     // Update informations
-    await UserAPI.updateById(newUser.id, [
+    await UserAPI.updateById(newUser.id as string, [
       {
         key: 'firstname',
         value: values.firstname
@@ -103,10 +103,8 @@ export const onAdd = async (
  */
 const Add = ({ plugins, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const [system] = SystemAPI.useSystem()

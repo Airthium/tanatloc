@@ -7,7 +7,8 @@ import {
   Dispatch,
   SetStateAction,
   useRef,
-  useCallback
+  useCallback,
+  RefObject
 } from 'react'
 import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
@@ -22,6 +23,7 @@ import PluginsAPI from '@/api/plugins'
 import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
+import { ColumnGroupType } from 'antd/lib/table'
 
 /**
  * Props
@@ -49,14 +51,8 @@ export const errors = {
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {
   // State
-  const [plugins, setPlugins]: [
-    IClientPlugin[],
-    Dispatch<SetStateAction<IClientPlugin[]>>
-  ] = useState()
-  const [scroll, setScroll]: [
-    { y: number },
-    Dispatch<SetStateAction<{ y: number }>>
-  ] = useState(null)
+  const [plugins, setPlugins] = useState<IClientPlugin[]>()
+  const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
   // Ref
   const refTable = useRef(null)
@@ -71,6 +67,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
           if (!plugin) return
           else
             return (
+              //@ts-ignore
               <Badge
                 key={authorizedplugin}
                 size="small"
@@ -98,23 +95,27 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
           })) || []
         }
         user={{
-          id: record.id,
+          id: record.id as string,
           firstname: record.firstname,
           lastname: record.lastname,
-          email: record.email,
-          authorizedplugins: record.authorizedplugins,
+          email: record.email as string,
+          authorizedplugins: record.authorizedplugins as string[],
           superuser: record.superuser
         }}
         swr={{ mutateOneUser: swr.mutateOneUser }}
       />
       <Delete
-        user={{ id: record.id, email: record.email }}
+        user={{ id: record.id as string, email: record.email as string }}
         swr={{ delOneUser: swr.delOneUser }}
       />
     </Space>
   )
 
-  const columns: TableColumnsType = [
+  const columns: TableColumnsType<{
+    firstname?: string
+    lastname?: string
+    email: string
+  }> = [
     {
       title: 'First name',
       dataIndex: 'firstname',
@@ -173,11 +174,10 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   // Update table scroll
   const onResize = useCallback(() => {
     // Check if too many users to display
-    if (
-      refTable.current.clientHeight >
-      window.innerHeight - refTable.current.offsetTop - 59
-    ) {
-      setScroll({ y: window.innerHeight - refTable.current.offsetTop - 59 })
+    const table = refTable.current as RefObject<HTMLDivElement>['current']
+    if (!table) return
+    if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
+      setScroll({ y: window.innerHeight - table.offsetTop - 59 })
     } else {
       // Scroll not needed
       setScroll(null)
@@ -228,10 +228,10 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         loading={!plugins}
         pagination={false}
         size="small"
-        columns={columns}
+        columns={columns as ColumnGroupType<object>[]}
         dataSource={users.map((u) => ({ ...u, key: u.id }))}
         ref={refTable}
-        scroll={scroll}
+        scroll={{ y: scroll?.y }}
       />
     </Space>
   )

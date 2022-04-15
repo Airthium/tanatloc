@@ -77,14 +77,8 @@ const Plugins = () => {
   const tableRef = useRef(null)
 
   // State
-  const [plugins, setPlugins]: [
-    IClientPlugin[],
-    Dispatch<SetStateAction<IClientPlugin[]>>
-  ] = useState()
-  const [scroll, setScroll]: [
-    { y: number },
-    Dispatch<SetStateAction<{ y: number }>>
-  ] = useState()
+  const [plugins, setPlugins] = useState<IClientPlugin[]>()
+  const [scroll, setScroll] = useState<{ y: number } | null>()
 
   // Data
   const [system, { mutateSystem, loadingSystem }] = SystemAPI.useSystem()

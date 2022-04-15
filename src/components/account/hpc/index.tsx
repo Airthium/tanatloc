@@ -66,10 +66,7 @@ export const pluginsList = async (): Promise<JSX.Element[]> => {
  */
 const HPC = (): JSX.Element => {
   // State
-  const [list, setList]: [
-    JSX.Element[],
-    Dispatch<SetStateAction<JSX.Element[]>>
-  ] = useState([
+  const [list, setList] = useState<JSX.Element[]>([
     <Card key="loading" title="Loading">
       <Spin />
     </Card>

@@ -1,7 +1,7 @@
 /** @module Components.Account.Password */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'

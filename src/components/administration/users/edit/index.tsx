@@ -1,10 +1,10 @@
 /** @module Components.Administration.User.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Checkbox, Form, Input, Select } from 'antd'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin, IDataBaseEntry } from '@/database/index.d'
 import { IUserWithData } from '@/lib/index.d'
 
 import { EditButton } from '@/components/assets/button'
@@ -66,22 +66,26 @@ export const onUpdate = async (
     // Update
     const toUpdate = Object.keys(values)
       .map((key) => {
-        const value = values[key]
-        if (value !== undefined && value !== '******' && value !== user[key])
+        const value = values[key as keyof IEditValues]
+        if (
+          value !== undefined &&
+          value !== '******' &&
+          value !== user[key as keyof IUserWithData]
+        )
           return { key, value, type: key === 'password' && 'crypt' }
       })
       .filter((u) => u)
 
     if (!toUpdate.length) return
 
-    await UserAPI.updateById(user.id, toUpdate)
+    await UserAPI.updateById(user.id as string, toUpdate as IDataBaseEntry[])
 
     // Mutate
+    values.password = '******'
     const newUser = {
       ...user,
       ...values
     }
-    delete newUser.password
     swr.mutateOneUser(newUser)
   } catch (err) {
     ErrorNotification(errors.update, err)
@@ -96,10 +100,8 @@ export const onUpdate = async (
  */
 const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   /**
    * Render

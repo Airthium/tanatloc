@@ -1,13 +1,6 @@
 /** @module Components.Administration.Plugins */
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Table, TableColumnsType } from 'antd'
 
 import { IClientPlugin, ISystem } from '@/database/index.d'
@@ -51,9 +44,9 @@ export const onChange = async (
 
     // Local
     const defaultplugins = system?.defaultplugins || []
-    const index = defaultplugins.indexOf(plugin.key)
+    const index = defaultplugins.indexOf(plugin.key as string)
     if (checked && index === -1) {
-      defaultplugins.push(plugin.key)
+      defaultplugins.push(plugin.key as string)
     }
     if (!checked && index !== -1) {
       defaultplugins.splice(index, 1)
@@ -125,12 +118,11 @@ const Plugins = () => {
 
   // Update table scroll
   const onResize = useCallback(() => {
-    if (
-      tableRef.current.clientHeight >
-      window.innerHeight - tableRef.current.offsetTop - 59
-    ) {
+    const table = tableRef.current as RefObject<HTMLDivElement>['current']
+    if (!table) return
+    if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
       // Scroll needed
-      setScroll({ y: window.innerHeight - tableRef.current.offsetTop - 59 })
+      setScroll({ y: window.innerHeight - table.offsetTop - 59 })
     } else {
       // Scroll not needed
       setScroll(null)
@@ -158,10 +150,10 @@ const Plugins = () => {
       loading={!plugins || loadingSystem}
       pagination={false}
       size="small"
-      columns={columns}
+      columns={columns as TableColumnsType<object>}
       dataSource={plugins}
       ref={tableRef}
-      scroll={scroll}
+      scroll={{ y: scroll?.y }}
     />
   )
 }

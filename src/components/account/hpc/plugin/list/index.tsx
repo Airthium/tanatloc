@@ -1,7 +1,7 @@
 /** @module Components.Account.HPC.Plugin.List */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'

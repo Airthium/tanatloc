@@ -196,14 +196,9 @@ export const onFinish = async (
  */
 const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState<boolean>(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState<boolean>(false)
-  const [initialValues, setInitialValues]: [
-    any,
-    Dispatch<SetStateAction<any>>
-  ] = useState({})
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [initialValues, setInitialValues] = useState<any>({})
 
   // Initial values
   useEffect(() => {

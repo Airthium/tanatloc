@@ -56,8 +56,7 @@ export const onDelete = async (
  */
 const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render

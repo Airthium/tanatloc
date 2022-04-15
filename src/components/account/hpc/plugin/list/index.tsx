@@ -28,10 +28,7 @@ export interface IProps {
  */
 const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   // State
-  const [list, setList]: [
-    JSX.Element[],
-    Dispatch<SetStateAction<JSX.Element[]>>
-  ] = useState<Array<JSX.Element>>([])
+  const [list, setList] = useState<Array<JSX.Element>>([])
 
   // List
   useEffect(() => {

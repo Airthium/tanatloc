@@ -1,14 +1,7 @@
 /** @module Components.Assets.Organization.Groups */
 
 import PropTypes from 'prop-types'
-import {
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useRef
-} from 'react'
+import { useState, useEffect, useCallback, useRef, RefObject } from 'react'
 import { Avatar, Space, Table } from 'antd'
 
 import {
@@ -51,15 +44,11 @@ export const errors = {
  */
 const Groups = ({ organization, swr }: IProps): JSX.Element => {
   // State
-  const [userOptions, setUserOptions]: [
-    { label: string; value: string }[],
-    Dispatch<SetStateAction<{ label: string; value: string }[]>>
-  ] = useState([])
+  const [userOptions, setUserOptions] = useState<
+    { label: string; value: string }[]
+  >([])
 
-  const [scroll, setScroll]: [
-    { y: number },
-    Dispatch<SetStateAction<{ y: number }>>
-  ] = useState(null)
+  const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
   // Ref
   const refTableGroup = useRef(null)
@@ -75,18 +64,18 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
     const owners = organization.owners
     const users = organization?.users
 
-    const allUsers = [...owners, ...(users || [])]
+    const allUsers = [...(owners as IUserWithData[]), ...(users || [])]
 
     const options = allUsers.map((user) => {
       let name = ''
       if (user.firstname || user.lastname)
         name = user.firstname + ' ' + user.lastname
-      else name = user.email
+      else name = user.email as string
       return {
         label: name,
         value: user.id
       }
-    })
+    }) as { label: string; value: string }[]
     setUserOptions(options)
   }, [organization])
 
@@ -150,12 +139,11 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
   // Update table scroll
   const onResize = useCallback(() => {
     // Check if too many groups to display
-    if (
-      refTableGroup.current.clientHeight >
-      window.innerHeight - refTableGroup.current.offsetTop - 59
-    ) {
+    const table = refTableGroup.current as RefObject<HTMLDivElement>['current']
+    if (!table) return
+    if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
       setScroll({
-        y: window.innerHeight - refTableGroup.current.offsetTop - 59
+        y: window.innerHeight - table.offsetTop - 59
       })
     } else {
       // Scroll not needed
@@ -195,7 +183,7 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
         size="small"
         columns={columns}
         dataSource={groups.map((g) => ({ key: g.id, ...g }))}
-        scroll={scroll}
+        scroll={{ y: scroll?.y }}
         ref={refTableGroup}
       />
     </Space>

@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.User.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
@@ -57,7 +57,7 @@ export const onDelete = async (
 
     // Local
     const newOrganization = { ...organization }
-    newOrganization[dBkey] = newOrganization[dBkey].filter(
+    newOrganization[dBkey] = newOrganization[dBkey]?.filter(
       (u) => u.id !== user.id
     )
     swr.mutateOneOrganization(newOrganization)
@@ -87,8 +87,7 @@ const Delete = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Set name

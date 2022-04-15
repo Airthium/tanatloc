@@ -1,14 +1,20 @@
-import Template from '../'
+import Template, { loadTemplates } from '../'
+
+jest.mock('path', () => ({
+  join: jest.fn
+}))
 
 jest.mock('ejs', () => ({
   compile: () => () => 'ejs'
 }))
 
-jest.mock('is-electron', () => () => false)
+const mockElectron = jest.fn()
+jest.mock('is-electron', () => () => mockElectron())
 
+const mockReadFile = jest.fn()
 const mockWriteFile = jest.fn()
 jest.mock('../../tools', () => ({
-  readFile: async () => 'readFile',
+  readFile: async () => mockReadFile(),
   writeFile: async () => mockWriteFile()
 }))
 
@@ -30,14 +36,34 @@ jest.mock('@/templates', () => ({
   key: 'file'
 }))
 
-global.tanatloc = {}
-
 describe('lib/template', () => {
   beforeEach(() => {
+    mockElectron.mockReset()
+
+    mockReadFile.mockReset()
     mockWriteFile.mockReset()
   })
 
+  test('loadTemplates', async () => {
+    mockReadFile.mockImplementation(() => 'readFile')
+    let templates = await loadTemplates()
+    expect(templates['key']()).toBe('ejs')
+
+    // Electron
+    mockElectron.mockImplementation(() => true)
+    templates = await loadTemplates()
+    expect(templates['key']()).toBe('ejs')
+  })
+
   test('render', async () => {
+    Object.defineProperty(global, 'tanatloc', {
+      value: {
+        templates: {
+          key: () => 'ejs'
+        }
+      }
+    })
+
     let script: string
 
     // Without save
@@ -53,13 +79,12 @@ describe('lib/template', () => {
     )
     expect(script).toBe('ejs')
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
-  })
 
-  test('render - no file', async () => {
+    // No file
     try {
       await Template.render('unknown key', {})
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Unable to find the model!')
     }
   })

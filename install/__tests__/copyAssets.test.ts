@@ -39,7 +39,7 @@ describe('install/copyAssets', () => {
     try {
       await copyAssets()
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('mkdir error')
     }
 
@@ -53,7 +53,7 @@ describe('install/copyAssets', () => {
     try {
       await copyAssets()
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('mkdir error')
     }
 
@@ -63,7 +63,7 @@ describe('install/copyAssets', () => {
     try {
       await copyAssets()
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('cp error')
     }
   })

@@ -32,7 +32,7 @@ export const createDatabase = async (): Promise<void> => {
     let client: PoolClient
 
     // Init
-    global.tanatloc = {}
+    Object.defineProperty(global, 'tanatloc', { value: {} })
     await initDatabase()
 
     // Pool

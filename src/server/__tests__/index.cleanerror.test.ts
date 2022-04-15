@@ -37,6 +37,9 @@ describe('src/server', () => {
 
     mockInit.mockReset()
     mockClean.mockReset()
+    mockClean.mockImplementation(() => {
+      throw new Error('clean error')
+    })
   })
 
   test('call', async () => {

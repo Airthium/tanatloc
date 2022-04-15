@@ -26,7 +26,7 @@ jest.mock('@/api/plugin', () => ({
   update: async (update: any) => mockUpdate(update)
 }))
 
-describe('components/account/hpc/dialog', () => {
+describe('components/account/hpc/plugin/dialog', () => {
   const plugin = {
     key: 'key',
     name: 'name',

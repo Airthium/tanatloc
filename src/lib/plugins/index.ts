@@ -25,7 +25,7 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
         // Import
         const plugin = isElectron()
           ? await require(`/plugins/${available}`)
-          : await require(`../../../plugins/${available}`)
+          : await import(`../../../plugins/${available}`)
         console.info(` - Plugin ${available} loaded!`)
         return plugin.default
       } catch (err) {
@@ -55,7 +55,7 @@ export const restartJobs = async (): Promise<void> => {
           const plugin = tanatloc.plugins.find((p) => p.key === pluginKey)
           if (plugin && plugin.server.lib.monitoring) {
             const cloudConfiguration =
-              simulation.scheme.configuration.run.cloudServer.configuration
+              simulation.scheme?.configuration?.run?.cloudServer?.configuration
             await plugin.server.lib.monitoring(
               simulation.id,
               task.pid,
@@ -77,15 +77,13 @@ export const restartJobs = async (): Promise<void> => {
  * @returns List
  */
 const serverList = async (): Promise<IServerPlugin[]> => {
-  return (
-    tanatloc.plugins?.map((plugin) => {
-      return {
-        category: plugin.category,
-        key: plugin.key,
-        ...plugin.server
-      }
-    }) || []
-  )
+  if (!tanatloc?.plugins) return []
+
+  return tanatloc.plugins?.map((plugin) => ({
+    category: plugin.category,
+    key: plugin.key,
+    ...plugin.server
+  }))
 }
 
 /**
@@ -95,28 +93,28 @@ const serverList = async (): Promise<IServerPlugin[]> => {
  * @returns List
  */
 const clientList = async (
-  user: { authorizedplugins?: string[] },
+  user?: { authorizedplugins?: string[] },
   complete?: boolean
 ): Promise<IClientPlugin[]> => {
+  if (!tanatloc?.plugins) return []
+
   if (complete) {
-    return (
-      tanatloc.plugins?.map((plugin) => ({
-        category: plugin.category,
-        key: plugin.key,
-        ...plugin.client
-      })) || []
-    )
+    return tanatloc.plugins.map((plugin) => ({
+      category: plugin.category,
+      key: plugin.key,
+      ...plugin.client
+    }))
   } else {
-    return (
-      tanatloc.plugins?.map((plugin) => {
-        if (user.authorizedplugins?.includes(plugin.key))
+    return tanatloc.plugins
+      .map((plugin) => {
+        if (user?.authorizedplugins?.includes(plugin.key))
           return {
             category: plugin.category,
             key: plugin.key,
             ...plugin.client
           }
-      }) || []
-    ).filter((p) => p)
+      })
+      .filter((p) => p)
   }
 }
 

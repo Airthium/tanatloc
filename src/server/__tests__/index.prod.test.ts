@@ -37,15 +37,12 @@ describe('src/server', () => {
 
     mockInit.mockReset()
     mockClean.mockReset()
+
+    Object.defineProperty(process.env, 'NODE_ENV', { value: 'production' })
   })
 
   test('call', async () => {
     Object.defineProperty(process, 'exit', { value: jest.fn })
-    Object.defineProperty(process, 'on', {
-      value: (type: string, callback: (code: number) => {}) => {
-        if (type === 'exit') callback(1)
-      }
-    })
     await import('..')
   })
 })

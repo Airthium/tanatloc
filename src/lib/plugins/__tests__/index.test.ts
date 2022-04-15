@@ -1,50 +1,4 @@
-import Plugins from '..'
-
-jest.mock('../../tools', () => ({
-  listDirectories: async () => ['plugin', 'pluginHPC', 'pluginerror']
-}))
-
-jest.mock('is-electron', () => () => false)
-
-jest.mock(
-  '/plugins/plugin',
-  () => ({
-    category: 'HPC1',
-    key: 'key1',
-    server: {
-      lib: {}
-    },
-    client: {
-      configuration: {}
-    }
-  }),
-  { virtual: true }
-)
-
-jest.mock(
-  '/plugins/pluginHPC',
-  () => ({
-    category: 'HPC2',
-    key: 'key2',
-    server: {
-      lib: {
-        monitoring: jest.fn
-      }
-    },
-    client: {
-      configuration: {}
-    }
-  }),
-  { virtual: true }
-)
-
-jest.mock(
-  '/plugins/pluginerror',
-  () => {
-    throw new Error('plugin import error')
-  },
-  { virtual: true }
-)
+import Plugins, { loadPlugins, restartJobs } from '..'
 
 jest.mock('../../simulation', () => ({
   getAll: async () => [
@@ -103,9 +57,138 @@ jest.mock('../../simulation', () => ({
   ]
 }))
 
-describe('lib/plugins', () => {
+jest.mock('../../tools', () => ({
+  listDirectories: async () => ['plugin', 'pluginHPC', 'pluginerror']
+}))
+
+const mockElectron = jest.fn()
+jest.mock('is-electron', () => () => mockElectron())
+
+const mockPlugin = {
+  category: 'HPC1',
+  key: 'key1',
+  server: {
+    lib: {}
+  },
+  client: {
+    configuration: {}
+  }
+}
+jest.mock('../../../../plugins/plugin', () => mockPlugin, { virtual: true })
+jest.mock('/plugins/plugin', () => mockPlugin, { virtual: true })
+
+const mockPluginHPC = {
+  category: 'HPC2',
+  key: 'key2',
+  server: {
+    lib: {
+      monitoring: jest.fn
+    }
+  },
+  client: {
+    configuration: {}
+  }
+}
+jest.mock('../../../../plugins/pluginHPC', () => mockPluginHPC, {
+  virtual: true
+})
+jest.mock('/plugins/pluginHPC', () => mockPluginHPC, { virtual: true })
+
+jest.mock(
+  '../../../../plugins/pluginerror',
+  () => {
+    throw new Error('plugin import error')
+  },
+  { virtual: true }
+)
+jest.mock(
+  '/plugins/pluginerror',
+  () => {
+    throw new Error('plugin import error')
+  },
+  { virtual: true }
+)
+
+describe('src/lib/plugins', () => {
+  beforeEach(() => {
+    mockElectron.mockReset()
+
+    Object.defineProperty(global, 'tanatloc', {
+      value: {
+        plugins: [
+          {
+            category: 'HPC1',
+            key: 'key1',
+            server: {
+              lib: {}
+            },
+            client: {
+              configuration: {}
+            }
+          },
+          {
+            category: 'HPC2',
+            key: 'key2',
+            server: {
+              lib: {
+                monitoring: jest.fn
+              }
+            },
+            client: {
+              configuration: {}
+            }
+          }
+        ]
+      },
+      configurable: true
+    })
+  })
+
+  test('loadPlugins', async () => {
+    let plugins = await loadPlugins()
+    expect(plugins).toEqual([
+      {
+        category: 'HPC1',
+        key: 'key1',
+        server: {
+          lib: {}
+        },
+        client: {
+          configuration: {}
+        }
+      },
+      {
+        category: 'HPC2',
+        key: 'key2',
+        server: {
+          lib: {
+            monitoring: jest.fn
+          }
+        },
+        client: {
+          configuration: {}
+        }
+      }
+    ])
+
+    // Electron
+    mockElectron.mockReturnValue(true)
+    plugins = await loadPlugins()
+    expect(plugins).toEqual([])
+  })
+
+  test('restartJobs', async () => {
+    //@ts-ignore
+    global.tanatloc.plugins[1].server.lib.monitoring = () => {
+      throw new Error('monitoring error')
+    }
+    await restartJobs()
+    //@ts-ignore
+    global.tanatloc.plugins[1].server.lib.monitoring = jest.fn
+  })
+
   test('serverList', async () => {
-    const list = Plugins.serverList()
+    let list = await Plugins.serverList()
     expect(list).toEqual([
       { category: 'HPC1', key: 'key1', lib: {} },
       { category: 'HPC2', key: 'key2', lib: { monitoring: jest.fn } }
@@ -114,18 +197,28 @@ describe('lib/plugins', () => {
 
   test('clientList', async () => {
     // Authorized
-    let list = Plugins.clientList({ authorizedplugins: ['key1'] })
+    let list = await Plugins.clientList({ authorizedplugins: ['key1'] })
     expect(list).toEqual([{ category: 'HPC1', key: 'key1', configuration: {} }])
 
     // Unauthorized
-    list = Plugins.clientList({ authorizedplugins: [] })
+    list = await Plugins.clientList({ authorizedplugins: [] })
     expect(list).toEqual([])
 
     // Complete
-    list = Plugins.clientList(null, true)
+    list = await Plugins.clientList(undefined, true)
     expect(list).toEqual([
       { category: 'HPC1', key: 'key1', configuration: {} },
       { category: 'HPC2', key: 'key2', configuration: {} }
     ])
+  })
+
+  test('Empty', async () => {
+    //@ts-ignore
+    global.tanatloc.plugins = null
+    let list = await Plugins.serverList()
+    expect(list).toEqual([])
+
+    list = await Plugins.clientList({ authorizedplugins: ['key1'] })
+    expect(list).toEqual([])
   })
 })

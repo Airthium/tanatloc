@@ -145,7 +145,7 @@ export const selectItem = (
  */
 export const onFinish = async (
   plugin: IClientPlugin,
-  edit: boolean,
+  edit: boolean | undefined,
   values: JSON,
   swr: {
     addOnePlugin?: (plugin: IClientPlugin) => void
@@ -167,7 +167,7 @@ export const onFinish = async (
       await PluginAPI.update(initialPlugin)
 
       // Mutate
-      swr.mutateOnePlugin && swr.mutateOnePlugin(initialPlugin)
+      swr?.mutateOnePlugin?.(initialPlugin)
     } else {
       // New plugin
       const newPlugin = { ...plugin }
@@ -181,7 +181,7 @@ export const onFinish = async (
       await PluginAPI.add(newPlugin)
 
       // Local
-      swr.addOnePlugin && swr.addOnePlugin(newPlugin)
+      swr?.addOnePlugin?.(newPlugin)
     }
   } catch (err) {
     ErrorNotification(errors.update, err)
@@ -230,7 +230,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         onOk={async (values) => {
           setLoading(true)
           try {
-            edit && await onFinish(plugin, edit, values, swr)
+            await onFinish(plugin, edit, values, swr)
 
             // Close
             setLoading(false)

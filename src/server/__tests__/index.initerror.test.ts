@@ -36,16 +36,14 @@ describe('src/server', () => {
     }))
 
     mockInit.mockReset()
+    mockInit.mockImplementation(() => {
+      throw new Error('init error')
+    })
     mockClean.mockReset()
   })
 
   test('call', async () => {
     Object.defineProperty(process, 'exit', { value: jest.fn })
-    Object.defineProperty(process, 'on', {
-      value: (type: string, callback: (code: number) => {}) => {
-        if (type === 'exit') callback(1)
-      }
-    })
     await import('..')
   })
 })

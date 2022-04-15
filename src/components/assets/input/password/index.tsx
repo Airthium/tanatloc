@@ -191,7 +191,7 @@ const PasswordItem = ({
       rules={[
         () => ({
           validator(_, value) {
-            const err = []
+            const err: string[] = []
             if (edit && value === '******') return Promise.resolve()
 
             if (!value) return Promise.reject(errors.password)

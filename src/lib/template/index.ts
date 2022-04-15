@@ -9,15 +9,17 @@ import Plugins from '../plugins'
 
 import Templates from '@/templates'
 
+export interface ITemplates {
+  [key: string]: ejs.TemplateFunction
+}
+
 /**
  * Load templates
  */
-export const loadTemplates = async (): Promise<{
-  [key: string]: (parameters: object) => Promise<string>
-}> => {
+export const loadTemplates = async (): Promise<ITemplates> => {
   console.info('Loading templates...')
 
-  const templates = {}
+  const templates: ITemplates = {}
   // Base templates
   await Promise.all(
     Object.keys(Templates).map(async (key) => {
@@ -25,7 +27,7 @@ export const loadTemplates = async (): Promise<{
         path.join(
           isElectron() ? process.resourcesPath : './dist',
           'templates',
-          Templates[key]
+          Templates[key as keyof typeof Templates]
         )
       )
       const func = ejs.compile(content.toString(), {
@@ -45,30 +47,32 @@ export const loadTemplates = async (): Promise<{
     plugins.map(async (plugin) => {
       if (plugin.category === 'Model')
         await Promise.all(
-          plugin.templates.map(async (template) => {
-            const content = await Tools.readFile(
-              path.join(
-                isElectron() ? process.resourcesPath : './',
-                'plugins',
-                plugin.key,
-                template.file
+          plugin.templates.map(
+            async (template: { key: string; file: string }) => {
+              const content = await Tools.readFile(
+                path.join(
+                  isElectron() ? process.resourcesPath : './',
+                  'plugins',
+                  plugin.key as string,
+                  template.file
+                )
               )
-            )
-            const func = ejs.compile(content.toString(), {
-              root: path.join(
-                isElectron() ? process.resourcesPath : './',
-                'templates'
+              const func = ejs.compile(content.toString(), {
+                root: path.join(
+                  isElectron() ? process.resourcesPath : './',
+                  'templates'
+                )
+              })
+              templates[template.key] = func
+              console.info(
+                ' - Template ' +
+                  template.key +
+                  ' loaded (from ' +
+                  plugin.key +
+                  ')'
               )
-            })
-            templates[template.key] = func
-            console.info(
-              ' - Template ' +
-                template.key +
-                ' loaded (from ' +
-                plugin.key +
-                ')'
-            )
-          })
+            }
+          )
         )
     })
   )

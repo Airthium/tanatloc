@@ -258,7 +258,7 @@ export interface IPlugin {
         configuration?: IModel['configuration']
       ) => Promise<void>
     }
-    templates?: Array<{ key: string; file: string }>
+    templates?: { key: string; file: string }[]
   }
 }
 

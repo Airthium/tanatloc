@@ -45,8 +45,8 @@ describe('route/user/check', () => {
 
     mockLogin.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

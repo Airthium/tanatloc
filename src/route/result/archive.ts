@@ -55,14 +55,14 @@ const archive = async (req: Request, res: Response): Promise<void> => {
         res.setHeader('Content-Type', 'application/zip')
         const archiveStream = await ResultLib.archive(simulation)
         archiveStream.pipe(res)
-      } catch (err) {
+      } catch (err: any) {
         throw error(500, err.message)
       }
     } else {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

@@ -11,7 +11,6 @@ import { error } from './error'
 /**
  * Session
  * @param req Request
- * @param res Response
  */
 export const session = async (req: Request): Promise<string> => {
   try {

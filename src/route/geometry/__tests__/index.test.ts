@@ -56,8 +56,8 @@ describe('route/geometry', () => {
       name: 'name'
     }))
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

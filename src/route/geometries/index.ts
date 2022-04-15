@@ -2,6 +2,8 @@
 
 import { Request, Response } from 'express'
 
+import { IGeometry } from '@/database/index.d'
+
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
@@ -48,13 +50,13 @@ const route = async (req: Request, res: Response): Promise<void> => {
         ids.map(async (id) => {
           try {
             // Get geometry
-            const geometry = await GeometryLib.get(id, [
+            const geometry = (await GeometryLib.get(id, [
               'name',
               'originalfilename',
               'summary',
               'dimension',
               'project'
-            ])
+            ])) as IGeometry & { project: string }
             if (!geometry) throw error(400, 'Invalid geometry identifier')
 
             // Check authorization
@@ -72,7 +74,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         const geometries = geometriesTmp.filter((p) => p)
 
         res.status(200).json({ geometries })
-      } catch (err) {
+      } catch (err: any) {
         /* istanbul ignore next */
         throw error(500, err.message)
       }
@@ -80,7 +82,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

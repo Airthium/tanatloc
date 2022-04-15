@@ -71,7 +71,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         try {
           const newGeometry = await GeometryLib.add(project, geometry)
           res.status(200).json(newGeometry)
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -79,7 +79,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

@@ -45,7 +45,7 @@ describe('route/session', () => {
     try {
       await session(req)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(mockSession).toHaveBeenCalledTimes(1)
       expect(err.status).toBe(401)
       expect(err.message).toBe('Unauthorized')
@@ -58,7 +58,7 @@ describe('route/session', () => {
     try {
       await session(req)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(mockSession).toHaveBeenCalledTimes(2)
       expect(err.status).toBe(401)
       expect(err.message).toBe('Unauthorized')
@@ -69,7 +69,7 @@ describe('route/session', () => {
     try {
       await session(req)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(mockSession).toHaveBeenCalledTimes(3)
       expect(err.status).toBe(401)
       expect(err.message).toBe('Unauthorized')
@@ -83,7 +83,7 @@ describe('route/session', () => {
     try {
       await session(req)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(mockSession).toHaveBeenCalledTimes(1)
       expect(err.status).toBe(401)
       expect(err.message).toBe('Unauthorized')

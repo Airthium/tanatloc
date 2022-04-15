@@ -53,7 +53,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           // Recover
           if (existingUser) await EmailLib.recover(email)
           res.status(200).end()
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
       } else {
@@ -64,7 +64,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

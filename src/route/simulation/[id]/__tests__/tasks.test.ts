@@ -53,8 +53,8 @@ describe('route/simulation/[id]/tasks', () => {
     mockGet.mockReset()
     mockGet.mockImplementation(() => ({}))
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

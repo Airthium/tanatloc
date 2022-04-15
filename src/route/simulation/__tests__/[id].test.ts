@@ -23,7 +23,7 @@ const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('@/lib/simulation', () => ({
-  get: async (_, data) => mockGet(_, data),
+  get: async (_: any, data: string[]) => mockGet(_, data),
   update: async () => mockUpdate(),
   del: () => mockDel()
 }))
@@ -62,8 +62,8 @@ describe('route/simulation/[id]', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

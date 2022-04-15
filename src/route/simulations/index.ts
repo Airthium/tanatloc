@@ -2,6 +2,8 @@
 
 import { Request, Response } from 'express'
 
+import { ISimulation } from '@/database/index.d'
+
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
@@ -48,11 +50,15 @@ const route = async (req: Request, res: Response): Promise<void> => {
         ids.map(async (id) => {
           try {
             // Get simulation
-            const simulation = await SimulationLib.get(id, [
+            const simulation = (await SimulationLib.get(id, [
               'name',
               'scheme',
               'project'
-            ])
+            ])) as ISimulation & {
+              name: string
+              scheme: ISimulation['scheme']
+              project: string
+            }
             if (!simulation) throw error(400, 'Invalid simulation identifier')
 
             // Check authorization
@@ -73,7 +79,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         const simulations = simulationsTmp.filter((p) => p)
 
         res.status(200).json({ simulations })
-      } catch (err) {
+      } catch (err: any) {
         /* istanbul ignore next */
         throw error(500, err.message)
       }
@@ -81,7 +87,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

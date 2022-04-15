@@ -73,7 +73,7 @@ const route = async (req: Request, res: Response) => {
       try {
         const projects = projectsTmp.filter((p) => p)
         res.status(200).json({ projects })
-      } catch (err) {
+      } catch (err: any) {
         /* istanbul ignore next */
         throw error(500, err.message)
       }
@@ -81,7 +81,7 @@ const route = async (req: Request, res: Response) => {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

@@ -57,8 +57,8 @@ describe('route/projects/ids', () => {
       title: 'title'
     }))
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

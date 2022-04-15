@@ -65,8 +65,8 @@ describe('route/project/[id]', () => {
     mockUnarchiveFromServer.mockReset()
     mockDeleteArchiveFile.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

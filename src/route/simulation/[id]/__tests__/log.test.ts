@@ -53,8 +53,8 @@ describe('route/simulation/[id]/log', () => {
     mockGetLog.mockReset()
     mockGetLog.mockImplementation(() => 'log')
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

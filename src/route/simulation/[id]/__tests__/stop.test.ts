@@ -52,8 +52,8 @@ describe('route/simulation/[id]/stop', () => {
 
     mockStop.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

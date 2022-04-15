@@ -52,7 +52,7 @@ export const loginRoute = async (req: Request, res: Response) => {
     setTokenCookie(res, token)
 
     res.status(200).json(session)
-  } catch (err) {
+  } catch (err: any) {
     console.error(err)
     res.status(401).json({ error: true, message: err.message })
     Sentry.configureScope((scope) => {

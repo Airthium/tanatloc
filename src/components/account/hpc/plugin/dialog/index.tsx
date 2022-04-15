@@ -1,7 +1,7 @@
 /** @module Components.Account.HPC.Plugin.Dialog */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'
@@ -146,11 +146,8 @@ export const selectItem = (
 export const onFinish = async (
   plugin: IClientPlugin,
   edit: boolean,
-  values: JSON,
-  swr: {
-    addOnePlugin?: (plugin: IClientPlugin) => void
-    mutateOnePlugin?: (plugin: IClientPlugin) => void
-  }
+  values: {},
+  swr: IProps['swr']
 ): Promise<void> => {
   try {
     if (edit) {
@@ -158,7 +155,7 @@ export const onFinish = async (
 
       // Set values
       Object.keys(values).forEach((key) => {
-        initialPlugin.configuration[key].value = values[key as keyof JSON]
+        initialPlugin.configuration[key].value = values[key as keyof {}]
       })
 
       initialPlugin.needReInit = true
@@ -167,21 +164,21 @@ export const onFinish = async (
       await PluginAPI.update(initialPlugin)
 
       // Mutate
-      swr?.mutateOnePlugin?.(initialPlugin)
+      swr.mutateOnePlugin?.(initialPlugin)
     } else {
       // New plugin
       const newPlugin = { ...plugin }
 
       // Set values
       Object.keys(values).forEach((key) => {
-        newPlugin.configuration[key].value = values[key as keyof JSON]
+        newPlugin.configuration[key].value = values[key as keyof {}]
       })
 
       // API
       await PluginAPI.add(newPlugin)
 
       // Local
-      swr?.addOnePlugin?.(newPlugin)
+      swr.addOnePlugin?.(newPlugin)
     }
   } catch (err) {
     ErrorNotification(errors.update, err)
@@ -198,7 +195,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const [initialValues, setInitialValues] = useState<any>({})
+  const [initialValues, setInitialValues] = useState<{}>({})
 
   // Initial values
   useEffect(() => {
@@ -238,7 +235,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         loading={loading}
       >
         {Object.keys(plugin.configuration).map((key) => {
-          const item: any = plugin.configuration[key]
+          const item = plugin.configuration[key]
           if (item.type === 'input') return inputItem(item, key)
           else if (item.type === 'textarea') return textareaItem(item, key)
           else if (item.type === 'password') return passwordItem(item, key)

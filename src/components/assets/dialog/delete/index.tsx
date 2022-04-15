@@ -50,6 +50,7 @@ const DeleteDialog = ({
    * Render
    */
   return (
+    //@ts-ignore
     <Modal
       className="Dialog"
       title={

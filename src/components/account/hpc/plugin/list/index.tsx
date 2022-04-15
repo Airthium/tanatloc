@@ -31,18 +31,18 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   const [list, setList]: [
     JSX.Element[],
     Dispatch<SetStateAction<JSX.Element[]>>
-  ] = useState([])
+  ] = useState<Array<JSX.Element>>([])
 
   // List
   useEffect(() => {
-    const pluginsList = plugins.map((p) => {
-      if (p.key !== plugin.key) return
+    const pluginsList = plugins.map((p: IClientPlugin) => {
+      if (p.key !== plugin.key) return 
 
       const configuration = p.configuration
 
       const children = Object.keys(configuration)
         .map((key) => {
-          if (key === 'name') return
+          if (key === 'name') return 
 
           let content: JSX.Element
           if (configuration[key].type === 'textarea') {
@@ -108,7 +108,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
           )}
         </Card>
       )
-    })
+    }).filter((c) => c) as JSX.Element[]
 
     setList(pluginsList)
   }, [plugin, plugins, swr])

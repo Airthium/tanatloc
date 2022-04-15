@@ -18,7 +18,7 @@ let serverError = false
  */
 const ErrorNotification = (
   title: string,
-  err?: ICallError,
+  err?: ICallError | any,
   display: boolean = true
 ): void => {
   if (err?.message === 'Failed to fetch') {

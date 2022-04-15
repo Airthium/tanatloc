@@ -145,7 +145,7 @@ export const selectItem = (
  */
 export const onFinish = async (
   plugin: IClientPlugin,
-  edit: boolean | undefined,
+  edit: boolean,
   values: JSON,
   swr: {
     addOnePlugin?: (plugin: IClientPlugin) => void
@@ -230,7 +230,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         onOk={async (values) => {
           setLoading(true)
           try {
-            await onFinish(plugin, edit, values, swr)
+            await onFinish(plugin, !!edit, values, swr)
 
             // Close
             setLoading(false)

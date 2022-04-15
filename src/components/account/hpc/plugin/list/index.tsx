@@ -35,80 +35,82 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
 
   // List
   useEffect(() => {
-    const pluginsList = plugins.map((p: IClientPlugin) => {
-      if (p.key !== plugin.key) return 
+    const pluginsList = plugins
+      .map((p: IClientPlugin) => {
+        if (p.key !== plugin.key) return
 
-      const configuration = p.configuration
+        const configuration = p.configuration
 
-      const children = Object.keys(configuration)
-        .map((key) => {
-          if (key === 'name') return 
+        const children = Object.keys(configuration)
+          .map((key) => {
+            if (key === 'name') return
 
-          let content: JSX.Element
-          if (configuration[key].type === 'textarea') {
-            const code = configuration[key].value
-            content = (
-              <Typography.Paragraph>
-                <pre>
-                  <code>{code}</code>
-                </pre>
+            let content: JSX.Element
+            if (configuration[key].type === 'textarea') {
+              const code = configuration[key].value
+              content = (
+                <Typography.Paragraph>
+                  <pre>
+                    <code>{code}</code>
+                  </pre>
+                </Typography.Paragraph>
+              )
+            } else if (configuration[key].type === 'password') {
+              content = <Typography.Text>******</Typography.Text>
+            } else {
+              content = (
+                <Typography.Text>{configuration[key].value}</Typography.Text>
+              )
+            }
+
+            return (
+              <Typography.Paragraph key={key}>
+                <Typography.Text strong={true}>
+                  {configuration[key].label}:
+                </Typography.Text>{' '}
+                {content}
               </Typography.Paragraph>
             )
-          } else if (configuration[key].type === 'password') {
-            content = <Typography.Text>******</Typography.Text>
-          } else {
-            content = (
-              <Typography.Text>{configuration[key].value}</Typography.Text>
-            )
-          }
+          })
+          .filter((c) => c)
 
-          return (
-            <Typography.Paragraph key={key}>
-              <Typography.Text strong={true}>
-                {configuration[key].label}:
-              </Typography.Text>{' '}
-              {content}
-            </Typography.Paragraph>
-          )
-        })
-        .filter((c) => c)
-
-      return (
-        <Card
-          key={p.uuid}
-          title={configuration.name?.value}
-          actions={[
-            <Delete
-              key="delete"
-              plugin={{
-                uuid: p.uuid,
-                configuration: p.configuration
-              }}
-              swr={{ delOnePlugin: swr.delOnePlugin }}
-            />,
-            <PluginDialog
-              key="plugin"
-              plugin={{
-                uuid: p.uuid,
-                key: p.key,
-                name: p.name,
-                needInit: p.needInit,
-                configuration: p.configuration,
-                inUseConfiguration: p.inUseConfiguration
-              }}
-              swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
-              edit={true}
-            />
-          ]}
-        >
-          {children.length ? (
-            children
-          ) : (
-            <Typography.Text>No configuration data</Typography.Text>
-          )}
-        </Card>
-      )
-    }).filter((c) => c) as JSX.Element[]
+        return (
+          <Card
+            key={p.uuid}
+            title={configuration.name?.value}
+            actions={[
+              <Delete
+                key="delete"
+                plugin={{
+                  uuid: p.uuid,
+                  configuration: p.configuration
+                }}
+                swr={{ delOnePlugin: swr.delOnePlugin }}
+              />,
+              <PluginDialog
+                key="plugin"
+                plugin={{
+                  uuid: p.uuid,
+                  key: p.key,
+                  name: p.name,
+                  needInit: p.needInit,
+                  configuration: p.configuration,
+                  inUseConfiguration: p.inUseConfiguration
+                }}
+                swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
+                edit={true}
+              />
+            ]}
+          >
+            {children.length ? (
+              children
+            ) : (
+              <Typography.Text>No configuration data</Typography.Text>
+            )}
+          </Card>
+        )
+      })
+      .filter((c) => c) as JSX.Element[]
 
     setList(pluginsList)
   }, [plugin, plugins, swr])

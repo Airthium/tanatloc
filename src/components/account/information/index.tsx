@@ -1,7 +1,7 @@
 /** @module Components.Account.Information */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
@@ -177,7 +177,7 @@ export const onFinish = async (
  */
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
-  const [uploading, setUploading]= useState<boolean>(false)
+  const [uploading, setUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError | null>()
 

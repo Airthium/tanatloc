@@ -39,8 +39,8 @@ describe('route/link', () => {
     mockGet.mockReset()
     mockProcess.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('POST', async () => {

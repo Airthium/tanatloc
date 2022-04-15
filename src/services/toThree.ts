@@ -24,7 +24,7 @@ const toThree = async (
   const pathOutPOSIX = pathOut.split(path.sep).join(path.posix.sep)
 
   // Extension
-  const extension = fileInPOSIX.split('.').pop()
+  const extension = fileInPOSIX.split('.').pop() as string
 
   // Check extension
   switch (extension.toLowerCase()) {

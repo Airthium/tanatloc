@@ -4,7 +4,7 @@ import { Pool } from 'pg'
 interface ITanatloc {
   pool: Pool
   plugins: IPlugin[]
-  templates: { [key: string]: (parameters: object) => Promise<string> }
+  templates: { [key: string]: ejs.TemplateFunction }
 }
 
 declare global {

@@ -16,7 +16,7 @@ jest.mock('../../auth', () => ({
 
 const mockError = jest.fn()
 jest.mock('../../error', () => ({
-  error: (status, message) => mockError(status, message)
+  error: (status: number, message: string) => mockError(status, message)
 }))
 
 const mockAdd = jest.fn()
@@ -56,8 +56,8 @@ describe('route/project', () => {
       title: 'title'
     }))
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

@@ -11,7 +11,7 @@ jest.mock('../../session', () => ({
 
 const mockError = jest.fn()
 jest.mock('../../error', () => ({
-  error: (status, message) => mockError(status, message)
+  error: (status: number, message: string) => mockError(status, message)
 }))
 
 const mockOrganizationGet = jest.fn()
@@ -67,8 +67,8 @@ describe('route/group', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

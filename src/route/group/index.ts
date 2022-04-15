@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express'
 
-import { IDataBaseEntry } from '@/database/index.d'
+import { IDataBaseEntry, IGroup } from '@/database/index.d'
 
 import { session } from '../session'
 import { error } from '../error'
@@ -108,7 +108,9 @@ const checkGroupAuth = async (
   group: { id: string },
   user: { id: string }
 ): Promise<void> => {
-  const groupData = await GroupLib.get(group.id, ['organization'])
+  const groupData = (await GroupLib.get(group.id, [
+    'organization'
+  ])) as IGroup & { organization: string }
   if (!groupData) throw error(400, 'Invalid group identifier')
 
   const organizationData = await OrganizationLib.get(groupData.organization, [
@@ -143,7 +145,7 @@ const route = async (req: Request, res: Response) => {
         try {
           const newGroup = await GroupLib.add(organization, group)
           res.status(200).json(newGroup)
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -158,7 +160,7 @@ const route = async (req: Request, res: Response) => {
         try {
           await GroupLib.update(req.body.group, req.body.data)
           res.status(200).end()
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -173,7 +175,7 @@ const route = async (req: Request, res: Response) => {
         try {
           await GroupLib.del(req.body)
           res.status(200).end()
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -181,7 +183,7 @@ const route = async (req: Request, res: Response) => {
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

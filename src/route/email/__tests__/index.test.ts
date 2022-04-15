@@ -43,8 +43,8 @@ describe('route/email', () => {
 
     mockUserGetBy.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('PUT', async () => {

@@ -52,8 +52,8 @@ describe('route/organization/[id]', () => {
     mockDecline.mockReset()
     mockQuit.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

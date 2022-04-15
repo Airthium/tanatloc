@@ -56,8 +56,8 @@ describe('route/system', () => {
     mockGet.mockReset()
     mockUpdate.mockReset()
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('GET', async () => {

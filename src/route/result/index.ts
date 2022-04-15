@@ -67,14 +67,14 @@ const route = async (req: Request, res: Response): Promise<void> => {
       try {
         const data = await ResultLib.load(simulation, result)
         res.status(200).json(data)
-      } catch (err) {
+      } catch (err: any) {
         throw error(500, err.message)
       }
     } else {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

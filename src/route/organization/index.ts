@@ -63,7 +63,8 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 
 /**
  * Check organization administrator
- * @param id Id
+ * @param organization organization
+ * @param user User
  */
 const checkOrganizationAdministrator = async (
   organization: { id: string },
@@ -100,7 +101,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
             req.body
           )
           res.status(200).json(organization)
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -121,7 +122,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
             sessionId
           )
           res.status(200).end()
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -136,7 +137,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           // Delete
           await OrganizationLib.del(req.body)
           res.status(200).end()
-        } catch (err) {
+        } catch (err: any) {
           throw error(500, err.message)
         }
         break
@@ -144,7 +145,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

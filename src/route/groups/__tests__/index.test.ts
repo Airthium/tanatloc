@@ -4,13 +4,9 @@ import groups from '..'
 
 describe('route/groups', () => {
   const req = {} as Request
-  let resStatus: number
   let resJson: string | object
   const res = {} as Response
-  res.status = (status: number) => {
-    resStatus = status
-    return res
-  }
+  res.status = () => res
   res.end = () => {
     resJson = 'end'
     return res

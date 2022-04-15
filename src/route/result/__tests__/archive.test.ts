@@ -54,13 +54,13 @@ describe('route/result/archive', () => {
 
     mockArchive.mockReset()
     mockArchive.mockImplementation(() => ({
-      pipe: (res: Response) => {
-        res.status(200).end()
+      pipe: (r: Response) => {
+        r.status(200).end()
       }
     }))
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

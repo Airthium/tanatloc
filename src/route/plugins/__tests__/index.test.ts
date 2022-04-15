@@ -55,8 +55,8 @@ describe('route/plugins', () => {
     mockClientList.mockReset()
     mockClientList.mockImplementation(() => ['plugin'])
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

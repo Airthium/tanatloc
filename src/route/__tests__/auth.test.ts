@@ -134,7 +134,7 @@ describe('route/auth', () => {
     try {
       await checkWorkspaceAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(400)
       expect(err.message).toBe('Invalid workspace identifier')
     }
@@ -143,7 +143,7 @@ describe('route/auth', () => {
     try {
       await checkWorkspaceAuth({ id: 'id' }, { id: 'id' }, 500)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid workspace identifier')
     }
@@ -153,7 +153,7 @@ describe('route/auth', () => {
     try {
       await checkWorkspaceAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(403)
       expect(err.message).toBe('Access denied')
     }
@@ -168,7 +168,7 @@ describe('route/auth', () => {
     try {
       await checkProjectAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(400)
       expect(err.message).toBe('Invalid project identifier')
     }
@@ -177,7 +177,7 @@ describe('route/auth', () => {
     try {
       await checkProjectAuth({ id: 'id' }, { id: 'id' }, 500)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid project identifier')
     }
@@ -187,7 +187,7 @@ describe('route/auth', () => {
     try {
       await checkProjectAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid workspace identifier')
     }
@@ -197,7 +197,7 @@ describe('route/auth', () => {
     try {
       await checkProjectAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(403)
       expect(err.message).toBe('Access denied')
     }
@@ -212,7 +212,7 @@ describe('route/auth', () => {
     try {
       await checkGeometryAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(400)
       expect(err.message).toBe('Invalid geometry identifier')
     }
@@ -221,7 +221,7 @@ describe('route/auth', () => {
     try {
       await checkGeometryAuth({ id: 'id' }, { id: 'id' }, 500)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid geometry identifier')
     }
@@ -231,7 +231,7 @@ describe('route/auth', () => {
     try {
       await checkGeometryAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid project identifier')
     }
@@ -241,7 +241,7 @@ describe('route/auth', () => {
     try {
       await checkGeometryAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid workspace identifier')
     }
@@ -251,7 +251,7 @@ describe('route/auth', () => {
     try {
       await checkGeometryAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(403)
       expect(err.message).toBe('Access denied')
     }
@@ -266,7 +266,7 @@ describe('route/auth', () => {
     try {
       await checkSimulationAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(400)
       expect(err.message).toBe('Invalid simulation identifier')
     }
@@ -275,7 +275,7 @@ describe('route/auth', () => {
     try {
       await checkSimulationAuth({ id: 'id' }, { id: 'id' }, 500)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid simulation identifier')
     }
@@ -285,7 +285,7 @@ describe('route/auth', () => {
     try {
       await checkSimulationAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid project identifier')
     }
@@ -295,7 +295,7 @@ describe('route/auth', () => {
     try {
       await checkSimulationAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid workspace identifier')
     }
@@ -305,7 +305,7 @@ describe('route/auth', () => {
     try {
       await checkSimulationAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(403)
       expect(err.message).toBe('Access denied')
     }
@@ -320,7 +320,7 @@ describe('route/auth', () => {
     try {
       await checkOrganizationAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(400)
       expect(err.message).toBe('Invalid organization identifier')
     }
@@ -329,7 +329,7 @@ describe('route/auth', () => {
     try {
       await checkOrganizationAuth({ id: 'id' }, { id: 'id' }, 500)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(500)
       expect(err.message).toBe('Invalid organization identifier')
     }
@@ -339,7 +339,7 @@ describe('route/auth', () => {
     try {
       await checkOrganizationAuth({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.status).toBe(403)
       expect(err.message).toBe('Access denied')
     }

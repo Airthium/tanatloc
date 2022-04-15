@@ -23,7 +23,11 @@ jest.mock('passport', () => {
   return {
     initialize: jest.fn,
     use: jest.fn,
-    authenticate: async (_, __, callback) => {
+    authenticate: async (
+      _: any,
+      __: any,
+      callback: (err?: Error, param?: { token: string }) => void
+    ) => {
       count++
       if (count === 1) callback(undefined, { token: 'token' })
       else if (count === 2) callback()
@@ -45,7 +49,7 @@ jest.mock('@/auth/auth-cookies', () => ({
 }))
 
 jest.mock('@/lib/sentry', () => ({
-  configureScope: (callback) => {
+  configureScope: (callback: (param: { setUser: Function }) => void) => {
     callback({ setUser: jest.fn })
   },
   captureException: jest.fn

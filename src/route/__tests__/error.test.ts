@@ -2,7 +2,7 @@ import { error } from '../error'
 
 const mockCaptureException = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: (err) => mockCaptureException(err)
+  captureException: (err: Error) => mockCaptureException(err)
 }))
 
 describe('route/error', () => {

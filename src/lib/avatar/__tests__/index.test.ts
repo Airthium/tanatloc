@@ -195,7 +195,7 @@ describe('lib/avatar', () => {
     try {
       await Avatar.read('id')
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Avatar does not exist.')
     }
     expect(mockPath).toHaveBeenCalledTimes(1)

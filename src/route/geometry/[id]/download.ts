@@ -33,14 +33,14 @@ const download = async (req: Request, res: Response) => {
         // Download
         const part = await GeometryLib.read({ id })
         res.status(200).json(part)
-      } catch (err) {
+      } catch (err: any) {
         throw error(500, err.message)
       }
     } else {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

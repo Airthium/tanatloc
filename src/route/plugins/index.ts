@@ -27,23 +27,23 @@ const route = async (req: Request, res: Response) => {
         // Get list
         const list = await PluginsLib.clientList(user)
         res.status(200).json(list)
-      } catch (err) {
+      } catch (err: any) {
         throw error(500, err.message)
       }
     } else if (req.method === 'POST') {
       // Get complete
       try {
         // Get complete list
-        const list = await PluginsLib.clientList(null, true)
+        const list = await PluginsLib.clientList(undefined, true)
         res.status(200).json(list)
-      } catch (err) {
+      } catch (err: any) {
         throw error(500, err.message)
       }
     } else {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })
   }
 }

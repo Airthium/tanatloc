@@ -10,7 +10,7 @@ const copyThreeAssets = async (): Promise<void> => {
   // Create path
   try {
     await fs.mkdir('public/three/libs', { recursive: true })
-  } catch (err) {
+  } catch (err: any) {
     if (err.code !== 'EEXIST') throw err
   }
 
@@ -32,7 +32,7 @@ const copyMathjaxAssets = async (): Promise<void> => {
     await fs.mkdir('public/mathjax', {
       recursive: true
     })
-  } catch (err) {
+  } catch (err: any) {
     if (err.code !== 'EEXIST') throw err
   }
 

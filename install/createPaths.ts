@@ -30,7 +30,7 @@ export const createPaths = async (): Promise<void> => {
 const createPath = async (path: string): Promise<void> => {
   try {
     await fs.mkdir(path)
-  } catch (err) {
+  } catch (err: any) {
     if (err.code === 'EEXIST') {
       console.warn(' ⚠ ' + path + ' directory already exists')
     } else {

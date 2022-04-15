@@ -14,10 +14,7 @@ const main = async (): Promise<void> => {
   console.info("  / /\\/ _` | '_ \\ / _` | __| |/ _ \\ / __|")
   console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')
   console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
-  global.initialization = {
-    plugins: true,
-    templates: true
-  }
+
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
     await createDatabase()

@@ -4,10 +4,8 @@
 
 import { createDatabase } from '../createDatabase'
 
-const mockCheckdB = jest.fn()
 const mockQuery = jest.fn()
 jest.mock('@/database', () => ({
-  checkdB: async () => mockCheckdB(),
   query: async (query: string) => mockQuery(query)
 }))
 
@@ -19,6 +17,11 @@ jest.mock('pg', () => ({
   }))
 }))
 
+const mockInit = jest.fn()
+jest.mock('@/server/init/database', () => ({
+  initDatabase: async () => mockInit()
+}))
+
 describe('install/dB', () => {
   beforeEach(() => {
     mockClient.mockImplementation(() => ({
@@ -27,13 +30,20 @@ describe('install/dB', () => {
       }),
       release: jest.fn()
     }))
-    mockCheckdB.mockReset()
-    mockCheckdB.mockImplementation(() => true)
     mockQuery.mockImplementation(() => ({ rows: [{}] }))
+
+    Object.defineProperty(global, 'tanatloc', {
+      value: {
+        pool: {
+          connect: () => mockClient(),
+          end: jest.fn()
+        }
+      },
+      configurable: true
+    })
   })
 
   test('Database not found', async () => {
-    mockCheckdB.mockImplementation(() => false)
     await createDatabase()
   })
 

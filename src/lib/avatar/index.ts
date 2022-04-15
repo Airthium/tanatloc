@@ -72,7 +72,10 @@ const add = async (
  */
 const read = async (id: string): Promise<Buffer> => {
   // Get path
-  const avatar = await get(id, ['path', 'type'])
+  const avatar = (await get(id, ['path', 'type'])) as IAvatar & {
+    path: string
+    type: string
+  }
   if (!avatar) throw new Error('Avatar does not exist.')
 
   // Read file

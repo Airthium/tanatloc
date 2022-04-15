@@ -52,11 +52,11 @@ const add = async (
         summary.solids.map(
           async (solid: {
             uuid: string
-            path: string
+            path?: string
             color: { r: number; g: number; b: number }
           }) => {
             const content = await Tools.readJSONFile(
-              path.join(GEOMETRY, geometry.uid, solid.path)
+              path.join(GEOMETRY, geometry.uid, solid.path!)
             )
             solid.uuid = content.uuid
             if (content.data?.attributes.color?.itemSize === 3)
@@ -75,11 +75,11 @@ const add = async (
         summary.faces.map(
           async (face: {
             uuid: string
-            path: string
+            path?: string
             color: { r: number; g: number; b: number }
           }) => {
             const content = await Tools.readJSONFile(
-              path.join(GEOMETRY, geometry.uid, face.path)
+              path.join(GEOMETRY, geometry.uid, face.path!)
             )
             face.uuid = content.uuid
             if (content.data?.attributes.color?.itemSize === 3)
@@ -98,11 +98,11 @@ const add = async (
         summary.edges.map(
           async (edge: {
             uuid: string
-            path: string
+            path?: string
             color: { r: number; g: number; b: number }
           }) => {
             const content = await Tools.readJSONFile(
-              path.join(GEOMETRY, geometry.uid, edge.path)
+              path.join(GEOMETRY, geometry.uid, edge.path!)
             )
             edge.uuid = content.uuid
             if (content.data?.attributes.color?.itemSize === 3)
@@ -211,7 +211,7 @@ const del = async (geometry: {
   ])
 
   // Delete geometry reference in project
-  await Project.update({ id: geometryData.project }, [
+  await Project.update({ id: geometryData.project! }, [
     {
       type: 'array',
       method: 'remove',
@@ -272,11 +272,11 @@ const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
 
   // Read
   const buffer = await Tools.readFile(
-    path.join(GEOMETRY, geometryData.uploadfilename)
+    path.join(GEOMETRY, geometryData.uploadfilename!)
   )
 
   return {
-    extension: geometryData.extension,
+    extension: geometryData.extension!,
     buffer: Buffer.from(buffer)
   }
 }
@@ -292,11 +292,11 @@ const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
   if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read GLB
-  const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb))
+  const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb!))
 
   // Read part file
   const part = await Tools.readJSONFile(
-    path.join(GEOMETRY, geometryData.json, 'part.json')
+    path.join(GEOMETRY, geometryData.json!, 'part.json')
   )
 
   return {

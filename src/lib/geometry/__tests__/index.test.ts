@@ -280,7 +280,7 @@ describe('lib/geometry', () => {
     try {
       await Geometry.read({ id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Geometry does not exist.')
     }
   })
@@ -310,7 +310,7 @@ describe('lib/geometry', () => {
     try {
       await Geometry.readPart({ id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Geometry does not exist.')
     }
   })

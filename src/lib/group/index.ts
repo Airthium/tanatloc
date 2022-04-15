@@ -60,7 +60,7 @@ const get = async (id: string, data: Array<string>): Promise<IGroup> => {
  * @returns Users
  */
 const getUsersData = async (
-  group: IGroup | { users: string[] }
+  group: (IGroup & { users: string[] }) | { users: string[] }
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     group.users.map(async (user) => {
@@ -93,7 +93,10 @@ const getWithData = async (
 
   const { users, ...groupData } = { ...group }
   const groupWithData: IGroupWithData = { ...groupData }
-  if (users) groupWithData.users = await getUsersData(group)
+  if (users)
+    groupWithData.users = await getUsersData(
+      group as IGroup & { users: string[] }
+    )
 
   return groupWithData
 }
@@ -194,7 +197,7 @@ const del = async (group: { id: string }): Promise<void> => {
   ])
 
   // Delete group from organization
-  await Organization.update({ id: groupData.organization }, [
+  await Organization.update({ id: groupData.organization! }, [
     {
       key: 'groups',
       type: 'array',

@@ -53,8 +53,8 @@ describe('route/geometry/[id]/download', () => {
     mockRead.mockReset()
     mockRead.mockImplementation(() => 'read')
 
-    resStatus = undefined
-    resJson = undefined
+    resStatus = 0
+    resJson = ''
   })
 
   test('no session', async () => {

@@ -36,7 +36,7 @@ jobs:
         run: yarn run next lint
 
       - name: Doc
-        run: yarn run doc
+        run: yarn run doc || true
 
       - name: Tests
         run: yarn run test || true

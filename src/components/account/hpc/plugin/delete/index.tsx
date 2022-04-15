@@ -1,7 +1,7 @@
 /** @module Components.Account.HPC.Plugin.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Typography } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'

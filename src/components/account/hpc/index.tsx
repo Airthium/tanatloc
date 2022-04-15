@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC */
 
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, Space, Spin } from 'antd'
 
 import { ErrorNotification } from '@/components/assets/notification'

@@ -242,14 +242,14 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         }}
         loading={loading}
       >
-        {plugin.configuration &&
-          Object.keys(plugin.configuration).map((key) => {
-            const item: any = plugin.configuration[key]
-            if (item.type === 'input') return inputItem(item, key)
-            else if (item.type === 'textarea') return textareaItem(item, key)
-            else if (item.type === 'password') return passwordItem(item, key)
-            else if (item.type === 'select') return selectItem(item, key)
-          })}
+        {Object.keys(plugin.configuration).map((key) => {
+          const item: any = plugin.configuration[key]
+          if (item.type === 'input') return inputItem(item, key)
+          else if (item.type === 'textarea') return textareaItem(item, key)
+          else if (item.type === 'password') return passwordItem(item, key)
+          else if (item.type === 'select') return selectItem(item, key)
+          else return <></>
+        })}
       </Dialog>
       {edit ? (
         <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>

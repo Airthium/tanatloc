@@ -2,11 +2,15 @@
 
 import isElectron from 'is-electron'
 
-import { INewUser } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewUser {
+  alreadyExists?: boolean
+  id?: string
+  email?: string
+}
 
 /**
  * Add

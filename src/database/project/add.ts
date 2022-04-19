@@ -1,10 +1,16 @@
 /** @module Database.Project.Add */
 
-import { INewProject } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewProject {
+  id: string
+  title: string
+  description?: string
+  owners: string[]
+  workspace: string
+}
 
 /**
  * Add

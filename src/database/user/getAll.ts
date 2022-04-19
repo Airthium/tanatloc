@@ -1,8 +1,8 @@
 /** @module Database.User.GetAll */
 
-import { IUser } from '../index.d'
-
 import { tables } from '@/config/db'
+
+import { TUserGet, IUser } from './get'
 
 import { query } from '..'
 
@@ -11,7 +11,9 @@ import { query } from '..'
  * @param data Data
  * @returns Users
  */
-export const getAll = async (data: Array<string>): Promise<Array<IUser>> => {
+export const getAll = async <T extends TUserGet>(
+  data: T
+): Promise<IUser<T>[]> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.USERS,
     []

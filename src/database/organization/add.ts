@@ -1,10 +1,14 @@
 /** @module Database.Organization.Add */
 
-import { INewOrganization } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewOrganization {
+  id: string
+  name: string
+  owners: Array<string>
+}
 
 /**
  * Add

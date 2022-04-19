@@ -1,8 +1,8 @@
 /** @module Database.Organization.GetAll */
 
-import { IOrganization } from '../index.d'
-
 import { tables } from '@/config/db'
+
+import { IOrganization, TOrganizationGet } from './get'
 
 import { query } from '..'
 
@@ -11,7 +11,9 @@ import { query } from '..'
  * @param data Data
  * @returns Organizations
  */
-export const getAll = async (data: Array<string>): Promise<IOrganization[]> => {
+export const getAll = async <T extends TOrganizationGet>(
+  data: T
+): Promise<IOrganization<T>[]> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.ORGANIZATIONS,
     []

@@ -68,8 +68,8 @@ export interface IGeometryPart {
 /**
  * Group
  */
-export interface IGroupWithData extends Omit<IGroup, 'users'> {
-  users?: IUserWithData[]
+export interface IGroupWithData extends Omit<IGroup<T>, 'users'> {
+  users: T extends ['users'] ? IUserWithData[] : never[]
 }
 
 export interface IOrganizationWithData

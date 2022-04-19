@@ -94,7 +94,7 @@ export const stopdB = async (): Promise<void> => {
  */
 export const query = async (
   command: string,
-  args: Array<boolean | number | string | Array<string> | object>
+  args: (boolean | number | string | string[] | object | undefined)[]
 ): Promise<IDataBaseResponse> => {
   // Query
   const client = await tanatloc.pool.connect()

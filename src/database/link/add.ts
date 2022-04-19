@@ -1,10 +1,15 @@
 /** @module Database.Link.Add */
 
-import { INewLink } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewLink {
+  id: string
+  type: string
+  email: string
+  userid?: string
+}
 
 /**
  * Add

@@ -1,10 +1,17 @@
 /** @module Database.Simulation.Add */
 
-import { INewSimulation } from '../index.d'
+import { IModel } from '@/models/index.d'
 
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewSimulation {
+  id: string
+  name: string
+  scheme: IModel
+  project: string
+}
 
 /**
  * Add

@@ -1,10 +1,15 @@
 /** @module Database.Group.Add */
 
-import { INewGroup } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewGroup {
+  id: string
+  name: string
+  users: string[]
+  organization: string
+}
 
 /**
  * Add
@@ -14,7 +19,7 @@ import { query } from '..'
  */
 export const add = async (
   organization: { id: string },
-  group: { name: string; users: Array<string> }
+  group: { name: string; users: string[] }
 ): Promise<INewGroup> => {
   const response = await query(
     'INSERT INTO ' +

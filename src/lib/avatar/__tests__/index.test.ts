@@ -210,7 +210,7 @@ describe('lib/avatar', () => {
   })
 
   test('get', async () => {
-    const avatar = await Avatar.get('id', ['data'])
+    const avatar = await Avatar.get('id', ['path'])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(avatar).toEqual({

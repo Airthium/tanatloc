@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
@@ -34,10 +34,8 @@ export interface IProps {
  */
 const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
   // State
-  const [organization, setOrganization]: [
-    IOrganizationWithData,
-    Dispatch<SetStateAction<IOrganizationWithData>>
-  ] = useState()
+  const [organization, setOrganization] =
+    useState<IOrganizationWithData | null>()
 
   // Data
   const router = useRouter()

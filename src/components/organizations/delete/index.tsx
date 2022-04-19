@@ -1,7 +1,7 @@
 /** @module Components.Organizations.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Typography } from 'antd'
 
 import { IOrganizationWithData } from '@/lib/index.d'
@@ -56,8 +56,7 @@ export const onDelete = async (
  */
 const Delete = ({ organization, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render

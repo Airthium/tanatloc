@@ -1,14 +1,7 @@
 /** @module Components.Organizations.List */
 
 import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
   CheckCircleOutlined,
@@ -30,6 +23,7 @@ import OrganizationAPI from '@/api/organization'
 import Utils from '@/lib/utils'
 
 import Delete from '../delete'
+import { ColumnGroupType } from 'antd/lib/table'
 
 /**
  * Props
@@ -68,8 +62,10 @@ const onQuit = async (
 
     // Local
     const newOrganization = { ...organization }
-    const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
-    newOrganization.users.splice(userIndex, 1)
+    const userIndex = (newOrganization.users as IUserWithData[]).findIndex(
+      (u) => u.id === user.id
+    )
+    ;(newOrganization.users as IUserWithData[]).splice(userIndex, 1)
 
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
@@ -101,10 +97,13 @@ const onAccept = async (
       (u) => u.id === user.id
     )
     if (ownerIndex !== -1) {
-      newOrganization.pendingowners.splice(ownerIndex, 1)
-      newOrganization.owners.push(user)
+      ;(newOrganization.pendingowners as IUserWithData[]).splice(
+        ownerIndex as number,
+        1
+      )
+      ;(newOrganization.owners as IUserWithData[]).push(user)
     } else {
-      newOrganization.pendingusers?.splice(userIndex, 1)
+      newOrganization.pendingusers?.splice(userIndex as number, 1)
       if (!newOrganization.users) newOrganization.users = []
       newOrganization.users.push(user)
     }
@@ -137,8 +136,16 @@ const onDecline = async (
     const userIndex = newOrganization.pendingusers?.findIndex(
       (u) => u.id === user.id
     )
-    if (ownerIndex !== -1) newOrganization.pendingowners.splice(ownerIndex, 1)
-    else newOrganization.pendingusers.splice(userIndex, 1)
+    if (ownerIndex !== -1)
+      (newOrganization.pendingowners as IUserWithData[]).splice(
+        ownerIndex as number,
+        1
+      )
+    else
+      (newOrganization.pendingusers as IUserWithData[]).splice(
+        userIndex as number,
+        1
+      )
 
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
@@ -158,13 +165,10 @@ const List = ({
   setOrganization
 }: IProps): JSX.Element => {
   // State
-  const [scroll, setScroll]: [
-    { y: number },
-    Dispatch<SetStateAction<{ y: number }>>
-  ] = useState(null)
+  const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
   // Ref
-  const refTableOrga = useRef(null)
+  const refTableOrga = useRef<HTMLDivElement>(null)
 
   // Data
   const ownersRender = (owners: IUserWithData[]) => (
@@ -183,7 +187,7 @@ const List = ({
     </Avatar.Group>
   )
   const actionsRender = (org: IOrganizationWithData) => {
-    if (org.owners.find((o) => o.id === user.id))
+    if (org.owners?.find((o) => o.id === user.id))
       return (
         <Space wrap>
           <Button
@@ -264,7 +268,9 @@ const List = ({
         </Space>
       )
   }
-  const columns: TableColumnsType = [
+  const columns: TableColumnsType<{
+    name: string
+  }> = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -306,6 +312,7 @@ const List = ({
    */
   const onResize = useCallback(() => {
     // Check if too many organizations to display
+    if (!refTableOrga.current) return
     if (
       refTableOrga.current.clientHeight >
       window.innerHeight - refTableOrga.current.offsetTop - 59
@@ -338,7 +345,7 @@ const List = ({
       loading={swr.loadingOrganizations}
       pagination={false}
       size="small"
-      columns={columns}
+      columns={columns as ColumnGroupType<object>[]}
       dataSource={organizations?.map((organization) => ({
         key: organization.id,
         id: organization.id,
@@ -350,7 +357,7 @@ const List = ({
         groups: organization.groups
       }))}
       ref={refTableOrga}
-      scroll={scroll}
+      scroll={{ y: scroll?.y }}
     />
   )
 }

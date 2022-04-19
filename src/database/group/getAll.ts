@@ -1,8 +1,8 @@
 /** @module Database.Group.GetAll */
 
-import { IGroup } from '../index.d'
-
 import { tables } from '@/config/db'
+
+import { TGroupGet, IGroup } from './get'
 
 import { query } from '..'
 
@@ -11,7 +11,9 @@ import { query } from '..'
  * @param data Data
  * @returns Groups
  */
-export const getAll = async (data: Array<string>): Promise<Array<IGroup>> => {
+export const getAll = async <T extends TGroupGet>(
+  data: T
+): Promise<IGroup<T>[]> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.GROUPS,
     []

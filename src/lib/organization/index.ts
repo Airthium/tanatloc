@@ -2,19 +2,17 @@
 
 import Crypto from 'crypto'
 
-import {
-  IDataBaseEntry,
-  INewOrganization,
-  IOrganization,
-  IUser
-} from '@/database/index.d'
+import { IDataBaseEntry, IUser } from '@/database/index.d'
 import {
   IGroupWithData,
   IOrganizationWithData,
   IUserWithData
 } from '../index.d'
 
-import OrganizationDB from '@/database/organization'
+import OrganizationDB, {
+  INewOrganization,
+  TOrganizationGet
+} from '@/database/organization'
 
 import User from '../user'
 import Group from '../group'
@@ -55,11 +53,8 @@ const add = async (
  * @param data Data
  * @returns Organization
  */
-const get = async (id: string, data: string[]): Promise<IOrganization> => {
+const get = async (id: string, data: TOrganizationGet) => {
   const organizationData = await OrganizationDB.get(id, data)
-
-  if (data.includes('owners') && !organizationData.owners)
-    organizationData.owners = []
 
   if (data.includes('pendingowners') && !organizationData.pendingowners)
     organizationData.pendingowners = []
@@ -312,7 +307,7 @@ const getByUser = async (
     })
   )
 
-  return userOrganizations.filter((o) => o) as IOrganizationWithData[]
+  return userOrganizations.filter((o) => o)
 }
 
 /**
@@ -328,11 +323,7 @@ const update = async (
 ) => {
   if (ownerId) {
     // Get owner
-    const owner = (await User.get(ownerId, [
-      'firstname',
-      'lastname',
-      'email'
-    ])) as IUser & { email: string }
+    const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
 
     // Check for emails
     for (const d of data) {

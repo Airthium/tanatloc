@@ -1,8 +1,9 @@
 /** @module Lib.Group */
 
-import GroupDB from '@/database/group'
-import { INewGroup, IGroup, IDataBaseEntry } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 import { IGroupWithData, IUserWithData } from '../index.d'
+
+import GroupDB, { INewGroup, TGroupGet } from '@/database/group'
 
 import User from '../user'
 import Workspace from '../workspace'
@@ -17,7 +18,7 @@ import Organization from '../organization'
  */
 const add = async (
   organization: { id: string },
-  group: { name: string; users: Array<string> }
+  group: { name: string; users: string[] }
 ): Promise<INewGroup> => {
   // Add group
   const newGroup = await GroupDB.add(organization, group)
@@ -41,7 +42,7 @@ const add = async (
  * @param data Data
  * @returns Group
  */
-const get = async (id: string, data: Array<string>): Promise<IGroup> => {
+const get = async (id: string, data: TGroupGet) => {
   const groupData = await GroupDB.get(id, data)
 
   if (data.includes('users') && !groupData.users) groupData.users = []
@@ -59,9 +60,9 @@ const get = async (id: string, data: Array<string>): Promise<IGroup> => {
  * @param group Group
  * @returns Users
  */
-const getUsersData = async (
-  group: (IGroup & { users: string[] }) | { users: string[] }
-): Promise<IUserWithData[]> => {
+const getUsersData = async (group: {
+  users: string[]
+}): Promise<IUserWithData[]> => {
   return Promise.all(
     group.users.map(async (user) => {
       const userData = await User.getWithData(user, [
@@ -87,16 +88,13 @@ const getUsersData = async (
  */
 const getWithData = async (
   id: string,
-  data: string[]
+  data: TGroupGet
 ): Promise<IGroupWithData> => {
   const group = await get(id, data)
 
-  const { users, ...groupData } = { ...group }
-  const groupWithData: IGroupWithData = { ...groupData }
-  if (users)
-    groupWithData.users = await getUsersData(
-      group as IGroup & { users: string[] }
-    )
+  const { users, ...groupData } = group
+  const groupWithData: IGroupWithData = { ...groupData, users: [] }
+  if (users) groupWithData.users = await getUsersData(group)
 
   return groupWithData
 }
@@ -106,7 +104,7 @@ const getWithData = async (
  * @param data Data
  * @return Groups
  */
-const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
+const getAll = async (data: TGroupGet): Promise<IGroupWithData[]> => {
   // Get groups
   const groups = await GroupDB.getAll(data)
 
@@ -126,15 +124,15 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
     })
 
   const groupsData = groups.map((group) => {
-    const { users, ...groupData } = { ...group }
-    return groupData
+    const { users, ...groupData } = group
+    return { ...groupData, users: [] }
   })
   const groupsWithData: IGroupWithData[] = [...groupsData]
 
   // Users data
   await Promise.all(
     groups.map(async (group, index) => {
-      const users = await getUsersData(group as IGroup & { users: string[] })
+      const users = await getUsersData(group)
       groupsWithData[index].users = users
     })
   )
@@ -150,7 +148,7 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
  */
 const getByOrganization = async (
   id: string,
-  data: Array<string>
+  data: TGroupGet
 ): Promise<IGroupWithData[]> => {
   // Get organization
   const organization = await Organization.get(id, ['groups'])
@@ -196,7 +194,7 @@ const del = async (group: { id: string }): Promise<void> => {
   ])
 
   // Delete group from organization
-  await Organization.update({ id: groupData.organization! }, [
+  await Organization.update({ id: groupData.organization }, [
     {
       key: 'groups',
       type: 'array',

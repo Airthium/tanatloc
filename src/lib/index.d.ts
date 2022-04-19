@@ -1,34 +1,58 @@
 /** @module Lib.Interface */
 
+import { IGeometry, INewGeometry } from '@/database/geometry'
 import {
   IGroup,
   IUser,
   IWorkspace,
   IProject,
-  INewGeometry,
   IOrganization
 } from '@/database/index.d'
 
-export interface INewGeometryWithData extends INewGeometry {
-  json: string
-  glb: string
-  summary: {
-    type: string
-    uuid: string
-    solids?: Array<{
-      uuid: string
-      color: { r: number; g: number; b: number }
-    }>
-    faces?: Array<{
-      uuid: string
-      color: { r: number; g: number; b: number }
-    }>
-    edges?: Array<{
-      uuid: string
-      color: { r: number; g: number; b: number }
-    }>
+/**
+ * Geometry
+ */
+export interface IGeometrySummaryFile {
+  type: string
+  uuid: string
+  solids?: {
+    name: string
+    path: string
+    number: string
+  }[]
+  faces?: {
+    name: string
+    path: string
+    number: string
+  }[]
+  edges?: {
+    name: string
+    path: string
+    number: string
+  }[]
+}
+
+export interface IGeometryEntityAttribute {
+  itemSize: number
+  array: number[]
+}
+
+export interface IGeometryEntityFile {
+  uuid: string
+  label: string
+  data: {
+    attributes: {
+      position: IGeometryEntityAttribute
+      color?: IGeometryEntityAttribute
+    }
   }
-  dimension: number
+}
+
+export interface INewGeometryWithData extends INewGeometry {
+  json: IGeometry['json']
+  glb: IGeometry['glb']
+  summary: IGeometry['summary']
+  dimension: IGeometry['dimension']
 }
 
 export interface IGeometryFile {
@@ -41,8 +65,11 @@ export interface IGeometryPart {
   buffer: Buffer
 }
 
-export interface IGroupWithData extends Omit<IGroup, 'users'> {
-  users?: IUserWithData[]
+/**
+ * Group
+ */
+export interface IGroupWithData extends Omit<IGroup<T>, 'users'> {
+  users: T extends ['users'] ? IUserWithData[] : never[]
 }
 
 export interface IOrganizationWithData

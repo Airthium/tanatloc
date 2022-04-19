@@ -1,10 +1,13 @@
 /** @module Database.User.GetByUsernameAndPassword */
 
-import { IUserCheck } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface IUserCheck {
+  id: string
+  isvalidated: boolean
+}
 
 /**
  * Get by email and password

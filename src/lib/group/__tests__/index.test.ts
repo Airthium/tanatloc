@@ -71,7 +71,7 @@ describe('lib/group', () => {
 
   test('get', async () => {
     mockGet.mockImplementation(() => ({ id: 'id', users: ['id'] }))
-    const group = await Group.get('id', ['data'])
+    const group = await Group.get('id', ['users'])
     expect(group).toEqual({
       id: 'id',
       users: ['id']
@@ -82,7 +82,7 @@ describe('lib/group', () => {
   test('getWithData', async () => {
     mockGet.mockImplementation(() => ({ id: 'id', users: ['id'] }))
     mockUserGetWithData.mockImplementation(() => ({ firstname: 'firstname' }))
-    const group = await Group.getWithData('id', ['data'])
+    const group = await Group.getWithData('id', ['users'])
     expect(group).toEqual({
       id: 'id',
       users: [{ id: 'id', firstname: 'firstname' }]
@@ -118,7 +118,7 @@ describe('lib/group', () => {
         users: ['id']
       }
     ])
-    groups = await Group.getAll(['data', 'workspaces', 'projects'])
+    groups = await Group.getAll(['users', 'workspaces', 'projects'])
     expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
     expect(groups).toEqual([
@@ -139,7 +139,7 @@ describe('lib/group', () => {
         projects: []
       }
     ])
-    groups = await Group.getAll(['data', 'workspaces', 'projects'])
+    groups = await Group.getAll(['users', 'workspaces', 'projects'])
     expect(mockGetAll).toHaveBeenCalledTimes(3)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(3)
     expect(groups).toEqual([
@@ -162,7 +162,7 @@ describe('lib/group', () => {
     mockGet.mockImplementation(() => ({
       name: 'name'
     }))
-    groups = await Group.getByOrganization('id', ['data'])
+    groups = await Group.getByOrganization('id', ['name'])
     expect(mockOrganizationGet).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(groups).toEqual([{ id: 'id', name: 'name' }])
@@ -173,7 +173,7 @@ describe('lib/group', () => {
       users: ['id']
     }))
     mockUserGetWithData.mockImplementation(() => ({ firstname: 'firstname' }))
-    groups = await Group.getByOrganization('id', ['data'])
+    groups = await Group.getByOrganization('id', ['name', 'users'])
     expect(mockOrganizationGet).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(2)

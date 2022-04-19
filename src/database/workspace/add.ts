@@ -1,10 +1,14 @@
 /** @module Database.Workspace.Add */
 
-import { INewWorkspace } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewWorkspace {
+  id: string
+  name: string
+  owners: string[]
+}
 
 /**
  * Add
@@ -26,7 +30,6 @@ export const add = async (
   const newWorkspace = response.rows[0]
   newWorkspace && (newWorkspace.name = workspace.name)
   newWorkspace && (newWorkspace.owners = [user.id])
-  newWorkspace && (newWorkspace.projects = [])
 
   return newWorkspace
 }

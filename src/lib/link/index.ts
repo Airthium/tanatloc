@@ -1,10 +1,8 @@
 /** @module Lib.Link */
 
-import { ILink, INewLink, IUser } from '@/database/index.d'
-
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
-import LinkDB from '@/database/link'
+import LinkDB, { INewLink, TLinkGet } from '@/database/link'
 
 import UserLib from '../user'
 
@@ -27,7 +25,7 @@ const add = async (link: {
  * @param data Data
  * @returns Link
  */
-const get = async (id: string, data: Array<string>): Promise<ILink> => {
+const get = async (id: string, data: TLinkGet) => {
   return LinkDB.get(id, data)
 }
 
@@ -44,7 +42,7 @@ const process = async (
 
   if (link.type === SUBSCRIBE || link.type === REVALIDATE) {
     // Update user
-    await UserLib.update({ id: (link as ILink & { userid: string }).userid }, [
+    await UserLib.update({ id: link.userid! }, [
       {
         key: 'isvalidated',
         value: 'true'
@@ -57,11 +55,7 @@ const process = async (
     if (link.email !== data!.email) throw new Error('Inconsistent data')
 
     // Update user
-    const user = (await UserLib.getBy(
-      data!.email,
-      ['id'],
-      'email'
-    )) as IUser & { id: string }
+    const user = await UserLib.getBy(data!.email, ['id'], 'email')
     await UserLib.update({ id: user.id }, [
       {
         type: 'crypt',

@@ -1,8 +1,9 @@
 /** @module Database.Link */
 
-import { add } from './add'
-import { get } from './get'
+import { INewLink, add } from './add'
+import { TLinkGet, ILink, get } from './get'
 import { del } from './del'
 
 const Link = { add, get, del }
+export type { INewLink, ILink, TLinkGet }
 export default Link

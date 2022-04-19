@@ -1,10 +1,16 @@
 /** @module Database.Geometry.Add */
 
-import { INewGeometry } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
+
+export interface INewGeometry {
+  id: string
+  name: string
+  originalfilename: string
+  extension: string
+  uploadfilename: string
+}
 
 /**
  * Add
@@ -16,7 +22,7 @@ export const add = async (
   project: { id: string },
   geometry: { name: string; uid: string }
 ): Promise<INewGeometry> => {
-  const extension = geometry.name.split('.').pop()
+  const extension = geometry.name.split('.').pop() || ''
   const uploadFileName = geometry.uid + '.' + extension
 
   const response = await query(

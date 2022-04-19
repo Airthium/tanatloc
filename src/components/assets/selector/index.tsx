@@ -5,8 +5,6 @@ import {
   ChangeEvent,
   useState,
   useEffect,
-  Dispatch,
-  SetStateAction,
   useCallback,
   useContext
 } from 'react'
@@ -84,12 +82,9 @@ const Selector = ({
   updateSelected
 }: IProps): JSX.Element => {
   // State
-  const [colors, setColors]: [IColor[], Dispatch<SetStateAction<IColor[]>>] =
-    useState([])
-  const [filter, setFilter]: [IColor, Dispatch<SetStateAction<IColor>>] =
-    useState()
-  const [search, setSearch]: [string, Dispatch<SetStateAction<string>>] =
-    useState()
+  const [colors, setColors] = useState<IColor[]>([])
+  const [filter, setFilter] = useState<IColor>()
+  const [search, setSearch] = useState<string>()
 
   // Context
   const { type, highlighted, selected, dispatch } = useContext(SelectContext)
@@ -101,20 +96,22 @@ const Selector = ({
 
   // Colors
   useEffect(() => {
-    const colorsList = []
-    geometry?.[type]?.forEach((element: { color?: IColor }) => {
-      if (element.color) {
-        const existingColor = colorsList.find(
-          (c) =>
-            c.r === element.color.r &&
-            c.g === element.color.g &&
-            c.b === element.color.b
-        )
-        if (!existingColor) {
-          colorsList.push(element.color)
+    const colorsList: IColor[] = []
+    geometry?.[type as keyof IProps['geometry']]?.forEach(
+      (element: { color?: IColor }) => {
+        if (element.color) {
+          const existingColor = colorsList.find(
+            (c) =>
+              c.r === element.color!.r &&
+              c.g === element.color!.g &&
+              c.b === element.color!.b
+          )
+          if (!existingColor) {
+            colorsList.push(element.color)
+          }
         }
       }
-    })
+    )
 
     setColors(colorsList)
   }, [geometry, type])
@@ -149,15 +146,15 @@ const Selector = ({
    * @param color Color
    */
   const onColorFilter = useCallback((color?: IColor): void => {
-    setFilter(color)
+    setFilter(color as IColor)
   }, [])
 
   /**
    * Select all
    */
   const selectAll = (): void => {
-    geometry?.[type]?.forEach(
-      (element: { uuid: string; number: number | string; color?: IColor }) => {
+    geometry?.[type as keyof IProps['geometry']]?.forEach(
+      (element: { uuid: string; number?: number | string; color?: IColor }) => {
         if (
           !filter ||
           (filter &&
@@ -165,7 +162,12 @@ const Selector = ({
             filter.g === element.color?.g &&
             filter.b === element.color?.b)
         )
-          dispatch(select({ uuid: element.uuid, label: element.number }))
+          dispatch(
+            select({
+              uuid: element.uuid,
+              label: element.number as string | number
+            })
+          )
       }
     )
   }
@@ -174,8 +176,8 @@ const Selector = ({
    * Unselect all
    */
   const unselectAll = () => {
-    geometry?.[type]?.forEach(
-      (element: { uuid: string; number: number | string; color?: IColor }) => {
+    geometry?.[type as keyof IProps['geometry']]?.forEach(
+      (element: { uuid: string; number?: number | string; color?: IColor }) => {
         if (
           !filter ||
           (filter &&
@@ -183,7 +185,12 @@ const Selector = ({
             filter.g === element.color?.g &&
             filter.b === element.color?.b)
         )
-          dispatch(unselect({ uuid: element.uuid, label: element.number }))
+          dispatch(
+            unselect({
+              uuid: element.uuid,
+              label: element.number as string | number
+            })
+          )
       }
     )
   }
@@ -192,8 +199,8 @@ const Selector = ({
    * Swap selection
    */
   const selectSwap = () => {
-    geometry?.[type]?.forEach(
-      (element: { uuid: string; number: number | string; color?: IColor }) => {
+    geometry?.[type as keyof IProps['geometry']]?.forEach(
+      (element: { uuid: string; number?: number | string; color?: IColor }) => {
         if (
           !filter ||
           (filter &&
@@ -202,10 +209,26 @@ const Selector = ({
             filter.b === element.color?.b)
         ) {
           if (selected.find((s) => s.uuid === element.uuid))
-            dispatch(unselect({ uuid: element.uuid, label: element.number }))
-          else dispatch(select({ uuid: element.uuid, label: element.number }))
+            dispatch(
+              unselect({
+                uuid: element.uuid,
+                label: element.number as string | number
+              })
+            )
+          else
+            dispatch(
+              select({
+                uuid: element.uuid,
+                label: element.number as string | number
+              })
+            )
         } else {
-          dispatch(select({ uuid: element.uuid, label: element.number }))
+          dispatch(
+            select({
+              uuid: element.uuid,
+              label: element.number as string | number
+            })
+          )
         }
       }
     )
@@ -296,12 +319,12 @@ const Selector = ({
       </Space>
 
       <div className="full-width marginTop-20">
-        {geometry?.[type]
-          ? geometry[type].map(
+        {geometry?.[type as keyof IProps['geometry']]
+          ? geometry[type as keyof IProps['geometry']]!.map(
               (
                 element: {
                   uuid: string
-                  number?: number
+                  number?: number | string
                   name?: string
                   color?: IColor
                 },
@@ -336,12 +359,15 @@ const Selector = ({
                       onMouseEnter={() =>
                         onHighlight({
                           uuid: element.uuid,
-                          label: element.number
+                          label: element.number as string | number
                         })
                       }
                       onMouseLeave={onUnhighlight}
                       onClick={() =>
-                        onSelect({ uuid: element.uuid, label: element.number })
+                        onSelect({
+                          uuid: element.uuid,
+                          label: element.number as string | number
+                        })
                       }
                     >
                       <Space direction="vertical">

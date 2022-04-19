@@ -2,13 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
-import {
-  useState,
-  useEffect,
-  CSSProperties,
-  Dispatch,
-  SetStateAction
-} from 'react'
+import { useState, useEffect, CSSProperties } from 'react'
 import {
   Button,
   Form,
@@ -90,10 +84,10 @@ export const onShare = async (
       const newWorkspace = { ...workspace }
       newWorkspace.groups = groupsSelected.map((group) => ({ id: group }))
       newWorkspace.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneWorkspace(newWorkspace)
+      swr.mutateOneWorkspace?.(newWorkspace)
     } else {
       // API
-      await ProjectAPI.update({ id: project.id }, [
+      await ProjectAPI.update({ id: project!.id }, [
         {
           key: 'groups',
           value: groupsSelected
@@ -107,7 +101,7 @@ export const onShare = async (
       const newProject = { ...project }
       newProject.groups = groupsSelected.map((group) => ({ id: group }))
       newProject.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneProject(newProject)
+      swr.mutateOneProject?.(newProject as IProjectWithData)
     }
   } catch (err) {
     ErrorNotification(errors.share, err)
@@ -136,26 +130,12 @@ const Share = ({
   style
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [treeGroupsData, setTreeGroupsData]: [
-    TreeDataNode[],
-    Dispatch<SetStateAction<TreeDataNode[]>>
-  ] = useState([])
-  const [treeUsersData, setTreeUsersData]: [
-    TreeDataNode[],
-    Dispatch<SetStateAction<TreeDataNode[]>>
-  ] = useState([])
-  const [groupsSelected, setGroupsSelected]: [
-    string[],
-    Dispatch<SetStateAction<string[]>>
-  ] = useState([])
-  const [usersSelected, setUsersSelected]: [
-    string[],
-    Dispatch<SetStateAction<string[]>>
-  ] = useState([])
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [treeGroupsData, setTreeGroupsData] = useState<TreeDataNode[]>([])
+  const [treeUsersData, setTreeUsersData] = useState<TreeDataNode[]>([])
+  const [groupsSelected, setGroupsSelected] = useState<string[]>([])
+  const [usersSelected, setUsersSelected] = useState<string[]>([])
 
   // Data
   const router = useRouter()
@@ -164,11 +144,11 @@ const Share = ({
   useEffect(() => {
     const parent = workspace || project
 
-    const defaultGroups = parent.groups?.map((g) => g.id)
-    const defaultUsers = parent.users?.map((u) => u.id)
+    const defaultGroups = parent?.groups?.map((g) => g.id)
+    const defaultUsers = parent?.users?.map((u) => u.id)
 
-    setGroupsSelected(defaultGroups)
-    setUsersSelected(defaultUsers)
+    setGroupsSelected(defaultGroups as string[])
+    setUsersSelected(defaultUsers as string[])
   }, [workspace, project])
 
   useEffect(() => {
@@ -217,11 +197,12 @@ const Share = ({
       .filter((o) => o)
 
     const uniqueUsersData = usersData.filter(
-      (user, index, self) => self.findIndex((s) => s.key === user.key) === index
+      (user, index, self) =>
+        self.findIndex((s) => s?.key === user?.key) === index
     )
 
     setTreeGroupsData(groupsData)
-    setTreeUsersData(uniqueUsersData)
+    setTreeUsersData(uniqueUsersData as TreeDataNode[])
   }, [organizations])
 
   let selector = null

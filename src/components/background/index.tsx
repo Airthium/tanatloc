@@ -26,7 +26,7 @@ const Background = (): JSX.Element => {
   const rotationSpeed: number = 0.005
 
   // Ref
-  const mount = useRef(null)
+  const mount = useRef<HTMLDivElement>(null)
 
   // Mount
   useEffect(() => {
@@ -36,7 +36,7 @@ const Background = (): JSX.Element => {
     }
 
     const div = mount.current
-
+    if (!div) return
     let frameId: number
 
     let width = div.clientWidth
@@ -63,9 +63,9 @@ const Background = (): JSX.Element => {
     div.appendChild(renderer.domElement)
 
     // Tetrahedra
-    const rotationX = []
-    const rotationY = []
-    const rotationZ = []
+    const rotationX: number[] = []
+    const rotationY: number[] = []
+    const rotationZ: number[] = []
     // Visible height & width
     const offset = camera.position.z
     const hFOV = (camera.fov * Math.PI) / 180
@@ -165,11 +165,11 @@ const Background = (): JSX.Element => {
       window.removeEventListener('resize', resize)
 
       // Unmount renderer
-      div.removeChild(renderer.domElement)
+      div.removeChild(renderer.domElement);
 
       // Clear scene
-      scene.children.forEach(
-        (child: Mesh<TetrahedronGeometry, MeshBasicMaterial>) => {
+      (scene.children as Mesh<TetrahedronGeometry, MeshBasicMaterial>[]).forEach(
+        (child: Mesh<TetrahedronGeometry, MeshBasicMaterial> ) => {
           child.geometry.dispose()
           child.material.dispose()
           scene.remove(child)

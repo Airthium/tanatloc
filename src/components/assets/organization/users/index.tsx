@@ -2,6 +2,7 @@
 
 import {
   Dispatch,
+  RefObject,
   SetStateAction,
   useCallback,
   useEffect,
@@ -51,7 +52,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const avatarRender = (_: any, user: IUserWithData) => Utils.userToAvatar(user)
   const ownerActionsRender = (owner: IUserWithData) => (
     <Delete
-      disabled={(organization.owners!.length < 2)}
+      disabled={organization.owners!.length < 2}
       user={{
         id: owner.id,
         email: owner.email
@@ -89,7 +90,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     )
   }
 
-  const columns: TableColumnsType = [
+  const columns: TableColumnsType<IUserWithData> = [
     {
       key: 'avatar',
       dataIndex: 'avatar',
@@ -112,7 +113,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  const ownersColumns: TableColumnsType = [
+  const ownersColumns: TableColumnsType<IUserWithData> = [
     ...columns,
     {
       key: 'actions',
@@ -124,7 +125,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  const usersColumns: TableColumnsType = [
+  const usersColumns: TableColumnsType<IUserWithData> = [
     ...columns,
     {
       key: 'actions',
@@ -137,11 +138,13 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   ]
 
   const onResize = useCallback(() => {
-    const wrapperHeight = refWrapper.current.clientHeight - 15
+    const table = refWrapper.current as RefObject<HTMLDivElement>['current']
+    if (!table) return
+    const wrapperHeight = table.clientHeight - 15
     const eachSpace = wrapperHeight / 2 - 39 - 12 - 32 - 20 - 75
 
-    const tableAdminHeight = refTableAdmin.current.clientHeight
-    const tableUsersHeight = refTableUsers.current.clientHeight
+    const tableAdminHeight = table.clientHeight
+    const tableUsersHeight = table.clientHeight
 
     // Check if too many admins to display
     if (tableAdminHeight > eachSpace) {
@@ -175,12 +178,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Set Table Scroll Limit
   useEffect(() => {
     onResize()
-  }, [
-    organization,
-    onResize,
-    refTableAdmin.current?.clientHeight,
-    refTableUsers.current?.clientHeight
-  ])
+  }, [organization, onResize, refTableAdmin.current, refTableUsers.current])
 
   /**
    * Render
@@ -210,17 +208,19 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               size="small"
               columns={ownersColumns}
               dataSource={[
-                ...organization.owners.map((o, index) => ({
+                ...(organization.owners as IUserWithData[]).map((o, index) => ({
                   ...o,
                   key: o.id || index
                 })),
                 ...(organization.pendingowners?.map((o, index) => ({
                   ...o,
                   pending: true,
-                  key: o.id || organization.owners.length + index
+                  key:
+                    o.id ||
+                    (organization.owners as IUserWithData[]).length + index
                 })) || [])
               ]}
-              scroll={scrollAdmin}
+              scroll={{ y: scrollAdmin?.y }}
               ref={refTableAdmin}
             />
           </Space>
@@ -254,10 +254,12 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                 ...(organization.pendingusers?.map((u, index) => ({
                   ...u,
                   pending: true,
-                  key: u.id || organization.users?.length + index
+                  key:
+                    u.id ||
+                    (organization.users as IUserWithData[])?.length + index
                 })) || [])
               ]}
-              scroll={scrollUsers}
+              scroll={{ y: scrollUsers?.y }}
               ref={refTableUsers}
             />
           </Space>

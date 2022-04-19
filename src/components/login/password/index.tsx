@@ -1,6 +1,6 @@
 /** @module Components.Login.Password */
 
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Button, Form, Input, Typography } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
@@ -44,10 +44,8 @@ export const passwordRecover = async (value: {
  */
 const PasswordRecover = (): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render

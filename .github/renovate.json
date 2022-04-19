@@ -12,7 +12,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": [],
+  "ignoreDeps": ["is-dockere", "url-join"],
   "lockFileMaintenance": {
     "enabled": false
   }

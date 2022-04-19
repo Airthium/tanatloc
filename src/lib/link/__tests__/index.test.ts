@@ -62,7 +62,7 @@ describe('lib/link', () => {
     }))
     try {
       await Link.process('id', { email: 'otheremail', password: 'password' })
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Inconsistent data')
     }
 

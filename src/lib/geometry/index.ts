@@ -202,16 +202,15 @@ const del = async (geometry: {
   glb?: string
 }): Promise<void> => {
   // Data
-  const geometryData = await get(geometry.id, [
-    'extension',
+  const geometryData = (await get(geometry.id, [
     'uploadfilename',
     'glb',
     'json',
     'project'
-  ])
+  ])) as IGeometry & { project: string }
 
   // Delete geometry reference in project
-  await Project.update({ id: geometryData.project! }, [
+  await Project.update({ id: geometryData.project }, [
     {
       type: 'array',
       method: 'remove',
@@ -267,16 +266,19 @@ const del = async (geometry: {
  */
 const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
   // Data
-  const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
+  const geometryData = (await get(geometry.id, [
+    'extension',
+    'uploadfilename'
+  ])) as IGeometry & { extension: string; uploadfilename: string }
   if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read
   const buffer = await Tools.readFile(
-    path.join(GEOMETRY, geometryData.uploadfilename!)
+    path.join(GEOMETRY, geometryData.uploadfilename)
   )
 
   return {
-    extension: geometryData.extension!,
+    extension: geometryData.extension,
     buffer: Buffer.from(buffer)
   }
 }
@@ -288,15 +290,18 @@ const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
  */
 const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
   // Data
-  const geometryData = await get(geometry.id, ['glb', 'json'])
+  const geometryData = (await get(geometry.id, [
+    'glb',
+    'json'
+  ])) as IGeometry & { glb: string; json: string }
   if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read GLB
-  const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb!))
+  const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb))
 
   // Read part file
   const part = await Tools.readJSONFile(
-    path.join(GEOMETRY, geometryData.json!, 'part.json')
+    path.join(GEOMETRY, geometryData.json, 'part.json')
   )
 
   return {

@@ -21,14 +21,14 @@ jest.mock('@/database/project', () => ({
 const mockAvatarRead = jest.fn()
 const mockAvatarArchive = jest.fn()
 jest.mock('../../avatar', () => ({
-  read: async (val) => mockAvatarRead(val),
+  read: async (val: any) => mockAvatarRead(val),
   archive: async () => mockAvatarArchive()
 }))
 
 const mockUserGet = jest.fn()
 const mockUserGetWithData = jest.fn()
 jest.mock('../../user', () => ({
-  get: async (val) => mockUserGet(val),
+  get: async (val: any) => mockUserGet(val),
   getWithData: async () => mockUserGetWithData()
 }))
 
@@ -348,7 +348,7 @@ describe('lib/project', () => {
     try {
       await Project.unarchiveFromServer({ id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Archive not found')
     }
     expect(mockToolsUnarchive).toHaveBeenCalledTimes(3)
@@ -373,7 +373,7 @@ describe('lib/project', () => {
     try {
       await Project.deleteArchiveFile({ id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('remove file error')
     }
   })

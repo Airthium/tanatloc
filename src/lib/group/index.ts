@@ -134,7 +134,7 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   // Users data
   await Promise.all(
     groups.map(async (group, index) => {
-      const users = await getUsersData(group)
+      const users = await getUsersData(group as IGroup & { users: string[] })
       groupsWithData[index].users = users
     })
   )
@@ -156,19 +156,18 @@ const getByOrganization = async (
   const organization = await Organization.get(id, ['groups'])
 
   // Get groups
-  return (
-    organization.groups &&
-    Promise.all(
-      organization.groups.map(async (group) => {
-        const groupData = await getWithData(group, data)
+  return organization.groups
+    ? Promise.all(
+        organization.groups.map(async (group) => {
+          const groupData = await getWithData(group, data)
 
-        return {
-          id: group,
-          ...groupData
-        }
-      })
-    )
-  )
+          return {
+            ...groupData,
+            id: group
+          }
+        })
+      )
+    : []
 }
 
 /**

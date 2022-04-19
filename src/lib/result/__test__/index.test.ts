@@ -37,7 +37,7 @@ describe('lib/result', () => {
 
     mockArchiver.mockReset()
     mockArchiver.mockImplementation(() => ({
-      on: (type, callback) => {
+      on: (type: string, callback: Function) => {
         if (type === 'error') return
         if (type === 'warning') callback('Warning')
       },
@@ -61,7 +61,7 @@ describe('lib/result', () => {
 
     mockWriteStream.mockReset()
     mockWriteStream.mockImplementation(() => ({
-      on: (_, callback) => callback(),
+      on: (_: any, callback: Function) => callback(),
       write: jest.fn(),
       end: jest.fn()
     }))
@@ -99,7 +99,7 @@ describe('lib/result', () => {
 
     // Error
     mockArchiver.mockImplementation(() => ({
-      on: (type, callback) => {
+      on: (type: string, callback: Function) => {
         if (type === 'error') callback(new Error())
         if (type === 'warning') callback('Warning')
       },

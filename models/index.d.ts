@@ -4,6 +4,68 @@ import { IClientPlugin } from '@/database/index.d'
 
 type TValue = boolean | number | string
 
+/**
+ * Model
+ */
+export interface IModel {
+  category: string
+  name: string
+  algorithm: string
+  code: string
+  sequential?: boolean
+  version: string
+  description: string
+  configuration: {
+    dimension?: number
+    geometry: IModelGeometry
+    materials?: IModelMaterials
+    parameters: IModelParameters
+    initialization?: IModelInitialization
+    boundaryConditions: IModelBoundaryConditions
+    run: IModelRun
+  }
+}
+
+/**
+ * Common
+ */
+export interface IModelCommon {
+  index: number
+  title: string
+  done?: boolean
+}
+
+/**
+ * Geometry
+ */
+export interface IModelGeometry extends IModelCommon {
+  meshable: boolean
+  value?: string
+  file?: string
+  name?: string
+  path?: string
+  meshParameters?: {
+    type: string
+    value: string
+  }
+}
+
+/**
+ * Materials
+ */
+export interface IModelMaterials extends IModelCommon {
+  children: IModelMaterialsChild[]
+  values?: IModelMaterialsValue[]
+}
+
+export interface IModelMaterialsChild {
+  label: string
+  name: string
+  htmlEntity: string
+  default: number
+  unit: string
+}
+
 export interface IModelMaterialValue {
   uuid: string
   material?: {
@@ -17,24 +79,86 @@ export interface IModelMaterialValue {
   selected: { uuid: string; label: number | string }[]
 }
 
-export interface IModelMaterial {
-  label: string
-  name: string
-  htmlEntity: string
-  default: number
-  unit: string
+/**
+ * Parameters
+ */
+export interface IModelParameters extends IModelCommon {
+  [key: string]:
+    | number
+    | string
+    | {
+        label: string
+        advanced?: boolean
+        children: IModelParameter[]
+      }
 }
 
 export interface IModelParameter {
+  only3D?: boolean
   label: string
   label2D?: string
   htmlEntity: string
   default: TValue
   default2D?: TValue
-  only3D?: boolean
   options?: { label: string; value: string; value2D?: string }[]
   unit?: string
   value?: TValue
+}
+
+/**
+ * Initialization
+ */
+export interface IModelInitialization extends IModelCommon {
+  direct?: IModelInitializationDirect
+  coupling?: IModelInitializationCoupling
+  value?: IModelInitializationValue
+}
+
+export interface IModelInitializationDirect {
+  label: string
+  children: IModelInitializationDirectChild[]
+}
+
+export interface IModelInitializationDirectChild {
+  only3D?: boolean
+  label: string
+  htmlEntity: string
+  options?: { label: string; value: string }[]
+  default: TValue
+  unit?: string
+  value?: TValue
+}
+
+export interface IModelInitializationCoupling {
+  label: string
+  compatibility: {
+    algorithm: string
+    map?: number[]
+    filter: {
+      name: string
+      prefixPattern?: string | RegExp
+      suffixPattern?: string | RegExp
+      pattern: string | RegExp
+      multiplicator?: string[]
+    }
+  }[]
+}
+
+export interface IModelInitializationValue {
+  type: string
+  simulation?: string
+  number?: number
+  result?: string
+  dat?: string
+  mesh?: string
+  values?: string[]
+}
+
+/**
+ * Boundary conditions
+ */
+export interface IModelBoundaryConditions extends IModelCommon {
+  [type: string]: number | string | IModelTypedBoundaryCondition
 }
 
 export interface IModelTypedBoundaryCondition {
@@ -67,122 +191,18 @@ export interface IModelBoundaryCondition {
   unit?: string
 }
 
-export interface IModelInitialization {
-  label: string
-  htmlEntity: string
-  only3D?: boolean
-  options?: { label: string; value: string }[]
-  default: TValue
-  unit?: string
-  value?: TValue
-}
-
-export interface IModelInitializationCoupling {
-  label: string
-  compatibility: {
-    algorithm: string
-    map?: number[]
-    filter: {
-      name: string
-      prefixPattern?: string | RegExp
-      suffixPattern?: string | RegExp
-      pattern: string | RegExp
-      multiplicator?: string[]
-    }
-  }[]
-}
-
-export interface IModelInitializationValue {
-  type: string
-  simulation?: string
-  number?: number
-  result?: string
-  dat?: string
-  mesh?: string
-  values?: string[]
-}
-
-export interface IModel {
-  category: string
-  name: string
-  algorithm: string
-  code: string
-  sequential?: boolean
-  version: string
-  description: string
-  configuration: {
-    dimension?: number
-    geometry?: {
-      index: number
-      title: string
-      done?: boolean
-      meshable: boolean
-      value?: string
-      file?: string
-      name?: string
-      path?: string
-      meshParameters?: {
-        type: string
-        value: string
-      }
-    }
-    materials?: {
-      index: number
-      title: string
-      done?: boolean
-      children?: IModelMaterial[]
-      values?: IModelMaterialValue[]
-    }
-    parameters?: {
-      index: number
-      title: string
-      done?: boolean
-      [key: string]:
-        | boolean
-        | number
-        | string
-        | {
-            label: string
-            advanced?: boolean
-            children: IModelParameter[]
-          }
-    }
-    initialization?: {
-      index: number
-      title: string
-      done?: boolean
-      [key: string]:
-        | boolean
-        | number
-        | string
-        | IModelInitializationValue
-        | {
-            label: string
-            children: IModelInitialization[]
-          }
-        | IModelInitializationCoupling
-      value?: IModelInitializationValue
-    }
-    boundaryConditions?: {
-      index: number
-      title: string
-      done?: boolean
-      [type: string]: boolean | number | string | IModelTypedBoundaryCondition
-    }
-    run?: {
-      index: number
-      title: string
-      done?: boolean
-      error?: string | Error
-      results?: { name: string }[]
-      resultsFilter?: {
-        name: string
-        prefixPattern: string | RegExp
-        suffixPattern: string | RegExp
-        pattern: string | RegExp
-        multiplicator?: string[]
-      }
-      cloudServer?: IClientPlugin
-    }
+/**
+ * Run
+ */
+export interface IModelRun extends IModelCommon {
+  error?: string | Error
+  results?: { name: string }[]
+  resultsFilter?: {
+    name: string
+    prefixPattern: string | RegExp
+    suffixPattern: string | RegExp
+    pattern: string | RegExp
+    multiplicator?: string[]
   }
+  cloudServer?: IClientPlugin
 }

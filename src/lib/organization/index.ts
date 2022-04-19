@@ -5,7 +5,8 @@ import Crypto from 'crypto'
 import {
   IDataBaseEntry,
   INewOrganization,
-  IOrganization
+  IOrganization,
+  IUser
 } from '@/database/index.d'
 import {
   IGroupWithData,
@@ -82,21 +83,20 @@ const get = async (id: string, data: string[]): Promise<IOrganization> => {
  * @returns Owners data
  */
 const getOwnersData = async (
-  organization: IOrganization | { owners: string[] },
+  organization: { owners: string[] },
   partial?: boolean
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     organization.owners.map(async (owner) => {
-      const ownerData = await User.getWithData(owner, [
-        !partial && 'firstname',
-        !partial && 'lastname',
-        'email',
-        !partial && 'avatar'
-      ])
+      const data = ['email']
+      if (!partial) {
+        data.push('firstname', 'lastname', 'avatar')
+      }
+      const ownerData = await User.getWithData(owner, data)
 
       return {
-        id: owner,
-        ...ownerData
+        ...ownerData,
+        id: owner
       }
     })
   )
@@ -109,21 +109,20 @@ const getOwnersData = async (
  * @returns Users data
  */
 const getUsersData = async (
-  organization: IOrganization | { users: string[] },
+  organization: { users: string[] },
   partial?: boolean
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     organization.users.map(async (user) => {
-      const userData = await User.getWithData(user, [
-        !partial && 'firstname',
-        !partial && 'lastname',
-        'email',
-        !partial && 'avatar'
-      ])
+      const data = ['email']
+      if (!partial) {
+        data.push('firstname', 'lastname', 'avatar')
+      }
+      const userData = await User.getWithData(user, data)
 
       return {
-        id: user,
-        ...userData
+        ...userData,
+        id: user
       }
     })
   )
@@ -134,16 +133,16 @@ const getUsersData = async (
  * @param organization Organization
  * @returns Groups data
  */
-const getGroupsData = async (
-  organization: IOrganization | { groups: string[] }
-): Promise<IGroupWithData[]> => {
+const getGroupsData = async (organization: {
+  groups: string[]
+}): Promise<IGroupWithData[]> => {
   return Promise.all(
     organization.groups.map(async (group) => {
       const groupData = await Group.getWithData(group, ['name', 'users'])
 
       return {
-        id: group,
-        ...groupData
+        ...groupData,
+        id: group
       }
     })
   )
@@ -173,31 +172,31 @@ const getWithData = async (
 
   // Owners
   if (owners) {
-    organizationWithData.owners = await getOwnersData(organization)
+    organizationWithData.owners = await getOwnersData({ owners })
   }
 
   if (pendingowners) {
     organizationWithData.pendingowners = await getOwnersData(
-      { owners: organization.pendingowners },
+      { owners: pendingowners },
       true
     )
   }
 
   // Users
   if (users) {
-    organizationWithData.users = await getUsersData(organization)
+    organizationWithData.users = await getUsersData({ users })
   }
 
   if (pendingusers) {
     organizationWithData.pendingusers = await getUsersData(
-      { users: organization.pendingusers },
+      { users: pendingusers },
       true
     )
   }
 
   // Groups
   if (groups) {
-    organizationWithData.groups = await getGroupsData(organization)
+    organizationWithData.groups = await getGroupsData({ groups })
   }
 
   return organizationWithData
@@ -282,22 +281,22 @@ const getByUser = async (
       }
 
       // Owners data
-      if (data.includes('owners'))
+      if (data.includes('owners') && owners)
         organizationWithData.owners = await getOwnersData({ owners })
 
       // Pending owners data (partial)
-      if (data.includes('pendingowners'))
+      if (data.includes('pendingowners') && pendingowners)
         organizationWithData.pendingowners = await getOwnersData(
           { owners: pendingowners },
           true
         )
 
       // Users data
-      if (data.includes('users'))
+      if (data.includes('users') && users)
         organizationWithData.users = await getUsersData({ users })
 
       // Pending users data (partial)
-      if (data.includes('pendingusers'))
+      if (data.includes('pendingusers') && pendingusers)
         organizationWithData.pendingusers = await getUsersData(
           {
             users: pendingusers
@@ -306,14 +305,14 @@ const getByUser = async (
         )
 
       // Group data
-      if (data.includes('groups'))
+      if (data.includes('groups') && groups)
         organizationWithData.groups = await getGroupsData({ groups })
 
       return organizationWithData
     })
   )
 
-  return userOrganizations.filter((o) => o)
+  return userOrganizations.filter((o) => o) as IOrganizationWithData[]
 }
 
 /**
@@ -329,7 +328,11 @@ const update = async (
 ) => {
   if (ownerId) {
     // Get owner
-    const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
+    const owner = (await User.get(ownerId, [
+      'firstname',
+      'lastname',
+      'email'
+    ])) as IUser & { email: string }
 
     // Check for emails
     for (const d of data) {
@@ -434,8 +437,8 @@ const accept = async (organization: { id: string }, user: { id: string }) => {
   ])
 
   // Check if user is pending
-  const pendingOwner = organizationData.pendingowners.includes(user.id)
-  const pendingUser = organizationData.pendingusers.includes(user.id)
+  const pendingOwner = organizationData.pendingowners?.includes(user.id)
+  const pendingUser = organizationData.pendingusers?.includes(user.id)
 
   if (!pendingOwner && !pendingUser)
     throw new Error('User has no invitation in this organization')
@@ -470,8 +473,8 @@ const decline = async (organization: { id: string }, user: { id: string }) => {
   ])
 
   // Check if user is pending
-  const pendingOwner = organizationData.pendingowners.includes(user.id)
-  const pendingUser = organizationData.pendingusers.includes(user.id)
+  const pendingOwner = organizationData.pendingowners?.includes(user.id)
+  const pendingUser = organizationData.pendingusers?.includes(user.id)
 
   if (!pendingOwner && !pendingUser)
     throw new Error('User has no invitation in this organization')
@@ -497,7 +500,7 @@ const quit = async (organization: { id: string }, user: { id: string }) => {
   const organizationData = await get(organization.id, ['users'])
 
   // Check user
-  if (!organizationData.users.includes(user.id))
+  if (!organizationData.users?.includes(user.id))
     throw new Error('User is not in this organization')
 
   // Update organization

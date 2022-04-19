@@ -353,7 +353,7 @@ describe('lib/organization', () => {
     try {
       await Organization.accept({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('User has no invitation in this organization')
     }
   })
@@ -380,7 +380,7 @@ describe('lib/organization', () => {
     try {
       await Organization.decline({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('User has no invitation in this organization')
     }
   })
@@ -391,7 +391,7 @@ describe('lib/organization', () => {
     try {
       await Organization.quit({ id: 'id' }, { id: 'id' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('User is not in this organization')
     }
 

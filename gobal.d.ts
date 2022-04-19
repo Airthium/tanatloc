@@ -9,4 +9,12 @@ interface ITanatloc {
 
 declare global {
   let tanatloc: ITanatloc
+
+  interface Window {
+    MathJax?: {
+      typesetPromise: () => Promise<void>
+    }
+  }
 }
+
+global.tanatloc = global.tanatloc || {}

@@ -53,6 +53,7 @@ describe('lib/download/pvd', () => {
   })
 
   test('full', () => {
+    //@ts-ignore
     simulation.scheme.configuration = {
       run: {
         index: 2,
@@ -85,12 +86,14 @@ describe('lib/download/pvd', () => {
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
 
     // Without multiplicator
+    //@ts-ignore
     delete simulation.scheme.configuration.run.resultsFilter.multiplicator
     pvds = createPVD(simulation, files)
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
   })
 
   test('no filtered files', () => {
+    //@ts-ignore
     simulation.scheme.configuration = {
       run: {
         index: 2,

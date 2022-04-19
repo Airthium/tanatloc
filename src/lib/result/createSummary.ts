@@ -3,9 +3,9 @@
 import path from 'path'
 import { WriteStream } from 'fs'
 
-import { SIMULATION } from '@/config/storage'
-
 import { IModel } from '@/models/index.d'
+
+import { SIMULATION } from '@/config/storage'
 
 import Tools from '../tools'
 
@@ -32,9 +32,11 @@ const createSummary = (simulation: {
   summary.write('algorithm: ' + simulation.scheme?.algorithm + '\n\n')
 
   // Keys
-  simulation.scheme?.configuration &&
-    Object.keys(simulation.scheme?.configuration).forEach((key) => {
-      const config = simulation.scheme.configuration[key]
+  const configuration = simulation.scheme?.configuration
+
+  configuration &&
+    Object.keys(configuration).forEach((key) => {
+      const config = configuration[key as keyof typeof configuration]
 
       if (key === 'geometry') {
         geometrySummary(summary, config)

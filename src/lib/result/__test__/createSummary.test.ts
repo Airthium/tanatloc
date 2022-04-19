@@ -50,6 +50,7 @@ describe('lib/download/summary', () => {
   })
 
   test('full', () => {
+    //@ts-ignore
     simulation.scheme.configuration = {
       geometry: {
         index: 1,

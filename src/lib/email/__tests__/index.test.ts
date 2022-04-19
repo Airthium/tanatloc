@@ -78,7 +78,7 @@ describe('lib/email', () => {
     }))
     try {
       await Email.subscribe('email', 'id')
-    } catch (err) {
+    } catch (err: any) {
       expect(mockLinkAdd).toHaveBeenCalledTimes(2)
       expect(mockSend).toHaveBeenCalledTimes(2)
       expect(mockLinkDel).toHaveBeenCalledTimes(1)
@@ -99,7 +99,7 @@ describe('lib/email', () => {
     }))
     try {
       await Email.recover('email')
-    } catch (err) {
+    } catch (err: any) {
       expect(mockLinkAdd).toHaveBeenCalledTimes(2)
       expect(mockSend).toHaveBeenCalledTimes(2)
       expect(mockLinkDel).toHaveBeenCalledTimes(1)
@@ -120,7 +120,7 @@ describe('lib/email', () => {
     }))
     try {
       await Email.revalidate('email', 'id')
-    } catch (err) {
+    } catch (err: any) {
       expect(mockLinkAdd).toHaveBeenCalledTimes(2)
       expect(mockSend).toHaveBeenCalledTimes(2)
       expect(mockLinkDel).toHaveBeenCalledTimes(1)

@@ -1,6 +1,6 @@
 /** @module Lib.Link */
 
-import { ILink, INewLink } from '@/database/index.d'
+import { ILink, INewLink, IUser } from '@/database/index.d'
 
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
@@ -44,7 +44,7 @@ const process = async (
 
   if (link.type === SUBSCRIBE || link.type === REVALIDATE) {
     // Update user
-    await UserLib.update({ id: link.userid }, [
+    await UserLib.update({ id: (link as ILink & { userid: string }).userid }, [
       {
         key: 'isvalidated',
         value: 'true'
@@ -54,15 +54,19 @@ const process = async (
     // Remove link
     await del({ id })
   } else if (link.type === PASSWORD_RECOVERY) {
-    if (link.email !== data.email) throw new Error('Inconsistent data')
+    if (link.email !== data!.email) throw new Error('Inconsistent data')
 
     // Update user
-    const user = await UserLib.getBy(data.email, ['id'], 'email')
+    const user = (await UserLib.getBy(
+      data!.email,
+      ['id'],
+      'email'
+    )) as IUser & { id: string }
     await UserLib.update({ id: user.id }, [
       {
         type: 'crypt',
         key: 'password',
-        value: data.password
+        value: data!.password
       }
     ])
 

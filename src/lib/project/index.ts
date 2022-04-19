@@ -3,7 +3,7 @@
 import path from 'path'
 import { ReadStream } from 'fs'
 
-import { IDataBaseEntry, IProject } from '@/database/index.d'
+import { IDataBaseEntry, IGroup, IProject } from '@/database/index.d'
 import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
@@ -81,7 +81,9 @@ const get = async (id: string, data: string[]): Promise<IProject> => {
  * @param project Project
  * @returns Avatar
  */
-const getAvatar = async (project: IProject): Promise<Buffer> => {
+const getAvatar = async (project: {
+  avatar: string
+}): Promise<Buffer | undefined> => {
   try {
     return await Avatar.read(project.avatar)
   } catch (err) {
@@ -94,7 +96,9 @@ const getAvatar = async (project: IProject): Promise<Buffer> => {
  * @param project Project
  * @returns Owners
  */
-const getOwners = async (project: IProject): Promise<IUserWithData[]> => {
+const getOwners = async (project: {
+  owners: string[]
+}): Promise<IUserWithData[]> => {
   return Promise.all(
     project.owners.map(async (owner) => {
       const ownerData = await User.getWithData(owner, [
@@ -104,8 +108,8 @@ const getOwners = async (project: IProject): Promise<IUserWithData[]> => {
         'avatar'
       ])
       return {
-        id: owner,
-        ...ownerData
+        ...ownerData,
+        id: owner
       }
     })
   )
@@ -116,7 +120,9 @@ const getOwners = async (project: IProject): Promise<IUserWithData[]> => {
  * @param project Project
  * @returns Users
  */
-const getUsers = async (project: IProject): Promise<IUserWithData[]> => {
+const getUsers = async (project: {
+  users: string[]
+}): Promise<IUserWithData[]> => {
   return Promise.all(
     project.users.map(async (user) => {
       const userData = await User.getWithData(user, [
@@ -126,8 +132,8 @@ const getUsers = async (project: IProject): Promise<IUserWithData[]> => {
         'avatar'
       ])
       return {
-        id: user,
-        ...userData
+        ...userData,
+        id: user
       }
     })
   )
@@ -138,13 +144,15 @@ const getUsers = async (project: IProject): Promise<IUserWithData[]> => {
  * @param project Project
  * @returns Groups
  */
-const getGroups = async (project: IProject): Promise<IGroupWithData[]> => {
+const getGroups = async (project: {
+  groups: string[]
+}): Promise<IGroupWithData[]> => {
   return Promise.all(
     project.groups.map(async (group) => {
       const groupData = await Group.getWithData(group, ['name'])
       return {
-        id: group,
-        ...groupData
+        ...groupData,
+        id: group
       }
     })
   )
@@ -163,22 +171,22 @@ const getWithData = async (
   const project = await get(id, data)
 
   // Check archived
-  if (project?.archived) project.avatar = null
+  if (project?.archived) project.avatar = undefined
 
   const { avatar, owners, users, groups, ...projectData } = { ...project }
   const projectWithData: IProjectWithData = { ...projectData }
 
   // Get avatar
-  if (avatar) projectWithData.avatar = await getAvatar(project)
+  if (avatar) projectWithData.avatar = await getAvatar({ avatar })
 
   // Get owners
-  if (owners) projectWithData.owners = await getOwners(project)
+  if (owners) projectWithData.owners = await getOwners({ owners })
 
   // Get users
-  if (users) projectWithData.users = await getUsers(project)
+  if (users) projectWithData.users = await getUsers({ users })
 
   // Get groups
-  if (groups) projectWithData.groups = await getGroups(project)
+  if (groups) projectWithData.groups = await getGroups({ groups })
 
   return projectWithData
 }
@@ -189,7 +197,9 @@ const getWithData = async (
  * @param project Project
  */
 const addToGroup = async (group: { id: string }, project: { id: string }) => {
-  const groupData = await Group.get(group.id, ['projects'])
+  const groupData = (await Group.get(group.id, ['projects'])) as IGroup & {
+    projects: string[]
+  }
   if (!groupData.projects.includes(project.id))
     await Group.update({ id: group.id }, [
       {
@@ -240,7 +250,9 @@ const update = async (
   const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
   if (groupsUpdate) {
     // Get data
-    const projectData = await get(project.id, ['groups'])
+    const projectData = (await get(project.id, ['groups'])) as IProject & {
+      groups: string[]
+    }
 
     // Delete groups
     const deleted = projectData.groups.filter(
@@ -254,8 +266,8 @@ const update = async (
     )
 
     // Added groups
-    const added = groupsUpdate.value.filter(
-      (g) => !projectData.groups.find((gg) => gg === g)
+    const added: string[] = groupsUpdate.value.filter(
+      (g: string) => !projectData.groups.find((gg) => gg === g)
     )
     await Promise.all(
       added.map(async (group) => {
@@ -287,7 +299,10 @@ const del = async (
   project: { id: string }
 ): Promise<void> => {
   // Get data
-  const data = await get(project.id, ['groups', 'simulations'])
+  const data = (await get(project.id, [
+    'groups',
+    'simulations'
+  ])) as IProject & { groups: string[]; simulations: string[] }
 
   // Delete from groups
 
@@ -321,13 +336,13 @@ const del = async (
  */
 const archive = async (project: { id: string }): Promise<ReadStream> => {
   // Data
-  const data = await get(project.id, [
+  const data = (await get(project.id, [
     'title',
     'description',
     'avatar',
     'geometries',
     'simulations'
-  ])
+  ])) as IProject & { geometries: string[]; simulations: string[] }
 
   // Create temporary path
   const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
@@ -502,7 +517,7 @@ const deleteArchiveFile = async (project: { id: string }): Promise<void> => {
   // Remove archive
   try {
     await Tools.removeFile(archiveFileName)
-  } catch (err) {
+  } catch (err: any) {
     if (err.code !== 'ENOENT') throw err
   }
 }

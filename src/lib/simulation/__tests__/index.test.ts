@@ -110,6 +110,7 @@ describe('lib/simulation', () => {
           code: 'code',
           version: 'version',
           description: 'description',
+          //@ts-ignore
           configuration: {}
         }
       }

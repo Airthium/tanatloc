@@ -17,7 +17,7 @@ const mailerSend = new MailerSend({
  * @param email Email
  * @returns Valid
  */
-const send = async (email: string): Promise<boolean> => {
+const send = async (email: EmailParams): Promise<boolean> => {
   if (TOKEN) {
     const res = await mailerSend.send(email)
     if (res.status !== 202) throw new Error('Mail error: ' + res.statusText)

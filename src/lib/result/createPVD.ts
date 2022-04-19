@@ -14,11 +14,17 @@ import Tools from '../tools'
  * @param files Files
  * @returns PVDs
  */
-const createPVD = (simulation: ISimulation, files: string[]) => {
-  const PVDs = []
+const createPVD = (
+  simulation: ISimulation,
+  files: string[]
+): { name: string; path: string }[] => {
+  const PVDs: { name: string; path: string }[] = []
 
   // Results filter
-  const filter = simulation.scheme.configuration.run.resultsFilter
+  const configuration = simulation.scheme?.configuration
+  if (!configuration) return PVDs
+
+  const filter = configuration.run?.resultsFilter
   if (filter) {
     const pattern = new RegExp(filter.pattern)
     const filteredFiles = files.filter((file) => pattern.test(file))
@@ -39,14 +45,14 @@ const createPVD = (simulation: ISimulation, files: string[]) => {
       vtuFiles.sort((a, b) => a.number - b.number)
 
       // Multiplicator
-      let multiplicator
+      let multiplicator: number
 
       const multiplicatorPath = filter.multiplicator
       if (multiplicatorPath) {
         const multiplicatorObject = multiplicatorPath.reduce(
-          (a, v) => a[v],
-          simulation.scheme.configuration
-        )
+          (a: any, v) => a[v],
+          configuration
+        ) as { value?: number; default: number }
 
         multiplicator = multiplicatorObject.value || multiplicatorObject.default
       }

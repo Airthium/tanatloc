@@ -2,7 +2,13 @@
 
 import path from 'path'
 
-import { IDataBaseEntry, INewSimulation, ISimulation } from '@/database/index.d'
+import {
+  IDataBaseEntry,
+  IGeometry,
+  INewSimulation,
+  ISimulation,
+  ISimulationTask
+} from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
 import { GEOMETRY, SIMULATION } from '@/config/storage'
@@ -94,7 +100,9 @@ const update = async (
  */
 const del = async (simulation: { id: string }): Promise<void> => {
   // Data
-  const simulationData = await get(simulation.id, ['project'])
+  const simulationData = (await get(simulation.id, [
+    'project'
+  ])) as ISimulation & { project: string }
 
   // Delete simulation reference in project
   await Project.update({ id: simulationData.project }, [
@@ -127,16 +135,19 @@ const run = async (
   user: { id: string },
   simulation: { id: string }
 ): Promise<void> => {
-  const simulationData = await get(simulation.id, ['scheme'])
+  const simulationData = (await get(simulation.id, [
+    'scheme'
+  ])) as ISimulation & { scheme: IModel }
 
   // Global
   const configuration = simulationData.scheme.configuration
+  if (!configuration) return
 
   // Update status
   configuration.run = {
     ...configuration.run,
-    done: null,
-    error: null
+    done: undefined,
+    error: undefined
   }
   await update(simulation, [
     {
@@ -155,12 +166,37 @@ const run = async (
   // Find plugin
   const plugins = await Plugins.serverList()
   const plugin = plugins.find(
-    (p) => p.key === configuration.run.cloudServer.key
+    (p) => p.key === configuration.run?.cloudServer?.key
   )
+
+  // Check plugin
+  if (!plugin) {
+    const err = new Error('Unavailable plugin')
+    console.error(err)
+
+    configuration.run = {
+      ...configuration.run,
+      error: err
+    }
+    update(simulation, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...configuration.run,
+          error: err
+        }
+      }
+    ])
+
+    return
+  }
 
   // Check authorized
   const userData = await User.get(user.id, ['authorizedplugins'])
-  if (!userData.authorizedplugins?.includes(plugin.key)) {
+  if (!userData.authorizedplugins?.includes(plugin.key as string)) {
     const err = new Error('Unauthorized')
     console.error(err)
 
@@ -188,31 +224,33 @@ const run = async (
   await Tools.createPath(path.join(SIMULATION, simulation.id, 'run'))
 
   // Copy geometry
-  const geometryId = configuration.geometry.value
-  const geometry = await Geometry.get(geometryId, [
-    'uploadfilename',
-    'extension'
-  ])
-  if (geometry.extension === 'dxf') {
-    // 2D replace
-    geometry.uploadfilename = geometry.uploadfilename.replace('.dxf', '.brep')
-  }
-  configuration.geometry.file = geometry.uploadfilename
-  configuration.geometry.name = geometry.uploadfilename.replace(
-    '.' + geometry.extension,
-    ''
-  )
-  configuration.geometry.path = 'geometry'
-  await Tools.copyFile(
-    {
-      path: GEOMETRY,
-      file: geometry.uploadfilename
-    },
-    {
-      path: path.join(SIMULATION, simulation.id, 'geometry'),
-      file: geometry.uploadfilename
+  const geometryId = configuration.geometry?.value
+  if (geometryId) {
+    const geometry = (await Geometry.get(geometryId, [
+      'uploadfilename',
+      'extension'
+    ])) as IGeometry & { uploadfilename: string; extension: string }
+    if (geometry.extension === 'dxf') {
+      // 2D replace
+      geometry.uploadfilename = geometry.uploadfilename.replace('.dxf', '.brep')
     }
-  )
+    configuration.geometry.file = geometry.uploadfilename
+    configuration.geometry.name = geometry.uploadfilename.replace(
+      '.' + geometry.extension,
+      ''
+    )
+    configuration.geometry.path = 'geometry'
+    await Tools.copyFile(
+      {
+        path: GEOMETRY,
+        file: geometry.uploadfilename
+      },
+      {
+        path: path.join(SIMULATION, simulation.id, 'geometry'),
+        file: geometry.uploadfilename
+      }
+    )
+  }
 
   // Check coupling
   if (configuration.initialization && configuration.initialization.value) {
@@ -285,7 +323,7 @@ const run = async (
         }
       ])
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err)
 
       configuration.run = {
@@ -312,7 +350,10 @@ const run = async (
  * @param simulation Simulation
  */
 const stop = async (simulation: { id: string }): Promise<void> => {
-  const simulationData = await get(simulation.id, ['scheme', 'tasks'])
+  const simulationData = (await get(simulation.id, [
+    'scheme',
+    'tasks'
+  ])) as ISimulation & { scheme: IModel; tasks: ISimulationTask[] }
 
   // Global
   const configuration = simulationData.scheme.configuration
@@ -321,7 +362,7 @@ const stop = async (simulation: { id: string }): Promise<void> => {
   // Find plugin
   const pluginsLibs = await Plugins.serverList()
   const pluginLib = pluginsLibs.find(
-    (p) => p.key === configuration.run.cloudServer.key
+    (p) => p.key === configuration.run.cloudServer?.key
   )?.lib
 
   // Stop

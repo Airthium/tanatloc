@@ -14,53 +14,6 @@ export interface IDataBaseResponse {
   rows: Array<any>
 }
 
-export interface INewAvatar {
-  id: string
-  name: string
-}
-
-export interface IAvatar {
-  id: string
-  name?: string
-  path?: string
-  type?: string
-}
-
-export interface INewGeometry {
-  id: string
-  name: string
-  originalfilename: string
-  extension: string
-  uploadfilename: string
-}
-
-export interface IGeometry {
-  id: string
-  name?: string
-  originalfilename?: string
-  extension?: string
-  uploadfilename?: string
-  glb?: string
-  json?: string
-  summary?: {
-    uuid?: string
-    solids?: {
-      uuid: string
-      number: number | string
-    }[]
-    faces?: {
-      uuid: string
-      number: number | string
-    }[]
-    edges?: {
-      uuid: string
-      number: number | string
-    }[]
-  }
-  dimension?: number
-  project?: string
-}
-
 export interface INewGroup {
   id: string
   name: string

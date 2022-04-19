@@ -1,14 +1,17 @@
 /** @module Database.Avatar.Add */
 
-import { INewAvatar } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
 
+export interface INewAvatar {
+  id: string
+  name: string
+}
+
 /**
  * Add
- * @param data Data
+ * @param avatar Avatar
  * @returns Avatar
  */
 export const add = async (avatar: {

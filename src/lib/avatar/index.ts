@@ -3,11 +3,9 @@
 import path from 'path'
 import sharp from 'sharp'
 
-import type { IAvatar, INewAvatar } from '@/database/index.d'
-
 import { AVATAR } from '@/config/storage'
 
-import AvatarDB from '@/database/avatar'
+import AvatarDB, { INewAvatar, TAvatarGet } from '@/database/avatar'
 
 import User from '../user'
 import Project from '../project'
@@ -72,10 +70,7 @@ const add = async (
  */
 const read = async (id: string): Promise<Buffer> => {
   // Get path
-  const avatar = (await get(id, ['path', 'type'])) as IAvatar & {
-    path: string
-    type: string
-  }
+  const avatar = await get(id, ['path', 'type'])
   if (!avatar) throw new Error('Avatar does not exist.')
 
   // Read file
@@ -91,7 +86,7 @@ const read = async (id: string): Promise<Buffer> => {
  * @param data Data
  * @returns Avatar
  */
-const get = async (id: string, data: Array<string>): Promise<IAvatar> => {
+const get = async (id: string, data: TAvatarGet) => {
   return AvatarDB.get(id, data)
 }
 

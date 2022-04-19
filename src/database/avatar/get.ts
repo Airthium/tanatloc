@@ -1,10 +1,17 @@
 /** @module Database.Avatar.Get */
 
-import { IAvatar } from '../index.d'
-
 import { tables } from '@/config/db'
 
 import { getter } from '..'
+
+export type TAvatarGet = ('name' | 'path' | 'type')[]
+
+export interface IAvatar<T> {
+  id: string
+  name: T extends ['name'] ? string : never
+  path: T extends ['path'] ? string : never
+  type: T extends ['type'] ? string : never
+}
 
 /**
  * Get
@@ -12,10 +19,10 @@ import { getter } from '..'
  * @param data Data
  * @returns Avatar
  */
-export const get = async (
+const get = async <T extends TAvatarGet>(
   id: string,
-  data: Array<string>
-): Promise<IAvatar> => {
+  data: T
+): Promise<IAvatar<T>> => {
   const response = await getter(tables.AVATARS, id, data)
 
   const avatar = response.rows[0]
@@ -23,3 +30,5 @@ export const get = async (
 
   return avatar
 }
+
+export { get }

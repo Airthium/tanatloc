@@ -42,7 +42,7 @@ export interface IPropsFormula {
  * Formula
  * @param props Props
  */
-const Formula = ({ text }) => {
+const Formula = ({ text }: IPropsFormula) => {
   useEffect(() => {
     mathjaxRefresh()
   }, [text])

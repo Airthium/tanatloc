@@ -39,14 +39,8 @@ export interface IProps {
  */
 const Users = ({ organization, swr }: IProps): JSX.Element => {
   // State
-  const [scrollAdmin, setScrollAdmin]: [
-    { y: number },
-    Dispatch<SetStateAction<{ y: number }>>
-  ] = useState(null)
-  const [scrollUsers, setScrollUsers]: [
-    { y: number },
-    Dispatch<SetStateAction<{ y: number }>>
-  ] = useState(null)
+  const [scrollAdmin, setScrollAdmin] = useState<{ y: number } | null>(null)
+  const [scrollUsers, setScrollUsers] = useState<{ y: number } | null>(null)
 
   // Ref
   const refWrapper = useRef(null)
@@ -57,7 +51,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const avatarRender = (_: any, user: IUserWithData) => Utils.userToAvatar(user)
   const ownerActionsRender = (owner: IUserWithData) => (
     <Delete
-      disabled={organization.owners.length < 2}
+      disabled={(organization.owners!.length < 2)}
       user={{
         id: owner.id,
         email: owner.email

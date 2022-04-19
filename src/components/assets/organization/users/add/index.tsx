@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.User.Add */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
@@ -41,7 +41,7 @@ export const checkAlreadyAdded = (
   user: { email: string },
   organization: IOrganizationWithData
 ): IUserWithData => {
-  const inOwners = organization.owners.find((o) => o.email === user.email)
+  const inOwners = organization.owners?.find((o) => o.email === user.email)
   const inPendingowners = organization.pendingowners?.find(
     (po) => po.email === user.email
   )
@@ -50,7 +50,9 @@ export const checkAlreadyAdded = (
     (pu) => pu.email === user.email
   )
 
-  return inOwners || inPendingowners || inUsers || inPendingusers
+  return (
+    inOwners || inPendingowners || inUsers || (inPendingusers as IUserWithData)
+  )
 }
 
 /**
@@ -110,10 +112,8 @@ export const onFinish = async (
  */
 const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render

@@ -1,14 +1,7 @@
 /** @module Components.Assets.Formula */
 
 import PropTypes from 'prop-types'
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState
-} from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
@@ -55,20 +48,17 @@ const Formula = ({
   unit
 }: IProps): JSX.Element => {
   // State
-  const [internalValue, setInternalValue]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState(String(defaultValue))
-  const [internalChecked, setInternalChecked]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(defaultChecked)
-  const [disabled, setDisabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(defaultChecked !== undefined ? !defaultChecked : false)
-  const [autoSave, setAutoSave]: [number, Dispatch<SetStateAction<number>>] =
-    useState(0)
-  const [saving, setSaving]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [internalValue, setInternalValue] = useState<string>(
+    String(defaultValue)
+  )
+  const [internalChecked, setInternalChecked] = useState<boolean>(
+    !!defaultChecked
+  )
+  const [disabled, setDisabled] = useState<boolean>(
+    defaultChecked !== undefined ? !defaultChecked : false
+  )
+  const [autoSave, setAutoSave] = useState<number>(0)
+  const [saving, setSaving] = useState<boolean>(false)
 
   // Default value
   useEffect(() => {
@@ -77,7 +67,7 @@ const Formula = ({
 
   // Default checked
   useEffect(() => {
-    setInternalChecked(defaultChecked)
+    setInternalChecked(!!defaultChecked)
   }, [defaultChecked])
 
   /**
@@ -90,7 +80,7 @@ const Formula = ({
       setInternalChecked(currentChecked)
       setSaving(true)
 
-      onCheckedChange(currentChecked)
+      onCheckedChange?.(currentChecked)
 
       setDisabled(!currentChecked)
     },
@@ -144,7 +134,7 @@ const Formula = ({
             onChange={onInputChange}
             addonAfter={
               <Space>
-                <MathJax.Inline text={unit} />
+                <MathJax.Inline text={unit as string} />
                 {saving ? (
                   <LoadingOutlined spin className="color-orange" />
                 ) : (

@@ -1,7 +1,7 @@
 /** @module Components.Assets.Button.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, ReactChild, SetStateAction, useState } from 'react'
+import { ReactChild, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -43,8 +43,7 @@ const DeleteButton = ({
   onDelete
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
 
   /**
    * Render

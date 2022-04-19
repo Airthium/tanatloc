@@ -1,7 +1,7 @@
 /** @module Components.Dashboard */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 import { Layout, Menu, Typography } from 'antd'
 import {
   AppstoreOutlined,
@@ -112,10 +112,7 @@ export const onLogout = async (
  */
 const Dashboard = () => {
   // State
-  const [currentKey, setCurrentKey]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
+  const [currentKey, setCurrentKey] = useState<string>()
 
   // Data
   const [user, { mutateUser, clearUser, errorUser, loadingUser }] =
@@ -199,7 +196,7 @@ const Dashboard = () => {
             onClick={({ keyPath }) => {
               const key = keyPath.pop()
               setCurrentKey(key)
-              onSelect(router, key, clearUser)
+              onSelect(router, key as string, clearUser)
             }}
             mode="inline"
           >

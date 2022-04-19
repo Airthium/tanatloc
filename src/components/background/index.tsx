@@ -165,16 +165,16 @@ const Background = (): JSX.Element => {
       window.removeEventListener('resize', resize)
 
       // Unmount renderer
-      div.removeChild(renderer.domElement);
+      div.removeChild(renderer.domElement)
 
       // Clear scene
-      (scene.children as Mesh<TetrahedronGeometry, MeshBasicMaterial>[]).forEach(
-        (child: Mesh<TetrahedronGeometry, MeshBasicMaterial> ) => {
-          child.geometry.dispose()
-          child.material.dispose()
-          scene.remove(child)
-        }
-      )
+      ;(
+        scene.children as Mesh<TetrahedronGeometry, MeshBasicMaterial>[]
+      ).forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+        scene.remove(child)
+      })
     }
   }, [router])
 

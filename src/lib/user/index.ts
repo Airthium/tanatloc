@@ -1,7 +1,7 @@
 /** @module Lib.User */
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IUserWithData } from '../index.d'
+import { IUserGet, IUserWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -56,7 +56,7 @@ const add = async (user: {
 const get = async <T extends TUserGet>(
   id: string,
   data: T
-): Promise<IUser<T>> => {
+): Promise<IUserGet<T>> => {
   const userData = await UserDB.get(id, data)
 
   if (data.includes('organizations') && !userData.organizations)
@@ -70,7 +70,7 @@ const get = async <T extends TUserGet>(
 
   if (data.includes('plugins') && !userData.plugins) userData.plugins = []
 
-  return userData
+  return userData as IUserGet<T>
 }
 
 /**
@@ -79,29 +79,27 @@ const get = async <T extends TUserGet>(
  * @param data Data
  * @returns User
  */
-const getWithData = async (
+const getWithData = async <T extends TUserGet>(
   id: string,
-  data: TUserGet
-): Promise<IUserWithData> => {
+  data: T
+): Promise<IUserWithData<T>> => {
   const user = await get(id, data)
 
-  const { avatar, ...userData } = { ...user }
-  const userWithData: IUserWithData = {
-    ...userData
-  }
+  const { avatar, ...userData } = user
+
   // Get avatar
+  let avatarData
   if (avatar) {
     try {
-      const avatarData = await Avatar.read(avatar)
-      userWithData.avatar = avatarData
+      avatarData = await Avatar.read(avatar)
     } catch (err) {
       console.warn(err)
-      user.avatar = undefined
+      avatarData = undefined
     }
   }
 
   // Return
-  return userWithData
+  return { ...userData, avatar: avatarData } as IUserWithData<T>
 }
 
 /**

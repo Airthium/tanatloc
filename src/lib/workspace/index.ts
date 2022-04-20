@@ -1,21 +1,16 @@
 /** @module Lib.Workspace */
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IWorkspaceWithData } from '../index.d'
+import { IGroupWithData, IWorkspaceGet, IWorkspaceWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
-import WorkspaceDB, {
-  INewWorkspace,
-  IWorkspace,
-  TWorkspaceGet
-} from '@/database/workspace'
+import WorkspaceDB, { INewWorkspace, TWorkspaceGet } from '@/database/workspace'
 
 import User from '../user'
 import Group from '../group'
 import Organization from '../organization'
 import Project from '../project'
-import { IUser } from '@/database/user'
 
 /**
  * Add
@@ -56,7 +51,7 @@ const add = async (
 const get = async <T extends TWorkspaceGet>(
   id: string,
   data: T
-): Promise<IWorkspace<T>> => {
+): Promise<IWorkspaceGet<T>> => {
   const workspaceData = await WorkspaceDB.get(id, data)
 
   if (data.includes('owners') && !workspaceData.owners)
@@ -73,7 +68,7 @@ const get = async <T extends TWorkspaceGet>(
   if (data.includes('archivedprojects') && !workspaceData.archivedprojects)
     workspaceData.archivedprojects = []
 
-  return workspaceData
+  return workspaceData as IWorkspaceGet<T>
 }
 
 /**
@@ -85,14 +80,15 @@ const get = async <T extends TWorkspaceGet>(
 const getWithData = async <T extends TWorkspaceGet>(
   id: string,
   data: T
-): Promise<IWorkspaceWithData> => {
+): Promise<IWorkspaceWithData<T>> => {
   const workspace = await get(id, data)
 
-  const { owners, users, groups, ...workspaceData } = { ...workspace }
-  const workspaceWithData: IWorkspaceWithData = { ...workspaceData }
+  const { owners, users, groups, ...workspaceData } = workspace
+
   // Get owners
+  let ownersData
   if (owners) {
-    const ownersData = await Promise.all(
+    ownersData = await Promise.all(
       owners.map(async (owner) => {
         const ownerData = await User.getWithData(owner, [
           'lastname',
@@ -101,17 +97,17 @@ const getWithData = async <T extends TWorkspaceGet>(
           'avatar'
         ])
         return {
-          id: owner,
-          ...ownerData
+          ...ownerData,
+          id: owner
         }
       })
     )
-    workspaceWithData.owners = ownersData
   }
 
   // Get users
+  let usersData
   if (users) {
-    const usersData = await Promise.all(
+    usersData = await Promise.all(
       users.map(async (user) => {
         const userData = await User.getWithData(user, [
           'lastname',
@@ -120,39 +116,48 @@ const getWithData = async <T extends TWorkspaceGet>(
           'avatar'
         ])
         return {
-          id: user,
-          ...userData
+          ...userData,
+          id: user
         }
       })
     )
-    workspaceWithData.users = usersData
   }
 
   // Get groups
+  let groupsData
   if (groups) {
-    const groupsData = await Promise.all(
+    groupsData = await Promise.all(
       groups.map(async (group) => {
         const groupData = await Group.getWithData(group, ['name'])
         return {
-          id: group,
-          ...groupData
+          ...groupData,
+          id: group
         }
       })
     )
-    workspaceWithData.groups = groupsData
   }
 
-  return workspaceWithData
+  // Return
+  return {
+    ...workspaceData,
+    users: usersData,
+    owners: ownersData,
+    groups: groupsData
+  } as IWorkspaceWithData<T>
 }
 
 /**
- * Get user workspaces
- * @param user User
- * @returns Workspaces
+ * Get workspaces
+ * @param workspaces Workspaces
+ * @returns Workspace
  */
-const getUserWorkspaces = async (user: { workspaces: string[] }) => {
+const getWorkspaces = async (
+  workspaces: string[]
+): Promise<
+  IWorkspaceWithData<('name' | 'owners' | 'users' | 'groups' | 'projects')[]>[]
+> => {
   return Promise.all(
-    user.workspaces.map(async (workspace: string) => {
+    workspaces.map(async (workspace) => {
       const data = await getWithData(workspace, [
         'name',
         'owners',
@@ -161,31 +166,8 @@ const getUserWorkspaces = async (user: { workspaces: string[] }) => {
         'projects'
       ])
       return {
-        id: workspace,
-        ...data
-      }
-    })
-  )
-}
-
-/**
- * Get group workspaces
- * @param group Group
- * @returns Workspace
- */
-const getGroupWorkspaces = async (group: { workspaces: string[] }) => {
-  return Promise.all(
-    group.workspaces.map(async (workspace) => {
-      const workspaceData = await getWithData(workspace, [
-        'name',
-        'users',
-        'owners',
-        'groups',
-        'projects'
-      ])
-      return {
-        id: workspace,
-        ...workspaceData
+        ...data,
+        id: workspace
       }
     })
   )
@@ -200,20 +182,26 @@ const getByUser = async ({
   id
 }: {
   id: string
-}): Promise<IWorkspaceWithData[]> => {
+}): Promise<
+  IWorkspaceWithData<('name' | 'owners' | 'users' | 'groups' | 'projects')[]>[]
+> => {
   // Get workspaces'ids
   const user = await User.get(id, ['organizations', 'workspaces'])
 
   const workspaces = []
 
   // Get local workspaces
-  const localWorkspaces = await getUserWorkspaces(user)
+  const localWorkspaces = await getWorkspaces(user.workspaces)
   workspaces.push(...localWorkspaces)
 
   // Get organizations workspaces & projects
   if (user.organizations) {
-    const groupsWorkspaces = []
-    const groupsProjects = []
+    const groupsWorkspaces: IWorkspaceWithData<
+      ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
+    >[] = []
+    const groupsProjects: IWorkspaceWithData<
+      ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
+    >[] = []
     await Promise.all(
       user.organizations.map(async (organization) => {
         const organizationData = await Organization.get(organization, [
@@ -230,7 +218,9 @@ const getByUser = async ({
 
               // Workspaces
               if (groupData.workspaces.length) {
-                const groupWorkspaces = await getGroupWorkspaces(groupData)
+                const groupWorkspaces = await getWorkspaces(
+                  groupData.workspaces
+                )
 
                 groupsWorkspaces.push(
                   ...groupWorkspaces.filter(
@@ -241,18 +231,19 @@ const getByUser = async ({
 
               // Projects
               if (groupData.projects.length) {
-                groupsProjects.push({
+                const customGroup = {
+                  id: group,
+                  name: groupData.name
+                } as IGroupWithData
+                const customWorkspace = {
                   id: groupData.id,
                   name: 'Projects from ' + groupData.name,
                   owners: [],
-                  groups: [
-                    {
-                      id: group,
-                      name: groupData.name
-                    }
-                  ],
+                  users: [],
+                  groups: [customGroup],
                   projects: groupData.projects
-                })
+                }
+                groupsProjects.push(customWorkspace)
               }
             })
           )
@@ -339,7 +330,7 @@ const update = async (
     )
 
     // Added groups
-    const added = groupsUpdate.value.filter(
+    const added: string[] = groupsUpdate.value.filter(
       (group: string) => !workspaceData.groups.find((g) => g.id === group)
     )
     await Promise.all(

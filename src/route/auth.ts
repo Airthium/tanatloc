@@ -1,9 +1,5 @@
 /** @module Route.Auth */
 
-import { IOrganization } from '@/database/organization'
-import { IProject } from '@/database/project'
-import { IWorkspace } from '@/database/workspace'
-
 import { error } from './error'
 
 import ProjectLib from '@/lib/project'
@@ -12,6 +8,7 @@ import GroupLib from '@/lib/group'
 import OrganizationLib from '@/lib/organization'
 import GeometryLib from '@/lib/geometry'
 import SimulationLib from '@/lib/simulation'
+import { IOrganizationGet, IProjectGet, IWorkspaceGet } from '@/lib/index.d'
 
 /**
  * Check authorization from group
@@ -22,9 +19,9 @@ import SimulationLib from '@/lib/simulation'
 const authGroup = async (
   user: { id: string },
   object:
-    | IProject<['groups']>
-    | IWorkspace<['groups']>
-    | IOrganization<['groups']>
+    | IProjectGet<'group'[]>
+    | IWorkspaceGet<'group'[]>
+    | IOrganizationGet<'group'[]>
 ) => {
   for (let group of object.groups) {
     const groupData = await GroupLib.get(group, ['organization'])
@@ -48,10 +45,10 @@ const authGroup = async (
 const auth = async (
   user: { id: string },
   object:
-    | IProject<['owners', 'users', 'groups']>
-    | IWorkspace<['owners', 'users', 'groups']>
-    | IOrganization<['owners', 'users', 'groups']>,
-  parentObject?: IWorkspace<['owners', 'users']>
+    | IProjectGet<('owners' | 'users' | 'groups')[]>
+    | IWorkspaceGet<('owners' | 'users' | 'groups')[]>
+    | IOrganizationGet<('owners' | 'users' | 'groups')[]>,
+  parentObject?: IWorkspaceGet<('owners' | 'users')[]>
 ) => {
   // Objects
   if (object?.owners?.includes(user.id) || object?.users?.includes(user.id))

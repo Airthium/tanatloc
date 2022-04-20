@@ -4,6 +4,7 @@ import path from 'path'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
+import { ISimulationGet } from '../index.d'
 
 import { GEOMETRY, SIMULATION } from '@/config/storage'
 
@@ -18,7 +19,6 @@ import Project from '../project'
 import Geometry from '../geometry'
 import Tools from '../tools'
 import Plugins from '../plugins'
-import { IGeometry } from '@/database/geometry'
 
 /**
  * Add
@@ -59,8 +59,8 @@ const add = async (
 const get = async <T extends TSimulationGet>(
   id: string,
   data: T
-): Promise<ISimulation<T>> => {
-  const simulationData = await SimulationDB.get(id, data)
+): Promise<ISimulationGet<T>> => {
+  const simulationData = (await SimulationDB.get(id, data)) as ISimulationGet<T>
 
   if (data.includes('tasks') && !simulationData.tasks) simulationData.tasks = []
 

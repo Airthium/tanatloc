@@ -5,6 +5,7 @@ import Crypto from 'crypto'
 import { IDataBaseEntry } from '@/database/index.d'
 import {
   IGroupWithData,
+  IOrganizationGet,
   IOrganizationWithData,
   IUserWithData
 } from '../index.d'
@@ -58,8 +59,11 @@ const add = async (
 const get = async <T extends TOrganizationGet>(
   id: string,
   data: T
-): Promise<IOrganization<T>> => {
-  const organizationData = await OrganizationDB.get(id, data)
+): Promise<IOrganizationGet<T>> => {
+  const organizationData = (await OrganizationDB.get(
+    id,
+    data
+  )) as IOrganizationGet<T>
 
   if (data.includes('pendingowners') && !organizationData.pendingowners)
     organizationData.pendingowners = []
@@ -77,67 +81,39 @@ const get = async <T extends TOrganizationGet>(
 }
 
 /**
- * Get owners data
- * @param organization Organization
+ * Get users data
+ * @param users Users
  * @param partial Partial data for pending owners
  * @returns Owners data
  */
-const getOwnersData = async (
-  organization: { owners: string[] },
+const getUsersData = async (
+  users: string[],
   partial?: boolean
 ): Promise<IUserWithData[]> => {
   return Promise.all(
-    organization.owners.map(async (owner) => {
+    users.map(async (user) => {
       const data: TUserGet = ['email']
       if (!partial) {
         data.push('firstname', 'lastname', 'avatar')
       }
-      const ownerData = await User.getWithData(owner, data)
+      const ownerData = await User.getWithData(user, data)
 
       return {
         ...ownerData,
-        id: owner
-      }
-    })
-  )
-}
-
-/**
- * Get users data
- * @param organization Organization
- * @param partial Partial data for pending users
- * @returns Users data
- */
-const getUsersData = async (
-  organization: { users: string[] },
-  partial?: boolean
-): Promise<IUserWithData[]> => {
-  return Promise.all(
-    organization.users.map(async (user) => {
-      const data: TUserGet = ['email']
-      if (!partial) {
-        data.push('firstname', 'lastname', 'avatar')
-      }
-      const userData = await User.getWithData(user, data)
-
-      return {
-        ...userData,
         id: user
       }
     })
-  )
+  ) as Promise<IUserWithData[]>
 }
 
 /**
  * Get groups data
- * @param organization Organization
+ * @param groups Groups
  * @returns Groups data
  */
-const getGroupsData = async (organization: {
-  groups: string[]
-}): Promise<IGroupWithData[]> => {
+const getGroupsData = async (groups: string[]): Promise<IGroupWithData[]> => {
   return Promise.all(
-    organization.groups.map(async (group) => {
+    groups.map(async (group) => {
       const groupData = await Group.getWithData(group, ['name', 'users'])
 
       return {
@@ -145,7 +121,7 @@ const getGroupsData = async (organization: {
         id: group
       }
     })
-  )
+  ) as Promise<IGroupWithData[]>
 }
 
 /**
@@ -154,10 +130,10 @@ const getGroupsData = async (organization: {
  * @param data Data
  * @returns Organization
  */
-const getWithData = async (
+const getWithData = async <T extends TOrganizationGet>(
   id: string,
-  data: TOrganizationGet
-): Promise<IOrganizationWithData> => {
+  data: T
+): Promise<IOrganizationWithData<T>> => {
   const organization = await get(id, data)
 
   const {
@@ -167,39 +143,44 @@ const getWithData = async (
     pendingusers,
     groups,
     ...organizationData
-  } = { ...organization }
-  const organizationWithData: IOrganizationWithData = { ...organizationData }
+  } = organization
 
   // Owners
+  let ownersData
   if (owners) {
-    organizationWithData.owners = await getOwnersData({ owners })
+    ownersData = await getUsersData(owners)
   }
 
+  let pendingownersData
   if (pendingowners) {
-    organizationWithData.pendingowners = await getOwnersData(
-      { owners: pendingowners },
-      true
-    )
+    pendingownersData = await getUsersData(pendingowners, true)
   }
 
   // Users
+  let usersData
   if (users) {
-    organizationWithData.users = await getUsersData({ users })
+    usersData = await getUsersData(users)
   }
 
+  let pendingusersData
   if (pendingusers) {
-    organizationWithData.pendingusers = await getUsersData(
-      { users: pendingusers },
-      true
-    )
+    pendingusersData = await getUsersData(pendingusers, true)
   }
 
   // Groups
+  let groupsData
   if (groups) {
-    organizationWithData.groups = await getGroupsData({ groups })
+    groupsData = await getGroupsData(groups)
   }
 
-  return organizationWithData
+  return {
+    ...organizationData,
+    owners: ownersData,
+    pendingowners: pendingownersData,
+    users: usersData,
+    pendingusers: pendingusersData,
+    groups: groupsData
+  } as IOrganizationWithData<T>
 }
 
 /**
@@ -207,17 +188,8 @@ const getWithData = async (
  * @param organizations Organizations
  * @param data Data
  */
-const setMissingData = (
-  organizations: IOrganization<
-    (
-      | 'name'
-      | 'owners'
-      | 'pendingowners'
-      | 'users'
-      | 'pendingusers'
-      | 'groups'
-    )[]
-  >[],
+const setMissingData = <T extends TOrganizationGet>(
+  organizations: IOrganization<T>[],
   data: string[]
 ): void => {
   if (data.includes('owners'))
@@ -252,14 +224,15 @@ const setMissingData = (
  * @param data Data
  * @returns Organizations
  */
-const getByUser = async (
+const getByUser = async <T extends TOrganizationGet>(
   user: { id: string },
-  data: TOrganizationGet
-): Promise<IOrganizationWithData[]> => {
+  data: T
+): Promise<IOrganizationWithData<T>[]> => {
   const internalData = [...data]
   if (!internalData.includes('owners')) internalData.push('owners')
   if (!internalData.includes('users')) internalData.push('users')
 
+  // Same as user ?
   const organizations = await OrganizationDB.getAll(internalData)
 
   setMissingData(organizations, data)
@@ -269,10 +242,12 @@ const getByUser = async (
     organizations.map(async (organization) => {
       // Check user
       if (
-        !organization.owners?.includes(user.id) &&
-        !organization.pendingowners?.includes(user.id) &&
-        !organization.users?.includes(user.id) &&
-        !organization.pendingusers?.includes(user.id)
+        !(organization.owners as string[] | undefined)?.includes(user.id) &&
+        !(organization.pendingowners as string[] | undefined)?.includes(
+          user.id
+        ) &&
+        !(organization.users as string[] | undefined)?.includes(user.id) &&
+        !(organization.pendingusers as string[] | undefined)?.includes(user.id)
       )
         return
 
@@ -283,45 +258,44 @@ const getByUser = async (
         pendingusers,
         groups,
         ...organizationData
-      } = { ...organization }
-
-      const organizationWithData: IOrganizationWithData = {
-        ...organizationData
-      }
+      } = organization
 
       // Owners data
+      let ownersData: IUserWithData[]
       if (data.includes('owners') && owners)
-        organizationWithData.owners = await getOwnersData({ owners })
+        ownersData = await getUsersData(owners)
 
       // Pending owners data (partial)
+      let pendingownersData: IUserWithData[]
       if (data.includes('pendingowners') && pendingowners)
-        organizationWithData.pendingowners = await getOwnersData(
-          { owners: pendingowners },
-          true
-        )
+        pendingownersData = await getUsersData(pendingowners, true)
 
       // Users data
-      if (data.includes('users') && users)
-        organizationWithData.users = await getUsersData({ users })
+      let usersData: IUserWithData[]
+      if (data.includes('users') && users) usersData = await getUsersData(users)
 
       // Pending users data (partial)
+      let pendingusersData: IUserWithData[]
       if (data.includes('pendingusers') && pendingusers)
-        organizationWithData.pendingusers = await getUsersData(
-          {
-            users: pendingusers
-          },
-          true
-        )
+        pendingusersData = await getUsersData(pendingusers, true)
 
       // Group data
+      let groupsData: IGroupWithData[]
       if (data.includes('groups') && groups)
-        organizationWithData.groups = await getGroupsData({ groups })
+        groupsData = await getGroupsData(groups)
 
-      return organizationWithData
+      return {
+        ...organizationData,
+        owners: ownersData,
+        pendingowners: pendingownersData,
+        users: usersData,
+        pendingusers: pendingusersData,
+        groups: groupsData
+      }
     })
   )
 
-  return userOrganizations.filter((o) => o) as IOrganization[]
+  return userOrganizations.filter((o) => o) as IOrganizationWithData<T>[]
 }
 
 /**
@@ -347,16 +321,16 @@ const update = async (
         (d.key === 'owners' || d.key === 'users')
       ) {
         const email = d.value
-        let user = await User.getBy(email, ['id'], 'email')
+        const user = await User.getBy(email, ['id'], 'email')
 
         if (user) d.value = user.id
         else {
           // Create user
-          user = await User.add({
+          const newUser = await User.add({
             email: email,
             password: Crypto.randomBytes(12).toString('hex')
           })
-          d.value = user.id
+          d.value = newUser.id
         }
 
         // Send email

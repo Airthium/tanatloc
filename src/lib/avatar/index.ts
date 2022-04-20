@@ -89,9 +89,7 @@ const read = async (id: string): Promise<Buffer> => {
 const get = async <T extends TAvatarGet>(
   id: string,
   data: T
-): Promise<IAvatar<T>> => {
-  return AvatarDB.get(id, data)
-}
+): Promise<IAvatar<T>> => AvatarDB.get(id, data)
 
 /**
  * Delete
@@ -149,7 +147,7 @@ const archive = async (avatar: { id: string }, to: string): Promise<void> => {
   const data = await get(avatar.id, ['path'])
 
   if (data.path) {
-    //copy
+    // Copy
     await Tools.copyFile(
       {
         path: AVATAR,
@@ -157,7 +155,7 @@ const archive = async (avatar: { id: string }, to: string): Promise<void> => {
       },
       { path: to, file: data.path }
     )
-    //remove
+    // Remove
     await Tools.removeFile(path.join(AVATAR, data.path))
   }
 }

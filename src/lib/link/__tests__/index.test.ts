@@ -32,7 +32,7 @@ describe('lib/link', () => {
   })
 
   test('get', async () => {
-    await Link.get('id', ['data'])
+    await Link.get('id', ['email'])
     expect(mockLinkGet).toHaveBeenCalledTimes(1)
   })
 

@@ -43,7 +43,7 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
  */
 export const restartJobs = async (): Promise<void> => {
   console.info('Restart jobs...')
-  const simulations = await Simulation.getAll(['id', 'scheme', 'tasks'])
+  const simulations = await Simulation.getAll(['scheme', 'tasks'])
 
   // Check waiting or processing tasks
   for (let simulation of simulations) {

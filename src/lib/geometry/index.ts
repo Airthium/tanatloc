@@ -185,9 +185,7 @@ const add = async (
 const get = async <T extends TGeometryGet>(
   id: string,
   data: T
-): Promise<IGeometry<T>> => {
-  return GeometryDB.get(id, data)
-}
+): Promise<IGeometry<T>> => GeometryDB.get(id, data)
 
 /**
  * Update geometry

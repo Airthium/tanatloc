@@ -12,6 +12,8 @@ import {
 import tar from 'tar'
 import { threeToGlb } from 'three-to-glb'
 
+import { IGeometrySummaryFile } from '../index.d'
+
 import Services from '@/services'
 
 /**
@@ -36,7 +38,7 @@ const createPath = async (location: string): Promise<void> => {
  * @param location Location
  * @returns Files list (with types)
  */
-const listFiles = async (location: string): Promise<Array<Dirent>> => {
+const listFiles = async (location: string): Promise<Dirent[]> => {
   return fs.readdir(location, { withFileTypes: true })
 }
 
@@ -45,13 +47,13 @@ const listFiles = async (location: string): Promise<Array<Dirent>> => {
  * @param location Location
  * @returns Directory list
  */
-const listDirectories = async (location: string): Promise<Array<string>> => {
+const listDirectories = async (location: string): Promise<string[]> => {
   const files = await listFiles(location)
   return files
     .map((file) => {
       if (file.isDirectory()) return file.name
     })
-    .filter((f) => f)
+    .filter((f) => f) as string[]
 }
 
 /**
@@ -231,52 +233,6 @@ const convert = async (
   }
 }
 
-/**
- * Load part
- * @param location Location
- * @param name File name
- * @returns Part
- */
-const loadPart = async (location: string, name: string): Promise<JSON> => {
-  const partFile = path.join(location, name)
-  const part = await readJSONFile(partFile)
-
-  // Load solids
-  if (part.solids) {
-    await Promise.all(
-      part.solids.map(async (solid) => {
-        const file = path.join(location, solid.path)
-        solid.buffer = await fs.readFile(file)
-        delete solid.path
-      })
-    )
-  }
-
-  // Load faces
-  if (part.faces) {
-    await Promise.all(
-      part.faces.map(async (face) => {
-        const file = path.join(location, face.path)
-        face.buffer = await fs.readFile(file)
-        delete face.path
-      })
-    )
-  }
-
-  // Load edges
-  if (part.edges) {
-    await Promise.all(
-      part.edges.map(async (edge) => {
-        const file = path.join(location, edge.path)
-        edge.buffer = await fs.readFile(file)
-        delete edge.path
-      })
-    )
-  }
-
-  return part
-}
-
 const Tools = {
   toPosix,
   createPath,
@@ -293,7 +249,6 @@ const Tools = {
   unarchive,
   readStream,
   writeStream,
-  convert,
-  loadPart
+  convert
 }
 export default Tools

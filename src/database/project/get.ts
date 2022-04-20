@@ -11,7 +11,7 @@ export type TProjectGet = (
   | 'avatar'
   | 'public'
   | 'history'
-  | 'createdate'
+  | 'createddate'
   | 'lastaccess'
   | 'geometries'
   | 'simulations'
@@ -27,7 +27,7 @@ export type TProjectGetDescription = 'description'[]
 export type TProjectGetAvatar = 'avatar'[]
 export type TProjectGetPublic = 'public'[]
 export type TProjectGetHistory = 'history'[]
-export type TProjectGetCreatedate = 'createdate'[]
+export type TProjectGetCreateddate = 'createddate'[]
 export type TProjectGetLastaccess = 'lastaccess'[]
 export type TProjectGetGeometries = 'geometries'[]
 export type TProjectGetSimulations = 'simulations'[]
@@ -44,7 +44,7 @@ export interface IProject<T = []> {
   avatar?: TProjectGetAvatar extends T ? string : never
   public?: TProjectGetPublic extends T ? boolean : never
   history?: TProjectGetHistory extends T ? object : never
-  createddate: TProjectGetCreatedate extends T ? Date : never
+  createddate: TProjectGetCreateddate extends T ? Date : never
   lastaccess: TProjectGetLastaccess extends T ? Date : never
   geometries?: TProjectGetGeometries extends T ? string[] : never[]
   simulations?: TProjectGetSimulations extends T ? string[] : never[]

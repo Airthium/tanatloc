@@ -4,7 +4,12 @@ import path from 'path'
 import { ReadStream } from 'fs'
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
+import {
+  IGroupWithData,
+  IProjectGet,
+  IProjectWithData,
+  IUserWithData
+} from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -15,11 +20,7 @@ import {
   STORAGE
 } from '@/config/storage'
 
-import ProjectDB, {
-  INewProject,
-  IProject,
-  TProjectGet
-} from '@/database/project'
+import ProjectDB, { INewProject, TProjectGet } from '@/database/project'
 
 import Avatar from '../avatar'
 import User from '../user'
@@ -65,8 +66,8 @@ const add = async (
 const get = async <T extends TProjectGet>(
   id: string,
   data: T
-): Promise<IProject<T>> => {
-  const projectData = await ProjectDB.get(id, data)
+): Promise<IProjectGet<T>> => {
+  const projectData = (await ProjectDB.get(id, data)) as IProjectGet<T>
 
   if (data.includes('geometries') && !projectData.geometries)
     projectData.geometries = []
@@ -99,39 +100,17 @@ const getAvatar = async (project: {
 }
 
 /**
- * Get owners
- * @param project Project
- * @returns Owners
- */
-const getOwners = async (project: {
-  owners: string[]
-}): Promise<IUserWithData[]> => {
-  return Promise.all(
-    project.owners.map(async (owner) => {
-      const ownerData = await User.getWithData(owner, [
-        'lastname',
-        'firstname',
-        'email',
-        'avatar'
-      ])
-      return {
-        ...ownerData,
-        id: owner
-      }
-    })
-  )
-}
-
-/**
  * Get users
- * @param project Project
+ * @param users Users
  * @returns Users
  */
-const getUsers = async (project: {
+const getUsers = async (
   users: string[]
-}): Promise<IUserWithData[]> => {
+): Promise<
+  IUserWithData<('lastname' | 'firstname' | 'email' | 'avatar')[]>[]
+> => {
   return Promise.all(
-    project.users.map(async (user) => {
+    users.map(async (user) => {
       const userData = await User.getWithData(user, [
         'lastname',
         'firstname',
@@ -151,11 +130,11 @@ const getUsers = async (project: {
  * @param project Project
  * @returns Groups
  */
-const getGroups = async (project: {
+const getGroups = async (
   groups: string[]
-}): Promise<IGroupWithData[]> => {
+): Promise<IGroupWithData<'name'[]>[]> => {
   return Promise.all(
-    project.groups.map(async (group) => {
+    groups.map(async (group) => {
       const groupData = await Group.getWithData(group, ['name'])
       return {
         ...groupData,
@@ -171,31 +150,40 @@ const getGroups = async (project: {
  * @param data Data
  * @returns Project
  */
-const getWithData = async (
+const getWithData = async <T extends TProjectGet>(
   id: string,
-  data: TProjectGet
+  data: T
 ): Promise<IProjectWithData> => {
   const project = await get(id, data)
 
   // Check archived
   if (project?.archived) project.avatar = undefined
 
-  const { avatar, owners, users, groups, ...projectData } = { ...project }
-  const projectWithData: IProjectWithData = { ...projectData }
+  const { avatar, owners, users, groups, ...projectData } = project
 
   // Get avatar
-  if (avatar) projectWithData.avatar = await getAvatar({ avatar })
+  let avatarData
+  if (avatar) avatarData = await getAvatar({ avatar })
 
   // Get owners
-  if (owners) projectWithData.owners = await getOwners({ owners })
+  let ownersData
+  if (owners) ownersData = await getUsers(owners)
 
   // Get users
-  if (users) projectWithData.users = await getUsers({ users })
+  let usersData
+  if (users) usersData = await getUsers(users)
 
   // Get groups
-  if (groups) projectWithData.groups = await getGroups({ groups })
+  let groupsData
+  if (groups) groupsData = await getGroups(groups)
 
-  return projectWithData
+  return {
+    ...projectData,
+    avatar: avatarData,
+    owners: ownersData,
+    users: usersData,
+    groups: groupsData
+  } as IProjectWithData
 }
 
 /**

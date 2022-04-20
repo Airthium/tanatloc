@@ -49,10 +49,10 @@ export interface IGeometryEntityFile {
 }
 
 export interface INewGeometryWithData extends INewGeometry {
-  json: IGeometry['json']
-  glb: IGeometry['glb']
-  summary: IGeometry['summary']
-  dimension: IGeometry['dimension']
+  json: IGeometry<'json'[]>['json']
+  glb: IGeometry<'glb'[]>['glb']
+  summary: IGeometry<'summary'[]>['summary']
+  dimension: IGeometry<'dimension'[]>['dimension']
 }
 
 export interface IGeometryFile {

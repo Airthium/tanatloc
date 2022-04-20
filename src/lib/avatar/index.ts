@@ -5,7 +5,7 @@ import sharp from 'sharp'
 
 import { AVATAR } from '@/config/storage'
 
-import AvatarDB, { INewAvatar, TAvatarGet } from '@/database/avatar'
+import AvatarDB, { IAvatar, INewAvatar, TAvatarGet } from '@/database/avatar'
 
 import User from '../user'
 import Project from '../project'
@@ -86,7 +86,10 @@ const read = async (id: string): Promise<Buffer> => {
  * @param data Data
  * @returns Avatar
  */
-const get = async (id: string, data: TAvatarGet) => {
+const get = async <T extends TAvatarGet>(
+  id: string,
+  data: T
+): Promise<IAvatar<T>> => {
   return AvatarDB.get(id, data)
 }
 

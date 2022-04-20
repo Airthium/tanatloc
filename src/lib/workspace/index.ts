@@ -11,7 +11,7 @@ import { IWorkspaceWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
-import WorkspaceDB from '@/database/workspace'
+import WorkspaceDB, { TWorkspaceGet } from '@/database/workspace'
 
 import User from '../user'
 import Group from '../group'
@@ -54,7 +54,10 @@ const add = async (
  * @param data Data
  * @returns Workspace
  */
-const get = async (id: string, data: string[]): Promise<IWorkspace> => {
+const get = async <T extends TWorkspaceGet>(
+  id: string,
+  data: T
+): Promise<IWorkspace<T>> => {
   const workspaceData = await WorkspaceDB.get(id, data)
 
   if (data.includes('owners') && !workspaceData.owners)

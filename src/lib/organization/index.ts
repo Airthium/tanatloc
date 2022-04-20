@@ -2,7 +2,7 @@
 
 import Crypto from 'crypto'
 
-import { IDataBaseEntry, IUser } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 import {
   IGroupWithData,
   IOrganizationWithData,
@@ -11,6 +11,7 @@ import {
 
 import OrganizationDB, {
   INewOrganization,
+  IOrganization,
   TOrganizationGet
 } from '@/database/organization'
 
@@ -53,7 +54,10 @@ const add = async (
  * @param data Data
  * @returns Organization
  */
-const get = async (id: string, data: TOrganizationGet) => {
+const get = async <T extends TOrganizationGet>(
+  id: string,
+  data: T
+): Promise<IOrganization<T>> => {
   const organizationData = await OrganizationDB.get(id, data)
 
   if (data.includes('pendingowners') && !organizationData.pendingowners)
@@ -151,7 +155,7 @@ const getGroupsData = async (organization: {
  */
 const getWithData = async (
   id: string,
-  data: string[]
+  data: TOrganizationGet
 ): Promise<IOrganizationWithData> => {
   const organization = await get(id, data)
 
@@ -240,7 +244,7 @@ const setMissingData = (
  */
 const getByUser = async (
   user: { id: string },
-  data: string[]
+  data: TOrganizationGet
 ): Promise<IOrganizationWithData[]> => {
   const internalData = [...data]
   if (!internalData.includes('owners')) internalData.push('owners')

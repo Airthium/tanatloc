@@ -6,11 +6,15 @@ import { getter } from '..'
 
 export type TLinkGet = ('type' | 'email' | 'userid')[]
 
-export interface ILink<T> {
+export type TLinkGetType = 'type'[]
+export type TLinkGetEmail = 'email'[]
+export type TLinkGetUserid = 'userid'[]
+
+export interface ILink<T = []> {
   id: string
-  type: T extends ['type'] ? string : never
-  email: T extends ['email'] ? string : never
-  userid?: T extends ['userid'] ? string : never
+  type: TLinkGetType extends T ? string : never
+  email: TLinkGetEmail extends T ? string : never
+  userid?: TLinkGetUserid extends T ? string : never
 }
 
 /**

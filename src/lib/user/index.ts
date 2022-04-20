@@ -5,7 +5,7 @@ import { IUserWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
-import UserDB from '@/database/user'
+import UserDB, { TUserGet } from '@/database/user'
 
 import Avatar from '../avatar'
 import Organization from '../organization'
@@ -52,7 +52,10 @@ const add = async (user: {
  * @param data Data
  * @returns User
  */
-const get = async (id: string, data: Array<string>): Promise<IUser> => {
+const get = async <T extends TUserGet>(
+  id: string,
+  data: T
+): Promise<IUser<T>> => {
   const userData = await UserDB.get(id, data)
 
   if (data.includes('organizations') && !userData.organizations)

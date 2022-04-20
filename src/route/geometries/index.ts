@@ -2,8 +2,6 @@
 
 import { Request, Response } from 'express'
 
-import { IGeometry } from '@/database/index.d'
-
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
@@ -50,13 +48,13 @@ const route = async (req: Request, res: Response): Promise<void> => {
         ids.map(async (id) => {
           try {
             // Get geometry
-            const geometry = (await GeometryLib.get(id, [
+            const geometry = await GeometryLib.get(id, [
               'name',
               'originalfilename',
               'summary',
               'dimension',
               'project'
-            ])) as IGeometry & { project: string }
+            ])
             if (!geometry) throw error(400, 'Invalid geometry identifier')
 
             // Check authorization

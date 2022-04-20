@@ -13,14 +13,23 @@ export type TWorkspaceGet = (
   | 'archivedprojects'
 )[]
 
-export interface IWorkspace<T> {
+export type TWorkspaceGetName = 'name'[]
+export type TWorkspaceGetOwners = 'owners'[]
+export type TWorkspaceGetUsers = 'users'[]
+export type TWorkspaceGetGroups = 'groups'[]
+export type TWorkspaceGetProjects = 'projects'[]
+export type TWorkspaceGetArchivedprojects = 'archivedprojects'[]
+
+export interface IWorkspace<T = []> {
   id: string
-  name: T extends ['name'] ? string : never
-  owners: T extends ['owners'] ? string[] : never[]
-  users?: T extends ['users'] ? string[] : never[]
-  groups?: T extends ['groups'] ? string[] : never[]
-  projects?: T extends ['projects'] ? string[] : never[]
-  archivedprojects?: T extends ['archivedprojects'] ? object[] : never[]
+  name: TWorkspaceGetName extends T ? string : never
+  owners: TWorkspaceGetOwners extends T ? string[] : never[]
+  users?: TWorkspaceGetUsers extends T ? string[] : never[]
+  groups?: TWorkspaceGetGroups extends T ? string[] : never[]
+  projects?: TWorkspaceGetProjects extends T ? string[] : never[]
+  archivedprojects?: TWorkspaceGetArchivedprojects extends T
+    ? object[]
+    : never[]
 }
 
 /**

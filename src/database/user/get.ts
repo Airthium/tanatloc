@@ -1,6 +1,6 @@
 /** @module Database.User.Get */
 
-import { IPlugin } from '../index.d'
+import { IPlugin } from '@/plugins/index.d'
 
 import { tables } from '@/config/db'
 
@@ -22,22 +22,36 @@ export type TUserGet = (
 )[]
 export type TUserGetKey = 'id' | 'email'
 
-export interface IUser<T, Key = 'id'> {
-  id: (T extends ['id'] ? string : never) | (Key extends 'id' ? string : never)
-  lastname?: T extends ['lastname'] ? string : never
-  firstname?: T extends ['firstname'] ? string : never
+export type TUserGetLastname = 'lastname'[]
+export type TUserGetFirstname = 'firstname'[]
+export type TUserGetEmail = 'email'[]
+export type TUserGetAvatar = 'avatar'[]
+export type TUserGetIsvalidated = 'isvalidated'[]
+export type TUserGetLastmodificationdate = 'lastmodificationdate'[]
+export type TUserGetSuperuser = 'superuser'[]
+export type TUserGetPassword = 'password'[]
+export type TUserGetPasswordlastchange = 'passwordlastchange'[]
+export type TUserGetOrganizations = 'organizations'[]
+export type TUserGetAuthorizedplugins = 'authorizedplugins'[]
+export type TUserGetPlugins = 'plugins'[]
+
+export interface IUser<T = [], Key = 'id'> {
+  id: ('id'[] extends T ? string : never) | (Key extends 'id' ? string : never)
+  lastname?: TUserGetLastname extends T ? string : never
+  firstname?: TUserGetFirstname extends T ? string : never
   email:
-    | (T extends ['email'] ? string : never)
+    | ('email'[] extends T ? string : never)
     | (Key extends 'email' ? string : never)
-  avatar?: T extends ['firstname'] ? string : never
-  isvalidated: T extends ['isvalidated'] ? boolean : never
-  lastmodificationdate: T extends ['lastmodificationdate'] ? Date : never
-  superuser: T extends ['superuser'] ? boolean : never
-  passwordlastchanged: T extends ['passwordlastchanged'] ? Date : never
-  organizations?: T extends ['organizations'] ? string[] : never[]
-  workspaces?: T extends ['workspaces'] ? string[] : never[]
-  authorizedplugins?: T extends ['authorizedplugins'] ? string[] : never[]
-  plugins?: T extends ['plugins'] ? IPlugin[] : never[]
+  avatar?: TUserGetAvatar extends T ? string : never
+  isvalidated: TUserGetIsvalidated extends T ? boolean : never
+  lastmodificationdate: TUserGetLastmodificationdate extends T ? Date : never
+  superuser: TUserGetSuperuser extends T ? boolean : never
+  password: TUserGetPassword extends T ? string : never
+  passwordlastchanged: TUserGetPasswordlastchange extends T ? Date : never
+  organizations?: TUserGetOrganizations extends T ? string[] : never[]
+  workspaces?: TUserGetPassword extends T ? string[] : never[]
+  authorizedplugins?: TUserGetAuthorizedplugins extends T ? string[] : never[]
+  plugins?: TUserGetPlugins extends T ? IPlugin[] : never[]
 }
 
 /**

@@ -3,7 +3,7 @@
 import { IDataBaseEntry } from '@/database/index.d'
 import { IGroupWithData, IUserWithData } from '../index.d'
 
-import GroupDB, { INewGroup, TGroupGet } from '@/database/group'
+import GroupDB, { IGroup, INewGroup, TGroupGet } from '@/database/group'
 
 import User from '../user'
 import Workspace from '../workspace'
@@ -42,7 +42,10 @@ const add = async (
  * @param data Data
  * @returns Group
  */
-const get = async (id: string, data: TGroupGet) => {
+const get = async <T extends TGroupGet>(
+  id: string,
+  data: T
+): Promise<IGroup<T>> => {
   const groupData = await GroupDB.get(id, data)
 
   if (data.includes('users') && !groupData.users) groupData.users = []

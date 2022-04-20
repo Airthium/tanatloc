@@ -12,13 +12,19 @@ export type TGroupGet = (
   | 'organization'
 )[]
 
-export interface IGroup<T> {
+export type TGroupGetName = 'name'[]
+export type TGroupGetUsers = 'users'[]
+export type TGroupGetWorkspaces = 'workspaces'[]
+export type TGroupGetProjects = 'projects'[]
+export type TGroupGetOrganization = 'organization'[]
+
+export interface IGroup<T = []> {
   id: string
-  name: T extends ['name'] ? string : never
-  users: T extends ['users'] ? string[] : never[]
-  workspaces?: T extends ['workspaces'] ? string[] : never[]
-  projects?: T extends ['projects'] ? string[] : never[]
-  organization: T extends ['organization'] ? string : never
+  name: TGroupGetName extends T ? string : never
+  users: TGroupGetUsers extends T ? string[] : never[]
+  workspaces?: TGroupGetWorkspaces extends T ? string[] : never[]
+  projects?: TGroupGetProjects extends T ? string[] : never[]
+  organization: TGroupGetOrganization extends T ? string : never
 }
 
 /**

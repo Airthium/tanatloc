@@ -3,7 +3,7 @@
 import path from 'path'
 import { ReadStream } from 'fs'
 
-import { IDataBaseEntry, IGroup, IProject } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
@@ -15,7 +15,11 @@ import {
   STORAGE
 } from '@/config/storage'
 
-import ProjectDB from '@/database/project'
+import ProjectDB, {
+  INewProject,
+  IProject,
+  TProjectGet
+} from '@/database/project'
 
 import Avatar from '../avatar'
 import User from '../user'
@@ -36,7 +40,7 @@ const add = async (
   user: { id: string },
   workspace: { id: string },
   project: { title: string; description?: string }
-): Promise<IProject> => {
+): Promise<INewProject> => {
   // Check title & description
   project.title = project.title.substring(0, LIMIT).trim()
   project.description = project.description?.substring(0, LIMIT).trim()
@@ -58,7 +62,10 @@ const add = async (
  * @param data Data
  * @returns Project
  */
-const get = async (id: string, data: string[]): Promise<IProject> => {
+const get = async <T extends TProjectGet>(
+  id: string,
+  data: T
+): Promise<IProject<T>> => {
   const projectData = await ProjectDB.get(id, data)
 
   if (data.includes('geometries') && !projectData.geometries)
@@ -197,9 +204,7 @@ const getWithData = async (
  * @param project Project
  */
 const addToGroup = async (group: { id: string }, project: { id: string }) => {
-  const groupData = (await Group.get(group.id, ['projects'])) as IGroup & {
-    projects: string[]
-  }
+  const groupData = await Group.get(group.id, ['projects'])
   if (!groupData.projects.includes(project.id))
     await Group.update({ id: group.id }, [
       {
@@ -250,9 +255,7 @@ const update = async (
   const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
   if (groupsUpdate) {
     // Get data
-    const projectData = (await get(project.id, ['groups'])) as IProject & {
-      groups: string[]
-    }
+    const projectData = await get(project.id, ['groups'])
 
     // Delete groups
     const deleted = projectData.groups.filter(
@@ -299,10 +302,7 @@ const del = async (
   project: { id: string }
 ): Promise<void> => {
   // Get data
-  const data = (await get(project.id, [
-    'groups',
-    'simulations'
-  ])) as IProject & { groups: string[]; simulations: string[] }
+  const data = await get(project.id, ['groups', 'simulations'])
 
   // Delete from groups
 
@@ -336,13 +336,13 @@ const del = async (
  */
 const archive = async (project: { id: string }): Promise<ReadStream> => {
   // Data
-  const data = (await get(project.id, [
+  const data = await get(project.id, [
     'title',
     'description',
     'avatar',
     'geometries',
     'simulations'
-  ])) as IProject & { geometries: string[]; simulations: string[] }
+  ])
 
   // Create temporary path
   const temporaryPath = path.join(STORAGE, '.archive-' + project.id)

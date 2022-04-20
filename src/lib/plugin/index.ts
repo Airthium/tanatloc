@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 
 import { LIMIT } from '@/config/string'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import User from '../user'
 import Plugins from '../plugins'

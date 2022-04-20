@@ -6,11 +6,15 @@ import { getter } from '..'
 
 export type TAvatarGet = ('name' | 'path' | 'type')[]
 
-export interface IAvatar<T> {
+export type TAvatarGetName = 'name'[]
+export type TAvatarGetPath = 'path'[]
+export type TAvatarGetType = 'type'[]
+
+export interface IAvatar<T = []> {
   id: string
-  name: T extends ['name'] ? string : never
-  path: T extends ['path'] ? string : never
-  type: T extends ['type'] ? string : never
+  name: TAvatarGetName extends T ? string : never
+  path: TAvatarGetPath extends T ? string : never
+  type: TAvatarGetType extends T ? string : never
 }
 
 /**

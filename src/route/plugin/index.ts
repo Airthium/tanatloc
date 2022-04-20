@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { session } from '../session'
 import { error } from '../error'

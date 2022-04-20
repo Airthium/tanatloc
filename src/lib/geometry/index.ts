@@ -13,7 +13,7 @@ import {
 
 import { GEOMETRY } from '@/config/storage'
 
-import GeometryDB, { TGeometryGet } from '@/database/geometry'
+import GeometryDB, { IGeometry, TGeometryGet } from '@/database/geometry'
 
 import Project from '../project'
 import Tools from '../tools'
@@ -182,7 +182,10 @@ const add = async (
  * @param data Data
  * @returns Geometry
  */
-const get = async (id: string, data: TGeometryGet) => {
+const get = async <T extends TGeometryGet>(
+  id: string,
+  data: T
+): Promise<IGeometry<T>> => {
   return GeometryDB.get(id, data)
 }
 

@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express'
 
-import { IDataBaseEntry, IGroup } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 
 import { session } from '../session'
 import { error } from '../error'
@@ -108,9 +108,7 @@ const checkGroupAuth = async (
   group: { id: string },
   user: { id: string }
 ): Promise<void> => {
-  const groupData = (await GroupLib.get(group.id, [
-    'organization'
-  ])) as IGroup & { organization: string }
+  const groupData = await GroupLib.get(group.id, ['organization'])
   if (!groupData) throw error(400, 'Invalid group identifier')
 
   const organizationData = await OrganizationLib.get(groupData.organization, [

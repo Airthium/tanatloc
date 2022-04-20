@@ -2,7 +2,7 @@
 
 import isElectron from 'is-electron'
 
-import { IClientPlugin, IPlugin, IServerPlugin } from '@/database/index.d'
+import { IClientPlugin, IPlugin, IServerPlugin } from '@/plugins/index.d'
 
 import Simulation from '../simulation'
 import Tools from '../tools'

@@ -2,8 +2,6 @@
 
 import { Request, Response } from 'express'
 
-import { ISimulation } from '@/database/index.d'
-
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
@@ -50,15 +48,11 @@ const route = async (req: Request, res: Response): Promise<void> => {
         ids.map(async (id) => {
           try {
             // Get simulation
-            const simulation = (await SimulationLib.get(id, [
+            const simulation = await SimulationLib.get(id, [
               'name',
               'scheme',
               'project'
-            ])) as ISimulation & {
-              name: string
-              scheme: ISimulation['scheme']
-              project: string
-            }
+            ])
             if (!simulation) throw error(400, 'Invalid simulation identifier')
 
             // Check authorization

@@ -1,15 +1,15 @@
 /** @module Lib.System */
 
-import { IDataBaseEntry, ISystem } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 
-import SystemDB from '@/database/system'
+import SystemDB, { ISystem, TSystemGet } from '@/database/system'
 
 /**
  * Get items
  * @params items Items
  * @returns System
  */
-const get = async (items: string[]): Promise<ISystem> => {
+const get = async <T extends TSystemGet>(items: T): Promise<ISystem<T>> => {
   return SystemDB.get(items)
 }
 

@@ -16,15 +16,25 @@ export type TGeometryGet = (
   | 'project'
 )[]
 
-export interface IGeometry<T> {
+export type TGeometryGetName = 'name'[]
+export type TGeometryGetOriginalfilename = 'originalfilename'[]
+export type TGeometryGetExtension = 'extension'[]
+export type TGeometryGetUploadfilename = 'uploadfilename'[]
+export type TGeometryGetGlb = 'glb'[]
+export type TGeometryGetJson = 'json'[]
+export type TGeometryGetSummary = 'summary'[]
+export type TGeometryGetDimension = 'dimension'[]
+export type TGeometryGetProject = 'project'[]
+
+export interface IGeometry<T = []> {
   id: string
-  name: T extends ['name'] ? string : never
-  originalfilename: T extends ['originalfilename'] ? string : never
-  extension: T extends ['extension'] ? string : never
-  uploadfilename: T extends ['uploadfilename'] ? string : never
-  glb: T extends ['glb'] ? string : never
-  json: T extends ['json'] ? string : never
-  summary: T extends ['summary']
+  name: TGeometryGetName extends T ? string : never
+  originalfilename: TGeometryGetOriginalfilename extends T ? string : never
+  extension: TGeometryGetExtension extends T ? string : never
+  uploadfilename: TGeometryGetUploadfilename extends T ? string : never
+  glb: TGeometryGetGlb extends T ? string : never
+  json: TGeometryGetJson extends T ? string : never
+  summary: TGeometryGetSummary extends T
     ? {
         uuid: string
         solids?: {
@@ -44,8 +54,8 @@ export interface IGeometry<T> {
         }[]
       }
     : never
-  dimension?: T extends ['dimension'] ? number : never
-  project: T extends ['project'] ? string : never
+  dimension?: TGeometryGetDimension extends T ? number : never
+  project: TGeometryGetProject extends T ? string : never
 }
 
 /**

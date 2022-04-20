@@ -21,22 +21,37 @@ export type TProjectGet = (
   | 'workspace'
 )[]
 
-export interface IProject<T> {
+export type TProjectGetArchived = 'archived'[]
+export type TProjectGetTitle = 'title'[]
+export type TProjectGetDescription = 'description'[]
+export type TProjectGetAvatar = 'avatar'[]
+export type TProjectGetPublic = 'public'[]
+export type TProjectGetHistory = 'history'[]
+export type TProjectGetCreatedate = 'createdate'[]
+export type TProjectGetLastaccess = 'lastaccess'[]
+export type TProjectGetGeometries = 'geometries'[]
+export type TProjectGetSimulations = 'simulations'[]
+export type TProjectGetOwners = 'owners'[]
+export type TProjectGetUsers = 'users'[]
+export type TProjectGetGroups = 'groups'[]
+export type TProjectGetWorkspace = 'workspace'[]
+
+export interface IProject<T = []> {
   id: string
-  archived?: T extends ['archived'] ? boolean : never
-  title: T extends ['title'] ? string : never
-  description?: T extends ['description'] ? string : never
-  avatar?: T extends ['avatar'] ? string : never
-  public?: T extends ['public'] ? boolean : never
-  history?: T extends ['history'] ? object : never
-  createddate: T extends ['createddate'] ? Date : never
-  lastaccess: T extends ['lastaccess'] ? Date : never
-  geometries?: T extends ['geometries'] ? string[] : never[]
-  simulations?: T extends ['simulations'] ? string[] : never[]
-  owners: T extends ['owners'] ? string[] : never[]
-  users?: T extends ['users'] ? string[] : never[]
-  groups?: T extends ['groups'] ? string[] : never[]
-  workspace: T extends ['workspace'] ? string : never
+  archived?: TProjectGetArchived extends T ? boolean : never
+  title: TProjectGetTitle extends T ? string : never
+  description?: TProjectGetDescription extends T ? string : never
+  avatar?: TProjectGetAvatar extends T ? string : never
+  public?: TProjectGetPublic extends T ? boolean : never
+  history?: TProjectGetHistory extends T ? object : never
+  createddate: TProjectGetCreatedate extends T ? Date : never
+  lastaccess: TProjectGetLastaccess extends T ? Date : never
+  geometries?: TProjectGetGeometries extends T ? string[] : never[]
+  simulations?: TProjectGetSimulations extends T ? string[] : never[]
+  owners: TProjectGetOwners extends T ? string[] : never[]
+  users?: TProjectGetUsers extends T ? string[] : never[]
+  groups?: TProjectGetGroups extends T ? string[] : never[]
+  workspace: TProjectGetWorkspace extends T ? string : never
 }
 
 /**

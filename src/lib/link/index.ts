@@ -2,7 +2,7 @@
 
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
-import LinkDB, { INewLink, TLinkGet } from '@/database/link'
+import LinkDB, { ILink, INewLink, TLinkGet } from '@/database/link'
 
 import UserLib from '../user'
 
@@ -25,7 +25,10 @@ const add = async (link: {
  * @param data Data
  * @returns Link
  */
-const get = async (id: string, data: TLinkGet) => {
+const get = async <T extends TLinkGet>(
+  id: string,
+  data: T
+): Promise<ILink<T>> => {
   return LinkDB.get(id, data)
 }
 

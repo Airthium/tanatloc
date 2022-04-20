@@ -1,13 +1,8 @@
 /** @module Route.Auth */
 
-import {
-  IProject,
-  IWorkspace,
-  IOrganization,
-  IGroup,
-  IGeometry,
-  ISimulation
-} from '@/database/index.d'
+import { IOrganization } from '@/database/organization'
+import { IProject } from '@/database/project'
+import { IWorkspace } from '@/database/workspace'
 
 import { error } from './error'
 
@@ -26,16 +21,17 @@ import SimulationLib from '@/lib/simulation'
  */
 const authGroup = async (
   user: { id: string },
-  object: (IProject | IWorkspace | IOrganization) & { groups: string[] }
+  object:
+    | IProject<['groups']>
+    | IWorkspace<['groups']>
+    | IOrganization<['groups']>
 ) => {
   for (let group of object.groups) {
-    const groupData = (await GroupLib.get(group, [
-      'organization'
-    ])) as IGroup & { organization: string }
-    const organizationData = (await OrganizationLib.get(
-      groupData.organization,
-      ['owners', 'users']
-    )) as IOrganization & { owners: string[]; users: string[] }
+    const groupData = await GroupLib.get(group, ['organization'])
+    const organizationData = await OrganizationLib.get(groupData.organization, [
+      'owners',
+      'users'
+    ])
 
     if (await auth(user, organizationData)) return true
   }
@@ -51,8 +47,11 @@ const authGroup = async (
  */
 const auth = async (
   user: { id: string },
-  object: IProject | IWorkspace | IOrganization,
-  parentObject?: IWorkspace
+  object:
+    | IProject<['owners', 'users', 'groups']>
+    | IWorkspace<['owners', 'users', 'groups']>
+    | IOrganization<['owners', 'users', 'groups']>,
+  parentObject?: IWorkspace<['owners', 'users']>
 ) => {
   // Objects
   if (object?.owners?.includes(user.id) || object?.users?.includes(user.id))
@@ -66,21 +65,10 @@ const auth = async (
     return true
 
   // Objects groups
-  if (object?.groups)
-    if (
-      await authGroup(
-        user,
-        object as (IProject | IWorkspace) & { groups: string[] }
-      )
-    )
-      return true
+  if (object?.groups) if (await authGroup(user, object)) return true
 
   // Parent objects groups
-  if (parentObject?.groups)
-    if (
-      await authGroup(user, parentObject as IWorkspace & { groups: string[] })
-    )
-      return true
+  if (parentObject?.groups) if (await authGroup(user, parentObject)) return true
 
   return false
 }
@@ -96,11 +84,11 @@ const checkWorkspaceAuth = async (
   workspace: { id: string },
   status?: number
 ) => {
-  const workspaceAuth = (await WorkspaceLib.get(workspace.id, [
+  const workspaceAuth = await WorkspaceLib.get(workspace.id, [
     'owners',
     'users',
     'groups'
-  ])) as IWorkspace & { owners: string[]; users: string[]; groups: string[] }
+  ])
   if (!workspaceAuth) throw error(status || 400, 'Invalid workspace identifier')
 
   if (!(await auth(user, workspaceAuth))) throw error(403, 'Access denied')
@@ -117,24 +105,19 @@ const checkProjectAuth = async (
   project: { id: string },
   status?: number
 ): Promise<void> => {
-  const projectAuth = (await ProjectLib.get(project.id, [
+  const projectAuth = await ProjectLib.get(project.id, [
     'owners',
     'users',
     'groups',
     'workspace'
-  ])) as IProject & {
-    owners: string[]
-    users: string[]
-    groups: string[]
-    workspace: string
-  }
+  ])
   if (!projectAuth) throw error(status || 400, 'Invalid project identifier')
 
-  const workspaceAuth = (await WorkspaceLib.get(projectAuth.workspace, [
+  const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
     'owners',
     'users',
     'groups'
-  ])) as IWorkspace & { owners: string[]; users: string[]; groups: string[] }
+  ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
   if (!(await auth(user, projectAuth, workspaceAuth)))
@@ -152,29 +135,22 @@ const checkGeometryAuth = async (
   geometry: { id: string },
   status?: number
 ): Promise<void> => {
-  const geometryAuth = (await GeometryLib.get(geometry.id, [
-    'project'
-  ])) as IGeometry & { project: string }
+  const geometryAuth = await GeometryLib.get(geometry.id, ['project'])
   if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifier')
 
-  const projectAuth = (await ProjectLib.get(geometryAuth.project, [
+  const projectAuth = await ProjectLib.get(geometryAuth.project, [
     'owners',
     'users',
     'groups',
     'workspace'
-  ])) as IProject & {
-    owners: string[]
-    users: string[]
-    groups: string[]
-    workspace: string
-  }
+  ])
   if (!projectAuth) throw error(500, 'Invalid project identifier')
 
-  const workspaceAuth = (await WorkspaceLib.get(projectAuth.workspace, [
+  const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
     'owners',
     'users',
     'groups'
-  ])) as IWorkspace & { owners: string[]; users: string[]; groups: string[] }
+  ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
   if (!(await auth(user, projectAuth, workspaceAuth)))
@@ -192,30 +168,23 @@ const checkSimulationAuth = async (
   simulation: { id: string },
   status?: number
 ): Promise<void> => {
-  const simulationAuth = (await SimulationLib.get(simulation.id, [
-    'project'
-  ])) as ISimulation & { project: string }
+  const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
   if (!simulationAuth)
     throw error(status || 400, 'Invalid simulation identifier')
 
-  const projectAuth = (await ProjectLib.get(simulationAuth.project, [
+  const projectAuth = await ProjectLib.get(simulationAuth.project, [
     'owners',
     'users',
     'groups',
     'workspace'
-  ])) as IProject & {
-    owners: string[]
-    users: string[]
-    groups: string[]
-    workspace: string
-  }
+  ])
   if (!projectAuth) throw error(500, 'Invalid project identifier')
 
-  const workspaceAuth = (await WorkspaceLib.get(projectAuth.workspace, [
+  const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
     'owners',
     'users',
     'groups'
-  ])) as IWorkspace & { owners: string[]; users: string[]; groups: string[] }
+  ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
   if (!(await auth(user, projectAuth, workspaceAuth)))
@@ -233,10 +202,10 @@ const checkOrganizationAuth = async (
   organization: { id: string },
   status?: number
 ): Promise<void> => {
-  const organizationAuth = (await OrganizationLib.get(organization.id, [
+  const organizationAuth = await OrganizationLib.get(organization.id, [
     'owners',
     'users'
-  ])) as IOrganization & { owners: string[]; users: string[] }
+  ])
   if (!organizationAuth)
     throw error(status || 400, 'Invalid organization identifier')
 

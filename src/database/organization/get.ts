@@ -13,14 +13,21 @@ export type TOrganizationGet = (
   | 'groups'
 )[]
 
-export interface IOrganization<T> {
+export type TOrganizationGetName = 'name'[]
+export type TOrganizationGetOwners = 'owners'[]
+export type TOrganizationGetPendingowners = 'pendingowners'[]
+export type TOrganizationGetUsers = 'users'[]
+export type TOrganizationGetPendingusers = 'pendingusers'[]
+export type TOrganizationGetGroups = 'groups'[]
+
+export interface IOrganization<T = []> {
   id: string
-  name: T extends ['name'] ? string : never
-  owners: T extends ['owners'] ? string[] : never[]
-  pendingowners?: T extends ['pendingowners'] ? string[] : never[]
-  users?: T extends ['users'] ? string[] : never[]
-  pendingusers?: T extends ['pendingusers'] ? string[] : never[]
-  groups?: T extends ['groups'] ? string[] : never[]
+  name: TOrganizationGetName extends T ? string : never
+  owners: TOrganizationGetOwners extends T ? string[] : never[]
+  pendingowners?: TOrganizationGetPendingowners extends T ? string[] : never[]
+  users?: TOrganizationGetUsers extends T ? string[] : never[]
+  pendingusers?: TOrganizationGetPendingusers extends T ? string[] : never[]
+  groups?: TOrganizationGetGroups extends T ? string[] : never[]
 }
 
 /**

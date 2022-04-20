@@ -13,7 +13,7 @@ import { IModel } from '@/models/index.d'
 
 import { GEOMETRY, SIMULATION } from '@/config/storage'
 
-import SimulationDB from '@/database/simulation'
+import SimulationDB, { TSimulationGet } from '@/database/simulation'
 
 import User from '../user'
 import Project from '../project'
@@ -57,7 +57,10 @@ const add = async (
  * @param data Data
  * @returns Simulation
  */
-const get = async (id: string, data: string[]): Promise<ISimulation> => {
+const get = async <T extends TSimulationGet>(
+  id: string,
+  data: T
+): Promise<ISimulation<T>> => {
   const simulationData = await SimulationDB.get(id, data)
 
   if (data.includes('tasks') && !simulationData.tasks) simulationData.tasks = []

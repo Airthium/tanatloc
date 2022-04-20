@@ -1,11 +1,11 @@
 /** @module Lib.User */
 
-import { IDataBaseEntry, INewUser, IUser, IUserCheck } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 import { IUserWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
-import UserDB, { TUserGet } from '@/database/user'
+import UserDB, { INewUser, IUser, IUserCheck, TUserGet } from '@/database/user'
 
 import Avatar from '../avatar'
 import Organization from '../organization'
@@ -13,6 +13,7 @@ import Workspace from '../workspace'
 import Email from '../email'
 import System from '../system'
 import Group from '../group'
+import { TUserGetKey } from '@/database/user/get'
 
 /**
  * Add
@@ -30,12 +31,12 @@ const add = async (user: {
   const newUser = await UserDB.add(user)
   if (!newUser.alreadyExists) {
     // Send email
-    await Email.subscribe(user.email, newUser.id)
+    await Email.subscribe(user.email, newUser.id!)
   }
 
   const system = await System.get(['defaultplugins'])
   if (system.defaultplugins) {
-    await UserDB.update({ id: newUser.id }, [
+    await UserDB.update({ id: newUser.id! }, [
       {
         key: 'authorizedplugins',
         value: system.defaultplugins
@@ -80,7 +81,7 @@ const get = async <T extends TUserGet>(
  */
 const getWithData = async (
   id: string,
-  data: Array<string>
+  data: TUserGet
 ): Promise<IUserWithData> => {
   const user = await get(id, data)
 
@@ -110,11 +111,11 @@ const getWithData = async (
  * @param keyName Key name
  * @returns User
  */
-const getBy = async (
+const getBy = async <T extends TUserGet, Key extends TUserGetKey>(
   key: string,
-  data: Array<string>,
-  keyName: string
-): Promise<IUser> => {
+  data: T,
+  keyName: Key
+): Promise<IUser<T, TUserGetKey>> => {
   return UserDB.get(key, data, keyName)
 }
 
@@ -123,7 +124,7 @@ const getBy = async (
  * @param data Data
  * @returns Users
  */
-const getAll = async (data: string[]): Promise<IUser[]> => {
+const getAll = async <T extends TUserGet>(data: T): Promise<IUser<T>[]> => {
   const users = await UserDB.getAll(data)
 
   if (data.includes('organizations'))
@@ -157,7 +158,7 @@ const getAll = async (data: string[]): Promise<IUser[]> => {
 const login = async (user: {
   email: string
   password: string
-}): Promise<IUserCheck & { email: string }> => {
+}): Promise<null | (IUserCheck & { email: string })> => {
   const loggedUser = await UserDB.getByUsernameAndPassword(user)
 
   // Check user
@@ -206,7 +207,6 @@ const del = async (user: { id: string }): Promise<void> => {
   const data = await get(user.id, ['workspaces', 'organizations', 'avatar'])
 
   // Delete from organization
-
   await Promise.all(
     data.organizations.map(async (organization) => {
       await Organization.update({ id: organization }, [
@@ -228,6 +228,7 @@ const del = async (user: { id: string }): Promise<void> => {
 
       const organizationData = await Organization.get(organization, ['groups'])
 
+      // Delete from groups
       await Promise.all(
         organizationData.groups.map(async (group) => {
           await Group.update({ id: group }, [
@@ -244,7 +245,6 @@ const del = async (user: { id: string }): Promise<void> => {
   )
 
   // Delete workspaces
-
   await Promise.all(
     data.workspaces.map(async (workspace) => {
       await Workspace.del(user, { id: workspace })

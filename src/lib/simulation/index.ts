@@ -2,24 +2,23 @@
 
 import path from 'path'
 
-import {
-  IDataBaseEntry,
-  IGeometry,
-  INewSimulation,
-  ISimulation,
-  ISimulationTask
-} from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
 import { GEOMETRY, SIMULATION } from '@/config/storage'
 
-import SimulationDB, { TSimulationGet } from '@/database/simulation'
+import SimulationDB, {
+  INewSimulation,
+  ISimulation,
+  TSimulationGet
+} from '@/database/simulation'
 
 import User from '../user'
 import Project from '../project'
 import Geometry from '../geometry'
 import Tools from '../tools'
 import Plugins from '../plugins'
+import { IGeometry } from '@/database/geometry'
 
 /**
  * Add
@@ -73,7 +72,9 @@ const get = async <T extends TSimulationGet>(
  * @param data Data
  * @returns Simulations
  */
-const getAll = async (data: string[]): Promise<ISimulation[]> => {
+const getAll = async <T extends TSimulationGet>(
+  data: T
+): Promise<ISimulation<T>[]> => {
   const simulations = await SimulationDB.getAll(data)
 
   if (data.includes('tasks'))
@@ -103,9 +104,7 @@ const update = async (
  */
 const del = async (simulation: { id: string }): Promise<void> => {
   // Data
-  const simulationData = (await get(simulation.id, [
-    'project'
-  ])) as ISimulation & { project: string }
+  const simulationData = await get(simulation.id, ['project'])
 
   // Delete simulation reference in project
   await Project.update({ id: simulationData.project }, [
@@ -138,12 +137,10 @@ const run = async (
   user: { id: string },
   simulation: { id: string }
 ): Promise<void> => {
-  const simulationData = (await get(simulation.id, [
-    'scheme'
-  ])) as ISimulation & { scheme: IModel }
+  const simulationData = await get(simulation.id, ['scheme'])
 
   // Global
-  const configuration = simulationData.scheme.configuration
+  const configuration = simulationData.scheme?.configuration
   if (!configuration) return
 
   // Update status
@@ -229,10 +226,10 @@ const run = async (
   // Copy geometry
   const geometryId = configuration.geometry?.value
   if (geometryId) {
-    const geometry = (await Geometry.get(geometryId, [
+    const geometry = await Geometry.get(geometryId, [
       'uploadfilename',
       'extension'
-    ])) as IGeometry & { uploadfilename: string; extension: string }
+    ])
     if (geometry.extension === 'dxf') {
       // 2D replace
       geometry.uploadfilename = geometry.uploadfilename.replace('.dxf', '.brep')
@@ -353,13 +350,12 @@ const run = async (
  * @param simulation Simulation
  */
 const stop = async (simulation: { id: string }): Promise<void> => {
-  const simulationData = (await get(simulation.id, [
-    'scheme',
-    'tasks'
-  ])) as ISimulation & { scheme: IModel; tasks: ISimulationTask[] }
+  const simulationData = await get(simulation.id, ['scheme', 'tasks'])
 
   // Global
-  const configuration = simulationData.scheme.configuration
+  const configuration = simulationData.scheme?.configuration
+  if (!configuration) return
+
   const tasks = simulationData.tasks
 
   // Find plugin

@@ -7,6 +7,7 @@ import { tables } from '@/config/db'
 import { getter } from '..'
 
 export type TUserGet = (
+  | 'id'
   | 'lastname'
   | 'firstname'
   | 'email'
@@ -17,11 +18,13 @@ export type TUserGet = (
   | 'password'
   | 'passwordlastchange'
   | 'organizations'
+  | 'workspaces'
   | 'authorizedplugins'
   | 'plugins'
 )[]
 export type TUserGetKey = 'id' | 'email'
 
+export type TUserGetId = 'id'[]
 export type TUserGetLastname = 'lastname'[]
 export type TUserGetFirstname = 'firstname'[]
 export type TUserGetEmail = 'email'[]
@@ -32,11 +35,14 @@ export type TUserGetSuperuser = 'superuser'[]
 export type TUserGetPassword = 'password'[]
 export type TUserGetPasswordlastchange = 'passwordlastchange'[]
 export type TUserGetOrganizations = 'organizations'[]
+export type TUserGetWorkspaces = 'workspaces'[]
 export type TUserGetAuthorizedplugins = 'authorizedplugins'[]
 export type TUserGetPlugins = 'plugins'[]
 
 export interface IUser<T = [], Key = 'id'> {
-  id: ('id'[] extends T ? string : never) | (Key extends 'id' ? string : never)
+  id:
+    | (TUserGetId extends T ? string : never)
+    | (Key extends 'id' ? string : never)
   lastname?: TUserGetLastname extends T ? string : never
   firstname?: TUserGetFirstname extends T ? string : never
   email:
@@ -49,7 +55,7 @@ export interface IUser<T = [], Key = 'id'> {
   password: TUserGetPassword extends T ? string : never
   passwordlastchanged: TUserGetPasswordlastchange extends T ? Date : never
   organizations?: TUserGetOrganizations extends T ? string[] : never[]
-  workspaces?: TUserGetPassword extends T ? string[] : never[]
+  workspaces?: TUserGetWorkspaces extends T ? string[] : never[]
   authorizedplugins?: TUserGetAuthorizedplugins extends T ? string[] : never[]
   plugins?: TUserGetPlugins extends T ? IPlugin[] : never[]
 }

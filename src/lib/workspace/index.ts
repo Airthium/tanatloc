@@ -1,22 +1,21 @@
 /** @module Lib.Workspace */
 
-import {
-  IDataBaseEntry,
-  IGroup,
-  INewWorkspace,
-  IUser,
-  IWorkspace
-} from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
 import { IWorkspaceWithData } from '../index.d'
 
 import { LIMIT } from '@/config/string'
 
-import WorkspaceDB, { TWorkspaceGet } from '@/database/workspace'
+import WorkspaceDB, {
+  INewWorkspace,
+  IWorkspace,
+  TWorkspaceGet
+} from '@/database/workspace'
 
 import User from '../user'
 import Group from '../group'
 import Organization from '../organization'
 import Project from '../project'
+import { IUser } from '@/database/user'
 
 /**
  * Add
@@ -83,9 +82,9 @@ const get = async <T extends TWorkspaceGet>(
  * @param data Data
  * @returns Workspace
  */
-const getWithData = async (
+const getWithData = async <T extends TWorkspaceGet>(
   id: string,
-  data: Array<string>
+  data: T
 ): Promise<IWorkspaceWithData> => {
   const workspace = await get(id, data)
 
@@ -151,7 +150,7 @@ const getWithData = async (
  * @param user User
  * @returns Workspaces
  */
-const getUserWorkspaces = async (user: IUser) => {
+const getUserWorkspaces = async (user: { workspaces: string[] }) => {
   return Promise.all(
     user.workspaces.map(async (workspace: string) => {
       const data = await getWithData(workspace, [
@@ -174,7 +173,7 @@ const getUserWorkspaces = async (user: IUser) => {
  * @param group Group
  * @returns Workspace
  */
-const getGroupWorkspaces = async (group: IGroup) => {
+const getGroupWorkspaces = async (group: { workspaces: string[] }) => {
   return Promise.all(
     group.workspaces.map(async (workspace) => {
       const workspaceData = await getWithData(workspace, [
@@ -208,7 +207,6 @@ const getByUser = async ({
   const workspaces = []
 
   // Get local workspaces
-
   const localWorkspaces = await getUserWorkspaces(user)
   workspaces.push(...localWorkspaces)
 

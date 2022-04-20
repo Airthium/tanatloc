@@ -39,12 +39,17 @@ export interface ISimulationTask {
   datas?: Array<{ x: number; y: number }>
 }
 
-export interface ISimulation<T> {
+export type TSimulationGetName = 'name'[]
+export type TSimulationGetScheme = 'scheme'[]
+export type TSimulationGetTasks = 'tasks'[]
+export type TSimulationGetProject = 'project'[]
+
+export interface ISimulation<T = []> {
   id: string
-  name: T extends ['name'] ? string : never
-  scheme?: T extends ['scheme'] ? IModel : never
-  tasks?: T extends ['tasks'] ? ISimulationTask[] : never[]
-  project: T extends ['project'] ? string : never
+  name: TSimulationGetName extends T ? string : never
+  scheme?: TSimulationGetScheme extends T ? IModel : never
+  tasks?: TSimulationGetTasks extends T ? ISimulationTask[] : never[]
+  project: TSimulationGetProject extends T ? string : never
 }
 
 /**

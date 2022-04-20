@@ -173,7 +173,7 @@ const getGroups = async (project: {
  */
 const getWithData = async (
   id: string,
-  data: string[]
+  data: TProjectGet
 ): Promise<IProjectWithData> => {
   const project = await get(id, data)
 

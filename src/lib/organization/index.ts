@@ -14,6 +14,7 @@ import OrganizationDB, {
   IOrganization,
   TOrganizationGet
 } from '@/database/organization'
+import { TUserGet } from '@/database/user'
 
 import User from '../user'
 import Group from '../group'
@@ -87,7 +88,7 @@ const getOwnersData = async (
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     organization.owners.map(async (owner) => {
-      const data = ['email']
+      const data: TUserGet = ['email']
       if (!partial) {
         data.push('firstname', 'lastname', 'avatar')
       }
@@ -113,7 +114,7 @@ const getUsersData = async (
 ): Promise<IUserWithData[]> => {
   return Promise.all(
     organization.users.map(async (user) => {
-      const data = ['email']
+      const data: TUserGet = ['email']
       if (!partial) {
         data.push('firstname', 'lastname', 'avatar')
       }
@@ -207,7 +208,16 @@ const getWithData = async (
  * @param data Data
  */
 const setMissingData = (
-  organizations: IOrganization[],
+  organizations: IOrganization<
+    (
+      | 'name'
+      | 'owners'
+      | 'pendingowners'
+      | 'users'
+      | 'pendingusers'
+      | 'groups'
+    )[]
+  >[],
   data: string[]
 ): void => {
   if (data.includes('owners'))
@@ -311,7 +321,7 @@ const getByUser = async (
     })
   )
 
-  return userOrganizations.filter((o) => o)
+  return userOrganizations.filter((o) => o) as IOrganization[]
 }
 
 /**

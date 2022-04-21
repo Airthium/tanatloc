@@ -119,7 +119,7 @@ const SectionViewHelper = (
   let lastAxis = defaultNormal
   let highlighted: Mesh<BufferGeometry, MeshBasicMaterial> | undefined
   let isDown: boolean
-  let control: Mesh
+  let control: Mesh | null
 
   // Controller
   const controller: IController = new Group()
@@ -423,8 +423,8 @@ const SectionViewHelper = (
       const intersection = new Vector3()
       raycaster.ray.intersectPlane(controlPlane, intersection)
 
-      if (control.type === 'Plane') planeMove(intersection)
-      else if (control.type === 'Dome') domeMove(mouse)
+      if (control?.type === 'Plane') planeMove(intersection)
+      else if (control?.type === 'Dome') domeMove(mouse)
       else arcMove(intersection)
 
       updateClippingPlane()
@@ -523,7 +523,7 @@ const SectionViewHelper = (
    */
   const arcControl = (): void => {
     // Rotation axis
-    control.getWorldDirection(controlRotationAxis)
+    control!.getWorldDirection(controlRotationAxis)
 
     // Rotation
     controlRotation.copy(controller.rotation)
@@ -589,7 +589,7 @@ const SectionViewHelper = (
    * @param mouse Mouse
    */
   const setControl = (mouse: Vector2): void => {
-    switch (control.type) {
+    switch (control?.type) {
       case 'Plane':
         planeControl()
         break

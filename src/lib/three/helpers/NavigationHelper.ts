@@ -19,7 +19,6 @@ import {
   Raycaster,
   WebGLRenderer,
   PerspectiveCamera,
-  Object3D,
   BufferGeometry,
   MeshStandardMaterial
 } from 'three'
@@ -72,9 +71,9 @@ const NavigationHelper = (
   // Cube corner
   const corner = 0.25
   // Highlight variable
-  let currentlyHighlighted = null
+  let currentlyHighlighted: (Group & { normal: Vector3 }) | null = null
   // Unhighlight variable
-  let previouslyHighlighted = null
+  let previouslyHighlighted: (Group & { normal: Vector3 }) | null = null
 
   // Faces
   const faces = [
@@ -110,7 +109,7 @@ const NavigationHelper = (
   faces.forEach((face) => {
     // Canvas
     const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D
     canvas.width = canvas.height = 256
     context.fillStyle = cubeColor
     context.fillRect(0, 0, canvas.width, canvas.height)
@@ -188,12 +187,12 @@ const NavigationHelper = (
     if (isIn(mouse)) {
       currentlyHighlighted = intersect(mouse)
       highlight()
-      if (currentlyHighlighted.uuid !== previouslyHighlighted?.uuid) {
+      if (currentlyHighlighted?.uuid !== previouslyHighlighted?.uuid) {
         unhighlight()
         previouslyHighlighted = currentlyHighlighted
       }
     } else {
-      currentlyHighlighted = 0
+      currentlyHighlighted = null
       unhighlight()
     }
   }
@@ -229,7 +228,7 @@ const NavigationHelper = (
    * Intersect
    * @param mouse Mouse
    */
-  const intersect = (mouse: Vector2): Object3D => {
+  const intersect = (mouse: Vector2): (Group & { normal: Vector3 }) | null => {
     const mouseCoords = new Vector3(mouse.x, mouse.y, -1)
     mouseCoords.unproject(localCamera)
 
@@ -240,7 +239,9 @@ const NavigationHelper = (
 
     const intersects = raycaster.intersectObjects(localScene.children, true)
 
-    return intersects.length && intersects[0].object.parent
+    return intersects.length
+      ? (intersects[0].object.parent as (Group & { normal: Vector3 }) | null)
+      : null
   }
 
   /**
@@ -249,19 +250,16 @@ const NavigationHelper = (
   const highlight = (): void => {
     currentlyHighlighted &&
       currentlyHighlighted.children &&
-      currentlyHighlighted.children.forEach(
-        (
-          object: Mesh<
-            BufferGeometry,
-            MeshStandardMaterial & { previousColor: Color }
-          >
-        ) => {
-          if (object.material && object.material.color) {
-            object.material.previousColor = object.material.color
-            object.material.color = new Color(highlightColor)
-          }
+      currentlyHighlighted.children.forEach((object) => {
+        const mesh = object as Mesh<
+          BufferGeometry,
+          MeshStandardMaterial & { previousColor: Color }
+        >
+        if (mesh.material && mesh.material.color) {
+          mesh.material.previousColor = mesh.material.color
+          mesh.material.color = new Color(highlightColor)
         }
-      )
+      })
   }
 
   /**
@@ -270,13 +268,12 @@ const NavigationHelper = (
   const unhighlight = (): void => {
     previouslyHighlighted &&
       previouslyHighlighted.children &&
-      previouslyHighlighted.children.forEach(
-        (object: Mesh<BufferGeometry, MeshStandardMaterial>) => {
-          if (object.material && object.material.color) {
-            object.material.color = new Color(cubeColor)
-          }
+      previouslyHighlighted.children.forEach((object) => {
+        const mesh = object as Mesh<BufferGeometry, MeshStandardMaterial>
+        if (mesh.material && mesh.material.color) {
+          mesh.material.color = new Color(cubeColor)
         }
-      )
+      })
   }
 
   /**
@@ -302,7 +299,7 @@ const NavigationHelper = (
       camera.up.copy(up)
 
       // Unhighlight
-      currentlyHighlighted = 0
+      currentlyHighlighted = null
       unhighlight()
 
       // Mouse move
@@ -349,12 +346,11 @@ const NavigationHelper = (
 
     // Cube
     cube.children.forEach((group) => {
-      group.children.forEach(
-        (child: Mesh<BufferGeometry, MeshStandardMaterial>) => {
-          child.geometry.dispose()
-          child.material.dispose()
-        }
-      )
+      group.children.forEach((child) => {
+        const mesh = child as Mesh<BufferGeometry, MeshStandardMaterial>
+        mesh.geometry.dispose()
+        mesh.material.dispose()
+      })
     })
 
     // Scene

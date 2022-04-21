@@ -26,7 +26,7 @@ const LabelHelper = (
   const canvas = document.createElement('canvas')
   canvas.width = 256
   canvas.height = 256
-  const context = canvas.getContext('2d')
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D
   context.fillStyle = 'grey'
   context.font = '50px sans-serif'
   context.textAlign = parameters?.align || 'center'
@@ -44,7 +44,7 @@ const LabelHelper = (
     transparent: true,
     depthWrite: false
   })
-  material.map.anisotropy = renderer.capabilities.getMaxAnisotropy()
+  material.map!.anisotropy = renderer.capabilities.getMaxAnisotropy()
 
   // Label
   const label = new Sprite(material) as ILabelHelper

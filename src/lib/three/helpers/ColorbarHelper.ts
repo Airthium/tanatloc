@@ -52,9 +52,9 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * Clean scene (local)
    */
   const clearScene = (): void => {
-    colorScene.children.forEach((child: IColorbarHelperSprite) => {
-      child.dispose()
-    })
+    colorScene.children.forEach((child) =>
+      (child as IColorbarHelperSprite).dispose()
+    )
     colorScene.clear()
   }
 

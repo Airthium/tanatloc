@@ -3,8 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IProjectWithData } from '@/lib/index.d'
-
+import { IFrontProject } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -15,14 +14,14 @@ import { fetcher } from '@/api/call'
 export const useProject = (
   id?: string
 ): [
-  IProjectWithData,
+  IFrontProject,
   {
-    mutateProject: (project: IProjectWithData) => void
+    mutateProject: (project: Partial<IFrontProject>) => void
     errorProject: Error
     loadingProject: boolean
   }
 ] => {
-  const defaultData = { id: '0' } as IProjectWithData
+  const defaultData = { id: '0' } as IFrontProject
 
   const { data, error, mutate } = useSWR(
     '/api/project' + (id ? '/' + id : ''),
@@ -36,7 +35,7 @@ export const useProject = (
    * @param update Project
    */
   const localMutate = useCallback(
-    (update: IProjectWithData): void => {
+    (update: Partial<IFrontProject>): void => {
       const mutatedProject = {
         ...project,
         ...update

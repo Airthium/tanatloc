@@ -3,29 +3,28 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { INewOrganization } from '@/database/organization'
-import { IOrganizationWithData } from '@/lib/index.d'
-
+import { IFrontOrganizations, IFrontOrganizationsItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
+
+// TODO new organization ?
 
 /**
  * Use organizations
  * @returns Organization
  */
 export const useOrganizations = (): [
-  IOrganizationWithData[],
+  IFrontOrganizations,
   {
-    mutateOrganizations: (data: {
-      organizations: IOrganizationWithData[]
-    }) => void
-    addOneOrganization: (organization: INewOrganization) => void
-    delOneOrganization: (organization: IOrganizationWithData) => void
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    addOneOrganization: (organization: Partial<IFrontOrganizationsItem>) => void
+    delOneOrganization: (organization: Partial<IFrontOrganizationsItem>) => void
+    mutateOneOrganization: (
+      organization: Partial<IFrontOrganizationsItem>
+    ) => void
     errorOrganizations: Error
     loadingOrganizations: boolean
   }
 ] => {
-  const defaultData: IOrganizationWithData[] = []
+  const defaultData: IFrontOrganizations = []
 
   const { data, error, mutate } = useSWR('/api/organizations', fetcher)
   const loading = !data
@@ -36,7 +35,7 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const addOne = useCallback(
-    (organization: INewOrganization): void => {
+    (organization: Partial<IFrontOrganizationsItem>): void => {
       const newOrganizations = [...organizations, organization]
       //@ts-ignore
       mutate({ organizations: newOrganizations })
@@ -49,7 +48,7 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const delOne = useCallback(
-    (organization: IOrganizationWithData): void => {
+    (organization: Partial<IFrontOrganizationsItem>): void => {
       const filteredOrganizations = organizations.filter(
         (o) => o.id !== organization.id
       )
@@ -63,7 +62,7 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const mutateOne = useCallback(
-    (organization: IOrganizationWithData): void => {
+    (organization: Partial<IFrontOrganizationsItem>): void => {
       const mutatedOrganizations = organizations.map((o) => {
         if (o.id === organization.id) o = { ...o, ...organization }
         return o
@@ -76,7 +75,6 @@ export const useOrganizations = (): [
   return [
     organizations,
     {
-      mutateOrganizations: mutate,
       addOneOrganization: addOne,
       delOneOrganization: delOne,
       mutateOneOrganization: mutateOne,

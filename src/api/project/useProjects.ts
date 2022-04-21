@@ -3,10 +3,11 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { INewProject } from '@/database/project'
-import { IProjectWithData } from '@/lib/index.d'
-
+import { IFrontProjects, IFrontProjectsItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
+
+// TODO new project ?
+
 /**
  * Use projects
  * @param ids Projects ids
@@ -15,17 +16,16 @@ import { fetcher } from '@/api/call'
 export const useProjects = (
   ids?: string[]
 ): [
-  IProjectWithData[],
+  IFrontProjects,
   {
-    mutateProjects: (data: { projects: IProjectWithData[] }) => void
-    addOneProject: (project: INewProject) => void
-    delOneProject: (project: IProjectWithData) => void
-    mutateOneProject: (project: IProjectWithData) => void
+    addOneProject: (project: Partial<IFrontProjectsItem>) => void
+    delOneProject: (project: Partial<IFrontProjectsItem>) => void
+    mutateOneProject: (project: Partial<IFrontProjectsItem>) => void
     errorProjects: Error
     loadingProjects: boolean
   }
 ] => {
-  const defaultData: IProjectWithData[] = []
+  const defaultData: IFrontProjects = []
 
   const { data, error, mutate } = useSWR(
     ['/api/projects', JSON.stringify({ ids })],
@@ -39,7 +39,7 @@ export const useProjects = (
    * @param project Project
    */
   const addOne = useCallback(
-    (project: INewProject): void => {
+    (project: Partial<IFrontProjectsItem>): void => {
       const newProjects = [...projects, project]
       //@ts-ignore
       mutate({ projects: newProjects })
@@ -52,7 +52,7 @@ export const useProjects = (
    * @param project project
    */
   const delOne = useCallback(
-    (project: IProjectWithData): void => {
+    (project: Partial<IFrontProjectsItem>): void => {
       const filteredProjects = projects.filter((p) => p.id !== project.id)
       mutate({ projects: filteredProjects })
     },
@@ -64,7 +64,7 @@ export const useProjects = (
    * @param project Project
    */
   const mutateOne = useCallback(
-    (project: IProjectWithData): void => {
+    (project: Partial<IFrontProjectsItem>): void => {
       const mutatedProjects = projects.map((p) => {
         if (p.id === project.id) p = { ...p, ...project }
         return p
@@ -77,7 +77,6 @@ export const useProjects = (
   return [
     projects,
     {
-      mutateProjects: mutate,
       addOneProject: addOne,
       delOneProject: delOne,
       mutateOneProject: mutateOne,

@@ -3,9 +3,10 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IGeometry } from '@/database/geometry'
-
+import { IFrontGeometries, IFrontGeometriesItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
+
+// TODO new geometry ?
 
 /**
  * Use geometries
@@ -15,17 +16,16 @@ import { fetcher } from '@/api/call'
 export const useGeometries = (
   ids?: Array<string>
 ): [
-  IGeometry[],
+  IFrontGeometries,
   {
-    mutateGeometries: (data: { geometries: IGeometry[] }) => void
-    addOneGeometry: (geometry: IGeometry) => void
-    delOneGeometry: (geometry: IGeometry) => void
-    mutateOneGeometry: (geometry: IGeometry) => void
+    addOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
+    delOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
+    mutateOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
     errorGeometries: Error
     loadingGeometries: boolean
   }
 ] => {
-  const defaultData: IGeometry[] = []
+  const defaultData: IFrontGeometries = []
 
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
@@ -39,8 +39,8 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const addOne = useCallback(
-    (geometry: IGeometry): void => {
-      const newGeometries = [...geometries, geometry]
+    (geometry: Partial<IFrontGeometriesItem>): void => {
+      const newGeometries = [...geometries, geometry] as IFrontGeometries
       mutate({ geometries: newGeometries })
     },
     [geometries, mutate]
@@ -51,7 +51,7 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const delOne = useCallback(
-    (geometry: IGeometry): void => {
+    (geometry: Partial<IFrontGeometriesItem>): void => {
       const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
       mutate({ geometries: filteredGeometries })
     },
@@ -63,7 +63,7 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const mutateOne = useCallback(
-    (geometry: IGeometry): void => {
+    (geometry: Partial<IFrontGeometriesItem>): void => {
       const mutatedGeometries = geometries.map((g) => {
         if (g.id === geometry.id) g = { ...g, ...geometry }
         return g
@@ -76,7 +76,6 @@ export const useGeometries = (
   return [
     geometries,
     {
-      mutateGeometries: mutate,
       addOneGeometry: addOne,
       delOneGeometry: delOne,
       mutateOneGeometry: mutateOne,

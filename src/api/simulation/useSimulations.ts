@@ -3,9 +3,10 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { ISimulation } from '@/database/simulation'
-
+import { IFrontSimulations, IFrontSimulationsItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
+
+// TODO new simulations ?
 
 /**
  * Use simulations
@@ -15,17 +16,19 @@ import { fetcher } from '@/api/call'
 export const useSimulations = (
   ids?: string[]
 ): [
-  ISimulation[],
+  IFrontSimulations,
   {
-    mutateSimulations: (data: { simulations: ISimulation[] }) => void
-    addOneSimulation: (simulation: ISimulation) => void
-    delOneSimulation: (simulation: ISimulation) => void
-    mutateOneSimulation: (simulation: ISimulation, revalidate?: boolean) => void
+    addOneSimulation: (simulation: Partial<IFrontSimulationsItem>) => void
+    delOneSimulation: (simulation: Partial<IFrontSimulationsItem>) => void
+    mutateOneSimulation: (
+      simulation: Partial<IFrontSimulationsItem>,
+      revalidate?: boolean
+    ) => void
     errorSimulations: Error
     loadingSimulations: boolean
   }
 ] => {
-  const defaultData: ISimulation[] = []
+  const defaultData: IFrontSimulations = []
 
   const { data, error, mutate } = useSWR(
     ['/api/simulations', JSON.stringify({ ids })],
@@ -39,7 +42,7 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const addOne = useCallback(
-    (simulation: ISimulation): void => {
+    (simulation: Partial<IFrontSimulationsItem>): void => {
       const newSimulations = [...simulations, simulation]
       mutate({ simulations: newSimulations })
     },
@@ -51,7 +54,7 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const delOne = useCallback(
-    (simulation: ISimulation): void => {
+    (simulation: Partial<IFrontSimulationsItem>): void => {
       const filteredSimulations = simulations.filter(
         (s) => s.id !== simulation.id
       )
@@ -65,7 +68,10 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const mutateOne = useCallback(
-    (simulation: ISimulation, revalidate?: boolean): void => {
+    (
+      simulation: Partial<IFrontSimulationsItem>,
+      revalidate?: boolean
+    ): void => {
       const mutatedSimulations = simulations.map((s) => {
         if (s.id === simulation.id) s = { ...s, ...simulation }
         return s
@@ -78,7 +84,6 @@ export const useSimulations = (
   return [
     simulations,
     {
-      mutateSimulations: mutate,
       addOneSimulation: addOne,
       delOneSimulation: delOne,
       mutateOneSimulation: mutateOne,

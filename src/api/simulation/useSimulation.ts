@@ -3,8 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { ISimulation } from '@/database/simulation'
-
+import { IFrontSimulation } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -16,14 +15,14 @@ export const useSimulation = (
   id?: string,
   refresh?: number
 ): [
-  ISimulation,
+  IFrontSimulation,
   {
-    mutateSimulation: (simulation: ISimulation) => void
+    mutateSimulation: (simulation: Partial<IFrontSimulation>) => void
     errorSimulation: Error
     loadingSimulation: boolean
   }
 ] => {
-  const defaultData = { id: '0' }
+  const defaultData = { id: '0' } as IFrontSimulation
 
   const { data, error, mutate } = useSWR(
     '/api/simulation' + (id ? '/' + id : ''),
@@ -38,7 +37,7 @@ export const useSimulation = (
    * @param update Simulation
    */
   const localMutate = useCallback(
-    (update: ISimulation): void => {
+    (update: Partial<IFrontSimulation>): void => {
       mutate({
         simulation: {
           ...simulation,

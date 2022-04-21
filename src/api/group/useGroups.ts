@@ -4,9 +4,11 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import { INewGroup } from '@/database/group'
-import { IGroupWithData } from '@/lib/index.d'
 
+import { IFrontGroups, IFrontGroupsItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
+
+// TODO new group ?
 
 /**
  * Use groups
@@ -16,17 +18,16 @@ import { fetcher } from '@/api/call'
 export const useGroups = (
   id?: string
 ): [
-  IGroupWithData[],
+  IFrontGroups,
   {
-    mutateGroups: (data: { groups: IGroupWithData[] }) => void
     addOneGroup: (group: INewGroup) => void
-    delOneGroup: (group: IGroupWithData) => void
-    mutateOneGroup: (group: IGroupWithData) => void
+    delOneGroup: (group: Partial<IFrontGroupsItem>) => void
+    mutateOneGroup: (group: Partial<IFrontGroupsItem>) => void
     errorGroups: Error
     loadingGroups: boolean
   }
 ] => {
-  const defaultData: IGroupWithData[] = []
+  const defaultData: IFrontGroups = []
 
   const { data, error, mutate } = useSWR('/api/groups/' + id, fetcher)
   const loading = !data
@@ -50,7 +51,7 @@ export const useGroups = (
    * @param group Group
    */
   const delOne = useCallback(
-    (group: IGroupWithData): void => {
+    (group: Partial<IFrontGroupsItem>): void => {
       const filteredGroups = groups.filter((g) => g.id !== group.id)
       mutate({ groups: filteredGroups })
     },
@@ -62,7 +63,7 @@ export const useGroups = (
    * @param groups Group
    */
   const mutateOne = useCallback(
-    (group: IGroupWithData): void => {
+    (group: Partial<IFrontGroupsItem>): void => {
       const mutatedGroups = groups.map((g) => {
         if (g.id === group.id) g = { ...g, ...group }
         return g
@@ -75,7 +76,6 @@ export const useGroups = (
   return [
     groups,
     {
-      mutateGroups: mutate,
       addOneGroup: addOne,
       delOneGroup: delOne,
       mutateOneGroup: mutateOne,

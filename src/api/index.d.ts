@@ -12,17 +12,28 @@ import {
   IWorkspaceWithData
 } from '@/lib/index.d'
 
-export interface IFrontGeometries
-  extends Array<
-    IGeometry<
-      ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
-    >
+/**
+ * Geometries
+ */
+export interface IFrontGeometriesItem
+  extends IGeometry<
+    ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
   > {}
 
-export interface IFrontGroups
-  extends Array<IGroupWithData<('name' | 'users')[]>> {}
+export interface IFrontGeometries extends Array<IFrontGeometriesItem> {}
 
-export interface IFrontOrganizations
+/**
+ * Groups
+ */
+export interface IFrontGroupsItem
+  extends IGroupWithData<('name' | 'users')[]> {}
+
+export interface IFrontGroups extends Array<IFrontGroupsItem> {}
+
+/**
+ * Organizations
+ */
+export interface IFrontOrganizationsItem
   extends IOrganizationWithData<
     (
       | 'name'
@@ -34,6 +45,11 @@ export interface IFrontOrganizations
     )[]
   > {}
 
+export interface IFrontOrganizations extends Array<IFrontOrganizationsItem> {}
+
+/**
+ * Project
+ */
 export interface IFrontProject
   extends IProjectWithData<
     (
@@ -47,34 +63,50 @@ export interface IFrontProject
     )[]
   > {}
 
-export interface IFrontProjects
-  extends Array<
-    IProjectWithData<
-      (
-        | 'archived'
-        | 'title'
-        | 'description'
-        | 'createddate'
-        | 'lastaccess'
-        | 'avatar'
-        | 'owners'
-        | 'users'
-        | 'groups'
-        | 'simulations'
-        | 'workspace'
-      )[]
-    >
+/**
+ * Projects
+ */
+export interface IFrontProjectsItem
+  extends IProjectWithData<
+    (
+      | 'archived'
+      | 'title'
+      | 'description'
+      | 'createddate'
+      | 'lastaccess'
+      | 'avatar'
+      | 'owners'
+      | 'users'
+      | 'groups'
+      | 'simulations'
+      | 'workspace'
+    )[]
   > {}
 
+export interface IFrontProjects extends Array<IFrontProjectsItem> {}
+
+/**
+ * Simulation
+ */
 export interface IFrontSimulation
   extends ISimulation<('name' | 'scheme' | 'tasks')[]> {}
 
-export interface IFrontSimulations
-  extends Array<ISimulation<('name' | 'scheme' | 'project')[]>> {}
+/**
+ * Simulations
+ */
+export interface IFrontSimulationsItem
+  extends ISimulation<('name' | 'scheme' | 'project')[]> {}
+export interface IFrontSimulations extends Array<IFrontSimuationsItem> {}
 
+/**
+ * System
+ */
 export interface IFrontSystem
   extends ISystem<('allowsignup' | 'password' | 'defaultplugins')[]> {}
 
+/**
+ * User
+ */
 export interface IFrontUser
   extends IUserWithData<
     (
@@ -88,25 +120,35 @@ export interface IFrontUser
     )[]
   > {}
 
-export interface IFrontUsers
-  extends Array<
-    IUserWithData<
-      (
-        | 'id'
-        | 'firstname'
-        | 'lastname'
-        | 'email'
-        | 'authorizedplugins'
-        | 'superuser'
-      )[]
-    >
+/**
+ * Users
+ */
+export interface IFrontUsersItem
+  extends IUserWithData<
+    (
+      | 'id'
+      | 'firstname'
+      | 'lastname'
+      | 'email'
+      | 'authorizedplugins'
+      | 'superuser'
+    )[]
   > {}
 
-export interface IFrontWorkspaces
-  extends Array<
-    IWorkspaceWithData<('name' | 'owners' | 'users' | 'groups' | 'projects')[]>
-  > {}
+export interface IFrontUsers extends Array<IFrontUsersItem> {}
 
+/**
+ * Workspaces
+ */
+export interface IFrontWorkspacesItem
+  extends IWorkspaceWithData<
+    ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
+  > {}
+export interface IFrontWorkspaces extends Array<IFrontWorkspacesItem> {}
+
+/**
+ * Fetch
+ */
 export interface IFetchResponse {
   geometries?: IFrontGeometries
   groups?: IFrontGroups

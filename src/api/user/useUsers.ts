@@ -3,26 +3,26 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IUserWithData } from '@/lib/index.d'
-
+import { IFrontUsers, IFrontUsersItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
+
+// TODO new user ?
 
 /**
  * Use users
  * @returns Users
  */
 export const useUsers = (): [
-  IUserWithData[],
+  IFrontUsers,
   {
-    mutateUsers: (data: { users: IUserWithData[] }) => void
-    addOneUser: (user: IUserWithData) => void
-    delOneUser: (user: IUserWithData) => void
-    mutateOneUser: (user: IUserWithData) => void
+    addOneUser: (user: Partial<IFrontUsersItem>) => void
+    delOneUser: (user: Partial<IFrontUsersItem>) => void
+    mutateOneUser: (user: Partial<IFrontUsersItem>) => void
     errorUsers: Error
     loadingUsers: boolean
   }
 ] => {
-  const defaultData: IUserWithData[] = []
+  const defaultData: IFrontUsers = []
 
   const { data, error, mutate } = useSWR('/api/users', fetcher)
   const loading = !data
@@ -33,8 +33,8 @@ export const useUsers = (): [
    * @param user User
    */
   const addOne = useCallback(
-    (user: IUserWithData): void => {
-      const newUsers = [...users, user]
+    (user: Partial<IFrontUsersItem>): void => {
+      const newUsers = [...users, user] as IFrontUsers
       mutate({ users: newUsers })
     },
     [users, mutate]
@@ -45,7 +45,7 @@ export const useUsers = (): [
    * @param user User
    */
   const delOne = useCallback(
-    (user: IUserWithData): void => {
+    (user: Partial<IFrontUsersItem>): void => {
       const filteredUsers = users.filter((u) => u.id !== user.id)
       mutate({ users: filteredUsers })
     },
@@ -57,7 +57,7 @@ export const useUsers = (): [
    * @param user User
    */
   const mutateOne = useCallback(
-    (user: IUserWithData): void => {
+    (user: Partial<IFrontUsersItem>): void => {
       const mutatedUsers = users.map((u) => {
         if (u.id === user.id) u = { ...u, ...user }
         return u
@@ -70,7 +70,6 @@ export const useUsers = (): [
   return [
     users,
     {
-      mutateUsers: mutate,
       addOneUser: addOne,
       delOneUser: delOne,
       mutateOneUser: mutateOne,

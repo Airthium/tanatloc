@@ -1,29 +1,28 @@
 /** @module API.Workspace.UseWorkspaces */
 
 import useSWR from 'swr'
-
-import { INewWorkspace } from '@/database/workspace'
-import { IWorkspaceWithData } from '@/lib/index.d'
-
-import { fetcher } from '@/api/call'
 import { useCallback } from 'react'
+
+import { IFrontWorkspaces, IFrontWorkspacesItem } from '@/api/index.d'
+import { fetcher } from '@/api/call'
+
+// TODO new workspace ?
 
 /**
  * Use workspace (SWR)
  * @returns Workspaces
  */
 export const useWorkspaces = (): [
-  IWorkspaceWithData[],
+  IFrontWorkspaces,
   {
-    mutateWorkspaces: (data: { workspaces: IWorkspaceWithData[] }) => void
-    addOneWorkspace: (workspace: INewWorkspace) => void
-    delOneWorkspace: (workspace: IWorkspaceWithData) => void
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    addOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
     errorWorkspaces: Error
     loadingWorkspaces: boolean
   }
 ] => {
-  const defaultData: IWorkspaceWithData[] = []
+  const defaultData: IFrontWorkspaces = []
 
   const { data, error, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
@@ -34,9 +33,8 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const addOne = useCallback(
-    (workspace: INewWorkspace): void => {
-      const newWorkspaces = [...workspaces, workspace]
-      //@ts-ignore
+    (workspace: Partial<IFrontWorkspacesItem>): void => {
+      const newWorkspaces = [...workspaces, workspace] as IFrontWorkspaces
       mutate({ workspaces: newWorkspaces })
     },
     [workspaces, mutate]
@@ -47,7 +45,7 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const delOne = useCallback(
-    (workspace: IWorkspaceWithData): void => {
+    (workspace: Partial<IFrontWorkspacesItem>): void => {
       const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
       mutate({ workspaces: filteredWorkspaces })
     },
@@ -59,7 +57,7 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const mutateOne = useCallback(
-    (workspace: IWorkspaceWithData): void => {
+    (workspace: Partial<IFrontWorkspacesItem>): void => {
       const mutatedWorkspaces = workspaces.map((w) => {
         if (w.id === workspace.id) w = { ...w, ...workspace }
         return w
@@ -72,7 +70,6 @@ export const useWorkspaces = (): [
   return [
     workspaces,
     {
-      mutateWorkspaces: mutate,
       addOneWorkspace: addOne,
       delOneWorkspace: delOne,
       mutateOneWorkspace: mutateOne,

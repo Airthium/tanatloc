@@ -54,9 +54,7 @@ describe('api/workspace/useWorkspaces', () => {
   })
 
   test('without workspace', () => {
-    mockWorkspaces.mockImplementation(() => {
-      // Empty
-    })
+    mockWorkspaces.mockImplementation(() => undefined)
 
     render(<FunctionalComponent />)
 

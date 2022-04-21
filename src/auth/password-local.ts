@@ -1,9 +1,8 @@
 /** @module Auth.PasswordLocal */
 
-import { IUserCheck } from '@/database/index.d'
-
 import Local from 'passport-local'
-import UserDB from '@/database/user'
+
+import UserDB, { IUserCheck } from '@/database/user'
 
 /**
  * Local strategy
@@ -20,7 +19,7 @@ const localStrategy = new Local.Strategy(
         if (!user) done(new Error('Bad credentials!'))
         else if (!user.isvalidated)
           done(new Error('User email is not validated yet!'))
-        done(null, user)
+        done(undefined, user)
       })
       .catch((error) => {
         done(error)

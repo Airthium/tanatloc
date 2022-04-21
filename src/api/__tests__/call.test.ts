@@ -50,7 +50,7 @@ describe('api/call', () => {
     try {
       await fetcher('/route')
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('An error occured while fetching data.')
     }
 
@@ -63,7 +63,7 @@ describe('api/call', () => {
     try {
       await fetcher('/route')
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('An error occured while fetching data.')
       expect(err.info).toEqual({
         error: true,
@@ -81,7 +81,7 @@ describe('api/call', () => {
     try {
       await call('/route')
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(mockRoute).toBe('/route')
       expect(mockParam).toEqual({
         method: 'GET',
@@ -109,7 +109,7 @@ describe('api/call', () => {
         body: 'something'
       })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(mockParam).toEqual({
         method: 'TEST',
         headers: {

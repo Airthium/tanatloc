@@ -26,7 +26,7 @@ import AvatarAPI from '@/api/avatar'
 export interface IProps {
   user: IUserWithData
   swr: {
-    mutateUser: (user: IUserWithData) => void
+    mutateUser: (user: Partial<IUserWithData<any>>) => void
   }
 }
 
@@ -78,7 +78,7 @@ export const onChange = async (
   user: IUserWithData,
   info: UploadChangeParam<any>,
   swr: {
-    mutateUser: (user: IUserWithData) => void
+    mutateUser: (user: Partial<IUserWithData<any>>) => void
   }
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') {
@@ -123,7 +123,9 @@ export const onFinish = async (
     firstname: string
     lastname: string
   },
-  swr: { mutateUser: (user: IUserWithData) => void }
+  swr: {
+    mutateUser: (user: Partial<IUserWithData<any>>) => void
+  }
 ): Promise<void> => {
   try {
     const toUpdate = []

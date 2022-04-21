@@ -40,9 +40,7 @@ describe('api/users', () => {
   })
 
   test('without users', () => {
-    mockUsers.mockImplementation(() => {
-      // Empty
-    })
+    mockUsers.mockImplementation(() => undefined)
 
     render(<FunctionalComponent />)
 

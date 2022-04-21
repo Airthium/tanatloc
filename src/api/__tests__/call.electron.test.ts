@@ -30,7 +30,7 @@ describe('api/call', () => {
     try {
       await fetcher('/route')
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('An error occured while fetching data.')
     }
   })

@@ -59,7 +59,7 @@ const removeTokenCookie = (res: Response): void => {
 const parseCookies = (req: Request): { [key: string]: string } => {
   // For API Routes we don't need to parse the cookies.
   if (isElectron()) {
-    const cookie = storage.get('auth-token')
+    const cookie = storage.get('auth-token') as string
     return parse(cookie?.toString() || '')
   } else {
     if (req.cookies) return req.cookies

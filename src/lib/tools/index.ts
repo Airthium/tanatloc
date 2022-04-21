@@ -12,8 +12,6 @@ import {
 import tar from 'tar'
 import { threeToGlb } from 'three-to-glb'
 
-import { IGeometrySummaryFile } from '../index.d'
-
 import Services from '@/services'
 
 /**

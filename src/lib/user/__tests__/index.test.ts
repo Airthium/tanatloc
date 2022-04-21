@@ -164,7 +164,7 @@ describe('lib/user', () => {
       avatar: 'avatar'
     }))
     mockAvatarRead.mockImplementation(() => 'avatar')
-    user = await User.getWithData('id', ['name'])
+    user = await User.getWithData('id', ['email', 'avatar'])
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockAvatarRead).toHaveBeenCalledTimes(1)
     expect(user).toEqual({ id: 'id', email: 'email', avatar: 'avatar' })
@@ -172,7 +172,7 @@ describe('lib/user', () => {
     mockAvatarRead.mockImplementation(() => {
       throw new Error('test')
     })
-    user = await User.getWithData('id', ['name'])
+    user = await User.getWithData('id', ['email', 'avatar'])
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockAvatarRead).toHaveBeenCalledTimes(2)
     expect(user).toEqual({ id: 'id', email: 'email', avatar: undefined })
@@ -190,12 +190,12 @@ describe('lib/user', () => {
   test('getAll', async () => {
     // Minimal
     mockGetAll.mockImplementation(() => [{ id: 'id' }])
-    let users = await User.getAll(['id'])
+    const users1 = await User.getAll(['id'])
     expect(mockGetAll).toHaveBeenCalledTimes(1)
-    expect(users).toEqual([{ id: 'id' }])
+    expect(users1).toEqual([{ id: 'id' }])
 
     // Array data
-    users = await User.getAll([
+    const users2 = await User.getAll([
       'id',
       'organizations',
       'workspaces',
@@ -203,7 +203,7 @@ describe('lib/user', () => {
       'plugins'
     ])
     expect(mockGetAll).toHaveBeenCalledTimes(2)
-    expect(users).toEqual([
+    expect(users2).toEqual([
       {
         id: 'id',
         organizations: [],
@@ -223,7 +223,7 @@ describe('lib/user', () => {
         plugins: []
       }
     ])
-    users = await User.getAll([
+    const users3 = await User.getAll([
       'id',
       'organizations',
       'workspaces',
@@ -231,7 +231,7 @@ describe('lib/user', () => {
       'plugins'
     ])
     expect(mockGetAll).toHaveBeenCalledTimes(3)
-    expect(users).toEqual([
+    expect(users3).toEqual([
       {
         id: 'id',
         organizations: [],

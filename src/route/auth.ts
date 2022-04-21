@@ -27,7 +27,8 @@ const authGroup = async (
     const groupData = await GroupLib.get(group, ['organization'])
     const organizationData = await OrganizationLib.get(groupData.organization, [
       'owners',
-      'users'
+      'users',
+      'groups'
     ])
 
     if (await auth(user, organizationData)) return true
@@ -48,7 +49,7 @@ const auth = async (
     | IProjectGet<('owners' | 'users' | 'groups')[]>
     | IWorkspaceGet<('owners' | 'users' | 'groups')[]>
     | IOrganizationGet<('owners' | 'users' | 'groups')[]>,
-  parentObject?: IWorkspaceGet<('owners' | 'users')[]>
+  parentObject?: IWorkspaceGet<('owners' | 'users' | 'groups')[]>
 ) => {
   // Objects
   if (object?.owners?.includes(user.id) || object?.users?.includes(user.id))
@@ -62,10 +63,23 @@ const auth = async (
     return true
 
   // Objects groups
-  if (object?.groups) if (await authGroup(user, object)) return true
+  if (object?.groups)
+    if (
+      await authGroup(user, { groups: object.groups } as
+        | IProjectGet<'group'[]>
+        | IWorkspaceGet<'group'[]>
+        | IOrganizationGet<'group'[]>)
+    )
+      return true
 
   // Parent objects groups
-  if (parentObject?.groups) if (await authGroup(user, parentObject)) return true
+  if (parentObject?.groups)
+    if (
+      await authGroup(user, { groups: parentObject.groups } as IWorkspaceGet<
+        'group'[]
+      >)
+    )
+      return true
 
   return false
 }
@@ -117,7 +131,17 @@ const checkProjectAuth = async (
   ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
-  if (!(await auth(user, projectAuth, workspaceAuth)))
+  if (
+    !(await auth(
+      user,
+      {
+        owners: projectAuth.owners,
+        users: projectAuth.users,
+        groups: projectAuth.groups
+      } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      workspaceAuth
+    ))
+  )
     throw error(403, 'Access denied')
 }
 
@@ -150,7 +174,17 @@ const checkGeometryAuth = async (
   ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
-  if (!(await auth(user, projectAuth, workspaceAuth)))
+  if (
+    !(await auth(
+      user,
+      {
+        owners: projectAuth.owners,
+        users: projectAuth.users,
+        groups: projectAuth.groups
+      } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      workspaceAuth
+    ))
+  )
     throw error(403, 'Access denied')
 }
 
@@ -184,7 +218,17 @@ const checkSimulationAuth = async (
   ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
-  if (!(await auth(user, projectAuth, workspaceAuth)))
+  if (
+    !(await auth(
+      user,
+      {
+        owners: projectAuth.owners,
+        users: projectAuth.users,
+        groups: projectAuth.groups
+      } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      workspaceAuth
+    ))
+  )
     throw error(403, 'Access denied')
 }
 
@@ -201,7 +245,8 @@ const checkOrganizationAuth = async (
 ): Promise<void> => {
   const organizationAuth = await OrganizationLib.get(organization.id, [
     'owners',
-    'users'
+    'users',
+    'groups'
   ])
   if (!organizationAuth)
     throw error(status || 400, 'Invalid organization identifier')

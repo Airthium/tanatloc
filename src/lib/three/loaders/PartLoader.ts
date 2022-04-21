@@ -20,7 +20,7 @@ import { Lut } from 'three/examples/jsm/math/Lut'
 
 export interface IPartLoader {
   load: (
-    part: { uuid?: string; buffer: Buffer },
+    part: { uuid: string; buffer: Buffer },
     transparent: boolean,
     clippingPlane: Plane
   ) => Promise<IPart>
@@ -55,7 +55,7 @@ export interface IPart extends Object3D {
     type: string
   ) => void
   stopSelection: () => void
-  getHighlighted: () => { uuid: string; number: number | string }
+  getHighlighted: () => { uuid: string; number: number | string } | null
   getSelected: () => { uuid: string; number: number | string }[]
   highlight: (uuid: string) => void
   unhighlight: () => void
@@ -179,7 +179,7 @@ const PartLoader = (
     // Solids
     const solids = part.children[0]
     solids?.children?.forEach((solid) => {
-      const childBox = solid.geometry.boundingBox
+      const childBox = solid.geometry.boundingBox as Box3
       mergeBox(box, childBox)
     })
 
@@ -187,7 +187,8 @@ const PartLoader = (
       // Try faces
       const faces = part.children[1]
       faces?.children?.forEach((face) => {
-        mergeBox(box, face.geometry.boundingBox)
+        const childBox = face.geometry.boundingBox as Box3
+        mergeBox(box, childBox)
       })
     }
 
@@ -195,7 +196,8 @@ const PartLoader = (
       // Try edges
       const edges = part.children[2]
       edges?.children?.forEach((edge) => {
-        mergeBox(box, edge.geometry.boundingBox)
+        const childBox = edge.geometry.boundingBox as Box3
+        mergeBox(box, childBox)
       })
     }
 
@@ -285,12 +287,12 @@ const PartLoader = (
 
   // highlight / selection Variables
   let raycaster = new Raycaster()
-  let selectionPart: IPart = null
-  let selectionRenderer: WebGLRenderer = null
-  let selectionCamera: PerspectiveCamera = null
-  let selectionOutlinePass: OutlinePass = null
-  let selectionType: number = null
-  let highlighted: { uuid: string; number: number | string } = null
+  let selectionPart: IPart | null = null
+  let selectionRenderer: WebGLRenderer | null = null
+  let selectionCamera: PerspectiveCamera | null = null
+  let selectionOutlinePass: OutlinePass | null = null
+  let selectionType: number | null = null
+  let highlighted: { uuid: string; number: number | string } | null = null
   let selected: { uuid: string; number: number | string }[] = []
 
   /**
@@ -377,9 +379,10 @@ const PartLoader = (
    */
   const findObject = (
     part: IPart,
-    uuid: string
-  ): IPart['children'][0]['children'][0] => {
+    uuid?: string
+  ): IPart['children'][0]['children'][0] | undefined => {
     if (!part) return
+    if (!uuid) return
 
     // Search in solids
     const solids = part.children[0]
@@ -425,18 +428,18 @@ const PartLoader = (
    */
   const mouseMove = (event: MouseEvent): void => {
     const mouse = globalToLocal(event)
-    raycaster.setFromCamera(mouse, selectionCamera)
+    raycaster.setFromCamera(mouse, selectionCamera!)
     const intersects = raycaster.intersectObjects(
-      selectionPart.children[selectionType].children
+      selectionPart!.children[selectionType!].children
     )
 
     if (intersects.length)
       mouseMoveEvent(
-        selectionPart,
+        selectionPart!,
         intersects[0].object.userData.uuid,
         intersects[0].object.userData.number
       )
-    else mouseMoveEvent(selectionPart)
+    else mouseMoveEvent(selectionPart!)
   }
 
   /**
@@ -449,16 +452,15 @@ const PartLoader = (
     selection?: boolean
   ): void => {
     if (selection) {
-      const alreadyOutlined = selectionOutlinePass.selectedObjects.find(
-        (s: IPart['children'][0]['children'][0]) =>
-          s.userData.uuid === mesh.userData.uuid
+      const alreadyOutlined = selectionOutlinePass!.selectedObjects.find(
+        (s) => s.userData.uuid === mesh.userData.uuid
       )
-      if (!alreadyOutlined) selectionOutlinePass.selectedObjects.push(mesh)
+      if (!alreadyOutlined) selectionOutlinePass!.selectedObjects.push(mesh)
     } else {
       const alreadySelected = selected.find(
         (s) => s.uuid === mesh.userData.uuid
       )
-      if (!alreadySelected) selectionOutlinePass.selectedObjects.push(mesh)
+      if (!alreadySelected) selectionOutlinePass!.selectedObjects.push(mesh)
     }
   }
 
@@ -472,24 +474,22 @@ const PartLoader = (
     selection?: boolean
   ): void => {
     if (selection) {
-      const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
-        (s: IPart['children'][0]['children'][0]) =>
-          s.userData.uuid === mesh.userData.uuid
+      const outlinedIndex = selectionOutlinePass!.selectedObjects.findIndex(
+        (s) => s.userData.uuid === mesh.userData.uuid
       )
-      selectionOutlinePass.selectedObjects = [
-        ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
-        ...selectionOutlinePass.selectedObjects.slice(outlinedIndex + 1)
+      selectionOutlinePass!.selectedObjects = [
+        ...selectionOutlinePass!.selectedObjects.slice(0, outlinedIndex),
+        ...selectionOutlinePass!.selectedObjects.slice(outlinedIndex + 1)
       ]
     } else {
       const selectedMesh = selected.find((s) => s.uuid === mesh.userData.uuid)
       if (!selectedMesh) {
-        const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
-          (s: IPart['children'][0]['children'][0]) =>
-            s.userData.uuid === mesh.userData.uuid
+        const outlinedIndex = selectionOutlinePass!.selectedObjects.findIndex(
+          (s) => s.userData.uuid === mesh.userData.uuid
         )
-        selectionOutlinePass.selectedObjects = [
-          ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
-          ...selectionOutlinePass.selectedObjects.slice(outlinedIndex + 1)
+        selectionOutlinePass!.selectedObjects = [
+          ...selectionOutlinePass!.selectedObjects.slice(0, outlinedIndex),
+          ...selectionOutlinePass!.selectedObjects.slice(outlinedIndex + 1)
         ]
       }
     }
@@ -503,7 +503,7 @@ const PartLoader = (
     if (uuid === highlighted?.uuid) return
     else unhighlight()
 
-    const mesh = findObject(selectionPart, uuid)
+    const mesh = findObject(selectionPart!, uuid)
     if (mesh && mesh.material) {
       highlighted = { uuid: mesh.userData.uuid, number: mesh.userData.number }
       addOutlineOn(mesh)
@@ -515,7 +515,7 @@ const PartLoader = (
    * Unhighlight
    */
   const unhighlight = (): void => {
-    const mesh = findObject(selectionPart, highlighted?.uuid)
+    const mesh = findObject(selectionPart!, highlighted?.uuid)
 
     if (mesh && mesh.material) {
       removeOutlineOn(mesh)
@@ -534,7 +534,7 @@ const PartLoader = (
    */
   const mouseDown = (): void => {
     if (highlighted)
-      mouseDownEvent(selectionPart, highlighted.uuid, highlighted.number)
+      mouseDownEvent(selectionPart!, highlighted.uuid, highlighted.number)
   }
 
   /**
@@ -542,7 +542,7 @@ const PartLoader = (
    * @param uuid Mesh uuid
    */
   const select = (uuid: string): void => {
-    const mesh = findObject(selectionPart, uuid)
+    const mesh = findObject(selectionPart!, uuid)
     if (mesh && mesh.material) {
       selected.push({ uuid, number: mesh.userData.number })
       addOutlineOn(mesh, true)
@@ -555,7 +555,7 @@ const PartLoader = (
    * @param uuid Mesh uuid
    */
   const unselect = (uuid: string): void => {
-    const mesh = findObject(selectionPart, uuid)
+    const mesh = findObject(selectionPart!, uuid)
 
     const index = selected.findIndex((s) => s.uuid === uuid)
     if (index !== -1)

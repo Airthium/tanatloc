@@ -139,7 +139,7 @@ describe('lib/tools', () => {
     })
     try {
       await Tools.copyDirectory('origin', 'destination')
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('error')
     }
     expect(mockCp).toHaveBeenCalledTimes(2)
@@ -211,7 +211,7 @@ describe('lib/tools', () => {
         }
       )
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('Conversion process failed.')
       expect(true).toBe(true)
     }
@@ -224,29 +224,5 @@ describe('lib/tools', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
-  })
-
-  test('loadPart', async () => {
-    let part
-
-    // Full
-    JSON.parse = () => ({
-      solids: [{}],
-      faces: [{}],
-      edges: [{}]
-    })
-    part = await Tools.loadPart('target', 'file')
-    expect(part).toEqual({
-      solids: [{ buffer: 'readFile' }],
-      faces: [{ buffer: 'readFile' }],
-      edges: [{ buffer: 'readFile' }]
-    })
-    expect(mockReadFile).toHaveBeenCalledTimes(4)
-
-    // Empty
-    JSON.parse = () => ({})
-    part = await Tools.loadPart('target', 'file')
-    expect(part).toEqual({})
-    expect(mockReadFile).toHaveBeenCalledTimes(4 + 1)
   })
 })

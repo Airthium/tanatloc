@@ -15,7 +15,7 @@ export const getAll = async <T extends TOrganizationGet>(
   data: T
 ): Promise<IOrganization<T>[]> => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + tables.ORGANIZATIONS,
+    'SELECT ' + ['id', ...data].join(',') + ' FROM ' + tables.ORGANIZATIONS,
     []
   )
 

@@ -97,6 +97,8 @@ const userToAvatar = (user: {
       key={user.id || JSON.stringify(user)}
       title={name + (user.pending ? ' (Invite pending)' : '')}
     >
+      {/*
+      //@ts-ignore */}
       <Badge
         count={user.pending && 'Pending...'}
         offset={[30, 5]}

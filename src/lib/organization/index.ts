@@ -12,7 +12,6 @@ import {
 
 import OrganizationDB, {
   INewOrganization,
-  IOrganization,
   TOrganizationGet
 } from '@/database/organization'
 import { TUserGet } from '@/database/user'
@@ -184,14 +183,15 @@ const getWithData = async <T extends TOrganizationGet>(
 }
 
 /**
- * Set missing data
- * @param organizations Organizations
+ * Get all
  * @param data Data
+ * @returns Organizations
  */
-const setMissingData = <T extends TOrganizationGet>(
-  organizations: IOrganization<T>[],
-  data: string[]
-): void => {
+const getAll = async <T extends TOrganizationGet>(
+  data: T
+): Promise<IOrganizationGet<T>[]> => {
+  const organizations = await OrganizationDB.getAll(data)
+
   if (data.includes('owners'))
     organizations.forEach((organization) => {
       !organization.owners && (organization.owners = [])
@@ -216,6 +216,8 @@ const setMissingData = <T extends TOrganizationGet>(
     organizations.forEach((organization) => {
       !organization.groups && (organization.groups = [])
     })
+
+  return organizations as IOrganizationGet<T>[]
 }
 
 /**
@@ -228,74 +230,34 @@ const getByUser = async <T extends TOrganizationGet>(
   user: { id: string },
   data: T
 ): Promise<IOrganizationWithData<T>[]> => {
-  const internalData = [...data]
-  if (!internalData.includes('owners')) internalData.push('owners')
-  if (!internalData.includes('users')) internalData.push('users')
+  const internalData: TOrganizationGet = [
+    'owners',
+    'pendingowners',
+    'users',
+    'pendingusers'
+  ]
 
-  // Same as user ?
-  const organizations = await OrganizationDB.getAll(internalData)
+  // Get all
+  const organizations = await getAll(internalData)
 
-  setMissingData(organizations, data)
+  // Check access
+  const accessOrganizations = organizations.filter((organization) => {
+    return (
+      organization.owners.includes(user.id) ||
+      organization.pendingowners.includes(user.id) ||
+      organization.users.includes(user.id) ||
+      organization.pendingusers.includes(user.id)
+    )
+  })
 
-  // Check user & data
+  // Get data
   const userOrganizations = await Promise.all(
-    organizations.map(async (organization) => {
-      // Check user
-      if (
-        !(organization.owners as string[] | undefined)?.includes(user.id) &&
-        !(organization.pendingowners as string[] | undefined)?.includes(
-          user.id
-        ) &&
-        !(organization.users as string[] | undefined)?.includes(user.id) &&
-        !(organization.pendingusers as string[] | undefined)?.includes(user.id)
-      )
-        return
-
-      const {
-        owners,
-        pendingowners,
-        users,
-        pendingusers,
-        groups,
-        ...organizationData
-      } = organization
-
-      // Owners data
-      let ownersData: IUserWithData[]
-      if (data.includes('owners') && owners)
-        ownersData = await getUsersData(owners)
-
-      // Pending owners data (partial)
-      let pendingownersData: IUserWithData[]
-      if (data.includes('pendingowners') && pendingowners)
-        pendingownersData = await getUsersData(pendingowners, true)
-
-      // Users data
-      let usersData: IUserWithData[]
-      if (data.includes('users') && users) usersData = await getUsersData(users)
-
-      // Pending users data (partial)
-      let pendingusersData: IUserWithData[]
-      if (data.includes('pendingusers') && pendingusers)
-        pendingusersData = await getUsersData(pendingusers, true)
-
-      // Group data
-      let groupsData: IGroupWithData[]
-      if (data.includes('groups') && groups)
-        groupsData = await getGroupsData(groups)
-
-      return {
-        ...organizationData,
-        owners: ownersData,
-        pendingowners: pendingownersData,
-        users: usersData,
-        pendingusers: pendingusersData,
-        groups: groupsData
-      }
+    accessOrganizations.map(async (organization) => {
+      return getWithData(organization.id, data)
     })
   )
 
-  return userOrganizations.filter((o) => o) as IOrganizationWithData<T>[]
+  return userOrganizations.filter((o) => o)
 }
 
 /**

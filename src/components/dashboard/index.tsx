@@ -266,7 +266,7 @@ const Dashboard = () => {
                 lastname: user.lastname,
                 avatar: user.avatar
               }}
-              swr={{ mutateUser }}
+              swr={{ mutateUser, clearUser }}
             />
           )}
           {currentKey === menuItems.organizations.key && (

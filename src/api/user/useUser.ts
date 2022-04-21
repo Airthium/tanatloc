@@ -12,7 +12,7 @@ import { fetcher } from '@/api/call'
  * @returns User
  */
 export const useUser = (): [
-  IUserWithData,
+  IUserWithData | undefined,
   {
     mutateUser: (user: IUserWithData) => void
     clearUser: () => void
@@ -41,7 +41,7 @@ export const useUser = (): [
   )
 
   const clear = useCallback(() => {
-    mutate({ user: null })
+    mutate({ user: undefined })
   }, [mutate])
 
   return [

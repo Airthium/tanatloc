@@ -1,10 +1,8 @@
 /** @module Components.Account.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Card } from 'antd'
-
-import { IUserWithData } from '@/lib/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -17,7 +15,7 @@ import { logout } from '@/api/logout'
  */
 export interface IProps {
   swr: {
-    mutateUser: (user: IUserWithData) => void
+    clearUser: () => void
   }
 }
 
@@ -33,7 +31,7 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (swr: {
-  mutateUser: (user: IUserWithData) => void
+  clearUser: () => void
 }): Promise<void> => {
   try {
     // Delete
@@ -43,7 +41,7 @@ export const onDelete = async (swr: {
     await logout()
 
     // Mutate
-    swr.mutateUser({})
+    swr.clearUser()
   } catch (err) {
     ErrorNotification(errors.del, err)
     throw err
@@ -86,7 +84,7 @@ const Delete = ({ swr }: IProps): JSX.Element => {
 
 Delete.propTypes = {
   swr: PropTypes.exact({
-    mutateUser: PropTypes.func.isRequired
+    clearUser: PropTypes.func.isRequired
   }).isRequired
 }
 

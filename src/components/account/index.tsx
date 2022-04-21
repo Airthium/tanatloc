@@ -18,6 +18,7 @@ export interface IProps {
   user: IUserWithData
   swr: {
     mutateUser: (user: IUserWithData) => void
+    clearUser: () => void
   }
 }
 
@@ -76,7 +77,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
                 }}
                 swr={{ mutateUser: swr.mutateUser }}
               />
-              <Delete swr={{ mutateUser: swr.mutateUser }} />
+              <Delete swr={{ clearUser: swr.clearUser }} />
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
@@ -105,7 +106,8 @@ Account.propTypes = {
     avatar: PropTypes.object
   }).isRequired,
   swr: PropTypes.exact({
-    mutateUser: PropTypes.func.isRequired
+    mutateUser: PropTypes.func.isRequired,
+    clearUser: PropTypes.func.isRequired
   }).isRequired
 }
 

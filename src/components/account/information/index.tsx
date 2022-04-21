@@ -19,6 +19,7 @@ import {
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
+import { IFrontUser } from '@/api/index.d'
 
 /**
  * Props
@@ -26,7 +27,7 @@ import AvatarAPI from '@/api/avatar'
 export interface IProps {
   user: IUserWithData
   swr: {
-    mutateUser: (user: Partial<IUserWithData<any>>) => void
+    mutateUser: (user: Partial<IFrontUser>) => void
   }
 }
 
@@ -78,7 +79,7 @@ export const onChange = async (
   user: IUserWithData,
   info: UploadChangeParam<any>,
   swr: {
-    mutateUser: (user: Partial<IUserWithData<'avatar'[]>>) => void
+    mutateUser: (user: Partial<IFrontUser>) => void
   }
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') {
@@ -124,9 +125,7 @@ export const onFinish = async (
     lastname: string
   },
   swr: {
-    mutateUser: (
-      user: Partial<IUserWithData<('email' | 'firstname' | 'lastname')[]>>
-    ) => void
+    mutateUser: (user: Partial<IFrontUser>) => void
   }
 ): Promise<void> => {
   try {

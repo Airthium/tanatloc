@@ -3,7 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IUserWithData } from '@/lib/index.d'
+import { IFrontUser } from '../index.d'
 
 import { fetcher } from '@/api/call'
 
@@ -12,9 +12,9 @@ import { fetcher } from '@/api/call'
  * @returns User
  */
 export const useUser = (): [
-  IUserWithData<any> | undefined,
+  IFrontUser | undefined,
   {
-    mutateUser: (user: Partial<IUserWithData<any>>) => void
+    mutateUser: (user: Partial<IFrontUser>) => void
     clearUser: () => void
     errorUser: Error
     loadingUser: boolean
@@ -29,10 +29,10 @@ export const useUser = (): [
    * @param update User
    */
   const localMutate = useCallback(
-    (update: Partial<IUserWithData<any>>): void => {
+    (update: Partial<IFrontUser>): void => {
       mutate({
         user: {
-          ...user,
+          ...(user as IFrontUser),
           ...update
         }
       })

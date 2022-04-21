@@ -22,13 +22,7 @@ jest.mock('passport-local', () => ({
 jest.mock('@/database/user', () => {
   let count = 0
   return {
-    getByUsernameAndPassword: async ({
-      email,
-      _password
-    }: {
-      email?: string
-      _password?: string
-    }) => {
+    getByUsernameAndPassword: async ({ email }: { email?: string }) => {
       count++
       if (!email) throw new Error()
       if (count === 1) return

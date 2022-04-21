@@ -10,6 +10,19 @@ import {
   IWorkspaceWithData
 } from '@/lib/index.d'
 
+export interface IFrontUser
+  extends IUserWithData<
+    (
+      | 'lastname'
+      | 'firstname'
+      | 'email'
+      | 'avatar'
+      | 'superuser'
+      | 'authorizedplugins'
+      | 'plugins'
+    )[]
+  > {}
+
 export interface IFetchResponse {
   geometries?: IGeometry[]
   groups?: IGroupWithData[]
@@ -20,7 +33,7 @@ export interface IFetchResponse {
   simulation?: ISimulation
   simulations?: ISimulation[]
   system?: ISystem
-  user?: IUserWithData
+  user?: IFrontUser
   users?: IUserWithData[]
   workspaces?: IWorkspaceWithData[]
 }

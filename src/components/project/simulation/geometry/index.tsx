@@ -3,7 +3,8 @@
 import PropTypes from 'prop-types'
 import { Card, Typography } from 'antd'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
+import { IGeometry } from '@/database/geometry/index'
 
 import { ErrorNotification } from '@/components/assets/notification'
 

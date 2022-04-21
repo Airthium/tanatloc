@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Typography } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IProjectWithData } from '@/lib/index.d'
 
 import { DeleteButton } from '@/components/assets/button'

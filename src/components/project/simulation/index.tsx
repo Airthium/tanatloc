@@ -14,7 +14,8 @@ import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
 
 import { IUserWithData } from '@/lib/index.d'
-import { IClientPlugin, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
+import { IClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'

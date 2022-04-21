@@ -5,7 +5,7 @@ import Add, {
   errors
 } from '@/components/project/simulation/boundaryConditions/add'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IModelBoundaryConditionValue } from '@/models/index.d'
 
 const mockErrorNotification = jest.fn()

@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Space, Spin } from 'antd'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 

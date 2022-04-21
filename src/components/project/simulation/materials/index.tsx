@@ -11,7 +11,8 @@ import {
 } from 'react'
 import { Card, Layout } from 'antd'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
+import { IGeometry } from '@/database/geometry/index'
 import { IModelMaterialValue } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'

@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Checkbox, Form, Input, Select } from 'antd'
 
-import { IClientPlugin, IDataBaseEntry } from '@/database/index.d'
+import { IDataBaseEntry } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 import { IUserWithData } from '@/lib/index.d'
 
 import { EditButton } from '@/components/assets/button'

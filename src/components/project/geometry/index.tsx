@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
-import { IGeometry } from '@/database/index.d'
+import { IGeometry } from '@/database/geometry/index'
 import { IProjectWithData } from '@/lib/index.d'
 
 import Loading from '@/components/loading'

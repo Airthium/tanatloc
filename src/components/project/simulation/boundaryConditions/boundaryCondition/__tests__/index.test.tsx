@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 const mockFormula = jest.fn()
 jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))

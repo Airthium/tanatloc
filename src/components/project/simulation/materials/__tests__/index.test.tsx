@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Materials from '@/components/project/simulation/materials'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { SelectContext } from '@/context/select'
 
 const mockAddButton = jest.fn()

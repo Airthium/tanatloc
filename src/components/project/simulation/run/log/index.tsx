@@ -10,7 +10,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
-import { ISimulation, ISimulationTask } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/simulation/index'
 
 /**
  * Props

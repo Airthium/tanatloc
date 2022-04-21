@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { INewWorkspace } from '@/database/index.d'
+import { INewWorkspace } from '@/database/workspace/index'
 
 import { LIMIT } from '@/config/string'
 

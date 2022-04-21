@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Form, Input, Select } from 'antd'
 
 import { IGroupWithData, IOrganizationWithData } from '@/lib/index.d'
-import { INewGroup } from '@/database/index.d'
+import { INewGroup } from '@/database/group/index'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'

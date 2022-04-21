@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
-import { INewOrganization } from '@/database/index.d'
+import { INewOrganization } from '@/database/organization/index'
 
 import Organization from '@/components/assets/organization'
 

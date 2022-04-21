@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IModelParameter } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'

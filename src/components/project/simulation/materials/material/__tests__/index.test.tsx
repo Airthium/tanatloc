@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Material from '@/components/project/simulation/materials/material'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IModelMaterialValue } from '@/models/index.d'
 
 const mockFormula = jest.fn()

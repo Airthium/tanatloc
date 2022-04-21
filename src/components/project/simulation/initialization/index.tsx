@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
-import { ISimulation, ISimulationTask } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/simulation/index'
 import {
   IModelInitialization,
   IModelInitializationCoupling

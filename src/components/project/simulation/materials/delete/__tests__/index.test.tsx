@@ -5,7 +5,7 @@ import Delete, {
   errors
 } from '@/components/project/simulation/materials/delete'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { ISelectState, SelectContext } from '@/context/select'
 
 const mockDeleteButton = jest.fn()

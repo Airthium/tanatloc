@@ -3,7 +3,8 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
-import { IGeometry, ISimulation, ISimulationTaskFile } from '@/database/index.d'
+import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
+import { IGeometry } from '@/database/geometry/index'
 import { IProjectWithData } from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'

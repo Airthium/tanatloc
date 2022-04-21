@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 import Copy, { errors } from '..'
 

@@ -26,7 +26,7 @@ import {
 } from 'recharts'
 import { camelCase } from 'lodash'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'

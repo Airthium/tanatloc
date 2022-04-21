@@ -22,7 +22,8 @@ import {
 } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
+import { IGeometry } from '@/database/geometry/index'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition

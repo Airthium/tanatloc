@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Card, Form, Select, Space } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'

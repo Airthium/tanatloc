@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IProjectWithData } from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'

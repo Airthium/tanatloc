@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition

@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { SelectContext } from '@/context/select'
 
 const mockAddButton = jest.fn()

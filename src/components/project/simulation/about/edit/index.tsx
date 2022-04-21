@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 import { EditButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'

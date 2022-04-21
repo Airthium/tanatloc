@@ -1,6 +1,6 @@
 /** @module API.User.Add */
 
-import { INewUser } from '@/database/index.d'
+import { INewUser } from '@/database/user'
 
 import { call } from '@/api/call'
 

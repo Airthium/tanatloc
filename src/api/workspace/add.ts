@@ -1,6 +1,6 @@
 /** @module API.Workspace.Add */
 
-import { INewWorkspace } from '@/database/index.d'
+import { INewWorkspace } from '@/database/workspace'
 
 import { call } from '@/api/call'
 

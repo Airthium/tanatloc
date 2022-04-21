@@ -9,7 +9,7 @@ jest.mock('swr', () => () => ({
 }))
 
 let data: any
-const FunctionalComponent = ({ ids }: { ids?: string[] }) => {
+const FunctionalComponent = () => {
   const [
     organizations,
     {

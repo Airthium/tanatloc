@@ -3,8 +3,8 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
+import { INewGroup } from '@/database/group'
 import { IGroupWithData } from '@/lib/index.d'
-import { INewGroup } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 
@@ -26,7 +26,7 @@ export const useGroups = (
     loadingGroups: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IGroupWithData[] = []
 
   const { data, error, mutate } = useSWR('/api/groups/' + id, fetcher)
   const loading = !data

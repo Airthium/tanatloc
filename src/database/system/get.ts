@@ -6,7 +6,7 @@ import { query } from '..'
 
 export type TSystemGet = ('allowsignup' | 'password' | 'defaultplugins')[]
 
-export interface ISystem<T> {
+export interface ISystem<T = []> {
   allowsignup: T extends ['allowsignup'] ? boolean : never
   password?: T extends ['password']
     ? {

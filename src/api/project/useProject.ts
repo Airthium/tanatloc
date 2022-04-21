@@ -22,7 +22,7 @@ export const useProject = (
     loadingProject: boolean
   }
 ] => {
-  const defaultData = { id: '0' }
+  const defaultData = { id: '0' } as IProjectWithData
 
   const { data, error, mutate } = useSWR(
     '/api/project' + (id ? '/' + id : ''),

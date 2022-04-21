@@ -7,9 +7,9 @@ import { ICallError } from '../index.d'
  */
 export class APIError extends Error {
   title: string
-  render: JSX.Element
-  err: ICallError | any
-  type: 'error' | 'success' | 'info' | 'warning'
+  render?: JSX.Element
+  err?: ICallError | any
+  type?: 'error' | 'success' | 'info' | 'warning'
 
   constructor(params: {
     title: string

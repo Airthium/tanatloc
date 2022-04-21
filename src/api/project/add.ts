@@ -1,6 +1,6 @@
 /** @module API.Project.Add */
 
-import { INewProject } from '@/database/index.d'
+import { INewProject } from '@/database/project'
 
 import { call } from '@/api/call'
 

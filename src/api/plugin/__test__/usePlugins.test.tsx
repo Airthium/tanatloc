@@ -2,9 +2,7 @@ import { render } from '@testing-library/react'
 
 import { usePlugins } from '../usePlugins'
 
-const mockData = jest.fn(() => ({
-  plugins: [{ key: 'key' }, {}]
-}))
+const mockData = jest.fn()
 jest.mock('swr', () => () => ({
   data: mockData(),
   mutate: jest.fn()
@@ -38,6 +36,12 @@ const FunctionalComponent = () => {
 }
 
 describe('api/plugins/usePlugins', () => {
+  beforeEach(() => {
+    mockData.mockImplementation(() => ({
+      plugins: [{ key: 'key' }, {}]
+    }))
+  })
+
   test('with plugins', () => {
     render(<FunctionalComponent />)
 

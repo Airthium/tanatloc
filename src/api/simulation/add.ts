@@ -1,6 +1,6 @@
 /** @module API.Simulation.Add */
 
-import { INewSimulation } from '@/database/index.d'
+import { INewSimulation } from '@/database/simulation'
 
 import { call } from '@/api/call'
 

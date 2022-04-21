@@ -3,8 +3,8 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
+import { INewOrganization } from '@/database/organization'
 import { IOrganizationWithData } from '@/lib/index.d'
-import { INewOrganization } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 
@@ -25,7 +25,7 @@ export const useOrganizations = (): [
     loadingOrganizations: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IOrganizationWithData[] = []
 
   const { data, error, mutate } = useSWR('/api/organizations', fetcher)
   const loading = !data

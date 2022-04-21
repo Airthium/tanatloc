@@ -2,8 +2,8 @@
 
 import useSWR from 'swr'
 
+import { INewWorkspace } from '@/database/workspace'
 import { IWorkspaceWithData } from '@/lib/index.d'
-import { INewWorkspace } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 import { useCallback } from 'react'
@@ -23,7 +23,7 @@ export const useWorkspaces = (): [
     loadingWorkspaces: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IWorkspaceWithData[] = []
 
   const { data, error, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data

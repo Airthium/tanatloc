@@ -22,7 +22,7 @@ export const useUsers = (): [
     loadingUsers: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IUserWithData[] = []
 
   const { data, error, mutate } = useSWR('/api/users', fetcher)
   const loading = !data

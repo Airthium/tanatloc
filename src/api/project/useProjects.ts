@@ -3,8 +3,8 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
+import { INewProject } from '@/database/project'
 import { IProjectWithData } from '@/lib/index.d'
-import { INewProject } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 /**
@@ -25,7 +25,7 @@ export const useProjects = (
     loadingProjects: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IProjectWithData[] = []
 
   const { data, error, mutate } = useSWR(
     ['/api/projects', JSON.stringify({ ids })],

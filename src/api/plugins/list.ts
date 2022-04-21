@@ -1,6 +1,6 @@
 /** @module API.Plugins.List */
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { call } from '@/api/call'
 

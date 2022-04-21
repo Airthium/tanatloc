@@ -1,6 +1,6 @@
 /** @module API.Organization.Add */
 
-import { INewOrganization } from '@/database/index.d'
+import { INewOrganization } from '@/database/organization'
 
 import { call } from '@/api/call'
 

@@ -1,6 +1,6 @@
 /** @module API.Link.Get */
 
-import { ILink } from '@/database/index.d'
+import { ILink } from '@/database/link'
 
 import { call } from '@/api/call'
 

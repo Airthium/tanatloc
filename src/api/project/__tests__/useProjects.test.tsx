@@ -67,7 +67,9 @@ describe('api/project/useProjects', () => {
   })
 
   test('withtout projects', () => {
-    mockProjects.mockImplementation(() => {})
+    mockProjects.mockImplementation(() => {
+      // Empty
+    })
 
     render(<FunctionalComponent ids={['id1', 'id2']} />)
 

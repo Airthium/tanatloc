@@ -1,6 +1,6 @@
 /** @module API.Group.Add */
 
-import { INewGroup } from '@/database/index.d'
+import { INewGroup } from '@/database/group'
 
 import { call } from '@/api/call'
 

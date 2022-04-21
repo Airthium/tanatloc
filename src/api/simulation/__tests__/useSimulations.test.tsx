@@ -62,7 +62,9 @@ describe('api/simulation/useSimulations', () => {
   })
 
   test('withtout simulations', () => {
-    mockSimulations.mockImplementation(() => {})
+    mockSimulations.mockImplementation(() => {
+      // Empty
+    })
 
     render(<FunctionalComponent ids={['id1', 'id2']} />)
 

@@ -9,7 +9,7 @@ import {
   ICallHeaders
 } from './index.d'
 
-const port: number = parseInt(process.env.PORT) || 3000
+const port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000
 const base: string = isElectron() ? 'http://localhost:' + port : ''
 
 /**

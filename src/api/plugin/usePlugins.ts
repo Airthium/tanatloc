@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 
 import { fetcher } from '@/api/call'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 /**
  * Uses plugins
@@ -22,7 +22,7 @@ export const usePlugins = (): [
     loadingPlugins: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IClientPlugin[] = []
 
   const { data, error, mutate } = useSWR('/api/plugin', fetcher)
   const loading = !data

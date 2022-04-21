@@ -1,6 +1,7 @@
 /** @module API.Simulation.Tasks */
 
 import { call } from '@/api/call'
+import { ISimulationTask } from '@/database/simulation'
 
 /**
  * Tasks
@@ -9,7 +10,7 @@ import { call } from '@/api/call'
  */
 export const tasks = async (simulation: {
   id: string
-}): Promise<Array<any>> => {
+}): Promise<Array<ISimulationTask[]>> => {
   const response = await call('/api/simulation/' + simulation.id + '/tasks', {
     method: 'GET',
     headers: {

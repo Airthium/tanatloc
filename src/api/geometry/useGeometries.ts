@@ -3,7 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IGeometry } from '@/database/index.d'
+import { IGeometry } from '@/database/geometry'
 
 import { fetcher } from '@/api/call'
 
@@ -25,7 +25,7 @@ export const useGeometries = (
     loadingGeometries: boolean
   }
 ] => {
-  const defaultData = []
+  const defaultData: IGeometry[] = []
 
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],

@@ -3,7 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation'
 
 import { fetcher } from '@/api/call'
 

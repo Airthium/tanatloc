@@ -6,8 +6,6 @@ import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
-import { IUserWithData } from '@/lib/index.d'
-
 import { LIMIT } from '@/config/string'
 
 import {
@@ -16,16 +14,16 @@ import {
   FormError
 } from '@/components/assets/notification'
 
+import { IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
-import { IFrontUser } from '@/api/index.d'
 
 /**
  * Props
  */
 export interface IProps {
-  user: IUserWithData
+  user: IFrontUser
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => void
   }
@@ -76,7 +74,7 @@ export const getBase64 = async (file: Blob): Promise<any> => {
  * @param swr SWR
  */
 export const onChange = async (
-  user: IUserWithData,
+  user: IFrontUser,
   info: UploadChangeParam<any>,
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => void
@@ -118,7 +116,7 @@ export const onChange = async (
  * @param swr SWR
  */
 export const onFinish = async (
-  user: IUserWithData,
+  user: IFrontUser,
   values: {
     email: string
     firstname: string

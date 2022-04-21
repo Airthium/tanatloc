@@ -3,10 +3,12 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontProjects, IFrontProjectsItem } from '@/api/index.d'
+import {
+  IFrontNewProject,
+  IFrontProjects,
+  IFrontProjectsItem
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new project ?
 
 /**
  * Use projects
@@ -18,7 +20,7 @@ export const useProjects = (
 ): [
   IFrontProjects,
   {
-    addOneProject: (project: Partial<IFrontProjectsItem>) => void
+    addOneProject: (project: IFrontNewProject) => void
     delOneProject: (project: Partial<IFrontProjectsItem>) => void
     mutateOneProject: (project: Partial<IFrontProjectsItem>) => void
     errorProjects: Error
@@ -39,9 +41,8 @@ export const useProjects = (
    * @param project Project
    */
   const addOne = useCallback(
-    (project: Partial<IFrontProjectsItem>): void => {
-      const newProjects = [...projects, project]
-      //@ts-ignore
+    (project: IFrontNewProject): void => {
+      const newProjects = [...projects, project] as IFrontProjects
       mutate({ projects: newProjects })
     },
     [projects, mutate]

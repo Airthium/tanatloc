@@ -3,12 +3,8 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { INewGroup } from '@/database/group'
-
-import { IFrontGroups, IFrontGroupsItem } from '@/api/index.d'
+import { IFrontNewGroup, IFrontGroups, IFrontGroupsItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new group ?
 
 /**
  * Use groups
@@ -20,7 +16,7 @@ export const useGroups = (
 ): [
   IFrontGroups,
   {
-    addOneGroup: (group: INewGroup) => void
+    addOneGroup: (group: IFrontNewGroup) => void
     delOneGroup: (group: Partial<IFrontGroupsItem>) => void
     mutateOneGroup: (group: Partial<IFrontGroupsItem>) => void
     errorGroups: Error
@@ -38,9 +34,8 @@ export const useGroups = (
    * @param group Group
    */
   const addOne = useCallback(
-    (group: INewGroup): void => {
-      const newGroups = [...groups, group]
-      //@ts-ignore
+    (group: IFrontNewGroup): void => {
+      const newGroups = [...groups, group] as IFrontGroups
       mutate({ groups: newGroups })
     },
     [groups, mutate]

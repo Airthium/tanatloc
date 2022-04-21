@@ -9,19 +9,12 @@ let data: any
 const FunctionalComponent = ({ ids }: { ids?: string[] }) => {
   const [
     geometries,
-    {
-      mutateGeometries,
-      addOneGeometry,
-      delOneGeometry,
-      mutateOneGeometry,
-      loadingGeometries
-    }
+    { addOneGeometry, delOneGeometry, mutateOneGeometry, loadingGeometries }
   ] = useGeometries(ids)
 
   data = {
     geometries,
     swr: {
-      mutateGeometries,
       addOneGeometry,
       delOneGeometry,
       mutateOneGeometry,
@@ -65,7 +58,6 @@ describe('api/geometry/useGeometries', () => {
     render(<FunctionalComponent ids={['id1', 'id2']} />)
 
     expect(data.geometries).toEqual([{ id: 'id' }, {}])
-    expect(data.swr.mutateGeometries).toBeDefined()
     expect(data.swr.addOneGeometry).toBeDefined()
     expect(data.swr.delOneGeometry).toBeDefined()
     expect(data.swr.mutateOneGeometry).toBeDefined()

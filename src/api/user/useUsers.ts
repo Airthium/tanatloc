@@ -3,10 +3,8 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontUsers, IFrontUsersItem } from '@/api/index.d'
+import { IFrontNewUser, IFrontUsers, IFrontUsersItem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new user ?
 
 /**
  * Use users
@@ -15,7 +13,7 @@ import { fetcher } from '@/api/call'
 export const useUsers = (): [
   IFrontUsers,
   {
-    addOneUser: (user: Partial<IFrontUsersItem>) => void
+    addOneUser: (user: IFrontNewUser) => void
     delOneUser: (user: Partial<IFrontUsersItem>) => void
     mutateOneUser: (user: Partial<IFrontUsersItem>) => void
     errorUsers: Error
@@ -33,7 +31,7 @@ export const useUsers = (): [
    * @param user User
    */
   const addOne = useCallback(
-    (user: Partial<IFrontUsersItem>): void => {
+    (user: IFrontNewUser): void => {
       const newUsers = [...users, user] as IFrontUsers
       mutate({ users: newUsers })
     },

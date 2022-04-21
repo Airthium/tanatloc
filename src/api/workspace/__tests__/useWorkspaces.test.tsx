@@ -12,19 +12,12 @@ let data: any
 const FunctionalComponent = () => {
   const [
     workspaces,
-    {
-      mutateWorkspaces,
-      addOneWorkspace,
-      delOneWorkspace,
-      mutateOneWorkspace,
-      loadingWorkspaces
-    }
+    { addOneWorkspace, delOneWorkspace, mutateOneWorkspace, loadingWorkspaces }
   ] = useWorkspaces()
 
   data = {
     workspaces,
     swr: {
-      mutateWorkspaces,
       addOneWorkspace,
       delOneWorkspace,
       mutateOneWorkspace,
@@ -42,7 +35,6 @@ describe('api/workspace/useWorkspaces', () => {
     render(<FunctionalComponent />)
 
     expect(data.workspaces).toEqual([{ id: 'id' }, {}])
-    expect(data.swr.mutateWorkspaces).toBeDefined()
     expect(data.swr.addOneWorkspace).toBeDefined()
     expect(data.swr.delOneWorkspace).toBeDefined()
     expect(data.swr.mutateOneWorkspace).toBeDefined()

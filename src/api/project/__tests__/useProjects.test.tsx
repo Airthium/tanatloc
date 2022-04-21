@@ -12,19 +12,12 @@ let data: any
 const FunctionalComponent = ({ ids }: { ids?: string[] }) => {
   const [
     projects,
-    {
-      mutateProjects,
-      addOneProject,
-      delOneProject,
-      mutateOneProject,
-      loadingProjects
-    }
+    { addOneProject, delOneProject, mutateOneProject, loadingProjects }
   ] = useProjects(ids)
 
   data = {
     projects,
     swr: {
-      mutateProjects,
       addOneProject,
       delOneProject,
       mutateOneProject,
@@ -42,7 +35,6 @@ describe('api/project/useProjects', () => {
     render(<FunctionalComponent />)
 
     expect(data.projects).toEqual([{ id: 'id' }, {}])
-    expect(data.swr.mutateProjects).toBeDefined()
     expect(data.swr.addOneProject).toBeDefined()
     expect(data.swr.delOneProject).toBeDefined()
     expect(data.swr.mutateOneProject).toBeDefined()

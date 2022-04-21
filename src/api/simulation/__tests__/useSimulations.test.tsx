@@ -13,7 +13,6 @@ const FunctionalComponent = ({ ids }: { ids?: string[] }) => {
   const [
     simulations,
     {
-      mutateSimulations,
       addOneSimulation,
       delOneSimulation,
       mutateOneSimulation,
@@ -24,7 +23,6 @@ const FunctionalComponent = ({ ids }: { ids?: string[] }) => {
   data = {
     simulations,
     swr: {
-      mutateSimulations,
       addOneSimulation,
       delOneSimulation,
       mutateOneSimulation,
@@ -44,7 +42,6 @@ describe('api/simulation/useSimulations', () => {
     render(<FunctionalComponent />)
 
     expect(data.simulations).toEqual([{ id: 'id' }, {}])
-    expect(data.swr.mutateSimulations).toBeDefined()
     expect(data.swr.addOneSimulation).toBeDefined()
     expect(data.swr.delOneSimulation).toBeDefined()
     expect(data.swr.mutateOneSimulation).toBeDefined()

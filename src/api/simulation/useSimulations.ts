@@ -3,10 +3,12 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontSimulations, IFrontSimulationsItem } from '@/api/index.d'
+import {
+  IFrontNewSimulation,
+  IFrontSimulations,
+  IFrontSimulationsItem
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new simulations ?
 
 /**
  * Use simulations
@@ -18,7 +20,7 @@ export const useSimulations = (
 ): [
   IFrontSimulations,
   {
-    addOneSimulation: (simulation: Partial<IFrontSimulationsItem>) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => void
     delOneSimulation: (simulation: Partial<IFrontSimulationsItem>) => void
     mutateOneSimulation: (
       simulation: Partial<IFrontSimulationsItem>,
@@ -42,8 +44,8 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const addOne = useCallback(
-    (simulation: Partial<IFrontSimulationsItem>): void => {
-      const newSimulations = [...simulations, simulation]
+    (simulation: IFrontNewSimulation): void => {
+      const newSimulations = [...simulations, simulation] as IFrontSimulations
       mutate({ simulations: newSimulations })
     },
     [simulations, mutate]

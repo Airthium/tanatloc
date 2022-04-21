@@ -1,11 +1,17 @@
 /** @module API.Interface */
 
-import { ISimulation } from '@/database/simulation'
 import { IGeometry } from '@/database/geometry'
+import { INewGroup } from '@/database/group'
+import { INewOrganization } from '@/database/organization'
+import { INewProject } from '@/database/project'
+import { INewSimulation, ISimulation } from '@/database/simulation'
 import { ISystem } from '@/database/system'
+import { INewUser } from '@/database/user'
+import { INewWorkspace } from '@/database/workspace'
 import { IClientPlugin } from '@/plugins/index.d'
 import {
   IGroupWithData,
+  INewGeometryWithData,
   IOrganizationWithData,
   IProjectWithData,
   IUserWithData,
@@ -15,6 +21,8 @@ import {
 /**
  * Geometries
  */
+export interface IFrontNewGeometry extends INewGeometryWithData {}
+
 export interface IFrontGeometriesItem
   extends IGeometry<
     ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
@@ -25,6 +33,8 @@ export interface IFrontGeometries extends Array<IFrontGeometriesItem> {}
 /**
  * Groups
  */
+export interface IFrontNewGroup extends INewGroup {}
+
 export interface IFrontGroupsItem
   extends IGroupWithData<('name' | 'users')[]> {}
 
@@ -33,6 +43,8 @@ export interface IFrontGroups extends Array<IFrontGroupsItem> {}
 /**
  * Organizations
  */
+export interface IFrontNewOrganization extends INewOrganization {}
+
 export interface IFrontOrganizationsItem
   extends IOrganizationWithData<
     (
@@ -66,6 +78,8 @@ export interface IFrontProject
 /**
  * Projects
  */
+export interface IFrontNewProject extends INewProject {}
+
 export interface IFrontProjectsItem
   extends IProjectWithData<
     (
@@ -94,8 +108,11 @@ export interface IFrontSimulation
 /**
  * Simulations
  */
+export interface IFrontNewSimulation extends INewSimulation {}
+
 export interface IFrontSimulationsItem
   extends ISimulation<('name' | 'scheme' | 'project')[]> {}
+
 export interface IFrontSimulations extends Array<IFrontSimuationsItem> {}
 
 /**
@@ -123,6 +140,8 @@ export interface IFrontUser
 /**
  * Users
  */
+export interface IFrontNewUser extends INewUser {}
+
 export interface IFrontUsersItem
   extends IUserWithData<
     (
@@ -140,10 +159,13 @@ export interface IFrontUsers extends Array<IFrontUsersItem> {}
 /**
  * Workspaces
  */
+export interface IFrontNewWorkspace extends INewWorkspace {}
+
 export interface IFrontWorkspacesItem
   extends IWorkspaceWithData<
     ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
   > {}
+
 export interface IFrontWorkspaces extends Array<IFrontWorkspacesItem> {}
 
 /**
@@ -152,8 +174,8 @@ export interface IFrontWorkspaces extends Array<IFrontWorkspacesItem> {}
 export interface IFetchResponse {
   geometries?: IFrontGeometries
   groups?: IFrontGroups
-  plugins?: IClientPlugin[]
   organizations?: IFrontOrganizations
+  plugins?: IClientPlugin[]
   project?: IFrontProject
   projects?: IFrontProjects
   simulation?: IFrontSimulation

@@ -3,10 +3,12 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontWorkspaces, IFrontWorkspacesItem } from '@/api/index.d'
+import {
+  IFrontNewWorkspace,
+  IFrontWorkspaces,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new workspace ?
 
 /**
  * Use workspace (SWR)
@@ -15,7 +17,7 @@ import { fetcher } from '@/api/call'
 export const useWorkspaces = (): [
   IFrontWorkspaces,
   {
-    addOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    addOneWorkspace: (workspace: IFrontNewWorkspace) => void
     delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
     mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
     errorWorkspaces: Error
@@ -33,7 +35,7 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const addOne = useCallback(
-    (workspace: Partial<IFrontWorkspacesItem>): void => {
+    (workspace: IFrontNewWorkspace): void => {
       const newWorkspaces = [...workspaces, workspace] as IFrontWorkspaces
       mutate({ workspaces: newWorkspaces })
     },

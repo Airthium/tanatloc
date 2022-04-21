@@ -3,10 +3,12 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontGeometries, IFrontGeometriesItem } from '@/api/index.d'
+import {
+  IFrontNewGeometry,
+  IFrontGeometries,
+  IFrontGeometriesItem
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new geometry ?
 
 /**
  * Use geometries
@@ -18,7 +20,7 @@ export const useGeometries = (
 ): [
   IFrontGeometries,
   {
-    addOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
+    addOneGeometry: (geometry: IFrontNewGeometry) => void
     delOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
     mutateOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
     errorGeometries: Error
@@ -39,7 +41,7 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const addOne = useCallback(
-    (geometry: Partial<IFrontGeometriesItem>): void => {
+    (geometry: IFrontNewGeometry): void => {
       const newGeometries = [...geometries, geometry] as IFrontGeometries
       mutate({ geometries: newGeometries })
     },

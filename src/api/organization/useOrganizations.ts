@@ -3,10 +3,12 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontOrganizations, IFrontOrganizationsItem } from '@/api/index.d'
+import {
+  IFrontNewOrganization,
+  IFrontOrganizations,
+  IFrontOrganizationsItem
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
-
-// TODO new organization ?
 
 /**
  * Use organizations
@@ -15,7 +17,7 @@ import { fetcher } from '@/api/call'
 export const useOrganizations = (): [
   IFrontOrganizations,
   {
-    addOneOrganization: (organization: Partial<IFrontOrganizationsItem>) => void
+    addOneOrganization: (organization: IFrontNewOrganization) => void
     delOneOrganization: (organization: Partial<IFrontOrganizationsItem>) => void
     mutateOneOrganization: (
       organization: Partial<IFrontOrganizationsItem>
@@ -35,9 +37,11 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const addOne = useCallback(
-    (organization: Partial<IFrontOrganizationsItem>): void => {
-      const newOrganizations = [...organizations, organization]
-      //@ts-ignore
+    (organization: IFrontNewOrganization): void => {
+      const newOrganizations = [
+        ...organizations,
+        organization
+      ] as IFrontOrganizations
       mutate({ organizations: newOrganizations })
     },
     [organizations, mutate]

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { IGeometry } from '@/database/index.d'
+import { IGeometry } from '@/database/geometry/index'
 
 import Dialog from '@/components/assets/dialog'
 

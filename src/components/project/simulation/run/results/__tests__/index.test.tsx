@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Results from '..'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplicator = jest.fn()

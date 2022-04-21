@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Results.Tools */
 
-import { ISimulationTaskFile } from '@/database/index.d'
+import { ISimulationTaskFile } from '@/database/simulation/index'
 import { IModel } from '@/models/index.d'
 
 /**

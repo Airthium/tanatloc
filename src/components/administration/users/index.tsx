@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback, RefObject } from 'react'
 import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 import { IUserWithData } from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'

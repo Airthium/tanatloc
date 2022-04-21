@@ -8,7 +8,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import ResultAPI from '@/api/result'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 /**
  * Props

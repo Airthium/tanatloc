@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IProjectWithData } from '@/lib/index.d'
 
 import MathJax from '@/components/assets/mathjax'

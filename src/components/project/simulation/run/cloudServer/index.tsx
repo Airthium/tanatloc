@@ -14,7 +14,7 @@ import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import { merge } from 'lodash'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
 import { LinkButton } from '@/components/assets/button'

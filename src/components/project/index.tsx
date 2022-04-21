@@ -21,11 +21,11 @@ import {
 } from '@ant-design/icons'
 
 import {
-  IGeometry,
   INewSimulation,
   ISimulation,
   ISimulationTaskFile
-} from '@/database/index.d'
+} from '@/database/simulation/index'
+import { IGeometry } from '@/database/geometry/index'
 import { IProjectWithData } from '@/lib/index.d'
 import { IModel } from '@/models/index.d'
 

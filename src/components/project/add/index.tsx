@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { IWorkspaceWithData } from '@/lib/index.d'
-import { INewProject } from '@/database/index.d'
+import { INewProject } from '@/database/project/index'
 
 import { LIMIT } from '@/config/string'
 

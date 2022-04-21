@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { INewOrganization } from '@/database/index.d'
+import { INewOrganization } from '@/database/organization/index'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'

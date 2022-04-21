@@ -3,7 +3,8 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Table, TableColumnsType } from 'antd'
 
-import { IClientPlugin, ISystem } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
+import { ISystem } from '@/database/system/index'
 
 import { ErrorNotification } from '@/components/assets/notification'
 

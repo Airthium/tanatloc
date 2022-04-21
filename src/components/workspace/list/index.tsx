@@ -19,7 +19,7 @@ import {
   IUserWithData,
   IWorkspaceWithData
 } from '@/lib/index.d'
-import { INewWorkspace } from '@/database/index.d'
+import { INewWorkspace } from '@/database/workspace/index'
 
 import { LIMIT } from '@/config/string'
 

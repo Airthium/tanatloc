@@ -7,7 +7,7 @@ import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 
 import { IProjectWithData } from '@/lib/index.d'
-import { IGeometry } from '@/database/index.d'
+import { IGeometry } from '@/database/geometry/index'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'

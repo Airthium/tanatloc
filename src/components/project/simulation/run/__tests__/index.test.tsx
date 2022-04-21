@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Run, { errors } from '..'
 
-import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
+import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({

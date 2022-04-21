@@ -6,11 +6,11 @@ import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
 import {
-  IClientPlugin,
   ISimulation,
   ISimulationTask,
   ISimulationTaskFile
-} from '@/database/index.d'
+} from '@/database/simulation/index'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 

@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Card, Typography } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
 
 import { EditButton } from '@/components/assets/button'

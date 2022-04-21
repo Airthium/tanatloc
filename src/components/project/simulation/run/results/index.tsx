@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
-import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
+import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
 
 import { getFilesNumbers, getMultiplicator } from './tools'
 

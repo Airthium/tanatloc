@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit, { errors } from '@/components/project/simulation/materials/edit'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IModelMaterialValue } from '@/models/index.d'
 
 const mockErrorNotification = jest.fn()

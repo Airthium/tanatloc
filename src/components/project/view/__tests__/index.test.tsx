@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { ISimulationTaskFile } from '@/database/index.d'
+import { ISimulationTaskFile } from '@/database/simulation/index'
 
 import View, { errors } from '@/components/project/view'
 

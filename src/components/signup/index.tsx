@@ -4,7 +4,7 @@ import { NextRouter, useRouter } from 'next/router'
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
-import { INewUser } from '@/database/index.d'
+import { INewUser } from '@/database/user/index'
 
 import { PasswordItem } from '@/components/assets/input'
 import { ErrorNotification, FormError } from '@/components/assets/notification'

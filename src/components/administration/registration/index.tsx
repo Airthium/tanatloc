@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
-import { ISystem } from '@/database/index.d'
+import { ISystem } from '@/database/system/index'
 
 import {
   MIN_SIZE,

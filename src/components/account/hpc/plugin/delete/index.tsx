@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'

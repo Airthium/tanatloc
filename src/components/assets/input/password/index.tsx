@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
-import { ISystem } from '@/database/index.d'
+import { ISystem } from '@/database/system/index'
 
 import {
   MIN_SIZE,

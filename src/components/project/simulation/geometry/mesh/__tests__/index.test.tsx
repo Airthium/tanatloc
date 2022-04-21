@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Mesh, { errors } from '..'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation/index'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({

@@ -113,7 +113,7 @@ const SelectionHelper = (
   const onSelectStart = (event: MouseEvent): void => {
     controls.enabled = false
 
-    renderer.domElement.parentElement.appendChild(element)
+    renderer.domElement.parentElement!.appendChild(element)
 
     element.style.left = event.clientX + 'px'
     element.style.top = event.clientY + 'px'

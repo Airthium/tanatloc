@@ -155,9 +155,9 @@ const AxisHelper = (
     sphereGeometry.dispose()
     sphereMaterial.dispose()
 
-    mesh.children.forEach((child: IArrowHelper | ILabelHelper) => {
+    mesh.children.forEach((child) => {
       if (child.type === 'ArrowHelper' || child.type === 'LabelHelper')
-        child.dispose()
+        (child as IArrowHelper | ILabelHelper).dispose()
     })
 
     localScene.remove(mesh)

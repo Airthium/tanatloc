@@ -254,12 +254,13 @@ const GridHelper = (
       boundingBox.max.z - boundingBox.min.z
     )
 
-    let currentlyVisible: boolean
-    scene.children.forEach((child: IGridHelperGroup) => {
+    let currentlyVisible = false
+    scene.children.forEach((child) => {
       if (child.type === 'GridHelper') {
-        currentlyVisible = child.visible
-        scene.remove(child)
-        child.dispose()
+        const grid = child as IGridHelperGroup
+        currentlyVisible = grid.visible
+        scene.remove(grid)
+        grid.dispose()
       }
     })
 

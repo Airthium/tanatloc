@@ -78,7 +78,7 @@ export const onChange = async (
   user: IUserWithData,
   info: UploadChangeParam<any>,
   swr: {
-    mutateUser: (user: Partial<IUserWithData<any>>) => void
+    mutateUser: (user: Partial<IUserWithData<'avatar'[]>>) => void
   }
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') {
@@ -124,7 +124,9 @@ export const onFinish = async (
     lastname: string
   },
   swr: {
-    mutateUser: (user: Partial<IUserWithData<any>>) => void
+    mutateUser: (
+      user: Partial<IUserWithData<('email' | 'firstname' | 'lastname')[]>>
+    ) => void
   }
 ): Promise<void> => {
   try {

@@ -1,6 +1,6 @@
 /** @module API.Geometry.Add */
 
-import { INewGeometry } from '@/database/index.d'
+import { INewGeometry } from '@/database/geometry'
 
 import { call } from '@/api/call'
 

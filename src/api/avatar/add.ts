@@ -1,6 +1,6 @@
 /** @module API.Avatar.Add */
 
-import { INewAvatar } from '@/database/index.d'
+import { INewAvatar } from '@/database/avatar'
 
 import { call } from '@/api/call'
 

@@ -65,19 +65,19 @@ describe('lib/organization', () => {
 
   test('get', async () => {
     mockGet.mockImplementation(() => ({ name: 'name' }))
-    let organization = await Organization.get('id', ['data'])
+    const organization1 = await Organization.get('id', ['name'])
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(organization).toEqual({ name: 'name' })
+    expect(organization1).toEqual({ name: 'name' })
 
     // With data
-    organization = await Organization.get('id', [
+    const organization2 = await Organization.get('id', [
       'owners',
       'pendingowners',
       'users',
       'pendingusers'
     ])
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(organization).toEqual({
+    expect(organization2).toEqual({
       name: 'name',
       owners: [],
       pendingowners: [],
@@ -93,14 +93,14 @@ describe('lib/organization', () => {
       users: [],
       pendingusers: []
     }))
-    organization = await Organization.get('id', [
+    const organization3 = await Organization.get('id', [
       'owners',
       'pendingowners',
       'users',
       'pendingusers'
     ])
     expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(organization).toEqual({
+    expect(organization3).toEqual({
       name: 'name',
       owners: [],
       pendingowners: [],
@@ -123,9 +123,9 @@ describe('lib/organization', () => {
     mockGroupGetWithData.mockImplementation(() => ({
       id: 'id'
     }))
-    let organization = await Organization.getWithData('id', ['data'])
+    const organization1 = await Organization.getWithData('id', ['name'])
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(organization).toEqual({
+    expect(organization1).toEqual({
       owners: [{ id: 'id' }],
       pendingowners: [{ id: 'id' }],
       users: [{ id: 'id' }],
@@ -135,9 +135,9 @@ describe('lib/organization', () => {
 
     // Without users, owners and groups
     mockGet.mockImplementation(() => ({}))
-    organization = await Organization.getWithData('id', ['data'])
+    const organization2 = await Organization.getWithData('id', ['name'])
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(organization).toEqual({})
+    expect(organization2).toEqual({})
   })
 
   test('getByUsers', async () => {

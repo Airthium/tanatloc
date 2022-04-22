@@ -1,4 +1,4 @@
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation'
 
 import createPVD from '../createPVD'
 
@@ -17,7 +17,7 @@ jest.mock('../../tools', () => ({
 }))
 
 describe('lib/download/pvd', () => {
-  const simulation: ISimulation = {
+  const simulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -33,7 +33,7 @@ describe('lib/download/pvd', () => {
         }
       }
     }
-  }
+  } as ISimulation<('name' | 'scheme')[]>
   const files = ['result_1.vtu', 'result_2.vtu']
 
   beforeEach(() => {

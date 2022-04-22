@@ -18,7 +18,7 @@ const mockGLTFError = jest.fn()
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
-    load = (_, finish, progress, error) => {
+    load = (_: any, finish: Function, progress: Function, error: Function) => {
       progress('progress')
       mockGLTFError(error)
       finish({
@@ -70,19 +70,13 @@ describe('lib/three/loaders/PartLoader', () => {
     uuid: 'uuid',
     buffer: Buffer.from([])
   }
-  let mouseMove
-  let mouseDown
-  const renderer = {
-    domElement: {
-      addEventListener: (type, callback) => {
-        if (type === 'pointermove') mouseMove = callback
-        else if (type === 'pointerdown') mouseDown = callback
-      },
-      removeEventListener:
-        jest.fn as WebGLRenderer['domElement']['removeEventListener']
-    } as WebGLRenderer['domElement'],
-    getSize: (vector) => vector
-  } as WebGLRenderer
+  const renderer = {} as WebGLRenderer
+  renderer.domElement = {} as WebGLRenderer['domElement']
+  renderer.domElement.addEventListener =
+    jest.fn as WebGLRenderer['domElement']['addEventListener']
+  renderer.domElement.removeEventListener =
+    jest.fn as WebGLRenderer['domElement']['removeEventListener']
+  renderer.getSize = (vector) => vector
   const camera = {} as PerspectiveCamera
   const outlinePass = {} as OutlinePass
   const clippingPlane = new Plane()
@@ -107,27 +101,32 @@ describe('lib/three/loaders/PartLoader', () => {
     await partLoader.load(part, true, clippingPlane)
 
     // With color
+    //@ts-ignore
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0.1, 0.2, 0.3]
     })
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockGeometry.getAttribute = jest.fn
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0, 0, 0]
     })
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [1, 1, 1]
     })
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockBox3.isEmpty = true
     await partLoader.load(part, true, clippingPlane)
 
@@ -138,7 +137,7 @@ describe('lib/three/loaders/PartLoader', () => {
     try {
       await partLoader.load(part, true, clippingPlane)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('gltf error')
     }
   })

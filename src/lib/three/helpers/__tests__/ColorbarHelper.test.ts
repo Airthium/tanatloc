@@ -29,6 +29,7 @@ describe('lib/three/helpers/ColorbarHelper', () => {
   renderer.setViewport = jest.fn
   renderer.render = jest.fn
 
+  //@ts-ignore
   global.MockScene.children = [
     {
       dispose: jest.fn()

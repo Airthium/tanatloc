@@ -35,11 +35,11 @@ export interface ISelectAction {
  */
 export const initialState: ISelectState = {
   enabled: false,
-  type: null,
-  part: null,
-  highlighted: null,
+  type: undefined,
+  part: undefined,
+  highlighted: undefined,
   selected: [],
-  dispatch: null
+  dispatch: () => undefined
 }
 
 /**
@@ -78,7 +78,7 @@ export const selectReducer = (
     case actionTypes.ENABLE:
       return { ...state, enabled: true }
     case actionTypes.DISABLE:
-      return { ...state, enabled: false, highlighted: null, selected: [] }
+      return { ...state, enabled: false, highlighted: undefined, selected: [] }
     case actionTypes.CLEAR:
       return { ...initialState }
     case actionTypes.SETTYPE:
@@ -88,7 +88,7 @@ export const selectReducer = (
     case actionTypes.HIGHLIGHT:
       return { ...state, highlighted: action.value as ISelect }
     case actionTypes.UNHIGHLIGHT:
-      return { ...state, highlighted: null }
+      return { ...state, highlighted: undefined }
     case actionTypes.SELECT:
       index = state.selected.findIndex(
         (item: ISelect) => item.uuid === (action.value as ISelect).uuid
@@ -129,7 +129,7 @@ export interface IProps {
  * @param props Props
  * @returns SelectProvider
  */
-const SelectProvider = ({ children }) => {
+const SelectProvider = ({ children }: IProps) => {
   // Reducer
   const [selectState, selectDispatch] = useReducer(selectReducer, initialState)
 

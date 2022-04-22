@@ -18,7 +18,7 @@ const mockGLTFError = jest.fn()
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
-    load = (_, finish, progress, error) => {
+    load = (_: any, finish: Function, progress: Function, error: Function) => {
       progress('progress')
       mockGLTFError(error)
       finish({
@@ -103,9 +103,11 @@ jest.mock('three/examples/jsm/loaders/DRACOLoader', () => ({
 
 describe('lib/three/loaders/PartLoader', () => {
   global.URL.createObjectURL = jest.fn()
+  //@ts-ignore
   global.MockGeometry.getAttribute = (attribute) => {
     if (attribute === 'position') return { array: [] }
   }
+  //@ts-ignore
   global.MockGroup.children = [
     {
       children: [
@@ -147,19 +149,18 @@ describe('lib/three/loaders/PartLoader', () => {
     buffer: Buffer.from([])
   }
   const clippingPlane = new Plane()
-  let mouseMove
-  let mouseDown
-  const renderer = {
-    domElement: {
-      addEventListener: (type, callback) => {
-        if (type === 'pointermove') mouseMove = callback
-        else if (type === 'pointerdown') mouseDown = callback
-      },
-      removeEventListener:
-        jest.fn as WebGLRenderer['domElement']['removeEventListener']
-    } as WebGLRenderer['domElement'],
-    getSize: (vector) => vector
-  } as WebGLRenderer
+  let mouseMove: Function
+  let mouseDown: Function
+  const renderer = {} as WebGLRenderer
+  renderer.domElement = {} as WebGLRenderer['domElement']
+  //@ts-ignore
+  renderer.domElement.addEventListener = (type: string, callback: Function) => {
+    if (type === 'pointermove') mouseMove = callback
+    else if (type === 'pointerdown') mouseDown = callback
+  }
+  renderer.domElement.removeEventListener =
+    jest.fn as WebGLRenderer['domElement']['removeEventListener']
+  renderer.getSize = (vector) => vector
   const camera = {} as PerspectiveCamera
   const outlinePass = {} as OutlinePass
   const mouseMoveEvent = jest.fn()
@@ -183,27 +184,32 @@ describe('lib/three/loaders/PartLoader', () => {
     await partLoader.load(part, true, clippingPlane)
 
     // With color
+    //@ts-ignore
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0.1, 0.2, 0.3]
     })
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockGeometry.getAttribute = jest.fn
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0, 0, 0]
     })
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [1, 1, 1]
     })
     await partLoader.load(part, true, clippingPlane)
 
+    //@ts-ignore
     global.MockBox3.isEmpty = true
     await partLoader.load(part, true, clippingPlane)
 
@@ -214,7 +220,7 @@ describe('lib/three/loaders/PartLoader', () => {
     try {
       await partLoader.load(part, true, clippingPlane)
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).toBe('gltf error')
     }
   })
@@ -279,13 +285,14 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('mouseMove', async () => {
     let current
-    mouseMoveEvent.mockImplementation((p, uuid) => (current = uuid))
+    mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'edges')
 
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
+    //@ts-ignore
     global.MockRaycaster.intersectObjects = [
       { object: { userData: { uuid: 'uuid', number: 'number' } } }
     ]
@@ -318,7 +325,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('mouseDown', async () => {
     let current
-    mouseDownEvent.mockImplementation((p, uuid) => (current = uuid))
+    mouseDownEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'edges')

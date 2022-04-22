@@ -9,10 +9,12 @@ document.createElement = jest.fn().mockImplementation(() => ({
   })
 }))
 
-document.addEventListener = (_, callback) => {
+//@ts-ignore
+document.addEventListener = (_: any, callback: Function) => {
   callback({})
 }
 
+//@ts-ignore
 global.MockRaycaster.intersectObjects = [
   {
     object: {
@@ -44,7 +46,8 @@ describe('lib/three/helpers/NavigationHelper', () => {
   const renderer: WebGLRenderer = {
     //@ts-ignore
     domElement: {
-      addEventListener: (_, callback) => {
+      //@ts-ignore
+      addEventListener: (_: any, callback: Function) => {
         callback({ target: { getBoundingClientRect: () => ({}) } })
         callback({
           clientX: 500,
@@ -120,6 +123,7 @@ describe('lib/three/helpers/NavigationHelper', () => {
   })
 
   test('dispose', () => {
+    //@ts-ignore
     global.MockGroup.children = [
       {
         children: [

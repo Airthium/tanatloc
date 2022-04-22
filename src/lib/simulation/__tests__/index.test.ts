@@ -135,20 +135,20 @@ describe('lib/simulation', () => {
 
   test('getAll', async () => {
     mockGetAll.mockImplementation(() => [{ id: 'id' }])
-    let simulations = await Simulation.getAll([])
+    const simulations1 = await Simulation.getAll([])
     expect(mockGetAll).toHaveBeenCalledTimes(1)
-    expect(simulations).toEqual([{ id: 'id' }])
+    expect(simulations1).toEqual([{ id: 'id' }])
 
     // With tasks
-    simulations = await Simulation.getAll(['tasks'])
+    const simulations2 = await Simulation.getAll(['tasks'])
     expect(mockGetAll).toHaveBeenCalledTimes(2)
-    expect(simulations).toEqual([{ id: 'id', tasks: [] }])
+    expect(simulations2).toEqual([{ id: 'id', tasks: [] }])
 
     // With tasks values
     mockGetAll.mockImplementation(() => [{ id: 'id', tasks: [] }])
-    simulations = await Simulation.getAll(['tasks'])
+    const simulations3 = await Simulation.getAll(['tasks'])
     expect(mockGetAll).toHaveBeenCalledTimes(3)
-    expect(simulations).toEqual([{ id: 'id', tasks: [] }])
+    expect(simulations3).toEqual([{ id: 'id', tasks: [] }])
   })
 
   test('update', async () => {

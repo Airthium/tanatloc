@@ -66,7 +66,7 @@ export interface IModelMaterialsChild {
   unit: string
 }
 
-export interface IModelMaterialValue {
+export interface IModelMaterialsValue {
   uuid: string
   material?: {
     label: string

@@ -44,6 +44,7 @@ describe('lib/three/helpers/AxisHelper', () => {
   })
 
   test('dispose', () => {
+    //@ts-ignore
     global.MockGroup.children = [{}, { type: 'ArrowHelper', dispose: jest.fn }]
     const axis = AxisHelper(renderer, camera)
     axis.dispose()

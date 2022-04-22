@@ -1,11 +1,4 @@
-import {
-  Box3,
-  Mesh,
-  PerspectiveCamera,
-  Scene,
-  Vector3,
-  WebGLRenderer
-} from 'three'
+import { Box3, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { SectionViewHelper } from '../SectionViewHelper'
 
@@ -18,14 +11,15 @@ jest.mock('three/examples/jsm/controls/TransformControls', () => ({
 }))
 
 describe('lib/three/helpers/SectionViewHelper', () => {
-  let mouseDown
-  let mouseMove
-  let mouseUp
+  let mouseDown: Function
+  let mouseMove: Function
+  let mouseUp: Function
 
   const renderer: WebGLRenderer = {
     //@ts-ignore
     domElement: {
-      addEventListener: (type, callback) => {
+      //@ts-ignore
+      addEventListener: (type: string, callback: Function) => {
         if (type === 'pointerdown') mouseDown = callback
         else if (type === 'pointermove') mouseMove = callback
         else if (type === 'pointerup') mouseUp = callback
@@ -71,6 +65,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   })
 
   test('toAxis - equal', () => {
+    //@ts-ignore
     global.MockVector3.equals = () => true
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.toAxis(new Vector3(1, 0, 0))
@@ -87,6 +82,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   })
 
   test('dispose', () => {
+    //@ts-ignore
     global.MockGroup.traverseChild = {
       type: 'Plane',
       geometry: {
@@ -102,6 +98,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   })
 
   test('dispose - other child', () => {
+    //@ts-ignore
     global.MockGroup.traverseChild = {
       type: 'Other'
     }
@@ -129,6 +126,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     mouseDown({})
 
     // With intersect (Plane)
+    //@ts-ignore
     global.MockRaycaster.intersectObject = [
       {
         object: {
@@ -177,6 +175,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     mouseUp()
 
     // With intersect (Dome)
+    //@ts-ignore
     global.MockRaycaster.intersectObject = [
       {
         object: {
@@ -215,6 +214,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     mouseUp()
 
     // With intersect (Arc)
+    //@ts-ignore
     global.MockRaycaster.intersectObject = [
       {
         object: {
@@ -254,6 +254,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     mouseUp()
 
     // With intersect (ArcY)
+    //@ts-ignore
     global.MockRaycaster.intersectObject = [
       {
         object: {
@@ -283,6 +284,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     mouseUp()
 
     // With intersect (Other)
+    //@ts-ignore
     global.MockRaycaster.intersectObject = [
       {
         object: {

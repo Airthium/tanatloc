@@ -5,7 +5,7 @@ jest.mock('is-electron', () => () => mockElectron())
 
 const mockQuery = jest.fn()
 jest.mock('../..', () => ({
-  query: async (query) => mockQuery(query)
+  query: async (query: string) => mockQuery(query)
 }))
 
 describe('database/user/add', () => {

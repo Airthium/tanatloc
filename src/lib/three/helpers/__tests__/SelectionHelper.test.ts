@@ -7,14 +7,15 @@ document.createElement = jest.fn().mockImplementation(() => ({
 }))
 
 describe('lib/three/helpers/SelectionHelper', () => {
-  let mouseDown
-  let mouseMove
-  let mouseUp
+  let mouseDown: Function
+  let mouseMove: Function
+  let mouseUp: Function
   const renderer: WebGLRenderer = {
     domElement: {
       //@ts-ignore
       getBoundingClientRect: () => ({}),
-      addEventListener: (type, callback) => {
+      //@ts-ignore
+      addEventListener: (type: string, callback: Function) => {
         if (type === 'pointerdown') mouseDown = callback
         else if (type === 'pointermove') mouseMove = callback
         else if (type === 'pointerup') mouseUp = callback
@@ -34,6 +35,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
   const camera = {
     position: new Vector3(0, 0, 0)
   } as PerspectiveCamera
+  //@ts-ignore
   const scene = {
     children: []
   } as Scene
@@ -72,6 +74,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseUp({})
 
     // 10x size
+    //@ts-ignore
     global.MockBox2.getSize = (vector) => {
       vector.x = 10
       vector.y = 0
@@ -82,6 +85,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseUp({})
 
     // 10x 10y size, no part
+    //@ts-ignore
     global.MockBox2.getSize = (vector) => {
       vector.x = 10
       vector.y = 10
@@ -111,6 +115,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
   })
 
   test('raycaster', () => {
+    //@ts-ignore
     global.MockBox2.getSize = (vector) => {
       vector.x = 10
       vector.y = 100
@@ -123,12 +128,14 @@ describe('lib/three/helpers/SelectionHelper', () => {
     )
 
     // No intersect
+    //@ts-ignore
     global.MockRaycaster.intersectObject = []
     selection.start()
     mouseDown({ button: 0 })
     mouseUp({})
 
     // Intersect
+    //@ts-ignore
     global.MockRaycaster.intersectObject = [{}]
     selection.start()
     mouseDown({ button: 0 })

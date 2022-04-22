@@ -180,7 +180,7 @@ describe('lib/project', () => {
 
     // Empty
     mockGet.mockImplementation(() => ({}))
-    project = await Project.getWithData('id', ['name'])
+    project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(project).toEqual({})
 
@@ -192,7 +192,7 @@ describe('lib/project', () => {
       groups: ['group']
     }))
     mockAvatarRead.mockImplementation((val) => val)
-    project = await Project.getWithData('id', ['name'])
+    project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockAvatarRead).toHaveBeenCalledTimes(1)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
@@ -207,7 +207,7 @@ describe('lib/project', () => {
     mockAvatarRead.mockImplementation(() => {
       throw new Error()
     })
-    project = await Project.getWithData('id', ['name'])
+    project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockAvatarRead).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(4)
@@ -223,7 +223,7 @@ describe('lib/project', () => {
     mockGet.mockImplementation(() => ({
       archived: true
     }))
-    project = await Project.getWithData('id', ['name'])
+    project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(project).toEqual({
       archived: true

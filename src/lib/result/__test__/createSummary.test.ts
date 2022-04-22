@@ -1,4 +1,4 @@
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation'
 
 import createSummary from '../createSummary'
 
@@ -17,7 +17,7 @@ jest.mock('../../tools', () => ({
 }))
 
 describe('lib/download/summary', () => {
-  const simulation: ISimulation = {
+  const simulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -28,7 +28,7 @@ describe('lib/download/summary', () => {
       version: 'version',
       configuration: {}
     }
-  }
+  } as ISimulation<('name' | 'scheme')[]>
 
   beforeEach(() => {
     mockPath.mockReset()
@@ -61,6 +61,7 @@ describe('lib/download/summary', () => {
       materials: {
         index: 2,
         title: 'Materials',
+        children: [],
         values: [
           {
             uuid: 'uuid',

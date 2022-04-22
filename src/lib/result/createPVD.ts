@@ -4,7 +4,7 @@ import path from 'path'
 
 import { SIMULATION } from '@/config/storage'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/simulation'
 
 import Tools from '../tools'
 
@@ -15,7 +15,7 @@ import Tools from '../tools'
  * @returns PVDs
  */
 const createPVD = (
-  simulation: ISimulation,
+  simulation: ISimulation<('name' | 'scheme')[]>,
   files: string[]
 ): { name: string; path: string }[] => {
   const PVDs: { name: string; path: string }[] = []

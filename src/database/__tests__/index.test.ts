@@ -23,8 +23,8 @@ jest.mock('pg', () => {
 
 describe('database', () => {
   beforeEach(() => {
+    //@ts-ignore
     global.tanatloc = {
-      //@ts-ignore
       pool: mockPool
     }
 

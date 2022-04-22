@@ -1,5 +1,6 @@
-import {
-  /*auth,*/ checkWorkspaceAuth,
+import { IProjectGet, IWorkspaceGet } from '@/lib/index.d'
+import auth, {
+  checkWorkspaceAuth,
   checkProjectAuth,
   checkGeometryAuth,
   checkSimulationAuth,
@@ -62,70 +63,146 @@ describe('route/auth', () => {
   test('authorized', async () => {
     let res
 
-    res = await auth({ id: 'id' }, { id: 'id', owners: ['id'] })
+    res = await auth({ id: 'id' }, {
+      id: 'id',
+      owners: ['id']
+    } as IProjectGet<('owners' | 'users' | 'groups')[]>)
     expect(res).toBe(true)
 
-    res = await auth({ id: 'id' }, { id: 'id' }, { id: 'id', owners: ['id'] })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id' } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      { id: 'id', owners: ['id'] } as IWorkspaceGet<
+        ('owners' | 'users' | 'groups')[]
+      >
+    )
     expect(res).toBe(true)
 
-    res = await auth({ id: 'id' }, { id: 'id', owners: ['id'], users: ['id'] })
+    res = await auth({ id: 'id' }, {
+      id: 'id',
+      owners: ['id'],
+      users: ['id']
+    } as IProjectGet<('owners' | 'users' | 'groups')[]>)
     expect(res).toBe(true)
 
-    res = await auth({ id: 'id' }, { id: 'id', users: ['id'] })
+    res = await auth({ id: 'id' }, { id: 'id', users: ['id'] } as IProjectGet<
+      ('owners' | 'users' | 'groups')[]
+    >)
     expect(res).toBe(true)
 
-    res = await auth({ id: 'id' }, { id: 'id' }, { id: 'id', users: ['id'] })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id' } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      { id: 'id', users: ['id'] } as IWorkspaceGet<
+        ('owners' | 'users' | 'groups')[]
+      >
+    )
     expect(res).toBe(true)
 
     mockGroupGet.mockImplementation(() => ({}))
     mockOrganizationGet.mockImplementation(() => ({ owners: ['id'] }))
-    res = await auth({ id: 'id' }, { id: 'id', groups: ['id'] }, { id: 'id' })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id', groups: ['id'] } as IProjectGet<
+        ('owners' | 'users' | 'groups')[]
+      >,
+      { id: 'id' } as IWorkspaceGet<('owners' | 'users' | 'groups')[]>
+    )
     expect(res).toBe(true)
 
-    res = await auth({ id: 'id' }, { id: 'id' }, { id: 'id', groups: ['id'] })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id' } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      { id: 'id', groups: ['id'] } as IWorkspaceGet<
+        ('owners' | 'users' | 'groups')[]
+      >
+    )
     expect(res).toBe(true)
 
     mockGroupGet.mockImplementation(() => ({}))
     mockOrganizationGet.mockImplementation(() => ({ users: ['id'] }))
-    res = await auth({ id: 'id' }, { id: 'id', groups: ['id'] }, { id: 'id' })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id', groups: ['id'] } as IProjectGet<
+        ('owners' | 'users' | 'groups')[]
+      >,
+      { id: 'id' } as IWorkspaceGet<('owners' | 'users' | 'groups')[]>
+    )
     expect(res).toBe(true)
 
-    res = await auth({ id: 'id' }, { id: 'id' }, { id: 'id', groups: ['id'] })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id' } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      { id: 'id', groups: ['id'] } as IWorkspaceGet<
+        ('owners' | 'users' | 'groups')[]
+      >
+    )
     expect(res).toBe(true)
   })
 
   test('not authorized', async () => {
     let res
 
-    res = await auth({ id: 'id' }, { id: 'id' })
+    res = await auth({ id: 'id' }, { id: 'id' } as IProjectGet<
+      ('owners' | 'users' | 'groups')[]
+    >)
     expect(res).toBe(false)
 
-    res = await auth({ id: 'id' }, { id: 'id', owners: ['id2'] })
+    res = await auth({ id: 'id' }, { id: 'id', owners: ['id2'] } as IProjectGet<
+      ('owners' | 'users' | 'groups')[]
+    >)
     expect(res).toBe(false)
 
-    res = await auth(
-      { id: 'id' },
-      { id: 'id', owners: ['id2'], users: ['id2'] }
-    )
+    res = await auth({ id: 'id' }, {
+      id: 'id',
+      owners: ['id2'],
+      users: ['id2']
+    } as IProjectGet<('owners' | 'users' | 'groups')[]>)
     expect(res).toBe(false)
 
-    res = await auth({ id: 'id' }, { id: 'id', users: ['id2'] })
+    res = await auth({ id: 'id' }, { id: 'id', users: ['id2'] } as IProjectGet<
+      ('owners' | 'users' | 'groups')[]
+    >)
     expect(res).toBe(false)
 
     mockGroupGet.mockImplementation(() => ({}))
     mockOrganizationGet.mockImplementation(() => ({ owners: ['id2'] }))
-    res = await auth({ id: 'id' }, { id: 'id', groups: ['id'] }, { id: 'id' })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id', groups: ['id'] } as IProjectGet<
+        ('owners' | 'users' | 'groups')[]
+      >,
+      { id: 'id' } as IWorkspaceGet<('owners' | 'users' | 'groups')[]>
+    )
     expect(res).toBe(false)
 
-    res = await auth({ id: 'id' }, { id: 'id' }, { id: 'id', groups: ['id'] })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id' } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      { id: 'id', groups: ['id'] } as IWorkspaceGet<
+        ('owners' | 'users' | 'groups')[]
+      >
+    )
     expect(res).toBe(false)
 
     mockGroupGet.mockImplementation(() => ({}))
     mockOrganizationGet.mockImplementation(() => ({ users: ['id2'] }))
-    res = await auth({ id: 'id' }, { id: 'id', groups: ['id'] }, { id: 'id' })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id', groups: ['id'] } as IProjectGet<
+        ('owners' | 'users' | 'groups')[]
+      >,
+      { id: 'id' } as IWorkspaceGet<('owners' | 'users' | 'groups')[]>
+    )
     expect(res).toBe(false)
 
-    res = await auth({ id: 'id' }, { id: 'id' }, { id: 'id', groups: ['id'] })
+    res = await auth(
+      { id: 'id' },
+      { id: 'id' } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      { id: 'id', groups: ['id'] } as IWorkspaceGet<
+        ('owners' | 'users' | 'groups')[]
+      >
+    )
     expect(res).toBe(false)
   })
 

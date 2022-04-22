@@ -9,7 +9,7 @@ jest.mock('@/database/system', () => ({
 
 describe('lib/system', () => {
   test('get', async () => {
-    await System.get(['name'])
+    await System.get(['allowsignup'])
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 

@@ -1,12 +1,4 @@
-import {
-  Box3,
-  Object3D,
-  PerspectiveCamera,
-  Scene,
-  Sphere,
-  Vector3,
-  WebGLRenderer
-} from 'three'
+import { Box3, PerspectiveCamera, Scene, Sphere, WebGLRenderer } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { GridHelper } from '../GridHelper'
 
@@ -23,6 +15,7 @@ jest.mock('../LabelHelper', () => ({
   })
 }))
 
+//@ts-ignore
 global.MockVector3 = { x: 1e5, y: 3, z: 1e-13 }
 
 describe('lib/three/helpers/GridHelper', () => {
@@ -54,6 +47,7 @@ describe('lib/three/helpers/GridHelper', () => {
     },
     children: []
   }
+  //@ts-ignore
   global.MockGroup = {
     children: [
       obj,
@@ -106,6 +100,7 @@ describe('lib/three/helpers/GridHelper', () => {
   })
 
   test('update', () => {
+    //@ts-ignore
     global.MockGroup.traverseChild = {
       type: 'LabelHelper',
       scale: { setScalar: jest.fn }
@@ -115,6 +110,7 @@ describe('lib/three/helpers/GridHelper', () => {
   })
 
   test('setVisible', () => {
+    //@ts-ignore
     global.MockGroup.traverseChild = {
       type: 'Line',
       scale: { setScalar: jest.fn }

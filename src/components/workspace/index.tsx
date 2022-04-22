@@ -1,6 +1,5 @@
 /** @module Components.Workspace */
 
-import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
@@ -14,7 +13,8 @@ import ProjectList from '@/components/project/list'
 import Utils from '@/lib/utils'
 
 import {
-  IFrontOrganizations,
+  IFrontMutateWorkspacesItem,
+  IFrontOrganizationsItem,
   IFrontUser,
   IFrontWorkspacesItem
 } from '@/api/index.d'
@@ -29,11 +29,14 @@ import Delete from './delete'
 export interface IProps {
   user: Pick<IFrontUser, 'id'>
   page: string
-  workspace: IFrontWorkspacesItem
-  organizations: IFrontOrganizations
+  workspace: Pick<
+    IFrontWorkspacesItem,
+    'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
+  >
+  organizations: Pick<IFrontOrganizationsItem, 'groups'>[]
   swr: {
-    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
-    mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 }
 
@@ -189,36 +192,6 @@ const Workspace = ({
       </Layout.Content>
     </Layout>
   )
-}
-
-Workspace.propTypes = {
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  page: PropTypes.string.isRequired,
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    projects: PropTypes.arrayOf(PropTypes.string).isRequired,
-    owners: PropTypes.array,
-    users: PropTypes.array,
-    groups: PropTypes.array
-  }).isRequired,
-  organizations: PropTypes.arrayOf(
-    PropTypes.shape({
-      groups: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string.isRequired,
-          name: PropTypes.string.isRequired,
-          users: PropTypes.array
-        })
-      )
-    })
-  ).isRequired,
-  swr: PropTypes.exact({
-    delOneWorkspace: PropTypes.func.isRequired,
-    mutateOneWorkspace: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Workspace

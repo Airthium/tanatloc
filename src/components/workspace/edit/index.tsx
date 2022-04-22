@@ -1,10 +1,7 @@
 /** @module Components.Workspace.Edit */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
-
-import { IWorkspaceWithData } from '@/lib/index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -12,15 +9,16 @@ import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Props
  */
 export interface IProps {
-  workspace: IWorkspaceWithData
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'name'>
   swr: {
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 }
 
@@ -38,9 +36,9 @@ export const errors = {
  * @param swr SWR
  */
 export const onEdit = async (
-  workspace: IWorkspaceWithData,
-  values: { name: string },
-  swr: { mutateOneWorkspace: (workspace: IWorkspaceWithData) => void }
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'name'>,
+  values: Pick<IFrontWorkspacesItem, 'name'>,
+  swr: { mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void }
 ): Promise<void> => {
   try {
     // New workspace
@@ -68,10 +66,8 @@ export const onEdit = async (
  */
 const Edit = ({ workspace, swr }: IProps): JSX.Element => {
   // Sate
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -115,16 +111,6 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
       </Dialog>
     </>
   )
-}
-
-Edit.propTypes = {
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneWorkspace: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Edit

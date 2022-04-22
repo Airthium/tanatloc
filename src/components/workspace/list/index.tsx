@@ -20,6 +20,7 @@ import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import {
+  IFrontMutateWorkspacesItem,
   IFrontNewWorkspace,
   IFrontOrganizationsItem,
   IFrontUser,
@@ -43,8 +44,8 @@ export interface IProps {
   organizations: Pick<IFrontOrganizationsItem, 'groups'>[]
   swr: {
     addOneWorkspace: (workspace: IFrontNewWorkspace) => void
-    mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
-    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 }
 

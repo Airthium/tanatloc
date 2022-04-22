@@ -1,10 +1,7 @@
 /** @module Components.Project.Edit */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
-
-import { IProjectWithData } from '@/lib/index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -12,6 +9,7 @@ import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontMutateProjectsItem, IFrontProjectsItem } from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 /**
@@ -19,9 +17,9 @@ import ProjectAPI from '@/api/project'
  */
 export interface IProps {
   disabled?: boolean
-  project: IProjectWithData
+  project: Pick<IFrontProjectsItem, 'id' | 'title' | 'description'>
   swr: {
-    mutateOneProject: (project: IProjectWithData) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => void
   }
 }
 
@@ -39,12 +37,9 @@ export const errors = {
  * @param swr SWR
  */
 export const onEdit = async (
-  project: IProjectWithData,
-  values: {
-    title: string
-    description?: string
-  },
-  swr: { mutateOneProject: (project: IProjectWithData) => void }
+  project: Pick<IFrontProjectsItem, 'id'>,
+  values: Pick<IFrontProjectsItem, 'title' | 'description'>,
+  swr: { mutateOneProject: (project: IFrontMutateProjectsItem) => void }
 ): Promise<void> => {
   try {
     // Edit
@@ -75,10 +70,8 @@ export const onEdit = async (
  */
 const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -132,18 +125,6 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
       </Dialog>
     </>
   )
-}
-
-Edit.propTypes = {
-  disabled: PropTypes.bool,
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneProject: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Edit

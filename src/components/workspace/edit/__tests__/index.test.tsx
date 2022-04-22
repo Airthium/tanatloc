@@ -23,7 +23,7 @@ jest.mock('@/api/workspace', () => ({
 }))
 
 describe('components/workspace/edit', () => {
-  const workspace = { id: 'id' }
+  const workspace = { id: 'id', name: 'name' }
   const swr = { mutateOneWorkspace: jest.fn() }
 
   beforeEach(() => {

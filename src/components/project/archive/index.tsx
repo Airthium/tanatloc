@@ -1,17 +1,20 @@
 /** @module Components.Project.Archive */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Button, Form, Tooltip, Typography, Upload } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 import { UploadChangeParam } from 'antd/lib/upload'
-
-import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontMutateProjectsItem,
+  IFrontMutateWorkspacesItem,
+  IFrontProjectsItem,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 /**
@@ -19,11 +22,11 @@ import ProjectAPI from '@/api/project'
  */
 export interface IProps {
   disabled?: boolean
-  workspace: IWorkspaceWithData
-  project: IProjectWithData
+  workspace: Pick<IFrontWorkspacesItem, 'id'>
+  project: Pick<IFrontProjectsItem, 'id' | 'archived' | 'title'>
   swr: {
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
-    mutateOneProject: (project: IProjectWithData) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => void
   }
 }
 
@@ -45,11 +48,11 @@ export const errors = {
  * @pram swr SWR
  */
 export const onArchive = async (
-  workspace: IWorkspaceWithData,
-  project: IProjectWithData,
+  workspace: Pick<IFrontWorkspacesItem, 'id'>,
+  project: Pick<IFrontProjectsItem, 'id'>,
   swr: {
-    mutateOneProject: (project: IProjectWithData) => void
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 ): Promise<void> => {
   try {
@@ -85,8 +88,8 @@ export const onArchive = async (
  * @param swr SWR
  */
 export const onUnarchiveServer = async (
-  workspace: IWorkspaceWithData,
-  project: IProjectWithData,
+  workspace: Pick<IFrontWorkspacesItem, 'id'>,
+  project: Pick<IFrontProjectsItem, 'id'>,
   swr: IProps['swr']
 ) => {
   try {
@@ -109,7 +112,9 @@ export const onUnarchiveServer = async (
  * Delete archive
  * @param project Project
  */
-export const onArchiveDelete = async (project: IProjectWithData) => {
+export const onArchiveDelete = async (
+  project: Pick<IFrontProjectsItem, 'id'>
+) => {
   try {
     await ProjectAPI.deleteArchiveFile({ id: project.id })
   } catch (err) {
@@ -139,8 +144,8 @@ export const getFile = async (file: Blob): Promise<any> => {
  * @param swr SWR
  */
 export const onUpload = async (
-  workspace: IWorkspaceWithData,
-  project: IProjectWithData,
+  workspace: Pick<IFrontWorkspacesItem, 'id'>,
+  project: Pick<IFrontProjectsItem, 'id'>,
   info: UploadChangeParam<any>,
   swr: IProps['swr']
 ): Promise<boolean> => {
@@ -172,6 +177,8 @@ export const onUpload = async (
 
     return false
   }
+
+  return false
 }
 
 /**
@@ -186,10 +193,8 @@ const Archive = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -203,7 +208,7 @@ const Archive = ({
         onCancel={() => setVisible(false)}
         onOk={
           project.archived
-            ? null
+            ? undefined
             : async () => {
                 setLoading(true)
                 try {
@@ -291,22 +296,6 @@ const Archive = ({
       </Tooltip>
     </>
   )
-}
-
-Archive.propTypes = {
-  disabled: PropTypes.bool,
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  project: PropTypes.exact({
-    archived: PropTypes.bool,
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneWorkspace: PropTypes.func.isRequired,
-    mutateOneProject: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Archive

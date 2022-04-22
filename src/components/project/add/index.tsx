@@ -1,12 +1,8 @@
 /** @module Components.Project.Add */
 
-import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
-
-import { IWorkspaceWithData } from '@/lib/index.d'
-import { INewProject } from '@/database/project/index'
 
 import { LIMIT } from '@/config/string'
 
@@ -14,16 +10,21 @@ import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontMutateWorkspacesItem,
+  IFrontNewProject,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 /**
  * Props
  */
 export interface IProps {
-  workspace: IWorkspaceWithData
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
   swr: {
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
-    addOneProject: (project: INewProject) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    addOneProject: (project: IFrontNewProject) => void
   }
 }
 
@@ -41,16 +42,13 @@ export const errors = {
  * @param swr SWR
  */
 export const onAdd = async (
-  workspace: IWorkspaceWithData,
-  values: {
-    title: string
-    description: string
-  },
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
+  values: Pick<IFrontNewProject, 'title' | 'description'>,
   swr: {
-    addOneProject: (project: INewProject) => void
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    addOneProject: (project: IFrontNewProject) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
-): Promise<INewProject> => {
+): Promise<IFrontNewProject> => {
   try {
     // Add
     const project = await ProjectAPI.add({ id: workspace.id }, values)
@@ -78,10 +76,8 @@ export const onAdd = async (
  */
 const Add = ({ workspace, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const router = useRouter()
@@ -146,17 +142,6 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
       </Dialog>
     </>
   )
-}
-
-Add.propTypes = {
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    projects: PropTypes.array
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneWorkspace: PropTypes.func.isRequired,
-    addOneProject: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Add

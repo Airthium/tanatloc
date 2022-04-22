@@ -30,7 +30,7 @@ jest.mock('@/api/project', () => ({
 }))
 
 describe('components/project/add', () => {
-  const workspace = { id: 'id' }
+  const workspace = { id: 'id', projects: [] }
   const swr = {
     mutateOneWorkspace: jest.fn(),
     addOneProject: jest.fn()

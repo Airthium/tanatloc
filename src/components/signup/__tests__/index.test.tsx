@@ -107,12 +107,16 @@ describe('components/signup', () => {
     unmount()
   })
 
-  test('onSignup', async () => {
+  const mockPassword = () => {
     mockPasswordItem.mockImplementation((props) => (
       <Form.Item name={props.name} label={props.label}>
         <Input role="PasswordItem" />
       </Form.Item>
     ))
+  }
+
+  test('onSignup', async () => {
+    mockPassword()
     mockFormError.mockImplementation((props) => (
       <div>{props.error?.render || null}</div>
     ))
@@ -179,11 +183,7 @@ describe('components/signup', () => {
   })
 
   test('mismatch passwords rule', async () => {
-    mockPasswordItem.mockImplementation((props) => (
-      <Form.Item name={props.name} label={props.label}>
-        <Input role="PasswordItem" />
-      </Form.Item>
-    ))
+    mockPassword()
     const { unmount } = render(<Signup />)
 
     const mockWarn = jest.fn()

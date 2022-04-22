@@ -1,7 +1,7 @@
 /** @module Components.Signup */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
 import { INewUser } from '@/database/user/index'
@@ -74,12 +74,8 @@ export const onLogin = (router: NextRouter): void => {
  */
 const Signup = (): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [formError, setFormError]: [
-    APIError,
-    Dispatch<SetStateAction<APIError>>
-  ] = useState()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [formError, setFormError] = useState<APIError>()
 
   // Data
   const router = useRouter()
@@ -132,7 +128,7 @@ const Signup = (): JSX.Element => {
                 setLoading(true)
                 try {
                   await onSignup(router, values)
-                } catch (err) {
+                } catch (err: any) {
                   setFormError(err)
                 } finally {
                   setLoading(false)

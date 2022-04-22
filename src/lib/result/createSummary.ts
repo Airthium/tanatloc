@@ -199,8 +199,10 @@ const runSummary = (
   stream: WriteStream,
   configuration: IModel['configuration']['run']
 ) => {
-  stream.write('Run:\n')
-  stream.write(' - Server: ' + configuration.cloudServer.name + '\n\n')
+  if (configuration.cloudServer) {
+    stream.write('Run:\n')
+    stream.write(' - Server: ' + configuration.cloudServer.name + '\n\n')
+  }
 }
 
 export default createSummary

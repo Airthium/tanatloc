@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { Checkbox, Form, Input, Select } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
-import { IUserWithData } from '@/lib/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -14,6 +13,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
+import { IFrontUser } from '@/api/index.d'
 
 /**
  * Props
@@ -21,7 +21,7 @@ import SystemAPI from '@/api/system'
 export interface IProps {
   plugins: IClientPlugin[]
   swr: {
-    addOneUser: (user: IUserWithData) => void
+    addOneUser: (user: Partial<IFrontUser>) => void
   }
 }
 
@@ -51,7 +51,7 @@ export const errors = {
  */
 export const onAdd = async (
   values: IAddValues,
-  swr: { addOneUser: (user: IUserWithData) => void }
+  swr: { addOneUser: (user: Partial<IFrontUser>) => void }
 ): Promise<void> => {
   try {
     // API

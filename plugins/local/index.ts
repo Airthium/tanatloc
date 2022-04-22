@@ -2,7 +2,7 @@
 
 import { LIMIT } from '@/config/string'
 
-import { IPlugin } from '@/database/index.d'
+import { IPlugin } from '@/plugins/index.d'
 
 import Lib from './src/lib'
 

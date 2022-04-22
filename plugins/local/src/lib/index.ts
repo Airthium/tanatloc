@@ -1,13 +1,25 @@
 /** @module Plugins.Local.Lib */
 
 import path from 'path'
-import { setIntervalAsync } from 'set-interval-async/fixed'
+import {
+  setIntervalAsync,
+  SetIntervalAsyncTimer
+} from 'set-interval-async/fixed'
 import { clearIntervalAsync } from 'set-interval-async'
+
+import {
+  IModel,
+  IModelMeshRefinement,
+  IModelTypedBoundaryCondition
+} from '@/models/index.d'
 
 import { SIMULATION } from '@/config/storage'
 
-import { ISimulation, ISimulationTask } from '@/database/index.d'
-import SimulationDB from '@/database/simulation'
+import SimulationDB, {
+  ISimulation,
+  ISimulationTask,
+  ISimulationTaskFile
+} from '@/database/simulation'
 
 import Services from '@/services'
 
@@ -81,80 +93,14 @@ const clean = async (simulationPath: string): Promise<void> => {
 }
 
 /**
- * Compute mesh
- * @param simulationPath Simulation path
- * @param geometry Geometry
- * @param mesh Mesh
- * @param callback Callback
- * @returns Mesh
- */
-const computeMesh = async (
-  simulationPath: string,
-  geometry: { path: string; file: string; name: string; dimension: number },
-  mesh: { path: string; parameters: any },
-  callback: (data: { pid?: number; data?: string; error?: string }) => void
-): Promise<{
-  type: string
-  fileName: string
-  originPath: string
-  renderPath: string
-  json: string
-  glb: string
-}> => {
-  const geoFile = geometry.name + '.geo'
-  const mshFile = geometry.name + '.msh'
-  const partPath = geometry.name
-
-  // Render template
-  await Template.render(
-    geometry.dimension === 2 ? 'gmsh2D' : 'gmsh3D',
-    {
-      ...mesh.parameters,
-      geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))
-    },
-    {
-      location: path.join(simulationPath, mesh.path),
-      name: geoFile
-    }
-  )
-
-  // Compute mesh
-  let code = await Services.gmsh(
-    simulationPath,
-    path.join(mesh.path, geoFile),
-    path.join(mesh.path, mshFile),
-    ({ pid, data, error }) => callback({ pid, data, error })
-  )
-
-  if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
-
-  // Convert mesh
-  const three = await Tools.convert(
-    path.join(simulationPath, mesh.path),
-    {
-      name: mshFile,
-      target: partPath
-    },
-    ({ data, error }) => callback({ data, error })
-  )
-
-  return {
-    type: 'mesh',
-    fileName: mshFile,
-    originPath: mesh.path,
-    renderPath: mesh.path,
-    json: three.json,
-    glb: three.glb
-  }
-}
-
-/**
  * Get refinements
  * @param configuration Configuration
  * @returns Refinements
  */
-const getRefinements = (configuration: any): any[] => {
-  const refinements = []
+const getRefinements = (
+  configuration: IModel['configuration']
+): IModelMeshRefinement[] => {
+  const refinements: IModelMeshRefinement[] = []
   configuration.boundaryConditions &&
     Object.keys(configuration.boundaryConditions).forEach((boundaryKey) => {
       if (
@@ -163,7 +109,11 @@ const getRefinements = (configuration: any): any[] => {
         boundaryKey === 'done'
       )
         return
-      const boundaryCondition = configuration.boundaryConditions[boundaryKey]
+
+      const boundaryCondition = configuration.boundaryConditions[
+        boundaryKey
+      ] as IModelTypedBoundaryCondition
+
       if (boundaryCondition.values && boundaryCondition.refineFactor) {
         refinements.push({
           type: 'factor',
@@ -177,111 +127,148 @@ const getRefinements = (configuration: any): any[] => {
 }
 
 /**
- * Compute meshes
+ * Compute mesh
  * @param id Simulation id
  * @param simulationPath Simulation path
  * @param configuration Configuration
  * @param tasks Tasks
  */
-const computeMeshes = async (
+const computeMesh = async (
   id: string,
   simulationPath: string,
-  configuration: any,
+  configuration: IModel['configuration'],
   tasks: ISimulationTask[]
 ): Promise<void> => {
   // Time
   const start = Date.now()
 
-  let taskIndex = 0
-  await Promise.all(
-    Object.keys(configuration).map(async (ckey) => {
-      if (configuration[ckey].meshable) {
-        const geometry = configuration[ckey]
+  const geometry = configuration.geometry
+  if (!geometry.meshable) return
 
-        // Task
-        const meshingTask: ISimulationTask = {
-          index: taskIndex++,
-          label: 'Mesh',
-          status: 'wait',
-          pid: undefined,
-          file: undefined,
-          log: '',
-          warning: '',
-          error: ''
-        }
-        tasks.push(meshingTask)
-        updateTasks(id, tasks)
+  // Task
+  const meshingTask: ISimulationTask = {
+    index: 0,
+    label: 'Mesh',
+    status: 'wait',
+    pid: undefined,
+    file: undefined,
+    log: '',
+    warning: '',
+    error: ''
+  }
+  tasks.push(meshingTask)
+  updateTasks(id, tasks)
 
-        if (configuration.initialization?.value?.type === 'coupling') {
-          // Build not needed
-          configuration[ckey].mesh = {}
-          meshingTask.log += 'Coupling: skip mesh build'
-          meshingTask.status = 'finish'
-          updateTasks(id, tasks)
-          return
-        }
+  try {
+    if (!geometry.name || !geometry.path || !geometry.file)
+      throw new Error('Missing data in geometry')
 
-        // Check refinements
-        const refinements = getRefinements(configuration)
+    if (configuration.initialization?.value?.type === 'coupling') {
+      // Build not needed
+      geometry.mesh = {}
+      meshingTask.log += 'Coupling: skip mesh build'
+      meshingTask.status = 'finish'
+      updateTasks(id, tasks)
+      return
+    }
 
-        // Mesh parameters
-        if (!geometry.meshParameters)
-          geometry.meshParameters = {
-            type: 'auto',
-            value: 'normal'
-          }
+    // Check refinements
+    const refinements = getRefinements(configuration)
 
-        const parameters = {
-          ...geometry.meshParameters,
-          refinements: refinements
-        }
-
-        // Build mesh
-        try {
-          const mesh = await computeMesh(
-            simulationPath,
-            {
-              path: path.join(geometry.path),
-              file: geometry.file,
-              name: geometry.name,
-              dimension: configuration.dimension
-            },
-            {
-              path: path.join(geometry.name + '_mesh'),
-              parameters
-            },
-            ({ pid, error, data }) => {
-              meshingTask.status = 'process'
-
-              pid && (meshingTask.pid = pid)
-
-              error && (meshingTask.error += 'Error: ' + error + '\n')
-
-              data && (meshingTask.log += data + '\n')
-
-              if ((Date.now() - start) % updateDelay === 0)
-                updateTasks(id, tasks)
-            }
-          )
-
-          // Task
-          meshingTask.status = 'finish'
-          meshingTask.file = mesh
-          updateTasks(id, tasks)
-
-          // Save mesh name
-          configuration[ckey].mesh = mesh
-        } catch (err) {
-          // Task
-          meshingTask.status = 'error'
-          meshingTask.error += 'Fatal error: ' + err.message
-          updateTasks(id, tasks)
-
-          throw err
-        }
+    // Mesh parameters
+    if (!geometry.meshParameters)
+      geometry.meshParameters = {
+        type: 'auto',
+        value: 'normal'
       }
-    })
-  )
+
+    const parameters = {
+      ...geometry.meshParameters,
+      refinements: refinements
+    }
+
+    // Build mesh
+    const geoFile = geometry.name + '.geo'
+    const mshFile = geometry.name + '.msh'
+    const meshPath = geometry.name + '_mesh'
+    const partPath = geometry.name
+
+    // Render template
+    await Template.render(
+      geometry.dimension === 2 ? 'gmsh2D' : 'gmsh3D',
+      {
+        ...parameters,
+        geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))
+      },
+      {
+        location: path.join(simulationPath, meshPath),
+        name: geoFile
+      }
+    )
+
+    // Compute mesh
+    let code = await Services.gmsh(
+      simulationPath,
+      path.join(meshPath, geoFile),
+      path.join(meshPath, mshFile),
+      ({ pid, data, error }) => {
+        meshingTask.status = 'process'
+
+        pid && (meshingTask.pid = pid)
+
+        error && (meshingTask.error += 'Error: ' + error + '\n')
+
+        data && (meshingTask.log += data + '\n')
+
+        if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+      }
+    )
+
+    if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
+
+    // Convert mesh
+    const three = await Tools.convert(
+      path.join(simulationPath, meshPath),
+      {
+        name: mshFile,
+        target: partPath
+      },
+      ({ data, error }) => {
+        meshingTask.status = 'process'
+
+        error && (meshingTask.error += 'Error: ' + error + '\n')
+
+        data && (meshingTask.log += data + '\n')
+
+        if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+      }
+    )
+
+    // Mesh
+    const mesh: ISimulationTaskFile = {
+      type: 'mesh',
+      fileName: mshFile,
+      originPath: meshPath,
+      renderPath: meshPath,
+      json: three.json,
+      glb: three.glb
+    }
+
+    // Save mesh
+    geometry.mesh = mesh
+
+    // Task
+    meshingTask.status = 'finish'
+    meshingTask.file = mesh
+    updateTasks(id, tasks)
+  } catch (err: any) {
+    // Task
+    meshingTask.status = 'error'
+    meshingTask.error += 'Fatal error: ' + err.message
+    updateTasks(id, tasks)
+
+    throw err
+  }
 }
 
 /**
@@ -291,8 +278,11 @@ const computeMeshes = async (
  */
 const computeSimulation = async (
   { id }: { id: string },
-  scheme: ISimulation['scheme']
+  scheme: ISimulation<'scheme'[]>['scheme']
 ): Promise<void> => {
+  // Check
+  if (!scheme) throw new Error('Scheme is not defined')
+
   // Time
   const start = Date.now()
 
@@ -306,13 +296,13 @@ const computeSimulation = async (
   await clean(simulationPath)
 
   // Create tasks
-  const tasks = []
+  const tasks: ISimulationTask[] = []
 
   // Ensure dimension
   configuration.dimension ?? (configuration.dimension = 3)
 
   // Meshes
-  await computeMeshes(id, simulationPath, configuration, tasks)
+  await computeMesh(id, simulationPath, configuration, tasks)
 
   const simulationTask: ISimulationTask = {
     index: tasks.length,
@@ -380,7 +370,7 @@ const computeSimulation = async (
     // Task
     simulationTask.status = 'finish'
     updateTasks(id, tasks)
-  } catch (err) {
+  } catch (err: any) {
     // Task
     simulationTask.status = 'error'
     simulationTask.error += 'Fatal error: ' + err.message
@@ -412,9 +402,9 @@ const monitoring = async (
   )
 }
 
-const interval = {}
-const results = {}
-const datas = {}
+const interval: { [key: string]: SetIntervalAsyncTimer } = {}
+const results: { [key: string]: string[] } = {}
+const datas: { [key: string]: string[] } = {}
 
 /**
  * Start process results & datas
@@ -429,7 +419,7 @@ const startProcess = (
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
-): string => {
+): SetIntervalAsyncTimer => {
   if (!interval[id]) {
     results[id] = []
     datas[id] = []
@@ -457,7 +447,7 @@ const stopProcess = async (
 ): Promise<void> => {
   if (interval[id]) {
     clearIntervalAsync(interval[id])
-    interval[id] = undefined
+    delete interval[id]
   }
 
   await processOutput(id, simulationPath, task, update)
@@ -573,7 +563,7 @@ const processResults = async (
           }))
         ]
         update()
-      } catch (err) {
+      } catch (err: any) {
         console.error(err)
         task.warning +=
           'Warning: Unable to convert result file (' + err.message + ')\n'
@@ -620,7 +610,7 @@ const processData = async (
         // Add to tasks
         task.datas = [...(task.datas || []), JSON.parse(dContent.toString())]
         update()
-      } catch (err) {
+      } catch (err: any) {
         task.warning +=
           'Warning: Unable to read data file (' + err.message + ')\n'
         update()
@@ -641,11 +631,11 @@ const processData = async (
 const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
   if (interval[id]) {
     clearIntervalAsync(interval[id])
-    interval[id] = undefined
+    delete interval[id]
   }
 
   tasks?.forEach((task) => {
-    if (task?.status === 'wait' || task?.status === 'process')
+    if (task.pid && (task?.status === 'wait' || task?.status === 'process'))
       try {
         process.kill(+task.pid)
       } catch (err) {}
@@ -655,6 +645,7 @@ const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
 const Local = {
   // Must be exported for each plugin
   key,
+  getRefinements,
   computeMesh,
   computeSimulation,
   monitoring,

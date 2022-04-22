@@ -1,11 +1,7 @@
-import { ISimulation, ISimulationTask } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/simulation'
+import { IModel } from '@/models/index.d'
 
 import Local from '..'
-
-const mockPath = jest.fn()
-jest.mock('path', () => ({
-  join: () => mockPath()
-}))
 
 const mockSetInterval = jest.fn()
 jest.mock('set-interval-async/fixed', () => ({
@@ -13,12 +9,10 @@ jest.mock('set-interval-async/fixed', () => ({
 }))
 
 jest.mock('set-interval-async', () => ({
-  clearIntervalAsync: () => {
-    /**/
-  }
+  clearIntervalAsync: () => undefined
 }))
 
-jest.mock('@/config/storage', () => ({}))
+jest.mock('@/config/storage', () => ({ SIMULATION: 'simulation' }))
 
 const mockUpdate = jest.fn()
 jest.mock('@/database/simulation', () => ({
@@ -28,9 +22,14 @@ jest.mock('@/database/simulation', () => ({
 const mockGmsh = jest.fn()
 const mockFreefem = jest.fn()
 jest.mock('@/services', () => ({
-  gmsh: async (path, mesh, geometry, callback) =>
-    mockGmsh(path, mesh, geometry, callback),
-  freefem: async (path, script, callback) => mockFreefem(path, script, callback)
+  gmsh: async (
+    path: string,
+    mesh: string,
+    geometry: string,
+    callback: Function
+  ) => mockGmsh(path, mesh, geometry, callback),
+  freefem: async (path: string, script: string, callback: Function) =>
+    mockFreefem(path, script, callback)
 }))
 
 const mockCreatePath = jest.fn()
@@ -42,8 +41,12 @@ jest.mock('@/lib/tools', () => ({
   toPosix: (path: string) => path,
   createPath: async () => mockCreatePath(),
   readFile: async () => mockReadFile(),
-  convert: async (path, file, callback, param) =>
-    mockConvert(path, file, callback, param),
+  convert: async (
+    path: string,
+    file: { name: string; target: string },
+    callback: Function,
+    param: { isResult: boolean }
+  ) => mockConvert(path, file, callback, param),
   removeFile: async () => mockRemoveFile(),
   removeDirectory: async () => mockRemoveDirectory()
 }))
@@ -55,8 +58,6 @@ jest.mock('@/lib/template', () => ({
 
 describe('plugins/local/src/lib', () => {
   beforeEach(() => {
-    mockPath.mockReset()
-
     mockSetInterval.mockReset()
 
     mockUpdate.mockReset()
@@ -68,12 +69,22 @@ describe('plugins/local/src/lib', () => {
     mockRemoveDirectory.mockReset()
 
     mockRender.mockReset()
+
     mockGmsh.mockReset()
     mockFreefem.mockReset()
   })
 
-  test('key', () => {
+  test('keys', () => {
     expect(Local.key).toBeDefined()
+
+    expect(Local.files.log).toBeDefined()
+    expect(Local.files.data).toBeDefined()
+    expect(Local.files.end).toBeDefined()
+
+    expect(Local.paths.run).toBeDefined()
+    expect(Local.paths.coupling).toBeDefined()
+    expect(Local.paths.result).toBeDefined()
+    expect(Local.paths.data).toBeDefined()
   })
 
   test('updateTasks', () => {
@@ -219,8 +230,6 @@ describe('plugins/local/src/lib', () => {
   })
 
   test('computeMesh', async () => {
-    // Normal
-    mockPath.mockImplementation(() => 'partPath')
     mockGmsh.mockImplementation((_, __, ___, callback) => {
       callback({})
       return 0
@@ -232,20 +241,56 @@ describe('plugins/local/src/lib', () => {
         glb: 'glb'
       }
     })
-    const data = await Local.computeMesh(
+
+    // Not meshable
+    await Local.computeMesh(
+      'id',
       'path',
-      { path: 'path', name: 'name', file: 'file', dimension: 3 },
-      { path: 'path', parameters: {} },
-      jest.fn()
+      {
+        geometry: {
+          index: 1,
+          title: 'Geometry',
+          meshable: false
+        }
+      } as IModel['configuration'],
+      []
     )
-    expect(data).toEqual({
-      type: 'mesh',
-      originPath: 'path',
-      renderPath: 'path',
-      fileName: 'name.msh',
-      json: 'json',
-      glb: 'glb'
-    })
+
+    // Missing data
+    try {
+      await Local.computeMesh(
+        'id',
+        'path',
+        {
+          geometry: {
+            index: 1,
+            title: 'Geometry',
+            meshable: true
+          }
+        } as IModel['configuration'],
+        []
+      )
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('Missing data in geometry')
+    }
+
+    // Normal
+    await Local.computeMesh(
+      'id',
+      'path',
+      {
+        geometry: {
+          index: 1,
+          title: 'Geometry',
+          meshable: true,
+          name: 'name',
+          path: 'path',
+          file: 'file'
+        }
+      } as IModel['configuration'],
+      []
+    )
 
     // Mesh convert error
     mockConvert.mockImplementation(() => {
@@ -253,26 +298,42 @@ describe('plugins/local/src/lib', () => {
     })
     try {
       await Local.computeMesh(
+        'id',
         'path',
-        { path: 'path', name: 'name', file: 'file', dimension: 2 },
-        { path: 'path', parameters: {} },
-        jest.fn()
+        {
+          geometry: {
+            index: 1,
+            title: 'Geometry',
+            meshable: true,
+            name: 'name',
+            path: 'path',
+            file: 'file'
+          }
+        } as IModel['configuration'],
+        []
       )
       expect(true).toBe(false)
     } catch (err) {
-      expect(true).toBe(true)
     } finally {
       mockConvert.mockImplementation(() => ({}))
     }
-
     // Error
     mockGmsh.mockReset()
     try {
       await Local.computeMesh(
+        'id',
         'path',
-        { path: 'path', name: 'name', file: 'file', dimension: 3 },
-        { path: 'path', parameters: {} },
-        jest.fn()
+        {
+          geometry: {
+            index: 1,
+            title: 'Geometry',
+            meshable: true,
+            name: 'name',
+            path: 'path',
+            file: 'file'
+          }
+        } as IModel['configuration'],
+        []
       )
       expect(true).toBe(false)
     } catch (err) {
@@ -292,12 +353,11 @@ describe('plugins/local/src/lib', () => {
       return 'interval'
     })
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
-
     // Empty
     await Local.computeSimulation({ id: 'id' }, {
       algorithm: 'algorithm',
-      configuration: {}
-    } as ISimulation['scheme'])
+      configuration: { geometry: {} }
+    } as ISimulation<'scheme'[]>['scheme'])
 
     // Simulation error
     mockFreefem.mockImplementation((_, __, callback) => {
@@ -307,14 +367,15 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeSimulation({ id: 'id' }, {
         algorithm: 'algorithm',
-        configuration: {}
-      } as ISimulation['scheme'])
+        configuration: {
+          geometry: {}
+        }
+      } as ISimulation<'scheme'[]>['scheme'])
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
     }
-
-    //With meshes
+    //With mesh
     mockFreefem.mockImplementation((_, __, callback) => {
       callback({ pid: 'pid' })
       return 0
@@ -329,12 +390,8 @@ describe('plugins/local/src/lib', () => {
     await Local.computeSimulation(
       { id: 'id' },
       {
-        category: 'category',
-        name: 'name',
-        code: 'code',
-        version: 'version',
-        description: 'description',
         algorithm: 'algorithm',
+        //@ts-ignore
         configuration: {
           geometry: {
             index: 1,
@@ -379,12 +436,8 @@ describe('plugins/local/src/lib', () => {
     await Local.computeSimulation(
       { id: 'id' },
       {
-        category: 'category',
-        name: 'name',
-        code: 'code',
-        version: 'version',
-        description: 'description',
         algorithm: 'algorithm',
+        //@ts-ignore
         configuration: {
           geometry: {
             index: 1,
@@ -409,7 +462,6 @@ describe('plugins/local/src/lib', () => {
             },
             key2: {
               label: 'key2',
-
               values: [
                 {
                   uuid: 'uuid',
@@ -487,18 +539,23 @@ describe('plugins/local/src/lib', () => {
     mockFreefem.mockImplementation(() => {
       return 0
     })
-
     jest
       .spyOn(Local, 'startProcess')
-      .mockImplementationOnce((_, __, ___, callback) => {
-        callback()
-        return 'id'
-      })
-
+      .mockImplementationOnce(
+        (
+          _id: string,
+          _simulationPath: string,
+          _simulationTask: ISimulationTask,
+          callback: Function
+        ) => {
+          callback()
+          return 'id' as any
+        }
+      )
     await Local.computeSimulation({ id: 'id' }, {
       algorithm: 'algorithm',
-      configuration: {}
-    } as ISimulation['scheme'])
+      configuration: { geometry: {} }
+    } as ISimulation<'scheme'[]>['scheme'])
   })
 
   test('monitoring', async () => {
@@ -515,14 +572,14 @@ describe('plugins/local/src/lib', () => {
       { label: 'label', status: 'wait' },
       { label: 'label', pid: '0', status: 'process' }
     ])
-    expect(mockKill).toHaveBeenCalledTimes(2)
+    expect(mockKill).toHaveBeenCalledTimes(1)
 
     // Start process
     mockSetInterval.mockImplementation((callback) => {
       callback()
       return 'interval'
     })
-    const id = Local.startProcess('id', '_', {} as ISimulationTask, jest.fn)
+    Local.startProcess('id', '_', {} as ISimulationTask, jest.fn)
     await Local.stop('id', [
       { label: 'label', status: 'finish' },
       { label: 'label', status: 'wait' },

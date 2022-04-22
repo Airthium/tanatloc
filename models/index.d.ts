@@ -1,6 +1,6 @@
 /** @module Models.Interface */
 
-import { IClientPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 type TValue = boolean | number | string
 
@@ -40,6 +40,7 @@ export interface IModelCommon {
  */
 export interface IModelGeometry extends IModelCommon {
   meshable: boolean
+  dimension?: number
   value?: string
   file?: string
   name?: string
@@ -48,6 +49,14 @@ export interface IModelGeometry extends IModelCommon {
     type: string
     value: string
   }
+  mesh?: {}
+}
+
+export interface IModelMeshRefinement {
+  type: 'manual' | 'auto' | 'factor'
+  value?: number
+  factor?: number
+  selected: { label: number | string }[]
 }
 
 /**

@@ -47,15 +47,15 @@ export interface IPlugin {
       ) => Promise<void>
       monitoring: (
         id: string,
-        pid: number | string,
+        pid: string | undefined,
         tasks: ISimulationTask[],
-        task: ISimulationTask,
-        configuration: IClientPlugin['configuration']
+        simulationTask: ISimulationTask,
+        configuration?: IClientPlugin['configuration']
       ) => Promise<void>
       stop: (
         id: string,
         tasks: ISimulationTask[],
-        configuration?: IModel['configuration']
+        configuration: IModel['configuration']
       ) => Promise<void>
     }
     templates?: { key: string; file: string }[]

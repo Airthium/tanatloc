@@ -1,22 +1,20 @@
 /** @module Components.Workspace.Delete */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
-
-import { IWorkspaceWithData } from '@/lib/index.d'
+import { useState } from 'react'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontWorkspacesItem } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Props
  */
 export interface IProps {
-  workspace: IWorkspaceWithData
+  workspace: Pick<IFrontWorkspacesItem, 'id'>
   swr: {
-    delOneWorkspace: (workspace: IWorkspaceWithData) => void
+    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
   }
 }
 
@@ -33,8 +31,8 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  workspace: IWorkspaceWithData,
-  swr: { delOneWorkspace: (workspace: IWorkspaceWithData) => void }
+  workspace: Pick<IFrontWorkspacesItem, 'id'>,
+  swr: { delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void }
 ): Promise<void> => {
   try {
     // Delete
@@ -55,8 +53,7 @@ export const onDelete = async (
  */
 const Delete = ({ workspace, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -76,15 +73,6 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    delOneWorkspace: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

@@ -1,10 +1,7 @@
 /** @module Components.Workspace.Add */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
-
-import { INewWorkspace } from '@/database/workspace/index'
 
 import { LIMIT } from '@/config/string'
 
@@ -12,6 +9,7 @@ import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontNewWorkspace } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
@@ -19,7 +17,7 @@ import WorkspaceAPI from '@/api/workspace'
  */
 export interface IProps {
   swr: {
-    addOneWorkspace: (workspace: INewWorkspace) => void
+    addOneWorkspace: (workspace: IFrontNewWorkspace) => void
   }
 }
 
@@ -36,8 +34,8 @@ export const errors = {
  * @param swr SWR
  */
 export const onOk = async (
-  values: { name: string },
-  swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
+  values: Pick<IFrontNewWorkspace, 'name'>,
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => void }
 ): Promise<void> => {
   try {
     // Add
@@ -58,10 +56,8 @@ export const onOk = async (
  */
 const Add = ({ swr }: IProps): JSX.Element => {
   // Sate
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [visible, setVisible] = useState<boolean>(false)
 
   /**
    * Render
@@ -106,12 +102,6 @@ const Add = ({ swr }: IProps): JSX.Element => {
       </Dialog>
     </>
   )
-}
-
-Add.propTypes = {
-  swr: PropTypes.exact({
-    addOneWorkspace: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Add

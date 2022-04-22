@@ -1,15 +1,9 @@
 /** @module Components.Workspace */
 
 import PropTypes from 'prop-types'
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-
-import {
-  IOrganizationWithData,
-  IUserWithData,
-  IWorkspaceWithData
-} from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import Share from '@/components/assets/share'
@@ -19,6 +13,11 @@ import ProjectList from '@/components/project/list'
 
 import Utils from '@/lib/utils'
 
+import {
+  IFrontOrganizations,
+  IFrontUser,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 import Edit from './edit'
@@ -28,13 +27,13 @@ import Delete from './delete'
  * Props
  */
 export interface IProps {
-  user: IUserWithData
+  user: Pick<IFrontUser, 'id'>
   page: string
-  workspace: IWorkspaceWithData
-  organizations: IOrganizationWithData[]
+  workspace: IFrontWorkspacesItem
+  organizations: IFrontOrganizations
   swr: {
-    delOneWorkspace: (workspace: IWorkspaceWithData) => void
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
   }
 }
 
@@ -59,10 +58,8 @@ const Workspace = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [filter, setFilter]: [string, Dispatch<SetStateAction<string>>] =
-    useState()
-  const [sorter, setSorter]: [string, Dispatch<SetStateAction<string>>] =
-    useState()
+  const [filter, setFilter] = useState<string>()
+  const [sorter, setSorter] = useState<string>()
 
   // Data
   const [
@@ -86,6 +83,8 @@ const Workspace = ({
    */
   return (
     <Layout className="no-scroll">
+      {/* 
+      //@ts-ignore */}
       <PageHeader
         className="inWorkspace-PageHeader"
         backIcon={false}

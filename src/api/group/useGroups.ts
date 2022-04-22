@@ -3,7 +3,11 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontNewGroup, IFrontGroups, IFrontGroupsItem } from '@/api/index.d'
+import {
+  IFrontNewGroup,
+  IFrontGroups,
+  IFrontMutateGroupsItem
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -17,8 +21,8 @@ export const useGroups = (
   IFrontGroups,
   {
     addOneGroup: (group: IFrontNewGroup) => void
-    delOneGroup: (group: Partial<IFrontGroupsItem>) => void
-    mutateOneGroup: (group: Partial<IFrontGroupsItem>) => void
+    delOneGroup: (group: IFrontMutateGroupsItem) => void
+    mutateOneGroup: (group: IFrontMutateGroupsItem) => void
     errorGroups: Error
     loadingGroups: boolean
   }
@@ -46,7 +50,7 @@ export const useGroups = (
    * @param group Group
    */
   const delOne = useCallback(
-    (group: Partial<IFrontGroupsItem>): void => {
+    (group: IFrontMutateGroupsItem): void => {
       const filteredGroups = groups.filter((g) => g.id !== group.id)
       mutate({ groups: filteredGroups })
     },
@@ -58,7 +62,7 @@ export const useGroups = (
    * @param groups Group
    */
   const mutateOne = useCallback(
-    (group: Partial<IFrontGroupsItem>): void => {
+    (group: IFrontMutateGroupsItem): void => {
       const mutatedGroups = groups.map((g) => {
         if (g.id === group.id) g = { ...g, ...group }
         return g

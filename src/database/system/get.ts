@@ -6,9 +6,13 @@ import { query } from '..'
 
 export type TSystemGet = ('allowsignup' | 'password' | 'defaultplugins')[]
 
+export type TSystemGetAllowsignup = 'allowsignup'[]
+export type TSystemGetPassword = 'password'[]
+export type TSystemGetDefaultplugins = 'defaultplugins'[]
+
 export interface ISystem<T = []> {
-  allowsignup: T extends ['allowsignup'] ? boolean : never
-  password?: T extends ['password']
+  allowsignup: TSystemGetAllowsignup extends T ? boolean : never
+  password?: TSystemGetPassword extends T
     ? {
         min: number
         max: number
@@ -17,7 +21,7 @@ export interface ISystem<T = []> {
         requireSymbol: boolean
       }
     : never
-  defaultplugins?: T extends ['defaultplugins'] ? string[] : never[]
+  defaultplugins?: TSystemGetDefaultplugins extends T ? string[] : never[]
 }
 
 /**

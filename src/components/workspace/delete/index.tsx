@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontWorkspacesItem } from '@/api/index.d'
+import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
@@ -14,7 +14,7 @@ import WorkspaceAPI from '@/api/workspace'
 export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id'>
   swr: {
-    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 }
 
@@ -32,7 +32,7 @@ export const errors = {
  */
 export const onDelete = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
-  swr: { delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void }
+  swr: { delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void }
 ): Promise<void> => {
   try {
     // Delete

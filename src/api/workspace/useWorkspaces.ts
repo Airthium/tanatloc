@@ -4,9 +4,9 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import {
+  IFrontMutateWorkspacesItem,
   IFrontNewWorkspace,
-  IFrontWorkspaces,
-  IFrontWorkspacesItem
+  IFrontWorkspaces
 } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
@@ -18,8 +18,8 @@ export const useWorkspaces = (): [
   IFrontWorkspaces,
   {
     addOneWorkspace: (workspace: IFrontNewWorkspace) => void
-    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
-    mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
     errorWorkspaces: Error
     loadingWorkspaces: boolean
   }
@@ -47,7 +47,7 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const delOne = useCallback(
-    (workspace: Partial<IFrontWorkspacesItem>): void => {
+    (workspace: IFrontMutateWorkspacesItem): void => {
       const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
       mutate({ workspaces: filteredWorkspaces })
     },
@@ -59,7 +59,7 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const mutateOne = useCallback(
-    (workspace: Partial<IFrontWorkspacesItem>): void => {
+    (workspace: IFrontMutateWorkspacesItem): void => {
       const mutatedWorkspaces = workspaces.map((w) => {
         if (w.id === workspace.id) w = { ...w, ...workspace }
         return w

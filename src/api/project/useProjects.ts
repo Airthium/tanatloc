@@ -4,9 +4,9 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import {
+  IFrontMutateProjectsItem,
   IFrontNewProject,
-  IFrontProjects,
-  IFrontProjectsItem
+  IFrontProjects
 } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
@@ -21,8 +21,8 @@ export const useProjects = (
   IFrontProjects,
   {
     addOneProject: (project: IFrontNewProject) => void
-    delOneProject: (project: Partial<IFrontProjectsItem>) => void
-    mutateOneProject: (project: Partial<IFrontProjectsItem>) => void
+    delOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => void
     errorProjects: Error
     loadingProjects: boolean
   }
@@ -53,7 +53,7 @@ export const useProjects = (
    * @param project project
    */
   const delOne = useCallback(
-    (project: Partial<IFrontProjectsItem>): void => {
+    (project: IFrontMutateProjectsItem): void => {
       const filteredProjects = projects.filter((p) => p.id !== project.id)
       mutate({ projects: filteredProjects })
     },
@@ -65,7 +65,7 @@ export const useProjects = (
    * @param project Project
    */
   const mutateOne = useCallback(
-    (project: Partial<IFrontProjectsItem>): void => {
+    (project: IFrontMutateProjectsItem): void => {
       const mutatedProjects = projects.map((p) => {
         if (p.id === project.id) p = { ...p, ...project }
         return p

@@ -4,9 +4,9 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import {
+  IFrontMutateOrganizationsItem,
   IFrontNewOrganization,
-  IFrontOrganizations,
-  IFrontOrganizationsItem
+  IFrontOrganizations
 } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
@@ -18,10 +18,8 @@ export const useOrganizations = (): [
   IFrontOrganizations,
   {
     addOneOrganization: (organization: IFrontNewOrganization) => void
-    delOneOrganization: (organization: Partial<IFrontOrganizationsItem>) => void
-    mutateOneOrganization: (
-      organization: Partial<IFrontOrganizationsItem>
-    ) => void
+    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
     errorOrganizations: Error
     loadingOrganizations: boolean
   }
@@ -52,7 +50,7 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const delOne = useCallback(
-    (organization: Partial<IFrontOrganizationsItem>): void => {
+    (organization: IFrontMutateOrganizationsItem): void => {
       const filteredOrganizations = organizations.filter(
         (o) => o.id !== organization.id
       )
@@ -66,7 +64,7 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const mutateOne = useCallback(
-    (organization: Partial<IFrontOrganizationsItem>): void => {
+    (organization: IFrontMutateOrganizationsItem): void => {
       const mutatedOrganizations = organizations.map((o) => {
         if (o.id === organization.id) o = { ...o, ...organization }
         return o

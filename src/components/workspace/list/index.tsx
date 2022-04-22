@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { NextRouter, useRouter } from 'next/router'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import {
   Divider,
   Empty,
@@ -14,18 +14,17 @@ import {
   Typography
 } from 'antd'
 
-import {
-  IOrganizationWithData,
-  IUserWithData,
-  IWorkspaceWithData
-} from '@/lib/index.d'
-import { INewWorkspace } from '@/database/workspace/index'
-
 import { LIMIT } from '@/config/string'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontNewWorkspace,
+  IFrontOrganizationsItem,
+  IFrontUser,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 import Workspace from '..'
@@ -36,13 +35,16 @@ import { menuItems } from '@/components/dashboard'
  * Props
  */
 export interface IProps {
-  user: IUserWithData
-  workspaces: IWorkspaceWithData[]
-  organizations: IOrganizationWithData[]
+  user: Pick<IFrontUser, 'id'>
+  workspaces: Pick<
+    IFrontWorkspacesItem,
+    'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
+  >[]
+  organizations: Pick<IFrontOrganizationsItem, 'groups'>[]
   swr: {
-    addOneWorkspace: (workspace: INewWorkspace) => void
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
-    delOneWorkspace: (workspace: IWorkspaceWithData) => void
+    addOneWorkspace: (workspace: IFrontNewWorkspace) => void
+    mutateOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
+    delOneWorkspace: (workspace: Partial<IFrontWorkspacesItem>) => void
   }
 }
 
@@ -61,8 +63,8 @@ export const errors = {
  */
 export const onOk = async (
   router: NextRouter,
-  values: { name: string },
-  swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
+  values: Pick<IFrontWorkspacesItem, 'name'>,
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => void }
 ): Promise<void> => {
   try {
     // Add
@@ -93,10 +95,8 @@ const WorkspacesList = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Router
   const router = useRouter()

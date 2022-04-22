@@ -4,9 +4,9 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import {
+  IFrontMutateSimulationsItem,
   IFrontNewSimulation,
-  IFrontSimulations,
-  IFrontSimulationsItem
+  IFrontSimulations
 } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
@@ -21,9 +21,9 @@ export const useSimulations = (
   IFrontSimulations,
   {
     addOneSimulation: (simulation: IFrontNewSimulation) => void
-    delOneSimulation: (simulation: Partial<IFrontSimulationsItem>) => void
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
     mutateOneSimulation: (
-      simulation: Partial<IFrontSimulationsItem>,
+      simulation: IFrontMutateSimulationsItem,
       revalidate?: boolean
     ) => void
     errorSimulations: Error
@@ -56,7 +56,7 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const delOne = useCallback(
-    (simulation: Partial<IFrontSimulationsItem>): void => {
+    (simulation: IFrontMutateSimulationsItem): void => {
       const filteredSimulations = simulations.filter(
         (s) => s.id !== simulation.id
       )
@@ -70,10 +70,7 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const mutateOne = useCallback(
-    (
-      simulation: Partial<IFrontSimulationsItem>,
-      revalidate?: boolean
-    ): void => {
+    (simulation: IFrontMutateSimulationsItem, revalidate?: boolean): void => {
       const mutatedSimulations = simulations.map((s) => {
         if (s.id === simulation.id) s = { ...s, ...simulation }
         return s

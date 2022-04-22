@@ -3,7 +3,11 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontNewUser, IFrontUsers, IFrontUsersItem } from '@/api/index.d'
+import {
+  IFrontMutateUsersItem,
+  IFrontNewUser,
+  IFrontUsers
+} from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -14,8 +18,8 @@ export const useUsers = (): [
   IFrontUsers,
   {
     addOneUser: (user: IFrontNewUser) => void
-    delOneUser: (user: Partial<IFrontUsersItem>) => void
-    mutateOneUser: (user: Partial<IFrontUsersItem>) => void
+    delOneUser: (user: IFrontMutateUsersItem) => void
+    mutateOneUser: (user: IFrontMutateUsersItem) => void
     errorUsers: Error
     loadingUsers: boolean
   }
@@ -43,7 +47,7 @@ export const useUsers = (): [
    * @param user User
    */
   const delOne = useCallback(
-    (user: Partial<IFrontUsersItem>): void => {
+    (user: IFrontMutateUsersItem): void => {
       const filteredUsers = users.filter((u) => u.id !== user.id)
       mutate({ users: filteredUsers })
     },
@@ -55,7 +59,7 @@ export const useUsers = (): [
    * @param user User
    */
   const mutateOne = useCallback(
-    (user: Partial<IFrontUsersItem>): void => {
+    (user: IFrontMutateUsersItem): void => {
       const mutatedUsers = users.map((u) => {
         if (u.id === user.id) u = { ...u, ...user }
         return u

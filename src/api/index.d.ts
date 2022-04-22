@@ -28,6 +28,11 @@ export interface IFrontGeometriesItem
     ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
   > {}
 
+export interface IFrontMutateGeometriesItem
+  extends Partial<IFrontGeometriesItem> {
+  id: string
+}
+
 export interface IFrontGeometries extends Array<IFrontGeometriesItem> {}
 
 /**
@@ -37,6 +42,10 @@ export interface IFrontNewGroup extends INewGroup {}
 
 export interface IFrontGroupsItem
   extends IGroupWithData<('name' | 'users')[]> {}
+
+export interface IFrontMutateGroupsItem extends Partial<IFrontGroupsItem> {
+  id: string
+}
 
 export interface IFrontGroups extends Array<IFrontGroupsItem> {}
 
@@ -56,6 +65,11 @@ export interface IFrontOrganizationsItem
       | 'groups'
     )[]
   > {}
+
+export interface IFrontMutateOrganizationsItem
+  extends Partial<IFrontOrganizationsItem> {
+  id: string
+}
 
 export interface IFrontOrganizations extends Array<IFrontOrganizationsItem> {}
 
@@ -97,6 +111,10 @@ export interface IFrontProjectsItem
     )[]
   > {}
 
+export interface IFrontMutateProjectsItem extends Partial<IFrontProjectsItem> {
+  id: string
+}
+
 export interface IFrontProjects extends Array<IFrontProjectsItem> {}
 
 /**
@@ -112,6 +130,11 @@ export interface IFrontNewSimulation extends INewSimulation {}
 
 export interface IFrontSimulationsItem
   extends ISimulation<('name' | 'scheme' | 'project')[]> {}
+
+export interface IFrontMutateSimulationsItem
+  extends Partial<IFrontSimulationsItem> {
+  id: string
+}
 
 export interface IFrontSimulations extends Array<IFrontSimuationsItem> {}
 
@@ -154,6 +177,10 @@ export interface IFrontUsersItem
     )[]
   > {}
 
+export interface IFrontMutateUsersItem extends Partial<IFrontUsersItem> {
+  id: string
+}
+
 export interface IFrontUsers extends Array<IFrontUsersItem> {}
 
 /**
@@ -165,6 +192,11 @@ export interface IFrontWorkspacesItem
   extends IWorkspaceWithData<
     ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
   > {}
+
+export interface IFrontMutateWorkspacesItem
+  extends Partial<IFrontWorkspacesItem> {
+  id: string
+}
 
 export interface IFrontWorkspaces extends Array<IFrontWorkspacesItem> {}
 

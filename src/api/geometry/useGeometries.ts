@@ -6,7 +6,7 @@ import { useCallback } from 'react'
 import {
   IFrontNewGeometry,
   IFrontGeometries,
-  IFrontGeometriesItem
+  IFrontMutateGeometriesItem
 } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
@@ -21,8 +21,8 @@ export const useGeometries = (
   IFrontGeometries,
   {
     addOneGeometry: (geometry: IFrontNewGeometry) => void
-    delOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
-    mutateOneGeometry: (geometry: Partial<IFrontGeometriesItem>) => void
+    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
+    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
     errorGeometries: Error
     loadingGeometries: boolean
   }
@@ -53,7 +53,7 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const delOne = useCallback(
-    (geometry: Partial<IFrontGeometriesItem>): void => {
+    (geometry: IFrontMutateGeometriesItem): void => {
       const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
       mutate({ geometries: filteredGeometries })
     },
@@ -65,7 +65,7 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const mutateOne = useCallback(
-    (geometry: Partial<IFrontGeometriesItem>): void => {
+    (geometry: IFrontMutateGeometriesItem): void => {
       const mutatedGeometries = geometries.map((g) => {
         if (g.id === geometry.id) g = { ...g, ...geometry }
         return g

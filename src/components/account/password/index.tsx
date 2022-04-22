@@ -4,14 +4,13 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
 
-import { IUserWithData } from '@/lib/index.d'
-
 import { PasswordItem } from '@/components/assets/input'
 import {
   SuccessNotification,
   FormError
 } from '@/components/assets/notification'
 
+import { IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 
@@ -19,7 +18,7 @@ import UserAPI from '@/api/user'
  * Props
  */
 export interface IProps {
-  user: IUserWithData
+  user: Partial<IFrontUser>
 }
 
 /**
@@ -38,7 +37,7 @@ export const errors = {
  * @param values Values
  */
 export const onFinish = async (
-  user: IUserWithData,
+  user: Partial<IFrontUser>,
   values: {
     password: string
     newPassword: string

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { NextRouter, useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
-import { IFrontUsersItem } from '@/api/index.d'
+import { IFrontUser } from '@/api/index.d'
 
 import Information from './information'
 import Password from './password'
@@ -15,9 +15,9 @@ import HPC from './hpc'
  * Props
  */
 export interface IProps {
-  user: IFrontUsersItem
+  user: IFrontUser
   swr: {
-    mutateUser: (user: Partial<IFrontUsersItem>) => void
+    mutateUser: (user: Partial<IFrontUser>) => void
     clearUser: () => void
   }
 }

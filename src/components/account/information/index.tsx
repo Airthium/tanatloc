@@ -23,7 +23,7 @@ import AvatarAPI from '@/api/avatar'
  * Props
  */
 export interface IProps {
-  user: IFrontUser
+  user: Partial<IFrontUser>
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => void
   }
@@ -74,7 +74,7 @@ export const getBase64 = async (file: Blob): Promise<any> => {
  * @param swr SWR
  */
 export const onChange = async (
-  user: IFrontUser,
+  user: Partial<IFrontUser>,
   info: UploadChangeParam<any>,
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => void
@@ -116,7 +116,7 @@ export const onChange = async (
  * @param swr SWR
  */
 export const onFinish = async (
-  user: IFrontUser,
+  user: Partial<IFrontUser>,
   values: {
     email: string
     firstname: string

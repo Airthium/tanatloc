@@ -3,7 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontSimulation } from '@/api/index.d'
+import { IFrontMutateSimulation, IFrontSimulation } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -17,7 +17,7 @@ export const useSimulation = (
 ): [
   IFrontSimulation,
   {
-    mutateSimulation: (simulation: Partial<IFrontSimulation>) => void
+    mutateSimulation: (simulation: IFrontMutateSimulation) => void
     errorSimulation: Error
     loadingSimulation: boolean
   }
@@ -37,7 +37,7 @@ export const useSimulation = (
    * @param update Simulation
    */
   const localMutate = useCallback(
-    (update: Partial<IFrontSimulation>): void => {
+    (update: IFrontMutateSimulation): void => {
       mutate({
         simulation: {
           ...simulation,

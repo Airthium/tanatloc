@@ -18,7 +18,7 @@ import {
 } from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'
-import { IFrontSystem } from '@/api/index.d'
+import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
 
 /**
  * Errors
@@ -35,7 +35,7 @@ export const errors = {
  */
 export const onAllowSignup = async (
   system: IFrontSystem,
-  mutateSystem: (system: Partial<IFrontSystem>) => void
+  mutateSystem: (system: IFrontMutateSystem) => void
 ): Promise<void> => {
   try {
     // Update
@@ -57,7 +57,7 @@ export const onAllowSignup = async (
  */
 export const onPasswordFinish = async (
   values: IFrontSystem['password'],
-  mutateSystem: (system: Partial<IFrontSystem>) => void
+  mutateSystem: (system: IFrontMutateSystem) => void
 ): Promise<void> => {
   try {
     // Update

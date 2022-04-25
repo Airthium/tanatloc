@@ -18,7 +18,7 @@ import UserAPI from '@/api/user'
  * Props
  */
 export interface IProps {
-  user: Partial<IFrontUser>
+  user: Pick<IFrontUser, 'email'>
 }
 
 /**
@@ -37,7 +37,7 @@ export const errors = {
  * @param values Values
  */
 export const onFinish = async (
-  user: Partial<IFrontUser>,
+  user: Pick<IFrontUser, 'email'>,
   values: {
     password: string
     newPassword: string

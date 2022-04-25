@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
 
-import { IUserWithData } from '@/lib/index.d'
+import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -15,12 +15,9 @@ import UserAPI from '@/api/user'
  * Props
  */
 export interface IProps {
-  user: {
-    id: string
-    email: string
-  }
+  user: Pick<IFrontUser, 'id' | 'email'>
   swr: {
-    delOneUser: (user: IUserWithData) => void
+    delOneUser: (user: IFrontMutateUser) => void
   }
 }
 
@@ -37,12 +34,12 @@ export const errors = {
  * @param swr Swr
  */
 export const onDelete = async (
-  user: IUserWithData,
-  swr: { delOneUser: (user: IUserWithData) => void }
+  user: Pick<IFrontUser, 'id' | 'email'>,
+  swr: { delOneUser: (user: IFrontMutateUser) => void }
 ): Promise<void> => {
   try {
     // Delete
-    await UserAPI.delById(user.id as string)
+    await UserAPI.delById(user.id)
 
     // Mutate
     swr.delOneUser({ id: user.id })

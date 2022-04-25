@@ -9,7 +9,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 import SystemAPI from '@/api/system'
-import { IFrontSystem } from '@/api/index.d'
+import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
 
 /**
  * Errors
@@ -30,7 +30,7 @@ export const onChange = async (
   system: IFrontSystem,
   plugin: IClientPlugin,
   checked: boolean,
-  swr: { mutateSystem: (system: Partial<IFrontSystem>) => void }
+  swr: { mutateSystem: (system: IFrontMutateSystem) => void }
 ) => {
   try {
     // API

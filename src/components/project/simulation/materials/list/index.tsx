@@ -1,17 +1,9 @@
 /** @module Components.Project.Simulation.Materials.List */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useState
-} from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 import { EditButton } from '@/components/assets/button'
 
@@ -20,13 +12,18 @@ import Delete from '../delete'
 import { SelectContext } from '@/context/select'
 import { enable, disable, select } from '@/context/select/actions'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
+
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onEdit: (index: number) => void
 }
@@ -38,11 +35,10 @@ export interface IProps {
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
-  const [enabled, setEnabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(true)
+  const [enabled, setEnabled] = useState<boolean>(true)
 
   // Data
-  const materials = simulation.scheme.configuration.materials
+  const materials = simulation.scheme.configuration.materials!
   const { dispatch } = useContext(SelectContext)
 
   /**
@@ -52,7 +48,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   const highlight = useCallback(
     (index: number): void => {
       dispatch(enable())
-      const currentSelected = materials.values[index].selected
+      const currentSelected = materials.values![index].selected
       currentSelected?.forEach((s) => {
         dispatch(select(s))
       })
@@ -73,7 +69,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   return (
     <>
       {materials.values
-        ?.map((material: IModelMaterialValue, index: number) => {
+        ?.map((material: IModelMaterialsValue, index: number) => {
           return (
             <Card
               className="material-item text-center"
@@ -114,23 +110,6 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
         .filter((l: any) => l)}
     </>
   )
-}
-
-List.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        materials: PropTypes.shape({
-          values: PropTypes.array
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onEdit: PropTypes.func.isRequired
 }
 
 export default List

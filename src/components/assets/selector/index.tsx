@@ -36,6 +36,11 @@ export interface IColor {
   b: number
 }
 
+export interface ISelection {
+  label: string
+  selected: { uuid: string; label: number | string }[]
+}
+
 /**
  * Props
  */
@@ -60,10 +65,7 @@ export interface IProps {
       color?: IColor
     }[]
   }
-  alreadySelected?: {
-    label: string
-    selected: { uuid: string; label: number | string }[]
-  }[]
+  alreadySelected?: ISelection[]
   updateSelected: (selected: ISelect[]) => void
 }
 

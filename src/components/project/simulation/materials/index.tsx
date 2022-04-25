@@ -1,35 +1,33 @@
 /** @module Components.Project.Simulation.Materials */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback,
-  useContext
-} from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { Card, Layout } from 'antd'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IGeometry } from '@/database/geometry/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
-import List from './list'
-import Material from './material'
+import Loading from '@/components/loading'
 
 import { SelectContext } from '@/context/select'
 import { enable, disable, setType, setPart } from '@/context/select/actions'
+
+import {
+  IFrontGeometriesItem,
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
+
+import List from './list'
+import Material from './material'
 
 /**
  * Props
  */
 export interface IProps {
-  geometry: IGeometry
-  simulation: ISimulation
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'dimension' | 'summary'>
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   setVisible: (visible: boolean) => void
 }
@@ -46,32 +44,28 @@ const Materials = ({
   setVisible
 }: IProps): JSX.Element => {
   // State
-  const [material, setMaterial]: [
-    IModelMaterialValue,
-    Dispatch<SetStateAction<IModelMaterialValue>>
-  ] = useState()
-  const [materialVisible, setMaterialVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [material, setMaterial] = useState<IModelMaterialsValue>()
+  const [materialVisible, setMaterialVisible] = useState<boolean>(false)
 
   // Context
   const { dispatch } = useContext(SelectContext)
 
   // Data
-  const materials = simulation.scheme.configuration.materials
+  const materials = simulation.scheme.configuration.materials!
 
   // Part
   useEffect(() => {
-    dispatch(setType(geometry.dimension === 2 ? 'faces' : 'solids'))
-    dispatch(setPart(geometry.summary.uuid))
+    if (geometry) {
+      dispatch(setType(geometry.dimension === 2 ? 'faces' : 'solids'))
+      dispatch(setPart(geometry.summary.uuid))
+    }
   }, [geometry, dispatch])
 
   /**
    * On add
    */
   const onAdd = useCallback((): void => {
-    setMaterial(null)
+    setMaterial(undefined)
     setMaterialVisible(true)
     setVisible(false)
     dispatch(enable())
@@ -83,7 +77,7 @@ const Materials = ({
    */
   const onEdit = useCallback(
     (index: number): void => {
-      const materialToEdit = materials.values[index]
+      const materialToEdit = materials.values![index]
       setMaterial(materialToEdit)
 
       setMaterialVisible(true)
@@ -99,13 +93,14 @@ const Materials = ({
   const onClose = useCallback((): void => {
     dispatch(disable())
     setMaterialVisible(false)
-    setMaterial(null)
+    setMaterial(undefined)
     setVisible(true)
   }, [dispatch, setVisible])
 
   /**
    * Render
    */
+  if (!geometry) return <Loading.Simple />
   return (
     <Layout>
       <Layout.Content>
@@ -147,33 +142,6 @@ const Materials = ({
       </Layout.Content>
     </Layout>
   )
-}
-
-Materials.propTypes = {
-  geometry: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    dimension: PropTypes.number.isRequired,
-    summary: PropTypes.exact({
-      uuid: PropTypes.string.isRequired,
-      solids: PropTypes.array.isRequired,
-      faces: PropTypes.array.isRequired
-    }).isRequired
-  }).isRequired,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        materials: PropTypes.shape({
-          children: PropTypes.array,
-          values: PropTypes.array
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  setVisible: PropTypes.func.isRequired
 }
 
 export default Materials

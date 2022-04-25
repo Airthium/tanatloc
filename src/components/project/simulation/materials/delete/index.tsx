@@ -1,27 +1,28 @@
 /** @module Components.Project.Simulation.Materials.Delete */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useContext, useState } from 'react'
+import { Dispatch, useContext, useState } from 'react'
 import { Typography } from 'antd'
-
-import { ISimulation } from '@/database/simulation/index'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { SelectContext } from '@/context/select'
+import { ISelectAction, SelectContext } from '@/context/select'
 import { unselect } from '@/context/select/actions'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   index: number
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -36,18 +37,20 @@ export const errors = {
  * On delete
  */
 const onDelete = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
-  dispatch: Dispatch<any>,
-  swr: IProps['swr']
+  dispatch: Dispatch<ISelectAction>,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
     const newSimulation = { ...simulation }
 
     // Update local
-    const materials = newSimulation.scheme.configuration.materials
-    const material = materials.values[index]
+    const materials = newSimulation.scheme.configuration.materials!
+    const material = materials.values![index]
 
     // (unselect)
     material.selected.forEach((s) => {
@@ -56,8 +59,8 @@ const onDelete = async (
 
     // Remove value
     materials.values = [
-      ...materials.values.slice(0, index),
-      ...materials.values.slice(index + 1)
+      ...materials.values!.slice(0, index),
+      ...materials.values!.slice(index + 1)
     ]
 
     // Diff
@@ -92,13 +95,12 @@ const onDelete = async (
  */
 const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const { dispatch } = useContext(SelectContext)
-  const materials = simulation.scheme.configuration.materials
-  const material = materials.values[index]
+  const materials = simulation.scheme.configuration.materials!
+  const material = materials.values![index]
 
   /**
    * Render
@@ -109,7 +111,7 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
       text={
         <>
           Are you sure you want to delete the material{' '}
-          <Typography.Text strong>{material?.material.label}</Typography.Text>
+          <Typography.Text strong>{material.material.label}</Typography.Text>
         </>
       }
       onDelete={async () => {
@@ -122,23 +124,6 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        materials: PropTypes.shape({
-          values: PropTypes.array.isRequired
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  index: PropTypes.number.isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

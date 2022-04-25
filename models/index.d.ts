@@ -77,7 +77,7 @@ export interface IModelMaterialsChild {
 
 export interface IModelMaterialsValue {
   uuid: string
-  material?: {
+  material: {
     label: string
     children: {
       label: string

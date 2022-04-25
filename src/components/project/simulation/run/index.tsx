@@ -1,15 +1,9 @@
 /** @module Components.Project.Simulation.Run */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
-import {
-  ISimulation,
-  ISimulationTask,
-  ISimulationTaskFile
-} from '@/database/simulation/index'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -18,17 +12,23 @@ import CloudServer from './cloudServer'
 import Log from './log'
 import Results from './results'
 
+import {
+  IFrontSimulationsItem,
+  IFrontResult,
+  IFrontMutateSimulation,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  result: Omit<Omit<ISimulationTaskFile, 'originPath'>, 'type'>
-  setResult: (result: ISimulationTaskFile) => void
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  result: Pick<IFrontResult, 'name' | 'fileName'>
+  setResult: (result: IFrontResult) => void
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -46,11 +46,11 @@ export const errors = {
  * @param cloudServer Cloud server
  */
 export const onCloudServer = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   cloudServer: IClientPlugin,
   swr: {
-    mutateSimulation: (simulation: ISimulation) => void
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateSimulation: (simulation: IFrontMutateSimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 ): Promise<void> => {
   try {
@@ -84,7 +84,9 @@ export const onCloudServer = async (
 /**
  * On run
  */
-export const onRun = async (simulation: ISimulation): Promise<void> => {
+export const onRun = async (
+  simulation: Pick<IFrontSimulationsItem, 'id'>
+): Promise<void> => {
   try {
     await SimulationAPI.run({ id: simulation.id })
   } catch (err) {
@@ -96,7 +98,9 @@ export const onRun = async (simulation: ISimulation): Promise<void> => {
 /**
  * On stop
  */
-export const onStop = async (simulation: ISimulation): Promise<void> => {
+export const onStop = async (
+  simulation: Pick<IFrontSimulationsItem, 'id'>
+): Promise<void> => {
   try {
     await SimulationAPI.stop({ id: simulation.id })
   } catch (err) {
@@ -111,10 +115,8 @@ export const onStop = async (simulation: ISimulation): Promise<void> => {
  */
 const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State
-  const [disabled, setDisabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [running, setRunning]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [disabled, setDisabled] = useState<boolean>(false)
+  const [running, setRunning] = useState<boolean>(false)
 
   const [steps, setSteps]: [
     ISimulationTask[],
@@ -281,27 +283,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
         </Layout.Content>
       </Layout>
     )
-}
-
-Run.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        run: PropTypes.shape({
-          cloudServer: PropTypes.object
-        }).isRequired
-      })
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  result: PropTypes.exact({
-    name: PropTypes.string.isRequired,
-    fileName: PropTypes.string.isRequired
-  }),
-  setResult: PropTypes.func.isRequired
 }
 
 export default Run

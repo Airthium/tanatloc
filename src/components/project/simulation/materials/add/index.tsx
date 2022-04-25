@@ -1,25 +1,27 @@
 /** @module Components.Project.Simulation.Materials.Add */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  material: Omit<IModelMaterialValue, 'uuid'>
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  material: Omit<IModelMaterialsValue, 'uuid'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onError: (desc?: string) => void
   onClose: () => void
@@ -37,18 +39,19 @@ export const errors = {
 /**
  * On add
  * @param simulation Simulation
- * @param geometry Geometry
  * @param material Material
  * @param swr SWR
  */
 export const onAdd = async (
-  simulation: IProps['simulation'],
-  material: IProps['material'],
-  swr: IProps['swr']
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  material: Omit<IModelMaterialsValue, 'uuid'>,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New material
-    const newMaterial = { ...material } as IModelMaterialValue
+    const newMaterial = { ...material } as IModelMaterialsValue
 
     // Set uuid
     newMaterial.uuid = uuid()
@@ -57,7 +60,7 @@ export const onAdd = async (
     const newSimulation = { ...simulation }
 
     // Update local
-    const materials = newSimulation.scheme.configuration.materials
+    const materials = newSimulation.scheme.configuration.materials!
     materials.values = [...(materials.values || []), newMaterial]
 
     // Diff
@@ -98,8 +101,7 @@ const Add = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -137,28 +139,6 @@ const Add = ({
       Add
     </AddButton>
   )
-}
-
-Add.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        materials: PropTypes.shape({
-          values: PropTypes.array
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  material: PropTypes.exact({
-    material: PropTypes.object,
-    selected: PropTypes.array
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onError: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
 }
 
 export default Add

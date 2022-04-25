@@ -1,25 +1,22 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback
-} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IGeometry } from '@/database/geometry/index'
-import { IModelMaterial, IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterials, IModelMaterialsValue } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
-import Selector from '@/components/assets/selector'
+import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
 import { ISelect } from '@/context/select'
+
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
+} from '@/api/index.d'
 
 import DataBase, { IMaterialDatabase } from '../database'
 import Add from '../add'
@@ -30,14 +27,14 @@ import Edit from '../edit'
  */
 export interface IProps {
   visible: boolean
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   geometry: {
-    solids: IGeometry['summary']['solids']
-    faces?: IGeometry['summary']['faces']
+    solids: IFrontGeometriesItem['summary']['solids']
+    faces?: IFrontGeometriesItem['summary']['faces']
   }
-  material?: IModelMaterialValue
+  material?: IModelMaterialsValue
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onClose: () => void
 }
@@ -56,23 +53,9 @@ const Material = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [alreadySelected, setAlreadySelected]: [
-    { label: string; selected: { uuid: string; label: number | string }[] }[],
-    Dispatch<
-      SetStateAction<
-        {
-          label: string
-          selected: { uuid: string; label: number | string }[]
-        }[]
-      >
-    >
-  ] = useState()
-  const [current, setCurrent]: [
-    IModelMaterialValue,
-    Dispatch<SetStateAction<IModelMaterialValue>>
-  ] = useState()
-  const [error, setError]: [string, Dispatch<SetStateAction<string>>] =
-    useState()
+  const [alreadySelected, setAlreadySelected] = useState<ISelection[]>()
+  const [current, setCurrent] = useState<IModelMaterialsValue>()
+  const [error, setError] = useState<string>()
 
   // Data
   const materials = simulation.scheme.configuration.materials
@@ -80,7 +63,7 @@ const Material = ({
   // Visible
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!visible && current) setCurrent(null)
+    if (!visible && current) setCurrent(undefined)
   })
 
   // Edit
@@ -134,7 +117,7 @@ const Material = ({
    * @param val Value
    */
   const onMaterialChange = useCallback(
-    (child: IModelMaterial, index: number, val: string) => {
+    (child: IModelMaterials, index: number, val: string) => {
       setCurrent((prevCurrent) => ({
         ...prevCurrent,
         material: {
@@ -172,7 +155,7 @@ const Material = ({
           type="text"
           icon={<CloseOutlined />}
           onClick={() => {
-            setCurrent(null)
+            setCurrent(undefined)
             onClose()
           }}
         />
@@ -181,7 +164,7 @@ const Material = ({
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <CancelButton
             onCancel={() => {
-              setCurrent(null)
+              setCurrent(undefined)
               onClose()
             }}
           />
@@ -262,34 +245,6 @@ const Material = ({
       </Space>
     </Drawer>
   )
-}
-
-Material.propTypes = {
-  visible: PropTypes.bool,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        materials: PropTypes.shape({
-          children: PropTypes.array,
-          values: PropTypes.array
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  geometry: PropTypes.exact({
-    solids: PropTypes.array.isRequired,
-    faces: PropTypes.array
-  }).isRequired,
-  material: PropTypes.exact({
-    uuid: PropTypes.string.isRequired,
-    material: PropTypes.object.isRequired,
-    selected: PropTypes.array.isRequired
-  }),
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onClose: PropTypes.func.isRequired
 }
 
 export default Material

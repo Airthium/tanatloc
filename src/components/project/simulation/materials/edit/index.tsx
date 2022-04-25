@@ -1,24 +1,26 @@
 /** @module Components.Project.Simulation.Materials.Edit */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  material: IModelMaterialValue
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  material: IModelMaterialsValue
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onError: (desc?: string) => void
   onClose: () => void
@@ -40,23 +42,25 @@ export const errors = {
  * @param swr SWR
  */
 export const onEdit = async (
-  simulation: IProps['simulation'],
-  material: IProps['material'],
-  swr: IProps['swr']
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  material: IModelMaterialsValue,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
     const newSimulation = { ...simulation }
-    const materials = newSimulation.scheme.configuration.materials
+    const materials = newSimulation.scheme.configuration.materials!
 
     // Update local
-    const index = materials.values.findIndex(
+    const index = materials.values!.findIndex(
       (m: { uuid: string }) => m.uuid === material.uuid
     )
     materials.values = [
-      ...materials.values.slice(0, index),
+      ...materials.values!.slice(0, index),
       material,
-      ...materials.values.slice(index + 1)
+      ...materials.values!.slice(index + 1)
     ]
 
     // Diff
@@ -95,8 +99,7 @@ const Edit = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -136,29 +139,6 @@ const Edit = ({
       Edit
     </EditButton>
   )
-}
-
-Edit.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        materials: PropTypes.shape({
-          values: PropTypes.array.isRequired
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  material: PropTypes.exact({
-    uuid: PropTypes.string.isRequired,
-    material: PropTypes.object,
-    selected: PropTypes.array
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onError: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
 }
 
 export default Edit

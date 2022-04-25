@@ -6,7 +6,7 @@ import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/plugins/index.d'
-import { IUserWithData } from '@/lib/index.d'
+import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 

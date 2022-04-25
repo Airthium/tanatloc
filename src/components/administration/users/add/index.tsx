@@ -13,7 +13,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
-import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
+import { IFrontMutateUser } from '@/api/index.d'
 
 /**
  * Props

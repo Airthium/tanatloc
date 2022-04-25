@@ -6,7 +6,7 @@ import { Checkbox, Form, Input, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
-import { IUserWithData } from '@/lib/index.d'
+import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -20,16 +20,17 @@ import UserAPI from '@/api/user'
  */
 export interface IProps {
   plugins: IClientPlugin[]
-  user: {
-    id: string
-    firstname?: string
-    lastname?: string
-    email: string
-    authorizedplugins: string[]
-    superuser?: boolean
-  }
+  user: Pick<
+    IFrontUser,
+    | 'id'
+    | 'firstname'
+    | 'lastname'
+    | 'email'
+    | 'authorizedplugins'
+    | 'superuser'
+  >
   swr: {
-    mutateOneUser: (user: IUserWithData) => void
+    mutateOneUser: (user: IFrontMutateUser) => void
   }
 }
 
@@ -59,9 +60,17 @@ export const errors = {
  * @param swr Swr
  */
 export const onUpdate = async (
-  user: IUserWithData,
+  user: Pick<
+    IFrontUser,
+    | 'id'
+    | 'firstname'
+    | 'lastname'
+    | 'email'
+    | 'authorizedplugins'
+    | 'superuser'
+  >,
   values: IEditValues,
-  swr: { mutateOneUser: (user: IUserWithData) => void }
+  swr: { mutateOneUser: (user: IFrontMutateUser) => void }
 ): Promise<void> => {
   try {
     // Update
@@ -71,7 +80,18 @@ export const onUpdate = async (
         if (
           value !== undefined &&
           value !== '******' &&
-          value !== user[key as keyof IUserWithData]
+          value !==
+            user[
+              key as keyof Pick<
+                IFrontUser,
+                | 'id'
+                | 'firstname'
+                | 'lastname'
+                | 'email'
+                | 'authorizedplugins'
+                | 'superuser'
+              >
+            ]
         )
           return { key, value, type: key === 'password' && 'crypt' }
       })
@@ -79,7 +99,7 @@ export const onUpdate = async (
 
     if (!toUpdate.length) return
 
-    await UserAPI.updateById(user.id as string, toUpdate as IDataBaseEntry[])
+    await UserAPI.updateById(user.id, toUpdate as IDataBaseEntry[])
 
     // Mutate
     values.password = '******'
@@ -87,7 +107,7 @@ export const onUpdate = async (
       ...user,
       ...values
     }
-    swr.mutateOneUser(newUser)
+    swr.mutateOneUser(newUser as IFrontUser)
   } catch (err) {
     ErrorNotification(errors.update, err)
     throw err

@@ -4,12 +4,12 @@ import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Table, TableColumnsType } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
-import { ISystem } from '@/database/system/index'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 import SystemAPI from '@/api/system'
+import { IFrontSystem } from '@/api/index.d'
 
 /**
  * Errors
@@ -27,10 +27,10 @@ export const errors = {
  * @param swr SWR
  */
 export const onChange = async (
-  system: ISystem,
+  system: IFrontSystem,
   plugin: IClientPlugin,
   checked: boolean,
-  swr: { mutateSystem: (system: ISystem) => void }
+  swr: { mutateSystem: (system: Partial<IFrontSystem>) => void }
 ) => {
   try {
     // API
@@ -45,7 +45,7 @@ export const onChange = async (
 
     // Local
     const defaultplugins = system?.defaultplugins || []
-    const index = defaultplugins.indexOf(plugin.key as string)
+    const index: number = defaultplugins.indexOf(plugin.key as string)
     if (checked && index === -1) {
       defaultplugins.push(plugin.key as string)
     }
@@ -109,7 +109,9 @@ const Plugins = () => {
           <Checkbox
             checked={checked}
             onChange={async (e) =>
-              onChange(system, plugin, e.target.checked, { mutateSystem })
+              onChange(system as IFrontSystem, plugin, e.target.checked, {
+                mutateSystem
+              })
             }
           />
         )

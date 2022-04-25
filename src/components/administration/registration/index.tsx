@@ -3,9 +3,6 @@
 import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
-
-import { ISystem } from '@/database/system/index'
-
 import {
   MIN_SIZE,
   MAX_SIZE,
@@ -21,6 +18,7 @@ import {
 } from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'
+import { IFrontSystem } from '@/api/index.d'
 
 /**
  * Errors
@@ -36,8 +34,8 @@ export const errors = {
  * @param mutateSystem Mutate system
  */
 export const onAllowSignup = async (
-  system: ISystem,
-  mutateSystem: (system: ISystem) => void
+  system: IFrontSystem,
+  mutateSystem: (system: Partial<IFrontSystem>) => void
 ): Promise<void> => {
   try {
     // Update
@@ -58,8 +56,8 @@ export const onAllowSignup = async (
  * @param mutateSystem Mutate system
  */
 export const onPasswordFinish = async (
-  values: ISystem['password'],
-  mutateSystem: (system: ISystem) => void
+  values: IFrontSystem['password'],
+  mutateSystem: (system: Partial<IFrontSystem>) => void
 ): Promise<void> => {
   try {
     // Update
@@ -122,7 +120,7 @@ const Registration = (): JSX.Element => {
         <Card title="Signup">
           <Checkbox
             checked={system?.allowsignup}
-            onChange={() => onAllowSignup(system, mutateSystem)}
+            onChange={() => onAllowSignup(system as IFrontSystem, mutateSystem)}
           >
             Allow signup
           </Checkbox>

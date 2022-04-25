@@ -76,7 +76,9 @@ export interface IGroupGet<T = []>
 }
 
 export interface IGroupWithData<T = []> extends Omit<IGroup<T>, 'users'> {
-  users: T extends ['users'] ? IUserWithData[] : never[]
+  users: 'users'[] extends T
+    ? IUserWithData<('firstname' | 'lastname' | 'email' | 'avatar')[]>[]
+    : never[]
 }
 
 /**
@@ -98,11 +100,21 @@ export interface IOrganizationWithData<T = []>
     IOrganization<T>,
     'owners' | 'pendingowners' | 'users' | 'pendingusers' | 'groups'
   > {
-  owners: 'owners'[] extends T ? IUserWithData[] : never[]
-  pendingowners: 'pendingowners'[] extends T ? IUserWithData[] : never[]
-  users: 'users'[] extends T ? IUserWithData[] : never[]
-  pendingusers: 'pendingusers'[] extends T ? IUserWithData[] : never[]
-  groups: 'groups' extends T ? IGroupWithData[] : never[]
+  owners: 'owners'[] extends T
+    ? IUserWithData<('email' | 'firstname' | 'lastname' | 'avatar')[]>[]
+    : never[]
+  pendingowners: 'pendingowners'[] extends T
+    ? IUserWithData<'email'[]>[]
+    : never[]
+  users: 'users'[] extends T
+    ? IUserWithData<('email' | 'firstname' | 'lastname' | 'avatar')[]>[]
+    : never[]
+  pendingusers: 'pendingusers'[] extends T
+    ? IUserWithData<'email'[]>[]
+    : never[]
+  groups: 'groups'[] extends T
+    ? IGroupWithData<('name' | 'users')[]>[]
+    : never[]
 }
 
 /**
@@ -123,9 +135,13 @@ export interface IProjectGet<T = []>
 export interface IProjectWithData<T = []>
   extends Omit<IProject<T>, 'avatar' | 'owners' | 'users' | 'groups'> {
   avatar?: 'avatar'[] extends T ? Buffer : never
-  owners: 'owners'[] extends T ? IUserWithData[] : never[]
-  users: 'users'[] extends T ? IUserWithData[] : never[]
-  groups: 'groups'[] extends T ? IGroupWithData[] : never[]
+  owners: 'owners'[] extends T
+    ? IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>[]
+    : never[]
+  users: 'users'[] extends T
+    ? IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>[]
+    : never[]
+  groups: 'groups'[] extends T ? IGroupWithData<'name'[]>[] : never[]
 }
 
 /**
@@ -170,8 +186,12 @@ export interface IWorkspaceGet<T = []>
 
 export interface IWorkspaceWithData<T = []>
   extends Omit<IWorkspace<T>, 'owners' | 'users' | 'groups' | 'projects'> {
-  owners: 'owners'[] extends T ? IUserWithData[] : never[]
-  users: 'users'[] extends T ? IUserWithData[] : never[]
-  groups: 'groups'[] extends T ? IGroupWithData[] : never[]
+  owners: 'owners'[] extends T
+    ? IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>[]
+    : never[]
+  users: 'users'[] extends T
+    ? IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>[]
+    : never[]
+  groups: 'groups'[] extends T ? IGroupWithData<'name'[]>[] : never[]
   projects: 'projects'[] extends T ? string[] : never[]
 }

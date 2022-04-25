@@ -234,7 +234,7 @@ const getByUser = async ({
                 const customGroup = {
                   id: group,
                   name: groupData.name
-                } as IGroupWithData
+                } as IGroupWithData<'name'[]>
                 const customWorkspace = {
                   id: groupData.id,
                   name: 'Projects from ' + groupData.name,

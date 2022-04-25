@@ -34,7 +34,7 @@ export interface IProps {
   disabled?: boolean
   workspace?: Pick<IFrontWorkspacesItem, 'id' | 'name' | 'users' | 'groups'>
   project?: Pick<IFrontProjectsItem, 'id' | 'title' | 'users' | 'groups'>
-  organizations: Pick<IFrontOrganizationsItem, 'id'|'name'|'groups'>[]
+  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
   swr: {
     mutateOneWorkspace?: (workspace: IFrontMutateWorkspacesItem) => void
     mutateOneProject?: (project: IFrontMutateProjectsItem) => void
@@ -85,7 +85,7 @@ export const onShare = async (
       const newWorkspace = { ...workspace }
       newWorkspace.groups = groupsSelected.map((group) => ({ id: group }))
       newWorkspace.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneWorkspace.(newWorkspace)
+      swr.mutateOneWorkspace(newWorkspace)
     } else {
       // API
       await ProjectAPI.update({ id: project!.id }, [
@@ -102,7 +102,7 @@ export const onShare = async (
       const newProject = { ...project }
       newProject.groups = groupsSelected.map((group) => ({ id: group }))
       newProject.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneProject.(newProject)
+      swr.mutateOneProject(newProject)
     }
   } catch (err) {
     ErrorNotification(errors.share, err)

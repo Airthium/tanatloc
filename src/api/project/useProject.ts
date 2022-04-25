@@ -3,7 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontProject } from '@/api/index.d'
+import { IFrontMutateProject, IFrontProject } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -16,7 +16,7 @@ export const useProject = (
 ): [
   IFrontProject,
   {
-    mutateProject: (project: Partial<IFrontProject>) => void
+    mutateProject: (project: IFrontMutateProject) => void
     errorProject: Error
     loadingProject: boolean
   }
@@ -35,7 +35,7 @@ export const useProject = (
    * @param update Project
    */
   const localMutate = useCallback(
-    (update: Partial<IFrontProject>): void => {
+    (update: IFrontMutateProject): void => {
       const mutatedProject = {
         ...project,
         ...update

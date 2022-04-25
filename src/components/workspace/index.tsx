@@ -75,6 +75,11 @@ const Workspace = ({
       loadingProjects
     }
   ] = ProjectAPI.useProjects(workspace?.projects)
+  const organizationsData = organizations.map((organization) => ({
+    id: organization.id,
+    name: organization.name,
+    groups: organization.groups
+  }))
 
   // Projects error
   useEffect(() => {
@@ -131,11 +136,7 @@ const Workspace = ({
                       groups: workspace.groups,
                       users: workspace.users
                     }}
-                    organizations={organizations.map((organization) => ({
-                      id: organization.id,
-                      name: organization.name,
-                      groups: organization.groups
-                    }))}
+                    organizations={organizationsData}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
                     style={{ buttonDark: true, buttonBordered: true }}
                   />
@@ -183,11 +184,7 @@ const Workspace = ({
             projects: workspace.projects
           }}
           projects={projects}
-          organizations={organizations.map((organization) => ({
-            id: organization.id,
-            name: organization.name,
-            groups: organization.groups
-          }))}
+          organizations={organizationsData}
           filter={filter}
           sorter={sorter}
           swr={{

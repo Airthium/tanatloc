@@ -1,17 +1,14 @@
 /** @module Components.Project.Geometry.Add */
 
-import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Space, Typography, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 
-import { IProjectWithData } from '@/lib/index.d'
-import { IGeometry } from '@/database/geometry/index'
-
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 import GeometryAPI from '@/api/geometry'
 
 /**
@@ -19,10 +16,10 @@ import GeometryAPI from '@/api/geometry'
  */
 export interface IProps {
   visible: boolean
-  project: IProjectWithData
+  project: Pick<IFrontProject, 'id' | 'geometries'>
   swr: {
-    mutateProject: (project: IProjectWithData) => void
-    addOneGeometry: (geometry: IGeometry) => void
+    mutateProject: (project: Partial<IFrontProject>) => void
+    addOneGeometry: (geometry: IFrontNewGeometry) => void
   }
   setVisible: Dispatch<SetStateAction<boolean>>
 }
@@ -67,9 +64,12 @@ export const getFile = async (file: Blob): Promise<any> => {
  * @param swr SWR
  */
 export const onUpload = async (
-  project: IProps['project'],
+  project: Pick<IFrontProject, 'id' | 'geometries'>,
   info: UploadChangeParam<any>,
-  swr: IProps['swr']
+  swr: {
+    mutateProject: (project: Partial<IFrontProject>) => void
+    addOneGeometry: (geometry: IFrontNewGeometry) => void
+  }
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') return true
   if (info.file.status === 'done') {
@@ -95,6 +95,8 @@ export const onUpload = async (
     } catch (err) {
       ErrorNotification(errors.add, err)
       throw err
+
+      return false
     }
   }
 }

@@ -1,13 +1,7 @@
 /** @module Components.Project */
 
 import { NextRouter, useRouter } from 'next/router'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState
-} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button, Layout, Menu, Typography } from 'antd'
 import {
   CodeSandboxOutlined,
@@ -20,13 +14,7 @@ import {
   PlusCircleOutlined
 } from '@ant-design/icons'
 
-import {
-  INewSimulation,
-  ISimulation,
-  ISimulationTaskFile
-} from '@/database/simulation/index'
-import { IGeometry } from '@/database/geometry/index'
-import { IProjectWithData } from '@/lib/index.d'
+import { ISimulation } from '@/database/simulation/index'
 import { IModel } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
@@ -35,17 +23,25 @@ import { ErrorNotification } from '@/components/assets/notification'
 import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'
 
+import SelectProvider from '@/context/select'
+
+import {
+  IFrontGeometriesItem,
+  IFrontProject,
+  IFrontNewSimulation,
+  IFrontSimulationsItem,
+  IFrontResult
+} from '@/api/index.d'
+import UserAPI from '@/api/user'
+import ProjectAPI from '@/api/project'
+import SimulationAPI from '@/api/simulation'
+import GeometryAPI from '@/api/geometry'
+
 import Panel from './panel'
 import Geometry from './geometry'
 import View from './view'
 import Data from './data'
 import Simulation from './simulation'
-
-import UserAPI from '@/api/user'
-import ProjectAPI from '@/api/project'
-import SimulationAPI from '@/api/simulation'
-import GeometryAPI from '@/api/geometry'
-import SelectProvider from '@/context/select'
 
 /**
  * Menu items
@@ -83,8 +79,8 @@ export const errors = {
  */
 export const handleDashboard = (
   router: NextRouter,
-  page: string,
-  workspaceId: string
+  page?: string,
+  workspaceId?: string
 ): void => {
   router.push({
     pathname: '/dashboard',
@@ -99,11 +95,11 @@ export const handleDashboard = (
  * @param swr SWR
  */
 export const onSelector = async (
-  project: IProjectWithData,
+  project: IFrontProject,
   scheme: IModel,
   swr: {
-    addOneSimulation: (simulation: INewSimulation) => void
-    mutateProject: (project: IProjectWithData) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => void
+    mutateProject: (project: Partial<IFrontProject>) => void
   }
 ): Promise<void> => {
   try {
@@ -139,42 +135,23 @@ const Project = (): JSX.Element => {
   }: { page?: string; workspaceId?: string; projectId?: string } = router.query
 
   // State
-  const [geometryAddVisible, setGeometryAddVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [geometry, setGeometry]: [
-    IGeometry & { needCleanup?: boolean },
-    Dispatch<SetStateAction<IGeometry & { needCleanup?: boolean }>>
-  ] = useState()
+  const [geometryAddVisible, setGeometryAddVisible] = useState<boolean>(false)
+  const [geometry, setGeometry] = useState<IFrontGeometriesItem>()
 
-  const [simulationSelectorVisible, setSimulationSelectorVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [simulation, setSimulation]: [
-    ISimulation,
-    Dispatch<SetStateAction<ISimulation>>
-  ] = useState()
+  const [simulationSelectorVisible, setSimulationSelectorVisible] =
+    useState<boolean>(false)
+  const [simulation, setSimulation] = useState<IFrontSimulationsItem>()
 
-  const [result, setResult]: [
-    ISimulationTaskFile,
-    Dispatch<SetStateAction<ISimulationTaskFile>>
-  ] = useState()
+  const [result, setResult] = useState<IFrontResult>()
 
-  const [menuKey, setMenuKey]: [
-    { key: string; id: string; item?: string },
-    Dispatch<SetStateAction<{ key: string; id: string; item?: string }>>
-  ] = useState()
+  const [menuKey, setMenuKey] = useState<{
+    key: string
+    id: string
+    item?: string
+  }>()
 
-  const [panel, setPanel]: [
-    JSX.Element,
-    Dispatch<SetStateAction<JSX.Element>>
-  ] = useState()
-  const [panelVisible, setPanelVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(true)
+  const [panel, setPanel] = useState<JSX.Element>()
+  const [panelVisible, setPanelVisible] = useState<boolean>(true)
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -206,8 +183,8 @@ const Project = (): JSX.Element => {
    * On panel close
    */
   const onPanelClose = useCallback((): void => {
-    setPanel(null)
-    setMenuKey(null)
+    setPanel(undefined)
+    setMenuKey(undefined)
   }, [])
 
   // Not logged -> go to login page
@@ -242,7 +219,7 @@ const Project = (): JSX.Element => {
         if (JSON.stringify(current) !== JSON.stringify(geometry))
           setGeometry(current)
       } else {
-        setGeometry(null)
+        setGeometry(undefined)
       }
     } else {
       setGeometry(geometries[0])
@@ -258,7 +235,7 @@ const Project = (): JSX.Element => {
           setSimulation(current)
       } else {
         onPanelClose()
-        setSimulation(null)
+        setSimulation(undefined)
       }
     }
   }, [simulations, simulation, loadingSimulations, setSimulation, onPanelClose])
@@ -557,7 +534,7 @@ const Project = (): JSX.Element => {
           setSimulationPanelRun(current)
           break
         default:
-          setPanel(null)
+          setPanel(undefined)
       }
     },
     [
@@ -582,10 +559,10 @@ const Project = (): JSX.Element => {
       setGeometryPanel(menuKey.id)
     } else {
       //menuKey.key === menuItems.simulations.key)
-      setSimulationPanel(menuKey.id, menuKey.item)
+      setSimulationPanel(menuKey.id, menuKey.item!)
 
       // Force geometry
-      if (menuKey.item !== 'run') setResult(null)
+      if (menuKey.item !== 'run') setResult(undefined)
     }
   }, [menuKey, setGeometryPanel, setSimulationPanel, onPanelClose])
 
@@ -595,11 +572,11 @@ const Project = (): JSX.Element => {
    */
   const onMenuClick = useCallback(
     ({ keyPath }: { keyPath: string[] }): void => {
-      const key = keyPath.pop()
-      const subKey = keyPath.pop()
+      const key = keyPath.pop() as string
+      const subKey = keyPath.pop() as string
       const subSubKey = keyPath.pop()
 
-      let item: string | undefined
+      let item
       if (subSubKey) {
         item = subSubKey.split('&').pop()
       }
@@ -623,7 +600,7 @@ const Project = (): JSX.Element => {
   // Simulations render build
   const simulationsRender = simulations.map((s) => {
     const configuration = s?.scheme?.configuration || {}
-    const categories = []
+    const categories: JSX.Element[] = []
     Object.keys(configuration).forEach((key) => {
       if (key === 'dimension') return
       const child = configuration[key]

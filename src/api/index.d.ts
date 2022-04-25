@@ -4,7 +4,11 @@ import { IGeometry } from '@/database/geometry'
 import { INewGroup } from '@/database/group'
 import { INewOrganization } from '@/database/organization'
 import { INewProject } from '@/database/project'
-import { INewSimulation, ISimulation } from '@/database/simulation'
+import {
+  INewSimulation,
+  ISimulation,
+  ISimulationTaskFile
+} from '@/database/simulation'
 import { ISystem } from '@/database/system'
 import { INewUser } from '@/database/user'
 import { INewWorkspace } from '@/database/workspace'
@@ -26,7 +30,9 @@ export interface IFrontNewGeometry extends INewGeometryWithData {}
 export interface IFrontGeometriesItem
   extends IGeometry<
     ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
-  > {}
+  > {
+  needCleanup?: boolean
+}
 
 export interface IFrontMutateGeometriesItem
   extends Partial<IFrontGeometriesItem> {
@@ -89,6 +95,8 @@ export interface IFrontProject
     )[]
   > {}
 
+export interface IFrontMutateProject extends Partial<IFrontProject> {}
+
 /**
  * Projects
  */
@@ -118,10 +126,17 @@ export interface IFrontMutateProjectsItem extends Partial<IFrontProjectsItem> {
 export interface IFrontProjects extends Array<IFrontProjectsItem> {}
 
 /**
+ * Result
+ */
+export interface IFrontResult extends ISimulationTaskFile {}
+
+/**
  * Simulation
  */
 export interface IFrontSimulation
   extends ISimulation<('name' | 'scheme' | 'tasks')[]> {}
+
+export interface IFrontMutateSimulation extends Partial<IFrontSimulation> {}
 
 /**
  * Simulations
@@ -144,6 +159,8 @@ export interface IFrontSimulations extends Array<IFrontSimuationsItem> {}
 export interface IFrontSystem
   extends ISystem<('allowsignup' | 'password' | 'defaultplugins')[]> {}
 
+export interface IFrontMutateSystem extends Partial<IFrontSystem> {}
+
 /**
  * User
  */
@@ -159,6 +176,8 @@ export interface IFrontUser
       | 'plugins'
     )[]
   > {}
+
+export interface IFrontMutateUser extends Partial<IFrontUser> {}
 
 /**
  * Users

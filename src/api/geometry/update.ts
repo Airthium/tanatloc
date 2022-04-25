@@ -2,6 +2,8 @@
 
 import { call } from '@/api/call'
 
+import { IDataBaseEntry } from '@/database/index.d'
+
 /**
  * Update
  * @param geometry Geometry
@@ -9,7 +11,7 @@ import { call } from '@/api/call'
  */
 export const update = async (
   geometry: { id: string },
-  data: Array<any>
+  data: IDataBaseEntry[]
 ): Promise<void> => {
   await call('/api/geometry/' + geometry.id, {
     method: 'PUT',

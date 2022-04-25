@@ -3,7 +3,7 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
 
-import { IFrontSystem } from '@/api/index.d'
+import { IFrontMutateSystem, IFrontSystem } from '@/api/index.d'
 import { fetcher } from '@/api/call'
 
 /**
@@ -13,7 +13,7 @@ import { fetcher } from '@/api/call'
 export const useSystem = (): [
   IFrontSystem | undefined,
   {
-    mutateSystem: (system: Partial<IFrontSystem>) => void
+    mutateSystem: (system: IFrontMutateSystem) => void
     errorSystem: Error
     loadingSystem: boolean
   }
@@ -27,7 +27,7 @@ export const useSystem = (): [
    * @param update System
    */
   const localMutate = useCallback(
-    (update: Partial<IFrontSystem>): void => {
+    (update: IFrontMutateSystem): void => {
       mutate({
         system: {
           ...(system as IFrontSystem),

@@ -6,13 +6,13 @@ import { Checkbox, Form, Input, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
-import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
 import UserAPI from '@/api/user'
 
 /**
@@ -21,7 +21,7 @@ import UserAPI from '@/api/user'
 export interface IProps {
   plugins: IClientPlugin[]
   user: Pick<
-    IFrontUser,
+    IFrontUsersItem,
     | 'id'
     | 'firstname'
     | 'lastname'
@@ -30,7 +30,7 @@ export interface IProps {
     | 'superuser'
   >
   swr: {
-    mutateOneUser: (user: IFrontMutateUser) => void
+    mutateOneUser: (user: IFrontMutateUsersItem) => void
   }
 }
 
@@ -61,7 +61,7 @@ export const errors = {
  */
 export const onUpdate = async (
   user: Pick<
-    IFrontUser,
+    IFrontUsersItem,
     | 'id'
     | 'firstname'
     | 'lastname'
@@ -70,7 +70,7 @@ export const onUpdate = async (
     | 'superuser'
   >,
   values: IEditValues,
-  swr: { mutateOneUser: (user: IFrontMutateUser) => void }
+  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => void }
 ): Promise<void> => {
   try {
     // Update
@@ -83,7 +83,7 @@ export const onUpdate = async (
           value !==
             user[
               key as keyof Pick<
-                IFrontUser,
+                IFrontUsersItem,
                 | 'id'
                 | 'firstname'
                 | 'lastname'
@@ -107,7 +107,7 @@ export const onUpdate = async (
       ...user,
       ...values
     }
-    swr.mutateOneUser(newUser as IFrontUser)
+    swr.mutateOneUser(newUser as IFrontUsersItem)
   } catch (err) {
     ErrorNotification(errors.update, err)
     throw err

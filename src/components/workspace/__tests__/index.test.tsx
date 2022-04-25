@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { IFrontOrganizationsItem, IFrontWorkspacesItem } from '@/api/index.d'
+
 import Workspace from '..'
 
 const mockErrorNotification = jest.fn()
@@ -52,10 +54,15 @@ describe('components/workspace', () => {
   const workspace = {
     id: 'id',
     name: 'workspace',
-    owners: [{ id: 'id' }],
+    owners: [{ id: 'id' } as IFrontWorkspacesItem['owners'][0]],
+    users: [],
+    groups: [],
     projects: []
   }
-  const organizations = []
+  const organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'groups'
+  >[] = []
   const swr = { delOneWorkspace: jest.fn(), mutateOneWorkspace: jest.fn() }
 
   beforeEach(() => {
@@ -150,9 +157,9 @@ describe('components/workspace', () => {
         page="page"
         workspace={{
           ...workspace,
-          owners: [{ id: 'id' }],
-          users: [{ id: 'id' }],
-          groups: [{ id: 'id' }]
+          owners: [{ id: 'id' } as IFrontWorkspacesItem['owners'][0]],
+          users: [{ id: 'id' } as IFrontWorkspacesItem['users'][0]],
+          groups: [{ id: 'id' } as IFrontWorkspacesItem['groups'][0]]
         }}
         organizations={organizations}
         swr={swr}

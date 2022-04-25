@@ -241,7 +241,8 @@ const getByUser = async ({
                   owners: [],
                   users: [],
                   groups: [customGroup],
-                  projects: groupData.projects
+                  projects: groupData.projects,
+                  archivedprojects: []
                 }
                 groupsProjects.push(customWorkspace)
               }

@@ -1,27 +1,32 @@
 /** @module Components.Project.View */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
-
-import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
-import { IGeometry } from '@/database/geometry/index'
-import { IProjectWithData } from '@/lib/index.d'
+import { useState, useEffect } from 'react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontGeometriesItem,
+  IFrontProject,
+  IFrontSimulationsItem,
+  IFrontResult
+} from '@/api/index.d'
 import GeometryAPI from '@/api/geometry'
 import ResultAPI from '@/api/result'
 
 import ThreeView from './three'
 
+type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'dimension' | 'needCleanup'>
+type TResult = Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
+
 /**
  * Props
  */
 export interface IProps {
-  project: IProjectWithData
-  simulation?: ISimulation
-  geometry?: IGeometry & { needCleanup?: boolean }
-  result?: Omit<Omit<ISimulationTaskFile, 'fileName'>, 'type'>
+  project: Pick<IFrontProject, 'id' | 'title'>
+  simulation?: Pick<IFrontSimulationsItem, 'id'>
+  geometry?: TGeometry
+  result?: TResult
 }
 
 /**
@@ -39,22 +44,21 @@ export const errors = {
  * @returns Part
  */
 const loadPart = async (
-  simulation: ISimulation,
-  file: {
-    id?: string
-    originPath?: string
-    glb?: string
-    json?: string
-  },
-  type: string
-): Promise<{ uuid?: string; buffer: Buffer }> => {
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  file: Pick<IFrontGeometriesItem, 'id'> | TResult,
+  type: 'geometry' | 'result'
+): Promise<{ uuid: string; buffer: Buffer } | undefined> => {
   try {
-    if (type === 'geometry') return await GeometryAPI.getPart({ id: file.id })
-    else
+    if (type === 'geometry') {
+      const geometry = file as Pick<IFrontGeometriesItem, 'id'>
+      return await GeometryAPI.getPart({ id: geometry.id })
+    } else {
+      const result = file as Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
       return await ResultAPI.load(
         { id: simulation.id },
-        { originPath: file.originPath, glb: file.glb, json: file.json }
+        { originPath: result.originPath, glb: result.glb!, json: result.json! }
       )
+    }
   } catch (err) {
     ErrorNotification(errors.part, err)
   }
@@ -72,46 +76,43 @@ const View = ({
   result
 }: IProps): JSX.Element => {
   // State
-  const [part, setPart]: [
-    { uuid?: string; buffer: Buffer },
-    Dispatch<
-      SetStateAction<{ uuid?: string; buffer: Buffer; dimension?: number }>
-    >
-  ] = useState()
-  const [previous, setPrevious]: [
-    IProps['geometry'] | IProps['result'],
-    Dispatch<SetStateAction<IGeometry | IProps['geometry'] | IProps['result']>>
-  ] = useState()
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [part, setPart] = useState<{
+    uuid?: string
+    buffer?: Buffer
+    dimension?: number
+  }>()
+  const [previous, setPrevious] = useState<TGeometry | TResult>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Part
   useEffect(() => {
-    if (simulation && result) {
-      if (result.glb !== (previous as IProps['result'])?.glb) {
-        setPrevious(result)
+    if (simulation) {
+      if (result) {
+        if (result.glb !== (previous as TResult)?.glb) {
+          setPrevious(result)
 
-        setLoading(true)
-        loadPart(simulation, result, 'result')
-          .then((partLoaded) =>
-            setPart({ ...partLoaded, dimension: geometry?.dimension })
-          )
-          .finally(() => setLoading(false))
-      }
-    } else if (geometry) {
-      if (geometry.id !== (previous as IProps['geometry'])?.id) {
-        setPrevious(geometry)
-
-        setLoading(true)
-        if (geometry.needCleanup) {
-          setPart(null)
-          setLoading(false)
-        } else {
-          loadPart(simulation, geometry, 'geometry')
+          setLoading(true)
+          loadPart(simulation, result, 'result')
             .then((partLoaded) =>
-              setPart({ ...partLoaded, dimension: geometry.dimension })
+              setPart({ ...partLoaded, dimension: geometry?.dimension })
             )
             .finally(() => setLoading(false))
+        }
+      } else if (geometry) {
+        if (geometry.id !== (previous as TGeometry)?.id) {
+          setPrevious(geometry)
+
+          setLoading(true)
+          if (geometry.needCleanup) {
+            setPart(undefined)
+            setLoading(false)
+          } else {
+            loadPart(simulation, geometry, 'geometry')
+              .then((partLoaded) =>
+                setPart({ ...partLoaded, dimension: geometry.dimension })
+              )
+              .finally(() => setLoading(false))
+          }
         }
       }
     }

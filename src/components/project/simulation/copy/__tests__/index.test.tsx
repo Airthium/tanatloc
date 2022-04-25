@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
-import { ISimulation } from '@/database/simulation/index'
+import { IFrontSimulationsItem } from '@/api/index.d'
 
 import Copy, { errors } from '..'
 
@@ -21,16 +21,10 @@ describe('components/project/simulation/copy', () => {
     id: 'id',
     simulations: ['id']
   }
-  const simulation: ISimulation = {
+  const simulation = {
     id: 'id',
     name: 'name',
     scheme: {
-      category: 'category',
-      name: 'name',
-      description: 'description',
-      algorithm: 'algorithm',
-      code: 'code',
-      version: 'version',
       configuration: {
         run: {
           index: 1,
@@ -38,7 +32,7 @@ describe('components/project/simulation/copy', () => {
         }
       }
     }
-  }
+  } as Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
   const swr = {
     mutateProject: jest.fn(),
     addOneSimulation: jest.fn()
@@ -88,42 +82,6 @@ describe('components/project/simulation/copy', () => {
         new Error('add error')
       )
     )
-
-    unmount()
-  })
-
-  test('without configuration & without project.simulations', async () => {
-    const { unmount } = render(
-      <Copy
-        project={{
-          id: 'id',
-          simulations: null
-        }}
-        simulation={{
-          id: 'id',
-          name: 'name',
-          scheme: {
-            category: 'category',
-            name: 'name',
-            description: 'description',
-            algorithm: 'algorithm',
-            code: 'code',
-            version: 'version',
-            configuration: undefined
-          }
-        }}
-        swr={swr}
-      />
-    )
-
-    const button = screen.getByRole('button')
-
-    // Normal
-    mockAdd.mockImplementation(() => ({}))
-    fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
     unmount()
   })

@@ -27,7 +27,7 @@ import Edit from './edit'
  */
 export interface IProps {
   project: Pick<IFrontProject, 'id' | 'geometries'>
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
   swr: {
     mutateProject: (project: Partial<IFrontProject>) => void
     mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => void

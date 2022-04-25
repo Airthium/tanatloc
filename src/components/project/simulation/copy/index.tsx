@@ -50,10 +50,8 @@ export const onCopy = async (
   try {
     // Clear results
     const newScheme = { ...simulation.scheme }
-    if (newScheme.configuration?.run) {
-      newScheme.configuration.run.done = false
-      newScheme.configuration.run.error = undefined
-    }
+    newScheme.configuration.run.done = false
+    newScheme.configuration.run.error = undefined
 
     // API
     const newSimulation = await SimulationAPI.add(
@@ -67,7 +65,7 @@ export const onCopy = async (
     // Mutate project
     swr.mutateProject({
       id: project.id,
-      simulations: [...(project.simulations || []), newSimulation.id]
+      simulations: [...project.simulations, newSimulation.id]
     })
   } catch (err) {
     ErrorNotification(errors.copy, err)

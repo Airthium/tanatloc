@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { IFrontOrganizationsItem, IFrontProjectsItem } from '@/api/index.d'
+
 import List from '..'
 
 const mockPush = jest.fn()
@@ -25,13 +27,30 @@ jest.mock('@/lib/utils', () => ({
   groupToAvatar: () => 'group_avatar'
 }))
 
+type TProject = Pick<
+  IFrontProjectsItem,
+  | 'id'
+  | 'archived'
+  | 'title'
+  | 'description'
+  | 'createddate'
+  | 'lastaccess'
+  | 'avatar'
+  | 'owners'
+  | 'users'
+  | 'groups'
+>
+
 describe('component/project/list', () => {
   const user = { id: 'id' }
   const workspace = { id: 'id', projects: [] }
   const filter = 'filter'
   const sorter = 'sorter'
-  const projects = [{ id: 'id' }, { id: 'id' }]
-  const organizations = []
+  const projects = [{ id: 'id' } as TProject, { id: 'id' } as TProject]
+  const organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'groups'
+  >[] = []
   const swr = {
     mutateOneWorkspace: jest.fn,
     delOneProject: jest.fn,
@@ -82,17 +101,17 @@ describe('component/project/list', () => {
         page="page"
         workspace={workspace}
         projects={[
-          { id: 'id1', title: 'project 1' },
+          { id: 'id1', title: 'project 1' } as TProject,
           {
             id: 'id2',
             title: 'project 2',
             description: 'description',
             avatar: Buffer.from('avatar'),
-            owners: [{ id: 'id' }],
-            users: [{ id: 'id1' }],
-            groups: [{ id: 'id2' }]
-          },
-          { id: 'id3', archived: true, title: 'archive 1' }
+            owners: [{ id: 'id' } as TProject['owners'][0]],
+            users: [{ id: 'id1' } as TProject['users'][0]],
+            groups: [{ id: 'id2' } as TProject['groups'][0]]
+          } as TProject,
+          { id: 'id3', archived: true, title: 'archive 1' } as TProject
         ]}
         organizations={organizations}
         swr={swr}
@@ -121,17 +140,17 @@ describe('component/project/list', () => {
         page="page"
         workspace={workspace}
         projects={[
-          { id: 'id1', title: 'project 1' },
+          { id: 'id1', title: 'project 1' } as TProject,
           {
             id: 'id2',
             title: 'project 2',
             description: 'description',
             avatar: Buffer.from('avatar'),
-            owners: [{ id: 'id' }],
-            users: [{ id: 'id1' }],
-            groups: [{ id: 'id2' }]
-          },
-          { id: 'id3', archived: true, title: 'archive 1' }
+            owners: [{ id: 'id' } as TProject['owners'][0]],
+            users: [{ id: 'id1' } as TProject['users'][0]],
+            groups: [{ id: 'id2' } as TProject['groups'][0]]
+          } as TProject,
+          { id: 'id3', archived: true, title: 'archive 1' } as TProject
         ]}
         sorter="alphaAsc"
         organizations={organizations}
@@ -149,17 +168,17 @@ describe('component/project/list', () => {
         page="page"
         workspace={workspace}
         projects={[
-          { id: 'id1', title: 'project 1' },
+          { id: 'id1', title: 'project 1' } as TProject,
           {
             id: 'id2',
             title: 'project 2',
             description: 'description',
             avatar: Buffer.from('avatar'),
-            owners: [{ id: 'id' }],
-            users: [{ id: 'id1' }],
-            groups: [{ id: 'id2' }]
-          },
-          { id: 'id3', archived: true, title: 'archive 1' }
+            owners: [{ id: 'id' } as TProject['owners'][0]],
+            users: [{ id: 'id1' } as TProject['users'][0]],
+            groups: [{ id: 'id2' } as TProject['groups'][0]]
+          } as TProject,
+          { id: 'id3', archived: true, title: 'archive 1' } as TProject
         ]}
         sorter="alphaDesc"
         organizations={organizations}
@@ -177,17 +196,17 @@ describe('component/project/list', () => {
         page="page"
         workspace={workspace}
         projects={[
-          { id: 'id1', title: 'project 1' },
+          { id: 'id1', title: 'project 1' } as TProject,
           {
             id: 'id2',
             title: 'project 2',
             description: 'description',
             avatar: Buffer.from('avatar'),
-            owners: [{ id: 'id' }],
-            users: [{ id: 'id1' }],
-            groups: [{ id: 'id2' }]
-          },
-          { id: 'id3', archived: true, title: 'archive 1' }
+            owners: [{ id: 'id' } as TProject['owners'][0]],
+            users: [{ id: 'id1' } as TProject['users'][0]],
+            groups: [{ id: 'id2' } as TProject['groups'][0]]
+          } as TProject,
+          { id: 'id3', archived: true, title: 'archive 1' } as TProject
         ]}
         sorter="modifiedDesc"
         organizations={organizations}

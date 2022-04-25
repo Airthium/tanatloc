@@ -32,6 +32,4 @@ const NotFound = (): JSX.Element => {
   )
 }
 
-NotFound.propTypes = {}
-
 export default NotFound

@@ -11,7 +11,7 @@ import { call } from '@/api/call'
 export const load = async (
   simulation: { id: string },
   result: { originPath: string; glb: string; json: string }
-): Promise<{ buffer: Buffer }> => {
+): Promise<{ uuid: string; buffer: Buffer }> => {
   const response = await call('/api/result', {
     method: 'POST',
     headers: {

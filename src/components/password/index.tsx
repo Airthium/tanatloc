@@ -1,6 +1,6 @@
 /** @module Components.Password */
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
   Button,
@@ -68,16 +68,10 @@ export const onFinish = async (
  */
 const PasswordRecovery = (): JSX.Element => {
   // State
-  const [checking, setChecking]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(true)
-  const [linkEmail, setLinkEmail]: [string, Dispatch<SetStateAction<string>>] =
-    useState()
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [formError, setFormError]: [
-    APIError,
-    Dispatch<SetStateAction<APIError>>
-  ] = useState()
+  const [checking, setChecking] = useState<boolean>(true)
+  const [linkEmail, setLinkEmail] = useState<string>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [formError, setFormError] = useState<APIError | any>()
 
   // Data
   const router = useRouter()
@@ -129,7 +123,7 @@ const PasswordRecovery = (): JSX.Element => {
             onFinish={async (values) => {
               setLoading(true)
               try {
-                await onFinish(router, linkEmail, id, values)
+                await onFinish(router, linkEmail!, id!, values)
               } catch (err) {
                 setFormError(err)
                 setLoading(false)
@@ -183,7 +177,5 @@ const PasswordRecovery = (): JSX.Element => {
     </Layout>
   )
 }
-
-PasswordRecovery.propTypes = {}
 
 export default PasswordRecovery

@@ -1,23 +1,23 @@
 /** @module Components.Project.Simulation.Run.Log */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Button, Drawer, Modal, Tabs, Tooltip } from 'antd'
 import { FileTextOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 
+import { ISimulationTask } from '@/database/simulation/index'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
-
-import { ISimulation, ISimulationTask } from '@/database/simulation/index'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  steps: ISimulationTask[]
+  simulation: Pick<IFrontSimulationsItem, 'id'>
+  steps: IFrontSimulationTask[]
 }
 
 /**
@@ -33,11 +33,11 @@ export const errors = {
  * @param step Step
  */
 export const getCompleteLog = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
   step: ISimulationTask
 ) => {
   try {
-    const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog)
+    const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog!)
     const log = Buffer.from(res.log).toString()
 
     Modal.info({
@@ -63,10 +63,8 @@ export const getCompleteLog = async (
  */
 const Log = ({ simulation, steps }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -142,13 +140,6 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
       </Tooltip>
     </>
   )
-}
-
-Log.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  steps: PropTypes.array
 }
 
 export default Log

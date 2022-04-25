@@ -1,9 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Log, { errors } from '..'
+import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 
-import { ISimulation, ISimulationTask } from '@/database/simulation/index'
+import Log, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -17,10 +17,10 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/run/log', () => {
-  const simulation: ISimulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id'> = {
     id: 'id'
   }
-  const steps: ISimulationTask[] = [
+  const steps: IFrontSimulationTask[] = [
     {
       label: 'label 1',
       status: 'finish',

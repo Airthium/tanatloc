@@ -1,6 +1,7 @@
 import React from 'react'
-
 import { render } from '@testing-library/react'
+
+import { IFrontSimulationsItem } from '@/api/index.d'
 
 import About from '@/components/project/simulation/about'
 
@@ -33,7 +34,7 @@ describe('components/project/simulation/about', () => {
       description: 'description',
       configuration: {}
     }
-  }
+  } as Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
   const swr = {
     mutateProject: jest.fn(),
     addOneSimulation: jest.fn(),

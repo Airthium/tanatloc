@@ -7,6 +7,7 @@ import { INewProject } from '@/database/project'
 import {
   INewSimulation,
   ISimulation,
+  ISimulationTask,
   ISimulationTaskFile
 } from '@/database/simulation'
 import { ISystem } from '@/database/system'
@@ -137,6 +138,8 @@ export interface IFrontSimulation
   extends ISimulation<('name' | 'scheme' | 'tasks')[]> {}
 
 export interface IFrontMutateSimulation extends Partial<IFrontSimulation> {}
+
+export interface IFrontSimulationTask extends ISimulationTask {}
 
 /**
  * Simulations

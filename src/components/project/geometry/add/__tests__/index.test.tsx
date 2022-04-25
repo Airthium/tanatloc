@@ -4,10 +4,10 @@ import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 import Add, { errors } from '..'
 
 const mockUpload = jest.fn()
-jest.mock('antd/lib/upload', () => (props) => mockUpload(props))
+jest.mock('antd/lib/upload', () => (props: any) => mockUpload(props))
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -22,7 +22,7 @@ jest.mock('@/api/geometry', () => ({
 
 Object.defineProperty(global, 'FileReader', {
   value: class {
-    addEventListener(_, callback) {
+    addEventListener(_: any, callback: Function) {
       callback()
     }
     readAsBufferArray() {
@@ -172,37 +172,6 @@ describe('components/project/geometry/add', () => {
         new Error('add error')
       )
     )
-
-    unmount()
-  })
-
-  test('onUpload, undefined project.geometries', async () => {
-    let info
-    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    mockUpload.mockImplementation((props) => (
-      <input
-        role="Upload"
-        //@ts-ignore
-        onClick={(e) => props.onChange(JSON.parse(e.target.value))}
-      />
-    ))
-
-    const { unmount } = render(
-      <Add
-        visible={visible}
-        project={{ id: 'id' }}
-        swr={swr}
-        setVisible={setVisible}
-      />
-    )
-
-    const upload = screen.getByRole('Upload')
-
-    // Done
-    info = { file: { status: 'done', originFileObj: {} } }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneGeometry).toHaveBeenCalledTimes(1))
 
     unmount()
   })

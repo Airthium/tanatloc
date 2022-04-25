@@ -90,7 +90,7 @@ export const onUpload = async (
       swr.addOneGeometry(geometry)
       swr.mutateProject({
         id: project.id,
-        geometries: [...(project.geometries || []), geometry.id]
+        geometries: [...project.geometries, geometry.id]
       })
     } catch (err) {
       ErrorNotification(errors.add, err)

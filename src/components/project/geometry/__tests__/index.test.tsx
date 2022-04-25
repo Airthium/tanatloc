@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontGeometriesItem } from '@/api/index.d'
+
 import Geometry, { errors } from '..'
 
 const mockDeleteButton = jest.fn()
@@ -44,8 +46,9 @@ describe('components/project/geometry', () => {
   }
   const geometry = {
     id: 'id',
-    name: 'name'
-  }
+    name: 'name',
+    summary: {}
+  } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
   const swr = {
     mutateProject: jest.fn(),
     mutateOneGeometry: jest.fn(),
@@ -108,7 +111,7 @@ describe('components/project/geometry', () => {
         project={project}
         geometry={{
           ...geometry,
-          summary: { solids: [], faces: [], edges: [] }
+          summary: { uuid: 'uuid', solids: [], faces: [], edges: [] }
         }}
         swr={swr}
         close={close}

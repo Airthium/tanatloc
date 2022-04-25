@@ -1,19 +1,18 @@
 /** @module Components.Project.Geometry.Edit */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { IGeometry } from '@/database/geometry/index'
-
 import Dialog from '@/components/assets/dialog'
+
+import { IFrontGeometriesItem } from '@/api/index.d'
 
 /**
  * Props
  */
 export interface IProps {
   visible: boolean
-  geometry: IGeometry
+  geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>
   setVisible: (visible: boolean) => void
   onEdit: (values: { name: string }) => Promise<void>
 }
@@ -29,8 +28,7 @@ const Edit = ({
   onEdit
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -65,16 +63,6 @@ const Edit = ({
       </Form.Item>
     </Dialog>
   )
-}
-
-Edit.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  geometry: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  setVisible: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired
 }
 
 export default Edit

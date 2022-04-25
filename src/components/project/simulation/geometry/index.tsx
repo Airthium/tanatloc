@@ -1,13 +1,14 @@
 /** @module Components.Project.Simulation.Geometry */
 
-import PropTypes from 'prop-types'
 import { Card, Typography } from 'antd'
-
-import { ISimulation } from '@/database/simulation/index'
-import { IGeometry } from '@/database/geometry/index'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontGeometriesItem,
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 import Mesh from './mesh'
@@ -16,12 +17,12 @@ import Mesh from './mesh'
  * Props
  */
 export interface IProps {
-  geometries: IGeometry[]
-  geometry?: IGeometry
-  simulation: ISimulation
-  setGeometry: (geometry: IGeometry) => void
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name'>[]
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'dimension'>
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  setGeometry: (geometry: IFrontGeometriesItem) => void
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -41,11 +42,13 @@ export const errors = {
  * @param swr Swr
  */
 export const onSelect = async (
-  simulation: ISimulation,
-  geometries: IGeometry[],
-  geometry: IGeometry,
-  setGeometry: (geometry: IGeometry) => void,
-  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  geometries: Pick<IFrontGeometriesItem, 'id'>[],
+  geometry: Pick<IFrontGeometriesItem, 'id' | 'dimension'>,
+  setGeometry: (geometry: IFrontGeometriesItem) => void,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     const newSimulation = { ...simulation }
@@ -78,7 +81,7 @@ export const onSelect = async (
 
     // Display
     const newGeometry = geometries.find((g) => g.id === geometry.id)
-    setGeometry(newGeometry)
+    setGeometry(newGeometry as IFrontGeometriesItem)
   } catch (err) {
     ErrorNotification(errors.update, err)
   }
@@ -98,7 +101,8 @@ const Geometry = ({
 }: IProps): JSX.Element => {
   // Data
   const geometryId = simulation.scheme.configuration.geometry.value
-  if (!geometryId) onSelect(simulation, geometries, geometry, setGeometry, swr)
+  if (!geometryId && geometry)
+    onSelect(simulation, geometries, geometry, setGeometry, swr)
 
   // List
   const list = geometries.map((g) => (
@@ -106,7 +110,7 @@ const Geometry = ({
       className="Geometry-list"
       key={g.id}
       style={{
-        backgroundColor: g.id === geometry.id ? '#FFFBE6' : '#FAFAFA'
+        backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
       }}
       onClick={() => onSelect(simulation, geometries, g, setGeometry, swr)}
     >
@@ -137,29 +141,6 @@ const Geometry = ({
       )}
     </>
   )
-}
-
-Geometry.propTypes = {
-  geometries: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  geometry: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        geometry: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Geometry

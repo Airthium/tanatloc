@@ -1,29 +1,24 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback
-} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, Form, Select, Space } from 'antd'
-
-import { ISimulation } from '@/database/simulation/index'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -41,9 +36,11 @@ export const errors = {
  * @param swr SWR
  */
 export const onMeshGlobalType = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
-  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     const newSimulation = { ...simulation }
@@ -86,10 +83,12 @@ export const onMeshGlobalType = async (
  * @param swr SWR
  */
 export const onMeshGlobalSize = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
   value: string,
-  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     const newSimulation = { ...simulation }
@@ -132,14 +131,8 @@ export const onMeshGlobalSize = async (
  */
 const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   // State
-  const [meshGlobalType, setMeshGlobalType]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
-  const [meshGlobalValue, setMeshGlobalValue]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
+  const [meshGlobalType, setMeshGlobalType] = useState<string>()
+  const [meshGlobalValue, setMeshGlobalValue] = useState<string>()
 
   // Global
   useEffect(() => {
@@ -159,9 +152,9 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
    * @param value Value
    */
   const onSize = useCallback(
-    async (value) => {
+    async (value: string) => {
       try {
-        await onMeshGlobalSize(simulation, meshGlobalType, value, swr)
+        await onMeshGlobalSize(simulation, meshGlobalType!, value, swr)
         setMeshGlobalValue(value)
       } catch (err) {}
     },
@@ -222,20 +215,6 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
       </Space>
     </Card>
   )
-}
-
-Mesh.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        geometry: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Mesh

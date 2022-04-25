@@ -335,9 +335,12 @@ const Project = (): JSX.Element => {
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Simulation.Geometry
             geometries={geometries}
-            geometry={{
-              id: geometry.id
-            }}
+            geometry={
+              geometry && {
+                id: geometry.id,
+                dimension: geometry.dimension
+              }
+            }
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -385,15 +388,17 @@ const Project = (): JSX.Element => {
           onClose={onPanelClose}
         >
           <Simulation.Materials
-            geometry={{
-              id: geometry.id,
-              dimension: geometry.dimension ?? 3,
-              summary: {
-                uuid: geometry.summary.uuid,
-                solids: geometry.summary.solids,
-                faces: geometry.summary.faces
+            geometry={
+              geometry && {
+                id: geometry.id,
+                dimension: geometry.dimension ?? 3,
+                summary: {
+                  uuid: geometry.summary.uuid,
+                  solids: geometry.summary.solids,
+                  faces: geometry.summary.faces
+                }
               }
-            }}
+            }
             simulation={{
               id: current.id,
               scheme: current.scheme

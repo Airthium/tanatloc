@@ -47,7 +47,7 @@ export type TSimulationGetProject = 'project'[]
 export interface ISimulation<T = []> {
   id: string
   name: TSimulationGetName extends T ? string : never
-  scheme?: TSimulationGetScheme extends T ? IModel : never
+  scheme: TSimulationGetScheme extends T ? IModel : never
   tasks?: TSimulationGetTasks extends T ? ISimulationTask[] : never[]
   project: TSimulationGetProject extends T ? string : never
 }

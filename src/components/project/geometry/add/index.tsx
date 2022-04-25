@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry.Add */
 
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Space, Typography, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
@@ -21,7 +21,7 @@ export interface IProps {
     mutateProject: (project: Partial<IFrontProject>) => void
     addOneGeometry: (geometry: IFrontNewGeometry) => void
   }
-  setVisible: Dispatch<SetStateAction<boolean>>
+  setVisible: (visible: boolean) => void
 }
 
 /**
@@ -95,20 +95,20 @@ export const onUpload = async (
     } catch (err) {
       ErrorNotification(errors.add, err)
       throw err
-
-      return false
     }
   }
+
+  return false
 }
 
 /**
  * Add
  * @param props Props
+ * @returns Add
  */
 const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   return (
     <Dialog
@@ -162,19 +162,6 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       </Space>
     </Dialog>
   )
-}
-
-Add.propTypes = {
-  visible: PropTypes.bool,
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    geometries: PropTypes.array.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateProject: PropTypes.func.isRequired,
-    addOneGeometry: PropTypes.func.isRequired
-  }).isRequired,
-  setVisible: PropTypes.func.isRequired
 }
 
 export default Add

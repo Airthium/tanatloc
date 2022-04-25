@@ -1,26 +1,28 @@
 /** @module Components.Project.Simulation.Copy */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
-
-import { ISimulation } from '@/database/simulation/index'
-import { IProjectWithData } from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+import {
+  IFrontProject,
+  IFrontSimulationsItem,
+  IFrontMutateProject,
+  IFrontNewSimulation
+} from '@/api/index.d'
 
 /**
  * Props
  */
 export interface IProps {
-  project: IProjectWithData
-  simulation: ISimulation
+  project: Pick<IFrontProject, 'id' | 'simulations'>
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
   swr: {
-    mutateProject: (project: IProjectWithData) => void
-    addOneSimulation: (simulation: ISimulation) => void
+    mutateProject: (project: IFrontMutateProject) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => void
   }
 }
 
@@ -38,16 +40,19 @@ export const errors = {
  * @param swr SWR
  */
 export const onCopy = async (
-  project: IProps['project'],
-  simulation: IProps['simulation'],
-  swr: IProps['swr']
+  project: Pick<IFrontProject, 'id' | 'simulations'>,
+  simulation: Pick<IFrontSimulationsItem, 'name' | 'scheme'>,
+  swr: {
+    mutateProject: (project: IFrontMutateProject) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => void
+  }
 ): Promise<void> => {
   try {
     // Clear results
     const newScheme = { ...simulation.scheme }
     if (newScheme.configuration?.run) {
       newScheme.configuration.run.done = false
-      newScheme.configuration.run.error = null
+      newScheme.configuration.run.error = undefined
     }
 
     // API
@@ -76,8 +81,7 @@ export const onCopy = async (
  */
 const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -99,22 +103,6 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
       />
     </Tooltip>
   )
-}
-
-Copy.propTypes = {
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    simulations: PropTypes.array.isRequired
-  }).isRequired,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    scheme: PropTypes.object.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateProject: PropTypes.func.isRequired,
-    addOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Copy

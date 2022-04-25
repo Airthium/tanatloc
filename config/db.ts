@@ -433,7 +433,8 @@ export const schemas: Scheme = {
     },
     {
       name: 'scheme',
-      type: 'JSONB'
+      type: 'JSONB',
+      constraint: 'NOT NULL'
     },
     {
       name: 'tasks',

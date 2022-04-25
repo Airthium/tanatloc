@@ -1,25 +1,27 @@
 /** @module Components.Project.Simulation.Parameters */
 
-import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
-import { ISimulation } from '@/database/simulation/index'
 import { IModelParameter } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -66,10 +68,12 @@ export const build2DSelect = (
   <Form layout="vertical" key={key}>
     <Form.Item label={child.label2D || child.label}>
       <Select
-        options={child.options.map((option) => ({
-          label: option.label,
-          value: option.value2D ?? option.value
-        }))}
+        options={
+          child.options?.map((option) => ({
+            label: option.label,
+            value: option.value2D ?? option.value
+          })) || []
+        }
         defaultValue={
           (child.value as string) ||
           (child.default2D as string) ||
@@ -175,8 +179,10 @@ const buildCheckbox = (
  * @param swr SWR
  */
 export const onDone = async (
-  simulation: ISimulation,
-  swr: IProps['swr']
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     const newSimulation = { ...simulation }
@@ -216,11 +222,13 @@ export const onDone = async (
  * @param swr SWR
  */
 export const onChange = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   key: string,
   index: number,
   value: boolean | string,
-  swr: IProps['swr']
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     const newSimulation = { ...simulation }
@@ -275,8 +283,8 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   }, [simulation, subScheme, swr])
 
   // Build parameters
-  const parameters = []
-  const advanced = []
+  const parameters: JSX.Element[] = []
+  const advanced: JSX.Element[] = []
   if (dimension === 2) {
     Object.keys(subScheme).forEach((key) => {
       if (key === 'index' || key === 'title' || key == 'done') return
@@ -368,7 +376,11 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       <Layout.Content>
         <Space direction="vertical">
           {parameters}
+          {/* 
+          //@ts-ignore */}
           <Collapse>
+            {/* 
+            //@ts-ignore */}
             <Collapse.Panel key="advanced" header="Advanced">
               <Space direction="vertical">{advanced}</Space>
             </Collapse.Panel>
@@ -377,20 +389,6 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       </Layout.Content>
     </Layout>
   )
-}
-
-Parameters.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        parameters: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  })
 }
 
 export default Parameters

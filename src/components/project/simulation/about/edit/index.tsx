@@ -1,24 +1,25 @@
 /** @module Components.Project.Simulation.About.Edit */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Form, Input } from 'antd'
-
-import { ISimulation } from '@/database/simulation/index'
 
 import { EditButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -36,9 +37,11 @@ export const errors = {
  * @param swr SWR
  */
 export const onEdit = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
   values: { name: string },
-  swr: IProps['swr']
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -64,10 +67,8 @@ export const onEdit = async (
  */
 const Edit = ({ simulation, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -105,16 +106,6 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
       </Dialog>
     </>
   )
-}
-
-Edit.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  })
 }
 
 export default Edit

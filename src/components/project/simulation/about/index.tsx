@@ -1,12 +1,16 @@
 /** @module Components.Project.Simulation.About*/
 
-import PropTypes from 'prop-types'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IProjectWithData } from '@/lib/index.d'
-
 import MathJax from '@/components/assets/mathjax'
+
+import {
+  IFrontProject,
+  IFrontSimulationsItem,
+  IFrontMutateProject,
+  IFrontNewSimulation,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import Copy from '../copy'
 import Edit from './edit'
@@ -16,13 +20,13 @@ import Delete from '../delete'
  * Props
  */
 export interface IProps {
-  project?: IProjectWithData
-  simulation?: ISimulation
+  project?: Pick<IFrontProject, 'id' | 'simulations'>
+  simulation?: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
   swr: {
-    mutateProject: (project: IProjectWithData) => void
-    addOneSimulation: (simulation: ISimulation) => void
-    delOneSimulation: (simulation: ISimulation) => void
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateProject: (project: IFrontMutateProject) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => void
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -107,30 +111,6 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
         </Layout.Content>
       </Layout>
     )
-}
-
-About.propTypes = {
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    simulations: PropTypes.array.isRequired
-  }),
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      category: PropTypes.string,
-      algorithm: PropTypes.string,
-      code: PropTypes.string,
-      version: PropTypes.string,
-      description: PropTypes.string
-    }).isRequired
-  }),
-  swr: PropTypes.exact({
-    mutateProject: PropTypes.func.isRequired,
-    addOneSimulation: PropTypes.func.isRequired,
-    delOneSimulation: PropTypes.func.isRequired,
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default About

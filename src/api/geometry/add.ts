@@ -1,6 +1,6 @@
 /** @module API.Geometry.Add */
 
-import { INewGeometry } from '@/database/geometry'
+import { INewGeometryWithData } from '@/lib/index.d'
 
 import { call } from '@/api/call'
 
@@ -13,7 +13,7 @@ import { call } from '@/api/call'
 export const add = async (
   project: { id: string },
   geometry: { name: string; uid: string; buffer: Buffer }
-): Promise<INewGeometry> => {
+): Promise<INewGeometryWithData> => {
   const response = await call('/api/geometry', {
     method: 'POST',
     body: JSON.stringify({ project, geometry })

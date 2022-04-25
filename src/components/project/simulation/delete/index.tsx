@@ -1,26 +1,28 @@
 /** @module Components.Project.Simulation.Delete */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Typography } from 'antd'
-
-import { ISimulation } from '@/database/simulation/index'
-import { IProjectWithData } from '@/lib/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+import {
+  IFrontMutateProject,
+  IFrontProject,
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 /**
  * Props
  */
 export interface IProps {
-  project: IProjectWithData
-  simulation: ISimulation
+  project: Pick<IFrontProject, 'id' | 'simulations'>
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
   swr: {
-    mutateProject: (project: IProjectWithData) => void
-    delOneSimulation: (simulation: ISimulation) => void
+    mutateProject: (project: IFrontMutateProject) => void
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -38,9 +40,12 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  project: IProps['project'],
-  simulation: IProps['simulation'],
-  swr: IProps['swr']
+  project: Pick<IFrontProject, 'id' | 'simulations'>,
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  swr: {
+    mutateProject: (project: IFrontMutateProject) => void
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -70,8 +75,7 @@ export const onDelete = async (
  */
 const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -95,21 +99,6 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    simulations: PropTypes.array.isRequired
-  }).isRequired,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateProject: PropTypes.func.isRequired,
-    delOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

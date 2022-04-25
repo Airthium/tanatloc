@@ -12,7 +12,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": ["is-dockere", "url-join"],
+  "ignoreDeps": ["is-docker", "url-join"],
   "lockFileMaintenance": {
     "enabled": false
   }

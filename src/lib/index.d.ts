@@ -156,7 +156,7 @@ export interface ISimulationGet<T = []> extends Omit<ISimulation<T>, 'tasks'> {
  */
 export interface IUserGet<T = []>
   extends Omit<
-    IUser,
+    IUser<T>,
     'organizations' | 'workspaces' | 'authorizedplugins' | 'plugins'
   > {
   organizations: 'organizations'[] extends T ? string[] : never[]

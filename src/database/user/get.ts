@@ -46,7 +46,7 @@ export interface IUser<T = [], Key = 'id'> {
   lastname?: TUserGetLastname extends T ? string : never
   firstname?: TUserGetFirstname extends T ? string : never
   email:
-    | ('email'[] extends T ? string : never)
+    | (TUserGetEmail extends T ? string : never)
     | (Key extends 'email' ? string : never)
   avatar?: TUserGetAvatar extends T ? string : never
   isvalidated: TUserGetIsvalidated extends T ? boolean : never

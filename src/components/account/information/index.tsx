@@ -1,6 +1,5 @@
 /** @module Components.Account.Information */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
@@ -14,7 +13,7 @@ import {
   FormError
 } from '@/components/assets/notification'
 
-import { IFrontUser } from '@/api/index.d'
+import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
@@ -25,7 +24,7 @@ import AvatarAPI from '@/api/avatar'
 export interface IProps {
   user: Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'>
   swr: {
-    mutateUser: (user: Partial<IFrontUser>) => void
+    mutateUser: (user: IFrontMutateUser) => void
   }
 }
 
@@ -123,7 +122,7 @@ export const onFinish = async (
     lastname: string
   },
   swr: {
-    mutateUser: (user: Partial<IFrontUser>) => void
+    mutateUser: (user: IFrontMutateUser) => void
   }
 ): Promise<void> => {
   try {
@@ -275,18 +274,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
       </Space>
     </Card>
   )
-}
-
-Information.propTypes = {
-  user: PropTypes.exact({
-    email: PropTypes.string.isRequired,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    avatar: PropTypes.object
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateUser: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Information

@@ -1,6 +1,5 @@
 /** @module Components.Workspace.List */
 
-import PropTypes from 'prop-types'
 import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
 import {
@@ -41,7 +40,7 @@ export interface IProps {
     IFrontWorkspacesItem,
     'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
   >[]
-  organizations: Pick<IFrontOrganizationsItem, 'groups'>[]
+  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
   swr: {
     addOneWorkspace: (workspace: IFrontNewWorkspace) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
@@ -206,38 +205,6 @@ const WorkspacesList = ({
       </Layout.Content>
     </Layout>
   )
-}
-
-WorkspacesList.propTypes = {
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  workspaces: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      projects: PropTypes.arrayOf(PropTypes.string).isRequired,
-      owners: PropTypes.array.isRequired,
-      users: PropTypes.array,
-      groups: PropTypes.array
-    }).isRequired
-  ).isRequired,
-  organizations: PropTypes.arrayOf(
-    PropTypes.shape({
-      groups: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string.isRequired,
-          name: PropTypes.string.isRequired,
-          users: PropTypes.array
-        })
-      )
-    })
-  ).isRequired,
-  swr: PropTypes.exact({
-    addOneWorkspace: PropTypes.func.isRequired,
-    mutateOneWorkspace: PropTypes.func.isRequired,
-    delOneWorkspace: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default WorkspacesList

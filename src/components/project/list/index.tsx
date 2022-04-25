@@ -1,7 +1,6 @@
 /** @module Components.Project.List */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -14,13 +13,6 @@ import {
   Typography
 } from 'antd'
 
-import {
-  IOrganizationWithData,
-  IProjectWithData,
-  IUserWithData,
-  IWorkspaceWithData
-} from '@/lib/index.d'
-
 import Loading from '@/components/loading'
 import Share from '@/components/assets/share'
 
@@ -28,25 +20,67 @@ import Edit from '../edit'
 import Delete from '../delete'
 import Archive from '../archive'
 
+import {
+  IFrontMutateProjectsItem,
+  IFrontMutateWorkspacesItem,
+  IFrontOrganizationsItem,
+  IFrontProjectsItem,
+  IFrontUser,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
+
 import Utils from '@/lib/utils'
 
 /**
  * Props
  */
 export interface IProps {
-  user: IUserWithData
+  user: Pick<IFrontUser, 'id'>
   page: string
-  workspace: IWorkspaceWithData
-  projects: IProjectWithData[]
-  organizations: IOrganizationWithData[]
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+  projects: Pick<
+    IFrontProjectsItem,
+    | 'id'
+    | 'archived'
+    | 'title'
+    | 'description'
+    | 'createddate'
+    | 'lastaccess'
+    | 'avatar'
+    | 'owners'
+    | 'users'
+    | 'groups'
+  >[]
+  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
   filter?: string
   sorter?: string
   swr: {
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
-    delOneProject: (project: IProjectWithData) => void
-    mutateOneProject: (project: IProjectWithData) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    delOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => void
     loadingProjects: boolean
   }
+}
+
+export interface IListItem
+  extends Pick<
+    IFrontProjectsItem,
+    | 'id'
+    | 'archived'
+    | 'title'
+    | 'description'
+    | 'createddate'
+    | 'lastaccess'
+    | 'avatar'
+    | 'owners'
+    | 'users'
+    | 'groups'
+  > {
+  snapshotRender: JSX.Element
+  descriptionRender: JSX.Element
+  ownersRender: JSX.Element[]
+  usersRender: JSX.Element[]
+  groupsRender: JSX.Element[]
 }
 
 /**
@@ -65,28 +99,8 @@ const ProjectList = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(true)
-  const [list, setList]: [
-    (IProjectWithData & {
-      snapshotRender: JSX.Element
-      descriptionRender: JSX.Element
-      ownersRender: JSX.Element[]
-      usersRender: JSX.Element[]
-      groupsRender: JSX.Element[]
-    })[],
-    Dispatch<
-      SetStateAction<
-        (IProjectWithData & {
-          snapshotRender: JSX.Element
-          descriptionRender: JSX.Element
-          ownersRender: JSX.Element[]
-          usersRender: JSX.Element[]
-          groupsRender: JSX.Element[]
-        })[]
-      >
-    >
-  ] = useState([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [list, setList] = useState<IListItem[]>([])
 
   // Router
   const router = useRouter()
@@ -155,7 +169,7 @@ const ProjectList = ({
           groupsRender: groups
         }
       })
-      .filter((p) => p)
+      .filter((p) => p) as IListItem[]
 
     switch (sorter) {
       case 'alphaAsc':
@@ -296,7 +310,11 @@ const ProjectList = ({
                     groups: project.groups,
                     users: project.users
                   }}
-                  organizations={organizations}
+                  organizations={organizations.map((organization) => ({
+                    id: organization.id,
+                    name: organization.name,
+                    groups: organization.groups
+                  }))}
                   swr={{ mutateOneProject: swr.mutateOneProject }}
                   style={{
                     buttonDark: true
@@ -340,27 +358,6 @@ const ProjectList = ({
         })}
       </Space>
     )
-}
-
-ProjectList.propTypes = {
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  page: PropTypes.string.isRequired,
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    projects: PropTypes.arrayOf(PropTypes.string).isRequired
-  }).isRequired,
-  projects: PropTypes.array.isRequired,
-  organizations: PropTypes.array.isRequired,
-  filter: PropTypes.string,
-  sorter: PropTypes.string,
-  swr: PropTypes.exact({
-    mutateOneWorkspace: PropTypes.func.isRequired,
-    delOneProject: PropTypes.func.isRequired,
-    mutateOneProject: PropTypes.func.isRequired,
-    loadingProjects: PropTypes.bool.isRequired
-  }).isRequired
 }
 
 export default ProjectList

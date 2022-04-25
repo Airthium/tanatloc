@@ -1,14 +1,17 @@
 /** @module Components.Project.Delete */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Alert, Typography } from 'antd'
-
-import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontMutateProjectsItem,
+  IFrontMutateWorkspacesItem,
+  IFrontProjectsItem,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 /**
@@ -16,11 +19,11 @@ import ProjectAPI from '@/api/project'
  */
 export interface IProps {
   disabled?: boolean
-  workspace: IWorkspaceWithData
-  project: IProjectWithData
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+  project: Pick<IFrontProjectsItem, 'id' | 'title'>
   swr: {
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
-    delOneProject: (project: IProjectWithData) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    delOneProject: (project: IFrontMutateProjectsItem) => void
   }
 }
 
@@ -38,16 +41,16 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  workspace: IWorkspaceWithData,
-  project: IProjectWithData,
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
+  project: Pick<IFrontProjectsItem, 'id' | 'title'>,
   swr: {
-    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
-    delOneProject: (project: IProjectWithData) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    delOneProject: (project: IFrontMutateProjectsItem) => void
   }
 ): Promise<void> => {
   try {
     // Delete
-    await ProjectAPI.del(workspace, project)
+    await ProjectAPI.del({ id: workspace.id }, { id: project.id })
 
     // Mutate workspaces
     const index = workspace.projects.findIndex((p) => p === project.id)
@@ -72,8 +75,7 @@ export const onDelete = async (
  */
 const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
   // Sate
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -103,22 +105,6 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  disabled: PropTypes.bool,
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    projects: PropTypes.array.isRequired
-  }).isRequired,
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneWorkspace: PropTypes.func.isRequired,
-    delOneProject: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

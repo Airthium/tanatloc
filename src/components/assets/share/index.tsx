@@ -13,30 +13,31 @@ import {
 } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
-import {
-  IOrganizationWithData,
-  IProjectWithData,
-  IWorkspaceWithData
-} from '@/lib/index.d'
-
 import { LinkButton } from '../button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
+import {
+  IFrontMutateProjectsItem,
+  IFrontMutateWorkspacesItem,
+  IFrontOrganizationsItem,
+  IFrontProjectsItem,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
+import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Props
  */
 export interface IProps {
   disabled?: boolean
-  workspace?: IWorkspaceWithData
-  project?: IProjectWithData
-  organizations: IOrganizationWithData[]
+  workspace?: Pick<IFrontWorkspacesItem, 'id' | 'name' | 'users' | 'groups'>
+  project?: Pick<IFrontProjectsItem, 'id' | 'title' | 'users' | 'groups'>
+  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
   swr: {
-    mutateOneWorkspace?: (workspace: IWorkspaceWithData) => void
-    mutateOneProject?: (project: IProjectWithData) => void
+    mutateOneWorkspace?: (workspace: IFrontMutateWorkspacesItem) => void
+    mutateOneProject?: (project: IFrontMutateProjectsItem) => void
   }
   style?: CSSProperties & {
     buttonLight?: boolean
@@ -61,8 +62,8 @@ export const errors = {
  * @param swr SWR
  */
 export const onShare = async (
-  workspace: IProps['workspace'],
-  project: IProps['project'],
+  workspace: Pick<IFrontWorkspacesItem, 'id' | 'users' | 'groups'> | undefined,
+  project: Pick<IFrontProjectsItem, 'id' | 'users' | 'groups'> | undefined,
   groupsSelected: string[],
   usersSelected: string[],
   swr: IProps['swr']
@@ -84,7 +85,7 @@ export const onShare = async (
       const newWorkspace = { ...workspace }
       newWorkspace.groups = groupsSelected.map((group) => ({ id: group }))
       newWorkspace.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneWorkspace?.(newWorkspace)
+      swr.mutateOneWorkspace(newWorkspace)
     } else {
       // API
       await ProjectAPI.update({ id: project!.id }, [
@@ -101,7 +102,7 @@ export const onShare = async (
       const newProject = { ...project }
       newProject.groups = groupsSelected.map((group) => ({ id: group }))
       newProject.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneProject?.(newProject as IProjectWithData)
+      swr.mutateOneProject(newProject)
     }
   } catch (err) {
     ErrorNotification(errors.share, err)

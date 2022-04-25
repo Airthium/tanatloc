@@ -33,7 +33,7 @@ export interface IProps {
     IFrontWorkspacesItem,
     'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
   >
-  organizations: Pick<IFrontOrganizationsItem, 'groups'>[]
+  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
   swr: {
     delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
@@ -131,7 +131,11 @@ const Workspace = ({
                       groups: workspace.groups,
                       users: workspace.users
                     }}
-                    organizations={organizations}
+                    organizations={organizations.map((organization) => ({
+                      id: organization.id,
+                      name: organization.name,
+                      groups: organization.groups
+                    }))}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
                     style={{ buttonDark: true, buttonBordered: true }}
                   />
@@ -179,7 +183,11 @@ const Workspace = ({
             projects: workspace.projects
           }}
           projects={projects}
-          organizations={organizations}
+          organizations={organizations.map((organization) => ({
+            id: organization.id,
+            name: organization.name,
+            groups: organization.groups
+          }))}
           filter={filter}
           sorter={sorter}
           swr={{

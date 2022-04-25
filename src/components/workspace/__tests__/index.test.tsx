@@ -48,7 +48,6 @@ jest.mock('../edit', () => () => <div />)
 jest.mock('../delete', () => () => <div />)
 
 describe('components/workspace', () => {
-  const loading = false
   const user = { id: 'id' }
   const workspace = {
     id: 'id',

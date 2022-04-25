@@ -12,7 +12,7 @@ import { call } from '@/api/call'
  */
 export const add = async (
   workspace: { id: string },
-  project: { title: string; description: string }
+  project: { title: string; description?: string }
 ): Promise<INewProject> => {
   const response = await call('/api/project', {
     method: 'POST',

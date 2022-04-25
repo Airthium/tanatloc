@@ -127,7 +127,7 @@ const getUsers = async (
 
 /**
  * Get groups
- * @param project Project
+ * @param groups Groups
  * @returns Groups
  */
 const getGroups = async (

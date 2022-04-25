@@ -13,7 +13,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
-import { IFrontUser } from '@/api/index.d'
+import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
 /**
  * Props
@@ -21,7 +21,7 @@ import { IFrontUser } from '@/api/index.d'
 export interface IProps {
   plugins: IClientPlugin[]
   swr: {
-    addOneUser: (user: Partial<IFrontUser>) => void
+    addOneUser: (user: IFrontMutateUser) => void
   }
 }
 
@@ -51,7 +51,7 @@ export const errors = {
  */
 export const onAdd = async (
   values: IAddValues,
-  swr: { addOneUser: (user: Partial<IFrontUser>) => void }
+  swr: { addOneUser: (user: IFrontMutateUser) => void }
 ): Promise<void> => {
   try {
     // API

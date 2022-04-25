@@ -87,6 +87,4 @@ const HPC = (): JSX.Element => {
   )
 }
 
-HPC.propTypes = {}
-
 export default HPC

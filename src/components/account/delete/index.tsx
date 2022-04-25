@@ -1,6 +1,5 @@
 /** @module Components.Account.Delete */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Card } from 'antd'
 
@@ -80,12 +79,6 @@ const Delete = ({ swr }: IProps): JSX.Element => {
       </DeleteButton>
     </Card>
   )
-}
-
-Delete.propTypes = {
-  swr: PropTypes.exact({
-    clearUser: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

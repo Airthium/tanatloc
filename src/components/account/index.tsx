@@ -1,6 +1,5 @@
 /** @module Components.Account */
 
-import PropTypes from 'prop-types'
 import { NextRouter, useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
@@ -96,19 +95,6 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
       </Layout.Content>
     </Layout>
   )
-}
-
-Account.propTypes = {
-  user: PropTypes.exact({
-    email: PropTypes.string.isRequired,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    avatar: PropTypes.object
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateUser: PropTypes.func.isRequired,
-    clearUser: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Account

@@ -26,7 +26,7 @@ jest.mock('@/api/logout', () => ({
 
 describe('components/account/delete', () => {
   const swr = {
-    mutateUser: jest.fn()
+    clearUser: jest.fn()
   }
 
   beforeEach(() => {
@@ -82,7 +82,7 @@ describe('components/account/delete', () => {
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.clearUser).toHaveBeenCalledTimes(1))
 
     unmount()
   })

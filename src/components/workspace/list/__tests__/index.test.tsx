@@ -34,7 +34,7 @@ describe('components/workspace/list', () => {
   const workspaces = [
     { id: 'id', name: 'name', projects: [], owners: [], users: [], groups: [] }
   ]
-  const organizations = [{ id: 'id', groups: [] }]
+  const organizations = [{ id: 'id', name: 'name', groups: [] }]
   const swr = {
     addOneWorkspace: jest.fn(),
     mutateOneWorkspace: jest.fn(),

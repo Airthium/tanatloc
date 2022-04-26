@@ -27,6 +27,7 @@ import { camelCase } from 'lodash'
 
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
+import Loading from '@/components/loading'
 
 import Utils from '@/lib/utils'
 
@@ -37,7 +38,7 @@ import SimulationAPI from '@/api/simulation'
  * Props
  */
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
+  simulation?: Pick<IFrontSimulationsItem, 'id' | 'name'>
 }
 
 /**
@@ -75,8 +76,8 @@ export const onCheck = (
  */
 export const exportCSV = (
   simulation: Pick<IFrontSimulationsItem, 'name'>,
-  table?: { columns: TableColumnsType; data: Array<any> },
-  infos?: {
+  table: { columns: TableColumnsType<object>; data: Array<any> },
+  infos: {
     names: string[]
     camelNames: string[]
   }
@@ -122,7 +123,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
     camelNames: string[]
   }>()
   const [table, setTable] = useState<{
-    columns: TableColumnsType
+    columns: TableColumnsType<object>
     data: { key: number; x: number; [key: string]: number }[]
   }>()
   const [columnSelection, setColumnSelection] = useState<
@@ -162,7 +163,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
 
       const camelNames = names.map((n) => camelCase(n))
 
-      const tableColumns: TableColumnsType = names.map((n, index) => ({
+      const tableColumns: TableColumnsType<object> = names.map((n, index) => ({
         align: 'center',
         title: (
           <Space>
@@ -211,7 +212,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   // Check effect
   useEffect(() => {
     const tableData = table?.data
-    if (!tableData?.length) return
+    if (!infos || !tableData?.length) return
 
     // Set lines
     const keys: string[] = []
@@ -235,12 +236,12 @@ const Data = ({ simulation }: IProps): JSX.Element => {
           />
         )
       })
-      .filter((l) => l)
+      .filter((l) => l) as JSX.Element[]
 
     // Set data
     const data = tableData
       .map((d) => {
-        const part = { x: d.x }
+        const part: { x: number; [key: string]: number } = { x: d.x }
         keys.forEach((key) => {
           d[key] && (part[key] = d[key])
         })
@@ -248,12 +249,8 @@ const Data = ({ simulation }: IProps): JSX.Element => {
       })
       .filter((d) => d)
 
-    const min = Math.min(
-      ...keys.flatMap((key) => data.map((d) => d[key] || null))
-    )
-    const max = Math.max(
-      ...keys.flatMap((key) => data.map((d) => d[key] || null))
-    )
+    const min = Math.min(...keys.flatMap((key) => data.map((d) => d[key])))
+    const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
 
     setPlot({ data, min, max, lines })
   }, [table?.data, columnSelection, infos])
@@ -261,6 +258,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   /**
    * Render
    */
+  if (!simulation) return <Loading.Simple />
   return (
     <Layout
       style={{
@@ -307,11 +305,11 @@ const Data = ({ simulation }: IProps): JSX.Element => {
             <div style={{ height: '100%', width: '50%' }}>
               <DownloadButton
                 loading={downloading}
-                disabled={!table?.data}
+                disabled={!infos || !table}
                 onDownload={() => {
                   setDownloading(true)
                   try {
-                    exportCSV(simulation, table, infos)
+                    exportCSV(simulation, table!, infos!)
                   } catch (err) {
                     ErrorNotification(errors.download, err)
                   } finally {
@@ -337,7 +335,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
-                <YAxis domain={[plot?.min, plot?.max]} />
+                <YAxis domain={[plot?.min || -1, plot?.max || 1]} />
                 <ReTooltip />
                 <Legend />
                 {plot?.lines}

@@ -244,7 +244,7 @@ const Project = (): JSX.Element => {
    * On geometry cleanup
    */
   const onGeometryCleanup = useCallback((): void => {
-    setGeometry({ id: '0', needCleanup: true })
+    setGeometry({ id: '0', needCleanup: true } as IFrontGeometriesItem)
   }, [])
 
   /**
@@ -855,10 +855,12 @@ const Project = (): JSX.Element => {
               }
             />
             <Data
-              simulation={{
-                id: simulation?.id,
-                name: simulation?.name
-              }}
+              simulation={
+                simulation && {
+                  id: simulation.id,
+                  name: simulation.name
+                }
+              }
             />
           </Layout.Content>
         </Layout>

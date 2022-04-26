@@ -15,8 +15,8 @@ export const getFilesNumbers = (
 ): (ISimulationTaskFile & { number: number })[] => {
   return files.map((file) => {
     const number = file.fileName
-      .replace(new RegExp(filter.prefixPattern), '')
-      .replace(new RegExp(filter.suffixPattern), '')
+      .replace(new RegExp(filter!.prefixPattern), '')
+      .replace(new RegExp(filter!.suffixPattern), '')
     return {
       ...file,
       number: +number
@@ -34,10 +34,10 @@ export const getMultiplicator = (
   configuration: IModel['configuration'],
   filter: IModel['configuration']['run']['resultsFilter']
 ) => {
-  const multiplicatorPath = filter.multiplicator
+  const multiplicatorPath = filter!.multiplicator
   if (multiplicatorPath) {
     const multiplicatorObject = multiplicatorPath.reduce(
-      (a, v) => a[v],
+      (a: any, v) => a[v],
       configuration
     )
     return multiplicatorObject.value ?? multiplicatorObject.default

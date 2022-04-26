@@ -93,6 +93,7 @@ export interface IModelMaterialsValue {
  */
 export interface IModelParameters extends IModelCommon {
   [key: string]:
+    | boolean
     | number
     | string
     | {

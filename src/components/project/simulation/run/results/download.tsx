@@ -1,22 +1,20 @@
 /** @module Components.Project.Simulation.Run.Results.Download */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 import ResultAPI from '@/api/result'
-
-import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  file: Omit<ISimulationTaskFile, 'type'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>
+  file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>
 }
 
 /**
@@ -32,8 +30,8 @@ export const errors = {
  * @param file File
  */
 const onDownload = async (
-  simulation: ISimulation,
-  file: Omit<ISimulationTaskFile, 'type'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>
 ): Promise<void> => {
   try {
     const content = await ResultAPI.download(
@@ -62,8 +60,7 @@ const onDownload = async (
  */
 const Download = ({ simulation, file }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -85,17 +82,6 @@ const Download = ({ simulation, file }: IProps): JSX.Element => {
       />
     </Tooltip>
   )
-}
-
-Download.propTypes = {
-  file: PropTypes.exact({
-    originPath: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    fileName: PropTypes.string.isRequired
-  }),
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  })
 }
 
 export default Download

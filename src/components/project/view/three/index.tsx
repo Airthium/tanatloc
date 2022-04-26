@@ -1,6 +1,5 @@
 /** @module Components.Project.View.Three */
 
-import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import {
   useRef,
@@ -8,7 +7,6 @@ import {
   useEffect,
   MutableRefObject,
   Dispatch,
-  SetStateAction,
   useCallback,
   useContext
 } from 'react'
@@ -39,6 +37,7 @@ import {
 import {
   AmbientLight,
   Box3,
+  Object3D,
   PerspectiveCamera,
   PointLight,
   Scene,
@@ -48,8 +47,6 @@ import {
   WebGLRenderer
 } from 'three'
 import { v4 } from 'uuid'
-
-import { IProjectWithData } from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -74,18 +71,19 @@ import {
 
 import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 
-import AvatarAPI from '@/api/avatar'
-
-import { SelectContext } from '@/context/select'
+import { ISelectAction, SelectContext } from '@/context/select'
 import { highlight, select, unselect } from '@/context/select/actions'
+
+import { IFrontProject } from '@/api/index.d'
+import AvatarAPI from '@/api/avatar'
 
 /**
  * Props
  */
 export interface IProps {
   loading: boolean
-  project: IProjectWithData
-  part?: { uuid?: string; buffer: Buffer; dimension?: number }
+  project: Pick<IFrontProject, 'id' | 'title'>
+  part?: { uuid: string; buffer: Buffer; dimension?: number }
 }
 
 /**
@@ -110,9 +108,10 @@ export const computeSceneBoundingSphere = (
   scene: Scene & { boundingBox?: Box3; boundingSphere?: Sphere }
 ): void => {
   const box = new Box3()
-  scene.children.forEach((child: IPart) => {
+  scene.children.forEach((child) => {
     if (child.visible && child.type === 'Part') {
-      const childBox: Box3 = child.boundingBox
+      const part = child as IPart
+      const childBox: Box3 = part.boundingBox
       const min = new Vector3(
         Math.min(box.min.x, childBox.min.x),
         Math.min(box.min.y, childBox.min.y),
@@ -156,7 +155,7 @@ export const zoom = (
   camera.position.add(translation)
 }
 
-let zoomInProgress = null
+let zoomInProgress: number | undefined = undefined
 /**
  * Zoom in
  * @param camera Camera
@@ -189,8 +188,8 @@ export const zoomOut = (
  * Zoom stop
  */
 export const zoomStop = (): void => {
-  cancelAnimationFrame(zoomInProgress)
-  zoomInProgress = null
+  zoomInProgress && cancelAnimationFrame(zoomInProgress)
+  zoomInProgress = undefined
 }
 
 /**
@@ -239,13 +238,11 @@ export const zoomToFit = (
  * @param scene Scene
  * @param camera Camera
  * @param controls Controls
- * @param gridHelper Grid helper
- * @param sectionViewHelper Section view helper
- * @param colorbarHelper Colorbar helper
+ * @param helpers Helpers
  * @param dispatch Dispatch
  */
 export const loadPart = async (
-  part: IProps['part'],
+  part: { uuid: string; buffer: Buffer },
   transparent: boolean,
   scene: Scene & { boundingSphere: Sphere },
   camera: PerspectiveCamera,
@@ -255,7 +252,7 @@ export const loadPart = async (
     sectionViewHelper: ISectionViewHelper
     colorbarHelper: IColorbarHelper
   },
-  dispatch: Dispatch<any>
+  dispatch: Dispatch<ISelectAction>
 ): Promise<void> => {
   // Events
   const mouseMoveEvent = (
@@ -263,6 +260,7 @@ export const loadPart = async (
     uuid?: string,
     number?: number | string
   ): void => {
+    console.log(uuid)
     child.highlight(uuid)
     setTimeout(() => dispatch(highlight({ uuid, label: number })), 1)
   }
@@ -369,7 +367,7 @@ export const takeScreenshot = async (
         uid: 'snapshot_' + v4(),
         data: image
       },
-      project
+      { id: project.id }
     )
   } catch (err) {
     ErrorNotification(errors.snapshot, err)
@@ -427,22 +425,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   const colorbarHelper: MutableRefObject<any> = useRef()
 
   // State
-  const [transparent, setTransparent]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [sectionView, setSectionView]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [screenshot, setScreenshot]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [savingScreenshot, setSavingScreenshot]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [transparent, setTransparent] = useState<boolean>(false)
+  const [sectionView, setSectionView] = useState<boolean>(false)
+  const [screenshot, setScreenshot] = useState<boolean>(false)
+  const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
 
   // Data
   const router = useRouter()
@@ -468,7 +454,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
     let width = currentMount.clientWidth
     let height = currentMount.clientHeight
-    let frameId: number
+    let frameId: number | undefined
 
     // Scene
     scene.current = new Scene()
@@ -641,8 +627,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
      * Stop animate
      */
     const stop = (): void => {
-      cancelAnimationFrame(frameId)
-      frameId = null
+      frameId && cancelAnimationFrame(frameId)
+      frameId = undefined
     }
 
     // Event listeners
@@ -660,7 +646,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       currentMount.removeChild(renderer.current.domElement)
 
       // Clean scene
-      scene.current.children.forEach((child) => {
+      scene.current.children.forEach((child: Object3D) => {
         scene.current.remove(child)
       })
 
@@ -693,7 +679,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     if (part) {
       // Load
       loadPart(
-        part,
+        { uuid: part.uuid, buffer: part.buffer },
         transparent,
         scene.current,
         camera.current,
@@ -780,7 +766,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           (s) => !selected.find((ss) => ss.uuid === s.uuid)
         )
         plus.forEach((p) => {
-          child.select(p.uuid)
+          p.uuid && child.select(p.uuid)
         })
 
         // Unselect
@@ -798,7 +784,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
    * Toggle transparent
    * @param checked Checked
    */
-  const toggleTransparent = useCallback((checked) => {
+  const toggleTransparent = useCallback((checked: boolean) => {
     setTransparent(checked)
     scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part') {
@@ -826,6 +812,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       <Layout.Header className="View-header">
         <div className="View-controls-main">
           <Tooltip title="Take snasphot" placement="right">
+            {/* 
+            //@ts-ignore */}
             <Dropdown
               placement="bottom"
               overlay={
@@ -1015,19 +1003,6 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       </Layout.Content>
     </Layout>
   )
-}
-
-ThreeView.propTypes = {
-  loading: PropTypes.bool,
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
-  }).isRequired,
-  part: PropTypes.exact({
-    uuid: PropTypes.string.isRequired,
-    buffer: PropTypes.object.isRequired,
-    dimension: PropTypes.number
-  })
 }
 
 export default ThreeView

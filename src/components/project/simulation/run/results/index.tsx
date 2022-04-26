@@ -1,14 +1,12 @@
 /** @module Components.Project.Simulation.Run.Results */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
-import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
+import { IFrontSimulation, IFrontResult } from '@/api/index.d'
 
 import { getFilesNumbers, getMultiplicator } from './tools'
-
 import Download from './download'
 import Archive from './archive'
 
@@ -16,15 +14,15 @@ import Archive from './archive'
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  result?: Omit<Omit<ISimulationTaskFile, 'originPath'>, 'type'>
-  setResult: Dispatch<SetStateAction<ISimulationTaskFile>>
+  simulation: Pick<IFrontSimulation, 'id' | 'scheme' | 'tasks'>
+  result?: Pick<IFrontResult, 'name' | 'fileName'>
+  setResult: (result?: IFrontResult) => void
 }
 
 export interface IFilteredFiles {
   filtered: true
   name: string
-  files: ISimulationTaskFile[]
+  files: IFrontResult[]
   options: { label: number; value: number }[]
 }
 
@@ -35,18 +33,9 @@ export interface IFilteredFiles {
  */
 const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   //State
-  const [singleFiles, setSingleFiles]: [
-    ISimulationTaskFile[],
-    Dispatch<SetStateAction<ISimulationTaskFile[]>>
-  ] = useState()
-  const [filteredFiles, setFilteredFiles]: [
-    IFilteredFiles,
-    Dispatch<SetStateAction<IFilteredFiles>>
-  ] = useState()
-  const [currentNumber, setCurrentNumber]: [
-    number,
-    Dispatch<SetStateAction<number>>
-  ] = useState()
+  const [singleFiles, setSingleFiles] = useState<IFrontResult[]>()
+  const [filteredFiles, setFilteredFiles] = useState<IFilteredFiles>()
+  const [currentNumber, setCurrentNumber] = useState<number>()
 
   // Data
   const configuration = simulation?.scheme?.configuration
@@ -55,12 +44,12 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   useEffect(() => {
     if (!simulation?.tasks) {
       setSingleFiles([])
-      setFilteredFiles(null)
+      setFilteredFiles(undefined)
       return
     }
 
     // New files
-    const newSingleFiles = []
+    const newSingleFiles: IFrontResult[] = []
 
     // Filter
     const filter = configuration?.run?.resultsFilter
@@ -78,9 +67,11 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
           // Pattern filter
           const pattern = new RegExp(filter.pattern)
           const notFilteredFiles = task.files.filter(
-            (file) => !pattern.test(file.fileName)
+            (file: IFrontResult) => !pattern.test(file.fileName)
           )
-          const files = task.files.filter((file) => pattern.test(file.fileName))
+          const files = task.files.filter((file: IFrontResult) =>
+            pattern.test(file.fileName)
+          )
 
           // Numbering
           const filesWithNumbers = getFilesNumbers(files, filter)
@@ -162,7 +153,7 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                   setResult(
                     result?.fileName === file?.fileName &&
                       result?.name === file?.name
-                      ? null
+                      ? undefined
                       : file
                   )
                 }
@@ -220,7 +211,7 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                           setResult(
                             result?.fileName === filteredFile?.fileName &&
                               result?.name === filteredFile?.name
-                              ? null
+                              ? undefined
                               : filteredFile
                           )
                         }
@@ -249,19 +240,6 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
         </Space>
       </Card>
     )
-}
-
-Results.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.object,
-    tasks: PropTypes.array
-  }),
-  result: PropTypes.exact({
-    name: PropTypes.string.isRequired,
-    fileName: PropTypes.string.isRequired
-  }),
-  setResult: PropTypes.func.isRequired
 }
 
 export default Results

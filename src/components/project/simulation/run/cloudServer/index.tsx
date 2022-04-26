@@ -1,14 +1,8 @@
 /** @module Components.Project.Simulation.Run.CloudServer */
 
-import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  ComponentType
-} from 'react'
+import PropTypes from 'prop-types'
+import { useState, useEffect, ComponentType } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
@@ -47,12 +41,8 @@ export const errors = {
  */
 const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [Plugins, setPlugins]: [
-    IClientPlugin[],
-    Dispatch<SetStateAction<IClientPlugin[]>>
-  ] = useState([])
+  const [visible, setVisible] = useState<boolean>(false)
+  const [Plugins, setPlugins] = useState<IClientPlugin[]>([])
 
   // Data
   const router = useRouter()
@@ -79,6 +69,8 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
    */
   return (
     <Card size="small" title="Computational resource">
+      {/* 
+      //@ts-ignore */}
       <Modal
         visible={visible}
         title="Computational resource"

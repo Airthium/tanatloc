@@ -1,20 +1,18 @@
 /** @module Components.Project.Simulation.Run.Results.Archive */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontSimulationsItem } from '@/api/index.d'
 import ResultAPI from '@/api/result'
-
-import { ISimulation } from '@/database/simulation/index'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
 }
 
 /**
@@ -27,7 +25,9 @@ export const errors = {
 /**
  * On archive
  */
-export const onArchive = async (simulation: ISimulation) => {
+export const onArchive = async (
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+) => {
   try {
     const archive = await ResultAPI.archive({ id: simulation.id })
     const content = await archive.blob()
@@ -49,8 +49,7 @@ export const onArchive = async (simulation: ISimulation) => {
  */
 const Archive = ({ simulation }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -69,15 +68,6 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Archive.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      name: PropTypes.string.isRequired
-    }).isRequired
-  })
 }
 
 export default Archive

@@ -1,9 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Run, { errors } from '..'
+import { IFrontSimulation, IFrontResult } from '@/api/index.d'
 
-import { ISimulation, ISimulationTaskFile } from '@/database/simulation/index'
+import Run, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -55,11 +55,8 @@ describe('components/project/simulation/run', () => {
       code: 'code',
       version: 'version',
       configuration: {
-        about: {
-          done: true
-        },
         parameters: {
-          index: 1,
+          index: 2,
           title: 'Parameters',
           done: true
         },
@@ -71,11 +68,11 @@ describe('components/project/simulation/run', () => {
         }
       }
     }
-  }
+  } as Pick<IFrontSimulation, 'id' | 'scheme'>
   const result = {
     fileName: 'fileName',
     name: 'name'
-  } as ISimulationTaskFile
+  } as IFrontResult
   const setResult = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
@@ -148,7 +145,7 @@ describe('components/project/simulation/run', () => {
     )
 
     const i = container.querySelector('i')
-    expect(i.className).toBe('ant-spin-dot-item')
+    expect(i?.className).toBe('ant-spin-dot-item')
 
     unmount()
   })
@@ -160,7 +157,7 @@ describe('components/project/simulation/run', () => {
           {
             id: 'id',
             scheme: {}
-          } as ISimulation
+          } as IFrontSimulation
         }
         result={result}
         setResult={setResult}
@@ -185,7 +182,7 @@ describe('components/project/simulation/run', () => {
                 run: {}
               }
             }
-          } as ISimulation
+          } as IFrontSimulation
         }
         result={result}
         setResult={setResult}

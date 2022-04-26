@@ -46,7 +46,7 @@ export const setPart = (part: string): ISelectAction => {
 export const highlight = ({ uuid, label }: ISelect): ISelectAction => {
   return {
     type: actionTypes.HIGHLIGHT,
-    value: { uuid, label: label }
+    value: { uuid, label }
   }
 }
 

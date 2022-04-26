@@ -22,6 +22,7 @@ describe('components/project/simulation/run/log', () => {
   }
   const steps: IFrontSimulationTask[] = [
     {
+      index: 0,
       label: 'label 1',
       status: 'finish',
       systemLog: 'log',
@@ -31,6 +32,7 @@ describe('components/project/simulation/run/log', () => {
       }
     },
     {
+      index: 1,
       label: 'label 2',
       status: 'finish'
     }

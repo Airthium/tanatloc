@@ -4,6 +4,15 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
+import {
+  IModel,
+  IModelRun,
+  IModelGeometry,
+  IModelMaterials,
+  IModelParameters,
+  IModelInitialization,
+  IModelBoundaryConditions
+} from '@/models/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -16,7 +25,8 @@ import {
   IFrontSimulationsItem,
   IFrontResult,
   IFrontMutateSimulation,
-  IFrontMutateSimulationsItem
+  IFrontMutateSimulationsItem,
+  IFrontSimulationTask
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
@@ -26,7 +36,7 @@ import SimulationAPI from '@/api/simulation'
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   result: Pick<IFrontResult, 'name' | 'fileName'>
-  setResult: (result: IFrontResult) => void
+  setResult: (result?: IFrontResult) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -118,10 +128,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)
 
-  const [steps, setSteps]: [
-    ISimulationTask[],
-    Dispatch<SetStateAction<ISimulationTask[]>>
-  ] = useState([])
+  const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -141,8 +148,16 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
     let done = true
     Object.keys(configuration).forEach((key) => {
-      if (key !== 'dimension' && key !== 'run' && !configuration[key].done)
-        done = false
+      if (key !== 'dimension' && key !== 'run') {
+        const item = configuration[key as keyof IModel['configuration']] as
+          | IModelRun
+          | IModelGeometry
+          | IModelMaterials
+          | IModelParameters
+          | IModelInitialization
+          | IModelBoundaryConditions
+        if (!item.done) done = false
+      }
     })
     if (!configuration.run.cloudServer) done = false
     setDisabled(!done)
@@ -161,11 +176,12 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
   // Steps
   useEffect(() => {
-    const newSteps = []
+    const newSteps: IFrontSimulationTask[] = []
     currentSimulation?.tasks?.forEach((task) => {
       if (!task) return
       // Steps
       newSteps[task.index] = {
+        index: task.index,
         label: task.label,
         status: task.status,
         log: task.log,
@@ -250,6 +266,8 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                   </Space>
                   <Log simulation={{ id: simulation.id }} steps={steps} />
                 </div>
+                {/* 
+                //@ts-ignore */}
                 <Steps direction="vertical">
                   {steps.map((step, index) => (
                     <Steps.Step

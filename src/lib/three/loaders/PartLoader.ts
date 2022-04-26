@@ -52,12 +52,12 @@ export interface IPart extends Object3D {
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type: string
+    type?: string
   ) => void
   stopSelection: () => void
   getHighlighted: () => { uuid: string; number: number | string } | null
   getSelected: () => { uuid: string; number: number | string }[]
-  highlight: (uuid: string) => void
+  highlight: (uuid?: string) => void
   unhighlight: () => void
   select: (uuid: string) => void
   unselect: (uuid: string) => void
@@ -156,7 +156,7 @@ const PartLoader = (
       renderer: WebGLRenderer,
       camera: PerspectiveCamera,
       outlinePass: OutlinePass,
-      type: string
+      type?: string
     ) => startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
     object.getHighlighted = () => highlighted
@@ -308,7 +308,7 @@ const PartLoader = (
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type: string
+    type?: string
   ): void => {
     selectionPart = part
     selectionRenderer = renderer
@@ -499,7 +499,7 @@ const PartLoader = (
    * Highlight
    * @param uuid Mesh uuid
    */
-  const highlight = (uuid: string): void => {
+  const highlight = (uuid?: string): void => {
     if (uuid === highlighted?.uuid) return
     else unhighlight()
 

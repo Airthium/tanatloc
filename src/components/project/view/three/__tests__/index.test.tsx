@@ -124,7 +124,7 @@ const mockPartLoader = jest.fn()
 jest.mock('@/lib/three/loaders/PartLoader', () => {
   let count = 0
   return {
-    PartLoader: (mouseMove, mouseDown) =>
+    PartLoader: (mouseMove: Function, mouseDown: Function) =>
       mockPartLoader(mouseMove, mouseDown, count++)
   }
 })
@@ -227,6 +227,7 @@ describe('components/project/view/three', () => {
       }
     })
 
+    //@ts-ignore
     global.MockScene.children = [
       { type: 'AmbientLight' },
       {
@@ -310,6 +311,7 @@ describe('components/project/view/three', () => {
   })
 
   test('without part', () => {
+    //@ts-ignore
     global.MockScene.children = []
     const { unmount } = render(
       <SelectContext.Provider
@@ -323,6 +325,7 @@ describe('components/project/view/three', () => {
   })
 
   test('already loaded part', () => {
+    //@ts-ignore
     global.MockScene.children = [
       {
         type: 'Part',
@@ -390,6 +393,7 @@ describe('components/project/view/three', () => {
   })
 
   test('switches & buttons', async () => {
+    //@ts-ignore
     global.MockWebGLRenderer.toDataURL = () => ''
     const { unmount } = render(
       <SelectContext.Provider

@@ -1,20 +1,11 @@
 /** @module Components.Project.Simulation */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback
-} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
 
-import { IUserWithData } from '@/lib/index.d'
-import { ISimulation } from '@/database/simulation/index'
 import { IClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
@@ -29,6 +20,11 @@ import Initialization from './initialization'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 
+import {
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem,
+  IFrontUser
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 import PluginsAPI from '@/api/plugins'
 
@@ -39,7 +35,7 @@ import Models from '@/models'
  */
 export interface ISelectorProps {
   visible: boolean
-  user?: IUserWithData
+  user?: Pick<IFrontUser, 'authorizedplugins'>
   onOk: (model: IModel) => Promise<void>
   onCancel: () => void
 }
@@ -58,8 +54,8 @@ export const errors = {
  * @param setModels Set models
  */
 export const pluginsList = (
-  user: IUserWithData,
-  setModels: Dispatch<SetStateAction<IModel[]>>
+  user: Pick<IFrontUser, 'authorizedplugins'>,
+  setModels: (models: IModel[]) => void
 ) => {
   if (!user) return
 
@@ -81,7 +77,7 @@ export const pluginsList = (
  * @param plugins Plugins
  */
 export const loadModels = (
-  user: IUserWithData,
+  user: Pick<IFrontUser, 'authorizedplugins'>,
   models: IModel[],
   plugins: IClientPlugin[]
 ) => {
@@ -89,7 +85,7 @@ export const loadModels = (
 
   plugins.forEach((plugin) => {
     if (
-      user?.authorizedplugins?.includes(plugin.key) &&
+      user?.authorizedplugins?.includes(plugin.key as string) &&
       plugin.category === 'Model'
     )
       allModels = [...allModels, ...plugin.models]
@@ -110,22 +106,16 @@ const Selector = ({
   onCancel
 }: ISelectorProps): JSX.Element => {
   // State
-  const [current, setCurrent]: [IModel, Dispatch<SetStateAction<IModel>>] =
-    useState()
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [models, setModels]: [IModel[], Dispatch<SetStateAction<IModel[]>>] =
-    useState([])
-  const [categories, setCategories]: [
-    { key: string; value: string }[],
-    Dispatch<SetStateAction<{ key: string; value: string }[]>>
-  ] = useState()
-  const [category, setCategory]: [string, Dispatch<SetStateAction<string>>] =
-    useState()
+  const [current, setCurrent] = useState<IModel>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [models, setModels] = useState<IModel[]>([])
+  const [categories, setCategories] =
+    useState<{ key: string; value: string }[]>()
+  const [category, setCategory] = useState<string>()
 
   // Models
   useEffect(() => {
-    pluginsList(user, setModels)
+    user && pluginsList(user, setModels)
   }, [user])
 
   // Categories
@@ -146,7 +136,7 @@ const Selector = ({
   const onSelect = useCallback(
     ({ key }: { key: string }): void => {
       const model = models.find((m) => m.algorithm === key)
-      setCurrent({ ...model })
+      setCurrent({ ...model! })
     },
     [models]
   )
@@ -155,6 +145,7 @@ const Selector = ({
    * Render
    */
   return (
+    //@ts-ignore
     <Modal
       visible={visible}
       title="Create simulation"
@@ -201,23 +192,14 @@ const Selector = ({
   )
 }
 
-Selector.propTypes = {
-  user: PropTypes.exact({
-    authorizedplugins: PropTypes.array
-  }),
-  visible: PropTypes.bool,
-  onOk: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-}
-
 /**
  * Updater props
  */
 export interface IUpdaterProps {
-  user?: IUserWithData
-  simulation?: ISimulation
+  user?: Pick<IFrontUser, 'authorizedplugins'>
+  simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -228,9 +210,11 @@ export interface IUpdaterProps {
  * @param swr SWR
  */
 export const onUpdate = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   models: IModel[],
-  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // Current model
@@ -264,20 +248,19 @@ export const onUpdate = async (
  * @param props Props
  * @return Simulation.Updater
  */
-const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
+const Updater = ({
+  user,
+  simulation,
+  swr
+}: IUpdaterProps): JSX.Element | null => {
   // State
-  const [needUpdate, setNeedUpdate]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [models, setModels]: [IModel[], Dispatch<SetStateAction<IModel[]>>] =
-    useState([])
+  const [needUpdate, setNeedUpdate] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [models, setModels] = useState<IModel[]>([])
 
   // Models
   useEffect(() => {
-    pluginsList(user, setModels)
+    user && pluginsList(user, setModels)
   }, [user])
 
   // Check model update
@@ -301,6 +284,7 @@ const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
   if (!simulation) return null
   else
     return (
+      //@ts-ignore
       <Modal
         title={
           <>
@@ -330,19 +314,6 @@ const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
         </Space>
       </Modal>
     )
-}
-
-Updater.propTypes = {
-  user: PropTypes.exact({
-    authorizedplugins: PropTypes.array
-  }),
-  simulation: PropTypes.exact({
-    id: PropTypes.string,
-    scheme: PropTypes.object
-  }),
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 const Simulation = {

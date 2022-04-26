@@ -5,8 +5,6 @@ import { Button, Drawer, Modal, Tabs, Tooltip } from 'antd'
 import { FileTextOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 
-import { ISimulationTask } from '@/database/simulation/index'
-
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
@@ -34,7 +32,7 @@ export const errors = {
  */
 export const getCompleteLog = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
-  step: ISimulationTask
+  step: IFrontSimulationTask
 ) => {
   try {
     const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog!)

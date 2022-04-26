@@ -6,7 +6,7 @@ import CloudServer from '@/components/project/simulation/run/cloudServer'
 jest.mock('/plugins/key/src/components', () => {}, { virtual: true })
 
 const mockDynamic = jest.fn()
-jest.mock('next/dynamic', () => (callback) => {
+jest.mock('next/dynamic', () => (callback: Function) => {
   callback()
   return mockDynamic()
 })
@@ -160,7 +160,7 @@ describe('components/project/simulation/run/cloudServer', () => {
   })
 
   test('onMerge', async () => {
-    mockDynamic.mockImplementation(() => (props) => (
+    mockDynamic.mockImplementation(() => (props: any) => (
       <div role="Renderer" onClick={props.onSelect} />
     ))
 

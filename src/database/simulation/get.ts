@@ -20,7 +20,7 @@ export interface ISimulationTaskFile {
 }
 
 export interface ISimulationTask {
-  index?: number
+  index: number
   label: string
   status: 'wait' | 'process' | 'finish' | 'error'
   pid?: string | number

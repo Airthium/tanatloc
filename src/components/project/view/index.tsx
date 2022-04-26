@@ -1,6 +1,5 @@
 /** @module Components.Project.View */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -47,7 +46,7 @@ const loadPart = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   file: Pick<IFrontGeometriesItem, 'id'> | TResult,
   type: 'geometry' | 'result'
-): Promise<{ uuid: string; buffer: Buffer } | undefined> => {
+): Promise<{ uuid: string; buffer: Buffer }> => {
   try {
     if (type === 'geometry') {
       const geometry = file as Pick<IFrontGeometriesItem, 'id'>
@@ -61,6 +60,7 @@ const loadPart = async (
     }
   } catch (err) {
     ErrorNotification(errors.part, err)
+    throw err
   }
 }
 
@@ -77,8 +77,8 @@ const View = ({
 }: IProps): JSX.Element => {
   // State
   const [part, setPart] = useState<{
-    uuid?: string
-    buffer?: Buffer
+    uuid: string
+    buffer: Buffer
     dimension?: number
   }>()
   const [previous, setPrevious] = useState<TGeometry | TResult>()
@@ -96,6 +96,7 @@ const View = ({
             .then((partLoaded) =>
               setPart({ ...partLoaded, dimension: geometry?.dimension })
             )
+            .catch()
             .finally(() => setLoading(false))
         }
       } else if (geometry) {
@@ -111,6 +112,7 @@ const View = ({
               .then((partLoaded) =>
                 setPart({ ...partLoaded, dimension: geometry.dimension })
               )
+              .catch()
               .finally(() => setLoading(false))
           }
         }
@@ -131,26 +133,6 @@ const View = ({
       part={part}
     />
   )
-}
-
-View.propTypes = {
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
-  }).isRequired,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }),
-  geometry: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    dimension: PropTypes.number,
-    needCleanup: PropTypes.bool
-  }),
-  result: PropTypes.exact({
-    glb: PropTypes.string.isRequired,
-    originPath: PropTypes.string.isRequired,
-    json: PropTypes.string.isRequired
-  })
 }
 
 export default View

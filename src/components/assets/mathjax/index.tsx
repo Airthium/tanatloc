@@ -17,7 +17,7 @@ const Head = (): JSX.Element => {
 }
 
 export interface IPropsInline {
-  text: string
+  text?: string
 }
 
 /**
@@ -35,7 +35,7 @@ const Inline = ({ text }: IPropsInline): JSX.Element => {
 }
 
 export interface IPropsFormula {
-  text: string
+  text?: string
 }
 
 /**
@@ -53,7 +53,7 @@ const Formula = ({ text }: IPropsFormula) => {
 }
 
 export interface IPropsHtml {
-  html: string
+  html?: string
 }
 
 /**

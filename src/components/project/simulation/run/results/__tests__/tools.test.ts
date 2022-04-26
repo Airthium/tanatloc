@@ -23,6 +23,7 @@ describe('@/components/project/simulation/run/results/tools', () => {
 
   test('getMultiplicator', () => {
     const multiplicator = getMultiplicator(
+      //@ts-ignore
       {
         parameters: {
           index: 1,
@@ -49,6 +50,7 @@ describe('@/components/project/simulation/run/results/tools', () => {
     // Without multiplicator path
     expect(
       getMultiplicator(
+        //@ts-ignore
         {},
         {
           name: 'name',

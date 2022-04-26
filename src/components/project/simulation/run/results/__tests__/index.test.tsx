@@ -1,9 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Results from '..'
+import { IFrontSimulation } from '@/api/index.d'
 
-import { ISimulation } from '@/database/simulation/index'
+import Results from '..'
 
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplicator = jest.fn()
@@ -19,7 +19,7 @@ const mockArchive = jest.fn()
 jest.mock('../archive', () => (props: any) => mockArchive(props))
 
 describe('components/project/simulation/run/results', () => {
-  const simulation: ISimulation = {
+  const simulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -56,7 +56,7 @@ describe('components/project/simulation/run/results', () => {
         ]
       }
     ]
-  }
+  } as IFrontSimulation
   const result = {
     fileName: 'file.vtu',
     name: 'file'
@@ -100,7 +100,7 @@ describe('components/project/simulation/run/results', () => {
   test('no results', () => {
     const { unmount } = render(
       <Results
-        simulation={{ id: 'id' }}
+        simulation={{ id: 'id' } as IFrontSimulation}
         result={result}
         setResult={setResult}
       />
@@ -145,29 +145,31 @@ describe('components/project/simulation/run/results', () => {
     ])
     const { unmount } = render(
       <Results
-        simulation={{
-          ...simulation,
-          scheme: {
-            category: 'category',
-            name: 'name',
-            description: 'description',
-            algorithm: 'algorithm',
-            code: 'code',
-            version: 'version',
-            configuration: {
-              run: {
-                index: 1,
-                title: 'Run',
-                resultsFilter: {
-                  name: 'name',
-                  pattern: 'file_\\d+.vtu',
-                  prefixPattern: 'file_',
-                  suffixPattern: '.vtu'
+        simulation={
+          {
+            ...simulation,
+            scheme: {
+              category: 'category',
+              name: 'name',
+              description: 'description',
+              algorithm: 'algorithm',
+              code: 'code',
+              version: 'version',
+              configuration: {
+                run: {
+                  index: 1,
+                  title: 'Run',
+                  resultsFilter: {
+                    name: 'name',
+                    pattern: 'file_\\d+.vtu',
+                    prefixPattern: 'file_',
+                    suffixPattern: '.vtu'
+                  }
                 }
               }
             }
-          }
-        }}
+          } as IFrontSimulation
+        }
         result={result}
         setResult={setResult}
       />
@@ -213,29 +215,31 @@ describe('components/project/simulation/run/results', () => {
     ])
     const { unmount } = render(
       <Results
-        simulation={{
-          ...simulation,
-          scheme: {
-            category: 'category',
-            name: 'name',
-            description: 'description',
-            algorithm: 'algorithm',
-            code: 'code',
-            version: 'version',
-            configuration: {
-              run: {
-                index: 1,
-                title: 'Run',
-                resultsFilter: {
-                  name: 'name',
-                  pattern: 'file_\\d+.vtu',
-                  prefixPattern: 'file_',
-                  suffixPattern: '.vtu'
+        simulation={
+          {
+            ...simulation,
+            scheme: {
+              category: 'category',
+              name: 'name',
+              description: 'description',
+              algorithm: 'algorithm',
+              code: 'code',
+              version: 'version',
+              configuration: {
+                run: {
+                  index: 1,
+                  title: 'Run',
+                  resultsFilter: {
+                    name: 'name',
+                    pattern: 'file_\\d+.vtu',
+                    prefixPattern: 'file_',
+                    suffixPattern: '.vtu'
+                  }
                 }
               }
             }
-          }
-        }}
+          } as IFrontSimulation
+        }
         result={{ fileName: 'file_1.vtu', name: 'file' }}
         setResult={setResult}
       />
@@ -282,30 +286,32 @@ describe('components/project/simulation/run/results', () => {
     mockGetMultiplicator.mockImplementation(() => 1)
     const { unmount } = render(
       <Results
-        simulation={{
-          ...simulation,
-          scheme: {
-            category: 'category',
-            name: 'name',
-            description: 'description',
-            algorithm: 'algorithm',
-            code: 'code',
-            version: 'version',
-            configuration: {
-              run: {
-                index: 1,
-                title: 'Run',
-                resultsFilter: {
-                  name: 'name',
-                  pattern: 'file_\\d+.vtu',
-                  prefixPattern: 'file_',
-                  suffixPattern: '.vtu',
-                  multiplicator: ['parameters', 'time', 'children', '1']
+        simulation={
+          {
+            ...simulation,
+            scheme: {
+              category: 'category',
+              name: 'name',
+              description: 'description',
+              algorithm: 'algorithm',
+              code: 'code',
+              version: 'version',
+              configuration: {
+                run: {
+                  index: 1,
+                  title: 'Run',
+                  resultsFilter: {
+                    name: 'name',
+                    pattern: 'file_\\d+.vtu',
+                    prefixPattern: 'file_',
+                    suffixPattern: '.vtu',
+                    multiplicator: ['parameters', 'time', 'children', '1']
+                  }
                 }
               }
             }
-          }
-        }}
+          } as IFrontSimulation
+        }
         setResult={setResult}
       />
     )

@@ -19,6 +19,7 @@ import {
   INewGeometryWithData,
   IOrganizationWithData,
   IProjectWithData,
+  ISimulationGet,
   IUserWithData,
   IWorkspaceWithData
 } from '@/lib/index.d'
@@ -135,7 +136,7 @@ export interface IFrontResult extends ISimulationTaskFile {}
  * Simulation
  */
 export interface IFrontSimulation
-  extends ISimulation<('name' | 'scheme' | 'tasks')[]> {}
+  extends ISimulationGet<('name' | 'scheme' | 'tasks')[]> {}
 
 export interface IFrontMutateSimulation extends Partial<IFrontSimulation> {}
 
@@ -147,7 +148,7 @@ export interface IFrontSimulationTask extends ISimulationTask {}
 export interface IFrontNewSimulation extends INewSimulation {}
 
 export interface IFrontSimulationsItem
-  extends ISimulation<('name' | 'scheme' | 'project')[]> {}
+  extends ISimulationGet<('name' | 'scheme' | 'project')[]> {}
 
 export interface IFrontMutateSimulationsItem
   extends Partial<IFrontSimulationsItem> {

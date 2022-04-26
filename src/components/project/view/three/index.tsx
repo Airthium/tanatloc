@@ -72,7 +72,12 @@ import {
 import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import { ISelectAction, SelectContext } from '@/context/select'
-import { highlight, select, unselect } from '@/context/select/actions'
+import {
+  highlight,
+  select,
+  unhighlight,
+  unselect
+} from '@/context/select/actions'
 
 import { IFrontProject } from '@/api/index.d'
 import AvatarAPI from '@/api/avatar'
@@ -258,17 +263,17 @@ export const loadPart = async (
   const mouseMoveEvent = (
     child: IPart,
     uuid?: string,
-    number?: number | string
+    number?: number
   ): void => {
-    console.log(uuid)
-    child.highlight(uuid)
-    setTimeout(() => dispatch(highlight({ uuid, label: number })), 1)
+    if (uuid) {
+      child.highlight(uuid)
+      setTimeout(() => dispatch(highlight({ uuid, label: number! })), 1)
+    } else {
+      child.unhighlight()
+      setTimeout(() => dispatch(unhighlight()), 1)
+    }
   }
-  const mouseDownEvent = (
-    child: IPart,
-    uuid: string,
-    number: number | string
-  ) => {
+  const mouseDownEvent = (child: IPart, uuid: string, number: number) => {
     const selected = child.getSelected()
     if (selected.find((s) => s.uuid === uuid)) {
       child.unselect(uuid)

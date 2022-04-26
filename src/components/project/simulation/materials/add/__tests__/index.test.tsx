@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Add, { errors } from '@/components/project/simulation/materials/add'
 
 import { ISimulation } from '@/database/simulation/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -29,7 +29,7 @@ describe('components/project/simulation/materials/add', () => {
       { uuid: 'uuid1', label: 1 },
       { uuid: 'uuid3', label: 3 }
     ]
-  } as IModelMaterialValue
+  } as IModelMaterialsValue
   const simulation = {
     id: 'id',
     scheme: {
@@ -121,12 +121,14 @@ describe('components/project/simulation/materials/add', () => {
     ))
     const { unmount } = render(
       <Add
-        material={{
-          selected: [
-            { uuid: 'uuid1', label: 1 },
-            { uuid: 'uuid3', label: 3 }
-          ]
-        }}
+        material={
+          {
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 3 }
+            ]
+          } as IModelMaterialsValue
+        }
         simulation={simulation}
         swr={swr}
         onError={onError}
@@ -158,7 +160,7 @@ describe('components/project/simulation/materials/add', () => {
         material={
           {
             material: {}
-          } as IModelMaterialValue
+          } as IModelMaterialsValue
         }
         simulation={simulation}
         swr={swr}

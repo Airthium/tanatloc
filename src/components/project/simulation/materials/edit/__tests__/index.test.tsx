@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Edit, { errors } from '@/components/project/simulation/materials/edit'
 
 import { ISimulation } from '@/database/simulation/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -30,7 +30,7 @@ describe('components/project/simulation/materials/edit', () => {
       { uuid: 'uuid1', label: 1 },
       { uuid: 'uuid3', label: 3 }
     ]
-  } as IModelMaterialValue
+  } as IModelMaterialsValue
   const simulation = {
     id: 'id',
     scheme: {
@@ -84,13 +84,15 @@ describe('components/project/simulation/materials/edit', () => {
     ))
     const { unmount } = render(
       <Edit
-        material={{
-          uuid: 'uuid',
-          selected: [
-            { uuid: 'uuid1', label: 1 },
-            { uuid: 'uuid3', label: 3 }
-          ]
-        }}
+        material={
+          {
+            uuid: 'uuid',
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 3 }
+            ]
+          } as IModelMaterialsValue
+        }
         simulation={simulation}
         swr={swr}
         onError={onError}
@@ -123,9 +125,13 @@ describe('components/project/simulation/materials/edit', () => {
         material={
           {
             uuid: 'uuid',
-            material: {},
+            material: {
+              uuid: 'uuid',
+              label: 'label',
+              children: []
+            },
             selected: []
-          } as IModelMaterialValue
+          } as IModelMaterialsValue
         }
         simulation={simulation}
         swr={swr}

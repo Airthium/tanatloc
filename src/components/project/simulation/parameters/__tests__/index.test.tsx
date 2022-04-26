@@ -1,12 +1,15 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { ISimulation } from '@/database/simulation/index'
+import { IFrontSimulationsItem } from '@/api/index.d'
 
 import Parameters, { errors } from '@/components/project/simulation/parameters'
 
 const mockFormula = jest.fn()
-jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
+jest.mock(
+  '@/components/assets/formula',
+  () => (props: any) => mockFormula(props)
+)
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -20,7 +23,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/parameters', () => {
-  const simulation: ISimulation = {
+  const simulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -30,6 +33,11 @@ describe('components/project/simulation/parameters', () => {
       version: 'version',
       description: 'description',
       configuration: {
+        geometry: {
+          index: 0,
+          title: 'Geometry',
+          meshable: true
+        },
         parameters: {
           index: 0,
           title: 'title',
@@ -86,10 +94,18 @@ describe('components/project/simulation/parameters', () => {
               }
             ]
           }
+        },
+        boundaryConditions: {
+          index: 0,
+          title: 'Boundary Conditions'
+        },
+        run: {
+          index: 0,
+          title: 'Run'
         }
       }
     }
-  }
+  } as Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
@@ -151,7 +167,7 @@ describe('components/project/simulation/parameters', () => {
   })
 
   test('onChange', async () => {
-    let value = 0
+    let value: number | undefined = 0
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={() => props.onValueChange(value)} />
     ))

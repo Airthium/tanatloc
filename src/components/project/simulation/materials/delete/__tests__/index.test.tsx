@@ -114,9 +114,8 @@ describe('components/project/simulation/materials/delete', () => {
     )
 
     // Normal
-    mockUpdate.mockImplementation(() => {
-      // Empty
-    })
+    mockUpdate.mockImplementation(() => undefined)
+    //@ts-ignore
     simulation.scheme.configuration.materials.values = [
       {
         uuid: 'uuid',

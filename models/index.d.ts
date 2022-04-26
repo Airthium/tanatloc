@@ -85,7 +85,7 @@ export interface IModelMaterialsValue {
       value: number | string
     }[]
   }
-  selected: { uuid: string; label: number | string }[]
+  selected: { uuid: string; label: number }[]
 }
 
 /**

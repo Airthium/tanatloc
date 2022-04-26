@@ -56,9 +56,9 @@ describe('context', () => {
     // Highlight
     res = selectReducer(initialState, {
       type: actionTypes.HIGHLIGHT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 1 }
     })
-    expect(res.highlighted).toEqual({ uuid: 'uuid', label: 'label' })
+    expect(res.highlighted).toEqual({ uuid: 'uuid', label: 1 })
 
     // Unhighlight
     res = selectReducer(initialState, { type: actionTypes.UNHIGHLIGHT })
@@ -67,26 +67,26 @@ describe('context', () => {
     // Select
     res = selectReducer(initialState, {
       type: actionTypes.SELECT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 2 }
     })
-    expect(res.selected).toEqual([{ uuid: 'uuid', label: 'label' }])
+    expect(res.selected).toEqual([{ uuid: 'uuid', label: 2 }])
 
     res = selectReducer(res, {
       type: actionTypes.SELECT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 3 }
     })
-    expect(res.selected).toEqual([{ uuid: 'uuid', label: 'label' }])
+    expect(res.selected).toEqual([{ uuid: 'uuid', label: 3 }])
 
     // Unselect
     res = selectReducer(res, {
       type: actionTypes.UNSELECT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 4 }
     })
     expect(res.selected).toEqual([])
 
     res = selectReducer(res, {
       type: actionTypes.UNSELECT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 4 }
     })
     expect(res.selected).toEqual([])
 

@@ -1,7 +1,6 @@
 /** @module Components.Project.Simulation.MAterials.Database */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
 import { DatabaseOutlined } from '@ant-design/icons'
 
@@ -359,23 +358,13 @@ const materialDatabase: IMaterialDatabase = {
  */
 const DataBase = ({ onSelect }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState()
-
-  const [secondLevel, setSecondLevel]: [
-    { key: string; children: IMaterialDatabase['key']['children'] },
-    Dispatch<
-      SetStateAction<{
-        key: string
-        children: IMaterialDatabase['key']['children']
-      }>
-    >
-  ] = useState()
-
-  const [current, setCurrent]: [
-    IMaterialDatabase['key']['children'][0],
-    Dispatch<SetStateAction<IMaterialDatabase['key']['children'][0]>>
-  ] = useState()
+  const [visible, setVisible] = useState<boolean>()
+  const [secondLevel, setSecondLevel] = useState<{
+    key: string
+    children: IMaterialDatabase['key']['children']
+  }>()
+  const [current, setCurrent] =
+    useState<IMaterialDatabase['key']['children'][0]>()
 
   // Data
   const keys = Object.keys(materialDatabase)
@@ -391,7 +380,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       key,
       children: subDatabase.children
     })
-    setCurrent(null)
+    setCurrent(undefined)
   }, [])
 
   /**
@@ -400,7 +389,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    */
   const onSecondLevel = useCallback(
     ({ key }: { key: string }) => {
-      const subDatabase = materialDatabase[secondLevel.key]
+      const subDatabase = materialDatabase[secondLevel!.key]
       const child = subDatabase.children.find((c) => c.key === key)
 
       setCurrent(child)
@@ -432,11 +421,13 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       >
         Pick a material
       </Button>
+      {/* 
+      //@ts-ignore */}
       <Modal
         visible={visible}
         title="Material database"
         onCancel={() => setVisible(false)}
-        onOk={() => onMaterialSelect(current)}
+        onOk={() => onMaterialSelect(current!)}
         okText="Choose"
         okButtonProps={{ disabled: !current }}
         width="50%"
@@ -473,10 +464,6 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       </Modal>
     </>
   )
-}
-
-DataBase.propTypes = {
-  onSelect: PropTypes.func.isRequired
 }
 
 export default DataBase

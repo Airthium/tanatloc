@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
-import { IModelMaterials, IModelMaterialsValue } from '@/models/index.d'
+import { IModelMaterialsChild, IModelMaterialsValue } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -82,7 +82,7 @@ const Material = ({
         }
       })
       .filter((s) => s)
-    setAlreadySelected(currentAlreadySelected)
+    setAlreadySelected((currentAlreadySelected || []) as ISelection[])
   }, [simulation, material, materials])
 
   /**
@@ -92,7 +92,7 @@ const Material = ({
   const onMaterialSelect = useCallback(
     (currentMaterial: IMaterialDatabase['key']['children'][0]) => {
       setCurrent((prevCurrent) => ({
-        ...prevCurrent,
+        ...(prevCurrent as IModelMaterialsValue),
         material: currentMaterial
       }))
     },
@@ -105,7 +105,7 @@ const Material = ({
    */
   const onSelected = useCallback((selected: ISelect[]) => {
     setCurrent((prevCurrent) => ({
-      ...prevCurrent,
+      ...(prevCurrent as IModelMaterialsValue),
       selected: selected
     }))
   }, [])
@@ -117,9 +117,9 @@ const Material = ({
    * @param val Value
    */
   const onMaterialChange = useCallback(
-    (child: IModelMaterials, index: number, val: string) => {
+    (child: IModelMaterialsChild, index: number, val: string) => {
       setCurrent((prevCurrent) => ({
-        ...prevCurrent,
+        ...(prevCurrent as IModelMaterialsValue),
         material: {
           label: 'Custom',
           children: [
@@ -186,8 +186,8 @@ const Material = ({
           ) : (
             <Add
               material={{
-                material: current?.material,
-                selected: current?.selected
+                material: current?.material!,
+                selected: current?.selected!
               }}
               simulation={{
                 id: simulation.id,
@@ -208,7 +208,7 @@ const Material = ({
             <Typography.Text>
               Material: {current?.material?.label ?? 'default'}
             </Typography.Text>
-            {materials.children?.map((child, index) => {
+            {materials?.children?.map((child, index) => {
               const m = current?.material?.children?.find(
                 (c) => c.symbol === child.name
               )

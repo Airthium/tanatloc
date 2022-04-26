@@ -6,8 +6,8 @@ import { createContext, Dispatch, ReactNode, useReducer } from 'react'
  * Select interface
  */
 export interface ISelect {
-  uuid?: string
-  label?: number | string
+  uuid: string
+  label: number
 }
 
 /**

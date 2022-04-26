@@ -31,7 +31,7 @@ export interface IPartChildChild extends Object3D {
   material: MeshStandardMaterial & { originalColor: Color }
   userData: {
     uuid: string
-    number: string | number
+    number: number
     lut?: Lut
   }
   visible: boolean
@@ -70,12 +70,8 @@ export interface IPart extends Object3D {
  * @param mouseDownEvent Mouse down event
  */
 const PartLoader = (
-  mouseMoveEvent: (
-    part: IPart,
-    uuid?: string,
-    number?: number | string
-  ) => void,
-  mouseDownEvent: (part: IPart, uuid: string, number: number | string) => void
+  mouseMoveEvent: (part: IPart, uuid?: string, number?: number) => void,
+  mouseDownEvent: (part: IPart, uuid: string, number: number) => void
 ): IPartLoader => {
   // Highlight color
   const highlightColor = new Color('#FAD114')
@@ -292,8 +288,8 @@ const PartLoader = (
   let selectionCamera: PerspectiveCamera | null = null
   let selectionOutlinePass: OutlinePass | null = null
   let selectionType: number | null = null
-  let highlighted: { uuid: string; number: number | string } | null = null
-  let selected: { uuid: string; number: number | string }[] = []
+  let highlighted: { uuid: string; number: number } | null = null
+  let selected: { uuid: string; number: number }[] = []
 
   /**
    *

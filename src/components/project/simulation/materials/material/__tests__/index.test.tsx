@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import Material from '@/components/project/simulation/materials/material'
 
 import { ISimulation } from '@/database/simulation/index'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialsValue } from '@/models/index.d'
 
 const mockFormula = jest.fn()
 jest.mock(
@@ -120,7 +120,7 @@ describe('components/project/simulation/materials/material', () => {
             uuid: 'uuid',
             material: {},
             selected: [{ uuid: 'uuid', label: 1 }]
-          } as IModelMaterialValue
+          } as IModelMaterialsValue
         }
         swr={swr}
         onClose={onClose}
@@ -222,7 +222,7 @@ describe('components/project/simulation/materials/material', () => {
             uuid: 'uuid',
             material: {},
             selected: [{ uuid: 'uuid', label: 1 }]
-          } as IModelMaterialValue
+          } as IModelMaterialsValue
         }
         swr={swr}
         onClose={onClose}
@@ -279,7 +279,7 @@ describe('components/project/simulation/materials/material', () => {
             uuid: 'uuid',
             material: {},
             selected: [{ uuid: 'uuid', label: 1 }]
-          } as IModelMaterialValue
+          } as IModelMaterialsValue
         }
         swr={swr}
         onClose={onClose}

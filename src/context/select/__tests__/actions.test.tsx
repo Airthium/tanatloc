@@ -38,10 +38,10 @@ describe('context/select', () => {
   })
 
   test('highlight', () => {
-    const res = highlight({ uuid: 'uuid', label: 'label' })
+    const res = highlight({ uuid: 'uuid', label: 1 })
     expect(res).toEqual({
       type: actionTypes.HIGHLIGHT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 1 }
     })
   })
 
@@ -51,18 +51,18 @@ describe('context/select', () => {
   })
 
   test('select', () => {
-    const res = select({ uuid: 'uuid', label: 'label' })
+    const res = select({ uuid: 'uuid', label: 1 })
     expect(res).toEqual({
       type: actionTypes.SELECT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 1 }
     })
   })
 
   test('unselect', () => {
-    const res = unselect({ uuid: 'uuid', label: 'label' })
+    const res = unselect({ uuid: 'uuid', label: 2 })
     expect(res).toEqual({
       type: actionTypes.UNSELECT,
-      value: { uuid: 'uuid', label: 'label' }
+      value: { uuid: 'uuid', label: 2 }
     })
   })
 })

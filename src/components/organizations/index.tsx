@@ -5,8 +5,13 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
-import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
-import { INewOrganization } from '@/database/organization/index'
+import {
+  IFrontUser,
+  IFrontOrganizations,
+  IFrontOrganizationsItem,
+  IFrontNewOrganization,
+  IFrontMutateOrganizationsItem
+} from '@/api/index.d'
 
 import Organization from '@/components/assets/organization'
 
@@ -17,12 +22,12 @@ import List from './list'
  * Props
  */
 export interface IProps {
-  user: IUserWithData
-  organizations: IOrganizationWithData[]
+  user: Pick<IFrontUser, 'id'>
+  organizations: IFrontOrganizations
   swr: {
-    addOneOrganization: (organization: INewOrganization) => void
-    delOneOrganization: (organization: IOrganizationWithData) => void
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    addOneOrganization: (organization: IFrontNewOrganization) => void
+    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
     loadingOrganizations: boolean
   }
 }
@@ -35,7 +40,7 @@ export interface IProps {
 const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
   // State
   const [organization, setOrganization] =
-    useState<IOrganizationWithData | null>()
+    useState<IFrontOrganizationsItem | null>()
 
   // Data
   const router = useRouter()

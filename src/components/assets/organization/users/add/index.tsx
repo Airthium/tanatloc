@@ -104,8 +104,12 @@ export const onFinish = async (
 
     // Local
     const newOrganization = { ...organization }
-    const newUser = { email: values.email }
-    newOrganization[dBkey] = [...newOrganization[dBkey], newUser]
+    newOrganization[dBkey] = [
+      ...newOrganization[dBkey],
+      {
+        email: values.email
+      } as IFrontOrganizationsItem['users'][0]
+    ]
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
     ErrorNotification(errors.add, err)

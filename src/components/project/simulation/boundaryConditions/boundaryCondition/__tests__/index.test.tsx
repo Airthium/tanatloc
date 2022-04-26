@@ -1,15 +1,21 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { IFrontSimulationsItem } from '@/api/index.d'
+
 import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 
-import { ISimulation } from '@/database/simulation/index'
-
 const mockFormula = jest.fn()
-jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
+jest.mock(
+  '@/components/assets/formula',
+  () => (props: any) => mockFormula(props)
+)
 
 const mockSelector = jest.fn()
-jest.mock('@/components/assets/selector', () => (props) => mockSelector(props))
+jest.mock(
+  '@/components/assets/selector',
+  () => (props: any) => mockSelector(props)
+)
 
 const mockCancelButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -29,7 +35,7 @@ jest.mock(
 )
 
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
-  const simulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -38,6 +44,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       code: 'code',
       version: 'version',
       description: 'description',
+      //@ts-ignore
       configuration: {
         boundaryConditions: {
           index: 1,
@@ -163,6 +170,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
             code: 'code',
             version: 'version',
             description: 'description',
+            //@ts-ignore
             configuration: {
               dimension: 2,
               boundaryConditions: {

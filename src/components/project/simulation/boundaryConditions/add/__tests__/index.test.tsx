@@ -5,7 +5,8 @@ import Add, {
   errors
 } from '@/components/project/simulation/boundaryConditions/add'
 
-import { ISimulation } from '@/database/simulation/index'
+import { IFrontSimulationsItem } from '@/api/index.d'
+
 import { IModelBoundaryConditionValue } from '@/models/index.d'
 
 const mockErrorNotification = jest.fn()
@@ -25,7 +26,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/boundaryConditions/add', () => {
-  const simulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -34,6 +35,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       code: 'code',
       version: 'version',
       description: 'description',
+      //@ts-ignore
       configuration: {
         boundaryConditions: {
           index: 1,
@@ -45,7 +47,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
         }
       }
     }
-  } as ISimulation
+  }
   const boundaryCondition = {
     uuid: 'uuid',
     name: 'name',
@@ -263,6 +265,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
             code: 'code',
             version: 'version',
             description: 'description',
+            //@ts-ignore
             configuration: {
               boundaryConditions: {
                 index: 1,

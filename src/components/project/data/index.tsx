@@ -1,7 +1,6 @@
 /** @module Components.Project.Data */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Button,
   Checkbox,
@@ -26,20 +25,20 @@ import {
 } from 'recharts'
 import { camelCase } from 'lodash'
 
-import { ISimulation } from '@/database/simulation/index'
-
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
+import Loading from '@/components/loading'
 
 import Utils from '@/lib/utils'
 
+import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation?: Pick<IFrontSimulationsItem, 'id' | 'name'>
 }
 
 /**
@@ -76,9 +75,9 @@ export const onCheck = (
  * @param infos Infos
  */
 export const exportCSV = (
-  simulation: ISimulation,
-  table?: { columns: TableColumnsType; data: Array<any> },
-  infos?: {
+  simulation: Pick<IFrontSimulationsItem, 'name'>,
+  table: { columns: TableColumnsType<object>; data: Array<any> },
+  infos: {
     names: string[]
     camelNames: string[]
   }
@@ -118,35 +117,25 @@ export const exportCSV = (
  */
 const Data = ({ simulation }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [infos, setInfos]: [
-    { names: string[]; camelNames: string[] },
-    Dispatch<SetStateAction<{ names: string[]; camelNames: string[] }>>
-  ] = useState()
-  const [table, setTable]: [
-    { columns: TableColumnsType; data: Array<any> },
-    Dispatch<SetStateAction<{ columns: TableColumnsType; data: Array<any> }>>
-  ] = useState()
-  const [columnSelection, setColumnSelection]: [
-    { checked: boolean }[],
-    Dispatch<SetStateAction<{ checked: boolean }[]>>
-  ] = useState([])
-  const [plot, setPlot]: [
-    { data: { x: number }[]; min: number; max: number; lines: JSX.Element[] },
-    Dispatch<
-      SetStateAction<{
-        data: { x: number }[]
-        min: number
-        max: number
-        lines: JSX.Element[]
-      }>
-    >
-  ] = useState()
-  const [downloading, setDownloading]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [infos, setInfos] = useState<{
+    names: string[]
+    camelNames: string[]
+  }>()
+  const [table, setTable] = useState<{
+    columns: TableColumnsType<object>
+    data: { key: number; x: number; [key: string]: number }[]
+  }>()
+  const [columnSelection, setColumnSelection] = useState<
+    { checked: boolean }[]
+  >([])
+  const [plot, setPlot] = useState<{
+    data: { x: number }[]
+    min: number
+    max: number
+    lines: JSX.Element[]
+  }>()
+  const [downloading, setDownloading] = useState<boolean>(false)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -157,9 +146,9 @@ const Data = ({ simulation }: IProps): JSX.Element => {
 
     if (tasks) {
       // Get tasks data
-      let tasksData = []
+      const tasksData: IFrontSimulationTask['datas'] = []
       tasks.forEach((task) => {
-        if (task?.datas) tasksData = [...tasksData, ...task.datas]
+        if (task?.datas) tasksData.push(...task.datas)
       })
 
       // Aggregate data
@@ -174,7 +163,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
 
       const camelNames = names.map((n) => camelCase(n))
 
-      const tableColumns: TableColumnsType = names.map((n, index) => ({
+      const tableColumns: TableColumnsType<object> = names.map((n, index) => ({
         align: 'center',
         title: (
           <Space>
@@ -198,7 +187,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
         key: 'x'
       })
 
-      const tableData = []
+      const tableData: { key: number; x: number; [key: string]: number }[] = []
       tasksData.forEach((d, index) => {
         const existingIndex = tableData.findIndex((t) => t.x === d.x)
         if (existingIndex === -1)
@@ -223,10 +212,10 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   // Check effect
   useEffect(() => {
     const tableData = table?.data
-    if (!tableData?.length) return
+    if (!infos || !tableData?.length) return
 
     // Set lines
-    const keys = []
+    const keys: string[] = []
     const lines = columnSelection
       .map((selection, index) => {
         if (!selection?.checked) return
@@ -247,12 +236,12 @@ const Data = ({ simulation }: IProps): JSX.Element => {
           />
         )
       })
-      .filter((l) => l)
+      .filter((l) => l) as JSX.Element[]
 
     // Set data
     const data = tableData
       .map((d) => {
-        const part = { x: d.x }
+        const part: { x: number; [key: string]: number } = { x: d.x }
         keys.forEach((key) => {
           d[key] && (part[key] = d[key])
         })
@@ -260,12 +249,8 @@ const Data = ({ simulation }: IProps): JSX.Element => {
       })
       .filter((d) => d)
 
-    const min = Math.min(
-      ...keys.flatMap((key) => data.map((d) => d[key] || null))
-    )
-    const max = Math.max(
-      ...keys.flatMap((key) => data.map((d) => d[key] || null))
-    )
+    const min = Math.min(...keys.flatMap((key) => data.map((d) => d[key])))
+    const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
 
     setPlot({ data, min, max, lines })
   }, [table?.data, columnSelection, infos])
@@ -273,6 +258,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   /**
    * Render
    */
+  if (!simulation) return <Loading.Simple />
   return (
     <Layout
       style={{
@@ -319,11 +305,11 @@ const Data = ({ simulation }: IProps): JSX.Element => {
             <div style={{ height: '100%', width: '50%' }}>
               <DownloadButton
                 loading={downloading}
-                disabled={!table?.data}
+                disabled={!infos || !table}
                 onDownload={() => {
                   setDownloading(true)
                   try {
-                    exportCSV(simulation, table, infos)
+                    exportCSV(simulation, table!, infos!)
                   } catch (err) {
                     ErrorNotification(errors.download, err)
                   } finally {
@@ -349,7 +335,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
-                <YAxis domain={[plot?.min, plot?.max]} />
+                <YAxis domain={[plot?.min || -1, plot?.max || 1]} />
                 <ReTooltip />
                 <Legend />
                 {plot?.lines}
@@ -360,13 +346,6 @@ const Data = ({ simulation }: IProps): JSX.Element => {
       </Layout.Content>
     </Layout>
   )
-}
-
-Data.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string,
-    name: PropTypes.string
-  }).isRequired
 }
 
 export default Data

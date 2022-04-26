@@ -1,10 +1,8 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Add */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { ISimulation } from '@/database/simulation/index'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
@@ -13,16 +11,20 @@ import {
 import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   boundaryCondition: Omit<IModelBoundaryConditionValue, 'uuid'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onError: (desc?: string) => void
   onClose: () => void
@@ -41,14 +43,15 @@ export const errors = {
 /**
  * on Add
  * @param simulation Simulation
- * @param geometry Geometry
  * @param boundaryCondition Boundary condition
  * @param swr SWR
  */
 const onAdd = async (
-  simulation: IProps['simulation'],
-  boundaryCondition: IProps['boundaryCondition'],
-  swr: IProps['swr']
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  boundaryCondition: Omit<IModelBoundaryConditionValue, 'uuid'>,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New boundary condition
@@ -114,8 +117,7 @@ const Add = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -160,32 +162,6 @@ const Add = ({
       Add
     </AddButton>
   )
-}
-
-Add.propTypes = {
-  simulation: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  boundaryCondition: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.exact({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      children: PropTypes.array
-    }),
-    selected: PropTypes.array,
-    values: PropTypes.array
-  }).isRequired,
-  swr: PropTypes.shape({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onError: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
 }
 
 export default Add

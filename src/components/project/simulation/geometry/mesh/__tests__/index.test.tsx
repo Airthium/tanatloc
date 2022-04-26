@@ -1,9 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Mesh, { errors } from '..'
+import { IFrontSimulationsItem } from '@/api/index.d'
 
-import { ISimulation } from '@/database/simulation/index'
+import Mesh, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -23,14 +23,15 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/geometry/mesh', () => {
-  const simulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       configuration: {
+        //@ts-ignore
         geometry: {}
       }
     }
-  } as ISimulation
+  }
   const swr = {
     mutateOneSimulation: jest.fn()
   }
@@ -55,21 +56,20 @@ describe('components/project/simulation/geometry/mesh', () => {
   test('with meshParameters', () => {
     const { unmount } = render(
       <Mesh
-        simulation={
-          {
-            id: 'id',
-            scheme: {
-              configuration: {
-                geometry: {
-                  meshParameters: {
-                    type: 'auto',
-                    value: 'normal'
-                  }
+        simulation={{
+          id: 'id',
+          scheme: {
+            configuration: {
+              //@ts-ignore
+              geometry: {
+                meshParameters: {
+                  type: 'auto',
+                  value: 'normal'
                 }
               }
             }
-          } as ISimulation
-        }
+          }
+        }}
         swr={swr}
       />
     )
@@ -202,21 +202,20 @@ describe('components/project/simulation/geometry/mesh', () => {
   test('set auto', async () => {
     const { unmount } = render(
       <Mesh
-        simulation={
-          {
-            id: 'id',
-            scheme: {
-              configuration: {
-                geometry: {
-                  meshParameters: {
-                    type: 'manual',
-                    value: '1'
-                  }
+        simulation={{
+          id: 'id',
+          scheme: {
+            configuration: {
+              //@ts-ignore
+              geometry: {
+                meshParameters: {
+                  type: 'manual',
+                  value: '1'
                 }
               }
             }
-          } as ISimulation
-        }
+          }
+        }}
         swr={swr}
       />
     )

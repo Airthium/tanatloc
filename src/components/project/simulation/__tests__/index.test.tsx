@@ -1,6 +1,8 @@
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontSimulationsItem } from '@/api/index.d'
+
 import Simulation, { errors } from '@/components/project/simulation'
 
 const mockAddedDiff = jest.fn()
@@ -65,7 +67,7 @@ jest.mock('@/models', () => [
 ])
 
 describe('components/project/simulation.Selector', () => {
-  const user = {}
+  const user = { authorizedplugins: [] }
   const visible = true
   const onOk = jest.fn()
   const onCancel = jest.fn()
@@ -245,8 +247,8 @@ describe('components/project/simulation.Selector', () => {
 })
 
 describe('components/project/simulation.Updater', () => {
-  const user = {}
-  const simulation = {
+  const user = { authorizedplugins: [] }
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -255,6 +257,7 @@ describe('components/project/simulation.Updater', () => {
       code: 'code',
       version: 'version',
       algorithm: 'algorithm',
+      //@ts-ignore
       configuration: undefined
     }
   }

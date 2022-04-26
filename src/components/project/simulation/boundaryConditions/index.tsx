@@ -1,39 +1,36 @@
 /** @module Components.Project.Simulation.BoundaryConditions */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback,
-  useContext
-} from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { Card, Layout } from 'antd'
 
-import { ISimulation } from '@/database/simulation/index'
-import { IGeometry } from '@/database/geometry/index'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
-
-import List from './list'
-import BoundaryCondition from './boundaryCondition'
+import Loading from '@/components/loading'
 
 import { SelectContext } from '@/context/select'
 import { enable, disable, setType, setPart } from '@/context/select/actions'
+
+import {
+  IFrontGeometriesItem,
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem
+} from '@/api/index.d'
+
+import List from './list'
+import BoundaryCondition from './boundaryCondition'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-  geometry: IGeometry
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary' | 'dimension'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   setVisible: (visible: boolean) => void
 }
@@ -50,14 +47,10 @@ const BoundaryConditions = ({
   setVisible
 }: IProps): JSX.Element => {
   // State
-  const [boundaryCondition, setBoundaryCondition]: [
-    IModelBoundaryConditionValue,
-    Dispatch<SetStateAction<IModelBoundaryConditionValue>>
-  ] = useState()
-  const [boundaryConditionVisible, setBoundaryConditionVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [boundaryCondition, setBoundaryCondition] =
+    useState<IModelBoundaryConditionValue>()
+  const [boundaryConditionVisible, setBoundaryConditionVisible] =
+    useState<boolean>(false)
 
   // Context
   const { dispatch } = useContext(SelectContext)
@@ -67,15 +60,17 @@ const BoundaryConditions = ({
 
   // Part
   useEffect(() => {
-    dispatch(setType(geometry.dimension === 2 ? 'edges' : 'faces'))
-    dispatch(setPart(geometry.summary.uuid))
+    if (geometry) {
+      dispatch(setType(geometry.dimension === 2 ? 'edges' : 'faces'))
+      dispatch(setPart(geometry.summary.uuid))
+    }
   }, [geometry, dispatch])
 
   /**
    * On add
    */
   const onAdd = useCallback((): void => {
-    setBoundaryCondition(null)
+    setBoundaryCondition(undefined)
     setBoundaryConditionVisible(true)
     setVisible(false)
     dispatch(enable())
@@ -91,7 +86,7 @@ const BoundaryConditions = ({
       const boundaryConditionType = boundaryConditions[
         type
       ] as IModelTypedBoundaryCondition
-      const boundaryConditionToEdit = boundaryConditionType.values[index]
+      const boundaryConditionToEdit = boundaryConditionType.values![index]
       setBoundaryCondition(boundaryConditionToEdit)
 
       setBoundaryConditionVisible(true)
@@ -107,13 +102,14 @@ const BoundaryConditions = ({
   const onClose = useCallback((): void => {
     dispatch(disable())
     setBoundaryConditionVisible(false)
-    setBoundaryCondition(null)
+    setBoundaryCondition(undefined)
     setVisible(true)
   }, [dispatch, setVisible])
 
   /**
    * Render
    */
+  if (!geometry) return <Loading.Simple />
   return (
     <Layout>
       <Layout.Content>
@@ -135,10 +131,12 @@ const BoundaryConditions = ({
               id: simulation.id,
               scheme: simulation.scheme
             }}
-            geometry={{
-              faces: geometry.summary.faces,
-              edges: geometry.summary.edges
-            }}
+            geometry={
+              geometry && {
+                faces: geometry.summary.faces,
+                edges: geometry.summary.edges
+              }
+            }
             boundaryCondition={
               boundaryCondition && {
                 uuid: boundaryCondition.uuid,
@@ -157,30 +155,6 @@ const BoundaryConditions = ({
       </Layout.Content>
     </Layout>
   )
-}
-
-BoundaryConditions.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  geometry: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    dimension: PropTypes.number.isRequired,
-    summary: PropTypes.exact({
-      uuid: PropTypes.string.isRequired,
-      faces: PropTypes.array.isRequired,
-      edges: PropTypes.array
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  setVisible: PropTypes.func.isRequired
 }
 
 export default BoundaryConditions

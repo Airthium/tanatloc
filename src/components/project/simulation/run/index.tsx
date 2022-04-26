@@ -35,7 +35,7 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  result: Pick<IFrontResult, 'name' | 'fileName'>
+  result?: Pick<IFrontResult, 'name' | 'fileName'>
   setResult: (result?: IFrontResult) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void

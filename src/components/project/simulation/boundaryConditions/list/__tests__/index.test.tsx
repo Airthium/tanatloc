@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { IFrontSimulationsItem } from '@/api/index.d'
+
 import List from '@/components/project/simulation/boundaryConditions/list'
 import { SelectContext } from '@/context/select'
 
@@ -21,7 +23,7 @@ jest.mock('@/components/assets/button', () => ({
 jest.mock('../../delete', () => () => <div />)
 
 describe('components/project/simulation/boundaryConditions/list', () => {
-  const simulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -30,6 +32,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       code: 'code',
       version: 'version',
       description: 'description',
+      //@ts-ignore
       configuration: {
         boundaryConditions: {
           index: 1,

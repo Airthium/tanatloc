@@ -155,7 +155,7 @@ export interface IModelInitializationCoupling {
 }
 
 export interface IModelInitializationValue {
-  type: string
+  type: 'none' | 'direct' | 'coupling'
   simulation?: string
   number?: number
   result?: string
@@ -186,7 +186,7 @@ export interface IModelBoundaryConditionValue {
     label: string
     children?: IModelBoundaryCondition[]
   }
-  selected: { uuid: string; label: number | string }[]
+  selected: { uuid: string; label: number }[]
   values?: {
     checked?: boolean
     value?: TValue

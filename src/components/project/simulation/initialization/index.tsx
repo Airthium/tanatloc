@@ -3,11 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
-import {
-  IModelInitialization,
-  IModelInitializationCoupling,
-  IModelInitializationDirectChild
-} from '@/models/index.d'
+import { IModelInitializationDirectChild } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -49,7 +45,7 @@ export const errors = {
  */
 const onSelectorChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  key: string,
+  key: 'none' | 'coupling' | 'direct',
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -92,7 +88,9 @@ const onCouplingChange = async (
   simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
-  swr: IProps['swr']
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // Check results
@@ -139,7 +137,9 @@ const onCouplingResultChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
   option: { file: string },
-  swr: IProps['swr']
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   // Update simulation
   try {
@@ -180,7 +180,9 @@ const onChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
   value: string,
-  swr: IProps['swr']
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
@@ -320,7 +322,7 @@ const Initialization = ({
   const [couplingSimulation, setCouplingSimulation] =
     useState<Pick<IFrontSimulationsItem, 'id' | 'scheme'>>()
   const [couplingResults, setCouplingResults] =
-    useState<{ label: string; value: string }[]>()
+    useState<{ label: string; value: string; file: string }[]>()
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization!
@@ -361,17 +363,23 @@ const Initialization = ({
       value: 'none'
     },
     {
-      label: 'Direct',
-      value: 'direct'
-    },
-    {
       label: 'Coupling',
       value: 'coupling'
+    },
+    {
+      label: 'Direct',
+      value: 'direct'
     }
   ]
 
   // Build initialization
-  const initializations: { coupling?: JSX.Element; direct?: JSX.Element } = {}
+  const initializations: {
+    none: JSX.Element
+    coupling?: JSX.Element
+    direct?: JSX.Element
+  } = {
+    none: <div />
+  }
   const initializationValue = subScheme.value
 
   // Render coupling
@@ -412,10 +420,14 @@ const Initialization = ({
               options={couplingResults}
               placeholder={'Select a ' + filter.name}
               value={initializationValue?.result}
-              onChange={async (
-                value: string,
-                option: { label: string; value: string; file: string }
-              ) => onCouplingResultChange(simulation, value, option, swr)}
+              onChange={async (value, option) => {
+                onCouplingResultChange(
+                  simulation,
+                  value,
+                  option as { label: string; value: string; file: string },
+                  swr
+                )
+              }}
             />
           </>
         ) : (
@@ -495,7 +507,7 @@ const Initialization = ({
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}
-            onChange={async (key) => {
+            onChange={async (key: 'none' | 'coupling' | 'direct') => {
               try {
                 await onSelectorChange(simulation, key, swr)
                 setCurrentKey(key)

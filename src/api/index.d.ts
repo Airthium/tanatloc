@@ -185,7 +185,9 @@ export interface IFrontUser
       | 'authorizedplugins'
       | 'plugins'
     )[]
-  > {}
+  > {
+  pending?: boolean
+}
 
 export interface IFrontMutateUser extends Partial<IFrontUser> {}
 

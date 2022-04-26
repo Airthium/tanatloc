@@ -68,10 +68,8 @@ const onQuit = async (
 
     // Local
     const newOrganization = { ...organization }
-    const userIndex = (newOrganization.users as IFrontUsers).findIndex(
-      (u) => u.id === user.id
-    )
-    ;(newOrganization.users as IFrontUsers).splice(userIndex, 1)
+    const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
+    newOrganization.users.splice(userIndex, 1)
 
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
@@ -87,7 +85,7 @@ const onQuit = async (
  */
 const onAccept = async (
   organization: IFrontOrganizationsItem,
-  user: Partial<IFrontUser>,
+  user: Pick<IFrontUser, 'id'>,
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
   }
@@ -101,16 +99,18 @@ const onAccept = async (
     const ownerIndex = newOrganization.pendingowners?.findIndex(
       (o) => o.id === user.id
     )
+    const pendingowner = newOrganization.pendingowners[ownerIndex]
     const userIndex = newOrganization.pendingusers?.findIndex(
       (u) => u.id === user.id
     )
+    const pendinguser = newOrganization.pendingusers[userIndex]
     if (ownerIndex !== -1) {
-      ;(newOrganization.pendingowners as IFrontUsers).splice(ownerIndex, 1)
-      ;(newOrganization.owners as IFrontUsers).push(user)
+      newOrganization.pendingowners.splice(ownerIndex, 1)
+      newOrganization.owners.push({ ...pendingowner })
     } else {
-      newOrganization.pendingusers?.splice(userIndex as number, 1)
+      newOrganization.pendingusers?.splice(userIndex, 1)
       if (!newOrganization.users) newOrganization.users = []
-      newOrganization.users.push(user)
+      newOrganization.users.push({ ...pendinguser })
     }
 
     swr.mutateOneOrganization(newOrganization)

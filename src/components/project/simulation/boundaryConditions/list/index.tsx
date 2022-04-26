@@ -1,32 +1,29 @@
 /** @module Components.Simulation.BoundaryConditions.List */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useState
-} from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'
 
-import { ISimulation } from '@/database/simulation/index'
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
 
 import { EditButton } from '@/components/assets/button'
 
-import Delete from '../delete'
-
 import { SelectContext } from '@/context/select'
 import { enable, disable, select } from '@/context/select/actions'
+
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
+
+import Delete from '../delete'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onEdit: (type: string, index: number) => void
 }
@@ -38,8 +35,7 @@ export interface IProps {
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
-  const [enabled, setEnabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(true)
+  const [enabled, setEnabled] = useState<boolean>(true)
 
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
@@ -56,7 +52,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
       const typedBoundaryCondition = boundaryConditions[
         key
       ] as IModelTypedBoundaryCondition
-      const currentSelected = typedBoundaryCondition.values[index].selected
+      const currentSelected = typedBoundaryCondition.values![index].selected
       currentSelected?.forEach((s) => {
         dispatch(select(s))
       })
@@ -124,21 +120,6 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
         .filter((l) => l)}
     </>
   )
-}
-
-List.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onEdit: PropTypes.func.isRequired
 }
 
 export default List

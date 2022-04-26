@@ -446,15 +446,17 @@ const Project = (): JSX.Element => {
           onClose={onPanelClose}
         >
           <Simulation.BoundaryConditions
-            geometry={{
-              id: geometry.id,
-              dimension: geometry.dimension ?? 3,
-              summary: {
-                uuid: geometry.summary.uuid,
-                faces: geometry.summary.faces,
-                edges: geometry.summary.edges
+            geometry={
+              geometry && {
+                id: geometry.id,
+                dimension: geometry.dimension ?? 3,
+                summary: {
+                  uuid: geometry.summary.uuid,
+                  faces: geometry.summary.faces,
+                  edges: geometry.summary.edges
+                }
               }
-            }}
+            }
             simulation={{
               id: current.id,
               scheme: current.scheme

@@ -1,29 +1,32 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useContext, useState } from 'react'
+import { Dispatch, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
-import { ISimulation } from '@/database/simulation/index'
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { SelectContext } from '@/context/select'
+import { ISelectAction, SelectContext } from '@/context/select'
 import { unselect } from '@/context/select/actions'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   type: string
   index: number
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -43,11 +46,13 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  simulation: IProps['simulation'],
-  type: IProps['type'],
-  index: IProps['index'],
-  dispatch: Dispatch<any>,
-  swr: IProps['swr']
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  type: string,
+  index: number,
+  dispatch: Dispatch<ISelectAction>,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
@@ -59,7 +64,7 @@ export const onDelete = async (
     const typedBoundaryCondition = boundaryConditions[
       type
     ] as IModelTypedBoundaryCondition
-    const boundaryCondition = typedBoundaryCondition.values[index]
+    const boundaryCondition = typedBoundaryCondition.values![index]
 
     // (unselect)
     boundaryCondition.selected.forEach((s) => {
@@ -67,8 +72,8 @@ export const onDelete = async (
     })
 
     typedBoundaryCondition.values = [
-      ...typedBoundaryCondition.values.slice(0, index),
-      ...typedBoundaryCondition.values.slice(index + 1)
+      ...typedBoundaryCondition.values!.slice(0, index),
+      ...typedBoundaryCondition.values!.slice(index + 1)
     ]
 
     // Diff
@@ -111,8 +116,7 @@ export const onDelete = async (
  */
 const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const { dispatch } = useContext(SelectContext)
@@ -120,7 +124,7 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   const typedBoundaryCondition = boundaryConditions[
     type
   ] as IModelTypedBoundaryCondition
-  const boundaryCondition = typedBoundaryCondition.values[index]
+  const boundaryCondition = typedBoundaryCondition.values![index]
 
   /**
    * Render

@@ -1,9 +1,7 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Edit */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
-import { ISimulation } from '@/database/simulation/index'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
@@ -12,18 +10,21 @@ import {
 import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
-
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   boundaryCondition: IModelBoundaryConditionValue
   oldBoundaryCondition: IModelBoundaryConditionValue
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 
   onError: (desc?: string) => void
@@ -44,10 +45,12 @@ export const errors = {
  * On edit
  */
 const onEdit = async (
-  simulation: IProps['simulation'],
-  boundaryCondition: IProps['boundaryCondition'],
-  oldBoundaryCondition: IProps['oldBoundaryCondition'],
-  swr: IProps['swr']
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  boundaryCondition: IModelBoundaryConditionValue,
+  oldBoundaryCondition: IModelBoundaryConditionValue,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
@@ -66,12 +69,12 @@ const onEdit = async (
       const oldtypedBoundaryCondition = boundaryConditions[
         oldType
       ] as IModelTypedBoundaryCondition
-      const index = oldtypedBoundaryCondition.values.findIndex(
+      const index = oldtypedBoundaryCondition.values!.findIndex(
         (b) => b.uuid === oldBoundaryCondition.uuid
       )
       oldtypedBoundaryCondition.values = [
-        ...oldtypedBoundaryCondition.values.slice(0, index),
-        ...oldtypedBoundaryCondition.values.slice(index + 1)
+        ...oldtypedBoundaryCondition.values!.slice(0, index),
+        ...oldtypedBoundaryCondition.values!.slice(index + 1)
       ]
     }
 
@@ -90,13 +93,13 @@ const onEdit = async (
       const typedBoundaryCondition = boundaryConditions[
         type
       ] as IModelTypedBoundaryCondition
-      const index = typedBoundaryCondition.values.findIndex(
+      const index = typedBoundaryCondition.values!.findIndex(
         (b) => b.uuid === boundaryCondition.uuid
       )
       typedBoundaryCondition.values = [
-        ...typedBoundaryCondition.values.slice(0, index),
+        ...typedBoundaryCondition.values!.slice(0, index),
         boundaryCondition,
-        ...typedBoundaryCondition.values.slice(index + 1)
+        ...typedBoundaryCondition.values!.slice(index + 1)
       ]
     }
 
@@ -139,8 +142,7 @@ const Edit = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * Render
@@ -186,44 +188,6 @@ const Edit = ({
       Edit
     </EditButton>
   )
-}
-
-Edit.propTypes = {
-  boundaryCondition: PropTypes.shape({
-    uuid: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    type: PropTypes.exact({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      children: PropTypes.array
-    }),
-    selected: PropTypes.array,
-    values: PropTypes.array
-  }).isRequired,
-  oldBoundaryCondition: PropTypes.shape({
-    uuid: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    type: PropTypes.exact({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      children: PropTypes.array
-    }),
-    selected: PropTypes.array,
-    values: PropTypes.array
-  }).isRequired,
-  simulation: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.shape({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onError: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
 }
 
 export default Edit

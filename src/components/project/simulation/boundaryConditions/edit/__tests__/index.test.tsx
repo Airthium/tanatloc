@@ -1,11 +1,12 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IModelBoundaryConditionValue } from '@/models/index.d'
+import { IFrontSimulationsItem } from '@/api/index.d'
+
 import Edit, {
   errors
 } from '@/components/project/simulation/boundaryConditions/edit'
-
-import { IModelBoundaryConditionValue } from '@/models/index.d'
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -24,7 +25,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/boundaryConditions/edit', () => {
-  const simulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -33,6 +34,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       code: 'code',
       version: 'version',
       description: 'description',
+      //@ts-ignore
       configuration: {
         boundaryConditions: {
           index: 1,
@@ -322,6 +324,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       <div role="EditButton" onClick={props.onEdit} />
     ))
     oldBoundaryCondition.type.key = 'otherKey'
+    //@ts-ignore
     simulation.scheme.configuration.boundaryConditions.key.values = null
     const { unmount } = render(
       <Edit

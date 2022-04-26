@@ -1,7 +1,6 @@
 /** @module Components.Project.Data */
 
-import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Button,
   Checkbox,
@@ -26,20 +25,19 @@ import {
 } from 'recharts'
 import { camelCase } from 'lodash'
 
-import { ISimulation } from '@/database/simulation/index'
-
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
+import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulation: ISimulation
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
 }
 
 /**
@@ -76,7 +74,7 @@ export const onCheck = (
  * @param infos Infos
  */
 export const exportCSV = (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'name'>,
   table?: { columns: TableColumnsType; data: Array<any> },
   infos?: {
     names: string[]
@@ -118,35 +116,25 @@ export const exportCSV = (
  */
 const Data = ({ simulation }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [infos, setInfos]: [
-    { names: string[]; camelNames: string[] },
-    Dispatch<SetStateAction<{ names: string[]; camelNames: string[] }>>
-  ] = useState()
-  const [table, setTable]: [
-    { columns: TableColumnsType; data: Array<any> },
-    Dispatch<SetStateAction<{ columns: TableColumnsType; data: Array<any> }>>
-  ] = useState()
-  const [columnSelection, setColumnSelection]: [
-    { checked: boolean }[],
-    Dispatch<SetStateAction<{ checked: boolean }[]>>
-  ] = useState([])
-  const [plot, setPlot]: [
-    { data: { x: number }[]; min: number; max: number; lines: JSX.Element[] },
-    Dispatch<
-      SetStateAction<{
-        data: { x: number }[]
-        min: number
-        max: number
-        lines: JSX.Element[]
-      }>
-    >
-  ] = useState()
-  const [downloading, setDownloading]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [infos, setInfos] = useState<{
+    names: string[]
+    camelNames: string[]
+  }>()
+  const [table, setTable] = useState<{
+    columns: TableColumnsType
+    data: { key: number; x: number; [key: string]: number }[]
+  }>()
+  const [columnSelection, setColumnSelection] = useState<
+    { checked: boolean }[]
+  >([])
+  const [plot, setPlot] = useState<{
+    data: { x: number }[]
+    min: number
+    max: number
+    lines: JSX.Element[]
+  }>()
+  const [downloading, setDownloading] = useState<boolean>(false)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -157,9 +145,9 @@ const Data = ({ simulation }: IProps): JSX.Element => {
 
     if (tasks) {
       // Get tasks data
-      let tasksData = []
+      const tasksData: IFrontSimulationTask['datas'] = []
       tasks.forEach((task) => {
-        if (task?.datas) tasksData = [...tasksData, ...task.datas]
+        if (task?.datas) tasksData.push(...task.datas)
       })
 
       // Aggregate data
@@ -198,7 +186,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
         key: 'x'
       })
 
-      const tableData = []
+      const tableData: { key: number; x: number; [key: string]: number }[] = []
       tasksData.forEach((d, index) => {
         const existingIndex = tableData.findIndex((t) => t.x === d.x)
         if (existingIndex === -1)
@@ -226,7 +214,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
     if (!tableData?.length) return
 
     // Set lines
-    const keys = []
+    const keys: string[] = []
     const lines = columnSelection
       .map((selection, index) => {
         if (!selection?.checked) return
@@ -360,13 +348,6 @@ const Data = ({ simulation }: IProps): JSX.Element => {
       </Layout.Content>
     </Layout>
   )
-}
-
-Data.propTypes = {
-  simulation: PropTypes.exact({
-    id: PropTypes.string,
-    name: PropTypes.string
-  }).isRequired
 }
 
 export default Data

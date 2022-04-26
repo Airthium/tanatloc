@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontSimulationsItem } from '@/api/index.d'
+
 import Delete, {
   errors
 } from '@/components/project/simulation/boundaryConditions/delete'
@@ -28,7 +30,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/boundaryConditions/delete', () => {
-  const simulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -37,6 +39,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
       code: 'code',
       version: 'version',
       description: 'description',
+      //@ts-ignore
       configuration: {
         boundaryConditions: {
           index: 3,

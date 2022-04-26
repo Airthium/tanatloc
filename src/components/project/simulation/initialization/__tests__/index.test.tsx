@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { ISimulation } from '@/database/simulation/index'
+import { IFrontSimulationsItem } from '@/api/index.d'
 
 import Initialization, { errors } from '..'
 
@@ -32,7 +32,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/initialization', () => {
-  const simulations: ISimulation[] = [
+  const simulations: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>[] = [
     {
       id: 'id',
       name: 'Simulation 0',
@@ -43,6 +43,7 @@ describe('components/project/simulation/initialization', () => {
         version: 'version',
         description: 'description',
         algorithm: 'algorithm1',
+        //@ts-ignore
         configuration: undefined
       }
     },
@@ -56,6 +57,7 @@ describe('components/project/simulation/initialization', () => {
         code: 'code',
         version: 'version',
         description: 'description',
+        //@ts-ignore
         configuration: {
           parameters: {
             index: 1,
@@ -100,6 +102,7 @@ describe('components/project/simulation/initialization', () => {
         version: 'version',
         description: 'description',
         algorithm: 'algorithm2',
+        //@ts-ignore
         configuration: undefined
       }
     },
@@ -113,11 +116,12 @@ describe('components/project/simulation/initialization', () => {
         version: 'version',
         description: 'description',
         algorithm: 'algorithm1',
+        //@ts-ignore
         configuration: undefined
       }
     }
   ]
-  const simulation: ISimulation = {
+  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -126,6 +130,7 @@ describe('components/project/simulation/initialization', () => {
       code: 'code',
       version: 'version',
       description: 'description',
+      //@ts-ignore
       configuration: {
         geometry: {
           title: 'Geometry',
@@ -156,7 +161,7 @@ describe('components/project/simulation/initialization', () => {
           index: 4,
           title: 'Initialization',
           done: true,
-          velocity: {
+          direct: {
             label: 'Velocity',
             children: [
               {
@@ -263,6 +268,7 @@ describe('components/project/simulation/initialization', () => {
             ...simulation.scheme,
             configuration: {
               ...simulation.scheme.configuration,
+              //@ts-ignore
               initialization: {
                 ...simulation.scheme.configuration.initialization,
                 value: {
@@ -525,7 +531,10 @@ describe('components/project/simulation/initialization', () => {
         fileName: 'result_1.vtu'
       }
     ])
-    const simulations2: ISimulation[] = [
+    const simulations2: Pick<
+      IFrontSimulationsItem,
+      'id' | 'name' | 'scheme'
+    >[] = [
       {
         id: 'id',
         name: 'Simulation 0',
@@ -536,6 +545,7 @@ describe('components/project/simulation/initialization', () => {
           version: 'version',
           description: 'description',
           algorithm: 'algorithm1',
+          //@ts-ignore
           configuration: undefined
         }
       },
@@ -549,6 +559,7 @@ describe('components/project/simulation/initialization', () => {
           version: 'version',
           description: 'description',
           algorithm: 'algorithm1',
+          //@ts-ignore
           configuration: {
             parameters: {
               index: 1,
@@ -588,6 +599,7 @@ describe('components/project/simulation/initialization', () => {
           version: 'version',
           description: 'description',
           algorithm: 'algorithm2',
+          //@ts-ignore
           configuration: undefined
         }
       }

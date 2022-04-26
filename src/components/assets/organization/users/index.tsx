@@ -1,16 +1,15 @@
 /** @module Components.Assets.Organization.Users */
 
-import {
-  RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Card, Space, Table, TableColumnsType } from 'antd'
 
-import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
+import {
+  IFrontOrganizationsItem,
+  IFrontMutateOrganizationsItem,
+  IFrontUsers,
+  IFrontUsersItem
+} from '@/api/index.d'
 import Utils from '@/lib/utils'
 
 import Add from './add'
@@ -20,9 +19,12 @@ import Delete from './delete'
  * Props
  */
 export interface IProps {
-  organization: IOrganizationWithData
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
     loadingOrganizations: boolean
   }
 }
@@ -47,10 +49,11 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const refTableUsers = useRef(null)
 
   // Columns
-  const avatarRender = (_: any, user: IUserWithData) => Utils.userToAvatar(user)
-  const ownerActionsRender = (owner: IUserWithData) => (
+  const avatarRender = (_: any, user: IFrontUsersItem) =>
+    Utils.userToAvatar(user)
+  const ownerActionsRender = (owner: IFrontUsersItem) => (
     <Delete
-      disabled={organization.owners!.length < 2}
+      disabled={organization.owners.length < 2}
       user={{
         id: owner.id,
         email: owner.email
@@ -66,7 +69,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
       }}
     />
   )
-  const userActionsRender = (user: IUserWithData) => {
+  const userActionsRender = (user: IFrontUsersItem) => {
     return (
       <Delete
         user={{
@@ -88,7 +91,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     )
   }
 
-  const columns: TableColumnsType<IUserWithData> = [
+  const columns: TableColumnsType<IFrontUsersItem> = [
     {
       key: 'avatar',
       dataIndex: 'avatar',
@@ -111,7 +114,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  const ownersColumns: TableColumnsType<IUserWithData> = [
+  const ownersColumns: TableColumnsType<IFrontUsersItem> = [
     ...columns,
     {
       key: 'actions',
@@ -123,7 +126,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  const usersColumns: TableColumnsType<IUserWithData> = [
+  const usersColumns: TableColumnsType<IFrontUsersItem> = [
     ...columns,
     {
       key: 'actions',
@@ -206,7 +209,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               size="small"
               columns={ownersColumns}
               dataSource={[
-                ...(organization.owners as IUserWithData[]).map((o, index) => ({
+                ...(organization.owners as IFrontUsers).map((o, index) => ({
                   ...o,
                   key: o.id || index
                 })),
@@ -214,8 +217,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                   ...o,
                   pending: true,
                   key:
-                    o.id ||
-                    (organization.owners as IUserWithData[]).length + index
+                    o.id || (organization.owners as IFrontUsers).length + index
                 })) || [])
               ]}
               scroll={{ y: scrollAdmin?.y }}
@@ -253,8 +255,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                   ...u,
                   pending: true,
                   key:
-                    u.id ||
-                    (organization.users as IUserWithData[])?.length + index
+                    u.id || (organization.users as IFrontUsers)?.length + index
                 })) || [])
               ]}
               scroll={{ y: scrollUsers?.y }}

@@ -4,7 +4,11 @@ import PropTypes from 'prop-types'
 import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
 
-import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
+import {
+  IFrontOrganizationsItem,
+  IFrontMutateOrganizationsItem,
+  IFrontUsersItem
+} from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -16,11 +20,14 @@ import OrganizationAPI from '@/api/organization'
  */
 export interface IProps {
   disabled?: boolean
-  user: IUserWithData
-  organization: IOrganizationWithData
+  user: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
   }
 }
 
@@ -39,10 +46,15 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  organization: IOrganizationWithData,
-  user: IUserWithData,
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >,
+  user: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>,
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers',
-  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -93,10 +105,13 @@ const Delete = ({
    * Set name
    * @param u User
    */
-  const setName = useCallback((u: IUserWithData) => {
-    if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
-    else return u.email
-  }, [])
+  const setName = useCallback(
+    (u: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>) => {
+      if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
+      else return u.email
+    },
+    []
+  )
 
   /**
    * Render

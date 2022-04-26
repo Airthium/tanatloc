@@ -4,7 +4,10 @@ import PropTypes from 'prop-types'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
-import { IOrganizationWithData } from '@/lib/index.d'
+import {
+  IFrontOrganizationsItem,
+  IFrontMutateOrganizationsItem
+} from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -17,9 +20,9 @@ import Groups from './groups'
  * Props
  */
 export interface IProps {
-  organization: IOrganizationWithData
+  organization: IFrontOrganizationsItem
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
     loadingOrganizations: boolean
   }
   onClose: () => void
@@ -39,9 +42,11 @@ export const errors = {
  * @param swr SWR
  */
 export const onName = async (
-  organization: IOrganizationWithData,
+  organization: IFrontOrganizationsItem,
   name: string,
-  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API

@@ -100,14 +100,15 @@ const onAccept = async (
       (o) => o.id === user.id
     )
     const pendingowner = newOrganization.pendingowners[ownerIndex]
-    const userIndex = newOrganization.pendingusers.findIndex(
-      (u) => u.id === user.id
-    )
-    const pendinguser = newOrganization.pendingusers[userIndex]
+
     if (ownerIndex !== -1) {
       newOrganization.pendingowners.splice(ownerIndex, 1)
       newOrganization.owners.push({ ...pendingowner })
     } else {
+      const userIndex = newOrganization.pendingusers.findIndex(
+        (u) => u.id === user.id
+      )
+      const pendinguser = newOrganization.pendingusers[userIndex]
       newOrganization.pendingusers?.splice(userIndex, 1)
       if (!newOrganization.users) newOrganization.users = []
       newOrganization.users.push({ ...pendinguser })
@@ -125,9 +126,11 @@ const onAccept = async (
  * @param user User
  */
 const onDecline = async (
-  organization: IOrganizationWithData,
-  user: IUserWithData,
-  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+  organization: IFrontOrganizationsItem,
+  user: Pick<IFrontUser, 'id'>,
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -138,19 +141,14 @@ const onDecline = async (
     const ownerIndex = newOrganization.pendingowners?.findIndex(
       (o) => o.id === user.id
     )
-    const userIndex = newOrganization.pendingusers?.findIndex(
-      (u) => u.id === user.id
-    )
-    if (ownerIndex !== -1)
-      (newOrganization.pendingowners as IUserWithData[]).splice(
-        ownerIndex as number,
-        1
+
+    if (ownerIndex !== -1) newOrganization.pendingowners.splice(ownerIndex, 1)
+    else {
+      const userIndex = newOrganization.pendingusers?.findIndex(
+        (u) => u.id === user.id
       )
-    else
-      (newOrganization.pendingusers as IUserWithData[]).splice(
-        userIndex as number,
-        1
-      )
+      newOrganization.pendingusers.splice(userIndex, 1)
+    }
 
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
@@ -176,22 +174,22 @@ const List = ({
   const refTableOrga = useRef<HTMLDivElement>(null)
 
   // Data
-  const ownersRender = (owners: IUserWithData[]) => (
+  const ownersRender = (owners: IFrontUsers) => (
     <Avatar.Group maxCount={5}>
       {owners?.map((o) => Utils.userToAvatar(o))}
     </Avatar.Group>
   )
-  const usersRender = (users: IUserWithData[]) => (
+  const usersRender = (users: IFrontUsers) => (
     <Avatar.Group maxCount={5}>
       {users?.map((u) => Utils.userToAvatar(u))}
     </Avatar.Group>
   )
-  const groupsRender = (groups: IGroupWithData[]) => (
+  const groupsRender = (groups: IFrontGroups) => (
     <Avatar.Group maxCount={5}>
       {groups?.map((g) => Utils.groupToAvatar(g))}
     </Avatar.Group>
   )
-  const actionsRender = (org: IOrganizationWithData) => {
+  const actionsRender = (org: IFrontOrganizationsItem) => {
     if (org.owners?.find((o) => o.id === user.id))
       return (
         <Space wrap>

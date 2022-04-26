@@ -4,7 +4,11 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
+import {
+  IFrontOrganizationsItem,
+  IFrontMutateOrganizationsItem,
+  IFrontUsersItem
+} from '@/api/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -17,10 +21,13 @@ import OrganizationAPI from '@/api/organization'
  */
 export interface IProps {
   title: string
-  organization: IOrganizationWithData
+  organization:   Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+>,
   dBkey: 'owners' | 'users'
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
   }
 }
 
@@ -39,8 +46,11 @@ export const errors = {
  */
 export const checkAlreadyAdded = (
   user: { email: string },
-  organization: IOrganizationWithData
-): IUserWithData => {
+  organization: Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+>
+): IFrontUsersItem => {
   const inOwners = organization.owners?.find((o) => o.email === user.email)
   const inPendingowners = organization.pendingowners?.find(
     (po) => po.email === user.email
@@ -51,7 +61,7 @@ export const checkAlreadyAdded = (
   )
 
   return (
-    inOwners || inPendingowners || inUsers || (inPendingusers as IUserWithData)
+    (inOwners || inPendingowners || inUsers || inPendingusers) as IFrontUsersItem
   )
 }
 
@@ -63,10 +73,13 @@ export const checkAlreadyAdded = (
  * @param swr SWR
  */
 export const onFinish = async (
-  organization: IOrganizationWithData,
+  organization: Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+>,
   dBkey: 'owners' | 'users',
   values: { email: string },
-  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+  swr: { mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void }
 ): Promise<void> => {
   // Check
   const exists = checkAlreadyAdded(values, organization)

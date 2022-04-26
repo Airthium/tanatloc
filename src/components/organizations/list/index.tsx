@@ -96,11 +96,11 @@ const onAccept = async (
 
     // Local
     const newOrganization = { ...organization }
-    const ownerIndex = newOrganization.pendingowners?.findIndex(
+    const ownerIndex = newOrganization.pendingowners.findIndex(
       (o) => o.id === user.id
     )
     const pendingowner = newOrganization.pendingowners[ownerIndex]
-    const userIndex = newOrganization.pendingusers?.findIndex(
+    const userIndex = newOrganization.pendingusers.findIndex(
       (u) => u.id === user.id
     )
     const pendinguser = newOrganization.pendingusers[userIndex]

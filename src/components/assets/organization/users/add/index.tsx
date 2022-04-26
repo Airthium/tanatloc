@@ -21,10 +21,10 @@ import OrganizationAPI from '@/api/organization'
  */
 export interface IProps {
   title: string
-  organization:   Pick<
-  IFrontOrganizationsItem,
-  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
->,
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >
   dBkey: 'owners' | 'users'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -47,9 +47,9 @@ export const errors = {
 export const checkAlreadyAdded = (
   user: { email: string },
   organization: Pick<
-  IFrontOrganizationsItem,
-  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
->
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >
 ): IFrontUsersItem => {
   const inOwners = organization.owners?.find((o) => o.email === user.email)
   const inPendingowners = organization.pendingowners?.find(
@@ -60,9 +60,10 @@ export const checkAlreadyAdded = (
     (pu) => pu.email === user.email
   )
 
-  return (
-    (inOwners || inPendingowners || inUsers || inPendingusers) as IFrontUsersItem
-  )
+  return (inOwners ||
+    inPendingowners ||
+    inUsers ||
+    inPendingusers) as IFrontUsersItem
 }
 
 /**
@@ -74,12 +75,14 @@ export const checkAlreadyAdded = (
  */
 export const onFinish = async (
   organization: Pick<
-  IFrontOrganizationsItem,
-  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
->,
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >,
   dBkey: 'owners' | 'users',
   values: { email: string },
-  swr: { mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void }
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   // Check
   const exists = checkAlreadyAdded(values, organization)
@@ -101,10 +104,8 @@ export const onFinish = async (
 
     // Local
     const newOrganization = { ...organization }
-    newOrganization[dBkey] = [
-      ...(newOrganization[dBkey] || []),
-      { email: values.email }
-    ]
+    const newUser = { email: values.email }
+    newOrganization[dBkey] = [...newOrganization[dBkey], newUser]
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
     ErrorNotification(errors.add, err)

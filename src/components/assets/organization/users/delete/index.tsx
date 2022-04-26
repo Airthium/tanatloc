@@ -1,18 +1,16 @@
 /** @module Components.Assets.Organization.User.Delete */
 
-import PropTypes from 'prop-types'
 import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
+
+import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import {
   IFrontOrganizationsItem,
   IFrontMutateOrganizationsItem,
   IFrontUsersItem
 } from '@/api/index.d'
-
-import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
-
 import OrganizationAPI from '@/api/organization'
 
 /**
@@ -21,11 +19,10 @@ import OrganizationAPI from '@/api/organization'
 export interface IProps {
   disabled?: boolean
   user: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>
-  organization:
-    | Pick<IFrontOrganizationsItem, 'id' | 'owners'>
-    | Pick<IFrontOrganizationsItem, 'id' | 'pendingowners'>
-    | Pick<IFrontOrganizationsItem, 'id' | 'users'>
-    | Pick<IFrontOrganizationsItem, 'id' | 'pendingusers'>
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -70,7 +67,7 @@ export const onDelete = async (
 
     // Local
     const newOrganization = { ...organization }
-    newOrganization[dBkey] = newOrganization[dBkey]?.filter(
+    newOrganization[dBkey] = newOrganization[dBkey].filter(
       (u) => u.id !== user.id
     )
     swr.mutateOneOrganization(newOrganization)
@@ -139,27 +136,6 @@ const Delete = ({
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  disabled: PropTypes.bool,
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string
-  }).isRequired,
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    owners: PropTypes.array,
-    pendingowners: PropTypes.array,
-    users: PropTypes.array,
-    pendingusers: PropTypes.array
-  }),
-  dBkey: PropTypes.oneOf(['owners', 'pendingowners', 'users', 'pendingusers']),
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

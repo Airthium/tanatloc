@@ -51,76 +51,47 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Columns
   const avatarRender = (_: any, user: IFrontUsersItem) =>
     Utils.userToAvatar(user)
-  const ownerActionsRender = (owner: IFrontUsersItem) =>
-    owner.pending ? (
-      <Delete
-        disabled={organization.owners.length < 2}
-        user={{
-          id: owner.id,
-          email: owner.email
-        }}
-        organization={{
-          id: organization.id,
-          pendingowners: organization.pendingowners
-        }}
-        dBkey={'pendingowners'}
-        swr={{
-          mutateOneOrganization: swr.mutateOneOrganization
-        }}
-      />
-    ) : (
-      <Delete
-        disabled={organization.owners.length < 2}
-        user={{
-          id: owner.id,
-          email: owner.email
-        }}
-        organization={{
-          id: organization.id,
-          owners: organization.owners
-        }}
-        dBkey={'owners'}
-        swr={{
-          mutateOneOrganization: swr.mutateOneOrganization
-        }}
-      />
-    )
-  const userActionsRender = (user: IFrontUsersItem) =>
-    user.pending ? (
-      <Delete
-        user={{
-          id: user.id,
-          email: user.email,
-          firstname: user.firstname,
-          lastname: user.lastname
-        }}
-        organization={{
-          id: organization.id,
-          pendingusers: organization.pendingusers
-        }}
-        dBkey={'pendingusers'}
-        swr={{
-          mutateOneOrganization: swr.mutateOneOrganization
-        }}
-      />
-    ) : (
-      <Delete
-        user={{
-          id: user.id,
-          email: user.email,
-          firstname: user.firstname,
-          lastname: user.lastname
-        }}
-        organization={{
-          id: organization.id,
-          users: organization.users
-        }}
-        dBkey={'users'}
-        swr={{
-          mutateOneOrganization: swr.mutateOneOrganization
-        }}
-      />
-    )
+  const ownerActionsRender = (owner: IFrontUsersItem) => (
+    <Delete
+      disabled={organization.owners.length < 2}
+      user={{
+        id: owner.id,
+        email: owner.email
+      }}
+      organization={{
+        id: organization.id,
+        owners: organization.owners,
+        pendingowners: organization.pendingowners,
+        users: organization.users,
+        pendingusers: organization.pendingusers
+      }}
+      dBkey={owner.pending ? 'pendingowners' : 'owners'}
+      swr={{
+        mutateOneOrganization: swr.mutateOneOrganization
+      }}
+    />
+  )
+  const userActionsRender = (user: IFrontUsersItem) => (
+    <Delete
+      user={{
+        id: user.id,
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname
+      }}
+      organization={{
+        id: organization.id,
+        owners: organization.owners,
+        pendingowners: organization.pendingowners,
+        users: organization.users,
+        pendingusers: organization.pendingusers
+      }}
+      dBkey={user.pending ? 'pendingusers' : 'users'}
+      swr={{
+        mutateOneOrganization: swr.mutateOneOrganization
+      }}
+    />
+  )
 
   const columns: TableColumnsType<IFrontUsersItem> = [
     {

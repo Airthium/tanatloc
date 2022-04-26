@@ -21,10 +21,11 @@ import OrganizationAPI from '@/api/organization'
 export interface IProps {
   disabled?: boolean
   user: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>
-  organization: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  >
+  organization:
+    | Pick<IFrontOrganizationsItem, 'id' | 'owners'>
+    | Pick<IFrontOrganizationsItem, 'id' | 'pendingowners'>
+    | Pick<IFrontOrganizationsItem, 'id' | 'users'>
+    | Pick<IFrontOrganizationsItem, 'id' | 'pendingusers'>
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void

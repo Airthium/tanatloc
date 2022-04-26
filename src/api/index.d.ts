@@ -206,7 +206,9 @@ export interface IFrontUsersItem
       | 'authorizedplugins'
       | 'superuser'
     )[]
-  > {}
+  > {
+  pending?: boolean
+}
 
 export interface IFrontMutateUsersItem extends Partial<IFrontUsersItem> {
   id: string

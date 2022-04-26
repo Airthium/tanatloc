@@ -40,8 +40,8 @@ export interface IProps {
  */
 const Users = ({ organization, swr }: IProps): JSX.Element => {
   // State
-  const [scrollAdmin, setScrollAdmin] = useState<{ y: number } | null>(null)
-  const [scrollUsers, setScrollUsers] = useState<{ y: number } | null>(null)
+  const [scrollAdmin, setScrollAdmin] = useState<{ y: number }>()
+  const [scrollUsers, setScrollUsers] = useState<{ y: number }>()
 
   // Ref
   const refWrapper = useRef(null)
@@ -51,26 +51,42 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Columns
   const avatarRender = (_: any, user: IFrontUsersItem) =>
     Utils.userToAvatar(user)
-  const ownerActionsRender = (owner: IFrontUsersItem) => (
-    <Delete
-      disabled={organization.owners.length < 2}
-      user={{
-        id: owner.id,
-        email: owner.email
-      }}
-      organization={{
-        id: organization.id,
-        owners: organization.owners,
-        pendingowners: organization.pendingowners
-      }}
-      dBkey={owner.pending ? 'pendingowners' : 'owners'}
-      swr={{
-        mutateOneOrganization: swr.mutateOneOrganization
-      }}
-    />
-  )
-  const userActionsRender = (user: IFrontUsersItem) => {
-    return (
+  const ownerActionsRender = (owner: IFrontUsersItem) =>
+    owner.pending ? (
+      <Delete
+        disabled={organization.owners.length < 2}
+        user={{
+          id: owner.id,
+          email: owner.email
+        }}
+        organization={{
+          id: organization.id,
+          pendingowners: organization.pendingowners
+        }}
+        dBkey={'pendingowners'}
+        swr={{
+          mutateOneOrganization: swr.mutateOneOrganization
+        }}
+      />
+    ) : (
+      <Delete
+        disabled={organization.owners.length < 2}
+        user={{
+          id: owner.id,
+          email: owner.email
+        }}
+        organization={{
+          id: organization.id,
+          owners: organization.owners
+        }}
+        dBkey={'owners'}
+        swr={{
+          mutateOneOrganization: swr.mutateOneOrganization
+        }}
+      />
+    )
+  const userActionsRender = (user: IFrontUsersItem) =>
+    user.pending ? (
       <Delete
         user={{
           id: user.id,
@@ -80,16 +96,31 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
         }}
         organization={{
           id: organization.id,
-          users: organization.users,
           pendingusers: organization.pendingusers
         }}
-        dBkey={user.pending ? 'pendingusers' : 'users'}
+        dBkey={'pendingusers'}
+        swr={{
+          mutateOneOrganization: swr.mutateOneOrganization
+        }}
+      />
+    ) : (
+      <Delete
+        user={{
+          id: user.id,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname
+        }}
+        organization={{
+          id: organization.id,
+          users: organization.users
+        }}
+        dBkey={'users'}
         swr={{
           mutateOneOrganization: swr.mutateOneOrganization
         }}
       />
     )
-  }
 
   const columns: TableColumnsType<IFrontUsersItem> = [
     {
@@ -154,7 +185,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
       })
     } else {
       // Scroll not needed
-      setScrollAdmin(null)
+      setScrollAdmin(undefined)
     }
 
     // Check if too many users to display
@@ -164,7 +195,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
       })
     } else {
       // Scroll not needed
-      setScrollUsers(null)
+      setScrollUsers(undefined)
     }
   }, [])
 

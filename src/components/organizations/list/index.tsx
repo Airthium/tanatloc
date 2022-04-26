@@ -11,10 +11,14 @@ import {
 } from '@ant-design/icons'
 
 import {
-  IGroupWithData,
-  IOrganizationWithData,
-  IUserWithData
-} from '@/lib/index.d'
+  IFrontUser,
+  IFrontUsers,
+  IFrontGroups,
+  IFrontOrganizations,
+  IFrontOrganizationsItem,
+  IFrontNewOrganization,
+  IFrontMutateOrganizationsItem
+} from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -29,14 +33,14 @@ import { ColumnGroupType } from 'antd/lib/table'
  * Props
  */
 export interface IProps {
-  user: IUserWithData
-  organizations: IOrganizationWithData[]
+  user: Pick<IFrontUser, 'id'>
+  organizations: IFrontOrganizations
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
-    delOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
     loadingOrganizations: boolean
   }
-  setOrganization: (organization: IOrganizationWithData) => void
+  setOrganization: (organization: IFrontOrganizationsItem) => void
 }
 
 export const errors = {
@@ -52,9 +56,11 @@ export const errors = {
  * @parm swr SWR
  */
 const onQuit = async (
-  organization: IOrganizationWithData,
-  user: IUserWithData,
-  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+  organization: IFrontOrganizationsItem,
+  user: Pick<IFrontUser, 'id'>,
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -62,10 +68,10 @@ const onQuit = async (
 
     // Local
     const newOrganization = { ...organization }
-    const userIndex = (newOrganization.users as IUserWithData[]).findIndex(
+    const userIndex = (newOrganization.users as IFrontUsers).findIndex(
       (u) => u.id === user.id
     )
-    ;(newOrganization.users as IUserWithData[]).splice(userIndex, 1)
+    ;(newOrganization.users as IFrontUsers).splice(userIndex, 1)
 
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
@@ -80,9 +86,11 @@ const onQuit = async (
  * @param swr SWR
  */
 const onAccept = async (
-  organization: IOrganizationWithData,
-  user: IUserWithData,
-  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+  organization: IFrontOrganizationsItem,
+  user: Partial<IFrontUser>,
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -97,11 +105,8 @@ const onAccept = async (
       (u) => u.id === user.id
     )
     if (ownerIndex !== -1) {
-      ;(newOrganization.pendingowners as IUserWithData[]).splice(
-        ownerIndex as number,
-        1
-      )
-      ;(newOrganization.owners as IUserWithData[]).push(user)
+      ;(newOrganization.pendingowners as IFrontUsers).splice(ownerIndex, 1)
+      ;(newOrganization.owners as IFrontUsers).push(user)
     } else {
       newOrganization.pendingusers?.splice(userIndex as number, 1)
       if (!newOrganization.users) newOrganization.users = []

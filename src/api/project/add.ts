@@ -1,6 +1,6 @@
 /** @module API.Project.Add */
 
-import { INewProject } from '@/database/project'
+import { IFrontNewProject } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -13,7 +13,7 @@ import { call } from '@/api/call'
 export const add = async (
   workspace: { id: string },
   project: { title: string; description?: string }
-): Promise<INewProject> => {
+): Promise<IFrontNewProject> => {
   const response = await call('/api/project', {
     method: 'POST',
     headers: {

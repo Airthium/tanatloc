@@ -1,6 +1,6 @@
 /** @module API.Avatar.Add */
 
-import { INewAvatar } from '@/database/avatar'
+import { IFrontNewAvatar } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -13,7 +13,7 @@ import { call } from '@/api/call'
 export const add = async (
   file: { name: string; uid: string; data: string },
   project?: { id: string }
-): Promise<INewAvatar> => {
+): Promise<IFrontNewAvatar> => {
   const response = await call('/api/avatar', {
     method: 'POST',
     headers: {

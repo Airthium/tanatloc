@@ -1,6 +1,6 @@
 /** @module API.Organization.Add */
 
-import { INewOrganization } from '@/database/organization'
+import { IFrontNewOrganization } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -11,7 +11,7 @@ import { call } from '@/api/call'
  */
 export const add = async (organization: {
   name: string
-}): Promise<INewOrganization> => {
+}): Promise<IFrontNewOrganization> => {
   const response = await call('/api/organization', {
     method: 'POST',
     headers: {

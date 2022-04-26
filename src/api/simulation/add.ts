@@ -1,6 +1,6 @@
 /** @module API.Simulation.Add */
 
-import { INewSimulation } from '@/database/simulation'
+import { IFrontNewSimulation } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -13,7 +13,7 @@ import { call } from '@/api/call'
 export const add = async (
   project: { id: string },
   simulation: { name: string; scheme: object }
-): Promise<INewSimulation> => {
+): Promise<IFrontNewSimulation> => {
   const response = await call('/api/simulation', {
     method: 'POST',
     headers: {

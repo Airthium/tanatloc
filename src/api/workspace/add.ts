@@ -1,6 +1,6 @@
 /** @module API.Workspace.Add */
 
-import { INewWorkspace } from '@/database/workspace'
+import { IFrontNewWorkspace } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -11,7 +11,7 @@ import { call } from '@/api/call'
  */
 export const add = async (workspace: {
   name: string
-}): Promise<INewWorkspace> => {
+}): Promise<IFrontNewWorkspace> => {
   const response = await call('/api/workspace', {
     method: 'POST',
     headers: {

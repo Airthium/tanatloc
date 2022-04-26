@@ -1,6 +1,6 @@
 /** @module API.Group.Add */
 
-import { INewGroup } from '@/database/group'
+import { IFrontNewGroup } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -13,7 +13,7 @@ import { call } from '@/api/call'
 export const add = async (
   organization: { id: string },
   group: { name: string; users: string[] }
-): Promise<INewGroup> => {
+): Promise<IFrontNewGroup> => {
   const response = await call('/api/group', {
     method: 'POST',
     body: JSON.stringify({ organization, group })

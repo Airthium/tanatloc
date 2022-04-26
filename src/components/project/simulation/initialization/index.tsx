@@ -1,19 +1,12 @@
 /** @module Components.Project.Simulation.Initialization */
 
-import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback
-} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
-import { ISimulation, ISimulationTask } from '@/database/simulation/index'
 import {
   IModelInitialization,
-  IModelInitializationCoupling
+  IModelInitializationCoupling,
+  IModelInitializationDirectChild
 } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
@@ -23,16 +16,21 @@ import {
   getMultiplicator
 } from '@/components/project/simulation/run/results/tools'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem,
+  IFrontSimulationTask
+} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
  */
 export interface IProps {
-  simulations: ISimulation[]
-  simulation?: ISimulation
+  simulations: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>[]
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
@@ -50,16 +48,18 @@ export const errors = {
  * @param swr SWR
  */
 const onSelectorChange = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   key: string,
-  swr: IProps['swr']
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
     const newSimulation = { ...simulation }
 
     // Update local
-    const initialization = newSimulation.scheme.configuration.initialization
+    const initialization = newSimulation.scheme.configuration.initialization!
     initialization.value = {
       type: key
     }
@@ -89,8 +89,8 @@ const onSelectorChange = async (
  * @param swr SWR
  */
 const onCouplingChange = async (
-  simulations: ISimulation[],
-  simulation: ISimulation,
+  simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
   swr: IProps['swr']
 ): Promise<void> => {
@@ -103,9 +103,9 @@ const onCouplingChange = async (
     const newSimulation = { ...simulation }
 
     // Update local
-    const initialization = newSimulation.scheme.configuration.initialization
+    const initialization = newSimulation.scheme.configuration.initialization!
     initialization.value = {
-      ...initialization.value,
+      ...initialization.value!,
       simulation: value,
       result: results?.[0]?.value
     }
@@ -136,7 +136,7 @@ const onCouplingChange = async (
  * @param swr SWR
  */
 const onCouplingResultChange = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
   option: { file: string },
   swr: IProps['swr']
@@ -147,9 +147,9 @@ const onCouplingResultChange = async (
     const newSimulation = { ...simulation }
 
     // Update local
-    const initialization = newSimulation.scheme.configuration.initialization
+    const initialization = newSimulation.scheme.configuration.initialization!
     initialization.value = {
-      ...initialization.value,
+      ...initialization.value!,
       number: +value,
       result: option.file
     }
@@ -177,7 +177,7 @@ const onCouplingResultChange = async (
  * @param value Value
  */
 const onChange = async (
-  simulation: ISimulation,
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
   value: string,
   swr: IProps['swr']
@@ -187,9 +187,9 @@ const onChange = async (
     const newSimulation = { ...simulation }
 
     // Update local
-    const initialization = newSimulation.scheme.configuration.initialization
-    if (!initialization.value.values) initialization.value.values = []
-    initialization.value.values[index] = value
+    const initialization = newSimulation.scheme.configuration.initialization!
+    if (!initialization.value!.values) initialization.value!.values = []
+    initialization.value!.values[index] = value
 
     // API
     await SimulationAPI.update({ id: simulation.id }, [
@@ -215,16 +215,16 @@ const onChange = async (
  * @param id Simulation id
  */
 const loadResults = async (
-  simulations: ISimulation[],
+  simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
   id: string
 ): Promise<{ label: string; value: string; file: string }[]> => {
-  const tasks: ISimulationTask[] = await SimulationAPI.tasks({ id })
+  const tasks: IFrontSimulationTask[] = await SimulationAPI.tasks({ id })
 
   const currentSimulation = simulations.find((s) => s.id === id)
-  const configuration = currentSimulation.scheme.configuration
+  const configuration = currentSimulation!.scheme.configuration
   const filter = configuration?.run?.resultsFilter
 
-  const results = []
+  const results: { label: string; value: string; file: string }[] = []
   tasks.forEach((task) => {
     // Check file
     if (task.file) {
@@ -279,7 +279,7 @@ const loadResults = async (
           const value = multiplicator ? file.number * multiplicator : index
           const floatingPointFix = Math.round(value * 1e15) / 1e15
           return {
-            label: floatingPointFix,
+            label: String(floatingPointFix),
             value: file.fileName,
             file: file.fileName
           }
@@ -288,24 +288,14 @@ const loadResults = async (
         // Add to results
         results.push(
           ...notFilteredFiles
-            .map((file) => {
-              results.push({
-                label: file.fileName,
-                value: file.fileName,
-                file: file.fileName
-              })
-            })
+            .map((file) => ({
+              label: file.fileName,
+              value: file.fileName,
+              file: file.fileName
+            }))
             .filter((f) => f)
         )
-        results.push(
-          ...options.map((option) => {
-            return {
-              label: option.label,
-              value: option.value,
-              file: option.file
-            }
-          })
-        )
+        results.push(...options)
       }
     }
   })
@@ -323,23 +313,17 @@ const Initialization = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [currentKey, setCurrentKey]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
-  const [couplingSimulation, setCouplingSimulation]: [
-    ISimulation,
-    Dispatch<SetStateAction<ISimulation>>
-  ] = useState()
-  const [couplingResults, setCouplingResults]: [
-    { label: string; value: string }[],
-    Dispatch<SetStateAction<{ label: string; value: string }[]>>
-  ] = useState()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [currentKey, setCurrentKey] = useState<'none' | 'coupling' | 'direct'>(
+    'none'
+  )
+  const [couplingSimulation, setCouplingSimulation] =
+    useState<Pick<IFrontSimulationsItem, 'id' | 'scheme'>>()
+  const [couplingResults, setCouplingResults] =
+    useState<{ label: string; value: string }[]>()
 
   // Data
-  const subScheme = simulation?.scheme.configuration.initialization
+  const subScheme = simulation?.scheme.configuration.initialization!
   const dimension = simulation?.scheme.configuration.dimension
 
   /**
@@ -356,10 +340,10 @@ const Initialization = ({
 
   // Key
   useEffect(() => {
-    if (!currentKey && subScheme?.value) setCurrentKey(subScheme.value.type)
+    if (!currentKey && subScheme.value) setCurrentKey(subScheme.value.type)
 
-    if (!couplingSimulation && subScheme?.value?.simulation)
-      setSimulation(subScheme?.value?.simulation)
+    if (!couplingSimulation && subScheme.value?.simulation)
+      setSimulation(subScheme.value?.simulation)
   }, [subScheme, currentKey, couplingSimulation, setSimulation])
 
   // Results
@@ -371,34 +355,24 @@ const Initialization = ({
   }, [simulations, couplingSimulation])
 
   // Build selector
-  const selectorOptions = Object.keys(subScheme)
-    .map((key) => {
-      if (
-        key === 'index' ||
-        key === 'title' ||
-        key === 'done' ||
-        key === 'value'
-      )
-        return
-
-      const initialization = subScheme[key] as
-        | { label: string; children: IModelInitialization[] }
-        | IModelInitializationCoupling
-
-      return {
-        label: initialization.label,
-        value: key
-      }
-    })
-    .filter((s) => s)
-  selectorOptions.unshift({
-    label: 'None',
-    value: 'none'
-  })
+  const selectorOptions = [
+    {
+      label: 'None',
+      value: 'none'
+    },
+    {
+      label: 'Direct',
+      value: 'direct'
+    },
+    {
+      label: 'Coupling',
+      value: 'coupling'
+    }
+  ]
 
   // Build initialization
+  const initializations: { coupling?: JSX.Element; direct?: JSX.Element } = {}
   const initializationValue = subScheme.value
-  const initializations = {}
 
   // Render coupling
   const renderCoupling = (
@@ -456,7 +430,7 @@ const Initialization = ({
   // Render direct
   const renderDirect = (direct: {
     label: string
-    children: IModelInitialization[]
+    children: IModelInitializationDirectChild[]
   }) => (
     <Space direction="vertical" className="full-width">
       {direct.children.map((child, index) => {
@@ -476,13 +450,10 @@ const Initialization = ({
     </Space>
   )
 
-  Object.keys(subScheme).forEach((key) => {
-    if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
-      return
-
+  {
     // Coupling
-    const coupling = subScheme[key] as IModelInitializationCoupling
-    if (coupling.compatibility) {
+    const coupling = subScheme['coupling']
+    if (coupling?.compatibility) {
       // Simulations
       const simulationsOptions = simulations.map((s) => {
         let disabled =
@@ -502,18 +473,15 @@ const Initialization = ({
       // Filter
       const filter = compatibility?.filter
 
-      initializations[key] = renderCoupling(simulationsOptions, filter)
+      initializations['coupling'] = renderCoupling(simulationsOptions, filter)
     }
 
     // Direct
-    const direct = subScheme[key] as {
-      label: string
-      children: IModelInitialization[]
+    const direct = subScheme['direct']
+    if (direct?.children) {
+      initializations['direct'] = renderDirect(direct)
     }
-    if (direct.children) {
-      initializations[key] = renderDirect(direct)
-    }
-  })
+  }
 
   /**
    * Render
@@ -540,21 +508,6 @@ const Initialization = ({
       </Layout.Content>
     </Layout>
   )
-}
-
-Initialization.propTypes = {
-  simulations: PropTypes.array,
-  simulation: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        initialization: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Initialization

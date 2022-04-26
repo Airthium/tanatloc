@@ -1,5 +1,6 @@
 /** @module API.Interface */
 
+import { INewAvatar } from '@/database/avatar'
 import { IGeometry } from '@/database/geometry'
 import { INewGroup } from '@/database/group'
 import { INewOrganization } from '@/database/organization'
@@ -23,6 +24,11 @@ import {
   IUserWithData,
   IWorkspaceWithData
 } from '@/lib/index.d'
+
+/**
+ * Avatar
+ */
+export interface IFrontNewAvatar extends INewAvatar {}
 
 /**
  * Geometries

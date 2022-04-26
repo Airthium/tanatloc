@@ -1,6 +1,6 @@
 /** @module API.User.Add */
 
-import { INewUser } from '@/database/user'
+import { IFrontNewUser } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -12,7 +12,7 @@ import { call } from '@/api/call'
 export const add = async (user: {
   email: string
   password: string
-}): Promise<INewUser> => {
+}): Promise<IFrontNewUser> => {
   const response = await call('/api/user', {
     method: 'POST',
     headers: {

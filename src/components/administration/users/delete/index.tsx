@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
 
-import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
+import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -15,9 +15,9 @@ import UserAPI from '@/api/user'
  * Props
  */
 export interface IProps {
-  user: Pick<IFrontUser, 'id' | 'email'>
+  user: Pick<IFrontUsersItem, 'id' | 'email'>
   swr: {
-    delOneUser: (user: IFrontMutateUser) => void
+    delOneUser: (user: IFrontMutateUsersItem) => void
   }
 }
 
@@ -34,8 +34,8 @@ export const errors = {
  * @param swr Swr
  */
 export const onDelete = async (
-  user: Pick<IFrontUser, 'id' | 'email'>,
-  swr: { delOneUser: (user: IFrontMutateUser) => void }
+  user: Pick<IFrontUsersItem, 'id' | 'email'>,
+  swr: { delOneUser: (user: IFrontMutateUsersItem) => void }
 ): Promise<void> => {
   try {
     // Delete

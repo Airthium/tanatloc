@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IClientPlugin } from '@/plugins/index.d'
+
 import Edit, { errors } from '..'
 
 const mockEditButton = jest.fn()
@@ -28,7 +30,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 describe('components/administration/users/edit', () => {
-  const plugins = []
+  const plugins: IClientPlugin[] = []
   const user = {
     id: 'id',
     email: 'email',

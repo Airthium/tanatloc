@@ -6,7 +6,11 @@ import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/plugins/index.d'
-import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
+import {
+  IFrontUsersItem,
+  IFrontNewUser,
+  IFrontMutateUsersItem
+} from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -21,11 +25,19 @@ import { ColumnGroupType } from 'antd/lib/table'
  * Props
  */
 export interface IProps {
-  users: IUserWithData[]
+  users: Pick<
+    IFrontUsersItem,
+    | 'id'
+    | 'email'
+    | 'firstname'
+    | 'lastname'
+    | 'authorizedplugins'
+    | 'superuser'
+  >[]
   swr: {
-    addOneUser: (user: IUserWithData) => void
-    delOneUser: (user: IUserWithData) => void
-    mutateOneUser: (user: IUserWithData) => void
+    addOneUser: (user: IFrontNewUser) => void
+    delOneUser: (user: IFrontMutateUsersItem) => void
+    mutateOneUser: (user: IFrontMutateUsersItem) => void
   }
 }
 
@@ -44,7 +56,7 @@ export const errors = {
 const Users = ({ users, swr }: IProps): JSX.Element => {
   // State
   const [plugins, setPlugins] = useState<IClientPlugin[]>()
-  const [scroll, setScroll] = useState<{ y: number } | null>(null)
+  const [scroll, setScroll] = useState<{ y: number }>()
 
   // Ref
   const refTable = useRef(null)
@@ -77,7 +89,18 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   const superuserRender = (superuser: boolean) =>
     superuser && <CheckOutlined className="color-green" />
 
-  const actionsRender = (_: any, record: IUserWithData) => (
+  const actionsRender = (
+    _: any,
+    record: Pick<
+      IFrontUsersItem,
+      | 'id'
+      | 'email'
+      | 'firstname'
+      | 'lastname'
+      | 'authorizedplugins'
+      | 'superuser'
+    >
+  ) => (
     <Space>
       <Edit
         plugins={
@@ -87,27 +110,33 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
           })) || []
         }
         user={{
-          id: record.id as string,
+          id: record.id,
           firstname: record.firstname,
           lastname: record.lastname,
-          email: record.email as string,
-          authorizedplugins: record.authorizedplugins as string[],
+          email: record.email,
+          authorizedplugins: record.authorizedplugins,
           superuser: record.superuser
         }}
         swr={{ mutateOneUser: swr.mutateOneUser }}
       />
       <Delete
-        user={{ id: record.id as string, email: record.email as string }}
+        user={{ id: record.id, email: record.email }}
         swr={{ delOneUser: swr.delOneUser }}
       />
     </Space>
   )
 
-  const columns: TableColumnsType<{
-    firstname?: string
-    lastname?: string
-    email: string
-  }> = [
+  const columns: TableColumnsType<
+    Pick<
+      IFrontUsersItem,
+      | 'id'
+      | 'email'
+      | 'firstname'
+      | 'lastname'
+      | 'authorizedplugins'
+      | 'superuser'
+    >
+  > = [
     {
       title: 'First name',
       dataIndex: 'firstname',
@@ -172,7 +201,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       setScroll({ y: window.innerHeight - table.offsetTop - 59 })
     } else {
       // Scroll not needed
-      setScroll(null)
+      setScroll(undefined)
     }
   }, [])
 

@@ -119,17 +119,27 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(() => {
       throw new Error('no file')
     })
-    Local.stopProcess('id', 'path', { label: 'label', status: 'wait' }, update)
+    Local.stopProcess(
+      'id',
+      'path',
+      { index: 1, label: 'label', status: 'wait' },
+      update
+    )
 
     const interval = Local.startProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
     expect(interval).toBe('interval')
 
-    Local.startProcess('id', 'path', { label: 'label', status: 'wait' }, update)
+    Local.startProcess(
+      'id',
+      'path',
+      { index: 1, label: 'label', status: 'wait' },
+      update
+    )
   })
 
   test('stopProcess', () => {
@@ -138,7 +148,12 @@ describe('plugins/local/src/lib', () => {
       throw new Error('no file')
     })
 
-    Local.stopProcess('id', 'path', { label: 'label', status: 'wait' }, update)
+    Local.stopProcess(
+      'id',
+      'path',
+      { index: 1, label: 'label', status: 'wait' },
+      update
+    )
   })
 
   test('processResult', async () => {
@@ -148,7 +163,12 @@ describe('plugins/local/src/lib', () => {
       return 'interval'
     })
     mockReadFile.mockImplementation(() => 'PROCESS VTU FILE Result.vtu')
-    Local.startProcess('id', 'path', { label: 'label', status: 'wait' }, update)
+    Local.startProcess(
+      'id',
+      'path',
+      { index: 1, label: 'label', status: 'wait' },
+      update
+    )
 
     // Convert error
     mockConvert.mockImplementation(() => {
@@ -157,7 +177,7 @@ describe('plugins/local/src/lib', () => {
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
 
@@ -168,7 +188,7 @@ describe('plugins/local/src/lib', () => {
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
 
@@ -179,14 +199,14 @@ describe('plugins/local/src/lib', () => {
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
 
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
   })
@@ -198,13 +218,18 @@ describe('plugins/local/src/lib', () => {
       return 'interval'
     })
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE data.dat')
-    Local.startProcess('id', 'path', { label: 'label', status: 'wait' }, update)
+    Local.startProcess(
+      'id',
+      'path',
+      { index: 1, label: 'label', status: 'wait' },
+      update
+    )
 
     // Error
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
 
@@ -218,13 +243,13 @@ describe('plugins/local/src/lib', () => {
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
     await Local.stopProcess(
       'id',
       'path',
-      { label: 'label', status: 'wait' },
+      { index: 1, label: 'label', status: 'wait' },
       update
     )
   })
@@ -560,7 +585,12 @@ describe('plugins/local/src/lib', () => {
 
   test('monitoring', async () => {
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
-    Local.monitoring('id', '_', [{ label: 'label', status: 'wait' }], [])
+    Local.monitoring(
+      'id',
+      '_',
+      [{ index: 1, label: 'label', status: 'wait' }],
+      []
+    )
   })
 
   test('stop', async () => {
@@ -568,9 +598,9 @@ describe('plugins/local/src/lib', () => {
       .spyOn(process, 'kill')
       .mockImplementation((_: number) => true)
     await Local.stop('id', [
-      { label: 'label', status: 'finish' },
-      { label: 'label', status: 'wait' },
-      { label: 'label', pid: '0', status: 'process' }
+      { index: 1, label: 'label', status: 'finish' },
+      { index: 1, label: 'label', status: 'wait' },
+      { index: 1, label: 'label', pid: '0', status: 'process' }
     ])
     expect(mockKill).toHaveBeenCalledTimes(1)
 
@@ -581,9 +611,9 @@ describe('plugins/local/src/lib', () => {
     })
     Local.startProcess('id', '_', {} as ISimulationTask, jest.fn)
     await Local.stop('id', [
-      { label: 'label', status: 'finish' },
-      { label: 'label', status: 'wait' },
-      { label: 'label', pid: '0', status: 'process' }
+      { index: 1, label: 'label', status: 'finish' },
+      { index: 1, label: 'label', status: 'wait' },
+      { index: 1, label: 'label', pid: '0', status: 'process' }
     ])
   })
 })

@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add, { errors } from '..'
+import { IClientPlugin } from '@/plugins/index.d'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -30,7 +31,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 describe('components/administration/users/add', () => {
-  const plugins = []
+  const plugins: IClientPlugin[] = []
   const swr = { addOneUser: jest.fn() }
 
   beforeEach(() => {

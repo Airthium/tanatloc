@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Share, { errors } from '..'
+import { IFrontProjectsItem, IFrontWorkspacesItem } from '@/api/index.d'
 
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -38,24 +39,29 @@ describe('components/assets/share', () => {
   const project = {
     id: 'id',
     title: 'title',
-    groups: [{ id: 'id' }],
-    users: [{ id: 'id' }]
+    groups: [{ id: 'id' } as IFrontProjectsItem['groups'][0]],
+    users: [{ id: 'id' } as IFrontProjectsItem['users'][0]]
   }
   const workspace = {
     id: 'id',
     name: 'name',
-    groups: [{ id: 'id' }],
-    users: [{ id: 'id' }]
+    groups: [{ id: 'id' } as IFrontWorkspacesItem['groups'][0]],
+    users: [{ id: 'id' } as IFrontWorkspacesItem['users'][0]]
   }
   const organizations = [
     {
       id: 'id0',
+      name: 'organization name',
       groups: [
         {
           id: 'id',
           name: 'group name',
           users: [
-            { id: 'id1', lastname: 'lastname', firstname: 'firstname' },
+            {
+              id: 'id1',
+              lastname: 'lastname',
+              firstname: 'firstname'
+            },
             { id: 'id2', email: 'email' },
             { id: 'id3', lastname: 'lastname' },
             { id: 'id4', firstname: 'firstname' }

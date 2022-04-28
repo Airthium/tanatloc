@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
-import { ISystem } from '@/database/system/index'
+import { IFrontSystem } from '@/api/index.d'
 
 import {
   MIN_SIZE,
@@ -80,7 +80,7 @@ export const checkRegex = (value: string, regex: RegExp): boolean => {
  * @param system System
  * @param value Value
  */
-export const requireLetter = (system: ISystem, value: string): boolean => {
+export const requireLetter = (system: IFrontSystem, value: string): boolean => {
   if (system?.password?.requireLetter ?? REQUIRE_LETTER)
     return checkRegex(value, /[a-zA-Z]/)
   return true
@@ -91,7 +91,7 @@ export const requireLetter = (system: ISystem, value: string): boolean => {
  * @param system System
  * @param value Value
  */
-export const requireNumber = (system: ISystem, value: string): boolean => {
+export const requireNumber = (system: IFrontSystem, value: string): boolean => {
   if (system?.password?.requireNumber ?? REQUIRE_NUMBER)
     return checkRegex(value, /\d/)
   return true
@@ -102,7 +102,7 @@ export const requireNumber = (system: ISystem, value: string): boolean => {
  * @param system System
  * @param value Value
  */
-export const requireSymbol = (system: ISystem, value: string): boolean => {
+export const requireSymbol = (system: IFrontSystem, value: string): boolean => {
   if (system?.password?.requireSymbol ?? REQUIRE_SYMBOL)
     return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
   return true
@@ -133,7 +133,7 @@ export const checkSize = (
  * @param err Errors
  */
 export const checkFormat = (
-  system: ISystem,
+  system: IFrontSystem,
   value: string,
   err: string[]
 ): void => {

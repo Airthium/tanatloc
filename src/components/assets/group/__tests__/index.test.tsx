@@ -30,7 +30,7 @@ jest.mock('@/api/group', () => ({
 }))
 
 describe('components/assets/group', () => {
-  const userOptions = []
+  const userOptions: { label: string; value: string }[] = []
   const organization = {
     id: 'id',
     groups: [{ id: 'id' }]

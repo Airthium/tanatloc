@@ -39,17 +39,20 @@ export interface IGeometry<T = []> {
         uuid: string
         solids?: {
           uuid: string
-          number: number | string
+          name: string
+          number: number
           color?: { r: number; g: number; b: number }
         }[]
         faces?: {
           uuid: string
-          number: number | string
+          name: string
+          number: number
           color?: { r: number; g: number; b: number }
         }[]
         edges?: {
           uuid: string
-          number: number | string
+          name: string
+          number: number
           color?: { r: number; g: number; b: number }
         }[]
       }

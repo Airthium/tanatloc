@@ -4,7 +4,8 @@ import {
   DeleteButton,
   DownloadButton,
   GoBack,
-  CancelButton
+  CancelButton,
+  LinkButton
 } from '..'
 
 jest.mock('../add', () => () => <div />)
@@ -19,6 +20,8 @@ jest.mock('../goBack', () => () => <div />)
 
 jest.mock('../cancel', () => () => <div />)
 
+jest.mock('../link', () => () => <div />)
+
 describe('components/assets/button', () => {
   test('import', () => {
     expect(AddButton).toBeDefined()
@@ -27,5 +30,6 @@ describe('components/assets/button', () => {
     expect(DownloadButton).toBeDefined()
     expect(GoBack).toBeDefined()
     expect(CancelButton).toBeDefined()
+    expect(LinkButton).toBeDefined()
   })
 })

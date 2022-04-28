@@ -25,6 +25,8 @@ import {
   unselect
 } from '@/context/select/actions'
 
+import { IFrontGeometriesItem } from '@/api/index.d'
+
 import Utils from '@/lib/utils'
 
 /**
@@ -41,30 +43,17 @@ export interface ISelection {
   selected: { uuid: string; label: number | string }[]
 }
 
+type TGeometry = {
+  solids?: IFrontGeometriesItem['summary']['solids']
+  faces?: IFrontGeometriesItem['summary']['faces']
+  edges?: IFrontGeometriesItem['summary']['edges']
+}
+
 /**
  * Props
  */
 export interface IProps {
-  geometry: {
-    solids?: {
-      uuid: string
-      number?: number | string
-      name?: string
-      color?: IColor
-    }[]
-    faces?: {
-      uuid: string
-      number?: number | string
-      name?: string
-      color?: IColor
-    }[]
-    edges?: {
-      uuid: string
-      number?: number | string
-      name?: string
-      color?: IColor
-    }[]
-  }
+  geometry: TGeometry
   alreadySelected?: ISelection[]
   updateSelected: (selected: ISelect[]) => void
 }
@@ -99,7 +88,7 @@ const Selector = ({
   // Colors
   useEffect(() => {
     const colorsList: IColor[] = []
-    geometry?.[type as keyof IProps['geometry']]?.forEach(
+    geometry?.[type as keyof TGeometry]?.forEach(
       (element: { color?: IColor }) => {
         if (element.color) {
           const existingColor = colorsList.find(
@@ -155,8 +144,8 @@ const Selector = ({
    * Select all
    */
   const selectAll = (): void => {
-    geometry?.[type as keyof IProps['geometry']]?.forEach(
-      (element: { uuid: string; number?: number | string; color?: IColor }) => {
+    geometry?.[type as keyof TGeometry]?.forEach(
+      (element: { uuid: string; number: number; color?: IColor }) => {
         if (
           !filter ||
           (filter &&
@@ -167,7 +156,7 @@ const Selector = ({
           dispatch(
             select({
               uuid: element.uuid,
-              label: element.number as string | number
+              label: element.number
             })
           )
       }
@@ -178,8 +167,8 @@ const Selector = ({
    * Unselect all
    */
   const unselectAll = () => {
-    geometry?.[type as keyof IProps['geometry']]?.forEach(
-      (element: { uuid: string; number?: number | string; color?: IColor }) => {
+    geometry?.[type as keyof TGeometry]?.forEach(
+      (element: { uuid: string; number: number; color?: IColor }) => {
         if (
           !filter ||
           (filter &&
@@ -190,7 +179,7 @@ const Selector = ({
           dispatch(
             unselect({
               uuid: element.uuid,
-              label: element.number as string | number
+              label: element.number
             })
           )
       }
@@ -201,8 +190,8 @@ const Selector = ({
    * Swap selection
    */
   const selectSwap = () => {
-    geometry?.[type as keyof IProps['geometry']]?.forEach(
-      (element: { uuid: string; number?: number | string; color?: IColor }) => {
+    geometry?.[type as keyof TGeometry]?.forEach(
+      (element: { uuid: string; number: number; color?: IColor }) => {
         if (
           !filter ||
           (filter &&
@@ -214,21 +203,21 @@ const Selector = ({
             dispatch(
               unselect({
                 uuid: element.uuid,
-                label: element.number as string | number
+                label: element.number
               })
             )
           else
             dispatch(
               select({
                 uuid: element.uuid,
-                label: element.number as string | number
+                label: element.number
               })
             )
         } else {
           dispatch(
             select({
               uuid: element.uuid,
-              label: element.number as string | number
+              label: element.number
             })
           )
         }
@@ -253,8 +242,8 @@ const Selector = ({
   const display = useCallback(
     (element: {
       uuid: string
-      number?: number | string
-      name?: string
+      number: number
+      name: string
       color?: IColor
     }) => {
       // Color filter
@@ -321,88 +310,78 @@ const Selector = ({
       </Space>
 
       <div className="full-width marginTop-20">
-        {geometry?.[type as keyof IProps['geometry']]
-          ? geometry[type as keyof IProps['geometry']]!.map(
-              (
-                element: {
-                  uuid: string
-                  number?: number | string
-                  name?: string
-                  color?: IColor
-                },
-                index: number
-              ) => {
-                if (display(element)) {
-                  let borderColor = 'transparent'
-                  let backgroundColor = 'transparent'
-                  if (
-                    selected.find((s) => s.uuid === element.uuid) &&
-                    highlighted?.uuid !== element.uuid
-                  ) {
-                    borderColor = '#FAD114'
-                    backgroundColor = 'rgba(255, 251, 230, 0.3)'
-                  } else if (highlighted?.uuid === element.uuid) {
-                    borderColor = '#FAD114'
-                    backgroundColor = '#FFFBE6'
-                  }
-
-                  return (
-                    <Card
-                      className="marginBottom-10"
-                      key={index}
-                      bodyStyle={{
-                        position: 'relative',
-                        padding: '10px 10px 10px 40px',
-                        borderWidth: '2px',
-                        borderStyle: 'solid',
-                        borderColor,
-                        backgroundColor
-                      }}
-                      onMouseEnter={() =>
-                        onHighlight({
-                          uuid: element.uuid,
-                          label: element.number as string | number
-                        })
-                      }
-                      onMouseLeave={onUnhighlight}
-                      onClick={() =>
-                        onSelect({
-                          uuid: element.uuid,
-                          label: element.number as string | number
-                        })
-                      }
-                    >
-                      <Space direction="vertical">
-                        <div>
-                          <div
-                            style={{
-                              position: 'absolute',
-                              left: '-2px',
-                              top: '-2px',
-                              bottom: '-2px',
-                              width: '30px',
-                              backgroundColor: Utils.rgbToRgba(element.color, 1)
-                            }}
-                          />
-                          {element.name}
-                        </div>
-                        {alreadySelected?.map((a) => {
-                          if (a.selected.find((s) => s.uuid === element.uuid))
-                            return (
-                              <Tag
-                                key={element.uuid}
-                                color={Utils.stringToColor(a.label)}
-                              >
-                                {a.label}
-                              </Tag>
-                            )
-                        })}
-                      </Space>
-                    </Card>
-                  )
+        {geometry?.[type as keyof TGeometry]
+          ? geometry[type as keyof TGeometry]!.map((element, index) => {
+              if (display(element)) {
+                let borderColor = 'transparent'
+                let backgroundColor = 'transparent'
+                if (
+                  selected.find((s) => s.uuid === element.uuid) &&
+                  highlighted?.uuid !== element.uuid
+                ) {
+                  borderColor = '#FAD114'
+                  backgroundColor = 'rgba(255, 251, 230, 0.3)'
+                } else if (highlighted?.uuid === element.uuid) {
+                  borderColor = '#FAD114'
+                  backgroundColor = '#FFFBE6'
                 }
+
+                return (
+                  <Card
+                    className="marginBottom-10"
+                    key={index}
+                    bodyStyle={{
+                      position: 'relative',
+                      padding: '10px 10px 10px 40px',
+                      borderWidth: '2px',
+                      borderStyle: 'solid',
+                      borderColor,
+                      backgroundColor
+                    }}
+                    onMouseEnter={() =>
+                      onHighlight({
+                        uuid: element.uuid,
+                        label: element.number
+                      })
+                    }
+                    onMouseLeave={onUnhighlight}
+                    onClick={() =>
+                      onSelect({
+                        uuid: element.uuid,
+                        label: element.number
+                      })
+                    }
+                  >
+                    <Space direction="vertical">
+                      <div>
+                        <div
+                          style={{
+                            position: 'absolute',
+                            left: '-2px',
+                            top: '-2px',
+                            bottom: '-2px',
+                            width: '30px',
+                            backgroundColor: Utils.rgbToRgba(element.color, 1)
+                          }}
+                        />
+                        {element.name}
+                      </div>
+                      {alreadySelected?.map((a) => {
+                        if (a.selected.find((s) => s.uuid === element.uuid))
+                          return (
+                            <Tag
+                              key={element.uuid}
+                              color={Utils.stringToColor(a.label)}
+                            >
+                              {a.label}
+                            </Tag>
+                          )
+                      })}
+                    </Space>
+                  </Card>
+                )
               }
-            )
+            })
           : []}
       </div>
     </Card>

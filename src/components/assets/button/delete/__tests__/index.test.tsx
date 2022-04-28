@@ -5,7 +5,7 @@ import DeleteButton from '@/components/assets/button/delete'
 
 const mockDeleteDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: (props) => mockDeleteDialog(props)
+  DeleteDialog: (props: any) => mockDeleteDialog(props)
 }))
 
 describe('components/assets/button/delete', () => {

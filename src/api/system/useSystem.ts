@@ -11,16 +11,18 @@ import { fetcher } from '@/api/call'
  * @returns System
  */
 export const useSystem = (): [
-  IFrontSystem | undefined,
+  IFrontSystem,
   {
     mutateSystem: (system: IFrontMutateSystem) => void
     errorSystem: Error
     loadingSystem: boolean
   }
 ] => {
+  const defaultData = {} as IFrontSystem
+
   const { data, error, mutate } = useSWR('/api/system', fetcher)
   const loading = !data
-  const system = data?.system
+  const system = data?.system || defaultData
 
   /**
    * Mutate

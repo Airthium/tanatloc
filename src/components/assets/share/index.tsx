@@ -83,9 +83,16 @@ export const onShare = async (
       ])
       // Mutate
       const newWorkspace = { ...workspace }
-      newWorkspace.groups = groupsSelected.map((group) => ({ id: group }))
-      newWorkspace.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneWorkspace(newWorkspace)
+      newWorkspace.groups = groupsSelected.map(
+        (group) =>
+          ({
+            id: group
+          } as IFrontWorkspacesItem['groups'][0])
+      )
+      newWorkspace.users = usersSelected.map(
+        (user) => ({ id: user } as IFrontWorkspacesItem['users'][0])
+      )
+      swr.mutateOneWorkspace!(newWorkspace)
     } else {
       // API
       await ProjectAPI.update({ id: project!.id }, [
@@ -99,10 +106,14 @@ export const onShare = async (
         }
       ])
       // Mutate
-      const newProject = { ...project }
-      newProject.groups = groupsSelected.map((group) => ({ id: group }))
-      newProject.users = usersSelected.map((user) => ({ id: user }))
-      swr.mutateOneProject(newProject)
+      const newProject = { ...project! }
+      newProject.groups = groupsSelected.map(
+        (group) => ({ id: group } as IFrontProjectsItem['groups'][0])
+      )
+      newProject.users = usersSelected.map(
+        (user) => ({ id: user } as IFrontProjectsItem['users'][0])
+      )
+      swr.mutateOneProject!(newProject)
     }
   } catch (err) {
     ErrorNotification(errors.share, err)

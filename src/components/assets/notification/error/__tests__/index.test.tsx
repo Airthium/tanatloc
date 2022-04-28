@@ -35,6 +35,7 @@ describe('components/assets/notification/error', () => {
       info: { message: 'API error 2' }
     } as ICallError)
 
+    //@ts-ignore
     onClose()
   })
 })

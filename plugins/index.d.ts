@@ -1,3 +1,5 @@
+/** @module Plugins.Interface */
+
 import { IModel } from '@/models/index.d'
 import { ISimulation, ISimulationTask } from '@/database/simulation'
 

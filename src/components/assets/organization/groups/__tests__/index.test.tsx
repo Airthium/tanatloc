@@ -45,6 +45,7 @@ describe('components/assets/organization/groups', () => {
   const organization = {
     id: 'id',
     owners: [],
+    users: [],
     groups: []
   }
   const swr = {
@@ -88,8 +89,18 @@ describe('components/assets/organization/groups', () => {
       <Groups
         organization={{
           ...organization,
-          owners: [{ id: 'id1', firstname: 'firstname', lastname: 'lastname' }],
-          users: [{ id: 'id2', email: 'email' }, {}]
+          owners: [
+            {
+              id: 'id1',
+              email: 'email',
+              firstname: 'firstname',
+              lastname: 'lastname'
+            }
+          ],
+          users: [
+            { id: 'id2', email: 'email' },
+            { id: 'id3', email: 'email' }
+          ]
         }}
         swr={swr}
       />

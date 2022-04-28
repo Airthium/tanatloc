@@ -33,12 +33,12 @@ describe('components/assets/group', () => {
   const userOptions: { label: string; value: string }[] = []
   const organization = {
     id: 'id',
-    groups: [{ id: 'id' }]
+    groups: [{ id: 'id', name: 'name', users: [] }]
   }
   const group = {
     id: 'id',
     name: 'name',
-    users: [{ id: 'id' }]
+    users: [{ id: 'id', email: 'email' }]
   }
   const swr = {
     mutateOneOrganization: jest.fn(),

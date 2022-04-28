@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontOrganizationsItem } from '@/api/index.d'
+
 import List, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
@@ -33,16 +35,20 @@ describe('components/organizations/list', () => {
     {
       id: 'id1',
       name: 'Name1',
-      owners: [{ id: 'idu' }],
-      users: [{ id: 'id1' }],
-      groups: [{ id: 'id1' }]
+      owners: [{ id: 'idu' } as IFrontOrganizationsItem['owners'][0]],
+      pendingowners: [],
+      users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+      pendingusers: [],
+      groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
     },
     {
       id: 'id2',
       name: 'Name2',
-      owners: [{ id: 'id2' }],
-      users: [{ id: 'id2' }],
-      groups: [{ id: 'id2' }]
+      owners: [{ id: 'id2' } as IFrontOrganizationsItem['owners'][0]],
+      pendingowners: [],
+      users: [{ id: 'id2' } as IFrontOrganizationsItem['users'][0]],
+      pendingusers: [],
+      groups: [{ id: 'id2' } as IFrontOrganizationsItem['groups'][0]]
     }
   ]
   const swr = {
@@ -112,17 +118,23 @@ describe('components/organizations/list', () => {
         organizations={[
           {
             id: 'id1',
+            //@ts-ignore
             name: undefined,
-            owners: [{ id: 'idu' }],
-            users: [{ id: 'id1' }],
-            groups: [{ id: 'id1' }]
+            owners: [{ id: 'idu' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           },
           {
             id: 'id2',
+            //@ts-ignore
             name: undefined,
-            owners: [{ id: 'id2' }],
-            users: [{ id: 'id2' }],
-            groups: [{ id: 'id2' }]
+            owners: [{ id: 'id2' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [],
+            users: [{ id: 'id2' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [],
+            groups: [{ id: 'id2' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}
@@ -148,11 +160,13 @@ describe('components/organizations/list', () => {
         user={user}
         organizations={[
           {
-            id: 'id',
-            name: 'name',
-            owners: [{ id: 'id1' }],
-            users: [{ id: 'idu' }],
-            groups: [{ id: 'id1' }]
+            id: 'id1',
+            name: 'Name1',
+            owners: [{ id: 'idu' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}
@@ -192,13 +206,17 @@ describe('components/organizations/list', () => {
         user={user}
         organizations={[
           {
-            id: 'id',
-            name: 'name',
-            owners: [{ id: 'id1' }],
-            pendingowners: [{ id: 'idu' }],
-            users: [{ id: 'id1' }],
-            pendingusers: [{ id: 'id1' }],
-            groups: [{ id: 'id1' }]
+            id: 'id1',
+            name: 'Name1',
+            owners: [{ id: 'id1' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [
+              { id: 'idu' } as IFrontOrganizationsItem['pendingowners'][0]
+            ],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [
+              { id: 'id1' } as IFrontOrganizationsItem['pendingusers'][0]
+            ],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}
@@ -238,13 +256,17 @@ describe('components/organizations/list', () => {
         user={user}
         organizations={[
           {
-            id: 'id',
-            name: 'name',
-            owners: [{ id: 'id1' }],
-            pendingowners: [{ id: 'idu' }],
-            users: [{ id: 'id1' }],
-            pendingusers: [{ id: 'id1' }],
-            groups: [{ id: 'id1' }]
+            id: 'id1',
+            name: 'Name1',
+            owners: [{ id: 'id1' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [
+              { id: 'idu' } as IFrontOrganizationsItem['pendingowners'][0]
+            ],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [
+              { id: 'id1' } as IFrontOrganizationsItem['pendingusers'][0]
+            ],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}
@@ -288,13 +310,17 @@ describe('components/organizations/list', () => {
         user={user}
         organizations={[
           {
-            id: 'id',
-            name: 'name',
-            owners: [{ id: 'id1' }],
-            pendingowners: [{ id: 'id1' }],
-            users: [{ id: 'id1' }],
-            pendingusers: [{ id: 'idu' }],
-            groups: [{ id: 'id1' }]
+            id: 'id1',
+            name: 'Name1',
+            owners: [{ id: 'id1' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [
+              { id: 'id1' } as IFrontOrganizationsItem['pendingowners'][0]
+            ],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [
+              { id: 'idu' } as IFrontOrganizationsItem['pendingusers'][0]
+            ],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}
@@ -334,13 +360,17 @@ describe('components/organizations/list', () => {
         user={user}
         organizations={[
           {
-            id: 'id',
-            name: 'name',
-            owners: [{ id: 'id1' }],
-            pendingowners: [{ id: 'id1' }],
-            users: [{ id: 'id1' }],
-            pendingusers: [{ id: 'idu' }],
-            groups: [{ id: 'id1' }]
+            id: 'id1',
+            name: 'Name1',
+            owners: [{ id: 'id1' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [
+              { id: 'id1' } as IFrontOrganizationsItem['pendingowners'][0]
+            ],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [
+              { id: 'idu' } as IFrontOrganizationsItem['pendingusers'][0]
+            ],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}
@@ -384,12 +414,17 @@ describe('components/organizations/list', () => {
         user={user}
         organizations={[
           {
-            id: 'id',
-            name: 'name',
-            owners: [{ id: 'id1' }],
-            pendingowners: [{ id: 'id1' }],
-            pendingusers: [{ id: 'idu' }],
-            groups: [{ id: 'id1' }]
+            id: 'id1',
+            name: 'Name1',
+            owners: [{ id: 'id1' } as IFrontOrganizationsItem['owners'][0]],
+            pendingowners: [
+              { id: 'id1' } as IFrontOrganizationsItem['pendingowners'][0]
+            ],
+            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            pendingusers: [
+              { id: 'idu' } as IFrontOrganizationsItem['pendingusers'][0]
+            ],
+            groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }
         ]}
         swr={swr}

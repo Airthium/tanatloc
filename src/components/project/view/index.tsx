@@ -15,8 +15,11 @@ import ResultAPI from '@/api/result'
 
 import ThreeView from './three'
 
-type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'dimension' | 'needCleanup'>
-type TResult = Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
+export type TGeometry = Pick<
+  IFrontGeometriesItem,
+  'id' | 'dimension' | 'needCleanup'
+>
+export type TResult = Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
 
 /**
  * Props

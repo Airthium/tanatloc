@@ -1,29 +1,30 @@
 /** @module Components.Assets.Organization.Groups */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect, useCallback, useRef, RefObject } from 'react'
 import { Avatar, Space, Table } from 'antd'
-
-import {
-  IGroupWithData,
-  IOrganizationWithData,
-  IUserWithData
-} from '@/lib/index.d'
 
 import Group, { Delete } from '@/components/assets/group'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
+import {
+  IFrontOrganizationsItem,
+  IFrontMutateOrganizationsItem,
+  IFrontGroupsItem
+} from '@/api/index.d'
 import GroupAPI from '@/api/group'
 
 /**
  * Props
  */
 export interface IProps {
-  organization: IOrganizationWithData
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'users' | 'groups'
+  >
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
   }
 }
 
@@ -64,13 +65,13 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
     const owners = organization.owners
     const users = organization?.users
 
-    const allUsers = [...(owners as IUserWithData[]), ...(users || [])]
+    const allUsers = [...owners, ...users]
 
     const options = allUsers.map((user) => {
       let name = ''
       if (user.firstname || user.lastname)
         name = user.firstname + ' ' + user.lastname
-      else name = user.email as string
+      else name = user.email
       return {
         label: name,
         value: user.id
@@ -85,12 +86,12 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
   }, [errorGroups])
 
   // Columns
-  const usersRender = (u: IUserWithData[]) => (
+  const usersRender = (u: IFrontGroupsItem['users']) => (
     <Avatar.Group maxCount={5}>
       {u.map((user) => Utils.userToAvatar(user))}
     </Avatar.Group>
   )
-  const actionsRender = (_: any, group: IGroupWithData) => (
+  const actionsRender = (_: any, group: IFrontGroupsItem) => (
     <Space>
       <Group
         userOptions={userOptions}
@@ -188,18 +189,6 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
       />
     </Space>
   )
-}
-
-Groups.propTypes = {
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    owners: PropTypes.array.isRequired,
-    users: PropTypes.array,
-    groups: PropTypes.array.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Groups

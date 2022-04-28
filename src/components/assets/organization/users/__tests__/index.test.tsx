@@ -15,7 +15,10 @@ jest.mock('@/lib/utils', () => ({
 describe('components/assets/organization/users', () => {
   const organization = {
     id: 'id',
-    owners: [{}]
+    owners: [{ id: 'id', email: 'email' }],
+    pendingowners: [],
+    users: [],
+    pendingusers: []
   }
   const swr = {
     mutateOneOrganization: jest.fn(),
@@ -34,7 +37,13 @@ describe('components/assets/organization/users', () => {
 
   test('with users', () => {
     const { unmount } = render(
-      <Users organization={{ ...organization, users: [{}] }} swr={swr} />
+      <Users
+        organization={{
+          ...organization,
+          users: [{ id: 'id', email: 'email' }]
+        }}
+        swr={swr}
+      />
     )
 
     unmount()
@@ -45,9 +54,9 @@ describe('components/assets/organization/users', () => {
       <Users
         organization={{
           ...organization,
-          pendingowners: [{}],
-          users: [{}],
-          pendingusers: [{}]
+          pendingowners: [{ id: 'id', email: 'email' }],
+          users: [{ id: 'id', email: 'email' }],
+          pendingusers: [{ id: 'id', email: 'email' }]
         }}
         swr={swr}
       />

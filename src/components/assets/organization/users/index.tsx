@@ -2,13 +2,11 @@
 
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Space, Table, TableColumnsType } from 'antd'
+import { Card, Space, Table, TableColumnType } from 'antd'
 
 import {
   IFrontOrganizationsItem,
-  IFrontMutateOrganizationsItem,
-  IFrontUsers,
-  IFrontUsersItem
+  IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 import Utils from '@/lib/utils'
 
@@ -49,9 +47,11 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const refTableUsers = useRef(null)
 
   // Columns
-  const avatarRender = (_: any, user: IFrontUsersItem) =>
+  const avatarRender = (_: any, user: IFrontOrganizationsItem['users'][0]) =>
     Utils.userToAvatar(user)
-  const ownerActionsRender = (owner: IFrontUsersItem) => (
+  const ownerActionsRender = (
+    owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
+  ) => (
     <Delete
       disabled={organization.owners.length < 2}
       user={{
@@ -71,7 +71,9 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
       }}
     />
   )
-  const userActionsRender = (user: IFrontUsersItem) => (
+  const userActionsRender = (
+    user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
+  ) => (
     <Delete
       user={{
         id: user.id,
@@ -93,7 +95,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     />
   )
 
-  const columns: TableColumnsType<IFrontUsersItem> = [
+  const columns = [
     {
       key: 'avatar',
       dataIndex: 'avatar',
@@ -116,25 +118,25 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  const ownersColumns: TableColumnsType<IFrontUsersItem> = [
+  const ownersColumns = [
     ...columns,
     {
       key: 'actions',
       title: 'Actions',
-      align: 'center',
-      fixed: 'right',
+      align: 'center' as TableColumnType<any>['align'],
+      fixed: 'right' as TableColumnType<any>['fixed'],
       width: 75,
       render: ownerActionsRender
     }
   ]
 
-  const usersColumns: TableColumnsType<IFrontUsersItem> = [
+  const usersColumns = [
     ...columns,
     {
       key: 'actions',
       title: 'Actions',
-      align: 'center',
-      fixed: 'right',
+      align: 'center' as TableColumnType<any>['align'],
+      fixed: 'right' as TableColumnType<any>['fixed'],
       width: 75,
       render: userActionsRender
     }
@@ -181,7 +183,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Set Table Scroll Limit
   useEffect(() => {
     onResize()
-  }, [organization, onResize, refTableAdmin.current, refTableUsers.current])
+  }, [organization, onResize])
 
   /**
    * Render
@@ -211,15 +213,14 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               size="small"
               columns={ownersColumns}
               dataSource={[
-                ...(organization.owners as IFrontUsers).map((o, index) => ({
+                ...organization.owners.map((o, index) => ({
                   ...o,
                   key: o.id || index
                 })),
                 ...(organization.pendingowners?.map((o, index) => ({
                   ...o,
                   pending: true,
-                  key:
-                    o.id || (organization.owners as IFrontUsers).length + index
+                  key: o.id || organization.owners.length + index
                 })) || [])
               ]}
               scroll={{ y: scrollAdmin?.y }}
@@ -256,8 +257,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                 ...(organization.pendingusers?.map((u, index) => ({
                   ...u,
                   pending: true,
-                  key:
-                    u.id || (organization.users as IFrontUsers)?.length + index
+                  key: u.id || organization.users?.length + index
                 })) || [])
               ]}
               scroll={{ y: scrollUsers?.y }}

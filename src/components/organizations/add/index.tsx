@@ -4,12 +4,11 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { INewOrganization } from '@/database/organization/index'
-
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontNewOrganization } from '@/api/index.d'
 import OrganizationAPI from '@/api/organization'
 
 /**
@@ -17,7 +16,7 @@ import OrganizationAPI from '@/api/organization'
  */
 export interface IProps {
   swr: {
-    addOneOrganization: (organization: INewOrganization) => void
+    addOneOrganization: (organization: IFrontNewOrganization) => void
   }
 }
 
@@ -35,7 +34,7 @@ export const errors = {
  */
 export const onAdd = async (
   values: { name: string },
-  swr: { addOneOrganization: (origanization: INewOrganization) => void }
+  swr: { addOneOrganization: (origanization: IFrontNewOrganization) => void }
 ): Promise<void> => {
   try {
     // API

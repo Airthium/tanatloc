@@ -1,6 +1,5 @@
 /** @module Components.Assets.Organization.User.Add */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
@@ -169,21 +168,6 @@ const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
       <AddButton onAdd={() => setVisible(true)}>{title}</AddButton>
     </>
   )
-}
-
-Add.propTypes = {
-  title: PropTypes.string.isRequired,
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    owners: PropTypes.array.isRequired,
-    pendingowners: PropTypes.array,
-    users: PropTypes.array,
-    pendingusers: PropTypes.array
-  }).isRequired,
-  dBkey: PropTypes.oneOf(['owners', 'users']),
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Add

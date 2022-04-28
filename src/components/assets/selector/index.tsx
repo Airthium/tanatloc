@@ -43,7 +43,7 @@ export interface ISelection {
   selected: { uuid: string; label: number | string }[]
 }
 
-type TGeometry = {
+export type TGeometry = {
   solids?: IFrontGeometriesItem['summary']['solids']
   faces?: IFrontGeometriesItem['summary']['faces']
   edges?: IFrontGeometriesItem['summary']['edges']

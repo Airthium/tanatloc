@@ -59,12 +59,13 @@ describe('components/assets/share', () => {
           users: [
             {
               id: 'id1',
+              email: 'email',
               lastname: 'lastname',
               firstname: 'firstname'
             },
             { id: 'id2', email: 'email' },
-            { id: 'id3', lastname: 'lastname' },
-            { id: 'id4', firstname: 'firstname' }
+            { id: 'id3', email: 'email', lastname: 'lastname' },
+            { id: 'id4', email: 'email', firstname: 'firstname' }
           ]
         }
       ]

@@ -32,7 +32,7 @@ export const useSystem = (): [
     (update: IFrontMutateSystem): void => {
       mutate({
         system: {
-          ...(system as IFrontSystem),
+          ...system,
           ...update
         }
       })

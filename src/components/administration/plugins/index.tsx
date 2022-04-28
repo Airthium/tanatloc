@@ -109,7 +109,7 @@ const Plugins = () => {
           <Checkbox
             checked={checked}
             onChange={async (e) =>
-              onChange(system as IFrontSystem, plugin, e.target.checked, {
+              onChange(system, plugin, e.target.checked, {
                 mutateSystem
               })
             }

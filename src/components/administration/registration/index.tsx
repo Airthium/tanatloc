@@ -120,7 +120,7 @@ const Registration = (): JSX.Element => {
         <Card title="Signup">
           <Checkbox
             checked={system?.allowsignup}
-            onChange={() => onAllowSignup(system as IFrontSystem, mutateSystem)}
+            onChange={() => onAllowSignup(system, mutateSystem)}
           >
             Allow signup
           </Checkbox>

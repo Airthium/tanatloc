@@ -16,7 +16,6 @@ import {
   IFrontGroups,
   IFrontOrganizations,
   IFrontOrganizationsItem,
-  IFrontNewOrganization,
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 

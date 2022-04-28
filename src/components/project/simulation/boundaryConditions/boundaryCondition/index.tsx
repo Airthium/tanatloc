@@ -60,11 +60,10 @@ const BoundaryCondition = ({
   swr,
   onClose
 }: IProps): JSX.Element => {
+  type BCExtended = (IModelTypedBoundaryCondition & { key: string })[]
   // State
   const [alreadySelected, setAlreadySelected] = useState<ISelection[]>([])
-  const [types, setTypes] = useState<
-    (IModelTypedBoundaryCondition & { key: string })[]
-  >([])
+  const [types, setTypes] = useState<BCExtended>([])
   const [totalNumber, setTotalNumber] = useState<number>()
   const [current, setCurrent] = useState<IModelBoundaryConditionValue>()
   const [error, setError] = useState<string>()
@@ -134,7 +133,7 @@ const BoundaryCondition = ({
           values: typedBoundaryCondition.values
         }
       })
-      .filter((t) => t) as (IModelTypedBoundaryCondition & { key: string })[]
+      .filter((t) => t) as BCExtended
     setTypes(currentTypes)
   }, [boundaryConditions])
 

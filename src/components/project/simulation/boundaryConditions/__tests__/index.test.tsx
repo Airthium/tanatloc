@@ -42,6 +42,7 @@ describe('components/project/simulation/boundaryConditions', () => {
       faces: [
         {
           uuid: 'uuid',
+          name: 'name',
           number: 1
         }
       ]

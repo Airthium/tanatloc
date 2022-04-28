@@ -74,6 +74,7 @@ const add = async (
 
           return {
             uuid: content.uuid,
+            name: solid.name,
             number: solid.number,
             color
           }
@@ -96,6 +97,7 @@ const add = async (
 
           return {
             uuid: content.uuid,
+            name: face.name,
             number: face.number,
             color
           }
@@ -118,6 +120,7 @@ const add = async (
 
           return {
             uuid: content.uuid,
+            name: edge.name,
             number: edge.number,
             color
           }

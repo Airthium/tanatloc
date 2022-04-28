@@ -66,6 +66,7 @@ describe('components/project/simulation/materials/material', () => {
     solids: [
       {
         uuid: 'uuid',
+        name: 'name',
         number: 1
       }
     ]

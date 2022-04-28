@@ -18,17 +18,17 @@ export interface IGeometrySummaryFile {
   solids?: {
     name: string
     path: string
-    number: string
+    number: number
   }[]
   faces?: {
     name: string
     path: string
-    number: string
+    number: number
   }[]
   edges?: {
     name: string
     path: string
-    number: string
+    number: number
   }[]
 }
 

@@ -99,7 +99,7 @@ const View = ({
             .then((partLoaded) =>
               setPart({ ...partLoaded, dimension: geometry?.dimension })
             )
-            .catch()
+            .catch((_err) => undefined)
             .finally(() => setLoading(false))
         }
       } else if (geometry) {
@@ -115,7 +115,7 @@ const View = ({
               .then((partLoaded) =>
                 setPart({ ...partLoaded, dimension: geometry.dimension })
               )
-              .catch()
+              .catch((_err) => undefined)
               .finally(() => setLoading(false))
           }
         }

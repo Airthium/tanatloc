@@ -152,6 +152,7 @@ describe('lib/organization', () => {
         name: 'name2'
       }
     ])
+    mockGet.mockImplementation(() => ({ name: 'name' }))
     organizations = await Organization.getByUser({ id: 'id1' }, ['name'])
     expect(mockGetAll).toHaveBeenCalledTimes(1)
     expect(organizations).toEqual([])
@@ -181,6 +182,7 @@ describe('lib/organization', () => {
         name: 'name2'
       }
     ])
+    mockGet.mockImplementation(() => ({ name: 'name', owners: ['id1'] }))
     organizations = await Organization.getByUser({ id: 'id1' }, [
       'name',
       'owners',
@@ -210,6 +212,12 @@ describe('lib/organization', () => {
         groups: ['id3']
       }
     ])
+    mockGet.mockImplementation(() => ({
+      name: 'name',
+      owners: ['id1'],
+      users: ['id2'],
+      groups: ['id3']
+    }))
     mockUserGetWithData.mockImplementation(() => ({ firstname: 'firstname' }))
     mockGroupGetWithData.mockImplementation(() => ({ name: 'name' }))
     organizations = await Organization.getByUser({ id: 'id2' }, [
@@ -252,6 +260,10 @@ describe('lib/organization', () => {
         pendingusers: ['id1']
       }
     ])
+    mockGet.mockImplementation(() => ({
+      name: 'name',
+      pendingusers: ['id1']
+    }))
     mockUserGetWithData.mockImplementation(() => ({ id: 'id1' }))
     organizations = await Organization.getByUser({ id: 'id1' }, [
       'name',

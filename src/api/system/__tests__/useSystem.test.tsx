@@ -47,6 +47,6 @@ describe('api/system/useSystem', () => {
 
     render(<FunctionalComponent />)
 
-    expect(data.system).toEqual(undefined)
+    expect(data.system).toEqual({})
   })
 })

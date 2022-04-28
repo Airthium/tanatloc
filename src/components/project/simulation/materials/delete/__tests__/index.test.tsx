@@ -90,7 +90,11 @@ describe('components/project/simulation/materials/delete', () => {
     const { unmount } = render(
       <SelectContext.Provider
         value={
-          { enabled: true, selected: [], dispatch: jest.fn() } as ISelectState
+          {
+            enabled: true,
+            selected: [],
+            dispatch: jest.fn()
+          } as ISelectState
         }
       >
         <Delete simulation={simulation} swr={swr} index={index} />

@@ -162,9 +162,9 @@ describe('components/organizations/list', () => {
           {
             id: 'id1',
             name: 'Name1',
-            owners: [{ id: 'idu' } as IFrontOrganizationsItem['owners'][0]],
+            owners: [{ id: 'id1' } as IFrontOrganizationsItem['owners'][0]],
             pendingowners: [],
-            users: [{ id: 'id1' } as IFrontOrganizationsItem['users'][0]],
+            users: [{ id: 'idu' } as IFrontOrganizationsItem['users'][0]],
             pendingusers: [],
             groups: [{ id: 'id1' } as IFrontOrganizationsItem['groups'][0]]
           }

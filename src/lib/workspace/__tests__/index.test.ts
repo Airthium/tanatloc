@@ -237,9 +237,11 @@ describe('lib/workspace', () => {
       },
       {
         id: 'groupid',
+        archivedprojects: [],
         groups: [{ id: 'groupid', name: 'name' }],
         name: 'Projects from name',
         owners: [],
+        users: [],
         projects: ['projectid']
       }
     ])

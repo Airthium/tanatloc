@@ -62,7 +62,7 @@ describe('context', () => {
 
     // Unhighlight
     res = selectReducer(initialState, { type: actionTypes.UNHIGHLIGHT })
-    expect(res.highlighted).toBe(null)
+    expect(res.highlighted).toBe(undefined)
 
     // Select
     res = selectReducer(initialState, {
@@ -75,7 +75,7 @@ describe('context', () => {
       type: actionTypes.SELECT,
       value: { uuid: 'uuid', label: 3 }
     })
-    expect(res.selected).toEqual([{ uuid: 'uuid', label: 3 }])
+    expect(res.selected).toEqual([{ uuid: 'uuid', label: 2 }])
 
     // Unselect
     res = selectReducer(res, {

@@ -59,10 +59,10 @@ const get = async <T extends TOrganizationGet>(
   id: string,
   data: T
 ): Promise<IOrganizationGet<T>> => {
-  const organizationData = (await OrganizationDB.get(
-    id,
-    data
-  )) as IOrganizationGet<T>
+  const organizationData = await OrganizationDB.get(id, data)
+
+  if (data.includes('owners') && !organizationData.owners)
+    organizationData.owners = []
 
   if (data.includes('pendingowners') && !organizationData.pendingowners)
     organizationData.pendingowners = []
@@ -76,7 +76,7 @@ const get = async <T extends TOrganizationGet>(
   if (data.includes('groups') && !organizationData.groups)
     organizationData.groups = []
 
-  return organizationData
+  return organizationData as IOrganizationGet<T>
 }
 
 /**

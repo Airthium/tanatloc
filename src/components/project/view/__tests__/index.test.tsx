@@ -36,7 +36,8 @@ describe('components/project/view', () => {
   }
   const result = {
     glb: 'test.glb',
-    originPath: 'originPath'
+    originPath: 'originPath',
+    json: 'json'
   } as ISimulationTaskFile
 
   beforeEach(() => {
@@ -55,7 +56,11 @@ describe('components/project/view', () => {
 
   test('geometry cleanup', () => {
     const { unmount } = render(
-      <View project={project} geometry={{ id: 'id', needCleanup: true }} />
+      <View
+        simulation={simulation}
+        project={project}
+        geometry={{ id: 'id0', needCleanup: true }}
+      />
     )
 
     unmount()
@@ -65,7 +70,9 @@ describe('components/project/view', () => {
     mockGeometryGet.mockImplementation(() => {
       throw new Error('geometry get error')
     })
-    const { unmount } = render(<View project={project} geometry={geometry} />)
+    const { unmount } = render(
+      <View simulation={simulation} project={project} geometry={geometry} />
+    )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
@@ -80,7 +87,9 @@ describe('components/project/view', () => {
   })
 
   test('with geometry', async () => {
-    const { unmount } = render(<View project={project} geometry={geometry} />)
+    const { unmount } = render(
+      <View simulation={simulation} project={project} geometry={geometry} />
+    )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
 

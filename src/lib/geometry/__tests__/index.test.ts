@@ -75,28 +75,53 @@ describe('lib/geometry', () => {
       glb: 'glb'
     }))
     const summary = {
-      solids: [{}, {}],
-      faces: [{}, {}],
-      edges: [{}, {}]
+      uuid: 'uuid',
+      solids: [
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: undefined
+        },
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: { r: 0, g: 0.5, b: 1 }
+        }
+      ],
+      faces: [
+        { uuid: 'uuid', name: 'name', number: 1, color: undefined },
+        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
+      ],
+      edges: [
+        { uuid: 'uuid', name: 'name', number: 1, color: undefined },
+        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
+      ]
     }
-    const solid = {}
+    const solid = {
+      uuid: 'uuid'
+    }
     const solidColor = {
+      uuid: 'uuid',
       data: {
         attributes: {
           color: { itemSize: 3, array: [0, 0.5, 1] }
         }
       }
     }
-    const face = {}
+    const face = { uuid: 'uuid' }
     const faceColor = {
+      uuid: 'uuid',
       data: {
         attributes: {
           color: { itemSize: 3, array: [0, 0.5, 1] }
         }
       }
     }
-    const edge = {}
+    const edge = { uuid: 'uuid' }
     const edgeColor = {
+      uuid: 'uuid',
       data: {
         attributes: {
           color: { itemSize: 3, array: [0, 0.5, 1] }
@@ -159,19 +184,38 @@ describe('lib/geometry', () => {
       glb: 'glb'
     }))
     const summary = {
-      faces: [{}, {}],
-      edges: [{}, {}]
+      uuid: 'uuid',
+      faces: [
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: undefined
+        },
+        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
+      ],
+      edges: [
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: undefined
+        },
+        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
+      ]
     }
-    const face = {}
+    const face = { uuid: 'uuid' }
     const faceColor = {
+      uuid: 'uuid',
       data: {
         attributes: {
           color: { itemSize: 3, array: [0, 0.5, 1] }
         }
       }
     }
-    const edge = {}
+    const edge = { uuid: 'uuid' }
     const edgeColor = {
+      uuid: 'uuid',
       data: {
         attributes: {
           color: { itemSize: 3, array: [0, 0.5, 1] }

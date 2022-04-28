@@ -12,8 +12,7 @@ describe('database/workspace/add', () => {
     expect(res).toEqual({
       id: 'id',
       name: 'name',
-      owners: ['id'],
-      projects: []
+      owners: ['id']
     })
   })
 })

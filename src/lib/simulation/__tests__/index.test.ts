@@ -190,7 +190,9 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {},
+          geometry: {
+            value: 'id'
+          },
           run: {
             cloudServer: {
               key: 'key'
@@ -218,7 +220,9 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {},
+          geometry: {
+            value: 'id'
+          },
           initialization: {
             value: {
               type: 'coupling'
@@ -243,7 +247,9 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {},
+          geometry: {
+            value: 'id'
+          },
           initialization: {
             value: {
               type: 'coupling',
@@ -270,7 +276,9 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {},
+          geometry: {
+            value: 'id'
+          },
           initialization: {
             value: {
               type: 'default'
@@ -321,7 +329,9 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {},
+          geometry: {
+            value: 'id'
+          },
           run: {
             cloudServer: {
               key: 'key'

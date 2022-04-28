@@ -195,7 +195,7 @@ const List = ({
     </Avatar.Group>
   )
   const actionsRender = (org: IFrontOrganizationsItem) => {
-    if (org.owners?.find((o) => o.id === user.id))
+    if (org.owners.find((o) => o.id === user.id))
       return (
         <Space wrap>
           <Button
@@ -213,7 +213,7 @@ const List = ({
           />
         </Space>
       )
-    else if (org.users?.find((u) => u.id === user.id))
+    else if (org.users.find((u) => u.id === user.id))
       return (
         <Space wrap>
           <Button

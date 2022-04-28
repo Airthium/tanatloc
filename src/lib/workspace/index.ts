@@ -13,6 +13,13 @@ import Organization from '../organization'
 import Project from '../project'
 
 /**
+ * Custom Types
+ */
+export type TWorkspace = IWorkspaceWithData<
+  ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
+>
+
+/**
  * Add
  * @param user User
  * @param workspace Workspace
@@ -151,11 +158,7 @@ const getWithData = async <T extends TWorkspaceGet>(
  * @param workspaces Workspaces
  * @returns Workspace
  */
-const getWorkspaces = async (
-  workspaces: string[]
-): Promise<
-  IWorkspaceWithData<('name' | 'owners' | 'users' | 'groups' | 'projects')[]>[]
-> => {
+const getWorkspaces = async (workspaces: string[]): Promise<TWorkspace[]> => {
   return Promise.all(
     workspaces.map(async (workspace) => {
       const data = await getWithData(workspace, [

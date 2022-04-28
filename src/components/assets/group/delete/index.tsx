@@ -2,22 +2,21 @@
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-
-import { IGroupWithData } from '@/lib/index.d'
+import { Typography } from 'antd'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontGroupsItem, IFrontMutateGroupsItem } from '@/api/index.d'
 import GroupAPI from '@/api/group'
-import { Typography } from 'antd'
 
 /**
  * Props
  */
 export interface IProps {
-  group: IGroupWithData
+  group: Pick<IFrontGroupsItem, 'id' | 'name'>
   swr: {
-    delOneGroup: (group: IGroupWithData) => void
+    delOneGroup: (group: IFrontMutateGroupsItem) => void
   }
 }
 
@@ -34,8 +33,8 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  group: IGroupWithData,
-  swr: { delOneGroup: (group: IGroupWithData) => void }
+  group: Pick<IFrontGroupsItem, 'id'>,
+  swr: { delOneGroup: (group: IFrontMutateGroupsItem) => void }
 ): Promise<void> => {
   try {
     // Delete

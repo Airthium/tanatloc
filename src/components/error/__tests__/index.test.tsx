@@ -2,6 +2,8 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import Error from '..'
+import { ServerResponse } from 'http'
+import { NextPageContext } from 'next'
 
 const mockReload = jest.fn()
 jest.mock('next/router', () => ({
@@ -39,23 +41,26 @@ describe('components/error', () => {
   test('getInitialProps', () => {
     let code: { statusCode?: number }
 
-    const res: { statusCode?: number } = {}
-    const err: { statusCode?: number } = {}
-    code = Error.getInitialProps({ res, err })
+    const res = {} as ServerResponse
+    const err = {} as Error & { statusCode: number | undefined }
+    code = Error.getInitialProps({ res, err } as NextPageContext)
     expect(code).toEqual({ statusCode: undefined })
 
     res.statusCode = 200
-    code = Error.getInitialProps({ res, err })
+    code = Error.getInitialProps({ res, err } as NextPageContext)
     expect(code).toEqual({ statusCode: 200 })
 
-    code = Error.getInitialProps({ res: null, err })
+    code = Error.getInitialProps({ res: undefined, err } as NextPageContext)
     expect(code).toEqual({ statusCode: undefined })
 
     err.statusCode = 200
-    code = Error.getInitialProps({ res: null, err })
+    code = Error.getInitialProps({ res: undefined, err } as NextPageContext)
     expect(code).toEqual({ statusCode: 200 })
 
-    code = Error.getInitialProps({ res: null, err: null })
+    code = Error.getInitialProps({
+      res: undefined,
+      err: null
+    } as NextPageContext)
     expect(code).toEqual({ statusCode: 404 })
   })
 })

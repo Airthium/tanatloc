@@ -69,6 +69,7 @@ describe('components/index', () => {
     const { unmount } = render(<Index />)
     fireEvent.click(screen.getByText(/Signup/))
     expect(mockPush).toHaveBeenCalledTimes(1)
+    //@ts-ignore
     expect(currentRoute).toBe('/signup')
 
     unmount()
@@ -81,6 +82,7 @@ describe('components/index', () => {
     const { unmount } = render(<Index />)
     fireEvent.click(screen.getByText(/Login/))
     expect(mockPush).toHaveBeenCalledTimes(1)
+    //@ts-ignore
     expect(currentRoute).toBe('/login')
 
     unmount()
@@ -96,6 +98,7 @@ describe('components/index', () => {
     const { unmount } = render(<Index />)
     fireEvent.click(screen.getByText(/Dashboard/))
     expect(mockPush).toHaveBeenCalledTimes(1)
+    //@ts-ignore
     expect(currentRoute).toBe('/dashboard')
 
     unmount()

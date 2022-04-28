@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontOrganizationsItem } from '@/api/index.d'
+
 import Add, { errors } from '..'
 
 const mockAddButton = jest.fn()
@@ -24,7 +26,13 @@ jest.mock('@/api/organization', () => ({
 
 describe('componenets/assets/organization/users/add', () => {
   const title = 'title'
-  const organization = { id: 'id', owners: [] }
+  const organization = {
+    id: 'id',
+    owners: [],
+    pendingowners: [],
+    users: [],
+    pendingusers: []
+  }
   const dBkey = 'users'
   const swr = {
     mutateOneOrganization: jest.fn()
@@ -126,10 +134,17 @@ describe('componenets/assets/organization/users/add', () => {
         title={title}
         organization={{
           id: 'id',
-          owners: [{ id: 'ido' }],
-          pendingowners: [{ id: 'idpo', email: 'email' }],
-          users: [{ id: 'idu' }],
-          pendingusers: [{ id: 'idpu' }]
+          owners: [{ id: 'ido' } as IFrontOrganizationsItem['owners'][0]],
+          pendingowners: [
+            {
+              id: 'idpo',
+              email: 'email'
+            } as IFrontOrganizationsItem['pendingowners'][0]
+          ],
+          users: [{ id: 'idu' } as IFrontOrganizationsItem['users'][0]],
+          pendingusers: [
+            { id: 'idpu' } as IFrontOrganizationsItem['pendingusers'][0]
+          ]
         }}
         dBkey={dBkey}
         swr={swr}

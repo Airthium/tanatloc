@@ -1,6 +1,6 @@
 /** @module Components.Error */
 
-import PropTypes from 'prop-types'
+import { NextPageContext } from 'next'
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
@@ -45,14 +45,10 @@ function Error({ statusCode }: IProps): JSX.Element {
   )
 }
 
-Error.getInitialProps = ({ res, err }) => {
+Error.getInitialProps = ({ res, err }: NextPageContext) => {
   if (res) return { statusCode: res.statusCode }
   else if (err) return { statusCode: err.statusCode }
   else return { statusCode: 404 }
-}
-
-Error.propTypes = {
-  statusCode: PropTypes.number
 }
 
 export default Error

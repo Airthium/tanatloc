@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { IFrontOrganizations } from '@/api/index.d'
+
 import Organizations from '..'
 
 const mockPush = jest.fn()
@@ -21,11 +23,11 @@ jest.mock(
 jest.mock('../add', () => () => <div />)
 
 const mockList = jest.fn()
-jest.mock('../list', () => (props) => mockList(props))
+jest.mock('../list', () => (props: any) => mockList(props))
 
 describe('components/organizations', () => {
   const user = { id: 'id' }
-  const organizations = []
+  const organizations: IFrontOrganizations = []
 
   const swr = {
     addOneOrganization: jest.fn(),
@@ -72,7 +74,17 @@ describe('components/organizations', () => {
     const { unmount } = render(
       <Organizations
         user={user}
-        organizations={[{ id: 'id', owners: [] }]}
+        organizations={[
+          {
+            id: 'id',
+            name: 'name',
+            owners: [],
+            pendingowners: [],
+            users: [],
+            pendingusers: [],
+            groups: []
+          }
+        ]}
         swr={swr}
       />
     )
@@ -90,7 +102,18 @@ describe('components/organizations', () => {
     const { unmount } = render(
       <Organizations
         user={user}
-        organizations={[...organizations, { id: 'id', owners: [] }]}
+        organizations={[
+          ...organizations,
+          {
+            id: 'id',
+            name: 'name',
+            owners: [],
+            pendingowners: [],
+            users: [],
+            pendingusers: [],
+            groups: []
+          }
+        ]}
         swr={swr}
       />
     )
@@ -111,7 +134,18 @@ describe('components/organizations', () => {
     const { unmount } = render(
       <Organizations
         user={user}
-        organizations={[...organizations, { id: 'id', owners: [] }]}
+        organizations={[
+          ...organizations,
+          {
+            id: 'id',
+            name: 'name',
+            owners: [],
+            pendingowners: [],
+            users: [],
+            pendingusers: [],
+            groups: []
+          }
+        ]}
         swr={swr}
       />
     )

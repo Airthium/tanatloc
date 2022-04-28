@@ -11,6 +11,7 @@ Object.defineProperty(window, 'requestAnimationFrame', {
   }
 })
 
+//@ts-ignore
 global.MockScene.children = [
   {
     rotation: {},

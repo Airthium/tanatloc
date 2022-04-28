@@ -16,7 +16,6 @@ import {
   IFrontGroups,
   IFrontOrganizations,
   IFrontOrganizationsItem,
-  IFrontNewOrganization,
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 
@@ -56,7 +55,7 @@ export const errors = {
  * @parm swr SWR
  */
 const onQuit = async (
-  organization: IFrontOrganizationsItem,
+  organization: Pick<IFrontOrganizationsItem, 'id' | 'users'>,
   user: Pick<IFrontUser, 'id'>,
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -84,7 +83,10 @@ const onQuit = async (
  * @param swr SWR
  */
 const onAccept = async (
-  organization: IFrontOrganizationsItem,
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  >,
   user: Pick<IFrontUser, 'id'>,
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -103,7 +105,7 @@ const onAccept = async (
 
     if (ownerIndex !== -1) {
       newOrganization.pendingowners.splice(ownerIndex, 1)
-      newOrganization.owners.push({ ...pendingowner })
+      newOrganization.owners.push(pendingowner)
     } else {
       const userIndex = newOrganization.pendingusers.findIndex(
         (u) => u.id === user.id
@@ -111,7 +113,7 @@ const onAccept = async (
       const pendinguser = newOrganization.pendingusers[userIndex]
       newOrganization.pendingusers?.splice(userIndex, 1)
       if (!newOrganization.users) newOrganization.users = []
-      newOrganization.users.push({ ...pendinguser })
+      newOrganization.users.push(pendinguser)
     }
 
     swr.mutateOneOrganization(newOrganization)
@@ -126,7 +128,10 @@ const onAccept = async (
  * @param user User
  */
 const onDecline = async (
-  organization: IFrontOrganizationsItem,
+  organization: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'pendingowners' | 'pendingusers'
+  >,
   user: Pick<IFrontUser, 'id'>,
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -134,7 +139,7 @@ const onDecline = async (
 ): Promise<void> => {
   try {
     // API
-    await OrganizationAPI.decline(organization)
+    await OrganizationAPI.decline({ id: organization.id })
 
     // Local
     const newOrganization = { ...organization }

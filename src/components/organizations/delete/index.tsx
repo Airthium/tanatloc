@@ -1,23 +1,24 @@
 /** @module Components.Organizations.Delete */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
-
-import { IOrganizationWithData } from '@/lib/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontMutateOrganizationsItem,
+  IFrontOrganizationsItem
+} from '@/api/index.d'
 import OrganizationAPI from '@/api/organization'
 
 /**
  * Props
  */
 export interface IProps {
-  organization: IOrganizationWithData
+  organization: Pick<IFrontOrganizationsItem, 'id' | 'name'>
   swr: {
-    delOneOrganization: (organization: IOrganizationWithData) => void
+    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
   }
 }
 
@@ -34,8 +35,10 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  organization: IOrganizationWithData,
-  swr: { delOneOrganization: (organization: IOrganizationWithData) => void }
+  organization: Pick<IFrontOrganizationsItem, 'id' | 'name'>,
+  swr: {
+    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
 ): Promise<void> => {
   try {
     // API
@@ -82,16 +85,6 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
       loading={loading}
     />
   )
-}
-
-Delete.propTypes = {
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    delOneOrganization: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

@@ -185,9 +185,7 @@ export interface IFrontUser
       | 'authorizedplugins'
       | 'plugins'
     )[]
-  > {
-  pending?: boolean
-}
+  > {}
 
 export interface IFrontMutateUser extends Partial<IFrontUser> {}
 
@@ -206,9 +204,7 @@ export interface IFrontUsersItem
       | 'authorizedplugins'
       | 'superuser'
     )[]
-  > {
-  pending?: boolean
-}
+  > {}
 
 export interface IFrontMutateUsersItem extends Partial<IFrontUsersItem> {
   id: string

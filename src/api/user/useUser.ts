@@ -14,7 +14,7 @@ import { fetcher } from '@/api/call'
 export const useUser = (): [
   IFrontUser | undefined,
   {
-    mutateUser: (user: IFrontMutateUser) => void
+    mutateUser: (user: Partial<IFrontMutateUser>) => void
     clearUser: () => void
     errorUser: Error
     loadingUser: boolean
@@ -29,7 +29,7 @@ export const useUser = (): [
    * @param update User
    */
   const localMutate = useCallback(
-    (update: IFrontMutateUser): void => {
+    (update: Partial<IFrontMutateUser>): void => {
       mutate({
         user: {
           ...(user as IFrontUser),

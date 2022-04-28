@@ -20,7 +20,7 @@ jest.mock('@/api/organization', () => ({
 }))
 
 describe('components/organizations/delete', () => {
-  const organization = { id: 'id' }
+  const organization = { id: 'id', name: 'name' }
   const swr = {
     delOneOrganization: jest.fn()
   }

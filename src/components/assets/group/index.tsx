@@ -1,16 +1,19 @@
 /** @module Components.Assets.Group */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input, Select } from 'antd'
-
-import { IGroupWithData, IOrganizationWithData } from '@/lib/index.d'
-import { INewGroup } from '@/database/group/index'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import {
+  IFrontOrganizationsItem,
+  IFrontGroupsItem,
+  IFrontMutateOrganizationsItem,
+  IFrontNewGroup,
+  IFrontMutateGroupsItem
+} from '@/api/index.d'
 import GroupAPI from '@/api/group'
 
 import Delete from './delete'
@@ -20,12 +23,12 @@ import Delete from './delete'
  */
 export interface IProps {
   userOptions: { label: string; value: string }[]
-  organization: IOrganizationWithData
-  group?: IGroupWithData
+  organization: Pick<IFrontOrganizationsItem, 'id' | 'groups'>
+  group?: Pick<IFrontGroupsItem, 'id' | 'name' | 'users'>
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
-    addOneGroup?: (group: INewGroup) => void
-    mutateOneGroup?: (group: IGroupWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    addOneGroup?: (group: IFrontNewGroup) => void
+    mutateOneGroup?: (group: IFrontMutateGroupsItem) => void
   }
 }
 
@@ -44,14 +47,14 @@ export const errors = {
  * @param swr SWR
  */
 export const onAdd = async (
-  organization: IOrganizationWithData,
+  organization: Pick<IFrontOrganizationsItem, 'id' | 'groups'>,
   values: {
     name: string
     users: string[]
   },
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
-    addOneGroup: (group: INewGroup) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    addOneGroup: (group: IFrontNewGroup) => void
   }
 ): Promise<void> => {
   try {
@@ -71,9 +74,9 @@ export const onAdd = async (
     swr.mutateOneOrganization({
       id: organization.id,
       groups: [
-        ...(organization.groups as IGroupWithData[]),
-        newGroup as IGroupWithData
-      ]
+        ...organization.groups,
+        newGroup
+      ] as IFrontOrganizationsItem['groups']
     })
   } catch (err) {
     ErrorNotification(errors.add, err)
@@ -89,15 +92,15 @@ export const onAdd = async (
  * @param swr SWR
  */
 export const onUpdate = async (
-  organization: IOrganizationWithData,
-  group: IGroupWithData,
+  organization: Pick<IFrontOrganizationsItem, 'id' | 'groups'>,
+  group: Pick<IFrontGroupsItem, 'id' | 'name' | 'users'>,
   values: {
     name: string
     users: string[]
   },
   swr: {
-    mutateOneOrganization: (organization: IOrganizationWithData) => void
-    mutateOneGroup: (group: IGroupWithData) => void
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneGroup: (group: IFrontMutateGroupsItem) => void
   }
 ): Promise<void> => {
   try {
@@ -136,11 +139,9 @@ export const onUpdate = async (
     swr.mutateOneOrganization({
       id: organization.id,
       groups: [
-        ...(organization.groups?.slice(0, groupIndex) as IGroupWithData[]),
+        ...organization.groups?.slice(0, groupIndex),
         group,
-        ...(organization.groups?.slice(
-          (groupIndex as number) + 1
-        ) as IGroupWithData[])
+        ...organization.groups?.slice((groupIndex as number) + 1)
       ]
     })
   } catch (err) {
@@ -188,28 +189,15 @@ const Group = ({
           setLoading(true)
           try {
             if (group) {
-              await onUpdate(
-                organization,
-                group,
-                values,
-                swr as {
-                  mutateOneOrganization: (
-                    organization: IOrganizationWithData
-                  ) => void
-                  mutateOneGroup: (group: IGroupWithData) => void
-                }
-              )
+              await onUpdate(organization, group, values, {
+                mutateOneOrganization: swr.mutateOneOrganization,
+                mutateOneGroup: swr.mutateOneGroup!
+              })
             } else {
-              await onAdd(
-                organization,
-                values,
-                swr as {
-                  mutateOneOrganization: (
-                    organization: IOrganizationWithData
-                  ) => void
-                  addOneGroup: (group: INewGroup) => void
-                }
-              )
+              await onAdd(organization, values, {
+                mutateOneOrganization: swr.mutateOneOrganization,
+                addOneGroup: swr.addOneGroup!
+              })
             }
 
             // Close
@@ -251,29 +239,6 @@ const Group = ({
       )}
     </>
   )
-}
-
-Group.propTypes = {
-  userOptions: PropTypes.arrayOf(
-    PropTypes.exact({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    groups: PropTypes.array.isRequired
-  }).isRequired,
-  group: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    users: PropTypes.array.isRequired
-  }),
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired,
-    addOneGroup: PropTypes.func,
-    mutateOneGroup: PropTypes.func
-  }).isRequired
 }
 
 export { Delete }

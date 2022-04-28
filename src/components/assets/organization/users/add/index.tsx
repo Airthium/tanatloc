@@ -16,14 +16,19 @@ import { ErrorNotification } from '@/components/assets/notification'
 import OrganizationAPI from '@/api/organization'
 
 /**
+ * Custom Types
+ */
+export type TOrganizationItem = Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+>
+
+/**
  * Props
  */
 export interface IProps {
   title: string
-  organization: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  >
+  organization: TOrganizationItem
   dBkey: 'owners' | 'users'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -45,10 +50,7 @@ export const errors = {
  */
 export const checkAlreadyAdded = (
   user: { email: string },
-  organization: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  >
+  organization: TOrganizationItem
 ): IFrontUsersItem => {
   const inOwners = organization.owners?.find((o) => o.email === user.email)
   const inPendingowners = organization.pendingowners?.find(
@@ -73,10 +75,7 @@ export const checkAlreadyAdded = (
  * @param swr SWR
  */
 export const onFinish = async (
-  organization: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  >,
+  organization: TOrganizationItem,
   dBkey: 'owners' | 'users',
   values: { email: string },
   swr: {

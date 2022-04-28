@@ -22,18 +22,18 @@ import Delete from './delete'
 import { ColumnGroupType } from 'antd/lib/table'
 
 /**
+ * Custom Types
+ */
+export type TUserItem = Pick<
+  IFrontUsersItem,
+  'id' | 'email' | 'firstname' | 'lastname' | 'authorizedplugins' | 'superuser'
+>
+
+/**
  * Props
  */
 export interface IProps {
-  users: Pick<
-    IFrontUsersItem,
-    | 'id'
-    | 'email'
-    | 'firstname'
-    | 'lastname'
-    | 'authorizedplugins'
-    | 'superuser'
-  >[]
+  users: TUserItem[]
   swr: {
     addOneUser: (user: IFrontNewUser) => void
     delOneUser: (user: IFrontMutateUsersItem) => void
@@ -89,18 +89,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   const superuserRender = (superuser: boolean) =>
     superuser && <CheckOutlined className="color-green" />
 
-  const actionsRender = (
-    _: any,
-    record: Pick<
-      IFrontUsersItem,
-      | 'id'
-      | 'email'
-      | 'firstname'
-      | 'lastname'
-      | 'authorizedplugins'
-      | 'superuser'
-    >
-  ) => (
+  const actionsRender = (_: any, record: TUserItem) => (
     <Space>
       <Edit
         plugins={
@@ -126,17 +115,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     </Space>
   )
 
-  const columns: TableColumnsType<
-    Pick<
-      IFrontUsersItem,
-      | 'id'
-      | 'email'
-      | 'firstname'
-      | 'lastname'
-      | 'authorizedplugins'
-      | 'superuser'
-    >
-  > = [
+  const columns: TableColumnsType<TUserItem> = [
     {
       title: 'First name',
       dataIndex: 'firstname',

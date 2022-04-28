@@ -19,10 +19,18 @@ import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
 
 /**
+ * Custom Types
+ */
+export type TUser = Pick<
+  IFrontUser,
+  'email' | 'firstname' | 'lastname' | 'avatar'
+>
+
+/**
  * Props
  */
 export interface IProps {
-  user: Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'>
+  user: TUser
   swr: {
     mutateUser: (user: IFrontMutateUser) => void
   }
@@ -73,7 +81,7 @@ export const getBase64 = async (file: Blob): Promise<any> => {
  * @param swr SWR
  */
 export const onChange = async (
-  user: Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'>,
+  user: TUser,
   info: UploadChangeParam<any>,
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => void
@@ -115,7 +123,7 @@ export const onChange = async (
  * @param swr SWR
  */
 export const onFinish = async (
-  user: Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'>,
+  user: TUser,
   values: {
     email: string
     firstname: string

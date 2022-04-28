@@ -16,19 +16,19 @@ import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
 import UserAPI from '@/api/user'
 
 /**
+ * Custom Types
+ */
+export type TUserItem = Pick<
+  IFrontUsersItem,
+  'id' | 'firstname' | 'lastname' | 'email' | 'authorizedplugins' | 'superuser'
+>
+
+/**
  * Props
  */
 export interface IProps {
   plugins: IClientPlugin[]
-  user: Pick<
-    IFrontUsersItem,
-    | 'id'
-    | 'firstname'
-    | 'lastname'
-    | 'email'
-    | 'authorizedplugins'
-    | 'superuser'
-  >
+  user: TUserItem
   swr: {
     mutateOneUser: (user: IFrontMutateUsersItem) => void
   }
@@ -60,15 +60,7 @@ export const errors = {
  * @param swr Swr
  */
 export const onUpdate = async (
-  user: Pick<
-    IFrontUsersItem,
-    | 'id'
-    | 'firstname'
-    | 'lastname'
-    | 'email'
-    | 'authorizedplugins'
-    | 'superuser'
-  >,
+  user: TUserItem,
   values: IEditValues,
   swr: { mutateOneUser: (user: IFrontMutateUsersItem) => void }
 ): Promise<void> => {
@@ -80,18 +72,7 @@ export const onUpdate = async (
         if (
           value !== undefined &&
           value !== '******' &&
-          value !==
-            user[
-              key as keyof Pick<
-                IFrontUsersItem,
-                | 'id'
-                | 'firstname'
-                | 'lastname'
-                | 'email'
-                | 'authorizedplugins'
-                | 'superuser'
-              >
-            ]
+          value !== user[key as keyof TUserItem]
         )
           return { key, value, type: key === 'password' && 'crypt' }
       })

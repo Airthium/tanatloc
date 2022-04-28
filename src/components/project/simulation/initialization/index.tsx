@@ -20,6 +20,11 @@ import {
 import SimulationAPI from '@/api/simulation'
 
 /**
+ * Custom Types
+ */
+export type TInitializationKey = 'none' | 'coupling' | 'direct'
+
+/**
  * Props
  */
 export interface IProps {
@@ -45,7 +50,7 @@ export const errors = {
  */
 const onSelectorChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  key: 'none' | 'coupling' | 'direct',
+  key: TInitializationKey,
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -316,9 +321,7 @@ const Initialization = ({
 }: IProps): JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
-  const [currentKey, setCurrentKey] = useState<'none' | 'coupling' | 'direct'>(
-    'none'
-  )
+  const [currentKey, setCurrentKey] = useState<TInitializationKey>('none')
   const [couplingSimulation, setCouplingSimulation] =
     useState<Pick<IFrontSimulationsItem, 'id' | 'scheme'>>()
   const [couplingResults, setCouplingResults] =
@@ -507,7 +510,7 @@ const Initialization = ({
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}
-            onChange={async (key: 'none' | 'coupling' | 'direct') => {
+            onChange={async (key: TInitializationKey) => {
               try {
                 await onSelectorChange(simulation, key, swr)
                 setCurrentKey(key)

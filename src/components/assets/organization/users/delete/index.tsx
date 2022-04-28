@@ -14,15 +14,24 @@ import {
 import OrganizationAPI from '@/api/organization'
 
 /**
+ * Custom Types
+ */
+export type TOrganizationItem = Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+>
+export type TUserItem = Pick<
+  IFrontUsersItem,
+  'id' | 'email' | 'firstname' | 'lastname'
+>
+
+/**
  * Props
  */
 export interface IProps {
   disabled?: boolean
-  user: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>
-  organization: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  >
+  user: TUserItem
+  organization: TOrganizationItem
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -44,11 +53,8 @@ export const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  organization: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  >,
-  user: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>,
+  organization: TOrganizationItem,
+  user: TUserItem,
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers',
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -103,13 +109,10 @@ const Delete = ({
    * Set name
    * @param u User
    */
-  const setName = useCallback(
-    (u: Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'>) => {
-      if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
-      else return u.email
-    },
-    []
-  )
+  const setName = useCallback((u: TUserItem) => {
+    if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
+    else return u.email
+  }, [])
 
   /**
    * Render

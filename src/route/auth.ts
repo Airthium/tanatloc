@@ -11,6 +11,11 @@ import SimulationLib from '@/lib/simulation'
 import { IOrganizationGet, IProjectGet, IWorkspaceGet } from '@/lib/index.d'
 
 /**
+ * Custom Types
+ */
+export type TAuthData = 'owners' | 'users' | 'groups'
+
+/**
  * Check authorization from group
  * @param user User
  * @param object Object
@@ -46,10 +51,10 @@ const authGroup = async (
 const auth = async (
   user: { id: string },
   object:
-    | IProjectGet<('owners' | 'users' | 'groups')[]>
-    | IWorkspaceGet<('owners' | 'users' | 'groups')[]>
-    | IOrganizationGet<('owners' | 'users' | 'groups')[]>,
-  parentObject?: IWorkspaceGet<('owners' | 'users' | 'groups')[]>
+    | IProjectGet<TAuthData[]>
+    | IWorkspaceGet<TAuthData[]>
+    | IOrganizationGet<TAuthData[]>,
+  parentObject?: IWorkspaceGet<TAuthData[]>
 ) => {
   // Objects
   if (object?.owners?.includes(user.id) || object?.users?.includes(user.id))
@@ -138,7 +143,7 @@ const checkProjectAuth = async (
         owners: projectAuth.owners,
         users: projectAuth.users,
         groups: projectAuth.groups
-      } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      } as IProjectGet<TAuthData[]>,
       workspaceAuth
     ))
   )
@@ -181,7 +186,7 @@ const checkGeometryAuth = async (
         owners: projectAuth.owners,
         users: projectAuth.users,
         groups: projectAuth.groups
-      } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      } as IProjectGet<TAuthData[]>,
       workspaceAuth
     ))
   )
@@ -225,7 +230,7 @@ const checkSimulationAuth = async (
         owners: projectAuth.owners,
         users: projectAuth.users,
         groups: projectAuth.groups
-      } as IProjectGet<('owners' | 'users' | 'groups')[]>,
+      } as IProjectGet<TAuthData[]>,
       workspaceAuth
     ))
   )

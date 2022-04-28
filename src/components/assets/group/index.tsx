@@ -141,7 +141,7 @@ export const onUpdate = async (
       groups: [
         ...organization.groups?.slice(0, groupIndex),
         group,
-        ...organization.groups?.slice((groupIndex as number) + 1)
+        ...organization.groups?.slice(groupIndex + 1)
       ]
     })
   } catch (err) {

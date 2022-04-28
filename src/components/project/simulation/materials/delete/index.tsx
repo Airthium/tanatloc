@@ -9,6 +9,8 @@ import { ErrorNotification } from '@/components/assets/notification'
 import { ISelectAction, SelectContext } from '@/context/select'
 import { unselect } from '@/context/select/actions'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
@@ -46,7 +48,7 @@ const onDelete = async (
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const materials = newSimulation.scheme.configuration.materials!

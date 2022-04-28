@@ -17,9 +17,7 @@ import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
-import CloudServer from './cloudServer'
-import Log from './log'
-import Results from './results'
+import Utils from '@/lib/utils'
 
 import {
   IFrontSimulationsItem,
@@ -29,6 +27,10 @@ import {
   IFrontSimulationTask
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
+
+import CloudServer from './cloudServer'
+import Log from './log'
+import Results from './results'
 
 /**
  * Props
@@ -65,7 +67,7 @@ export const onCloudServer = async (
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const configuration = simulation.scheme.configuration

@@ -9,6 +9,8 @@ import { IModelParameter } from '@/models/index.d'
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem
@@ -185,7 +187,7 @@ export const onDone = async (
   }
 ): Promise<void> => {
   try {
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const parameters = newSimulation.scheme.configuration.parameters
@@ -231,7 +233,7 @@ export const onChange = async (
   }
 ): Promise<void> => {
   try {
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const parameters = newSimulation.scheme.configuration.parameters

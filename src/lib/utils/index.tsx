@@ -3,6 +3,10 @@
 import { Avatar, Badge, Spin, Tooltip } from 'antd'
 import { parseOneAddress } from 'email-addresses'
 
+const deepCopy = <T extends {}>(object: T) => {
+  return JSON.parse(JSON.stringify(object)) as T
+}
+
 /**
  * String to color
  * @param str String
@@ -159,6 +163,7 @@ const getGitVersion = (): string => {
 }
 
 const Utils = {
+  deepCopy,
   stringToColor,
   rgbToHex,
   rgbToRgba,

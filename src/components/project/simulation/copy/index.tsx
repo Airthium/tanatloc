@@ -6,6 +6,8 @@ import { CopyOutlined } from '@ant-design/icons'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import SimulationAPI from '@/api/simulation'
 import {
   IFrontProject,
@@ -49,7 +51,7 @@ export const onCopy = async (
 ): Promise<void> => {
   try {
     // Clear results
-    const newScheme = { ...simulation.scheme }
+    const newScheme = Utils.deepCopy(simulation.scheme)
     newScheme.configuration.run.done = false
     newScheme.configuration.run.error = undefined
 

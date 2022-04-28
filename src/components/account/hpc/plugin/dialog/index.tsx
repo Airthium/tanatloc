@@ -10,6 +10,8 @@ import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import PluginAPI from '@/api/plugin'
 
 /**
@@ -151,7 +153,7 @@ export const onFinish = async (
 ): Promise<void> => {
   try {
     if (edit) {
-      const initialPlugin = { ...plugin }
+      const initialPlugin = Utils.deepCopy(plugin)
 
       // Set values
       Object.keys(values).forEach((key) => {
@@ -167,7 +169,7 @@ export const onFinish = async (
       swr.mutateOnePlugin?.(initialPlugin)
     } else {
       // New plugin
-      const newPlugin = { ...plugin }
+      const newPlugin = Utils.deepCopy(plugin)
 
       // Set values
       Object.keys(values).forEach((key) => {

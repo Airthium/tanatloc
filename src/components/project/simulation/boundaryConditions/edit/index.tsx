@@ -10,6 +10,8 @@ import {
 import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
@@ -54,7 +56,7 @@ const onEdit = async (
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
     const boundaryConditions =
       newSimulation.scheme.configuration.boundaryConditions
 

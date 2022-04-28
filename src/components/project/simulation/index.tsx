@@ -12,13 +12,9 @@ import { IModel } from '@/models/index.d'
 import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
-import About from './about'
-import Geometry from './geometry'
-import Materials from './materials'
-import Parameters from './parameters'
-import Initialization from './initialization'
-import BoundaryConditions from './boundaryConditions'
-import Run from './run'
+import Models from '@/models'
+
+import Utils from '@/lib/utils'
 
 import {
   IFrontMutateSimulationsItem,
@@ -28,7 +24,13 @@ import {
 import SimulationAPI from '@/api/simulation'
 import PluginsAPI from '@/api/plugins'
 
-import Models from '@/models'
+import About from './about'
+import Geometry from './geometry'
+import Materials from './materials'
+import Parameters from './parameters'
+import Initialization from './initialization'
+import BoundaryConditions from './boundaryConditions'
+import Run from './run'
 
 /**
  * Selector props
@@ -136,7 +138,7 @@ const Selector = ({
   const onSelect = useCallback(
     ({ key }: { key: string }): void => {
       const model = models.find((m) => m.algorithm === key)
-      setCurrent({ ...model! })
+      setCurrent(Utils.deepCopy(model!))
     },
     [models]
   )
@@ -223,7 +225,7 @@ export const onUpdate = async (
     )
 
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Merge
     merge(newSimulation.scheme, currentModel)

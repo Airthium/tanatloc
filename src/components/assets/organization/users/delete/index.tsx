@@ -6,6 +6,8 @@ import { Typography } from 'antd'
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontOrganizationsItem,
   IFrontMutateOrganizationsItem,
@@ -72,7 +74,7 @@ export const onDelete = async (
     ])
 
     // Local
-    const newOrganization = { ...organization }
+    const newOrganization = Utils.deepCopy(organization)
     newOrganization[dBkey] = newOrganization[dBkey].filter(
       (u) => u.id !== user.id
     )

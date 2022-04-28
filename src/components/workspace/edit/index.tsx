@@ -9,6 +9,8 @@ import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
@@ -42,7 +44,7 @@ export const onEdit = async (
 ): Promise<void> => {
   try {
     // New workspace
-    const newWorkspace = { ...workspace }
+    const newWorkspace = Utils.deepCopy(workspace)
     workspace.name = values.name
 
     // Edit

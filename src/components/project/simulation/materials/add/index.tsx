@@ -8,6 +8,8 @@ import { IModelMaterialsValue } from '@/models/index.d'
 import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
@@ -51,13 +53,13 @@ export const onAdd = async (
 ): Promise<void> => {
   try {
     // New material
-    const newMaterial = { ...material } as IModelMaterialsValue
+    const newMaterial = Utils.deepCopy(material) as IModelMaterialsValue
 
     // Set uuid
     newMaterial.uuid = uuid()
 
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const materials = newSimulation.scheme.configuration.materials!

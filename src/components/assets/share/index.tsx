@@ -17,7 +17,8 @@ import { LinkButton } from '../button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import ProjectAPI from '@/api/project'
+import Utils from '@/lib/utils'
+
 import {
   IFrontMutateProjectsItem,
   IFrontMutateWorkspacesItem,
@@ -25,6 +26,7 @@ import {
   IFrontProjectsItem,
   IFrontWorkspacesItem
 } from '@/api/index.d'
+import ProjectAPI from '@/api/project'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
@@ -82,7 +84,7 @@ export const onShare = async (
         }
       ])
       // Mutate
-      const newWorkspace = { ...workspace }
+      const newWorkspace = Utils.deepCopy(workspace)
       newWorkspace.groups = groupsSelected.map(
         (group) =>
           ({
@@ -106,7 +108,7 @@ export const onShare = async (
         }
       ])
       // Mutate
-      const newProject = { ...project! }
+      const newProject = Utils.deepCopy(project!)
       newProject.groups = groupsSelected.map(
         (group) => ({ id: group } as IFrontProjectsItem['groups'][0])
       )

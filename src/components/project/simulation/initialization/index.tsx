@@ -12,6 +12,8 @@ import {
   getMultiplicator
 } from '@/components/project/simulation/run/results/tools'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem,
@@ -57,7 +59,7 @@ const onSelectorChange = async (
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const initialization = newSimulation.scheme.configuration.initialization!
@@ -103,7 +105,7 @@ const onCouplingChange = async (
 
     // Update simulation
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const initialization = newSimulation.scheme.configuration.initialization!
@@ -149,7 +151,7 @@ const onCouplingResultChange = async (
   // Update simulation
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const initialization = newSimulation.scheme.configuration.initialization!
@@ -191,7 +193,7 @@ const onChange = async (
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const initialization = newSimulation.scheme.configuration.initialization!

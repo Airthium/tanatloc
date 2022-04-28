@@ -6,6 +6,8 @@ import { Card, Form, Select, Space } from 'antd'
 import { ErrorNotification } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
@@ -43,7 +45,7 @@ export const onMeshGlobalType = async (
   }
 ): Promise<void> => {
   try {
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update
     newSimulation.scheme.configuration.geometry.meshParameters = {
@@ -91,7 +93,7 @@ export const onMeshGlobalSize = async (
   }
 ): Promise<void> => {
   try {
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update
     newSimulation.scheme.configuration.geometry.meshParameters = {

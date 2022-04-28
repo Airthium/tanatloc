@@ -4,6 +4,8 @@ import { Card, Typography } from 'antd'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontGeometriesItem,
   IFrontMutateSimulationsItem,
@@ -51,7 +53,7 @@ export const onSelect = async (
   }
 ): Promise<void> => {
   try {
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update
     newSimulation.scheme.configuration.geometry.value = geometry.id

@@ -11,6 +11,8 @@ import {
 import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
@@ -66,7 +68,7 @@ const onAdd = async (
     newBoundaryCondition.uuid = uuid()
 
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
     const boundaryConditions =

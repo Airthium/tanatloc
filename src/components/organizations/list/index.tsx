@@ -9,6 +9,11 @@ import {
   ControlOutlined,
   LeftSquareOutlined
 } from '@ant-design/icons'
+import { ColumnGroupType } from 'antd/lib/table'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
 
 import {
   IFrontUser,
@@ -18,15 +23,9 @@ import {
   IFrontOrganizationsItem,
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
-
-import { ErrorNotification } from '@/components/assets/notification'
-
 import OrganizationAPI from '@/api/organization'
 
-import Utils from '@/lib/utils'
-
 import Delete from '../delete'
-import { ColumnGroupType } from 'antd/lib/table'
 
 /**
  * Props
@@ -66,7 +65,7 @@ const onQuit = async (
     await OrganizationAPI.quit({ id: organization.id })
 
     // Local
-    const newOrganization = { ...organization }
+    const newOrganization = Utils.deepCopy(organization)
     const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
     newOrganization.users.splice(userIndex, 1)
 
@@ -97,7 +96,7 @@ const onAccept = async (
     await OrganizationAPI.accept(organization)
 
     // Local
-    const newOrganization = { ...organization }
+    const newOrganization = Utils.deepCopy(organization)
     const ownerIndex = newOrganization.pendingowners.findIndex(
       (o) => o.id === user.id
     )
@@ -142,7 +141,7 @@ const onDecline = async (
     await OrganizationAPI.decline({ id: organization.id })
 
     // Local
-    const newOrganization = { ...organization }
+    const newOrganization = Utils.deepCopy(organization)
     const ownerIndex = newOrganization.pendingowners?.findIndex(
       (o) => o.id === user.id
     )

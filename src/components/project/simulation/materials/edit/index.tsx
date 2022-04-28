@@ -7,6 +7,8 @@ import { IModelMaterialsValue } from '@/models/index.d'
 import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
+import Utils from '@/lib/utils'
+
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
@@ -50,7 +52,7 @@ export const onEdit = async (
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...simulation }
+    const newSimulation = Utils.deepCopy(simulation)
     const materials = newSimulation.scheme.configuration.materials!
 
     // Update local

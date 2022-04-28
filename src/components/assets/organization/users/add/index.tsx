@@ -3,16 +3,17 @@
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
+import { AddButton } from '@/components/assets/button'
+import Dialog from '@/components/assets/dialog'
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
 import {
   IFrontOrganizationsItem,
   IFrontMutateOrganizationsItem,
   IFrontUsersItem
 } from '@/api/index.d'
-
-import { AddButton } from '@/components/assets/button'
-import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
-
 import OrganizationAPI from '@/api/organization'
 
 /**
@@ -101,7 +102,7 @@ export const onFinish = async (
     ])
 
     // Local
-    const newOrganization = { ...organization }
+    const newOrganization = Utils.deepCopy(organization)
     newOrganization[dBkey] = [
       ...newOrganization[dBkey],
       {

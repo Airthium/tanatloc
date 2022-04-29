@@ -131,6 +131,18 @@ describe('components/project/simulation/materials', () => {
     unmount()
   })
 
+  test('no geometry', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Materials simulation={simulation} swr={swr} setVisible={setVisible} />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
   test('onAdd', () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />

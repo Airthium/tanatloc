@@ -141,4 +141,12 @@ describe('lib/three/helpers/NavigationHelper', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.dispose()
   })
+
+  test('no intersect', () => {
+    //@ts-ignore
+    global.MockRaycaster.intersectObjects = []
+
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
+    expect(navigation).toBeDefined()
+  })
 })

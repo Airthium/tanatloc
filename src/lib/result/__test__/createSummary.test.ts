@@ -168,4 +168,101 @@ describe('lib/download/summary', () => {
       name: 'summary.txt'
     })
   })
+
+  test('without materials & cloud server', () => {
+    //@ts-ignore
+    simulation.scheme.configuration = {
+      geometry: {
+        index: 1,
+        title: 'Geometry',
+        meshable: true,
+        file: 'file'
+      },
+      materials: undefined,
+      parameters: {
+        index: 3,
+        title: 'Parameters',
+        parameter: {
+          label: 'label',
+          children: [
+            {
+              label: 'label',
+              htmlEntity: 'entity',
+              default: 0,
+              value: 'value'
+            }
+          ]
+        },
+        otherParameter: {
+          label: 'label',
+          children: [
+            {
+              label: 'label',
+              htmlEntity: 'entity',
+              default: 'default'
+            }
+          ]
+        }
+      },
+      boundaryConditions: {
+        index: 0,
+        title: 'Boundary conditions',
+        type: {
+          label: 'label',
+          values: [
+            {
+              uuid: 'uuid',
+              name: 'name',
+              type: {
+                key: 'key',
+                label: 'label'
+              },
+              values: [
+                {
+                  value: 'value'
+                },
+                {
+                  value: 'value',
+                  checked: true
+                },
+                {
+                  value: 'value',
+                  checked: false
+                }
+              ],
+              selected: [{ uuid: 'uuid', label: 1 }]
+            }
+          ]
+        },
+        otherType: {
+          label: 'label'
+        },
+        otherOtherType: {
+          label: 'label',
+          values: [
+            {
+              uuid: 'uuid',
+              name: 'undefined',
+              type: {
+                key: 'undefined',
+                label: 'undefined'
+              },
+              selected: []
+            }
+          ]
+        }
+      },
+      run: {
+        index: 5,
+        title: 'Run'
+      },
+      //@ts-ignore
+      unknowKey: {}
+    }
+    const summary = createSummary(simulation)
+    expect(summary).toEqual({
+      path: 'path',
+      name: 'summary.txt'
+    })
+  })
 })

@@ -59,7 +59,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   const [scroll, setScroll] = useState<{ y: number }>()
 
   // Ref
-  const refTable = useRef(null)
+  const refTable = useRef<HTMLDivElement>(null)
 
   // Data
   const authorizedpluginsRender = (authorizedplugins: string[]) => {
@@ -171,10 +171,13 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     }
   ]
 
-  // Update table scroll
+  /**
+   * On resize
+   */
   const onResize = useCallback(() => {
     // Check if too many users to display
-    const table = refTable.current as RefObject<HTMLDivElement>['current']
+    const table = refTable.current
+    /* istanbul ignore next */
     if (!table) return
     if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
       setScroll({ y: window.innerHeight - table.offsetTop - 59 })

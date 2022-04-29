@@ -36,6 +36,7 @@ const Background = (): JSX.Element => {
     }
 
     const div = mount.current
+    /* istanbul ignore next */
     if (!div) return
     let frameId: number
 

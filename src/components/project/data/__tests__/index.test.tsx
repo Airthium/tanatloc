@@ -42,6 +42,12 @@ describe('components/project/data', () => {
     unmount()
   })
 
+  test('no simulation', () => {
+    const { unmount } = render(<Data />)
+
+    unmount()
+  })
+
   test('with data', () => {
     const data = {
       tasks: [

@@ -29,5 +29,9 @@ describe('src/server/init/database', () => {
     expect(global.tanatloc.pool).toBe('pool')
     expect(mockCheckdB).toHaveBeenCalledTimes(2)
     expect(mockStartdB).toHaveBeenCalledTimes(1)
+
+    await initDatabase()
+    expect(mockCheckdB).toHaveBeenCalledTimes(2)
+    expect(mockStartdB).toHaveBeenCalledTimes(1)
   })
 })

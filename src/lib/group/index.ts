@@ -163,18 +163,16 @@ const getByOrganization = async <T extends TGroupGet>(
   const organization = await Organization.get(id, ['groups'])
 
   // Get groups
-  return organization.groups
-    ? Promise.all(
-        organization.groups.map(async (group) => {
-          const groupData = await getWithData(group, data)
+  return Promise.all(
+    organization.groups.map(async (group) => {
+      const groupData = await getWithData(group, data)
 
-          return {
-            ...groupData,
-            id: group
-          }
-        })
-      )
-    : []
+      return {
+        ...groupData,
+        id: group
+      }
+    })
+  )
 }
 
 /**

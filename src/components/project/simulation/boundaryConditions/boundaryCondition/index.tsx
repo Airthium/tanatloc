@@ -115,7 +115,7 @@ const BoundaryCondition = ({
       })
       .flat()
       .filter((s) => s)
-    setAlreadySelected((currentAlreadySelected || []) as ISelection[])
+    setAlreadySelected(currentAlreadySelected as ISelection[])
   }, [boundaryConditions, boundaryCondition])
 
   // Types

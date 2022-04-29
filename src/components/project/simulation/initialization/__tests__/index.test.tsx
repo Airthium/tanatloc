@@ -720,4 +720,59 @@ describe('components/project/simulation/initialization', () => {
 
     unmount()
   })
+
+  test('no direct, no coupling, no value', () => {
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={{
+          id: 'id',
+          scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
+            //@ts-ignore
+            configuration: {
+              geometry: {
+                title: 'Geometry',
+                index: 0,
+                meshable: false
+              },
+              parameters: {
+                index: 1,
+                title: 'Parameters',
+                time: {
+                  label: 'Time',
+                  children: [
+                    {
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0
+                    },
+                    {
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0,
+                      value: 0.1
+                    }
+                  ]
+                }
+              },
+              initialization: {
+                index: 4,
+                title: 'Initialization',
+                done: true
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
 })

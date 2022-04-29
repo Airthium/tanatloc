@@ -49,7 +49,9 @@ describe('components/project/view', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<View project={project} />)
+    const { unmount } = render(
+      <View simulation={simulation} project={project} />
+    )
 
     unmount()
   })
@@ -92,6 +94,31 @@ describe('components/project/view', () => {
     )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('with result error', async () => {
+    mockResultLoad.mockImplementation(() => {
+      throw new Error('result load error')
+    })
+    const { unmount } = render(
+      <View
+        project={project}
+        simulation={simulation}
+        geometry={geometry}
+        result={result}
+      />
+    )
+
+    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.part,
+        new Error('result load error')
+      )
+    )
 
     unmount()
   })

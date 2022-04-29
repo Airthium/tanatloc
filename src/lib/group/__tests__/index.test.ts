@@ -93,6 +93,12 @@ describe('lib/group', () => {
   test('getAll', async () => {
     let groups
 
+    // Empty
+    mockGetAll.mockImplementation(() => [])
+    groups = await Group.getAll(['name'])
+    expect(mockGetAll).toHaveBeenCalledTimes(1)
+    expect(groups).toEqual([])
+
     // Users only
     mockGetAll.mockImplementation(() => [
       {
@@ -104,7 +110,7 @@ describe('lib/group', () => {
       firstname: 'firstname'
     }))
     groups = await Group.getAll(['users'])
-    expect(mockGetAll).toHaveBeenCalledTimes(1)
+    expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(1)
     expect(groups).toEqual([
       { users: [{ id: 'id', firstname: 'firstname' }] },
@@ -119,7 +125,7 @@ describe('lib/group', () => {
       }
     ])
     groups = await Group.getAll(['users', 'workspaces', 'projects'])
-    expect(mockGetAll).toHaveBeenCalledTimes(2)
+    expect(mockGetAll).toHaveBeenCalledTimes(3)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
     expect(groups).toEqual([
       {
@@ -140,7 +146,7 @@ describe('lib/group', () => {
       }
     ])
     groups = await Group.getAll(['users', 'workspaces', 'projects'])
-    expect(mockGetAll).toHaveBeenCalledTimes(3)
+    expect(mockGetAll).toHaveBeenCalledTimes(4)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(3)
     expect(groups).toEqual([
       {

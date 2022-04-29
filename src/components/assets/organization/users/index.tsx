@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization.Users */
 
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Card, Space, Table, TableColumnType } from 'antd'
 
@@ -42,9 +42,9 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const [scrollUsers, setScrollUsers] = useState<{ y: number }>()
 
   // Ref
-  const refWrapper = useRef(null)
-  const refTableAdmin = useRef(null)
-  const refTableUsers = useRef(null)
+  const refWrapper = useRef<HTMLDivElement>(null)
+  const refTableAdmin = useRef<HTMLDivElement>(null)
+  const refTableUsers = useRef<HTMLDivElement>(null)
 
   // Columns
   const avatarRender = (_: any, user: IFrontOrganizationsItem['users'][0]) =>
@@ -143,7 +143,8 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   ]
 
   const onResize = useCallback(() => {
-    const table = refWrapper.current as RefObject<HTMLDivElement>['current']
+    const table = refWrapper.current
+    /* istanbul ignore next */
     if (!table) return
     const wrapperHeight = table.clientHeight - 15
     const eachSpace = wrapperHeight / 2 - 39 - 12 - 32 - 20 - 75
@@ -213,15 +214,15 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               size="small"
               columns={ownersColumns}
               dataSource={[
-                ...organization.owners.map((o, index) => ({
+                ...organization.owners.map((o) => ({
                   ...o,
-                  key: o.id || index
+                  key: o.id
                 })),
-                ...(organization.pendingowners?.map((o, index) => ({
+                ...organization.pendingowners?.map((o) => ({
                   ...o,
                   pending: true,
-                  key: o.id || organization.owners.length + index
-                })) || [])
+                  key: o.id
+                }))
               ]}
               scroll={{ y: scrollAdmin?.y }}
               ref={refTableAdmin}
@@ -250,15 +251,15 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               size="small"
               columns={usersColumns}
               dataSource={[
-                ...(organization.users?.map((u, index) => ({
+                ...organization.users?.map((u) => ({
                   ...u,
-                  key: u.id || index
-                })) || []),
-                ...(organization.pendingusers?.map((u, index) => ({
+                  key: u.id
+                })),
+                ...organization.pendingusers?.map((u) => ({
                   ...u,
                   pending: true,
-                  key: u.id || organization.users?.length + index
-                })) || [])
+                  key: u.id
+                }))
               ]}
               scroll={{ y: scrollUsers?.y }}
               ref={refTableUsers}

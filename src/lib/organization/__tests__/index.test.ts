@@ -109,6 +109,60 @@ describe('lib/organization', () => {
     })
   })
 
+  test('getAll', async () => {
+    mockGetAll.mockImplementation(() => [{ name: 'name' }])
+    const organization1 = await Organization.getAll(['name'])
+    expect(organization1).toEqual([{ name: 'name' }])
+
+    const organization2 = await Organization.getAll([
+      'name',
+      'owners',
+      'pendingowners',
+      'users',
+      'pendingusers',
+      'groups'
+    ])
+    expect(organization2).toEqual([
+      {
+        name: 'name',
+        owners: [],
+        pendingowners: [],
+        users: [],
+        pendingusers: [],
+        groups: []
+      }
+    ])
+
+    mockGetAll.mockImplementation(() => [
+      {
+        name: 'name',
+        owners: [],
+        pendingowners: [],
+        users: [],
+        pendingusers: [],
+        groups: []
+      }
+    ])
+    const organization3 = await Organization.getAll([
+      'name',
+      'owners',
+      'pendingowners',
+      'users',
+      'pendingusers',
+      'groups'
+    ])
+    expect(organization3).toEqual([
+      {
+        name: 'name',
+        owners: [],
+        pendingowners: [],
+        users: [],
+        pendingusers: [],
+        groups: []
+      }
+    ])
+  })
+
   test('getWithData', async () => {
     mockGet.mockImplementation(() => ({
       users: ['id'],

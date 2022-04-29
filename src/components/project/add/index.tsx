@@ -59,7 +59,7 @@ export const onAdd = async (
     // Mutate workspaces
     swr.mutateOneWorkspace({
       ...workspace,
-      projects: [...(workspace.projects || []), project.id]
+      projects: [...workspace.projects, project.id]
     })
 
     return project

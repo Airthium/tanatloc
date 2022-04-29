@@ -52,7 +52,7 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
   // Ref
-  const refTableGroup = useRef(null)
+  const refTableGroup = useRef<HTMLDivElement>(null)
 
   // Data
   const [
@@ -137,10 +137,13 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
     }
   ]
 
-  // Update table scroll
+  /**
+   * On resize
+   */
   const onResize = useCallback(() => {
     // Check if too many groups to display
-    const table = refTableGroup.current as RefObject<HTMLDivElement>['current']
+    const table = refTableGroup.current
+    /* istanbul ignore next */
     if (!table) return
     if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
       setScroll({

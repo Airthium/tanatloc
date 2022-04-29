@@ -346,35 +346,4 @@ const Share = ({
   )
 }
 
-Share.propTypes = {
-  disabled: PropTypes.bool,
-  project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    groups: PropTypes.array,
-    users: PropTypes.array
-  }),
-  workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    groups: PropTypes.array,
-    users: PropTypes.array
-  }),
-  organizations: PropTypes.arrayOf(
-    PropTypes.shape({
-      groups: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string.isRequired,
-          name: PropTypes.string.isRequired,
-          users: PropTypes.array
-        })
-      )
-    })
-  ).isRequired,
-  swr: PropTypes.exact({
-    mutateOneProject: PropTypes.func,
-    mutateOneWorkspace: PropTypes.func
-  }).isRequired
-}
-
 export default Share

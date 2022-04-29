@@ -388,45 +388,4 @@ const Selector = ({
   )
 }
 
-Selector.propTypes = {
-  geometry: PropTypes.exact({
-    faces: PropTypes.arrayOf(
-      PropTypes.exact({
-        uuid: PropTypes.string.isRequired,
-        number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        name: PropTypes.string,
-        color: PropTypes.object
-      })
-    ),
-    solids: PropTypes.arrayOf(
-      PropTypes.exact({
-        uuid: PropTypes.string.isRequired,
-        number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        name: PropTypes.string,
-        color: PropTypes.object
-      })
-    ),
-    edges: PropTypes.arrayOf(
-      PropTypes.exact({
-        uuid: PropTypes.string.isRequired,
-        number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        name: PropTypes.string,
-        color: PropTypes.object
-      })
-    )
-  }).isRequired,
-  alreadySelected: PropTypes.arrayOf(
-    PropTypes.exact({
-      label: PropTypes.string,
-      selected: PropTypes.arrayOf(
-        PropTypes.exact({
-          uuid: PropTypes.string,
-          label: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-        })
-      )
-    })
-  ),
-  updateSelected: PropTypes.func.isRequired
-}
-
 export default Selector

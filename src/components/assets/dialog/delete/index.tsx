@@ -1,6 +1,5 @@
 /** @module Components.Assets.Dialog.Delete */
 
-import PropTypes from 'prop-types'
 import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { ReactChild } from 'react'
@@ -76,15 +75,6 @@ const DeleteDialog = ({
       </Space>
     </Modal>
   )
-}
-
-DeleteDialog.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  loading: PropTypes.bool,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  children: PropTypes.node.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onOk: PropTypes.func.isRequired
 }
 
 export default DeleteDialog

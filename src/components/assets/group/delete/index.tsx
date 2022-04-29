@@ -1,6 +1,5 @@
 /** @module Components.Assets.Group.Delete */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
 
@@ -85,16 +84,6 @@ const Delete = ({ group, swr }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  group: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    delOneGroup: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

@@ -97,10 +97,4 @@ const Add = ({ swr }: IProps): JSX.Element => {
   )
 }
 
-Add.propTypes = {
-  swr: PropTypes.exact({
-    addOneOrganization: PropTypes.func.isRequired
-  }).isRequired
-}
-
 export default Add

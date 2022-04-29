@@ -1,6 +1,5 @@
 /** @module Plugins.Local.Components */
 
-import PropTypes from 'prop-types'
 import { Button, Typography, Space } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
@@ -39,10 +38,6 @@ const Local = ({ onSelect }: IProps): JSX.Element => {
       </Button>
     </Space>
   )
-}
-
-Local.propTypes = {
-  onSelect: PropTypes.func.isRequired
 }
 
 export default Local

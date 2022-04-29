@@ -139,27 +139,4 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
   )
 }
 
-Organizations.propTypes = {
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  organizations: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string,
-      owners: PropTypes.array.isRequired,
-      pendingowners: PropTypes.array,
-      users: PropTypes.array,
-      pendingusers: PropTypes.array,
-      groups: PropTypes.array
-    })
-  ).isRequired,
-  swr: PropTypes.exact({
-    addOneOrganization: PropTypes.func.isRequired,
-    delOneOrganization: PropTypes.func.isRequired,
-    mutateOneOrganization: PropTypes.func.isRequired,
-    loadingOrganizations: PropTypes.bool.isRequired
-  }).isRequired
-}
-
 export default Organizations

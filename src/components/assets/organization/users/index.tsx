@@ -1,7 +1,6 @@
 /** @module Components.Assets.Organization.Users */
 
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
 import { Card, Space, Table, TableColumnType } from 'antd'
 
 import {
@@ -268,20 +267,6 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
       </Space>
     </div>
   )
-}
-
-Users.propTypes = {
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    owners: PropTypes.array.isRequired,
-    pendingowners: PropTypes.array,
-    users: PropTypes.array,
-    pendingusers: PropTypes.array
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired,
-    loadingOrganizations: PropTypes.bool.isRequired
-  }).isRequired
 }
 
 export default Users

@@ -1,6 +1,5 @@
 /** @module Components.Organizations.List */
 
-import PropTypes from 'prop-types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
@@ -367,29 +366,6 @@ const List = ({
       scroll={{ y: scroll?.y }}
     />
   )
-}
-
-List.propTypes = {
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  }).isRequired,
-  organizations: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string,
-      owners: PropTypes.array.isRequired,
-      pendingowners: PropTypes.array,
-      users: PropTypes.array,
-      pendingusers: PropTypes.array,
-      groups: PropTypes.array
-    })
-  ).isRequired,
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired,
-    delOneOrganization: PropTypes.func.isRequired,
-    loadingOrganizations: PropTypes.bool.isRequired
-  }).isRequired,
-  setOrganization: PropTypes.func.isRequired
 }
 
 export default List

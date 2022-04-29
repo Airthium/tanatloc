@@ -161,6 +161,4 @@ const Plugins = () => {
   )
 }
 
-Plugins.propTypes = {}
-
 export default Plugins

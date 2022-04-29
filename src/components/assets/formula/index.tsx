@@ -149,14 +149,4 @@ const Formula = ({
   )
 }
 
-Formula.propTypes = {
-  label: PropTypes.string,
-  className: PropTypes.string,
-  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  defaultChecked: PropTypes.bool,
-  onValueChange: PropTypes.func.isRequired,
-  onCheckedChange: PropTypes.func,
-  unit: PropTypes.string
-}
-
 export default Formula

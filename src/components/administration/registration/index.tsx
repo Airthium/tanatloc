@@ -191,6 +191,4 @@ const Registration = (): JSX.Element => {
     )
 }
 
-Registration.propTypes = {}
-
 export default Registration

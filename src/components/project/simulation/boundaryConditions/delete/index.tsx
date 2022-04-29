@@ -1,6 +1,5 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Delete */
 
-import PropTypes from 'prop-types'
 import { Dispatch, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
@@ -150,22 +149,6 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
       }
     />
   )
-}
-
-Delete.propTypes = {
-  index: PropTypes.number.isRequired,
-  type: PropTypes.string.isRequired,
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired,
-  swr: PropTypes.shape({
-    mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

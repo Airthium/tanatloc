@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.GoBack */
 
-import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
@@ -34,11 +33,6 @@ const GoBack = ({ children, onClick }: IProps): JSX.Element => {
       {children || 'Go back'}
     </Button>
   )
-}
-
-GoBack.propTypes = {
-  children: PropTypes.node,
-  onClick: PropTypes.func.isRequired
 }
 
 export default GoBack

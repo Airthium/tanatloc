@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Delete */
 
-import PropTypes from 'prop-types'
 import { ReactChild, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
@@ -76,16 +75,6 @@ const DeleteButton = ({
       </Tooltip>
     </>
   )
-}
-
-DeleteButton.propTypes = {
-  disabled: PropTypes.bool,
-  loading: PropTypes.bool,
-  bordered: PropTypes.bool,
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  title: PropTypes.string,
-  children: PropTypes.node,
-  onDelete: PropTypes.func.isRequired
 }
 
 export default DeleteButton

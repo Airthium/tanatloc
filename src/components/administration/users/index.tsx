@@ -1,19 +1,18 @@
 /** @module Components.Administration.Users */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect, useRef, useCallback, RefObject } from 'react'
 import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/plugins/index.d'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
 import {
   IFrontUsersItem,
   IFrontNewUser,
   IFrontMutateUsersItem
 } from '@/api/index.d'
-
-import { ErrorNotification } from '@/components/assets/notification'
-
 import PluginsAPI from '@/api/plugins'
 
 import Add from './add'
@@ -235,24 +234,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       />
     </Space>
   )
-}
-
-Users.propTypes = {
-  users: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      firstname: PropTypes.string,
-      lastname: PropTypes.string,
-      authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired,
-      superuser: PropTypes.bool.isRequired
-    }).isRequired
-  ).isRequired,
-  swr: PropTypes.exact({
-    addOneUser: PropTypes.func.isRequired,
-    delOneUser: PropTypes.func.isRequired,
-    mutateOneUser: PropTypes.func.isRequired
-  })
 }
 
 export default Users

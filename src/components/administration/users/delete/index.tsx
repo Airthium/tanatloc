@@ -1,14 +1,12 @@
 /** @module Components.Administration.User.Delete */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
-
-import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 import UserAPI from '@/api/user'
 
 /**
@@ -82,16 +80,6 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
       }}
     />
   )
-}
-
-Delete.propTypes = {
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    delOneUser: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

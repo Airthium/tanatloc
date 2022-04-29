@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Download */
 
-import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import { ReactChild } from 'react'
@@ -50,14 +49,6 @@ const DownloadButton = ({
       </Button>
     </Tooltip>
   )
-}
-
-DownloadButton.propTypes = {
-  disabled: PropTypes.bool,
-  loading: PropTypes.bool,
-  bordered: PropTypes.bool,
-  children: PropTypes.node,
-  onDownload: PropTypes.func.isRequired
 }
 
 export default DownloadButton

@@ -1,6 +1,5 @@
 /** @module Components.Assets.Notification.Success */
 
-import PropTypes from 'prop-types'
 import { notification } from 'antd'
 
 /**
@@ -15,11 +14,6 @@ const SuccessNotification = (title: string, subTitle?: string): void => {
     description: subTitle,
     duration: 10
   })
-}
-
-SuccessNotification.propTypes = {
-  title: PropTypes.string.isRequired,
-  subTitle: PropTypes.string
 }
 
 export default SuccessNotification

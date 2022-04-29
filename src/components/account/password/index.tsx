@@ -1,6 +1,5 @@
 /** @module Components.Account.Password */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
 
@@ -160,12 +159,6 @@ const Password = ({ user }: IProps): JSX.Element => {
       </Form>
     </Card>
   )
-}
-
-Password.propTypes = {
-  user: PropTypes.exact({
-    email: PropTypes.string.isRequired
-  }).isRequired
 }
 
 export default Password

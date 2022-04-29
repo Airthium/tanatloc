@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Add */
 
-import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
@@ -68,18 +67,6 @@ const AddButton = ({
       </Button>
     </Tooltip>
   )
-}
-
-AddButton.propTypes = {
-  disabled: PropTypes.bool,
-  primary: PropTypes.bool,
-  light: PropTypes.bool,
-  dark: PropTypes.bool,
-  fullWidth: PropTypes.bool,
-  needMargin: PropTypes.bool,
-  loading: PropTypes.bool,
-  children: PropTypes.node,
-  onAdd: PropTypes.func.isRequired
 }
 
 export default AddButton

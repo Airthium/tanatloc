@@ -1,6 +1,5 @@
 /** @module Components.Assets.Organization */
 
-import PropTypes from 'prop-types'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -133,23 +132,6 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
       </Tabs>
     </>
   )
-}
-
-Organization.propTypes = {
-  organization: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    owners: PropTypes.array.isRequired,
-    pendingowners: PropTypes.array,
-    users: PropTypes.array,
-    pendingusers: PropTypes.array,
-    groups: PropTypes.array.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneOrganization: PropTypes.func.isRequired,
-    loadingOrganizations: PropTypes.bool.isRequired
-  }).isRequired,
-  onClose: PropTypes.func.isRequired
 }
 
 export default Organization

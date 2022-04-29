@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Cancel */
 
-import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 
@@ -45,13 +44,6 @@ const CancelButton = ({
       </Button>
     </Tooltip>
   )
-}
-
-CancelButton.propTypes = {
-  disabled: PropTypes.bool,
-  loading: PropTypes.bool,
-  children: PropTypes.node,
-  onCancel: PropTypes.func.isRequired
 }
 
 export default CancelButton

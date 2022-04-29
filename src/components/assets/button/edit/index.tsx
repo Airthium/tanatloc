@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Edit */
 
-import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
@@ -68,18 +67,6 @@ const EditButton = ({
       </Button>
     </Tooltip>
   )
-}
-
-EditButton.propTypes = {
-  disabled: PropTypes.bool,
-  primary: PropTypes.bool,
-  bordered: PropTypes.bool,
-  light: PropTypes.bool,
-  dark: PropTypes.bool,
-  needMargin: PropTypes.bool,
-  loading: PropTypes.bool,
-  children: PropTypes.node,
-  onEdit: PropTypes.func.isRequired
 }
 
 export default EditButton

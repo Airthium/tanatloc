@@ -136,6 +136,7 @@ jest.mock('@/api/avatar', () => ({
 
 jest.mock('@/context/select/actions', () => ({
   highlight: jest.fn(),
+  unhighlight: jest.fn(),
   select: jest.fn(),
   unselect: jest.fn()
 }))
@@ -155,6 +156,7 @@ Object.defineProperty(window, 'requestAnimationFrame', {
       mockZoomOutCount++
       if (mockZoomOutCount < 10) callback()
     }
+    return 1
   }
 })
 
@@ -178,6 +180,9 @@ describe('components/project/view/three', () => {
     mockWebGLAvailable.mockImplementation(() => true)
 
     mockPartLoader.mockImplementation((mouseMove, mouseDown, count) => {
+      mouseMove({
+        unhighlight: jest.fn()
+      })
       mouseMove(
         {
           highlight: jest.fn()

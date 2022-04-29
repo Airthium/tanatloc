@@ -775,4 +775,107 @@ describe('components/project/simulation/initialization', () => {
 
     unmount()
   })
+
+  test('with value.values', async () => {
+    mockFormula.mockImplementation((props) => (
+      <div role="Formula" onClick={props.onValueChange} />
+    ))
+
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={{
+          id: 'id',
+          scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
+            //@ts-ignore
+            configuration: {
+              geometry: {
+                title: 'Geometry',
+                index: 0,
+                meshable: false
+              },
+              parameters: {
+                index: 1,
+                title: 'Parameters',
+                time: {
+                  label: 'Time',
+                  children: [
+                    {
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0
+                    },
+                    {
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0,
+                      value: 0.1
+                    }
+                  ]
+                }
+              },
+              initialization: {
+                index: 4,
+                title: 'Initialization',
+                done: true,
+                direct: {
+                  label: 'Velocity',
+                  children: [
+                    {
+                      label: 'Ux',
+                      htmlEntity: 'formula',
+                      default: 0,
+                      value: 0,
+                      unit: '\\(m.s^{-1}\\)'
+                    },
+                    {
+                      label: 'Uy',
+                      htmlEntity: 'formula',
+                      default: 0,
+                      unit: '\\(m.s^{-1}\\)'
+                    },
+                    {
+                      only3D: true,
+                      label: 'Uz',
+                      htmlEntity: 'formula',
+                      default: 0,
+                      unit: '\\(m.s^{-1}\\)'
+                    }
+                  ]
+                },
+                //@ts-ignore
+                value: {
+                  values: []
+                }
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    // Open
+    const select = screen.getAllByRole('combobox')
+    fireEvent.mouseDown(select[0])
+
+    const direct = screen.getByText('Velocity')
+    fireEvent.click(direct)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+
+    await waitFor(() => screen.getAllByRole('Formula'))
+
+    // Click formula
+    const formulas = screen.getAllByRole('Formula')
+    fireEvent.click(formulas[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+
+    unmount()
+  })
 })

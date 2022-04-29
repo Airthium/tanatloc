@@ -323,7 +323,7 @@ const Initialization = ({
 }: IProps): JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
-  const [currentKey, setCurrentKey] = useState<TInitializationKey>('none')
+  const [currentKey, setCurrentKey] = useState<TInitializationKey>()
   const [couplingSimulation, setCouplingSimulation] =
     useState<Pick<IFrontSimulationsItem, 'id' | 'scheme'>>()
   const [couplingResults, setCouplingResults] =
@@ -524,7 +524,7 @@ const Initialization = ({
             }}
           />
 
-          {initializations[currentKey]}
+          {initializations[currentKey || 'none']}
         </Card>
       </Layout.Content>
     </Layout>

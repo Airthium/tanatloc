@@ -49,6 +49,12 @@ describe('components/project/view', () => {
   })
 
   test('render', () => {
+    const { unmount } = render(<View project={project} />)
+
+    unmount()
+  })
+
+  test('with simulation', () => {
     const { unmount } = render(
       <View simulation={simulation} project={project} />
     )

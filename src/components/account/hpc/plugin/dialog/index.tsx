@@ -208,9 +208,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
     const currentInitialValues: any = {}
     Object.keys(plugin.configuration).forEach((key) => {
       currentInitialValues[key] =
-        plugin.configuration[key].value !== undefined
-          ? plugin.configuration[key].value
-          : plugin.configuration[key].default
+        plugin.configuration[key].value ?? plugin.configuration[key].default
     })
     setInitialValues(currentInitialValues)
   }, [plugin?.configuration])

@@ -1,6 +1,5 @@
 /** @module Components.Assets.Selector */
 
-import PropTypes from 'prop-types'
 import {
   ChangeEvent,
   useState,

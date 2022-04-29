@@ -1,6 +1,5 @@
 /** @module Components.Assets.Share */
 
-import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { useState, useEffect, CSSProperties } from 'react'
 import {

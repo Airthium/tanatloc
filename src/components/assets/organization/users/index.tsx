@@ -1,7 +1,6 @@
 /** @module Components.Assets.Organization.Users */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
 import { Card, Space, Table, TableColumnType } from 'antd'
 
 import {

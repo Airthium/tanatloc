@@ -1,6 +1,5 @@
 /** @module Components.Assets.Formula */
 
-import PropTypes from 'prop-types'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'

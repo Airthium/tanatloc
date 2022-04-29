@@ -1,6 +1,5 @@
 /** @module Components.Administration.Users */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'

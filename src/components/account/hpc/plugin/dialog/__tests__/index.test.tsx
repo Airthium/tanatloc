@@ -106,9 +106,9 @@ describe('components/account/hpc/plugin/dialog', () => {
         onClick={async () => {
           try {
             await onOk({
-              input: 'input',
-              password: 'password',
-              select: 'option1'
+              input: 'inputValue',
+              password: 'passwordValue',
+              select: 'selectValue'
             })
           } catch (err) {}
         }}
@@ -126,7 +126,26 @@ describe('components/account/hpc/plugin/dialog', () => {
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockAdd).toHaveBeenLastCalledWith(plugin))
+    await waitFor(() =>
+      expect(mockAdd).toHaveBeenLastCalledWith({
+        ...plugin,
+        configuration: {
+          ...plugin.configuration,
+          input: {
+            ...plugin.configuration.input,
+            value: 'inputValue'
+          },
+          password: {
+            ...plugin.configuration.password,
+            value: 'passwordValue'
+          },
+          select: {
+            ...plugin.configuration.select,
+            value: 'selectValue'
+          }
+        }
+      })
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -155,9 +174,9 @@ describe('components/account/hpc/plugin/dialog', () => {
         onClick={async () => {
           try {
             await onOk({
-              input: 'input',
-              password: 'password',
-              select: 'option2'
+              input: 'inputValue2',
+              password: 'passwordValue2',
+              select: 'selectValue2'
             })
           } catch (err) {}
         }}
@@ -178,6 +197,21 @@ describe('components/account/hpc/plugin/dialog', () => {
     await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith({
         ...plugin,
+        configuration: {
+          ...plugin.configuration,
+          input: {
+            ...plugin.configuration.input,
+            value: 'inputValue2'
+          },
+          password: {
+            ...plugin.configuration.password,
+            value: 'passwordValue2'
+          },
+          select: {
+            ...plugin.configuration.select,
+            value: 'selectValue2'
+          }
+        },
         needReInit: true
       })
     )

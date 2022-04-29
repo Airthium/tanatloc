@@ -366,16 +366,20 @@ const Initialization = ({
     {
       label: 'None',
       value: 'none'
-    },
-    {
-      label: 'Coupling',
-      value: 'coupling'
-    },
-    {
-      label: 'Direct',
-      value: 'direct'
     }
   ]
+
+  if (subScheme['coupling'])
+    selectorOptions.push({
+      label: subScheme['coupling'].label,
+      value: 'coupling'
+    })
+
+  if (subScheme['direct'])
+    selectorOptions.push({
+      label: subScheme['direct'].label,
+      value: 'direct'
+    })
 
   // Build initialization
   const initializations: {

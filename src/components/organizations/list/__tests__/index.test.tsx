@@ -24,7 +24,8 @@ const mockUserToAvatar = jest.fn()
 const mockGroupToAvatar = jest.fn()
 jest.mock('@/lib/utils', () => ({
   userToAvatar: () => mockUserToAvatar(),
-  groupToAvatar: () => mockGroupToAvatar()
+  groupToAvatar: () => mockGroupToAvatar(),
+  deepCopy: (obj: any) => JSON.parse(JSON.stringify(obj))
 }))
 
 jest.mock('../../delete', () => () => <div />)

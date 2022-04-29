@@ -199,7 +199,9 @@ describe('components/project/simulation/initialization', () => {
                 }
               }
             ]
-          }
+          },
+          //@ts-ignore
+          value: {}
         }
       }
     }
@@ -283,12 +285,6 @@ describe('components/project/simulation/initialization', () => {
       />
     )
 
-    await waitFor(() =>
-      screen.getByText(
-        'If you use coupling, the selected simulation mesh will be used, at least for the first iteration.'
-      )
-    )
-
     unmount()
   })
 
@@ -305,8 +301,8 @@ describe('components/project/simulation/initialization', () => {
     fireEvent.mouseDown(select)
 
     // Normal
-    const velocity = screen.getByText('Velocity')
-    fireEvent.click(velocity)
+    const coupling = screen.getByText('Coupling')
+    fireEvent.click(coupling)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
@@ -316,8 +312,8 @@ describe('components/project/simulation/initialization', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    const coupling = screen.getByText('Coupling')
-    fireEvent.click(coupling)
+    const direct = screen.getByText('Velocity')
+    fireEvent.click(direct)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
@@ -340,8 +336,8 @@ describe('components/project/simulation/initialization', () => {
     const select = screen.getAllByRole('combobox')
     fireEvent.mouseDown(select[0])
 
-    const velocity = screen.getByText('Velocity')
-    fireEvent.click(velocity)
+    const direct = screen.getByText('Velocity')
+    fireEvent.click(direct)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     await waitFor(() => screen.getAllByRole('Formula'))
@@ -460,12 +456,15 @@ describe('components/project/simulation/initialization', () => {
     const resultSelect = newSelects[2]
     fireEvent.mouseDown(resultSelect)
 
-    const resultOptions1 = screen.getAllByText('0')
+    const resultOptions0 = screen.getAllByText('0')
+    const resultOption0 = resultOptions0[0]
+
+    const resultOptions1 = screen.getAllByText('1')
     const resultOption1 = resultOptions1[0]
 
     // Error
 
-    fireEvent.click(resultOption1)
+    fireEvent.click(resultOption0)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(4)
@@ -704,7 +703,7 @@ describe('components/project/simulation/initialization', () => {
     // Click simulation select
     await waitFor(() => {
       const selects = screen.getAllByRole('combobox')
-      expect(selects.length).toBe(3)
+      expect(selects.length).toBe(2)
     })
     const selects = screen.getAllByRole('combobox')
     fireEvent.mouseDown(selects[1])

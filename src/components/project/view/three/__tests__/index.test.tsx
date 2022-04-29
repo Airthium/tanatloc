@@ -424,7 +424,7 @@ describe('components/project/view/three', () => {
     fireEvent.click(projectSnapshot)
     await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Avatar error
     mockAvatarAdd.mockImplementation(() => {

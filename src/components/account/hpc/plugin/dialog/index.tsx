@@ -149,9 +149,13 @@ export const onFinish = async (
   plugin: IClientPlugin,
   edit: boolean,
   values: {},
-  swr: IProps['swr']
+  swr: {
+    addOnePlugin?: (plugin: IClientPlugin) => void
+    mutateOnePlugin?: (plugin: IClientPlugin) => void
+  }
 ): Promise<void> => {
   try {
+    console.log(values)
     if (edit) {
       const initialPlugin = Utils.deepCopy(plugin)
 

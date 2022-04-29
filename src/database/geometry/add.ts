@@ -22,7 +22,7 @@ export const add = async (
   project: { id: string },
   geometry: { name: string; uid: string }
 ): Promise<INewGeometry> => {
-  const extension = geometry.name.split('.').pop() || ''
+  const extension = geometry.name.split('.').pop()
   const uploadFileName = geometry.uid + '.' + extension
 
   const response = await query(

@@ -256,11 +256,11 @@ describe('plugins/local/src/lib', () => {
 
   test('computeMesh', async () => {
     mockGmsh.mockImplementation((_, __, ___, callback) => {
-      callback({})
+      callback({ data: 'data', error: 'error' })
       return 0
     })
     mockConvert.mockImplementation((_, __, callback) => {
-      callback({})
+      callback({ data: 'data', error: 'error' })
       return {
         json: 'json',
         glb: 'glb'
@@ -312,6 +312,24 @@ describe('plugins/local/src/lib', () => {
           name: 'name',
           path: 'path',
           file: 'file'
+        }
+      } as IModel['configuration'],
+      []
+    )
+
+    // 2D
+    await Local.computeMesh(
+      'id',
+      'path',
+      {
+        geometry: {
+          index: 1,
+          title: 'Geometry',
+          meshable: true,
+          name: 'name',
+          path: 'path',
+          file: 'file',
+          dimension: 2
         }
       } as IModel['configuration'],
       []
@@ -378,6 +396,16 @@ describe('plugins/local/src/lib', () => {
       return 'interval'
     })
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
+
+    // No scheme
+    try {
+      await Local.computeSimulation(
+        { id: 'id' },
+        //@ts-ignore
+        undefined
+      )
+    } catch (err) {}
+
     // Empty
     await Local.computeSimulation({ id: 'id' }, {
       algorithm: 'algorithm',

@@ -50,7 +50,7 @@ describe('component/project/list', () => {
   const organizations: Pick<
     IFrontOrganizationsItem,
     'id' | 'name' | 'groups'
-  >[] = []
+  >[] = [{ id: 'id', name: 'name', groups: [] }]
   const swr = {
     mutateOneWorkspace: jest.fn,
     delOneProject: jest.fn,

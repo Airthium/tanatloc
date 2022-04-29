@@ -27,6 +27,8 @@ describe('context', () => {
   test('selectReducer', () => {
     let res: ISelectState
 
+    initialState.dispatch({ type: actionTypes.ENABLE })
+
     // Enable
     res = selectReducer(initialState, { type: actionTypes.ENABLE })
     expect(res.enabled).toBe(true)

@@ -97,20 +97,13 @@ const materialsSummary = (
 
   stream.write('Materials:\n')
   configuration.values?.forEach((value) => {
-    if (value.material) {
-      stream.write(' - ' + value.material.label + ':\n')
-      value.material.children.forEach((child) => {
-        stream.write(
-          '  - ' +
-            child.label +
-            ', ' +
-            child.symbol +
-            ' = ' +
-            child.value +
-            '\n'
-        )
-      })
-    }
+    stream.write(' - ' + value.material.label + ':\n')
+    value.material.children.forEach((child) => {
+      stream.write(
+        '  - ' + child.label + ', ' + child.symbol + ' = ' + child.value + '\n'
+      )
+    })
+
     stream.write('  - Selected: [')
     stream.write(value.selected.map((select) => select.label).join(', '))
     stream.write(']\n')

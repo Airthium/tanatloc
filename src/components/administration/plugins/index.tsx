@@ -1,6 +1,6 @@
 /** @module Components.Administration.Plugins */
 
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Table, TableColumnsType } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -68,7 +68,7 @@ export const onChange = async (
  */
 const Plugins = () => {
   // Ref
-  const tableRef = useRef(null)
+  const tableRef = useRef<HTMLDivElement>(null)
 
   // State
   const [plugins, setPlugins] = useState<IClientPlugin[]>()
@@ -119,9 +119,12 @@ const Plugins = () => {
     }
   ]
 
-  // Update table scroll
+  /**
+   * On resize
+   */
   const onResize = useCallback(() => {
-    const table = tableRef.current as RefObject<HTMLDivElement>['current']
+    const table = tableRef.current
+    /* istanbul ignore next */
     if (!table) return
     if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
       // Scroll needed

@@ -59,8 +59,6 @@ export const pluginsList = (
   user: Pick<IFrontUser, 'authorizedplugins'>,
   setModels: (models: IModel[]) => void
 ) => {
-  if (!user) return
-
   PluginsAPI.list()
     .then((plugins) => {
       const allModels = loadModels(user, Models, plugins)

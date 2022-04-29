@@ -458,6 +458,7 @@ const quit = async (organization: { id: string }, user: { id: string }) => {
 const Organization = {
   add,
   get,
+  getAll,
   getWithData,
   getByUser,
   update,

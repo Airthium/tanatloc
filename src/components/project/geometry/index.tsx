@@ -224,30 +224,26 @@ const Geometry = ({
               <span className="text-light">Unit:</span>{' '}
               <MathJax.Inline text={'m'} />
             </Typography.Text>
-            {geometry.summary ? (
-              <>
-                {geometry.summary.solids && (
-                  <Typography.Text>
-                    <span className="text-light">Number of solids:</span>{' '}
-                    {geometry.summary.solids.length}
-                  </Typography.Text>
-                )}
-                {geometry.summary.faces && (
-                  <Typography.Text>
-                    <span className="text-light">Number of faces:</span>{' '}
-                    {geometry.summary.faces.length}
-                  </Typography.Text>
-                )}
-                {geometry.summary.edges && (
-                  <Typography.Text>
-                    <span className="text-light">Number of edges:</span>{' '}
-                    {geometry.summary.edges.length}
-                  </Typography.Text>
-                )}
-              </>
-            ) : (
-              <Typography.Text>No summary available</Typography.Text>
-            )}
+            <>
+              {geometry.summary.solids && (
+                <Typography.Text>
+                  <span className="text-light">Number of solids:</span>{' '}
+                  {geometry.summary.solids.length}
+                </Typography.Text>
+              )}
+              {geometry.summary.faces && (
+                <Typography.Text>
+                  <span className="text-light">Number of faces:</span>{' '}
+                  {geometry.summary.faces.length}
+                </Typography.Text>
+              )}
+              {geometry.summary.edges && (
+                <Typography.Text>
+                  <span className="text-light">Number of edges:</span>{' '}
+                  {geometry.summary.edges.length}
+                </Typography.Text>
+              )}
+            </>
           </Space>
         </Card>
       </Layout.Content>

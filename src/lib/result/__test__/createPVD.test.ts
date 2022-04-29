@@ -125,4 +125,19 @@ describe('lib/download/pvd', () => {
     const pvds = createPVD(simulation, files)
     expect(pvds).toEqual([])
   })
+
+  test('no configuration', () => {
+    const pvds = createPVD(
+      {
+        ...simulation,
+        scheme: {
+          ...simulation.scheme,
+          //@ts-ignore
+          configuration: undefined
+        }
+      },
+      files
+    )
+    expect(pvds).toEqual([])
+  })
 })

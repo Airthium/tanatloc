@@ -15,7 +15,7 @@ export const getAll = async <T extends TUserGet>(
   data: T
 ): Promise<IUser<T>[]> => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + tables.USERS,
+    'SELECT ' + ['id', ...data].join(',') + ' FROM ' + tables.USERS,
     []
   )
 

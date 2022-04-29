@@ -109,8 +109,7 @@ const onAccept = async (
         (u) => u.id === user.id
       )
       const pendinguser = newOrganization.pendingusers[userIndex]
-      newOrganization.pendingusers?.splice(userIndex, 1)
-      if (!newOrganization.users) newOrganization.users = []
+      newOrganization.pendingusers.splice(userIndex, 1)
       newOrganization.users.push(pendinguser)
     }
 
@@ -318,12 +317,11 @@ const List = ({
    */
   const onResize = useCallback(() => {
     // Check if too many organizations to display
-    if (!refTableOrga.current) return
-    if (
-      refTableOrga.current.clientHeight >
-      window.innerHeight - refTableOrga.current.offsetTop - 59
-    ) {
-      setScroll({ y: window.innerHeight - refTableOrga.current.offsetTop - 59 })
+    const table = refTableOrga.current
+    /* istanbul ignore next */
+    if (!table) return
+    if (table.clientHeight > window.innerHeight - table.offsetTop - 59) {
+      setScroll({ y: window.innerHeight - table.offsetTop - 59 })
     } else {
       // Scroll not needed
       setScroll(null)

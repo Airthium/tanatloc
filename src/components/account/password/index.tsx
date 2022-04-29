@@ -46,7 +46,7 @@ export const onFinish = async (
   try {
     // Check current password
     current = await UserAPI.check({
-      email: user.email || '',
+      email: user.email,
       password: values.password
     })
   } catch (err) {

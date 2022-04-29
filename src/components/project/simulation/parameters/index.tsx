@@ -70,12 +70,10 @@ export const build2DSelect = (
   <Form layout="vertical" key={key}>
     <Form.Item label={child.label2D || child.label}>
       <Select
-        options={
-          child.options?.map((option) => ({
-            label: option.label,
-            value: option.value2D ?? option.value
-          })) || []
-        }
+        options={child.options?.map((option) => ({
+          label: option.label,
+          value: option.value2D ?? option.value
+        }))}
         defaultValue={
           (child.value as string) ||
           (child.default2D as string) ||

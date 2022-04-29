@@ -143,6 +143,22 @@ describe('components/project/simulation/boundaryConditions', () => {
     unmount()
   })
 
+  test('no geometry', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <BoundaryConditions
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
   test('onAdd', () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />

@@ -1,6 +1,6 @@
 /** @module Components.Administration.Plugins */
 
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Table, TableColumnsType } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'

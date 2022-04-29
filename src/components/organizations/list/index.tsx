@@ -1,7 +1,7 @@
 /** @module Components.Organizations.List */
 
 import PropTypes from 'prop-types'
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
   CheckCircleOutlined,

@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization.Groups */
 
-import { useState, useEffect, useCallback, useRef, RefObject } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Avatar, Space, Table } from 'antd'
 
 import Group, { Delete } from '@/components/assets/group'

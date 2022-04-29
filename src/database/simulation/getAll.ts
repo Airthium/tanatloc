@@ -15,7 +15,7 @@ export const getAll = async <T extends TSimulationGet>(
   data: T
 ): Promise<ISimulation<T>[]> => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + tables.SIMULATIONS,
+    'SELECT ' + ['id', ...data].join(',') + ' FROM ' + tables.SIMULATIONS,
     []
   )
 

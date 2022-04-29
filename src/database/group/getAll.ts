@@ -15,7 +15,7 @@ export const getAll = async <T extends TGroupGet>(
   data: T
 ): Promise<IGroup<T>[]> => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + tables.GROUPS,
+    'SELECT ' + ['id', ...data].join(',') + ' FROM ' + tables.GROUPS,
     []
   )
 

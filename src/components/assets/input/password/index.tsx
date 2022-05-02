@@ -1,6 +1,5 @@
 /** @module Components.Assets.Input.Password */
 
-import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
 import { IFrontSystem } from '@/api/index.d'
@@ -216,18 +215,6 @@ const PasswordItem = ({
       />
     </Form.Item>
   )
-}
-
-PasswordItem.propTypes = {
-  labelCol: PropTypes.object,
-  wrapperCol: PropTypes.object,
-  name: PropTypes.string,
-  label: PropTypes.string,
-  inputPlaceholder: PropTypes.string,
-  inputAutoComplete: PropTypes.string,
-  edit: PropTypes.bool,
-  style: PropTypes.object,
-  className: PropTypes.string
 }
 
 export default PasswordItem

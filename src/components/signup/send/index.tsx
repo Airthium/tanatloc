@@ -20,6 +20,4 @@ const Send = (): JSX.Element => {
   )
 }
 
-Send.propTypes = {}
-
 export default Send

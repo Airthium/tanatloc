@@ -259,6 +259,4 @@ const Index = (): JSX.Element => {
   )
 }
 
-Index.propTypes = {}
-
 export default Index

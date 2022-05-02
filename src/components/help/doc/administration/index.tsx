@@ -32,6 +32,4 @@ const Administration = (): JSX.Element => {
   )
 }
 
-Administration.propTypes = {}
-
 export default Administration

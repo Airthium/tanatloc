@@ -1,6 +1,5 @@
 /** @module Components.Assets.Dialog */
 
-import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { Form, Modal, Typography } from 'antd'
 import { BaseButtonProps } from 'antd/lib/button/button'
@@ -122,19 +121,6 @@ const Dialog = ({
       </Form>
     </Modal>
   )
-}
-
-Dialog.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  closable: PropTypes.bool,
-  loading: PropTypes.bool,
-  title: PropTypes.string.isRequired,
-  initialValues: PropTypes.object,
-  okButtonProps: PropTypes.object,
-  okButtonText: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  onCancel: PropTypes.func,
-  onOk: PropTypes.func
 }
 
 export default Dialog

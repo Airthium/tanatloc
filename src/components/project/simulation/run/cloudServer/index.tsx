@@ -1,7 +1,6 @@
 /** @module Components.Project.Simulation.Run.CloudServer */
 
 import dynamic from 'next/dynamic'
-import PropTypes from 'prop-types'
 import { useState, useEffect, ComponentType } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
@@ -162,20 +161,6 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
       </Space>
     </Card>
   )
-}
-
-CloudServer.propTypes = {
-  disabled: PropTypes.bool,
-  cloudServer: PropTypes.shape({
-    name: PropTypes.string,
-    configuration: PropTypes.shape({
-      name: PropTypes.shape({
-        value: PropTypes.string
-      })
-    }),
-    inUseConfiguration: PropTypes.object.isRequired
-  }),
-  onOk: PropTypes.func.isRequired
 }
 
 export default CloudServer

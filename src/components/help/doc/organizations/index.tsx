@@ -38,6 +38,4 @@ const Organizations = (): JSX.Element => {
   )
 }
 
-Organizations.propTypes = {}
-
 export default Organizations

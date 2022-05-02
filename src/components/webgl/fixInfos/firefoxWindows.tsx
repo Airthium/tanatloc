@@ -49,6 +49,4 @@ const FirefoxWindows = (): JSX.Element => {
   )
 }
 
-FirefoxWindows.propTypes = {}
-
 export default FirefoxWindows

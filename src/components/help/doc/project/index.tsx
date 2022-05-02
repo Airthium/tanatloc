@@ -44,6 +44,4 @@ const Project = (): JSX.Element => {
   )
 }
 
-Project.propTypes = {}
-
 export default Project

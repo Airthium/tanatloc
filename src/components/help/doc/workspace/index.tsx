@@ -23,6 +23,4 @@ const Workspace = (): JSX.Element => {
   )
 }
 
-Workspace.propTypes = {}
-
 export default Workspace

@@ -41,6 +41,4 @@ const Help = (): JSX.Element => {
   )
 }
 
-Help.propTypes = {}
-
 export default Help

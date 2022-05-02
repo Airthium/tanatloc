@@ -59,7 +59,7 @@ const DeleteButton = ({
           setVisible(false)
         }}
       >
-        {<>{text}</> || 'Are you sure?'}
+        {text || 'Are you sure?'}
       </DeleteDialog>
       <Tooltip title={children || 'Delete'}>
         <Button

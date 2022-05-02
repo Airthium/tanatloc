@@ -41,7 +41,7 @@ export const errors = {
 export const inputItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
-): React.ReactChild => {
+): React.ReactElement => {
   return (
     <Form.Item
       key={item.label}
@@ -63,7 +63,7 @@ export const inputItem = (
 export const textareaItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
-): React.ReactChild => {
+): React.ReactElement => {
   return (
     <Form.Item
       key={item.label}
@@ -89,7 +89,7 @@ export const textareaItem = (
 export const passwordItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
-): React.ReactChild => {
+): React.ReactElement => {
   return (
     <Form.Item
       key={item.label}
@@ -116,7 +116,7 @@ export const passwordItem = (
 export const selectItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
-): React.ReactChild => {
+): React.ReactElement => {
   return (
     <Form.Item
       key={item.label}

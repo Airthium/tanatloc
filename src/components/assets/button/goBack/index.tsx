@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.GoBack */
 
-import { ReactChild } from 'react'
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -8,7 +7,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
  * Props
  */
 export interface IProps {
-  children?: ReactChild | ReactChild[]
+  children?: string | React.ReactElement | React.ReactElement[]
   onClick: () => void
 }
 

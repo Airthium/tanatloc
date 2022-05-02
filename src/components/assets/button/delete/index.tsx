@@ -1,6 +1,6 @@
 /** @module Components.Assets.Button.Delete */
 
-import { ReactChild, useState } from 'react'
+import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -13,9 +13,9 @@ export interface IProps {
   disabled?: boolean
   loading?: boolean
   bordered?: boolean
-  text?: ReactChild | string
+  text?: string | React.ReactElement
   title?: string
-  children?: ReactChild | ReactChild[]
+  children?: string | React.ReactElement | React.ReactElement[]
   onDelete: () => Promise<void>
 }
 
@@ -59,7 +59,7 @@ const DeleteButton = ({
           setVisible(false)
         }}
       >
-        {text || 'Are you sure?'}
+        {<>{text}</> || 'Are you sure?'}
       </DeleteDialog>
       <Tooltip title={children || 'Delete'}>
         <Button

@@ -206,22 +206,33 @@ const computeMesh = async (
       }
     )
 
+    // Callback
+    const callback = ({
+      pid,
+      data,
+      error
+    }: {
+      pid?: number
+      data?: string
+      error?: string
+    }) => {
+      meshingTask.status = 'process'
+
+      pid && (meshingTask.pid = pid)
+
+      error && (meshingTask.error += 'Error: ' + error + '\n')
+
+      data && (meshingTask.log += data + '\n')
+
+      if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+    }
+
     // Compute mesh
     let code = await Services.gmsh(
       simulationPath,
       path.join(meshPath, geoFile),
       path.join(meshPath, mshFile),
-      ({ pid, data, error }) => {
-        meshingTask.status = 'process'
-
-        pid && (meshingTask.pid = pid)
-
-        error && (meshingTask.error += 'Error: ' + error + '\n')
-
-        data && (meshingTask.log += data + '\n')
-
-        if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
-      }
+      ({ pid, data, error }) => callback({ pid, data, error })
     )
 
     if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
@@ -233,15 +244,7 @@ const computeMesh = async (
         name: mshFile,
         target: partPath
       },
-      ({ data, error }) => {
-        meshingTask.status = 'process'
-
-        error && (meshingTask.error += 'Error: ' + error + '\n')
-
-        data && (meshingTask.log += data + '\n')
-
-        if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
-      }
+      ({ data, error }) => callback({ data, error })
     )
 
     // Mesh

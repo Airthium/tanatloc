@@ -213,8 +213,6 @@ const Project = (): JSX.Element => {
 
   // Update geometry
   useEffect(() => {
-    console.log(loadingGeometries)
-    console.log(geometry)
     if (!loadingGeometries && geometry) {
       const current = geometries.find((g) => g.id === geometry?.id)
       if (current) {

@@ -155,7 +155,6 @@ export const onFinish = async (
   }
 ): Promise<void> => {
   try {
-    console.log(values)
     if (edit) {
       const initialPlugin = Utils.deepCopy(plugin)
 

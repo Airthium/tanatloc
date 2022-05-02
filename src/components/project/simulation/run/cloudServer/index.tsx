@@ -69,8 +69,6 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
    */
   return (
     <Card size="small" title="Computational resource">
-      {/* 
-      //@ts-ignore */}
       <Modal
         visible={visible}
         title="Computational resource"

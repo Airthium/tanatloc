@@ -91,8 +91,6 @@ const Workspace = ({
    */
   return (
     <Layout className="no-scroll">
-      {/* 
-      //@ts-ignore */}
       <PageHeader
         className="inWorkspace-PageHeader"
         backIcon={false}

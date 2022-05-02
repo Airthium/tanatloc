@@ -421,8 +421,6 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       >
         Pick a material
       </Button>
-      {/* 
-      //@ts-ignore */}
       <Modal
         visible={visible}
         title="Material database"

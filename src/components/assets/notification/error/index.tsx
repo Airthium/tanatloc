@@ -44,9 +44,7 @@ const ErrorNotification = (
         <>
           <Typography.Text code>{err.message}</Typography.Text>
           {(err.status || err.info) && (
-            //@ts-ignore
             <Collapse>
-              {/* @ts-ignore */}
               <Collapse.Panel key="information" header="More information">
                 <Space direction="vertical">
                   {err.status && (

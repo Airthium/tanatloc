@@ -145,7 +145,6 @@ const Selector = ({
    * Render
    */
   return (
-    //@ts-ignore
     <Modal
       visible={visible}
       title="Create simulation"
@@ -284,7 +283,6 @@ const Updater = ({
   if (!simulation) return null
   else
     return (
-      //@ts-ignore
       <Modal
         title={
           <>

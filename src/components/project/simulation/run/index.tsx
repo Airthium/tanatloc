@@ -268,8 +268,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                   </Space>
                   <Log simulation={{ id: simulation.id }} steps={steps} />
                 </div>
-                {/* 
-                //@ts-ignore */}
                 <Steps direction="vertical">
                   {steps.map((step, index) => (
                     <Steps.Step

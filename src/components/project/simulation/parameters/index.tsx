@@ -376,11 +376,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       <Layout.Content>
         <Space direction="vertical">
           {parameters}
-          {/* 
-          //@ts-ignore */}
           <Collapse>
-            {/* 
-            //@ts-ignore */}
             <Collapse.Panel key="advanced" header="Advanced">
               <Space direction="vertical">{advanced}</Space>
             </Collapse.Panel>

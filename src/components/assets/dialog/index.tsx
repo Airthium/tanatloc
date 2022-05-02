@@ -78,7 +78,6 @@ const Dialog = ({
    * Render
    */
   return (
-    //@ts-ignore
     <Modal
       className="Dialog"
       title={

@@ -70,7 +70,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
           if (!plugin) return
           else
             return (
-              //@ts-ignore
               <Badge
                 key={authorizedplugin}
                 size="small"

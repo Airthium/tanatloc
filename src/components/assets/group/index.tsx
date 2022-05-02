@@ -127,13 +127,10 @@ export const onUpdate = async (
     await GroupAPI.update({ id: group.id }, toUpdate)
 
     // Local
-    swr.mutateOneGroup(
-      //@ts-ignore
-      {
-        ...group,
-        ...values
-      }
-    )
+    swr.mutateOneGroup({
+      ...group,
+      ...(values as any)
+    })
 
     const groupIndex = organization.groups?.findIndex((g) => g.id === group.id)
     swr.mutateOneOrganization({

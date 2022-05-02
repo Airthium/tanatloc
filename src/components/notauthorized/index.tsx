@@ -57,6 +57,4 @@ const NotAuthorized = (): JSX.Element => {
   )
 }
 
-NotAuthorized.propTypes = {}
-
 export default NotAuthorized

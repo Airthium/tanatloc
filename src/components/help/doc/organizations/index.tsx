@@ -16,9 +16,7 @@ const Organizations = (): JSX.Element => {
         Allow you to manage an organization, and associated groups for sharing
         purpose.
       </Typography.Text>
-      {/* @ts-ignore */}
       <Collapse>
-        {/* @ts-ignore */}
         <Collapse.Panel key="users" header="Users">
           <Typography.Text>
             Add or remove owners and users.
@@ -27,7 +25,6 @@ const Organizations = (): JSX.Element => {
             or a project.
           </Typography.Text>
         </Collapse.Panel>
-        {/* @ts-ignore */}
         <Collapse.Panel key="groups" header="Groups">
           <Typography.Text>
             Add, modify or remove groups.
@@ -40,7 +37,5 @@ const Organizations = (): JSX.Element => {
     </Card>
   )
 }
-
-Organizations.propTypes = {}
 
 export default Organizations

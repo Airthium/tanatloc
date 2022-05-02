@@ -29,6 +29,4 @@ const NoManipBrowser = (): JSX.Element => {
   )
 }
 
-NoManipBrowser.propTypes = {}
-
 export default NoManipBrowser

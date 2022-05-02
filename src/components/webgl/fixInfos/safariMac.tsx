@@ -48,6 +48,4 @@ const SafariMac = (): JSX.Element => {
   )
 }
 
-SafariMac.propTypes = {}
-
 export default SafariMac

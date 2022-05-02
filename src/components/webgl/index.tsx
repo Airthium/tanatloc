@@ -160,6 +160,4 @@ const WebGLError = (): JSX.Element => {
   )
 }
 
-WebGLError.propTypes = {}
-
 export default WebGLError

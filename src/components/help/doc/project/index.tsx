@@ -15,9 +15,7 @@ const Project = (): JSX.Element => {
       <Typography.Text>
         The project is used to manage geometries and simulation.
       </Typography.Text>
-      {/* @ts-ignore */}
       <Collapse>
-        {/* @ts-ignore */}
         <Collapse.Panel key="archive" header="Archive Project">
           <Typography.Text>
             You can archive a project to save disk space.
@@ -45,7 +43,5 @@ const Project = (): JSX.Element => {
     </Card>
   )
 }
-
-Project.propTypes = {}
 
 export default Project

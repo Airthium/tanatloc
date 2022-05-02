@@ -12,9 +12,7 @@ const HPC = (): JSX.Element => {
    */
   return (
     <Card title="Account / HPC plugins">
-      {/* @ts-ignore */}
       <Collapse>
-        {/* @ts-ignore */}
         <Collapse.Panel key="local" header="Local plugin">
           <Typography.Text>
             Allow to compute a simulation directly on the frontal server.
@@ -23,7 +21,6 @@ const HPC = (): JSX.Element => {
             This plugin is only reserved for test purposes.
           </Typography.Text>
         </Collapse.Panel>
-        {/* @ts-ignore */}
         <Collapse.Panel key="rescale" header="Rescale plugin">
           <Typography.Text>
             Allow to compute a simulation on{' '}
@@ -65,7 +62,5 @@ const HPC = (): JSX.Element => {
     </Card>
   )
 }
-
-HPC.propTypes = {}
 
 export default HPC

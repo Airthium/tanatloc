@@ -57,6 +57,4 @@ const FirefoxMac = (): JSX.Element => {
   )
 }
 
-FirefoxMac.propTypes = {}
-
 export default FirefoxMac

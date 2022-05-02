@@ -1,6 +1,5 @@
 /** @module Components.Assets.Notification.Error */
 
-import PropTypes from 'prop-types'
 import { Collapse, notification, Space, Typography } from 'antd'
 
 import { ICallError } from '@/api/index.d'
@@ -44,9 +43,7 @@ const ErrorNotification = (
         <>
           <Typography.Text code>{err.message}</Typography.Text>
           {(err.status || err.info) && (
-            //@ts-ignore
             <Collapse>
-              {/* @ts-ignore */}
               <Collapse.Panel key="information" header="More information">
                 <Space direction="vertical">
                   {err.status && (
@@ -67,12 +64,6 @@ const ErrorNotification = (
     })
   err && console.error(err)
   err && Sentry.captureException(err)
-}
-
-ErrorNotification.propTypes = {
-  title: PropTypes.string.isRequired,
-  err: PropTypes.object,
-  display: PropTypes.bool
 }
 
 export default ErrorNotification

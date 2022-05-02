@@ -156,7 +156,7 @@ const Project = (): JSX.Element => {
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
   const [project, { mutateProject, errorProject, loadingProject }] =
-    ProjectAPI.useProject(projectId || '')
+    ProjectAPI.useProject(projectId)
 
   const [
     simulations,
@@ -606,7 +606,7 @@ const Project = (): JSX.Element => {
 
   // Simulations render build
   const simulationsRender = simulations.map((s) => {
-    const configuration = s?.scheme?.configuration || {}
+    const configuration = s.scheme.configuration || {}
     const categories: JSX.Element[] = []
     Object.keys(configuration).forEach((key) => {
       if (key === 'dimension') return
@@ -867,7 +867,5 @@ const Project = (): JSX.Element => {
       </SelectProvider>
     )
 }
-
-Project.propTypes = {}
 
 export default Project

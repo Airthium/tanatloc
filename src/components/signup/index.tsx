@@ -187,6 +187,4 @@ const Signup = (): JSX.Element => {
     )
 }
 
-Signup.propTypes = {}
-
 export default Signup

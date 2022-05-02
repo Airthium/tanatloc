@@ -162,6 +162,4 @@ const Login = (): JSX.Element => {
     )
 }
 
-Login.propTypes = {}
-
 export default Login

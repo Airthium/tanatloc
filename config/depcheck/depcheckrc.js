@@ -53,6 +53,7 @@ depcheck.special.customJest = async (fileName, deps) => {
   const newDeps = []
 
   if (path.basename(fileName) === 'jest.config.js') {
+    newDeps.push('jest-environment-jsdom')
     if (deps.includes('typescript')) newDeps.push('@types/jest')
 
     const config = await require(fileName)

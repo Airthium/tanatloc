@@ -181,13 +181,7 @@ const getWorkspaces = async (workspaces: string[]): Promise<TWorkspace[]> => {
  * @param user User
  * @returns Workspaces
  */
-const getByUser = async ({
-  id
-}: {
-  id: string
-}): Promise<
-  IWorkspaceWithData<('name' | 'owners' | 'users' | 'groups' | 'projects')[]>[]
-> => {
+const getByUser = async ({ id }: { id: string }): Promise<TWorkspace[]> => {
   // Get workspaces'ids
   const user = await User.get(id, ['organizations', 'workspaces'])
 
@@ -199,12 +193,8 @@ const getByUser = async ({
 
   // Get organizations workspaces & projects
   if (user.organizations) {
-    const groupsWorkspaces: IWorkspaceWithData<
-      ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
-    >[] = []
-    const groupsProjects: IWorkspaceWithData<
-      ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
-    >[] = []
+    const groupsWorkspaces: TWorkspace[] = []
+    const groupsProjects: TWorkspace[] = []
     await Promise.all(
       user.organizations.map(async (organization) => {
         const organizationData = await Organization.get(organization, [

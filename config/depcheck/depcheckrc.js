@@ -7,11 +7,11 @@ const { exit } = require('process')
  * Custom typedeoc parser
  * @returns Deps array
  */
-depcheck.special.customTypedoc = async (fileName) => {
+depcheck.special.customTypedoc = (fileName) => {
   const newDeps = []
 
   if (path.basename(fileName) === 'package.json') {
-    const packageJson = await require(fileName)
+    const packageJson = require(fileName)
 
     Object.values(packageJson.scripts).forEach((script) => {
       if (script.includes('typedoc')) {
@@ -49,14 +49,14 @@ depcheck.special.customNext = async (fileName) => {
  * Custom jest.config.js parser
  * @returns Deps array
  */
-depcheck.special.customJest = async (fileName, deps) => {
+depcheck.special.customJest = (fileName, deps) => {
   const newDeps = []
 
   if (path.basename(fileName) === 'jest.config.js') {
     newDeps.push('jest-environment-jsdom')
     if (deps.includes('typescript')) newDeps.push('@types/jest')
 
-    const config = await require(fileName)
+    const config = require(fileName)
     Object.values(config.transform).forEach((value) => {
       if (!value.includes('<rootDir>')) newDeps.push(value)
     })

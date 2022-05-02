@@ -9,16 +9,16 @@ git clean -xdf
 yarn install
 
 # Depcheck
-yarn run depcheck
+yarn run depcheck | true
 
 # Lint
-yarn run prettier
+yarn run prettier | true
 
 # Next lint
-yarn run next lint
+yarn run next lint | true
 
 # Doc
-yarn run doc
+yarn run doc | true
 
 # Test
 yarn run test | true

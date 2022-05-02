@@ -210,7 +210,7 @@ const List = ({
           />
         </Space>
       )
-    else if (org.users.find((u) => u.id === user.id))
+    else if (org.users?.find((u) => u.id === user.id))
       return (
         <Space wrap>
           <Button

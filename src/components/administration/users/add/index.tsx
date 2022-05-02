@@ -11,9 +11,9 @@ import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IFrontMutateUser } from '@/api/index.d'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
-import { IFrontMutateUser } from '@/api/index.d'
 
 /**
  * Props
@@ -117,9 +117,11 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
       <Dialog
         title="New user"
         visible={visible}
-        initialValues={{
-          authorizedplugins: system?.defaultplugins
-        }}
+        initialValues={
+          system.defaultplugins && {
+            authorizedplugins: system.defaultplugins
+          }
+        }
         onCancel={() => setVisible(false)}
         onOk={async (values: IAddValues) => {
           setLoading(true)

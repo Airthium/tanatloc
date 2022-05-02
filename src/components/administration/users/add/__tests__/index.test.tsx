@@ -30,6 +30,11 @@ jest.mock('@/api/user', () => ({
   updateById: async () => mockUpdateById()
 }))
 
+const mockSystem = jest.fn()
+jest.mock('@/api/system', () => ({
+  useSystem: () => [mockSystem()]
+}))
+
 describe('components/administration/users/add', () => {
   const plugins: IClientPlugin[] = []
   const swr = { addOneUser: jest.fn() }
@@ -48,9 +53,19 @@ describe('components/administration/users/add', () => {
 
     mockAdd.mockReset()
     mockUpdateById.mockReset()
+
+    mockSystem.mockReset()
+    mockSystem.mockImplementation(() => ({}))
   })
 
   test('render', () => {
+    const { unmount } = render(<Add plugins={plugins} swr={swr} />)
+
+    unmount()
+  })
+
+  test('with defaultplugins', () => {
+    mockSystem.mockImplementation(() => ({ defaultplugins: [] }))
     const { unmount } = render(<Add plugins={plugins} swr={swr} />)
 
     unmount()

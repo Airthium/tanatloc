@@ -298,7 +298,7 @@ describe('lib/user', () => {
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockAvatarDel).toHaveBeenCalledTimes(1)
     expect(mockWorkspaceDel).toHaveBeenCalledTimes(1)
-    expect(mockOrganizationUpdate).toHaveBeenCalledTimes(2)
+    expect(mockOrganizationUpdate).toHaveBeenCalledTimes(4)
     expect(mockGroupUpdate).toHaveBeenCalledTimes(1)
   })
 })

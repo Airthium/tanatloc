@@ -210,7 +210,7 @@ const List = ({
           />
         </Space>
       )
-    else if (org.users?.find((u) => u.id === user.id))
+    else if (org.users.find((u) => u.id === user.id))
       return (
         <Space wrap>
           <Button
@@ -229,8 +229,8 @@ const List = ({
         </Space>
       )
     else if (
-      org.pendingowners?.find((o) => o.id === user.id) ||
-      org.pendingusers?.find((u) => u.id === user.id)
+      org.pendingowners.find((o) => o.id === user.id) ||
+      org.pendingusers.find((u) => u.id === user.id)
     )
       return (
         <Space wrap>

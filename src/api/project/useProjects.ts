@@ -42,7 +42,10 @@ export const useProjects = (
    */
   const addOne = useCallback(
     (project: IFrontNewProject): void => {
-      const newProjects = [...projects, project] as IFrontProjects
+      const newProjects = [
+        ...projects,
+        { ...project, users: [], geometries: [], simulations: [], groups: [] }
+      ] as IFrontProjects
       mutate({ projects: newProjects })
     },
     [projects, mutate]

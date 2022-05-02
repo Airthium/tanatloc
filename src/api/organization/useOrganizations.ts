@@ -38,7 +38,13 @@ export const useOrganizations = (): [
     (organization: IFrontNewOrganization): void => {
       const newOrganizations = [
         ...organizations,
-        organization
+        {
+          ...organization,
+          pendingowners: [],
+          users: [],
+          pendingusers: [],
+          groups: []
+        }
       ] as IFrontOrganizations
       mutate({ organizations: newOrganizations })
     },

@@ -217,7 +217,23 @@ const del = async (user: { id: string }): Promise<void> => {
       ])
       await Organization.update({ id: organization }, [
         {
+          key: 'pendingowners',
+          type: 'array',
+          method: 'remove',
+          value: user.id
+        }
+      ])
+      await Organization.update({ id: organization }, [
+        {
           key: 'users',
+          type: 'array',
+          method: 'remove',
+          value: user.id
+        }
+      ])
+      await Organization.update({ id: organization }, [
+        {
+          key: 'pendingusers',
           type: 'array',
           method: 'remove',
           value: user.id

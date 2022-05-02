@@ -156,7 +156,7 @@ const Project = (): JSX.Element => {
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
   const [project, { mutateProject, errorProject, loadingProject }] =
-    ProjectAPI.useProject(projectId || '')
+    ProjectAPI.useProject(projectId)
 
   const [
     simulations,

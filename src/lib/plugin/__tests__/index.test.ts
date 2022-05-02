@@ -1,5 +1,9 @@
 import Plugin from '../'
 
+jest.mock('uuid', () => ({
+  v4: () => 'uuid'
+}))
+
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('../../user', () => ({

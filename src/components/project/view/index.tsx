@@ -46,7 +46,7 @@ export const errors = {
  * @returns Part
  */
 const loadPart = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
   file: Pick<IFrontGeometriesItem, 'id'> | TResult,
   type: 'geometry' | 'result'
 ): Promise<{ uuid: string; buffer: Buffer }> => {
@@ -57,7 +57,7 @@ const loadPart = async (
     } else {
       const result = file as Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
       return await ResultAPI.load(
-        { id: simulation.id },
+        { id: simulation!.id },
         { originPath: result.originPath, glb: result.glb!, json: result.json! }
       )
     }
@@ -89,35 +89,33 @@ const View = ({
 
   // Part
   useEffect(() => {
-    if (simulation) {
-      if (result) {
-        if (result.glb !== (previous as TResult)?.glb) {
-          setPrevious(result)
+    if (simulation && result) {
+      if (result.glb !== (previous as TResult)?.glb) {
+        setPrevious(result)
 
-          setLoading(true)
-          loadPart(simulation, result, 'result')
+        setLoading(true)
+        loadPart(simulation, result, 'result')
+          .then((partLoaded) =>
+            setPart({ ...partLoaded, dimension: geometry?.dimension })
+          )
+          .catch((_err) => undefined)
+          .finally(() => setLoading(false))
+      }
+    } else if (geometry) {
+      if (geometry.id !== (previous as TGeometry)?.id) {
+        setPrevious(geometry)
+
+        setLoading(true)
+        if (geometry.needCleanup) {
+          setPart(undefined)
+          setLoading(false)
+        } else {
+          loadPart(undefined, geometry, 'geometry')
             .then((partLoaded) =>
-              setPart({ ...partLoaded, dimension: geometry?.dimension })
+              setPart({ ...partLoaded, dimension: geometry.dimension })
             )
             .catch((_err) => undefined)
             .finally(() => setLoading(false))
-        }
-      } else if (geometry) {
-        if (geometry.id !== (previous as TGeometry)?.id) {
-          setPrevious(geometry)
-
-          setLoading(true)
-          if (geometry.needCleanup) {
-            setPart(undefined)
-            setLoading(false)
-          } else {
-            loadPart(simulation, geometry, 'geometry')
-              .then((partLoaded) =>
-                setPart({ ...partLoaded, dimension: geometry.dimension })
-              )
-              .catch((_err) => undefined)
-              .finally(() => setLoading(false))
-          }
         }
       }
     }

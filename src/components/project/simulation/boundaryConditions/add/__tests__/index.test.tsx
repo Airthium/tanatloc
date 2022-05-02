@@ -9,6 +9,10 @@ import { IFrontSimulationsItem } from '@/api/index.d'
 
 import { IModelBoundaryConditionValue } from '@/models/index.d'
 
+jest.mock('uuid', () => ({
+  v4: () => 'uuid'
+}))
+
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   ErrorNotification: (title: string, err: Error) =>

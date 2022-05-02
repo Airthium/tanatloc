@@ -10,6 +10,10 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('uuid', () => ({
+  v4: () => 'uuid'
+}))
+
 const mockErroNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   ErrorNotification: (title: string, err: Error) =>

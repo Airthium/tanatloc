@@ -6,6 +6,10 @@ import Add, { errors } from '@/components/project/simulation/materials/add'
 import { ISimulation } from '@/database/simulation/index'
 import { IModelMaterialsValue } from '@/models/index.d'
 
+jest.mock('uuid', () => ({
+  v4: () => 'uuid'
+}))
+
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   ErrorNotification: (title: string, err: Error) =>

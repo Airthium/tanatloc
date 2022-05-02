@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Cancel */
 
-import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 
 /**
@@ -9,7 +8,7 @@ import { Button, Tooltip } from 'antd'
 export interface IProps {
   disabled?: boolean
   loading?: boolean
-  children?: ReactChild | ReactChild[]
+  children?: string | React.ReactElement | React.ReactElement[]
   onCancel: () => void
 }
 

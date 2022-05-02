@@ -1,7 +1,7 @@
 /** @module Lib.Template */
 
 import path from 'path'
-import ejs from 'ejs'
+import ejs, { AsyncTemplateFunction } from 'ejs'
 import isElectron from 'is-electron'
 
 import Tools from '../tools'
@@ -10,7 +10,7 @@ import Plugins from '../plugins'
 import Templates from '@/templates'
 
 export interface ITemplates {
-  [key: string]: ejs.TemplateFunction
+  [key: string]: AsyncTemplateFunction
 }
 
 /**
@@ -36,7 +36,7 @@ export const loadTemplates = async (): Promise<ITemplates> => {
           'templates'
         )
       })
-      templates[key] = func
+      templates[key] = func as unknown as AsyncTemplateFunction
       console.info(' - Template ' + key + ' loaded')
     })
   )
@@ -63,7 +63,7 @@ export const loadTemplates = async (): Promise<ITemplates> => {
                   'templates'
                 )
               })
-              templates[template.key] = func
+              templates[template.key] = func as unknown as AsyncTemplateFunction
               console.info(
                 ' - Template ' +
                   template.key +

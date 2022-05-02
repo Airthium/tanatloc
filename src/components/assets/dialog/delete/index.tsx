@@ -2,7 +2,6 @@
 
 import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
-import { ReactChild } from 'react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -13,7 +12,7 @@ export interface IProps {
   visible: boolean
   loading?: boolean
   title: string
-  children: ReactChild | ReactChild[]
+  children: string | React.ReactElement | React.ReactElement[]
   onCancel: () => void
   onOk: () => Promise<void>
 }

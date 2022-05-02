@@ -2,7 +2,6 @@
 
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
-import { ReactChild } from 'react'
 
 /**
  * Props
@@ -11,7 +10,7 @@ export interface IProps {
   disabled?: boolean
   loading?: boolean
   bordered?: boolean
-  children?: ReactChild | ReactChild[]
+  children?: string | React.ReactElement | React.ReactElement[]
   onDownload: () => void
 }
 

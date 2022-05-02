@@ -1,6 +1,5 @@
 /** @module Components.Project.Panel*/
 
-import { ReactChild } from 'react'
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
@@ -10,7 +9,7 @@ import { CloseOutlined } from '@ant-design/icons'
 export interface IProps {
   visible: boolean
   title: string
-  children?: ReactChild | ReactChild[]
+  children?: React.ReactElement | React.ReactElement[]
   onClose: () => void
 }
 

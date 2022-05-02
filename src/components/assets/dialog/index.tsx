@@ -1,7 +1,7 @@
 /** @module Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
-import { ReactChild, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Form, Modal, Typography } from 'antd'
 import { BaseButtonProps } from 'antd/lib/button/button'
 
@@ -22,7 +22,7 @@ export interface IProps {
   okButtonText?: string
   cancelButtonProps?: BaseButtonProps
   cancelButtonText?: string
-  children: ReactChild | ReactChild[]
+  children: string | React.ReactElement | React.ReactElement[]
   onCancel?: () => void
   onOk?: (values: any) => Promise<void>
 }

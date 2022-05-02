@@ -1,6 +1,5 @@
 /** @module Components.Assets.Button.Add */
 
-import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
@@ -15,7 +14,7 @@ export interface IProps {
   fullWidth?: boolean
   needMargin?: boolean
   loading?: boolean
-  children?: ReactChild | ReactChild[]
+  children?: string | React.ReactElement | React.ReactElement[]
   onAdd: () => void
 }
 

@@ -36,7 +36,10 @@ export const useUsers = (): [
    */
   const addOne = useCallback(
     (user: IFrontNewUser): void => {
-      const newUsers = [...users, user] as IFrontUsers
+      const newUsers = [
+        ...users,
+        { ...user, authorizedplugins: [] }
+      ] as IFrontUsers
       mutate({ users: newUsers })
     },
     [users, mutate]

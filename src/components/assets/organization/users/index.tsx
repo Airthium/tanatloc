@@ -52,7 +52,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
   ) => (
     <Delete
-      disabled={organization.owners.length < 2}
+      disabled={organization.owners.length < 2 && !owner.pending}
       user={{
         id: owner.id,
         email: owner.email

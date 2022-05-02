@@ -36,9 +36,6 @@
     "build:client": "NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) next build",
     "export": "yarn build:client && next export",
     "start": "NODE_ENV=production NODE_OPTIONS=\"--max_old_space_size=8192\" node dist/src/server/index.js",
-    "preteste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn prestart",
-    "teste2e": "jest --config config/jest/e2e/jest.config.js --coverage --silent --runInBand",
-    "teste2ewatch": "jest --config config/jest/e2e/jest.config.js --watch --runInBand",
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {

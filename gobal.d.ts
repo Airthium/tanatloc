@@ -6,6 +6,7 @@ interface ITanatloc {
   pool: Pool
   plugins: IPlugin[]
   templates: { [key: string]: AsyncTemplateFunction }
+  complete: boolean
 }
 
 declare global {

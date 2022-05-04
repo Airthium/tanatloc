@@ -29,11 +29,15 @@ const Simple = (): JSX.Element => {
   )
 }
 
+export interface IProps {
+  text?: string | React.ReactElement | React.ReactElement[]
+}
+
 /**
  * Loading
  * @returns Loading
  */
-const Loading = (): JSX.Element => {
+const Loading = ({ text }: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -45,7 +49,7 @@ const Loading = (): JSX.Element => {
       <Card className="Loading">
         <Space>
           <Spin size="large" />
-          Loading, please wait...
+          {text ?? 'Loading, please wait...'}
         </Space>
       </Card>
     </Layout>

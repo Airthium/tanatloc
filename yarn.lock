@@ -7803,9 +7803,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-format@ssh://git@github.com:Airthium/pg-format.git#1.0.8":
+"pg-format@https://github.com/Airthium/pg-format.git#1.0.8":
   version: 1.0.8
-  resolution: "pg-format@ssh://git@github.com:Airthium/pg-format.git#commit=b69774c29d6779add1686c30bc4c7eea4cfc4d64"
+  resolution: "pg-format@https://github.com/Airthium/pg-format.git#commit=b69774c29d6779add1686c30bc4c7eea4cfc4d64"
   checksum: 54df051b7d19c2c5fd36fbfbd516899bd2aa0a3a0906bd09b60be090a10b40b10ebd17d282f73a1cf3ef794ea73a716451c02e8689df89ba2b0d496c850d9c08
   languageName: node
   linkType: hard
@@ -7817,10 +7817,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-native@ssh://git@github.com:Airthium/pg-native.git#3.0.0":
+"pg-native@https://github.com/Airthium/pg-native.git#3.0.0":
   version: 3.0.0
-  resolution: "pg-native@ssh://git@github.com:Airthium/pg-native.git#commit=adc64bfa3c1500c55045a00690663d3418898b1d"
-  checksum: b385587cb78b21d4b90f73e68ddbef5b0792878f0dd565772e127a5b9b9ddb5c283f501e7de33fd445cefae862190bbac84b9a1e0dba7f2c828e5195b1eee515
+  resolution: "pg-native@https://github.com/Airthium/pg-native.git#commit=b867f98612501b4f4274535e78f1791691560011"
+  checksum: 40f2d2609537447585faf6d0fb7d335d679c0f40b3df462b0eaa30149f0d9fa64ebd2fde20c0dcc3c8ee2f67a0db8bf801b79363f2252f360559e585fa5657ec
   languageName: node
   linkType: hard
 
@@ -9930,8 +9930,8 @@ __metadata:
     passport: 0.5.2
     passport-local: 1.0.0
     pg: 8.7.3
-    pg-format: "ssh://git@github.com:Airthium/pg-format.git#1.0.8"
-    pg-native: "ssh://git@github.com:Airthium/pg-native.git#3.0.0"
+    pg-format: "https://github.com/Airthium/pg-format.git#1.0.8"
+    pg-native: "https://github.com/Airthium/pg-native.git#3.0.0"
     prettier: 2.6.2
     prop-types: 15.8.1
     react: 18.1.0
@@ -9944,7 +9944,7 @@ __metadata:
     three: 0.140.0
     three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.2.2"
     typedoc: 0.22.15
-    typedoc-plugin-airthium: "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.4"
+    typedoc-plugin-airthium: "https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.4"
     typescript: 4.6.4
     url-join: 4.0.1
     uuid: 8.3.2
@@ -10265,12 +10265,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.4":
-  version: 1.0.2
-  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=c2a581f55567ce3316b4f5836666f980ac385186"
+"typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.4":
+  version: 1.0.4
+  resolution: "typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#commit=e47a739c5f195bc9c743b498d4d151110cc8080c"
   peerDependencies:
     typedoc: 0.22.15
-  checksum: fdeae88a9731eff313e2573e8ab67697683146fb7c905326c4f93c2d37df4bf717e6f09d57e27b36a9c870288828a0ddbb6829d7373ce649774c9b3b778c8499
+  checksum: 297d845426e1dcd3bfc2a9d0edc782952827acdfdc3451fc7fc04fd275d3f135780aed1a5a6fde61530d9578d7010c636ef1933425114627b40224dc0f096d84
   languageName: node
   linkType: hard
 

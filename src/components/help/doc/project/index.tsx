@@ -20,7 +20,7 @@ const Project = (): JSX.Element => {
           <Typography.Text>
             You can archive a project to save disk space.
             <br />
-            One archived, a project is not editable anymore.
+            Once archived, a project is not editable anymore.
             <br />
             At the archive time, you can download a{' '}
             <code>.tanatlocarchive</code> file that contains all the data to

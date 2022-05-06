@@ -433,20 +433,22 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
         <Layout>
           <Layout.Content>
             <Space style={{ alignItems: 'stretch' }}>
-              <Menu mode="inline" onClick={onFirstLevel}>
-                {keys.map((key) => {
-                  return (
-                    <Menu.Item key={key}>
-                      {materialDatabase[key].label}
-                    </Menu.Item>
-                  )
-                })}
-              </Menu>
-              <Menu mode="inline" onClick={onSecondLevel}>
-                {secondLevel?.children.map((child) => {
-                  return <Menu.Item key={child.key}>{child.label}</Menu.Item>
-                })}
-              </Menu>
+              <Menu
+                mode="inline"
+                items={keys.map((key) => ({
+                  key: key,
+                  label: materialDatabase[key].label
+                }))}
+                onClick={onFirstLevel}
+              />
+              <Menu
+                mode="inline"
+                items={secondLevel?.children.map((child) => ({
+                  key: child.key,
+                  label: child.label
+                }))}
+                onClick={onSecondLevel}
+              ></Menu>
               {current && (
                 <List itemLayout="vertical">
                   {current.children.map((child) => (

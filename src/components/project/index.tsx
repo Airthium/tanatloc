@@ -3,6 +3,7 @@
 import { NextRouter, useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Layout, Menu, Typography } from 'antd'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
   CodeSandboxOutlined,
   PieChartOutlined,
@@ -598,16 +599,16 @@ const Project = (): JSX.Element => {
   )
 
   // Geometries render build
-  const geometriesRender = geometries.map((g) => (
-    <Menu.Item icon={<PieChartOutlined />} key={g.id}>
-      {g.name}
-    </Menu.Item>
-  ))
+  const geometriesRender = geometries.map((g) => ({
+    key: g.id,
+    icon: <PieChartOutlined />,
+    label: g.name
+  }))
 
   // Simulations render build
   const simulationsRender = simulations.map((s) => {
     const configuration = s.scheme.configuration || {}
-    const categories: JSX.Element[] = []
+    const categories: ItemType[] = []
     Object.keys(configuration).forEach((key) => {
       if (key === 'dimension') return
       const child = configuration[key]
@@ -626,35 +627,30 @@ const Project = (): JSX.Element => {
         child.done = null
       }
 
-      categories[child.index] = (
-        <Menu.Item
-          className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"
-          key={s.id + '&' + key}
-          icon={icon}
-          disabled={!geometries.length}
-        >
-          {child.title}
-        </Menu.Item>
-      )
+      categories[child.index] = {
+        key: s.id + '&' + key,
+        className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
+        disabled: !geometries.length,
+        icon: icon,
+        label: child.title
+      }
     })
-    return (
-      <Menu.SubMenu
-        className="Project-Menu-SubMenu-Simulations-SubMenu"
-        key={s.id}
-        icon={<CodeSandboxOutlined />}
-        title={s.name}
-      >
-        <Menu.Item
-          className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"
-          key={s.id + '&about'}
-          icon={<CheckCircleOutlined style={{ color: 'green' }} />}
-          disabled={!geometries.length}
-        >
-          About
-        </Menu.Item>
-        {categories}
-      </Menu.SubMenu>
-    )
+    return {
+      key: s.id,
+      className: 'Project-Menu-SubMenu-Simulations-SubMenu',
+      icon: <CodeSandboxOutlined />,
+      label: s.name,
+      children: [
+        {
+          key: s.id + '&about',
+          className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
+          disabled: !geometries.length,
+          icon: <CheckCircleOutlined style={{ color: 'green' }} />,
+          label: 'About'
+        },
+        ...categories
+      ]
+    }
   })
 
   /**
@@ -670,32 +666,38 @@ const Project = (): JSX.Element => {
             <div className="logo">
               <img src="/images/logo.svg" alt="Tanatloc" />
             </div>
-            <Menu mode="inline">
-              <Menu.Item
-                className="Project-Menu-GoBack"
-                key={'menu-go-back'}
-                disabled={true}
-                style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
-              >
-                <GoBack
-                  onClick={() => handleDashboard(router, page, workspaceId)}
-                >
-                  Return to dashboard
-                </GoBack>
-              </Menu.Item>
-
-              <Menu.Divider className="Project-Menu-Divider" />
-
-              <Menu.Item
-                className="Project-Menu-Title"
-                key={'title'}
-                disabled={true}
-              >
-                <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
-                  {project.title}
-                </Typography.Paragraph>
-              </Menu.Item>
-            </Menu>
+            <Menu
+              mode="inline"
+              items={[
+                {
+                  key: 'menu-go-back',
+                  disabled: true,
+                  className: 'Project-Menu-GoBack',
+                  style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
+                  label: (
+                    <GoBack
+                      onClick={() => handleDashboard(router, page, workspaceId)}
+                    >
+                      Return to dashboard
+                    </GoBack>
+                  )
+                },
+                {
+                  type: 'divider',
+                  className: 'Project-Menu-Divider'
+                },
+                {
+                  key: 'title',
+                  disabled: true,
+                  className: 'Project-Menu-Title',
+                  label: (
+                    <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
+                      {project.title}
+                    </Typography.Paragraph>
+                  )
+                }
+              ]}
+            />
             <div className="Project-Menu-scroll">
               <Menu
                 className="Project-Menu"
@@ -704,82 +706,82 @@ const Project = (): JSX.Element => {
                   menuItems.geometries.key,
                   menuItems.simulations.key
                 ]}
-                onClick={onMenuClick}
-              >
-                <Menu.SubMenu
-                  key={menuItems.geometries.key}
-                  className="Project-Menu-SubMenu-Geometries"
-                  icon={
-                    loadingGeometries ? (
+                items={[
+                  {
+                    key: menuItems.geometries.key,
+                    className: 'Project-Menu-SubMenu-Geometries',
+                    icon: loadingGeometries ? (
                       <LoadingOutlined />
                     ) : (
                       <PieChartOutlined />
-                    )
-                  }
-                  title={
-                    <Typography.Text strong>
-                      {menuItems.geometries.label} ({geometries.length})
-                    </Typography.Text>
-                  }
-                >
-                  <Menu.Item
-                    className="Project-Menu-SubMenu-Geometries-New"
-                    key="new_geometry"
-                    disabled={true}
-                  >
-                    <Button
-                      icon={<UploadOutlined />}
-                      onClick={() => setGeometryAddVisible(true)}
-                    >
-                      New Geometry
-                    </Button>
-                  </Menu.Item>
-                  {!geometries.length ? (
-                    <Menu.Item
-                      className="text-dark"
-                      key="geometry-needed"
-                      disabled={true}
-                      icon={
-                        <ExclamationCircleOutlined style={{ color: 'red' }} />
-                      }
-                    >
-                      A Geometry is needed
-                    </Menu.Item>
-                  ) : null}
-                  {geometriesRender}
-                </Menu.SubMenu>
-                <Menu.SubMenu
-                  key={menuItems.simulations.key}
-                  className="Project-Menu-SubMenu-Simulations"
-                  icon={
-                    loadingSimulations ? (
+                    ),
+                    label: (
+                      <Typography.Text strong>
+                        {menuItems.geometries.label} ({geometries.length})
+                      </Typography.Text>
+                    ),
+                    children: [
+                      {
+                        key: 'new_geometry',
+                        className: 'Project-Menu-SubMenu-Geometries-New',
+                        disabled: true,
+                        label: (
+                          <Button
+                            icon={<UploadOutlined />}
+                            onClick={() => setGeometryAddVisible(true)}
+                          >
+                            New Geometry
+                          </Button>
+                        )
+                      },
+                      {
+                        key: 'geometry-needed',
+                        className:
+                          'text-dark ' +
+                          (geometries.length ? 'display-none' : ''),
+                        disabled: true,
+                        icon: (
+                          <ExclamationCircleOutlined style={{ color: 'red' }} />
+                        ),
+                        label: 'A Geometry is needed'
+                      },
+                      ...geometriesRender
+                    ]
+                  },
+                  {
+                    key: menuItems.simulations.key,
+                    className: 'Project-Menu-SubMenu-Simulations',
+                    icon: loadingSimulations ? (
                       <LoadingOutlined />
                     ) : (
                       <CodeSandboxOutlined />
-                    )
+                    ),
+                    label: (
+                      <Typography.Text strong>
+                        {menuItems.simulations.label} ({simulations.length})
+                      </Typography.Text>
+                    ),
+                    children: [
+                      {
+                        key: 'new_simulation',
+                        className: 'Project-Menu-SubMenu-Simulations-New',
+                        disabled: true,
+                        label: (
+                          <Button
+                            disabled={!geometries.length}
+                            icon={<PlusCircleOutlined />}
+                            onClick={() => setSimulationSelectorVisible(true)}
+                          >
+                            New Simulation
+                          </Button>
+                        )
+                      },
+                      ...simulationsRender
+                    ]
                   }
-                  title={
-                    <Typography.Text strong>
-                      {menuItems.simulations.label} ({simulations.length})
-                    </Typography.Text>
-                  }
-                >
-                  <Menu.Item
-                    className="Project-Menu-SubMenu-Simulations-New"
-                    key={'new_simulation'}
-                    disabled={true}
-                  >
-                    <Button
-                      disabled={!geometries.length}
-                      icon={<PlusCircleOutlined />}
-                      onClick={() => setSimulationSelectorVisible(true)}
-                    >
-                      New Simulation
-                    </Button>
-                  </Menu.Item>
-                  {simulationsRender}
-                </Menu.SubMenu>
-              </Menu>
+                ]}
+                onClick={onMenuClick}
+              />
             </div>
           </Layout.Sider>
           <Layout.Content className="no-scroll relative">

@@ -127,6 +127,7 @@ describe('components/dashboard', () => {
   })
 
   test('render', () => {
+    mockUser.mockImplementation(() => ({ id: 'id', superuser: false }))
     const { unmount } = render(<Dashboard />)
 
     unmount()

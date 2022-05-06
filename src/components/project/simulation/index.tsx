@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
@@ -141,6 +142,28 @@ const Selector = ({
     [models]
   )
 
+  // Menu items
+  const menuItems: ItemType[] = [
+    {
+      key: 'category',
+      disabled: true,
+      label: (
+        <Select
+          className="full-width"
+          options={categories}
+          allowClear
+          showArrow={false}
+          placeholder="Category filter"
+          onChange={(value) => setCategory(value)}
+        />
+      )
+    }
+  ]
+  models.forEach((model) => {
+    if (!category || model.category === category)
+      menuItems.push({ key: model.algorithm, label: model.name })
+  })
+
   /**
    * Render
    */
@@ -163,22 +186,7 @@ const Selector = ({
     >
       <Layout>
         <Layout.Sider theme="light">
-          <Menu mode="inline" onSelect={onSelect}>
-            <Menu.Item key="category" disabled>
-              <Select
-                className="full-width"
-                options={categories}
-                allowClear
-                showArrow={false}
-                placeholder="Category filter"
-                onChange={(value) => setCategory(value)}
-              />
-            </Menu.Item>
-            {models.map((model) => {
-              if (!category || model.category === category)
-                return <Menu.Item key={model.algorithm}>{model.name}</Menu.Item>
-            })}
-          </Menu>
+          <Menu mode="inline" items={menuItems} onSelect={onSelect} />
         </Layout.Sider>
         <Layout.Content
           style={{ padding: '20px', height: '60vh', overflow: 'auto' }}

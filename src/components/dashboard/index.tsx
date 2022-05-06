@@ -182,110 +182,112 @@ const Dashboard = () => {
    */
   if (!user || loadingUser || loadingOrganizations || loadingWorkspaces)
     return <Loading />
-  else
-    return (
-      <Layout className="Dashboard">
-        <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
-          <div className="logo">
-            <img src="/images/logo.svg" alt="Tanatloc" />
-          </div>
 
-          <Menu
-            className="Dashboard-Menu"
-            theme="light"
-            onClick={({ keyPath }) => {
-              const key = keyPath.pop()
-              setCurrentKey(key)
-              onSelect(router, key as string, clearUser)
+  return (
+    <Layout className="Dashboard">
+      <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
+        <div className="logo">
+          <img src="/images/logo.svg" alt="Tanatloc" />
+        </div>
+
+        <Menu
+          className="Dashboard-Menu"
+          theme="light"
+          items={[
+            {
+              key: menuItems.workspaces.key,
+              icon: <AppstoreOutlined />,
+              label: menuItems.workspaces.label
+            },
+            {
+              key: menuItems.account.key,
+              icon: <SettingOutlined />,
+              label: menuItems.account.label
+            },
+            {
+              key: menuItems.organizations.key,
+              icon: <TeamOutlined />,
+              label: menuItems.organizations.label
+            },
+            {
+              key: menuItems.administration.key,
+              className: user.superuser ? '' : 'display-none',
+              icon: <ControlOutlined />,
+              label: menuItems.administration.label
+            },
+            {
+              key: menuItems.help.key,
+              icon: <QuestionCircleOutlined />,
+              label: menuItems.help.label
+            },
+            { type: 'divider' },
+            {
+              key: menuItems.logout.key,
+              danger: true,
+              icon: <LogoutOutlined />,
+              label: menuItems.logout.label
+            },
+            {
+              key: 'version',
+              disabled: true,
+              className: 'version',
+              label: (
+                <Typography.Text
+                  className="text-light"
+                  ellipsis={{ tooltip: true }}
+                >
+                  version {packageJson.version}{' '}
+                  {gitVersion && <>({gitVersion})</>}
+                </Typography.Text>
+              )
+            }
+          ]}
+          onClick={({ keyPath }) => {
+            const key = keyPath.pop()
+            setCurrentKey(key)
+            onSelect(router, key as string, clearUser)
+          }}
+          mode="inline"
+        />
+      </Layout.Sider>
+
+      <Layout.Content className="no-scroll">
+        {currentKey === menuItems.workspaces.key && (
+          <WorkspacesList
+            user={{ id: user.id }}
+            workspaces={workspaces}
+            organizations={organizations}
+            swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}
+          />
+        )}
+        {currentKey === menuItems.account.key && (
+          <Account
+            user={{
+              email: user.email,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              avatar: user.avatar
             }}
-            mode="inline"
-          >
-            <Menu.Item
-              key={menuItems.workspaces.key}
-              icon={<AppstoreOutlined />}
-            >
-              {menuItems.workspaces.label}
-            </Menu.Item>
-            <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
-              {menuItems.account.label}
-            </Menu.Item>
-            <Menu.Item
-              key={menuItems.organizations.key}
-              icon={<TeamOutlined />}
-            >
-              {menuItems.organizations.label}
-            </Menu.Item>
-            {user.superuser && (
-              <Menu.Item
-                key={menuItems.administration.key}
-                icon={<ControlOutlined />}
-              >
-                {menuItems.administration.label}
-              </Menu.Item>
-            )}
-            <Menu.Item
-              key={menuItems.help.key}
-              icon={<QuestionCircleOutlined />}
-            >
-              {menuItems.help.label}
-            </Menu.Item>
-            <Menu.Divider className="Dashboard-Menu-Divider" />
-            <Menu.Item
-              key={menuItems.logout.key}
-              danger={true}
-              icon={<LogoutOutlined />}
-            >
-              {menuItems.logout.label}
-            </Menu.Item>
-            <Menu.Item key="version" disabled className="version">
-              <Typography.Text
-                className="text-light"
-                ellipsis={{ tooltip: true }}
-              >
-                version {packageJson.version}{' '}
-                {gitVersion && <>({gitVersion})</>}
-              </Typography.Text>
-            </Menu.Item>
-          </Menu>
-        </Layout.Sider>
-
-        <Layout.Content className="no-scroll">
-          {currentKey === menuItems.workspaces.key && (
-            <WorkspacesList
-              user={{ id: user.id }}
-              workspaces={workspaces}
-              organizations={organizations}
-              swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}
-            />
-          )}
-          {currentKey === menuItems.account.key && (
-            <Account
-              user={{
-                email: user.email,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                avatar: user.avatar
-              }}
-              swr={{ mutateUser, clearUser }}
-            />
-          )}
-          {currentKey === menuItems.organizations.key && (
-            <Organizations
-              user={{ id: user.id }}
-              organizations={organizations}
-              swr={{
-                addOneOrganization,
-                delOneOrganization,
-                mutateOneOrganization,
-                loadingOrganizations
-              }}
-            />
-          )}
-          {currentKey === menuItems.administration.key && <Administration />}
-          {currentKey === menuItems.help.key && <Help />}
-        </Layout.Content>
-      </Layout>
-    )
+            swr={{ mutateUser, clearUser }}
+          />
+        )}
+        {currentKey === menuItems.organizations.key && (
+          <Organizations
+            user={{ id: user.id }}
+            organizations={organizations}
+            swr={{
+              addOneOrganization,
+              delOneOrganization,
+              mutateOneOrganization,
+              loadingOrganizations
+            }}
+          />
+        )}
+        {currentKey === menuItems.administration.key && <Administration />}
+        {currentKey === menuItems.help.key && <Help />}
+      </Layout.Content>
+    </Layout>
+  )
 }
 
 export default Dashboard

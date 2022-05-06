@@ -820,50 +820,58 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             <Dropdown
               placement="bottom"
               overlay={
-                <Menu>
-                  <Menu.Item key="project">
-                    <Button
-                      type="text"
-                      loading={screenshot}
-                      onClick={async () => {
-                        setScreenshot(true)
-                        try {
-                          await takeScreenshot(
-                            project,
-                            scene.current,
-                            camera.current,
-                            renderer.current
-                          )
-                        } finally {
-                          setScreenshot(false)
-                        }
-                      }}
-                    >
-                      Project snapshot
-                    </Button>
-                  </Menu.Item>
-                  <Menu.Item key="image">
-                    <Button
-                      type="text"
-                      loading={savingScreenshot}
-                      onClick={() => {
-                        setSavingScreenshot(true)
-                        try {
-                          downloadScreenshot(
-                            project,
-                            scene.current,
-                            camera.current,
-                            renderer.current
-                          )
-                        } finally {
-                          setSavingScreenshot(false)
-                        }
-                      }}
-                    >
-                      Export image
-                    </Button>
-                  </Menu.Item>
-                </Menu>
+                <Menu
+                  items={[
+                    {
+                      key: 'project',
+                      label: (
+                        <Button
+                          type="text"
+                          loading={screenshot}
+                          onClick={async () => {
+                            setScreenshot(true)
+                            try {
+                              await takeScreenshot(
+                                project,
+                                scene.current,
+                                camera.current,
+                                renderer.current
+                              )
+                            } finally {
+                              setScreenshot(false)
+                            }
+                          }}
+                        >
+                          Project snapshot
+                        </Button>
+                      )
+                    },
+                    {
+                      key: 'image',
+                      label: (
+                        <Button
+                          type="text"
+                          loading={savingScreenshot}
+                          onClick={() => {
+                            setSavingScreenshot(true)
+                            try {
+                              downloadScreenshot(
+                                project,
+                                scene.current,
+                                camera.current,
+                                renderer.current
+                              )
+                            } finally {
+                              setSavingScreenshot(false)
+                            }
+                          }}
+                        >
+                          Export image
+                        </Button>
+                      )
+                    }
+                  ]}
+                />
               }
             >
               <Button icon={<FundProjectionScreenOutlined />} />

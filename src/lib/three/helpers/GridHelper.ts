@@ -44,9 +44,9 @@ const GridHelper = (
   controls: TrackballControls
 ) => {
   // Grid offset
-  const baseGridOffset = 0.05
+  const baseGridOffset = 0.1
   // Axis offset
-  const baseLabelOffset = 2
+  const baseLabelOffset = 1
   // Minimum divisions
   const minDiv = 2
   // Maximum divisions

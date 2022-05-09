@@ -152,4 +152,26 @@ describe('services/gmsh', () => {
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
   })
+
+  test('custom', async () => {
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: (_: any, callback: Function) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (_: any, callback: Function) => {
+          callback('stderr')
+        }
+      },
+      on: (arg: string, callback: Function) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    const code = await gmsh('path', 'fileIn', 'fileOut', mockCallback, 'custom')
+    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(code).toBe(0)
+  })
 })

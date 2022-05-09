@@ -12,8 +12,6 @@
 
 - Apple sign
 
-- Local freefem (only for electron) plugin
-
 ## Postprocessing (Long term)
 
 - pvserver

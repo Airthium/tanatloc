@@ -359,11 +359,12 @@ const computeSimulation = async (
     const code = await Services.freefem(
       simulationPath,
       path.join(runPath, id + '.edp'),
-      async ({ pid, error }) => {
+      async ({ pid, data, error }) => {
         simulationTask.status = 'process'
 
         pid && (simulationTask.pid = pid)
 
+        data && (simulationTask.error += 'Error: ' + error + '\n')
         error && (simulationTask.error += 'Error: ' + error + '\n')
 
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)

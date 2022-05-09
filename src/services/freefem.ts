@@ -24,13 +24,17 @@ const freefem = async (
     let run: any
 
     if (isDocker()) {
-      run = spawn('ff-mpirun', [' -np', '1', scriptPOSIX, '-ns'], {
+      run = spawn('ff-mpirun', [' -np', '1', scriptPOSIX, '-ns', ' > log'], {
         cwd: bindPath
       })
     } else if (customExecutable) {
-      run = spawn(customExecutable, [' -np', '1', scriptPOSIX, '-ns'], {
-        cwd: bindPath
-      })
+      run = spawn(
+        customExecutable,
+        [' -np', '1', scriptPOSIX, '-ns', ' > log'],
+        {
+          cwd: bindPath
+        }
+      )
     } else {
       const user =
         process.platform === 'win32'

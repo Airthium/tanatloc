@@ -152,4 +152,26 @@ describe('services/freefem', () => {
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
   })
+
+  test('custom', async () => {
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: () => {
+          // Empty
+        }
+      },
+      stderr: {
+        on: () => {
+          // Empty
+        }
+      },
+      on: (arg: string, callback: Function) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    const code = await freefem('path', 'script', mockCallback, 'custom')
+    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(code).toBe(0)
+  })
 })

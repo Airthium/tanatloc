@@ -276,7 +276,8 @@ describe('plugins/local/src/lib', () => {
           index: 1,
           title: 'Geometry',
           meshable: false
-        }
+        },
+        run: {}
       } as IModel['configuration'],
       []
     )
@@ -291,7 +292,8 @@ describe('plugins/local/src/lib', () => {
             index: 1,
             title: 'Geometry',
             meshable: true
-          }
+          },
+          run: {}
         } as IModel['configuration'],
         []
       )
@@ -312,7 +314,8 @@ describe('plugins/local/src/lib', () => {
           name: 'name',
           path: 'path',
           file: 'file'
-        }
+        },
+        run: {}
       } as IModel['configuration'],
       []
     )
@@ -330,7 +333,8 @@ describe('plugins/local/src/lib', () => {
           path: 'path',
           file: 'file',
           dimension: 2
-        }
+        },
+        run: {}
       } as IModel['configuration'],
       []
     )
@@ -351,7 +355,8 @@ describe('plugins/local/src/lib', () => {
             name: 'name',
             path: 'path',
             file: 'file'
-          }
+          },
+          run: {}
         } as IModel['configuration'],
         []
       )
@@ -374,7 +379,8 @@ describe('plugins/local/src/lib', () => {
             name: 'name',
             path: 'path',
             file: 'file'
-          }
+          },
+          run: {}
         } as IModel['configuration'],
         []
       )
@@ -388,6 +394,7 @@ describe('plugins/local/src/lib', () => {
     Date.now = () => 500 + 250 * Math.random()
     mockFreefem.mockImplementation((_, __, callback) => {
       callback({ pid: 'pid' })
+      callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
     })
@@ -409,7 +416,7 @@ describe('plugins/local/src/lib', () => {
     // Empty
     await Local.computeSimulation({ id: 'id' }, {
       algorithm: 'algorithm',
-      configuration: { geometry: {} }
+      configuration: { geometry: {}, run: {} }
     } as ISimulation<'scheme'[]>['scheme'])
 
     // Simulation error
@@ -421,7 +428,8 @@ describe('plugins/local/src/lib', () => {
       await Local.computeSimulation({ id: 'id' }, {
         algorithm: 'algorithm',
         configuration: {
-          geometry: {}
+          geometry: {},
+          run: {}
         }
       } as ISimulation<'scheme'[]>['scheme'])
       expect(true).toBe(false)
@@ -479,6 +487,10 @@ describe('plugins/local/src/lib', () => {
               ],
               refineFactor: 5
             }
+          },
+          run: {
+            index: 0,
+            title: 'Run'
           }
         }
       }
@@ -528,6 +540,10 @@ describe('plugins/local/src/lib', () => {
               ],
               refineFactor: 5
             }
+          },
+          run: {
+            index: 0,
+            title: 'Run'
           }
         }
       }
@@ -578,6 +594,10 @@ describe('plugins/local/src/lib', () => {
                 ],
                 refineFactor: 5
               }
+            },
+            run: {
+              index: 0,
+              title: 'Run'
             }
           }
         }
@@ -607,7 +627,7 @@ describe('plugins/local/src/lib', () => {
       )
     await Local.computeSimulation({ id: 'id' }, {
       algorithm: 'algorithm',
-      configuration: { geometry: {} }
+      configuration: { geometry: {}, run: {} }
     } as ISimulation<'scheme'[]>['scheme'])
   })
 

@@ -18,6 +18,16 @@ describe('plugins/local', () => {
               { required: true, message: 'Name is required' },
               { max: 50, message: 'Max 50 characters' }
             ]
+          },
+          gmshPath: {
+            label: 'Gmsh path',
+            type: 'input',
+            tooltip: 'Fill this input to use a local version of Gmsh'
+          },
+          freefemPath: {
+            label: 'FreeFEM path (ff-mpirun)',
+            type: 'input',
+            tooltip: 'Fill this input to use a local version of FreeFEM'
           }
         },
         inUseConfiguration: {}

@@ -16,6 +16,8 @@
 
 - pvserver
 
+## Editor (Long term)
+
 ## ThreeJS (Debug)
 
 - faces disapear when speed click on different faces, visible is set to false by something ?

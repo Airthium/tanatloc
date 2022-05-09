@@ -58,7 +58,7 @@ depcheck.special.customJest = (fileName, deps) => {
 
     const config = require(fileName)
     Object.values(config.transform).forEach((value) => {
-      if (!value.includes('<rootDir>')) newDeps.push(value)
+      if (!value.includes('<rootDir>')) newDeps.push(value[0])
     })
   }
 

@@ -23,6 +23,16 @@ const Local: IPlugin = {
           { required: true, message: 'Name is required' },
           { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
         ]
+      },
+      gmshPath: {
+        label: 'Gmsh path',
+        type: 'input',
+        tooltip: 'Fill this input to use a local version of Gmsh'
+      },
+      freefemPath: {
+        label: 'FreeFEM path (ff-mpirun)',
+        type: 'input',
+        tooltip: 'Fill this input to use a local version of FreeFEM'
       }
     },
     inUseConfiguration: {}

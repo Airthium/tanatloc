@@ -10,12 +10,14 @@ import isDocker from 'is-docker'
  * @param fileIn In file (POSIX path)
  * @param fileOut Out file (POSIX path)
  * @param callback Callback
+ * @param customExecutable Custom executable
  */
 const gmsh = async (
   bindPath: string,
   fileIn: string,
   fileOut: string,
-  callback: (data: { pid?: number; data?: string; error?: string }) => void
+  callback: (data: { pid?: number; data?: string; error?: string }) => void,
+  customExecutable?: string
 ): Promise<number> => {
   // Enfore POSIX
   const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)
@@ -27,6 +29,23 @@ const gmsh = async (
     if (isDocker()) {
       run = spawn(
         'gmsh',
+        [
+          '-3',
+          fileInPOSIX,
+          '-o',
+          fileOutPOSIX,
+          '-format',
+          'msh2',
+          '-clcurv',
+          '10'
+        ],
+        {
+          cwd: bindPath
+        }
+      )
+    } else if (customExecutable) {
+      run = spawn(
+        customExecutable,
         [
           '-3',
           fileInPOSIX,

@@ -227,12 +227,17 @@ const computeMesh = async (
       if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
     }
 
+    // Configuration
+    const gmshPath =
+      configuration.run.cloudServer?.configuration?.gmshPath?.value
+
     // Compute mesh
     let code = await Services.gmsh(
       simulationPath,
       path.join(meshPath, geoFile),
       path.join(meshPath, mshFile),
-      ({ pid, data, error }) => callback({ pid, data, error })
+      ({ pid, data, error }) => callback({ pid, data, error }),
+      gmshPath
     )
 
     if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
@@ -349,6 +354,8 @@ const computeSimulation = async (
     Local.startProcess(id, simulationPath, simulationTask, () =>
       updateTasks(id, tasks)
     )
+    const freefemPath =
+      configuration.run.cloudServer?.configuration?.freefemPath?.value
     const code = await Services.freefem(
       simulationPath,
       path.join(runPath, id + '.edp'),
@@ -360,7 +367,8 @@ const computeSimulation = async (
         error && (simulationTask.error += 'Error: ' + error + '\n')
 
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
-      }
+      },
+      freefemPath
     )
 
     await stopProcess(id, simulationPath, simulationTask, () =>

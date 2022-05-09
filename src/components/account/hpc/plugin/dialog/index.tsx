@@ -48,6 +48,7 @@ export const inputItem = (
       name={key}
       label={item.label}
       htmlFor={'input-' + key}
+      tooltip={item.tooltip}
       rules={item.rules}
     >
       <Input id={'input-' + key} autoComplete="off" {...(item.props || {})} />
@@ -70,6 +71,7 @@ export const textareaItem = (
       name={key}
       label={item.label}
       htmlFor={'input-' + key}
+      tooltip={item.tooltip}
       rules={item.rules}
     >
       <Input.TextArea
@@ -96,6 +98,7 @@ export const passwordItem = (
       name={key}
       label={item.label}
       htmlFor={'input-' + key}
+      tooltip={item.tooltip}
       rules={item.rules}
     >
       <Input
@@ -123,6 +126,7 @@ export const selectItem = (
       name={key}
       label={item.label}
       htmlFor={'select-' + key}
+      tooltip={item.tooltip}
       rules={item.rules}
     >
       <Select id={'select-' + key}>

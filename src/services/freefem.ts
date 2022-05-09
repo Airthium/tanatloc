@@ -9,11 +9,13 @@ import isDocker from 'is-docker'
  * @param  bindPath Path
  * @param script Script (POSIX path)
  * @param callback Callback
+ * @param customExecutable Custom executable
  */
 const freefem = async (
   bindPath: string,
   script: string,
-  callback: (data: { pid?: number; data?: string; error?: string }) => void
+  callback: (data: { pid?: number; data?: string; error?: string }) => void,
+  customExecutable?: string
 ): Promise<number> => {
   // Enfore POSIX
   const scriptPOSIX = script.split(path.sep).join(path.posix.sep)
@@ -23,6 +25,10 @@ const freefem = async (
 
     if (isDocker()) {
       run = spawn('ff-mpirun', [' -np', '1', scriptPOSIX, '-ns'], {
+        cwd: bindPath
+      })
+    } else if (customExecutable) {
+      run = spawn(customExecutable, [' -np', '1', scriptPOSIX, '-ns'], {
         cwd: bindPath
       })
     } else {

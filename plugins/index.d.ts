@@ -17,6 +17,7 @@ export interface IPlugin {
       [key: string]: {
         label: string
         type: string
+        tooltip?: string
         rules?: {
           required?: boolean
           message?: string

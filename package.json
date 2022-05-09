@@ -50,7 +50,7 @@
     "@sentry/browser": "6.19.7",
     "@sentry/node": "6.19.7",
     "@swc/cli": "0.1.57",
-    "@swc/core": "1.2.179",
+    "@swc/core": "1.2.177",
     "@testing-library/react": "13.2.0",
     "@types/archiver": "5.3.1",
     "@types/cookie": "0.5.1",

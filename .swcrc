@@ -7,7 +7,7 @@
       "tsx": true,
       "dynamicImport": true
     },
-    "target": "es2016",
+    "target": "es2020",
     "baseUrl": "./",
     "paths": {
       "@/config": ["config"],

@@ -56,40 +56,30 @@ const route = async (req: Request, res: Response): Promise<void> => {
     // Check session
     const sessionId = await session(req)
 
-    switch (req.method) {
-      case 'GET':
-        try {
-          const list = PostprocessingLib.list()
-          res.status(200).send(list)
-        } catch (err: any) {
-          throw error(500, err.message)
-        }
-        break
-      case 'POST':
-        // Check
-        checkBody(req.body)
+    if (req.method === 'POST') {
+      // Check
+      checkBody(req.body)
 
-        const { simulation, result, filter, parameters } = req.body
+      const { simulation, result, filter, parameters } = req.body
 
-        // Check auth
-        await checkSimulationAuth({ id: sessionId }, { id: simulation.id })
+      // Check auth
+      await checkSimulationAuth({ id: sessionId }, { id: simulation.id })
 
-        // Load
-        try {
-          const data = await PostprocessingLib.run(
-            simulation,
-            result,
-            filter,
-            parameters
-          )
-          res.status(200).json(data)
-        } catch (err: any) {
-          throw error(500, err.message)
-        }
-        break
-      default:
-        // Unauthorized method
-        throw error(402, 'Method ' + req.method + ' not allowed')
+      // Load
+      try {
+        const data = await PostprocessingLib.run(
+          simulation,
+          result,
+          filter,
+          parameters
+        )
+        res.status(200).json(data)
+      } catch (err: any) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err: any) {
     res.status(err.status).json({ error: true, message: err.message })

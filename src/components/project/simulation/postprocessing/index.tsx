@@ -1,5 +1,7 @@
 import { Button, Layout, Tooltip } from 'antd'
 
+import PostprocessingList from 'postprocessing'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
@@ -23,9 +25,8 @@ const run = async (
   }
 }
 
-// Get available postprocessing from api/pp/list
-
 const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
+  console.log(PostprocessingList)
   if (!simulation || !result) return null
   return (
     <Layout

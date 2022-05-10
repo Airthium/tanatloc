@@ -73,7 +73,8 @@ const options = {
     'form-data', // For plugins
     'node-fetch', // For plugins
     'set-interval-async', // For plugins
-    'url-join' // For plugins
+    'url-join', // For plugins
+    'postprocessing'
   ],
   specials: [
     depcheck.special.bin,

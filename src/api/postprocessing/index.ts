@@ -1,4 +1,7 @@
+/** @module API.Postprocessing */
+
+import { list } from './list'
 import { run } from './run'
 
-const Postprocessing = { run }
+const Postprocessing = { list, run }
 export default Postprocessing

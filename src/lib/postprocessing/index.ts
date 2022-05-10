@@ -1,6 +1,11 @@
-import { SIMULATION } from '@/config/storage'
-import { spawn } from 'child_process'
 import path from 'path'
+import { spawn } from 'child_process'
+
+import { SIMULATION } from '@/config/storage'
+
+import PostprocessingList from 'postprocessing'
+
+const list = () => PostprocessingList
 
 const run = async (
   simulation: { id: string },
@@ -51,5 +56,5 @@ const run = async (
   return {}
 }
 
-const Postprocessing = { run }
+const Postprocessing = { list, run }
 export default Postprocessing

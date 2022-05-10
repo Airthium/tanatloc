@@ -1,4 +1,12 @@
-export const postprocessing = [
+export interface IPostProcessing {
+  label: string
+  parameters?: {
+    label: string
+    type: string
+  }[]
+}
+
+const postprocessing: IPostProcessing[] = [
   {
     label: 'Warp by vector',
     parameters: [
@@ -9,3 +17,5 @@ export const postprocessing = [
     ]
   }
 ]
+
+export default postprocessing

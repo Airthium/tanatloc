@@ -1,4 +1,4 @@
-/** @module API.Postprocessing */
+/** @module API.Postprocessing.Run */
 
 import { call } from '@/api/call'
 
@@ -10,6 +10,9 @@ export const run = async (
 ): Promise<{ uuid: string; buffer: Buffer }> => {
   const response = await call('/api/postprocessing', {
     method: 'POST',
+    headers: {
+      Accept: 'application/json'
+    },
     body: JSON.stringify({ simulation, result, filter, parameters })
   })
 

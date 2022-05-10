@@ -23,6 +23,8 @@ const run = async (
   }
 }
 
+// Get available postprocessing from api/pp/list
+
 const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
   if (!simulation || !result) return null
   return (

@@ -6,6 +6,7 @@
     "../../install",
     "../../models",
     "../../plugins",
+    "../../postprocessing",
     "../../src/api",
     "../../src/auth",
     "../../src/components",

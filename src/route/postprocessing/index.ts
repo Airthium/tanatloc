@@ -58,6 +58,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
 
     if (req.method === 'POST') {
       // Check
+      console.log(req.body)
       checkBody(req.body)
 
       const { simulation, result, filter, parameters } = req.body

@@ -214,5 +214,9 @@ export interface IModelRun extends IModelCommon {
     pattern: string | RegExp
     multiplicator?: string[]
   }
+  postprocessing?: {
+    key: string
+    parameters: { key: string; value: string }[]
+  }[]
   cloudServer?: IClientPlugin
 }

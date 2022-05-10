@@ -27,7 +27,7 @@ const run = async (
   )
 
   const python = spawn('pvpython', [
-    './postprocessing/warpByVector.py',
+    './postprocessing/' + filter + '.py',
     vtu,
     outVtu,
     ...parameters

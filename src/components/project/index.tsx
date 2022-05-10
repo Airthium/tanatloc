@@ -653,6 +653,8 @@ const Project = (): JSX.Element => {
     }
   })
 
+  console.log(result)
+
   /**
    * Render
    */
@@ -867,7 +869,8 @@ const Project = (): JSX.Element => {
             <Simulation.Postprocessing
               simulation={
                 simulation && {
-                  id: simulation.id
+                  id: simulation.id,
+                  scheme: simulation.scheme
                 }
               }
               result={

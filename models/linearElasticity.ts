@@ -228,6 +228,12 @@ const LinearElasticity: IModel = {
         {
           name: 'gamma33'
         }
+      ],
+      postprocessing: [
+        {
+          key: 'warpByVector',
+          parameters: [{ key: 'Vectors', value: 'U' }]
+        }
       ]
     }
   }

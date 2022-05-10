@@ -6,7 +6,7 @@ export const run = async (
   simulation: { id: string },
   result: { fileName: string; originPath: string },
   filter: string,
-  ...parameters: string[]
+  parameters: string[]
 ): Promise<{ uuid: string; buffer: Buffer }> => {
   const response = await call('/api/postprocessing', {
     method: 'POST',

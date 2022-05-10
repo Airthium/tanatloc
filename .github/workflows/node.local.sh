@@ -27,5 +27,4 @@ yarn run test | true
 yarn run prestart
 
 # Build
-rm -Rf .next
 yarn run build

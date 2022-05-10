@@ -27,7 +27,7 @@
     "prestart:norun": "yarn prestart:config && yarn prestart:database && yarn prestart:init && yarn prestart:install",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) nodemon",
     "build": "yarn build:server && yarn build:client",
-    "build:server": "rm -rf dist && yarn build:server:config && yarn build:server:src && yarn build:server:models && yarn build:server:plugins && yarn build:server:templates",
+    "build:server": "yarn build:server:config && yarn build:server:src && yarn build:server:models && yarn build:server:plugins && yarn build:server:templates",
     "build:server:config": "swc config --out-dir dist/config",
     "build:server:src": "swc src --out-dir dist/src",
     "build:server:models": "swc models --out-dir dist/models",

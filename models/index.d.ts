@@ -216,7 +216,7 @@ export interface IModelRun extends IModelCommon {
   }
   postprocessing?: {
     key: string
-    parameters: { key: string; value: string }[]
+    parameters: { key: string; value?: string; options?: string[] }[]
   }[]
   cloudServer?: IClientPlugin
 }

@@ -19,7 +19,13 @@ const postprocessing: IPostProcessing[] = [
     parameters: [
       {
         key: 'Vectors',
-        label: 'Vectors'
+        label: 'Vectors',
+        rules: [
+          {
+            required: true,
+            message: 'Vectors is required'
+          }
+        ]
       },
       {
         key: 'ScaleFactor',
@@ -29,6 +35,33 @@ const postprocessing: IPostProcessing[] = [
           {
             required: true,
             message: 'Scale factor is required'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    key: 'contour',
+    label: 'Contour',
+    parameters: [
+      {
+        key: 'ContourBy',
+        label: 'Contour by',
+        rules: [
+          {
+            required: true,
+            message: 'ContourBy by is required'
+          }
+        ]
+      },
+      {
+        key: 'isosurface',
+        label: 'Isosurface',
+        default: '0',
+        rules: [
+          {
+            required: true,
+            message: 'Isosurface is required'
           }
         ]
       }

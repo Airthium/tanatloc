@@ -80,18 +80,35 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
 
     if (post && post.parameters) {
       parameters = post.parameters.map((parameter, index) => {
-        const defaultParameter = defaultPost?.parameters.find(
+        const defaultParameter = defaultPost?.parameters?.find(
           (param) => param.key === parameter.key
         )
-        if (defaultParameter) {
+        if (defaultParameter?.value) {
           return (
             <Form.Item
               key={parameter.key}
               label={parameter.label}
               name={['parameters', index]}
               initialValue={defaultParameter.value}
+              rules={parameter.rules}
             >
               <Input disabled={true} />
+            </Form.Item>
+          )
+        } else if (defaultParameter?.options) {
+          return (
+            <Form.Item
+              key={parameter.key}
+              label={parameter.label}
+              name={['parameters', index]}
+              rules={parameter.rules}
+            >
+              <Select
+                options={defaultParameter.options.map((option) => ({
+                  label: option,
+                  value: option
+                }))}
+              />
             </Form.Item>
           )
         } else {

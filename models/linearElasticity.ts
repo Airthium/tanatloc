@@ -233,6 +233,24 @@ const LinearElasticity: IModel = {
         {
           key: 'warpByVector',
           parameters: [{ key: 'Vectors', value: 'U' }]
+        },
+        {
+          key: 'contour',
+          parameters: [
+            {
+              key: 'ContourBy',
+              options: [
+                'U',
+                'vonMises',
+                'gamma11',
+                'gamma12',
+                'gamma13',
+                'gamma22',
+                'gamma23',
+                'gamma33'
+              ]
+            }
+          ]
         }
       ]
     }

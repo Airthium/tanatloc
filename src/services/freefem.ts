@@ -10,6 +10,7 @@ import isDocker from 'is-docker'
  * @param script Script (POSIX path)
  * @param callback Callback
  * @param customExecutable Custom executable
+ * @returns Code
  */
 const freefem = async (
   bindPath: string,

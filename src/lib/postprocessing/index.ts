@@ -26,6 +26,9 @@ const run = async (
     fileNameWithoutExtension + '_' + filter + '.vtu'
   )
 
+  //use services.pvpython
+  //todo use one path (bindPath) containing py script and files (copy script file and remove after?)
+
   const python = spawn('pvpython', [
     './postprocessing/' + filter + '.py',
     vtu,

@@ -11,6 +11,7 @@ import isDocker from 'is-docker'
  * @param fileOut Out file (POSIX path)
  * @param callback Callback
  * @param customExecutable Custom executable
+ * @returns Code
  */
 const gmsh = async (
   bindPath: string,

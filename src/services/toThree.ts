@@ -11,6 +11,7 @@ import isDocker from 'is-docker'
  * @param bindPath Path
  * @param fileIn In file (POSIX path)
  * @param pathOut Out path (POSIX path)
+ * @returns Code, data, error
  */
 const toThree = async (
   bindPath: string,
@@ -61,7 +62,6 @@ const toThree = async (
     return { code: 0, data: data.toString(), error: '' }
   } else {
     return new Promise((resolve, reject) => {
-      let run: any
       let data = ''
       let error = ''
 
@@ -73,7 +73,7 @@ const toThree = async (
         process.platform === 'win32'
           ? 1000
           : execSync('id -g').toString().trim()
-      run = spawn('docker', [
+      const run = spawn('docker', [
         'run',
         '--volume=' + bindPath + ':/three',
         '--user=' + user + ':' + group,

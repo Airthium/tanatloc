@@ -254,7 +254,13 @@ const LinearElasticityTime: IModel = {
         suffixPattern: '.vtu',
         pattern: 'Result_\\d+.vtu',
         multiplicator: ['parameters', 'time', 'children', '1']
-      }
+      },
+      postprocessing: [
+        {
+          key: 'warpByVector',
+          parameters: [{ key: 'Vectors', value: 'U' }]
+        }
+      ]
     }
   }
 }

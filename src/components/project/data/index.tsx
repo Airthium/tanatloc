@@ -12,7 +12,7 @@ import {
   Tooltip
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { LineChartOutlined, UpOutlined } from '@ant-design/icons'
+import { LineChartOutlined } from '@ant-design/icons'
 import {
   CartesianGrid,
   Legend,
@@ -27,7 +27,6 @@ import { camelCase } from 'lodash'
 
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
-import Loading from '@/components/loading'
 
 import Utils from '@/lib/utils'
 
@@ -115,7 +114,7 @@ export const exportCSV = (
  * @param props Props
  * @returns Data
  */
-const Data = ({ simulation }: IProps): JSX.Element => {
+const Data = ({ simulation }: IProps): JSX.Element | null => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [infos, setInfos] = useState<{
@@ -258,34 +257,30 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   /**
    * Render
    */
-  if (!simulation) return <Loading.Simple />
+  if (!simulation) return null
+  if (!table?.data?.length) return null
   return (
     <Layout
       style={{
         position: 'absolute',
         zIndex: 100,
-        bottom: -15,
-        left: 'calc(50vw - 16px)',
+        right: 50,
+        bottom: 25,
         backgroundColor: 'rgba(255, 255, 255, 0)'
       }}
     >
       <Layout.Content>
         <Tooltip title="Data visualization">
           <Button
-            disabled={!table?.data}
             type="primary"
-            icon={
-              <UpOutlined
-                style={{ fontSize: 24, position: 'absolute', top: 2, left: 28 }}
-              />
-            }
+            icon={<LineChartOutlined />}
             onClick={() => setVisible(true)}
             style={{
-              width: 80,
-              height: 80,
-              border: '1ps solid gray',
-              borderRadius: 40,
-              marginBottom: -40
+              width: 40,
+              height: 40,
+              border: '1px solid #5E14FA',
+              borderRadius: 20,
+              marginBottom: -20
             }}
           />
         </Tooltip>

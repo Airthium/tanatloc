@@ -653,8 +653,6 @@ const Project = (): JSX.Element => {
     }
   })
 
-  console.log(result)
-
   /**
    * Render
    */

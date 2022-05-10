@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, Form, Input, Layout, Select } from 'antd'
+import { Button, Drawer, Form, Input, Layout, Select, Tooltip } from 'antd'
+import { RadarChartOutlined } from '@ant-design/icons'
 
 import PostprocessingList from 'postprocessing'
 
@@ -40,6 +41,7 @@ const run = async (
  */
 const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
   // State
+  const [visible, setVisible] = useState<boolean>()
   const [filter, setFilter] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
 
@@ -64,6 +66,11 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
         value: p.key
       }
   }).filter((p) => p) as { label: string; value: string }[]
+
+  /**
+   * Empty render
+   */
+  if (!options.length) return null
 
   // Parameters
   let parameters = null
@@ -93,6 +100,8 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
               key={parameter.key}
               label={parameter.label}
               name={['parameters', index]}
+              rules={parameter.rules}
+              initialValue={parameter.default}
             >
               <Input />
             </Form.Item>
@@ -107,40 +116,70 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
    */
   return (
     <Layout
-      style={{ position: 'absolute', zIndex: 150, right: 0, bottom: 150 }}
+      style={{
+        position: 'absolute',
+        zIndex: 101,
+        right: 25,
+        bottom: 50,
+        backgroundColor: 'rgba(255, 255, 255, 0)'
+      }}
     >
       <Layout.Content>
-        <Form>
-          <Form.Item name="filter" label="Filter">
-            <Select
-              placeholder="Select a filter"
-              options={options}
-              onChange={setFilter}
-            />
-          </Form.Item>
-        </Form>
-        <Form
-          layout="vertical"
-          onFinish={async (values) => {
-            setLoading(true)
-            try {
-              await run(
-                { id: simulation.id },
-                result,
-                filter!,
-                values.parameters || []
-              )
-            } catch (err) {}
-            setLoading(false)
-          }}
+        <Tooltip title="Post-processing">
+          <Button
+            type="primary"
+            icon={<RadarChartOutlined />}
+            onClick={() => setVisible(true)}
+            style={{
+              width: 40,
+              height: 40,
+              border: '1px solid #5E14FA',
+              borderRadius: 20,
+              marginBottom: -20
+            }}
+          />
+        </Tooltip>
+
+        <Drawer
+          title="Post-processing"
+          closable={true}
+          onClose={() => setVisible(false)}
+          visible={visible}
+          mask={false}
+          maskClosable={false}
         >
-          {parameters}
-          <Form.Item>
-            <Button type="primary" loading={loading} htmlType="submit">
-              Run
-            </Button>
-          </Form.Item>
-        </Form>
+          <Form style={{ margin: '24px 0' }}>
+            <Form.Item name="filter" label="Filter">
+              <Select
+                placeholder="Select a filter"
+                options={options}
+                onChange={setFilter}
+              />
+            </Form.Item>
+          </Form>
+          <Form
+            layout="vertical"
+            onFinish={async (values) => {
+              setLoading(true)
+              try {
+                await run(
+                  { id: simulation.id },
+                  result,
+                  filter!,
+                  values.parameters || []
+                )
+              } catch (err) {}
+              setLoading(false)
+            }}
+          >
+            {parameters}
+            <Form.Item>
+              <Button type="primary" loading={loading} htmlType="submit">
+                Run
+              </Button>
+            </Form.Item>
+          </Form>
+        </Drawer>
       </Layout.Content>
     </Layout>
   )

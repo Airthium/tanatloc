@@ -32,6 +32,7 @@ import Parameters from './parameters'
 import Initialization from './initialization'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
+import Postprocessing from './postprocessing'
 
 /**
  * Selector props
@@ -331,7 +332,8 @@ const Simulation = {
   Parameters,
   Initialization,
   BoundaryConditions,
-  Run
+  Run,
+  Postprocessing
 }
 
 export default Simulation

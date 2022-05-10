@@ -864,6 +864,19 @@ const Project = (): JSX.Element => {
                 }
               }
             />
+            <Simulation.Postprocessing
+              simulation={
+                simulation && {
+                  id: simulation.id
+                }
+              }
+              result={
+                result && {
+                  fileName: result.fileName,
+                  originPath: result.originPath
+                }
+              }
+            />
           </Layout.Content>
         </Layout>
       </SelectProvider>

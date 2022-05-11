@@ -27,8 +27,8 @@ const pvpython = async (
 
   return new Promise((resolve, reject) => {
     let run: any
-    let data: string
-    let error: string
+    let data = ''
+    let error = ''
 
     if (isDocker()) {
       run = spawn(

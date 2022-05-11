@@ -40,6 +40,12 @@ describe('components/project/view', () => {
     json: 'json'
   } as ISimulationTaskFile
 
+  const postprocessing = {
+    glb: 'test.glb',
+    originPath: 'originPath',
+    json: 'json'
+  } as ISimulationTaskFile
+
   beforeEach(() => {
     mockErroNotification.mockReset()
 
@@ -136,6 +142,48 @@ describe('components/project/view', () => {
         simulation={simulation}
         geometry={geometry}
         result={result}
+      />
+    )
+
+    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('with postprocessing error', async () => {
+    mockResultLoad.mockImplementation(() => {
+      throw new Error('postprocessing load error')
+    })
+    const { unmount } = render(
+      <View
+        project={project}
+        simulation={simulation}
+        geometry={geometry}
+        result={result}
+        postprocessing={postprocessing}
+      />
+    )
+
+    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.part,
+        new Error('postprocessing load error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('with postprocessing', async () => {
+    const { unmount } = render(
+      <View
+        project={project}
+        simulation={simulation}
+        geometry={geometry}
+        result={result}
+        postprocessing={postprocessing}
       />
     )
 

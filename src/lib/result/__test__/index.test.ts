@@ -1,4 +1,4 @@
-import Geometry from '..'
+import Result from '..'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -71,7 +71,7 @@ describe('lib/result', () => {
     mockReadJSONFile.mockImplementation(() => ({
       uuid: 'uuid'
     }))
-    const load = await Geometry.load(
+    const load = await Result.load(
       { id: 'id' },
       { originPath: 'originPath', glb: 'glb', json: 'json' }
     )
@@ -80,7 +80,7 @@ describe('lib/result', () => {
   })
 
   test('download', () => {
-    const download = Geometry.download(
+    const download = Result.download(
       { id: 'id' },
       { originPath: 'originPath', fileName: 'fileName' }
     )
@@ -90,7 +90,7 @@ describe('lib/result', () => {
 
   test('archive', async () => {
     // Normal
-    const archive = await Geometry.archive({ id: 'id' })
+    const archive = await Result.archive({ id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(5)
     expect(mockSimulationGet).toHaveBeenCalledTimes(1)
     expect(mockReadStream).toHaveBeenCalledTimes(4)
@@ -108,7 +108,7 @@ describe('lib/result', () => {
       finalize: jest.fn()
     }))
     try {
-      await Geometry.archive({ id: 'id' })
+      await Result.archive({ id: 'id' })
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

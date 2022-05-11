@@ -41,6 +41,13 @@ export interface IPostProcessFile {
 }
 
 /**
+ * Errrors
+ */
+export const errors = {
+  run: 'Unable to run filter'
+}
+
+/**
  * Run
  * @param simulation Simulation
  * @param result Result
@@ -56,7 +63,7 @@ const run = async (
   try {
     return await PostprocessingAPI.run(simulation, result, filter, parameters)
   } catch (err) {
-    ErrorNotification('postprocessing', err)
+    ErrorNotification(errors.run, err)
   }
 }
 
@@ -115,7 +122,7 @@ const Postprocessing = ({
     const post = PostprocessingList.find((pp) => pp.key === filter)
     const defaultPost = postprocess.find((pp) => pp.key === filter)
 
-    if (post && post.parameters) {
+    if (post?.parameters) {
       parameters = post.parameters.map((parameter, index) => {
         const defaultParameter = defaultPost?.parameters?.find(
           (param) => param.key === parameter.key

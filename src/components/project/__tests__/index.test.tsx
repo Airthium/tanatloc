@@ -49,6 +49,7 @@ jest.mock('../data', () => () => <div />)
 
 const mockSelector = jest.fn()
 jest.mock('../simulation', () => {
+  let count = 0
   return {
     Selector: (props: any) => mockSelector(props),
     Updater: () => <div />,
@@ -63,9 +64,21 @@ jest.mock('../simulation', () => {
       <div role="Simulation.BoundaryCondition" onClick={props.setVisible} />
     ),
     Run: (props: any) => (
-      <div role="Simulation.Run" onClick={() => props.setResult({})} />
+      <div
+        role="Simulation.Run"
+        onClick={() => {
+          count++
+          if (count === 1) props.setResult({})
+          else props.setResult()
+        }}
+      />
     ),
-    Postprocessing: (props: any) => <div role="Simulation.Postprocessing" />
+    Postprocessing: (props: any) => (
+      <div
+        role="Simulation.Postprocessing"
+        onClick={() => props.setResult({})}
+      />
+    )
   }
 })
 
@@ -804,6 +817,11 @@ describe('components/project', () => {
     fireEvent.click(simulationItem)
 
     const run = screen.getByRole('Simulation.Run')
+    fireEvent.click(run)
+
+    const postprocessing = screen.getByRole('Simulation.Postprocessing')
+    fireEvent.click(postprocessing)
+
     fireEvent.click(run)
 
     unmount()

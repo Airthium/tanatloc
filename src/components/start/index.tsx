@@ -1,3 +1,5 @@
+/** @module Components.Start */
+
 import { Typography } from 'antd'
 import Loading from '../loading'
 

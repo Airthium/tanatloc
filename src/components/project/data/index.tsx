@@ -304,7 +304,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 onDownload={() => {
                   setDownloading(true)
                   try {
-                    exportCSV(simulation, table!, infos!)
+                    exportCSV(simulation, table, infos!)
                   } catch (err) {
                     ErrorNotification(errors.download, err)
                   } finally {

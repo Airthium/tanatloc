@@ -1,3 +1,5 @@
+/** @module Lib.Postprocessing */
+
 import path from 'path'
 
 import { SIMULATION } from '@/config/storage'

@@ -1,3 +1,5 @@
+/** @module Postprocessing */
+
 export interface IPostProcessing {
   key: string
   label: string

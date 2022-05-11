@@ -29,6 +29,7 @@ export interface IProps {
   simulation?: Pick<IFrontSimulationsItem, 'id'>
   geometry?: TGeometry
   result?: TResult
+  postprocessing?: TResult
 }
 
 /**
@@ -76,7 +77,8 @@ const View = ({
   project,
   simulation,
   geometry,
-  result
+  result,
+  postprocessing
 }: IProps): JSX.Element => {
   // State
   const [part, setPart] = useState<{
@@ -89,7 +91,19 @@ const View = ({
 
   // Part
   useEffect(() => {
-    if (simulation && result) {
+    if (simulation && postprocessing) {
+      if (postprocessing.glb !== (previous as TResult)?.glb) {
+        setPrevious(postprocessing)
+
+        setLoading(true)
+        loadPart(simulation, postprocessing, 'result')
+          .then((partLoaded) =>
+            setPart({ ...partLoaded, dimension: geometry?.dimension })
+          )
+          .catch((_err) => undefined)
+          .finally(() => setLoading(false))
+      }
+    } else if (simulation && result) {
       if (result.glb !== (previous as TResult)?.glb) {
         setPrevious(result)
 
@@ -119,7 +133,7 @@ const View = ({
         }
       }
     }
-  }, [simulation, geometry, result, previous])
+  }, [simulation, geometry, result, postprocessing, previous])
 
   /**
    * Render

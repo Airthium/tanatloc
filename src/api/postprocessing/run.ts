@@ -7,7 +7,15 @@ export const run = async (
   result: { fileName: string; originPath: string },
   filter: string,
   parameters: string[]
-): Promise<{ uuid: string; buffer: Buffer }> => {
+): Promise<
+  {
+    fileName: string
+    name: string
+    originPath: string
+    glb: string
+    json: string
+  }[]
+> => {
   const response = await call('/api/postprocessing', {
     method: 'POST',
     headers: {

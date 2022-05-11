@@ -18,13 +18,14 @@ const LabelHelper = (
   text: string,
   parameters?: {
     position?: Vector3
+    width?: number
     scale?: number
     align?: CanvasTextAlign
   }
 ): ILabelHelper => {
   // Canvas
   const canvas = document.createElement('canvas')
-  canvas.width = 256
+  canvas.width = parameters?.width || 256
   canvas.height = 256
   const context = canvas.getContext('2d') as CanvasRenderingContext2D
   context.fillStyle = 'grey'

@@ -29,7 +29,7 @@ export interface IColorbarHelperSprite extends Sprite {
  * @param renderer Renderer
  */
 const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
-  const width = 500
+  const width = 700
   const height = 50
 
   const colorScene = new Scene()
@@ -74,7 +74,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     sprite = new Sprite(material) as IColorbarHelperSprite
     sprite.material.rotation = -Math.PI / 2
     sprite.scale.x = 0.2
-    sprite.scale.y = 1.4
+    sprite.scale.y = 1.2
     sprite.dispose = sprite.material.dispose
     colorScene.add(sprite)
 
@@ -90,17 +90,19 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     let max = NumberHelper(lut.maxV)
 
     const minLabel = LabelHelper(renderer, String(min), {
-      position: new Vector3(-0.72, 0, 0),
+      position: new Vector3(-0.62, 0, 0),
+      width: 512,
       align: 'right'
     })
-    minLabel.scale.x = 0.25
-    minLabel.scale.y = 2.5
+    minLabel.scale.x = 0.4
+    minLabel.scale.y = 2.8
     const maxLabel = LabelHelper(renderer, String(max), {
-      position: new Vector3(0.72, 0, 0),
+      position: new Vector3(0.62, 0, 0),
+      width: 512,
       align: 'left'
     })
-    maxLabel.scale.x = 0.25
-    maxLabel.scale.y = 2.5
+    maxLabel.scale.x = 0.4
+    maxLabel.scale.y = 2.8
 
     colorScene.add(minLabel)
     colorScene.add(maxLabel)

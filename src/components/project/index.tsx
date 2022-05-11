@@ -145,6 +145,8 @@ const Project = (): JSX.Element => {
 
   const [result, setResult] = useState<IFrontResult>()
 
+  const [postprocessing, setPostprocessing] = useState<IFrontResult>()
+
   const [menuKey, setMenuKey] = useState<{
     key: string
     id: string
@@ -570,9 +572,17 @@ const Project = (): JSX.Element => {
       setSimulationPanel(menuKey.id, menuKey.item!)
 
       // Force geometry
-      if (menuKey.item !== 'run') setResult(undefined)
+      if (menuKey.item !== 'run') {
+        setResult(undefined)
+        setPostprocessing(undefined)
+      }
     }
   }, [menuKey, setGeometryPanel, setSimulationPanel, onPanelClose])
+
+  // Close result
+  useEffect(() => {
+    if (!result && postprocessing) setPostprocessing(undefined)
+  }, [result, postprocessing])
 
   /**
    * On menu click
@@ -855,6 +865,13 @@ const Project = (): JSX.Element => {
                   json: result.json
                 }
               }
+              postprocessing={
+                postprocessing && {
+                  glb: postprocessing.glb,
+                  originPath: postprocessing.originPath,
+                  json: postprocessing.json
+                }
+              }
             />
             <Data
               simulation={
@@ -873,10 +890,18 @@ const Project = (): JSX.Element => {
               }
               result={
                 result && {
+                  name: result.name,
                   fileName: result.fileName,
                   originPath: result.originPath
                 }
               }
+              postprocessing={
+                postprocessing && {
+                  name: postprocessing.name,
+                  fileName: postprocessing.fileName
+                }
+              }
+              setResult={setPostprocessing}
             />
           </Layout.Content>
         </Layout>

@@ -1,58 +1,97 @@
 import path from 'path'
-import { spawn } from 'child_process'
 
 import { SIMULATION } from '@/config/storage'
+
+import Services from '@/services'
+
+import Tools from '@/lib/tools'
 
 const run = async (
   simulation: { id: string },
   result: { fileName: string; originPath: string },
   filter: string,
   parameters: string[]
-) => {
+): Promise<
+  {
+    fileName: string
+    name: string
+    originPath: string
+    glb: string
+    json: string
+  }[]
+> => {
+  // Result path
+  const resultPath = path.join(SIMULATION, simulation.id, result.originPath)
+
+  // Script
+  const script = filter + '.py'
+  await Tools.copyFile(
+    { path: './postprocessing', file: script },
+    { path: resultPath, file: script }
+  )
+
+  // In-out files
+  const vtuIn = result.fileName
   const fileNameWithoutExtension = result.fileName
     .split('.')
     .slice(0, -1)
     .join('.')
-  const vtu = path.join(
-    SIMULATION,
-    simulation.id,
-    result.originPath,
-    fileNameWithoutExtension + '.vtu'
-  )
-  const outVtu = path.join(
-    SIMULATION,
-    simulation.id,
-    result.originPath,
-    fileNameWithoutExtension + '_' + filter + '.vtu'
+  const vtuOut = fileNameWithoutExtension + '_' + filter + '.vtu'
+
+  // pvpython
+  const { code, data, error } = await Services.pvpython(
+    resultPath,
+    script,
+    vtuIn,
+    vtuOut,
+    parameters
   )
 
-  //use services.pvpython
-  //todo use one path (bindPath) containing py script and files (copy script file and remove after?)
+  // Remove script
+  await Tools.removeFile(path.join(resultPath, script))
 
-  const python = spawn('pvpython', [
-    './postprocessing/' + filter + '.py',
-    vtu,
-    outVtu,
-    ...parameters
-  ])
+  // Error
+  if (code !== 0)
+    throw new Error(
+      'Post-processing script failed. Code ' +
+        code +
+        (data ? '\n' + data : '') +
+        (error ? '\n' + error : '')
+    )
 
-  python.stdout.on('data', (data: Buffer) => {
-    console.log(data.toString())
-  })
+  // Convert
+  let convertData = ''
+  let convertError = ''
+  const target = fileNameWithoutExtension + '_' + filter
+  await Tools.convert(
+    resultPath,
+    { name: vtuOut, target },
+    ({ data: cData, error: cError }) => {
+      cData && (convertData += cData)
+      cError && (convertError += cError)
+    },
+    { isResult: true }
+  )
 
-  python.stderr.on('data', (data: Buffer) => {
-    console.log(data.toString())
-  })
+  if (convertError)
+    throw new Error(
+      'Error: Post-processing converting process failed (' + convertError + ')'
+    )
 
-  python.on('close', (code: number) => {
-    console.log(code)
-  })
+  // New results
+  const newResults = convertData
+    ?.trim()
+    ?.split('\n')
+    .map((res) => JSON.parse(res))
 
-  python.on('error', (err: Error) => {
-    console.log(err)
-  })
-
-  return {}
+  // Return
+  return newResults.map((newResult) => ({
+    fileName: newResult.fileName,
+    name: newResult.name,
+    originPath: result.originPath,
+    json: newResult.path,
+    glb: newResult.path + '.glb'
+  }))
 }
 
 const Postprocessing = { run }

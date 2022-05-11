@@ -1,17 +1,43 @@
-import { useState } from 'react'
-import { Button, Drawer, Form, Input, Layout, Select, Tooltip } from 'antd'
-import { RadarChartOutlined } from '@ant-design/icons'
+import { useEffect, useState } from 'react'
+import {
+  Button,
+  Card,
+  Drawer,
+  Form,
+  Input,
+  Layout,
+  Select,
+  Space,
+  Tooltip
+} from 'antd'
+import {
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  RadarChartOutlined,
+  RocketOutlined
+} from '@ant-design/icons'
 
 import PostprocessingList from 'postprocessing'
 
 import { ErrorNotification } from '@/components/assets/notification'
+import Download from '@/components/project/simulation/run/results/download'
 
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 import PostprocessingAPI from '@/api/postprocessing'
 
 export interface IProps {
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  result?: Pick<IFrontResult, 'fileName' | 'originPath'>
+  result?: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>
+  postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
+  setResult: (result?: IFrontResult) => void
+}
+
+export interface IPostProcessFile {
+  fileName: string
+  name: string
+  originPath: string
+  glb: string
+  json: string
 }
 
 /**
@@ -26,9 +52,9 @@ const run = async (
   result: Pick<IFrontResult, 'fileName' | 'originPath'>,
   filter: string,
   parameters: string[]
-): Promise<void> => {
+): Promise<IPostProcessFile[] | undefined> => {
   try {
-    await PostprocessingAPI.run(simulation, result, filter, parameters)
+    return await PostprocessingAPI.run(simulation, result, filter, parameters)
   } catch (err) {
     ErrorNotification('postprocessing', err)
   }
@@ -39,11 +65,22 @@ const run = async (
  * @param props Props
  * @returns Postprocessing
  */
-const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
+const Postprocessing = ({
+  simulation,
+  result,
+  postprocessing,
+  setResult
+}: IProps): JSX.Element | null => {
   // State
   const [visible, setVisible] = useState<boolean>()
   const [filter, setFilter] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
+  const [results, setResults] = useState<IPostProcessFile[]>()
+
+  // Update visible
+  useEffect(() => {
+    if (!result && visible) setVisible(false)
+  }, [result, visible])
 
   /**
    * Empty render
@@ -51,16 +88,16 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
   if (!simulation || !result) return null
 
   // Data
-  const postprocessing = simulation.scheme.configuration.run.postprocessing
+  const postprocess = simulation.scheme.configuration.run.postprocessing
 
   /**
    * Empty render
    */
-  if (!postprocessing) return null
+  if (!postprocess) return null
 
   // Options
   const options = PostprocessingList.map((p) => {
-    if (postprocessing.find((pp) => pp.key === p.key))
+    if (postprocess.find((pp) => pp.key === p.key))
       return {
         label: p.label,
         value: p.key
@@ -76,7 +113,7 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
   let parameters = null
   if (filter) {
     const post = PostprocessingList.find((pp) => pp.key === filter)
-    const defaultPost = postprocessing.find((pp) => pp.key === filter)
+    const defaultPost = postprocess.find((pp) => pp.key === filter)
 
     if (post && post.parameters) {
       parameters = post.parameters.map((parameter, index) => {
@@ -176,26 +213,75 @@ const Postprocessing = ({ simulation, result }: IProps): JSX.Element | null => {
           </Form>
           <Form
             layout="vertical"
+            style={{ margin: '24px 0' }}
             onFinish={async (values) => {
               setLoading(true)
               try {
-                await run(
+                const newResults = await run(
                   { id: simulation.id },
                   result,
                   filter!,
                   values.parameters || []
                 )
+                setResults(newResults)
               } catch (err) {}
               setLoading(false)
             }}
           >
             {parameters}
             <Form.Item>
-              <Button type="primary" loading={loading} htmlType="submit">
+              <Button
+                type="primary"
+                loading={loading}
+                htmlType="submit"
+                icon={<RocketOutlined />}
+              >
                 Run
               </Button>
             </Form.Item>
           </Form>
+          {results && (
+            <Card size="small" title="Post-processing">
+              <Space direction="vertical" className="full-width">
+                {results.map((res) => (
+                  <Space key={res.glb}>
+                    <Button
+                      icon={
+                        postprocessing?.fileName === res.fileName &&
+                        postprocessing?.name === res.name ? (
+                          <EyeOutlined style={{ color: '#fad114' }} />
+                        ) : (
+                          <EyeInvisibleOutlined />
+                        )
+                      }
+                      onClick={() =>
+                        setResult(
+                          postprocessing?.fileName === res.fileName &&
+                            postprocessing?.name === res.name
+                            ? undefined
+                            : {
+                                type: 'postprocessing',
+                                ...res
+                              }
+                        )
+                      }
+                    />
+                    <Download
+                      simulation={{
+                        id: simulation.id
+                      }}
+                      file={{
+                        name: res.name,
+                        fileName: res.fileName,
+                        originPath: res.originPath
+                      }}
+                    />
+                    {res.name}
+                  </Space>
+                ))}
+              </Space>
+            </Card>
+          )}
         </Drawer>
       </Layout.Content>
     </Layout>

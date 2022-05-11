@@ -18,6 +18,8 @@
       "@/templates/*": ["templates/*"],
       "@/plugins": ["plugins"],
       "@/plugins/*": ["plugins/*"],
+      "@/postprocessing": ["postprocessing"],
+      "@/postprocessing/*": ["postprocessing/*"],
       "@/api": ["src/api"],
       "@/api/*": ["src/api/*"],
       "@/auth": ["src/auth"],

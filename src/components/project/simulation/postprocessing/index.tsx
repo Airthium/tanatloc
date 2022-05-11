@@ -17,7 +17,7 @@ import {
   RocketOutlined
 } from '@ant-design/icons'
 
-import PostprocessingList from 'postprocessing'
+import PostprocessingList from '@/postprocessing'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import Download from '@/components/project/simulation/run/results/download'
@@ -241,7 +241,7 @@ const Postprocessing = ({
             </Form.Item>
           </Form>
           {results && (
-            <Card size="small" title="Post-processing">
+            <Card size="small" title="Post-processing" extra={filter}>
               <Space direction="vertical" className="full-width">
                 {results.map((res) => (
                   <Space key={res.glb}>

@@ -34,6 +34,7 @@ module.exports = {
     '^@/models(.*)$': '<rootDir>/models$1',
     '^@/templates(.*)$': '<rootDir>/templates$1',
     '^@/plugins(.*)$': '<rootDir>/plugins$1',
+    '^@/postprocessing(.*)$': '<rootDir>/postprocessing$1',
     '^@/api(.*)$': '<rootDir>/src/api$1',
     '^@/auth(.*)$': '<rootDir>/src/auth$1',
     '^@/components(.*)$': '<rootDir>/src/components$1',

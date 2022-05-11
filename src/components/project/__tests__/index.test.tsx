@@ -64,7 +64,8 @@ jest.mock('../simulation', () => {
     ),
     Run: (props: any) => (
       <div role="Simulation.Run" onClick={() => props.setResult({})} />
-    )
+    ),
+    Postprocessing: (props: any) => <div role="Simulation.Postprocessing" />
   }
 })
 

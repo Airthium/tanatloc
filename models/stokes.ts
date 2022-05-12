@@ -187,6 +187,17 @@ const Stokes: IModel = {
         {
           name: 'Presure'
         }
+      ],
+      postprocessing: [
+        {
+          key: 'streamTracer',
+          parameters: [
+            {
+              key: 'Vectors',
+              value: 'Velocity'
+            }
+          ]
+        }
       ]
     }
   }

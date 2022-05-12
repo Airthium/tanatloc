@@ -224,7 +224,7 @@ const LinearElasticityTime: IModel = {
       title: 'Run',
       results: [
         {
-          name: 'U'
+          name: 'Displacement'
         },
         {
           name: 'vonMises'
@@ -258,7 +258,7 @@ const LinearElasticityTime: IModel = {
       postprocessing: [
         {
           key: 'warpByVector',
-          parameters: [{ key: 'Vectors', value: 'U' }]
+          parameters: [{ key: 'Vectors', value: 'Displacement' }]
         },
         {
           key: 'contour',
@@ -266,7 +266,7 @@ const LinearElasticityTime: IModel = {
             {
               key: 'ContourBy',
               options: [
-                'U',
+                'Displacement',
                 'vonMises',
                 'gamma11',
                 'gamma12',

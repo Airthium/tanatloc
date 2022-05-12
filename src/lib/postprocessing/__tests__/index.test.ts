@@ -41,13 +41,13 @@ describe('lib/postprocessing', () => {
 
     const res = await Postprocessing.run(
       { id: 'id' },
-      { fileName: 'fileName', originPath: 'originPath' },
+      { fileName: 'fileName.vtu', originPath: 'originPath' },
       'filter',
       ['']
     )
     expect(res).toEqual([
       {
-        fileName: 'fileName',
+        fileName: 'fileName_filter.vtu',
         name: 'name',
         originPath: 'originPath',
         json: 'path',

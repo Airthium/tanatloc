@@ -91,6 +91,14 @@ const Postprocessing = ({
     if (!result && visible) setVisible(false)
   }, [result, visible])
 
+  // Cleanup
+  useEffect(() => {
+    if (!simulation) {
+      setFilter(undefined)
+      setResults(undefined)
+    }
+  }, [simulation, result])
+
   /**
    * Empty render
    */

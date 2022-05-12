@@ -68,6 +68,22 @@ const postprocessing: IPostProcessing[] = [
         ]
       }
     ]
+  },
+  {
+    key: 'streamTracer',
+    label: 'Stream tracer',
+    parameters: [
+      {
+        key: 'Vectors',
+        label: 'Vectors',
+        rules: [
+          {
+            required: true,
+            message: 'Vectors is required'
+          }
+        ]
+      }
+    ]
   }
 ]
 

@@ -1,5 +1,5 @@
 import sys
-from paraview.simple import XMLUnstructuredGridReader, XMLUnstructuredGridWriter, WarpByVector
+from paraview.simple import WarpByVector, XMLUnstructuredGridReader, XMLUnstructuredGridWriter
 
 # Arguments
 # 1. string: InFileName
@@ -8,11 +8,14 @@ from paraview.simple import XMLUnstructuredGridReader, XMLUnstructuredGridWriter
 # 4. number: ScaleFactor
 
 args = sys.argv
-print(args)
 
+# Read
 VTU = XMLUnstructuredGridReader(FileName=args[1])
+VTU.UpdatePipeline()
 
+# Warp by vector
 NewVTU = WarpByVector(Input=VTU, ScaleFactor=float(args[4]), Vectors=[args[3]])
 
+# Write
 Writer = XMLUnstructuredGridWriter(FileName=args[2], Input=NewVTU)
 Writer.UpdatePipeline()

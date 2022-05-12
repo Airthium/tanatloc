@@ -73,6 +73,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           filter,
           parameters
         )
+
         res.status(200).json(data)
       } catch (err: any) {
         throw error(500, err.message)

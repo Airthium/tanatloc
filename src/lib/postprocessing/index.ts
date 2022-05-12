@@ -88,7 +88,7 @@ const run = async (
 
   // Return
   return newResults.map((newResult) => ({
-    fileName: newResult.fileName,
+    fileName: vtuOut,
     name: newResult.name,
     originPath: result.originPath,
     json: newResult.path,

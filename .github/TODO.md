@@ -10,6 +10,7 @@
 
 ## Electron (Long term)
 
+- Check for update, changelog au prochain démarrage
 - Apple sign
 
 ## Postprocessing (Long term)

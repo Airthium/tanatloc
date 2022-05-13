@@ -291,10 +291,12 @@ export const loadPart = async (
     transparent,
     helpers.sectionViewHelper.getClippingPlane()
   )
+  console.log(mesh)
 
   // Scene
   scene.add(mesh)
   computeSceneBoundingSphere(scene)
+  console.log(scene.boundingSphere)
 
   // Grid
   helpers.gridHelper.update()

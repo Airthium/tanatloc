@@ -49,7 +49,7 @@ export interface IPart extends Object3D {
   type: 'Part'
   uuid: string
   boundingBox: Box3
-  children: IPartChildChild[]
+  children: IPartChild[]
   dispose: () => void
   setTransparent: (transparent: boolean) => void
   startSelection: (
@@ -121,42 +121,42 @@ const PartLoader = (
 
     object.uuid = part.uuid
 
-    object.children.forEach((child) => {
-      if (child.type === 'Mesh') {
-        child.material.clippingPlanes = [clippingPlane]
-        child.material.roughness = 0.5
-        child.visible = true
+    // object.children.forEach((child) => {
+    //   if (child.type === 'Mesh') {
+    //     child.material.clippingPlanes = [clippingPlane]
+    //     child.material.roughness = 0.5
+    //     child.visible = true
+    //   }
+    // })
+
+    // Set original colors
+    const solids = object.children[0]
+    if (solids)
+      for (const solid of solids.children) {
+        solid.material.originalColor = solid.material.color
+        solid.material.roughness = 0.5
+        solid.material.clippingPlanes = [clippingPlane]
+        solid.visible = false
       }
-    })
 
-    // // Set original colors
-    // const solids = object.children[0]
-    // if (solids)
-    //   for (const solid of solids.children) {
-    //     solid.material.originalColor = solid.material.color
-    //     solid.material.roughness = 0.5
-    //     solid.material.clippingPlanes = [clippingPlane]
-    //     solid.visible = false
-    //   }
+    const faces = object.children[1]
+    if (faces)
+      for (const face of faces.children) {
+        face.material.originalColor = face.material.color
+        face.material.roughness = 0.5
+        face.material.clippingPlanes = [clippingPlane]
+      }
 
-    // const faces = object.children[1]
-    // if (faces)
-    //   for (const face of faces.children) {
-    //     face.material.originalColor = face.material.color
-    //     face.material.roughness = 0.5
-    //     face.material.clippingPlanes = [clippingPlane]
-    //   }
-
-    // const edges = object.children[2]
-    // if (edges)
-    //   for (const edge of edges.children) {
-    //     edge.material.originalColor = edge.material.color
-    //     edge.material.roughness = 0.5
-    //     edge.material.clippingPlanes = [clippingPlane]
-    //   }
+    const edges = object.children[2]
+    if (edges)
+      for (const edge of edges.children) {
+        edge.material.originalColor = edge.material.color
+        edge.material.roughness = 0.5
+        edge.material.clippingPlanes = [clippingPlane]
+      }
 
     // Transparency
-    // setTransparent(object, transparent)
+    setTransparent(object, transparent)
 
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
@@ -187,35 +187,35 @@ const PartLoader = (
   const computeBoundingBox = (part: IPart): Box3 => {
     const box = new Box3()
 
-    part.children.forEach((child) => {
-      if (child.type === 'Mesh') {
-        box.expandByObject(child)
-      }
-    })
-    // // Solids
-    // const solids = part.children[0]
-    // solids?.children?.forEach((solid) => {
-    //   const childBox = solid.geometry.boundingBox as Box3
-    //   mergeBox(box, childBox)
+    // part.children.forEach((child) => {
+    //   if (child.type === 'Mesh') {
+    //     box.expandByObject(child)
+    //   }
     // })
+    // Solids
+    const solids = part.children[0]
+    solids?.children?.forEach((solid) => {
+      const childBox = solid.geometry.boundingBox as Box3
+      mergeBox(box, childBox)
+    })
 
-    // if (box.isEmpty()) {
-    //   // Try faces
-    //   const faces = part.children[1]
-    //   faces?.children?.forEach((face) => {
-    //     const childBox = face.geometry.boundingBox as Box3
-    //     mergeBox(box, childBox)
-    //   })
-    // }
+    if (box.isEmpty()) {
+      // Try faces
+      const faces = part.children[1]
+      faces?.children?.forEach((face) => {
+        const childBox = face.geometry.boundingBox as Box3
+        mergeBox(box, childBox)
+      })
+    }
 
-    // if (box.isEmpty()) {
-    //   // Try edges
-    //   const edges = part.children[2]
-    //   edges?.children?.forEach((edge) => {
-    //     const childBox = edge.geometry.boundingBox as Box3
-    //     mergeBox(box, childBox)
-    //   })
-    // }
+    if (box.isEmpty()) {
+      // Try edges
+      const edges = part.children[2]
+      edges?.children?.forEach((edge) => {
+        const childBox = edge.geometry.boundingBox as Box3
+        mergeBox(box, childBox)
+      })
+    }
 
     return box
   }

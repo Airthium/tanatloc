@@ -21,9 +21,22 @@
 
 .Index-content {
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Index-content h1.ant-typography {
+   width: 100%;
+   margin-bottom: 0;
+}
+
+.Index-content .ant-divider {
+  margin: 12px 0 24px 0;
 }
 
 .Index-cols {
+  max-width: 1000px;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }

@@ -10,6 +10,7 @@
 
 ## Electron (Long term)
 
+- Check for update, changelog au prochain démarrage
 - Apple sign
 
 ## Postprocessing (Long term)
@@ -23,3 +24,5 @@
 - faces disapear when speed click on different faces, visible is set to false by something ?
 
 ## Misc (Debug)
+
+- deploy without mail server, go to login after signup, not in /send

@@ -448,7 +448,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
                   label: child.label
                 }))}
                 onClick={onSecondLevel}
-              ></Menu>
+              />
               {current && (
                 <List itemLayout="vertical">
                   {current.children.map((child) => (

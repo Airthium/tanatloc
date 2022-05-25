@@ -1,7 +1,6 @@
 /** @module Components.Error */
 
 import { NextPageContext } from 'next'
-import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
 /**
@@ -17,8 +16,6 @@ export interface IProps {
  * @return Error
  */
 function Error({ statusCode }: IProps): JSX.Element {
-  // Router
-  const router = useRouter()
 
   /**
    * Render
@@ -30,15 +27,13 @@ function Error({ statusCode }: IProps): JSX.Element {
           <Typography.Title level={1}>{statusCode}</Typography.Title>
         )}
         <Typography.Title level={1}>
-          {statusCode ? 'An error occurred on server' : 'An error occurred'}
+          {statusCode === 100 ? 'An error occurred while installing the application ' : 'An error occurred while loading server'}
         </Typography.Title>
         <Typography.Title
           level={2}
           underline={true}
-          onClick={() => router.reload()}
-          style={{ cursor: 'pointer' }}
         >
-          Please, refresh the page
+          Please, try to run the application again.
         </Typography.Title>
       </Layout.Content>
     </Layout>

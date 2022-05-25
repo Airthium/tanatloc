@@ -10,9 +10,6 @@ export type TGeometryGet = (
   | 'extension'
   | 'uploadfilename'
   | 'glb'
-  | 'json'
-  | 'summary'
-  | 'dimension'
   | 'project'
 )[]
 
@@ -21,9 +18,6 @@ export type TGeometryGetOriginalfilename = 'originalfilename'[]
 export type TGeometryGetExtension = 'extension'[]
 export type TGeometryGetUploadfilename = 'uploadfilename'[]
 export type TGeometryGetGlb = 'glb'[]
-export type TGeometryGetJson = 'json'[]
-export type TGeometryGetSummary = 'summary'[]
-export type TGeometryGetDimension = 'dimension'[]
 export type TGeometryGetProject = 'project'[]
 
 export interface IGeometry<T = []> {
@@ -33,31 +27,6 @@ export interface IGeometry<T = []> {
   extension: TGeometryGetExtension extends T ? string : never
   uploadfilename: TGeometryGetUploadfilename extends T ? string : never
   glb: TGeometryGetGlb extends T ? string : never
-  json: TGeometryGetJson extends T ? string : never
-  summary: TGeometryGetSummary extends T
-    ? {
-        uuid: string
-        solids?: {
-          uuid: string
-          name: string
-          number: number
-          color?: { r: number; g: number; b: number }
-        }[]
-        faces?: {
-          uuid: string
-          name: string
-          number: number
-          color?: { r: number; g: number; b: number }
-        }[]
-        edges?: {
-          uuid: string
-          name: string
-          number: number
-          color?: { r: number; g: number; b: number }
-        }[]
-      }
-    : never
-  dimension?: TGeometryGetDimension extends T ? number : never
   project: TGeometryGetProject extends T ? string : never
 }
 

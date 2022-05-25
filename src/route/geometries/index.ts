@@ -51,8 +51,6 @@ const route = async (req: Request, res: Response): Promise<void> => {
             const geometry = await GeometryLib.get(id, [
               'name',
               'originalfilename',
-              'summary',
-              'dimension',
               'project'
             ])
             if (!geometry) throw error(400, 'Invalid geometry identifier')

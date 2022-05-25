@@ -1,7 +1,9 @@
 /** @module Components.Project.Geometry */
 
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
+
+import { SelectContext } from '@/context/select'
 
 import Loading from '@/components/loading'
 import {
@@ -27,7 +29,7 @@ import Edit from './edit'
  */
 export interface IProps {
   project: Pick<IFrontProject, 'id' | 'geometries'>
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'name'>
   swr: {
     mutateProject: (project: Partial<IFrontProject>) => void
     mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
@@ -156,6 +158,11 @@ const Geometry = ({
   const [editVisible, setEditVisible] = useState<boolean>(false)
   const [deleting, setDeleting] = useState<boolean>(false)
 
+  // Context
+  const { summary } = useContext(SelectContext)
+
+  console.log(summary)
+
   /**
    * Render
    */
@@ -224,26 +231,28 @@ const Geometry = ({
               <span className="text-light">Unit:</span>{' '}
               <MathJax.Inline text={'m'} />
             </Typography.Text>
-            <>
-              {geometry.summary.solids && (
-                <Typography.Text>
-                  <span className="text-light">Number of solids:</span>{' '}
-                  {geometry.summary.solids.length}
-                </Typography.Text>
-              )}
-              {geometry.summary.faces && (
+            {summary && (
+              <>
+                {summary.type === 'Geometry3D' && (
+                  <Typography.Text>
+                    <span className="text-light">Number of solids:</span>{' '}
+                    {summary.solids.length}
+                  </Typography.Text>
+                )}
+
                 <Typography.Text>
                   <span className="text-light">Number of faces:</span>{' '}
-                  {geometry.summary.faces.length}
+                  {summary.faces.length}
                 </Typography.Text>
-              )}
-              {geometry.summary.edges && (
-                <Typography.Text>
-                  <span className="text-light">Number of edges:</span>{' '}
-                  {geometry.summary.edges.length}
-                </Typography.Text>
-              )}
-            </>
+
+                {summary.type === 'Geometry2D' && (
+                  <Typography.Text>
+                    <span className="text-light">Number of edges:</span>{' '}
+                    {summary.edges.length}
+                  </Typography.Text>
+                )}
+              </>
+            )}
           </Space>
         </Card>
       </Layout.Content>

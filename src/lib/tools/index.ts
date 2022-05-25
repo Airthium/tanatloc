@@ -198,32 +198,32 @@ const convert = async (
   const { code, data, error } = await Services.toThree(
     location,
     origin,
-    jsonTarget
+    glbTarget
   )
   callback?.({ data, error })
 
   if (error) throw new Error('Conversion process failed.')
   if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
-  if (param && param.isResult) {
-    const results = data
-      ?.trim()
-      ?.split('\n')
-      .map((res) => JSON.parse(res))
+  // if (param && param.isResult) {
+  //   const results = data
+  //     ?.trim()
+  //     ?.split('\n')
+  //     .map((res) => JSON.parse(res))
 
-    await Promise.all(
-      results.map(async (result: { path: string }) => {
-        const glb = await threeToGlb(
-          path.join(location, result.path),
-          'part.json'
-        )
-        await writeFile(location, result.path + '.glb', glb)
-      })
-    )
-  } else {
-    const glb = await threeToGlb(path.join(location, jsonTarget), 'part.json')
-    await writeFile(location, glbTarget, glb)
-  }
+  //   await Promise.all(
+  //     results.map(async (result: { path: string }) => {
+  //       const glb = await threeToGlb(
+  //         path.join(location, result.path),
+  //         'part.json'
+  //       )
+  //       await writeFile(location, result.path + '.glb', glb)
+  //     })
+  //   )
+  // } else {
+  //   const glb = await threeToGlb(path.join(location, jsonTarget), 'part.json')
+  //   await writeFile(location, glbTarget, glb)
+  // }
 
   return {
     json: jsonTarget,

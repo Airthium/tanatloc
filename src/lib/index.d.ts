@@ -12,26 +12,6 @@ import { IPlugin } from '@/plugins'
 /**
  * Geometry
  */
-export interface IGeometrySummaryFile {
-  type: string
-  uuid: string
-  solids?: {
-    name: string
-    path: string
-    number: number
-  }[]
-  faces?: {
-    name: string
-    path: string
-    number: number
-  }[]
-  edges?: {
-    name: string
-    path: string
-    number: number
-  }[]
-}
-
 export interface IGeometryEntityAttribute {
   itemSize: number
   array: number[]
@@ -49,10 +29,7 @@ export interface IGeometryEntityFile {
 }
 
 export interface INewGeometryWithData extends INewGeometry {
-  json: IGeometry<'json'[]>['json']
   glb: IGeometry<'glb'[]>['glb']
-  summary: IGeometry<'summary'[]>['summary']
-  dimension: IGeometry<'dimension'[]>['dimension']
 }
 
 export interface IGeometryFile {

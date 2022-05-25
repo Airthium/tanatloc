@@ -3,13 +3,7 @@
 import path from 'path'
 
 import { IDataBaseEntry } from '@/database/index.d'
-import {
-  IGeometryPart,
-  IGeometryFile,
-  INewGeometryWithData,
-  IGeometrySummaryFile,
-  IGeometryEntityFile
-} from '../index.d'
+import { IGeometryPart, IGeometryFile, INewGeometryWithData } from '../index.d'
 
 import { GEOMETRY } from '@/config/storage'
 
@@ -48,109 +42,15 @@ const add = async (
       target: geometry.uid
     })
 
-    // Get summary
-    const summaryContent = (await Tools.readJSONFile(
-      path.join(GEOMETRY, geometry.uid, 'part.json')
-    )) as IGeometrySummaryFile
-
-    const summary: INewGeometryWithData['summary'] = {
-      uuid: summaryContent.uuid
-    }
-
-    summaryContent.solids &&
-      (summary.solids = await Promise.all(
-        summaryContent.solids.map(async (solid) => {
-          const content = (await Tools.readJSONFile(
-            path.join(GEOMETRY, geometry.uid, solid.path)
-          )) as IGeometryEntityFile
-
-          let color
-          if (content.data?.attributes.color?.itemSize === 3)
-            color = {
-              r: content.data.attributes.color.array[0],
-              g: content.data.attributes.color.array[1],
-              b: content.data.attributes.color.array[2]
-            }
-
-          return {
-            uuid: content.uuid,
-            name: solid.name,
-            number: solid.number,
-            color
-          }
-        })
-      ))
-    summaryContent.faces &&
-      (summary.faces = await Promise.all(
-        summaryContent.faces.map(async (face) => {
-          const content = (await Tools.readJSONFile(
-            path.join(GEOMETRY, geometry.uid, face.path)
-          )) as IGeometryEntityFile
-
-          let color
-          if (content.data?.attributes.color?.itemSize === 3)
-            color = {
-              r: content.data.attributes.color.array[0],
-              g: content.data.attributes.color.array[1],
-              b: content.data.attributes.color.array[2]
-            }
-
-          return {
-            uuid: content.uuid,
-            name: face.name,
-            number: face.number,
-            color
-          }
-        })
-      ))
-    summaryContent.edges &&
-      (summary.edges = await Promise.all(
-        summaryContent.edges.map(async (edge) => {
-          const content = (await Tools.readJSONFile(
-            path.join(GEOMETRY, geometry.uid, edge.path)
-          )) as IGeometryEntityFile
-
-          let color
-          if (content.data?.attributes.color?.itemSize === 3)
-            color = {
-              r: content.data.attributes.color.array[0],
-              g: content.data.attributes.color.array[1],
-              b: content.data.attributes.color.array[2]
-            }
-
-          return {
-            uuid: content.uuid,
-            name: edge.name,
-            number: edge.number,
-            color
-          }
-        })
-      ))
-
     // Update geometry
     const newGeometry = {
       ...geometryData,
-      json: part.json,
-      glb: part.glb,
-      summary,
-      dimension: summary.solids?.length ? 3 : 2
+      glb: part.glb
     }
     await GeometryDB.update({ id: geometryData.id }, [
       {
         key: 'glb',
         value: newGeometry.glb
-      },
-      {
-        key: 'json',
-        value: newGeometry.json
-      },
-      {
-        key: 'summary',
-        value: JSON.stringify(newGeometry.summary)
-      },
-      {
-        key: 'dimension',
-        value: newGeometry.dimension
       }
     ])
 
@@ -171,7 +71,6 @@ const add = async (
     console.warn('-> Delete geometry')
     await del({
       ...geometryData,
-      json: geometry.uid,
       glb: geometry.uid + '.glb'
     })
 
@@ -206,16 +105,11 @@ const update = async (
  * Delete
  * @param geometry Geometry
  */
-const del = async (geometry: {
-  id: string
-  json?: string
-  glb?: string
-}): Promise<void> => {
+const del = async (geometry: { id: string; glb?: string }): Promise<void> => {
   // Data
   const geometryData = await get(geometry.id, [
     'uploadfilename',
     'glb',
-    'json',
     'project'
   ])
 
@@ -247,20 +141,6 @@ const del = async (geometry: {
   if (geometry.glb)
     try {
       await Tools.removeFile(path.join(GEOMETRY, geometry.glb))
-    } catch (err) {
-      console.warn(err)
-    }
-
-  // Delete json directory
-  if (geometryData.json)
-    try {
-      await Tools.removeDirectory(path.join(GEOMETRY, geometryData.json))
-    } catch (err) {
-      console.warn(err)
-    }
-  if (geometry.json)
-    try {
-      await Tools.removeDirectory(path.join(GEOMETRY, geometry.json))
     } catch (err) {
       console.warn(err)
     }
@@ -297,19 +177,14 @@ const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
  */
 const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
   // Data
-  const geometryData = await get(geometry.id, ['glb', 'json'])
+  const geometryData = await get(geometry.id, ['glb'])
   if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read GLB
   const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb))
 
-  // Read part file
-  const part = await Tools.readJSONFile(
-    path.join(GEOMETRY, geometryData.json, 'part.json')
-  )
-
   return {
-    uuid: part.uuid,
+    uuid: geometryData.id,
     buffer: Buffer.from(buffer)
   }
 }
@@ -321,7 +196,7 @@ const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
  */
 const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   // Data
-  const data = await get(geometry.id, ['uploadfilename', 'glb', 'json'])
+  const data = await get(geometry.id, ['uploadfilename', 'glb'])
 
   // Original file
   if (data.uploadfilename) {
@@ -338,15 +213,6 @@ const archive = async (geometry: { id: string }, to: string): Promise<void> => {
     )
     //remove
     await Tools.removeFile(path.join(GEOMETRY, data.uploadfilename))
-  }
-
-  // JSON
-  if (data.json) {
-    const json = path.join(GEOMETRY, data.json)
-    //copy
-    await Tools.copyDirectory(json, path.join(to, data.json))
-    //remove
-    await Tools.removeDirectory(json)
   }
 
   // GLB

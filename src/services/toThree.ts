@@ -10,19 +10,19 @@ import isDocker from 'is-docker'
  * @memberof Services
  * @param bindPath Path
  * @param fileIn In file (POSIX path)
- * @param pathOut Out path (POSIX path)
+ * @param fileOut Out file (POSIX path)
  * @returns Code, data, error
  */
 const toThree = async (
   bindPath: string,
   fileIn: string,
-  pathOut: string
+  fileOut: string
 ): Promise<{ code: number; data: string; error: string }> => {
   let command = ''
 
   // Enfore POSIX
   const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)
-  const pathOutPOSIX = pathOut.split(path.sep).join(path.posix.sep)
+  const fileOutPOSIX = fileOut.split(path.sep).join(path.posix.sep)
 
   // Extension
   const extension = fileInPOSIX.split('.').pop() as string
@@ -30,27 +30,19 @@ const toThree = async (
   // Check extension
   switch (extension.toLowerCase()) {
     case 'step':
-      command = 'StepToThreeJS ' + fileInPOSIX + ' ' + pathOutPOSIX
+      command = 'StepToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
       break
     case 'stp':
-      command = 'StepToThreeJS ' + fileInPOSIX + ' ' + pathOutPOSIX
+      command = 'StepToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
       break
     case 'dxf':
-      command =
-        'DXFToBRep ' +
-        fileInPOSIX +
-        ' ' +
-        pathOutPOSIX +
-        '.brep && BRepToThreeJS ' +
-        pathOutPOSIX +
-        '.brep ' +
-        pathOutPOSIX
+      command = 'DXFToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
       break
     case 'msh':
-      command = 'GmshToThreeJS ' + fileInPOSIX + ' ' + pathOutPOSIX
+      command = 'GmshToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
       break
     case 'vtu':
-      command = 'VTUToThreeJS ' + fileInPOSIX + ' ' + pathOutPOSIX
+      command = 'VTUToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
       break
     default:
       throw new Error('Unknown conversion code')
@@ -85,10 +77,12 @@ const toThree = async (
       ])
 
       run.stdout.on('data', (stdout: Buffer) => {
+        console.log(stdout.toString())
         stdout && (data += stdout.toString())
       })
 
       run.stderr.on('data', (stderr: Buffer) => {
+        console.log(stderr.toString())
         stderr && (error += stderr.toString())
       })
 

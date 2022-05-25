@@ -2,6 +2,31 @@
 
 import { createContext, Dispatch, ReactNode, useReducer } from 'react'
 
+import { IPart } from '@/lib/three/loaders/PartLoader'
+
+/**
+ * Summary interface
+ */
+export interface ISelectSummary {
+  uuid: string
+  type: string
+  solids: {
+    name: string
+    uuid: string
+    label: number
+  }[]
+  faces: {
+    name: string
+    uuid: string
+    label: number
+  }[]
+  edges: {
+    name: string
+    uuid: string
+    label: number
+  }[]
+}
+
 /**
  * Select interface
  */
@@ -16,7 +41,8 @@ export interface ISelect {
 export interface ISelectState {
   enabled: boolean
   type?: 'solids' | 'faces' | 'edges'
-  part?: string
+  part?: IPart
+  summary?: ISelectSummary
   highlighted?: ISelect
   selected: ISelect[]
   dispatch: Dispatch<ISelectAction>
@@ -27,7 +53,7 @@ export interface ISelectState {
  */
 export interface ISelectAction {
   type: string
-  value?: string | ISelect
+  value?: string | ISelect | IPart
 }
 
 /**
@@ -63,6 +89,49 @@ export const actionTypes = {
 export const SelectContext = createContext(initialState)
 
 /**
+ * Create summary
+ * @param part Part
+ * @returns Summary
+ */
+const createSummary = (part: IPart): ISelectSummary => {
+  const summary: ISelectSummary = {
+    uuid: part.uuid,
+    type: part.name,
+    solids: [],
+    faces: [],
+    edges: []
+  }
+
+  part.children.forEach((solid) => {
+    summary.solids.push({
+      name: solid.name,
+      uuid: solid.userData.uuid,
+      label: solid.userData.label
+    })
+
+    solid.children.forEach((child) => {
+      if (child.type === 'Mesh') {
+        summary.faces.push({
+          name: child.name,
+          uuid: child.userData.uuid,
+          label: child.userData.label
+        })
+      } else if (child.type === 'Object3D') {
+        child.children.forEach((edge) => {
+          summary.edges.push({
+            name: edge.name,
+            uuid: edge.userData.uuid,
+            label: edge.userData.label
+          })
+        })
+      }
+    })
+  })
+
+  return summary
+}
+
+/**
  * Reducer
  * @param state State
  * @param action Action
@@ -84,7 +153,8 @@ export const selectReducer = (
     case actionTypes.SETTYPE:
       return { ...state, type: action.value as 'solids' | 'faces' | 'edges' }
     case actionTypes.SETPART:
-      return { ...state, part: action.value as string }
+      const summary = createSummary(action.value as IPart)
+      return { ...state, part: action.value as IPart, summary: summary }
     case actionTypes.HIGHLIGHT:
       return { ...state, highlighted: action.value as ISelect }
     case actionTypes.UNHIGHLIGHT:

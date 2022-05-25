@@ -5,11 +5,11 @@ import Error from '@/components/error'
 /**
  * Error page
  */
-const error = (): JSX.Element => {
+const _error = (): JSX.Element => {
   /**
    * Render
    */
   return <Error />
 }
 
-export default error
+export default _error

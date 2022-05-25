@@ -1,5 +1,7 @@
 /** @module Context.Select.Actions */
 
+import { IPart } from '@/lib/three/loaders/PartLoader'
+
 import { actionTypes, ISelect, ISelectAction } from '.'
 
 /**
@@ -35,7 +37,7 @@ export const setType = (type: 'solids' | 'faces' | 'edges'): ISelectAction => {
  * Set part
  * @param part Part
  */
-export const setPart = (part: string): ISelectAction => {
+export const setPart = (part: IPart): ISelectAction => {
   return { type: actionTypes.SETPART, value: part }
 }
 

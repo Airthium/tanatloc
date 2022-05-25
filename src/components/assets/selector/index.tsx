@@ -24,8 +24,6 @@ import {
   unselect
 } from '@/context/select/actions'
 
-import { IFrontGeometriesItem } from '@/api/index.d'
-
 import Utils from '@/lib/utils'
 
 /**

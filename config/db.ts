@@ -402,18 +402,6 @@ export const schemas: Scheme = {
       type: 'TEXT'
     },
     {
-      name: 'json',
-      type: 'TEXT'
-    },
-    {
-      name: 'summary',
-      type: 'JSONB'
-    },
-    {
-      name: 'dimension',
-      type: 'SMALLINT'
-    },
-    {
       name: 'project',
       type: 'UUID',
       constraint: 'NOT NULL'

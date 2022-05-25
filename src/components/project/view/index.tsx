@@ -15,10 +15,7 @@ import ResultAPI from '@/api/result'
 
 import ThreeView from './three'
 
-export type TGeometry = Pick<
-  IFrontGeometriesItem,
-  'id' | 'dimension' | 'needCleanup'
->
+export type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'>
 export type TResult = Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
 
 /**
@@ -84,7 +81,6 @@ const View = ({
   const [part, setPart] = useState<{
     uuid: string
     buffer: Buffer
-    dimension?: number
   }>()
   const [previous, setPrevious] = useState<TGeometry | TResult>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -97,9 +93,7 @@ const View = ({
 
         setLoading(true)
         loadPart(simulation, postprocessing, 'result')
-          .then((partLoaded) =>
-            setPart({ ...partLoaded, dimension: geometry?.dimension })
-          )
+          .then((partLoaded) => setPart({ ...partLoaded }))
           .catch((_err) => undefined)
           .finally(() => setLoading(false))
       }
@@ -109,9 +103,7 @@ const View = ({
 
         setLoading(true)
         loadPart(simulation, result, 'result')
-          .then((partLoaded) =>
-            setPart({ ...partLoaded, dimension: geometry?.dimension })
-          )
+          .then((partLoaded) => setPart({ ...partLoaded }))
           .catch((_err) => undefined)
           .finally(() => setLoading(false))
       }
@@ -125,9 +117,7 @@ const View = ({
           setLoading(false)
         } else {
           loadPart(undefined, geometry, 'geometry')
-            .then((partLoaded) =>
-              setPart({ ...partLoaded, dimension: geometry.dimension })
-            )
+            .then((partLoaded) => setPart({ ...partLoaded }))
             .catch((_err) => undefined)
             .finally(() => setLoading(false))
         }

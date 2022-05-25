@@ -76,7 +76,8 @@ import {
   highlight,
   select,
   unhighlight,
-  unselect
+  unselect,
+  setPart
 } from '@/context/select/actions'
 
 import { IFrontProject } from '@/api/index.d'
@@ -88,7 +89,7 @@ import AvatarAPI from '@/api/avatar'
 export interface IProps {
   loading: boolean
   project: Pick<IFrontProject, 'id' | 'title'>
-  part?: { uuid: string; buffer: Buffer; dimension?: number }
+  part?: { uuid: string; buffer: Buffer }
 }
 
 /**
@@ -291,12 +292,11 @@ export const loadPart = async (
     transparent,
     helpers.sectionViewHelper.getClippingPlane()
   )
-  console.log(mesh)
+  dispatch(setPart(mesh))
 
   // Scene
   scene.add(mesh)
   computeSceneBoundingSphere(scene)
-  console.log(scene.boundingSphere)
 
   // Grid
   helpers.gridHelper.update()
@@ -700,29 +700,30 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       )
         .then(() => {
           // Dimension
-          if (part.dimension === 2) {
-            // Set camera
-            const normal = new Vector3(0, 0, 1)
-            const up = new Vector3(0, 1, 0)
+          // TODO
+          // if (part.dimension === 2) {
+          //   // Set camera
+          //   const normal = new Vector3(0, 0, 1)
+          //   const up = new Vector3(0, 1, 0)
 
-            const center = new Vector3()
-            scene.current.boundingBox.getCenter(center)
+          //   const center = new Vector3()
+          //   scene.current.boundingBox.getCenter(center)
 
-            const distance = camera.current.position.distanceTo(
-              controls.current.target
-            )
-            const interval = normal.clone().multiplyScalar(distance)
-            const newPosition = center.add(interval)
+          //   const distance = camera.current.position.distanceTo(
+          //     controls.current.target
+          //   )
+          //   const interval = normal.clone().multiplyScalar(distance)
+          //   const newPosition = center.add(interval)
 
-            camera.current.position.copy(newPosition)
-            camera.current.up.copy(up)
+          //   camera.current.position.copy(newPosition)
+          //   camera.current.up.copy(up)
 
-            // Stop rotate
-            controls.current.noRotate = true
-          } else {
-            // Activate rotate
-            controls.current.noRotate = false
-          }
+          //   // Stop rotate
+          //   controls.current.noRotate = true
+          // } else {
+          // Activate rotate
+          controls.current.noRotate = false
+          // }
         })
         .catch((err) => {
           ErrorNotification(errors.load, err)

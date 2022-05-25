@@ -62,7 +62,7 @@ const BoundaryConditions = ({
   useEffect(() => {
     if (geometry) {
       dispatch(setType(geometry.dimension === 2 ? 'edges' : 'faces'))
-      dispatch(setPart(geometry.summary.uuid))
+      // dispatch(setPart(geometry.summary.uuid))
     }
   }, [geometry, dispatch])
 

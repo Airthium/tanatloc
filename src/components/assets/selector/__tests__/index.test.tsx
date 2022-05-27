@@ -22,33 +22,6 @@ jest.mock('@/lib/utils', () => ({
 }))
 
 describe('components/assets/selector', () => {
-  const geometry = {
-    faces: [
-      {
-        name: 'name',
-        number: 1,
-        uuid: 'uuid',
-        color: { r: 0, g: 0.5, b: 1 }
-      },
-      {
-        uuid: 'uuid2',
-        name: 'name2',
-        number: 2
-      },
-      {
-        uuid: 'uuid3',
-        name: 'name3',
-        number: 3,
-        color: { r: 0, g: 0.5, b: 1 }
-      },
-      {
-        uuid: 'uuid4',
-        name: 'name4',
-        number: 4,
-        color: { r: 0, g: 0.5, b: 0.5 }
-      }
-    ]
-  }
   const alreadySelected = [
     {
       label: 'label',
@@ -77,7 +50,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -98,7 +70,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={{}}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -119,7 +90,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -148,7 +118,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -174,7 +143,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -200,7 +168,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -224,7 +191,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -248,7 +214,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -273,7 +238,6 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />

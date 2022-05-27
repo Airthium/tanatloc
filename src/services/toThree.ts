@@ -77,12 +77,10 @@ const toThree = async (
       ])
 
       run.stdout.on('data', (stdout: Buffer) => {
-        console.log(stdout.toString())
         stdout && (data += stdout.toString())
       })
 
       run.stderr.on('data', (stderr: Buffer) => {
-        console.log(stderr.toString())
         stderr && (error += stderr.toString())
       })
 

@@ -85,9 +85,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       }
     }
   }
-  const geometry = {
-    faces: []
-  }
   const swr = { mutateOneSimulation: jest.fn() }
   const onClose = jest.fn()
 
@@ -115,7 +112,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -129,7 +125,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         boundaryCondition={{
           uuid: 'uuid',
           name: 'name',
@@ -148,7 +143,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={false}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -192,7 +186,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
             }
           }
         }}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -212,7 +205,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -247,7 +239,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -296,7 +287,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         boundaryCondition={{
           uuid: 'uuid',
           name: 'name',

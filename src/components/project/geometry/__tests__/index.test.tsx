@@ -46,9 +46,8 @@ describe('components/project/geometry', () => {
   }
   const geometry = {
     id: 'id',
-    name: 'name',
-    summary: {}
-  } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+    name: 'name'
+  } as Pick<IFrontGeometriesItem, 'id' | 'name'>
   const swr = {
     mutateProject: jest.fn(),
     mutateOneGeometry: jest.fn(),
@@ -96,23 +95,6 @@ describe('components/project/geometry', () => {
       <Geometry
         project={project}
         geometry={undefined}
-        swr={swr}
-        close={close}
-        onCleanup={onCleanup}
-      />
-    )
-
-    unmount()
-  })
-
-  test('with summary', () => {
-    const { unmount } = render(
-      <Geometry
-        project={project}
-        geometry={{
-          ...geometry,
-          summary: { uuid: 'uuid', solids: [], faces: [], edges: [] }
-        }}
         swr={swr}
         close={close}
         onCleanup={onCleanup}

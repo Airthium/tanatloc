@@ -50,6 +50,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
             // Get geometry
             const geometry = await GeometryLib.get(id, [
               'name',
+              'summary',
               'originalfilename',
               'project'
             ])

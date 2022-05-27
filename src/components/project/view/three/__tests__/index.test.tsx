@@ -548,19 +548,19 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('dimension 2', () => {
-    const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
-        <ThreeView
-          loading={loading}
-          project={project}
-          part={{ ...part, dimension: 2 }}
-        />
-      </SelectContext.Provider>
-    )
+  // test('dimension 2', () => {
+  //   const { unmount } = render(
+  //     <SelectContext.Provider
+  //       value={{ enabled: false, selected: [], dispatch: jest.fn }}
+  //     >
+  //       <ThreeView
+  //         loading={loading}
+  //         project={project}
+  //         part={{ ...part, dimension: 2 }}
+  //       />
+  //     </SelectContext.Provider>
+  //   )
 
-    unmount()
-  })
+  //   unmount()
+  // })
 })

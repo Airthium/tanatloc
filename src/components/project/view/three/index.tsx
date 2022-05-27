@@ -70,6 +70,7 @@ import {
 } from '@/lib/three/helpers/ColorbarHelper'
 
 import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
+import { IGeometryPart } from '@/lib/index.d'
 
 import { ISelectAction, SelectContext } from '@/context/select'
 import {
@@ -89,7 +90,7 @@ import AvatarAPI from '@/api/avatar'
 export interface IProps {
   loading: boolean
   project: Pick<IFrontProject, 'id' | 'title'>
-  part?: { uuid: string; buffer: Buffer }
+  part?: IGeometryPart
 }
 
 /**
@@ -248,7 +249,7 @@ export const zoomToFit = (
  * @param dispatch Dispatch
  */
 export const loadPart = async (
-  part: { uuid: string; buffer: Buffer },
+  part: IGeometryPart,
   transparent: boolean,
   scene: Scene & { boundingSphere: Sphere },
   camera: PerspectiveCamera,
@@ -671,7 +672,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
     // Check part update
     const currentPart = scene.current.children.find(
-      (child: IPart) => child.type === 'Part' && child.uuid === part?.uuid
+      (child: IPart) =>
+        child.type === 'Part' && child.uuid === part?.summary.uuid
     )
     if (currentPart) return
 
@@ -686,7 +688,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     if (part) {
       // Load
       loadPart(
-        { uuid: part.uuid, buffer: part.buffer },
+        part,
         transparent,
         scene.current,
         camera.current,
@@ -697,38 +699,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           colorbarHelper: colorbarHelper.current
         },
         dispatch
-      )
-        .then(() => {
-          // Dimension
-          // TODO
-          // if (part.dimension === 2) {
-          //   // Set camera
-          //   const normal = new Vector3(0, 0, 1)
-          //   const up = new Vector3(0, 1, 0)
-
-          //   const center = new Vector3()
-          //   scene.current.boundingBox.getCenter(center)
-
-          //   const distance = camera.current.position.distanceTo(
-          //     controls.current.target
-          //   )
-          //   const interval = normal.clone().multiplyScalar(distance)
-          //   const newPosition = center.add(interval)
-
-          //   camera.current.position.copy(newPosition)
-          //   camera.current.up.copy(up)
-
-          //   // Stop rotate
-          //   controls.current.noRotate = true
-          // } else {
-          // Activate rotate
-          controls.current.noRotate = false
-          // }
-        })
-        .catch((err) => {
-          ErrorNotification(errors.load, err)
-          computeSceneBoundingSphere(scene.current)
-        })
+      ).catch((err) => {
+        ErrorNotification(errors.load, err)
+        computeSceneBoundingSphere(scene.current)
+      })
     } else {
       // Scene
       computeSceneBoundingSphere(scene.current)
@@ -738,12 +712,40 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     }
   }, [part, transparent, dispatch])
 
+  // Dimension
+  useEffect(() => {
+    // Dimension
+    if (part?.summary.dimension === 2) {
+      // Set camera
+      const normal = new Vector3(0, 0, 1)
+      const up = new Vector3(0, 1, 0)
+
+      const center = new Vector3()
+      scene.current.boundingBox.getCenter(center)
+
+      const distance = camera.current.position.distanceTo(
+        controls.current.target
+      )
+      const interval = normal.clone().multiplyScalar(distance)
+      const newPosition = center.add(interval)
+
+      camera.current.position.copy(newPosition)
+      camera.current.up.copy(up)
+
+      // Stop rotate
+      controls.current.noRotate = true
+    } else {
+      // Activate rotate
+      controls.current.noRotate = false
+    }
+  }, [part])
+
   // Enable / disable selection
   useEffect(() => {
     if (!scene.current) return
 
     scene.current.children.forEach((child: IPart) => {
-      if (child.type === 'Part' && child.uuid === selectPart) {
+      if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
         if (selectEnabled)
           child.startSelection(
             renderer.current,
@@ -758,11 +760,12 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     })
   }, [selectEnabled, selectPart, selectType])
 
+  // Highlight / Select
   useEffect(() => {
     if (!scene.current) return
 
     scene.current.children.forEach((child: IPart) => {
-      if (child.type === 'Part' && child.uuid === selectPart) {
+      if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
         // Highlight
         child.highlight(selectHighlighted?.uuid)
 

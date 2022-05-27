@@ -14,13 +14,15 @@ import {
 import SimulationAPI from '@/api/simulation'
 
 import Mesh from './mesh'
+import { useContext, useEffect } from 'react'
+import { SelectContext } from '@/context/select'
 
 /**
  * Props
  */
 export interface IProps {
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name'>[]
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'dimension'>
+  geometry?: Pick<IFrontGeometriesItem, 'id'>
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   setGeometry: (geometry: IFrontGeometriesItem) => void
   swr: {
@@ -46,7 +48,7 @@ export const errors = {
 export const onSelect = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   geometries: Pick<IFrontGeometriesItem, 'id'>[],
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'dimension'>,
+  geometry: Pick<IFrontGeometriesItem, 'id'> & { dimension?: number },
   setGeometry: (geometry: IFrontGeometriesItem) => void,
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -101,10 +103,21 @@ const Geometry = ({
   setGeometry,
   swr
 }: IProps): JSX.Element => {
+  // Context
+  const { summary } = useContext(SelectContext)
+
   // Data
   const geometryId = simulation.scheme.configuration.geometry.value
+
+  // Auto select
   if (!geometryId && geometry)
-    onSelect(simulation, geometries, geometry, setGeometry, swr)
+    onSelect(
+      simulation,
+      geometries,
+      { ...geometry, dimension: summary?.dimension },
+      setGeometry,
+      swr
+    )
 
   // List
   const list = geometries.map((g) => (

@@ -42,15 +42,24 @@ const add = async (
       target: geometry.uid
     })
 
+    // Read summary
+    const summary = await Tools.readJSONFile(
+      path.join(GEOMETRY, part[0].glb + '.desc')
+    )
+
     // Update geometry
     const newGeometry = {
       ...geometryData,
-      glb: part.glb
+      glb: part[0].glb
     }
     await GeometryDB.update({ id: geometryData.id }, [
       {
         key: 'glb',
         value: newGeometry.glb
+      },
+      {
+        key: 'summary',
+        value: summary
       }
     ])
 
@@ -177,14 +186,14 @@ const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
  */
 const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
   // Data
-  const geometryData = await get(geometry.id, ['glb'])
+  const geometryData = await get(geometry.id, ['glb', 'summary'])
   if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read GLB
   const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb))
 
   return {
-    uuid: geometryData.id,
+    summary: geometryData.summary,
     buffer: Buffer.from(buffer)
   }
 }

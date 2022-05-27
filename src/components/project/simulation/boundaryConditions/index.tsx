@@ -12,7 +12,7 @@ import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
 import { SelectContext } from '@/context/select'
-import { enable, disable, setType, setPart } from '@/context/select/actions'
+import { enable, disable, setType } from '@/context/select/actions'
 
 import {
   IFrontGeometriesItem,
@@ -28,7 +28,7 @@ import BoundaryCondition from './boundaryCondition'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary' | 'dimension'>
+  geometry?: Pick<IFrontGeometriesItem, 'id'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -53,18 +53,17 @@ const BoundaryConditions = ({
     useState<boolean>(false)
 
   // Context
-  const { dispatch } = useContext(SelectContext)
+  const { summary, dispatch } = useContext(SelectContext)
 
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
   // Part
   useEffect(() => {
-    if (geometry) {
-      dispatch(setType(geometry.dimension === 2 ? 'edges' : 'faces'))
-      // dispatch(setPart(geometry.summary.uuid))
+    if (summary) {
+      dispatch(setType(summary.dimension === 2 ? 'edges' : 'faces'))
     }
-  }, [geometry, dispatch])
+  }, [summary, dispatch])
 
   /**
    * On add
@@ -131,12 +130,6 @@ const BoundaryConditions = ({
               id: simulation.id,
               scheme: simulation.scheme
             }}
-            geometry={
-              geometry && {
-                faces: geometry.summary.faces,
-                edges: geometry.summary.edges
-              }
-            }
             boundaryCondition={
               boundaryCondition && {
                 uuid: boundaryCondition.uuid,

@@ -70,10 +70,11 @@ describe('lib/geometry', () => {
       id: 'id'
     }))
     mockGet.mockImplementation(() => ({}))
-    mockToolsConvert.mockImplementation(() => ({
-      json: 'json',
-      glb: 'glb'
-    }))
+    mockToolsConvert.mockImplementation(() => [
+      {
+        glb: 'glb'
+      }
+    ])
     const summary = {
       uuid: 'uuid',
       solids: [
@@ -150,7 +151,6 @@ describe('lib/geometry', () => {
     expect(geometry).toEqual({
       dimension: 3,
       id: 'id',
-      json: 'json',
       glb: 'glb',
       summary: summary
     })
@@ -179,10 +179,11 @@ describe('lib/geometry', () => {
       id: 'id'
     }))
     mockGet.mockImplementation(() => ({}))
-    mockToolsConvert.mockImplementation(() => ({
-      json: 'json',
-      glb: 'glb'
-    }))
+    mockToolsConvert.mockImplementation(() => [
+      {
+        glb: 'glb'
+      }
+    ])
     const summary = {
       uuid: 'uuid',
       faces: [
@@ -242,7 +243,6 @@ describe('lib/geometry', () => {
     expect(geometry).toEqual({
       dimension: 2,
       id: 'id',
-      json: 'json',
       glb: 'glb',
       summary: summary
     })
@@ -271,8 +271,7 @@ describe('lib/geometry', () => {
     mockGet.mockImplementation(() => ({
       uploadfilename: 'uploadfilename',
       extension: 'extension',
-      glb: 'glb',
-      json: 'json'
+      glb: 'glb'
     }))
     await Geometry.del({ id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(2)
@@ -291,8 +290,7 @@ describe('lib/geometry', () => {
     })
     await Geometry.del({
       id: 'id',
-      glb: 'glb',
-      json: 'json'
+      glb: 'glb'
     })
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
@@ -332,8 +330,7 @@ describe('lib/geometry', () => {
   test('readPart', async () => {
     mockPath.mockImplementation((path) => path)
     mockGet.mockImplementation(() => ({
-      glb: 'glb',
-      json: 'json'
+      glb: 'glb'
     }))
     mockToolsReadFile.mockImplementation(() => Buffer.from('buffer'))
     mockToolsReadJSONFile.mockImplementation(() => ({ uuid: 'uuid' }))
@@ -368,8 +365,7 @@ describe('lib/geometry', () => {
     // Full
     mockGet.mockImplementation(() => ({
       uploadfilename: 'uploadfilename',
-      glb: 'glb',
-      json: 'json'
+      glb: 'glb'
     }))
     await Geometry.archive({ id: 'id' }, 'to')
     expect(mockGet).toHaveBeenCalledTimes(2)

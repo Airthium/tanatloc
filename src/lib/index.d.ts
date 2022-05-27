@@ -1,6 +1,7 @@
 /** @module Lib.Interface */
 
 import { IGeometry, INewGeometry } from '@/database/geometry'
+import { TGeometrySummary } from '@/database/geometry/get'
 import { IGroup } from '@/database/group'
 import { IUser } from '@/database/user'
 import { IWorkspace } from '@/database/workspace'
@@ -38,7 +39,7 @@ export interface IGeometryFile {
 }
 
 export interface IGeometryPart {
-  uuid: string
+  summary: TGeometrySummary
   buffer: Buffer
 }
 

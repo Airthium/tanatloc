@@ -5,7 +5,6 @@ import {
   BufferGeometry,
   Color,
   DoubleSide,
-  Material,
   Mesh,
   MeshStandardMaterial,
   Object3D,
@@ -13,7 +12,6 @@ import {
   Plane,
   Raycaster,
   Vector2,
-  Vector3,
   WebGLRenderer
 } from 'three'
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -22,9 +20,11 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
+import { IGeometryPart } from '@/lib/index.d'
+
 export interface IPartLoader {
   load: (
-    part: { uuid: string; buffer: Buffer },
+    part: IGeometryPart,
     transparent: boolean,
     clippingPlane: Plane
   ) => Promise<IPart>
@@ -38,7 +38,7 @@ export interface IPartMesh
   userData: {
     uuid: string
     label: number
-    // lut?: Lut
+    lut?: Lut
   }
 }
 
@@ -60,8 +60,8 @@ export interface IPart extends Object3D {
     type?: string
   ) => void
   stopSelection: () => void
-  getHighlighted: () => { uuid: string; number: number | string } | null
-  getSelected: () => { uuid: string; number: number | string }[]
+  getHighlighted: () => { uuid: string; label: number | string } | null
+  getSelected: () => { uuid: string; label: number | string }[]
   highlight: (uuid?: string) => void
   unhighlight: () => void
   select: (uuid: string) => void
@@ -75,8 +75,8 @@ export interface IPart extends Object3D {
  * @param mouseDownEvent Mouse down event
  */
 const PartLoader = (
-  mouseMoveEvent: (part: IPart, uuid?: string, number?: number) => void,
-  mouseDownEvent: (part: IPart, uuid: string, number: number) => void
+  mouseMoveEvent: (part: IPart, uuid?: string, label?: number) => void,
+  mouseDownEvent: (part: IPart, uuid: string, label: number) => void
 ): IPartLoader => {
   // Highlight color
   const highlightColor = new Color('#FAD114')
@@ -90,7 +90,7 @@ const PartLoader = (
    * @param clippingPlane Clipping plane
    */
   const load = async (
-    part: { uuid: string; buffer: Buffer },
+    part: IGeometryPart,
     transparent: boolean,
     clippingPlane: Plane
   ): Promise<IPart> => {
@@ -119,7 +119,7 @@ const PartLoader = (
     const scene = gltf.scene
     const object = new Object3D() as IPart
     object.type = 'Part'
-    object.uuid = part.uuid
+    object.uuid = part.summary.uuid
     object.children = scene.children
 
     // Set clipping plane and visible
@@ -127,6 +127,7 @@ const PartLoader = (
       if (child.type === 'Mesh') {
         const mesh = child as IPartMesh
         mesh.material.clippingPlanes = [clippingPlane]
+        mesh.material.originalColor = mesh.material.color
         mesh.material.side = DoubleSide
         mesh.material.roughness = 0.5
         mesh.material.metalness = 0.5
@@ -134,57 +135,68 @@ const PartLoader = (
       }
     })
 
-    // Check type
-    const firstName = object.children[0].name
-    switch (firstName) {
-      case 'Solid1':
-        object.name = 'Geometry3D'
-        break
-      case 'Faces':
-        object.name = 'Geometry2D'
-      case 'Triangles':
-        // TODO mesh or result
-        break
-      default:
-        break
-    }
-
-    // Set uuid, label
-    let faceIndex = 0
-    let edgeIndex = 0
-    object.children.forEach((solid, solidIndex) => {
-      // Solid
-      console.log(solid.name)
-      solid.name = 'Solid ' + (solidIndex + 1)
-      solid.userData = {
-        uuid: solid.uuid,
-        label: solidIndex + 1
-      }
-      solid.children.forEach((child) => {
-        if (child.type === 'Mesh') {
-          // Face
-          faceIndex++
-          const face = child
-          console.log(face.name)
-          face.name = 'Face ' + faceIndex
-          face.userData = {
-            uuid: child.uuid,
-            label: faceIndex
-          }
-        } else if (child.type === 'Object3D') {
-          child.children.forEach((edge) => {
-            // Edge
-            console.log(edge.name)
-            edgeIndex++
-            edge.name = 'Edge ' + edgeIndex
-            edge.userData = {
-              uuid: edge.uuid,
-              label: edgeIndex
+    // Set name, uuid, label
+    if (part.summary.type === 'geometry') {
+      if (part.summary.dimension === 2) {
+        let nFaces = 0
+        object.children.forEach((child) => {
+          if (child.type === 'Mesh') {
+            child.userData = {
+              uuid: part.summary.faces[nFaces].uuid,
+              label: part.summary.faces[nFaces].label
             }
-          })
-        }
-      })
-    })
+            nFaces++
+          } else if (child.type === 'Object3D') {
+            child.children.forEach((edge, index) => {
+              edge.userData = {
+                uuid: part.summary.edges[index].uuid,
+                label: part.summary.edges[index].label
+              }
+            })
+          }
+        })
+      }
+    }
+    // object.traverse((child) => {
+    //   child.name = child.name.replace('_', '')
+    //   child.userData = {
+    //     uuid: child.uuid,
+    //     label: child.
+    //   }
+    // })
+
+    // let faceIndex = 0
+    // let edgeIndex = 0
+    // object.children.forEach((solid, solidIndex) => {
+    //   // Solid
+    //   solid.name = 'Solid ' + (solidIndex + 1)
+    //   solid.userData = {
+    //     uuid: solid.uuid,
+    //     label: solidIndex + 1
+    //   }
+    //   solid.children.forEach((child) => {
+    //     if (child.type === 'Mesh') {
+    //       // Face
+    //       faceIndex++
+    //       const face = child
+    //       face.name = 'Face ' + faceIndex
+    //       face.userData = {
+    //         uuid: child.uuid,
+    //         label: faceIndex
+    //       }
+    //     } else if (child.type === 'Object3D') {
+    //       child.children.forEach((edge) => {
+    //         // Edge
+    //         edgeIndex++
+    //         edge.name = 'Edge ' + edgeIndex
+    //         edge.userData = {
+    //           uuid: edge.uuid,
+    //           label: edgeIndex
+    //         }
+    //       })
+    //     }
+    //   })
+    // })
 
     // Transparency
     setTransparent(object, transparent)
@@ -262,8 +274,8 @@ const PartLoader = (
   let selectionCamera: PerspectiveCamera | null = null
   let selectionOutlinePass: OutlinePass | null = null
   let selectionLevel: number | null = null
-  let highlighted: { uuid: string; number: number } | null = null
-  let selected: { uuid: string; number: number }[] = []
+  let highlighted: { uuid: string; label: number } | null = null
+  let selected: { uuid: string; label: number }[] = []
 
   /**
    *
@@ -339,7 +351,7 @@ const PartLoader = (
 
     let found
     part.traverse((child) => {
-      if (child.uuid === uuid) found = child
+      if (child.userData.uuid === uuid) found = child
     })
 
     return found
@@ -367,17 +379,17 @@ const PartLoader = (
    * Mouse move
    * @param event Event
    */
-  //TODO
   const mouseMove = (event: MouseEvent): void => {
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, selectionCamera!)
-    const intersects = raycaster.intersectObjects([selectionPart!])
+    // TODO
+    const intersects = raycaster.intersectObjects(selectionPart!.children, true)
 
     if (intersects.length)
       mouseMoveEvent(
         selectionPart!,
         intersects[0].object.userData.uuid,
-        intersects[0].object.userData.number
+        intersects[0].object.userData.label
       )
     else mouseMoveEvent(selectionPart!)
   }
@@ -388,7 +400,7 @@ const PartLoader = (
    * @param selection Selection
    */
   const addOutlineOn = (
-    mesh: IPart['children'][0]['children'][0],
+    mesh: IPartObject | IPartMesh,
     selection?: boolean
   ): void => {
     if (selection) {
@@ -410,7 +422,7 @@ const PartLoader = (
    * @param selection Selection
    */
   const removeOutlineOn = (
-    mesh: IPart['children'][0]['children'][0],
+    mesh: IPartObject | IPartMesh,
     selection?: boolean
   ): void => {
     if (selection) {
@@ -445,16 +457,26 @@ const PartLoader = (
 
     const mesh = findObject(selectionPart!, uuid)
     if (mesh) {
-      if (mesh.type === 'Mesh') {
+      highlighted = {
+        uuid: mesh.userData.uuid,
+        label: mesh.userData.label
       }
       addOutlineOn(mesh)
-    }
 
-    // if (mesh && mesh.material) {
-    //   highlighted = { uuid: mesh.userData.uuid, number: mesh.userData.number }
-    //   addOutlineOn(mesh)
-    //   mesh.material.color = highlightColor
-    // }
+      // Highlight
+      if (mesh.type === 'Mesh') {
+        const partMesh = mesh as IPartMesh
+        partMesh.material.color = highlightColor
+      } else if (mesh.type === 'Object3D') {
+        const partObject = mesh as IPartObject
+        partObject.children.forEach((child) => {
+          if (child.type === 'Mesh') {
+            const subMesh = child as IPartMesh
+            subMesh.material.color = highlightColor
+          }
+        })
+      }
+    }
   }
 
   /**
@@ -463,13 +485,28 @@ const PartLoader = (
   const unhighlight = (): void => {
     const mesh = findObject(selectionPart!, highlighted?.uuid)
 
-    if (mesh && mesh.material) {
+    if (mesh) {
       removeOutlineOn(mesh)
       // Check selection
       const index = selected.findIndex((s) => s.uuid === mesh.userData.uuid)
+      console.log(index)
+      console.log(mesh.type)
+      console.log(mesh.material.originalColor)
       // Unhighlight
-      mesh.material.color =
-        index === -1 ? mesh.material.originalColor : selectColor
+      if (mesh.type === 'Mesh') {
+        const partMesh = mesh as IPartMesh
+        partMesh.material.color =
+          index === -1 ? partMesh.material.originalColor : selectColor
+      } else if (mesh.type === 'Object3D') {
+        const partObject = mesh as IPartObject
+        partObject.children.forEach((child) => {
+          if (child.type === 'Mesh') {
+            const subMesh = child as IPartMesh
+            subMesh.material.color =
+              index === -1 ? subMesh.material.originalColor : selectColor
+          }
+        })
+      }
     }
 
     highlighted = null
@@ -480,7 +517,7 @@ const PartLoader = (
    */
   const mouseDown = (): void => {
     if (highlighted)
-      mouseDownEvent(selectionPart!, highlighted.uuid, highlighted.number)
+      mouseDownEvent(selectionPart!, highlighted.uuid, highlighted.label)
   }
 
   /**
@@ -489,10 +526,23 @@ const PartLoader = (
    */
   const select = (uuid: string): void => {
     const mesh = findObject(selectionPart!, uuid)
-    if (mesh && mesh.material) {
-      selected.push({ uuid, number: mesh.userData.number })
+    if (mesh) {
+      selected.push({ uuid, label: mesh.userData.label })
       addOutlineOn(mesh, true)
-      mesh.material.color = selectColor
+
+      // Select
+      if (mesh.type === 'Mesh') {
+        const partMesh = mesh as IPartMesh
+        partMesh.material.color = selectColor
+      } else if (mesh.type === 'Obejct3D') {
+        const partObject = mesh as IPartObject
+        partObject.children.forEach((child) => {
+          if (child.type === 'Mesh') {
+            const subMesh = child as IPartMesh
+            subMesh.material.color = selectColor
+          }
+        })
+      }
     }
   }
 
@@ -507,9 +557,22 @@ const PartLoader = (
     if (index !== -1)
       selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
 
-    if (mesh && mesh.material) {
+    if (mesh) {
       removeOutlineOn(mesh, true)
-      mesh.material.color = mesh.material.originalColor
+
+      // Unselect
+      if (mesh.type === 'Mesh') {
+        const partMesh = mesh as IPartMesh
+        partMesh.material.color = partMesh.material.originalColor
+      } else if (mesh.type === 'Obejct3D') {
+        const partObject = mesh as IPartObject
+        partObject.children.forEach((child) => {
+          if (child.type === 'Mesh') {
+            const subMesh = child as IPartMesh
+            subMesh.material.color = subMesh.material.originalColor
+          }
+        })
+      }
     }
   }
 

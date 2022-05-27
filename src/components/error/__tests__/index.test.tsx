@@ -20,7 +20,7 @@ describe('components/error', () => {
   })
 
   test('with statusCode', () => {
-    const { unmount } = render(<Error statusCode={200} />)
+    const { unmount } = render(<Error webStatusCode={200} />)
 
     unmount()
   })
@@ -39,7 +39,7 @@ describe('components/error', () => {
   })
 
   test('getInitialProps', () => {
-    let code: { statusCode?: number }
+    let code: { webStatusCode?: number }
 
     const res = {} as ServerResponse
     const err = {} as Error & { statusCode: number | undefined }

@@ -19,7 +19,6 @@ const run = async (
     name: string
     originPath: string
     glb: string
-    json: string
   }[]
 > => {
   // Result path
@@ -65,7 +64,7 @@ const run = async (
   let convertData = ''
   let convertError = ''
   const target = fileNameWithoutExtension + '_' + filter
-  await Tools.convert(
+  const newResults = await Tools.convert(
     resultPath,
     { name: vtuOut, target },
     ({ data: cData, error: cError }) => {
@@ -81,18 +80,12 @@ const run = async (
     )
 
   // New results
-  const newResults = convertData
-    ?.trim()
-    ?.split('\n')
-    .map((res) => JSON.parse(res))
-
   // Return
   return newResults.map((newResult) => ({
     fileName: vtuOut,
     name: newResult.name,
     originPath: result.originPath,
-    json: newResult.path,
-    glb: newResult.path + '.glb'
+    glb: newResult.glb
   }))
 }
 

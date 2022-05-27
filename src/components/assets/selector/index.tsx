@@ -16,6 +16,8 @@ import {
   SwapOutlined
 } from '@ant-design/icons'
 
+import { TGeometryColor } from '@/database/geometry/get'
+
 import { SelectContext, ISelect } from '@/context/select'
 import {
   highlight,
@@ -24,33 +26,20 @@ import {
   unselect
 } from '@/context/select/actions'
 
-import Utils from '@/lib/utils'
+import { IFrontGeometriesItem } from '@/api/index.d'
 
-/**
- * Color
- */
-export interface IColor {
-  r: number
-  g: number
-  b: number
-}
+import Utils from '@/lib/utils'
 
 export interface ISelection {
   label: string
   selected: { uuid: string; label: number | string }[]
 }
 
-export type TGeometry = {
-  solids?: IFrontGeometriesItem['summary']['solids']
-  faces?: IFrontGeometriesItem['summary']['faces']
-  edges?: IFrontGeometriesItem['summary']['edges']
-}
-
 /**
  * Props
  */
 export interface IProps {
-  geometry: TGeometry
+  geometry: Pick<IFrontGeometriesItem, 'summary'>
   alreadySelected?: ISelection[]
   updateSelected: (selected: ISelect[]) => void
 }
@@ -59,7 +48,6 @@ export interface IProps {
  * Selector
  * @param props Props
  * @description Props list:
- * - geometry (Object) Geometry
  * - alreadySelected (Array) Already selected
  * - updateSelected (Function) Update selected
  * @returns Selector
@@ -70,8 +58,8 @@ const Selector = ({
   updateSelected
 }: IProps): JSX.Element => {
   // State
-  const [colors, setColors] = useState<IColor[]>([])
-  const [filter, setFilter] = useState<IColor>()
+  const [colors, setColors] = useState<TGeometryColor[]>([])
+  const [filter, setFilter] = useState<TGeometryColor>()
   const [search, setSearch] = useState<string>()
 
   // Context
@@ -84,9 +72,9 @@ const Selector = ({
 
   // Colors
   useEffect(() => {
-    const colorsList: IColor[] = []
-    geometry?.[type as keyof TGeometry]?.forEach(
-      (element: { color?: IColor }) => {
+    const colorsList: TGeometryColor[] = []
+    if (type)
+      geometry.summary[type].forEach((element) => {
         if (element.color) {
           const existingColor = colorsList.find(
             (c) =>
@@ -98,8 +86,7 @@ const Selector = ({
             colorsList.push(element.color)
           }
         }
-      }
-    )
+      })
 
     setColors(colorsList)
   }, [geometry, type])
@@ -133,16 +120,16 @@ const Selector = ({
    * On color fitler
    * @param color Color
    */
-  const onColorFilter = useCallback((color?: IColor): void => {
-    setFilter(color as IColor)
+  const onColorFilter = useCallback((color?: TGeometryColor): void => {
+    setFilter(color)
   }, [])
 
   /**
    * Select all
    */
   const selectAll = (): void => {
-    geometry?.[type as keyof TGeometry]?.forEach(
-      (element: { uuid: string; number: number; color?: IColor }) => {
+    if (type)
+      geometry.summary[type].forEach((element) => {
         if (
           !filter ||
           (filter &&
@@ -153,19 +140,18 @@ const Selector = ({
           dispatch(
             select({
               uuid: element.uuid,
-              label: element.number
+              label: element.label
             })
           )
-      }
-    )
+      })
   }
 
   /**
    * Unselect all
    */
   const unselectAll = () => {
-    geometry?.[type as keyof TGeometry]?.forEach(
-      (element: { uuid: string; number: number; color?: IColor }) => {
+    if (type)
+      geometry.summary[type].forEach((element) => {
         if (
           !filter ||
           (filter &&
@@ -176,19 +162,18 @@ const Selector = ({
           dispatch(
             unselect({
               uuid: element.uuid,
-              label: element.number
+              label: element.label
             })
           )
-      }
-    )
+      })
   }
 
   /**
    * Swap selection
    */
   const selectSwap = () => {
-    geometry?.[type as keyof TGeometry]?.forEach(
-      (element: { uuid: string; number: number; color?: IColor }) => {
+    if (type)
+      geometry.summary[type].forEach((element) => {
         if (
           !filter ||
           (filter &&
@@ -200,26 +185,25 @@ const Selector = ({
             dispatch(
               unselect({
                 uuid: element.uuid,
-                label: element.number
+                label: element.label
               })
             )
           else
             dispatch(
               select({
                 uuid: element.uuid,
-                label: element.number
+                label: element.label
               })
             )
         } else {
           dispatch(
             select({
               uuid: element.uuid,
-              label: element.number
+              label: element.label
             })
           )
         }
-      }
-    )
+      })
   }
 
   /**
@@ -239,9 +223,9 @@ const Selector = ({
   const display = useCallback(
     (element: {
       uuid: string
-      number: number
+      label: number
       name: string
-      color?: IColor
+      color?: TGeometryColor
     }) => {
       // Color filter
       if (
@@ -307,8 +291,8 @@ const Selector = ({
       </Space>
 
       <div className="full-width marginTop-20">
-        {geometry?.[type as keyof TGeometry]
-          ? geometry[type as keyof TGeometry]!.map((element, index) => {
+        {type
+          ? geometry.summary[type]!.map((element, index) => {
               if (display(element)) {
                 let borderColor = 'transparent'
                 let backgroundColor = 'transparent'
@@ -338,14 +322,14 @@ const Selector = ({
                     onMouseEnter={() =>
                       onHighlight({
                         uuid: element.uuid,
-                        label: element.number
+                        label: element.label
                       })
                     }
                     onMouseLeave={onUnhighlight}
                     onClick={() =>
                       onSelect({
                         uuid: element.uuid,
-                        label: element.number
+                        label: element.label
                       })
                     }
                   >

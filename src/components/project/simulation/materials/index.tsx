@@ -9,7 +9,7 @@ import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
 import { SelectContext } from '@/context/select'
-import { enable, disable, setType, setPart } from '@/context/select/actions'
+import { enable, disable, setType } from '@/context/select/actions'
 
 import {
   IFrontGeometriesItem,
@@ -24,7 +24,7 @@ import Material from './material'
  * Props
  */
 export interface IProps {
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'dimension' | 'summary'>
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary'>
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -55,9 +55,8 @@ const Materials = ({
 
   // Part
   useEffect(() => {
-    if (geometry) {
-      dispatch(setType(geometry.dimension === 2 ? 'faces' : 'solids'))
-      // dispatch(setPart(geometry.summary.uuid))
+    if (geometry?.summary) {
+      dispatch(setType(geometry.summary.dimension === 2 ? 'faces' : 'solids'))
     }
   }, [geometry, dispatch])
 
@@ -118,13 +117,12 @@ const Materials = ({
           />
           <Material
             visible={materialVisible}
+            geometry={{
+              summary: geometry.summary
+            }}
             simulation={{
               id: simulation.id,
               scheme: simulation.scheme
-            }}
-            geometry={{
-              solids: geometry.summary.solids,
-              faces: geometry.summary.faces
             }}
             material={
               material && {

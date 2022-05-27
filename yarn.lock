@@ -569,7 +569,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/get@npm:^1.13.0":
+"@electron/get@npm:^1.14.1":
   version: 1.14.1
   resolution: "@electron/get@npm:1.14.1"
   dependencies:
@@ -1763,13 +1763,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^9.4.0":
-  version: 9.6.61
-  resolution: "@types/node@npm:9.6.61"
-  checksum: c8caed1010c5eb94697024606a5cbcb9905251166daed6ec1b47d3c70a57435aba72547adf347b8d17785df89dbfc0ac20e63b9f807bc44cc0e11a3705ae5a91
-  languageName: node
-  linkType: hard
-
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
@@ -1954,13 +1947,6 @@ __metadata:
   version: 0.140.0
   resolution: "@types/three@npm:0.140.0"
   checksum: 05693787002f0e879e76a09cfd474d4fd100779f00c048e380d146783adaff539846988625b0f9117451bf2790637a236c68111f7f3e160f5227373a037381ba
-  languageName: node
-  linkType: hard
-
-"@types/tmp@npm:0.0.33":
-  version: 0.0.33
-  resolution: "@types/tmp@npm:0.0.33"
-  checksum: b6963af74092bd56a1a9a7936a1a6de45ddbd5e774f9fc904f16b7e2ada79da8a769e0c5b9df083064b8080bb260c4973ba4307640b7b7a75ed1c47bda8c4110
   languageName: node
   linkType: hard
 
@@ -3950,16 +3936,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:18.2.4":
-  version: 18.2.4
-  resolution: "electron@npm:18.2.4"
+"electron@npm:19.0.1":
+  version: 19.0.1
+  resolution: "electron@npm:19.0.1"
   dependencies:
-    "@electron/get": ^1.13.0
+    "@electron/get": ^1.14.1
     "@types/node": ^16.11.26
     extract-zip: ^1.0.3
   bin:
     electron: cli.js
-  checksum: 07c5696988b61aaa465fd44981a7956a4e7c2d71828471f105d6f5700f96e8e47d6c0800d0b710b29edcc3f9a1aae89bdc44ce3c909229e1cbae9fc424a2a772
+  checksum: 4f7507a6e2556a42304e981b24e33ab0eab54dd23ef9419ce5f2c6b8eada15a2399af97909804147f7da06ac52a36c7742053f8c9822cbcc3d07db1c80bf278d
   languageName: node
   linkType: hard
 
@@ -4476,13 +4462,6 @@ __metadata:
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
   checksum: 1875311c42fcfe9c707b2712c32664a245629b42bb0a5a84439762dd0fd637fc54d078155ea83c2af9e0323c9ac13687e03cfba79b03af9f40c89b4960099374
-  languageName: node
-  linkType: hard
-
-"eventtarget@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "eventtarget@npm:0.1.0"
-  checksum: a046920e643505f7676f39ece2f7cd271fa8a5c9bdc76688b08bdcef30fa46c2295e256c85c383c921faf1aa052b484b07ebe74fa4b25ca0accdf57cdb915f72
   languageName: node
   linkType: hard
 
@@ -7657,13 +7636,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"os-tmpdir@npm:~1.0.2":
-  version: 1.0.2
-  resolution: "os-tmpdir@npm:1.0.2"
-  checksum: 5666560f7b9f10182548bf7013883265be33620b1c1b4a4d405c25be2636f970c5488ff3e6c48de75b55d02bde037249fe5dbfbb4c0fb7714953d56aed062e6d
-  languageName: node
-  linkType: hard
-
 "p-cancelable@npm:^1.0.0":
   version: 1.1.0
   resolution: "p-cancelable@npm:1.1.0"
@@ -10004,7 +9976,7 @@ __metadata:
     deep-object-diff: 1.1.7
     depcheck: 1.4.3
     ejs: 3.1.8
-    electron: 18.2.4
+    electron: 19.0.1
     electron-serve: 1.1.0
     electron-store: 8.0.1
     email-addresses: 5.0.0
@@ -10042,7 +10014,6 @@ __metadata:
     swr: 1.3.0
     tar: 6.1.11
     three: 0.140.2
-    three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.2.4"
     typedoc: 0.22.15
     typedoc-plugin-airthium: "https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.4"
     typescript: 4.6.4
@@ -10118,23 +10089,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#1.2.4":
-  version: 1.2.4
-  resolution: "three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#commit=1f63e435a9e967f33f7cdfdb6ec270763eb9926e"
-  dependencies:
-    three: 0.140.0
-    vblob: 1.0.2
-  checksum: 7a8d3378d7675e089af25783a62b3d9d67fa4ea6d7f1c44dfd809b92c3254dd90ebc0ce614d4dc4a0a064307518399f16a655c34c253ab65494c0664f56fed8d
-  languageName: node
-  linkType: hard
-
-"three@npm:0.140.0":
-  version: 0.140.0
-  resolution: "three@npm:0.140.0"
-  checksum: f7d16e643046c831741972d3caddf1f0b64ed42d454e13708e8d6cc329d700fa0544324942fc361d1bffb924a144750fce3662288208c2b7ed640e3a732a6d2a
-  languageName: node
-  linkType: hard
-
 "three@npm:0.140.2":
   version: 0.140.2
   resolution: "three@npm:0.140.2"
@@ -10146,15 +10100,6 @@ __metadata:
   version: 6.0.1
   resolution: "throat@npm:6.0.1"
   checksum: 782d4171ee4e3cf947483ed2ff1af3e17cc4354c693b9d339284f61f99fbc401d171e0b0d2db3295bb7d447630333e9319c174ebd7ef315c6fb791db9675369c
-  languageName: node
-  linkType: hard
-
-"tmp@npm:0.0.33":
-  version: 0.0.33
-  resolution: "tmp@npm:0.0.33"
-  dependencies:
-    os-tmpdir: ~1.0.2
-  checksum: 902d7aceb74453ea02abbf58c203f4a8fc1cead89b60b31e354f74ed5b3fb09ea817f94fb310f884a5d16987dd9fa5a735412a7c2dd088dd3d415aa819ae3a28
   languageName: node
   linkType: hard
 
@@ -10577,18 +10522,6 @@ __metadata:
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
   checksum: ae0123222c6df65b437669d63dfa8c36cee20a504101b2fcd97b8bf76f91259c17f9f2b4d70a1e3c6bbcee7f51b28392833adb6b2770b23b01abec84e369660b
-  languageName: node
-  linkType: hard
-
-"vblob@npm:1.0.2":
-  version: 1.0.2
-  resolution: "vblob@npm:1.0.2"
-  dependencies:
-    "@types/node": ^9.4.0
-    "@types/tmp": 0.0.33
-    eventtarget: ^0.1.0
-    tmp: 0.0.33
-  checksum: c080ee28d275bac9f69d25dee3ac1626dd9a67f5ffe74c1f63bb64ba1841a60bad9d7698ad61aad8add5a990565f7fa7e6af08bb5d28970ff741db9012392369
   languageName: node
   linkType: hard
 

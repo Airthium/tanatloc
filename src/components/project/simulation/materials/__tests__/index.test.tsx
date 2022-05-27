@@ -36,17 +36,7 @@ jest.mock('@/context/select/actions', () => ({
 
 describe('components/project/simulation/materials', () => {
   const geometry = {
-    id: 'id',
-    summary: {
-      uuid: 'uuid',
-      solids: [
-        {
-          uuid: 'uuid',
-          name: 'name',
-          number: 1
-        }
-      ]
-    }
+    id: 'id'
   }
   const simulation = {
     id: 'id',
@@ -115,8 +105,7 @@ describe('components/project/simulation/materials', () => {
       >
         <Materials
           geometry={{
-            ...geometry,
-            dimension: 2
+            ...geometry
           }}
           simulation={simulation}
           swr={swr}

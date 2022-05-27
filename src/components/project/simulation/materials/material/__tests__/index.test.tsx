@@ -62,15 +62,6 @@ describe('components/project/simulation/materials/material', () => {
       }
     }
   } as ISimulation
-  const geometry = {
-    solids: [
-      {
-        uuid: 'uuid',
-        name: 'name',
-        number: 1
-      }
-    ]
-  }
   const swr = { mutateOneSimulation: jest.fn() }
   const onClose = jest.fn()
 
@@ -101,7 +92,6 @@ describe('components/project/simulation/materials/material', () => {
       <Material
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -115,7 +105,6 @@ describe('components/project/simulation/materials/material', () => {
       <Material
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         material={
           {
             uuid: 'uuid',
@@ -132,7 +121,6 @@ describe('components/project/simulation/materials/material', () => {
       <Material
         visible={false}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -175,7 +163,6 @@ describe('components/project/simulation/materials/material', () => {
       <Material
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
       />
@@ -217,7 +204,6 @@ describe('components/project/simulation/materials/material', () => {
       <Material
         visible={true}
         simulation={simulation}
-        geometry={geometry}
         material={
           {
             uuid: 'uuid',
@@ -274,7 +260,6 @@ describe('components/project/simulation/materials/material', () => {
             }
           } as ISimulation
         }
-        geometry={geometry}
         material={
           {
             uuid: 'uuid',

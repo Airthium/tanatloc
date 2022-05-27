@@ -10,7 +10,6 @@ import {
   promises as fs
 } from 'fs'
 import tar from 'tar'
-import { threeToGlb } from 'three-to-glb'
 
 import Services from '@/services'
 
@@ -189,46 +188,44 @@ const convert = async (
   file: { name: string; target: string },
   callback?: (data: { data?: string; error?: string }) => void,
   param?: { isResult: boolean }
-): Promise<{ json: string; glb: string }> => {
+): Promise<{ name: string; glb: string }[]> => {
   const origin = file.name
-
-  const jsonTarget = file.target
-  const glbTarget = file.target + '.glb'
+  const genericGlb = file.target
+  const glbTarget = genericGlb + '.glb'
 
   const { code, data, error } = await Services.toThree(
     location,
     origin,
-    glbTarget
+    param?.isResult ? genericGlb : glbTarget
   )
   callback?.({ data, error })
 
-  if (error) throw new Error('Conversion process failed.')
-  if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
-
-  // if (param && param.isResult) {
-  //   const results = data
-  //     ?.trim()
-  //     ?.split('\n')
-  //     .map((res) => JSON.parse(res))
-
-  //   await Promise.all(
-  //     results.map(async (result: { path: string }) => {
-  //       const glb = await threeToGlb(
-  //         path.join(location, result.path),
-  //         'part.json'
-  //       )
-  //       await writeFile(location, result.path + '.glb', glb)
-  //     })
-  //   )
-  // } else {
-  //   const glb = await threeToGlb(path.join(location, jsonTarget), 'part.json')
-  //   await writeFile(location, glbTarget, glb)
-  // }
-
-  return {
-    json: jsonTarget,
-    glb: glbTarget
+  if (error) {
+    const err = new Error('Conversion process failed.')
+    data && (err.message += '\nData: ' + data)
+    err.message += '\nError: ' + error
+    throw err
   }
+  if (code !== 0) {
+    const err = new Error('Conversion process failed. Code ' + code + '.')
+    data && (err.message += '\nData: ' + data)
+    error && (err.message += '\nError: ' + error)
+    throw err
+  }
+
+  if (param?.isResult) {
+    return data
+      .trim()
+      .split('\n')
+      .map((res) => JSON.parse(res))
+  }
+
+  return [
+    {
+      name: file.name,
+      glb: glbTarget
+    }
+  ]
 }
 
 const Tools = {

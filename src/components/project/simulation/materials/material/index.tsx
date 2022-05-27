@@ -27,11 +27,8 @@ import Edit from '../edit'
  */
 export interface IProps {
   visible: boolean
+  geometry: Pick<IFrontGeometriesItem, 'summary'>
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometry: {
-    solids: IFrontGeometriesItem['summary']['solids']
-    faces?: IFrontGeometriesItem['summary']['faces']
-  }
   material?: IModelMaterialsValue
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -46,8 +43,8 @@ export interface IProps {
  */
 const Material = ({
   visible,
-  simulation,
   geometry,
+  simulation,
   material,
   swr,
   onClose
@@ -229,10 +226,7 @@ const Material = ({
         </Card>
 
         <Selector
-          geometry={{
-            solids: geometry.solids,
-            faces: geometry.faces
-          }}
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />

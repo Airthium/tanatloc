@@ -36,17 +36,7 @@ jest.mock('@/context/select/actions', () => ({
 
 describe('components/project/simulation/boundaryConditions', () => {
   const geometry = {
-    id: 'id',
-    summary: {
-      uuid: 'uuid',
-      faces: [
-        {
-          uuid: 'uuid',
-          name: 'name',
-          number: 1
-        }
-      ]
-    }
+    id: 'id'
   }
   const simulation = {
     id: 'id',
@@ -127,8 +117,7 @@ describe('components/project/simulation/boundaryConditions', () => {
       >
         <BoundaryConditions
           geometry={{
-            ...geometry,
-            dimension: 2
+            ...geometry
           }}
           simulation={simulation}
           swr={swr}

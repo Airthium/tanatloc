@@ -58,7 +58,7 @@ const updateTasks = (id: string, tasks: ISimulationTask[]): void => {
       key: 'tasks',
       value: tasks
     }
-  ])
+  ]).catch()
 }
 
 /**
@@ -258,8 +258,7 @@ const computeMesh = async (
       fileName: mshFile,
       originPath: meshPath,
       renderPath: meshPath,
-      json: three.json,
-      glb: three.glb
+      glb: three[0].glb
     }
 
     // Save mesh
@@ -530,39 +529,25 @@ const processResults = async (
 
       try {
         // Convert
-        let convertData = ''
-        let convertError = ''
-        await Tools.convert(
+
+        const newResults = await Tools.convert(
           path.join(simulationPath, runPath, resultPath),
           {
             name: resFile,
             target: partPath
           },
           ({ data, error }) => {
-            data && (convertData += data)
-            error && (convertError += error)
+            error &&
+              (task.warning +=
+                'Warning: Result converting process failed (' + error + ')\n')
+
+            data && (task.log += data + '\n')
           },
           { isResult: true }
         )
-
-        if (convertError) {
-          task.warning +=
-            'Warning: Result converting process failed (' + convertError + ')\n'
-          update()
-
-          // Remove line from existing results
-          const index = results[id].findIndex((l) => l === line)
-          results[id].splice(index, 1)
-
-          return
-        }
+        update()
 
         // Add to task
-        const newResults = convertData
-          ?.trim()
-          ?.split('\n')
-          .map((res) => JSON.parse(res))
-
         task.files = [
           ...(task.files || []),
           ...newResults.map((result) => ({
@@ -570,8 +555,7 @@ const processResults = async (
             fileName: resFile,
             originPath: path.join(runPath, resultPath),
             name: result.name,
-            json: result.path,
-            glb: result.path + '.glb'
+            glb: result.glb
           }))
         ]
         update()

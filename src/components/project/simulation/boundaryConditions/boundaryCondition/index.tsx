@@ -29,17 +29,12 @@ import Add from '../add'
 import Edit from '../edit'
 import {
   IFrontSimulationsItem,
-  IFrontGeometriesItem,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
 export interface IProps {
   visible: boolean
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometry: {
-    faces: IFrontGeometriesItem['summary']['faces']
-    edges?: IFrontGeometriesItem['summary']['edges']
-  }
   boundaryCondition?: IModelBoundaryConditionValue
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -55,7 +50,6 @@ export interface IProps {
 const BoundaryCondition = ({
   visible,
   simulation,
-  geometry,
   boundaryCondition,
   swr,
   onClose
@@ -384,10 +378,6 @@ const BoundaryCondition = ({
           </Card>
         )}
         <Selector
-          geometry={{
-            faces: geometry.faces,
-            edges: geometry.edges
-          }}
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { IGeometryPart } from '@/lib/index.d'
+
 import {
   IFrontGeometriesItem,
   IFrontProject,
@@ -47,7 +49,7 @@ const loadPart = async (
   simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
   file: Pick<IFrontGeometriesItem, 'id'> | TResult,
   type: 'geometry' | 'result'
-): Promise<{ uuid: string; buffer: Buffer }> => {
+): Promise<IGeometryPart> => {
   try {
     if (type === 'geometry') {
       const geometry = file as Pick<IFrontGeometriesItem, 'id'>
@@ -78,10 +80,7 @@ const View = ({
   postprocessing
 }: IProps): JSX.Element => {
   // State
-  const [part, setPart] = useState<{
-    uuid: string
-    buffer: Buffer
-  }>()
+  const [part, setPart] = useState<IGeometryPart>()
   const [previous, setPrevious] = useState<TGeometry | TResult>()
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -93,7 +92,7 @@ const View = ({
 
         setLoading(true)
         loadPart(simulation, postprocessing, 'result')
-          .then((partLoaded) => setPart({ ...partLoaded }))
+          .then((partLoaded) => setPart(partLoaded))
           .catch((_err) => undefined)
           .finally(() => setLoading(false))
       }
@@ -103,7 +102,7 @@ const View = ({
 
         setLoading(true)
         loadPart(simulation, result, 'result')
-          .then((partLoaded) => setPart({ ...partLoaded }))
+          .then((partLoaded) => setPart(partLoaded))
           .catch((_err) => undefined)
           .finally(() => setLoading(false))
       }
@@ -117,7 +116,7 @@ const View = ({
           setLoading(false)
         } else {
           loadPart(undefined, geometry, 'geometry')
-            .then((partLoaded) => setPart({ ...partLoaded }))
+            .then((partLoaded) => setPart(partLoaded))
             .catch((_err) => undefined)
             .finally(() => setLoading(false))
         }

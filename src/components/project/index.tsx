@@ -340,8 +340,7 @@ const Project = (): JSX.Element => {
             geometries={geometries}
             geometry={
               geometry && {
-                id: geometry.id,
-                dimension: geometry.dimension
+                id: geometry.id
               }
             }
             simulation={{
@@ -394,12 +393,7 @@ const Project = (): JSX.Element => {
             geometry={
               geometry && {
                 id: geometry.id,
-                dimension: geometry.dimension ?? 3,
-                summary: {
-                  uuid: geometry.summary.uuid,
-                  solids: geometry.summary.solids,
-                  faces: geometry.summary.faces
-                }
+                summary: geometry.summary
               }
             }
             simulation={{
@@ -451,13 +445,7 @@ const Project = (): JSX.Element => {
           <Simulation.BoundaryConditions
             geometry={
               geometry && {
-                id: geometry.id,
-                dimension: geometry.dimension ?? 3,
-                summary: {
-                  uuid: geometry.summary.uuid,
-                  faces: geometry.summary.faces,
-                  edges: geometry.summary.edges
-                }
+                id: geometry.id
               }
             }
             simulation={{
@@ -854,7 +842,6 @@ const Project = (): JSX.Element => {
               geometry={
                 geometry && {
                   id: geometry.id,
-                  dimension: geometry.dimension,
                   needCleanup: geometry.needCleanup
                 }
               }

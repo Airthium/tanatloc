@@ -32,7 +32,7 @@ import Utils from '@/lib/utils'
 
 export interface ISelection {
   label: string
-  selected: { uuid: string; label: number | string }[]
+  selected: { uuid: string; label: number }[]
 }
 
 /**

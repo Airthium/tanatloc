@@ -60,7 +60,7 @@ export interface IPart extends Object3D {
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type?: string
+    type: string
   ) => void
   stopSelection: () => void
   getHighlighted: () => { uuid: string; label: number | string } | null
@@ -124,6 +124,7 @@ const PartLoader = (
     object.type = 'Part'
     object.uuid = part.summary.uuid
     object.children = scene.children
+    object.userData = scene.userData
 
     // Set material
     if (part.summary.type === 'mesh') {
@@ -194,7 +195,10 @@ const PartLoader = (
           mesh.material.clippingPlanes = [clippingPlane]
         }
       })
-    } else if (part.summary.type === 'geometry') {
+    } else if (
+      part.summary.type === 'geometry3D' ||
+      part.summary.type === 'geometry2D'
+    ) {
       object.traverse((child) => {
         if (child.type === 'Mesh') {
           const mesh = child as IPartMesh
@@ -215,8 +219,9 @@ const PartLoader = (
     object.startSelection = (
       renderer: WebGLRenderer,
       camera: PerspectiveCamera,
-      outlinePass: OutlinePass
-    ) => startSelection(object, renderer, camera, outlinePass)
+      outlinePass: OutlinePass,
+      type: string
+    ) => startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection()
     object.getHighlighted = () => highlighted
     object.getSelected = () => selected
@@ -275,6 +280,7 @@ const PartLoader = (
   // highlight / selection Variables
   let raycaster = new Raycaster()
   let selectionPart: IPart | null = null
+  let selectionType: string | null = null
   let selectionRenderer: WebGLRenderer | null = null
   let selectionCamera: PerspectiveCamera | null = null
   let selectionOutlinePass: OutlinePass | null = null
@@ -293,9 +299,11 @@ const PartLoader = (
     part: IPart,
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
-    outlinePass: OutlinePass
+    outlinePass: OutlinePass,
+    type: string
   ): void => {
     selectionPart = part
+    selectionType = type
     selectionRenderer = renderer
     selectionCamera = camera
     selectionOutlinePass = outlinePass
@@ -324,6 +332,7 @@ const PartLoader = (
     })
     selected.length = 0
 
+    selectionType = null
     selectionPart = null
     selectionRenderer = null
     selectionCamera = null
@@ -375,8 +384,14 @@ const PartLoader = (
   const mouseMove = (event: MouseEvent): void => {
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, selectionCamera!)
-    // TODO
-    const intersects = raycaster.intersectObjects(selectionPart!.children, true)
+    const intersects = raycaster.intersectObject(selectionPart!, true)
+
+    console.log(selectionPart)
+    const summary = selectionPart!.userData
+    const elements = summary[selectionType!]
+
+    console.log(elements)
+    //TODO
 
     if (intersects.length)
       mouseMoveEvent(
@@ -462,7 +477,7 @@ const PartLoader = (
         partMesh.material.color = highlightColor
       } else if (mesh.type === 'Object3D') {
         const partObject = mesh as IPartObject
-        partObject.children.forEach((child) => {
+        partObject.traverse((child) => {
           if (child.type === 'Mesh') {
             const subMesh = child as IPartMesh
             subMesh.material.color = highlightColor
@@ -489,7 +504,7 @@ const PartLoader = (
           index === -1 ? partMesh.material.originalColor : selectColor
       } else if (mesh.type === 'Object3D') {
         const partObject = mesh as IPartObject
-        partObject.children.forEach((child) => {
+        partObject.traverse((child) => {
           if (child.type === 'Mesh') {
             const subMesh = child as IPartMesh
             subMesh.material.color =
@@ -526,7 +541,7 @@ const PartLoader = (
         partMesh.material.color = selectColor
       } else if (mesh.type === 'Obejct3D') {
         const partObject = mesh as IPartObject
-        partObject.children.forEach((child) => {
+        partObject.traverse((child) => {
           if (child.type === 'Mesh') {
             const subMesh = child as IPartMesh
             subMesh.material.color = selectColor
@@ -556,7 +571,7 @@ const PartLoader = (
         partMesh.material.color = partMesh.material.originalColor
       } else if (mesh.type === 'Obejct3D') {
         const partObject = mesh as IPartObject
-        partObject.children.forEach((child) => {
+        partObject.traverse((child) => {
           if (child.type === 'Mesh') {
             const subMesh = child as IPartMesh
             subMesh.material.color = subMesh.material.originalColor

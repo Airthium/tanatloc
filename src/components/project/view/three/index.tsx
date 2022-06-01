@@ -265,11 +265,11 @@ export const loadPart = async (
   const mouseMoveEvent = (
     child: IPart,
     uuid?: string,
-    number?: number
+    label?: number
   ): void => {
     if (uuid) {
       child.highlight(uuid)
-      setTimeout(() => dispatch(highlight({ uuid, label: number! })), 1)
+      setTimeout(() => dispatch(highlight({ uuid, label: label! })), 1)
     } else {
       child.unhighlight()
       setTimeout(() => dispatch(unhighlight()), 1)
@@ -447,6 +447,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     part: selectPart,
     highlighted: selectHighlighted,
     selected: selectSelected,
+    type: selectType,
     dispatch
   } = useContext(SelectContext)
 
@@ -749,7 +750,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           child.startSelection(
             renderer.current,
             camera.current,
-            outlinePass.current
+            outlinePass.current,
+            selectType!
           )
         else {
           child.stopSelection()

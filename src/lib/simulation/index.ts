@@ -231,7 +231,7 @@ const run = async (
       'extension'
     ])
     if (geometry.extension === 'dxf') {
-      // 2D replace
+      // 2D replace (Gmsh can not import DXF)
       geometry.uploadfilename = geometry.uploadfilename.replace('.dxf', '.brep')
     }
     configuration.geometry.file = geometry.uploadfilename

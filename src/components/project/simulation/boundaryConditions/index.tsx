@@ -28,7 +28,7 @@ import BoundaryCondition from './boundaryCondition'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometry?: Pick<IFrontGeometriesItem, 'id'>
+  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -53,17 +53,17 @@ const BoundaryConditions = ({
     useState<boolean>(false)
 
   // Context
-  const { summary, dispatch } = useContext(SelectContext)
+  const { dispatch } = useContext(SelectContext)
 
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
   // Part
   useEffect(() => {
-    if (summary) {
-      dispatch(setType(summary.dimension === 2 ? 'edges' : 'faces'))
+    if (geometry?.summary) {
+      dispatch(setType(geometry.summary.dimension === 2 ? 'edges' : 'faces'))
     }
-  }, [summary, dispatch])
+  }, [geometry, dispatch])
 
   /**
    * On add
@@ -126,6 +126,7 @@ const BoundaryConditions = ({
           />
           <BoundaryCondition
             visible={boundaryConditionVisible}
+            geometry={{ summary: geometry.summary }}
             simulation={{
               id: simulation.id,
               scheme: simulation.scheme

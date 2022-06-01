@@ -1,5 +1,7 @@
 /** @module API.Result.Load */
 
+import { IGeometryPart } from '@/lib/index.d'
+
 import { call } from '@/api/call'
 
 /**
@@ -10,8 +12,8 @@ import { call } from '@/api/call'
  */
 export const load = async (
   simulation: { id: string },
-  result: { originPath: string; glb: string; json: string }
-): Promise<{ uuid: string; buffer: Buffer }> => {
+  result: { originPath: string; glb: string }
+): Promise<IGeometryPart> => {
   const response = await call('/api/result', {
     method: 'POST',
     headers: {

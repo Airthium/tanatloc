@@ -18,7 +18,7 @@ import ResultAPI from '@/api/result'
 import ThreeView from './three'
 
 export type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'>
-export type TResult = Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
+export type TResult = Pick<IFrontResult, 'glb' | 'originPath'>
 
 /**
  * Props
@@ -58,7 +58,7 @@ const loadPart = async (
       const result = file as Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
       return await ResultAPI.load(
         { id: simulation!.id },
-        { originPath: result.originPath, glb: result.glb!, json: result.json! }
+        { originPath: result.originPath, glb: result.glb! }
       )
     }
   } catch (err) {

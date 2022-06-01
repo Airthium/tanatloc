@@ -3,11 +3,14 @@
 import path from 'path'
 import archiver from 'archiver'
 import { ReadStream } from 'fs'
+import extractJson from 'extract-json-from-string'
 
 import { SIMULATION } from '@/config/storage'
 
-import Simulation from '../simulation'
-import Tools from '../tools'
+import { IGeometryPart } from '@/lib/index.d'
+
+import Simulation from '@/lib/simulation'
+import Tools from '@/lib/tools'
 
 import createSummary from './createSummary'
 import createPVD from './createPVD'
@@ -22,26 +25,22 @@ const archiveFileName = 'resultsArchive.zip'
  */
 const load = async (
   simulation: { id: string },
-  result: { originPath: string; json: string; glb: string }
-): Promise<{ uuid: string; buffer: Buffer }> => {
+  result: { originPath: string; glb: string }
+): Promise<IGeometryPart> => {
   // Read GLB
   const buffer = await Tools.readFile(
     path.join(SIMULATION, simulation.id, result.originPath, result.glb)
   )
 
-  // Read part file
-  const part = await Tools.readJSONFile(
-    path.join(
-      SIMULATION,
-      simulation.id,
-      result.originPath,
-      result.json,
-      'part.json'
-    )
+  // Read summary
+  const content = await Tools.readFile(
+    path.join(SIMULATION, simulation.id, result.originPath, result.glb)
   )
+  const jsons = extractJson(content.toString())
+  const summary = jsons[0].scenes[0].extras
 
   return {
-    uuid: part.uuid,
+    summary,
     buffer: Buffer.from(buffer)
   }
 }

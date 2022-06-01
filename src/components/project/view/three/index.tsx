@@ -306,8 +306,8 @@ export const loadPart = async (
   zoomToFit(scene, camera, controls)
 
   // Colorbar
-  if (mesh?.children[1]?.children[0]?.userData.lut) {
-    helpers.colorbarHelper.setLUT(mesh.children[1].children[0].userData.lut)
+  if (mesh.children[0].userData.lut) {
+    helpers.colorbarHelper.setLUT(mesh.children[0].userData.lut)
     helpers.colorbarHelper.setVisible(true)
   } else {
     helpers.colorbarHelper.setVisible(false)
@@ -444,7 +444,6 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   // Context
   const {
     enabled: selectEnabled,
-    type: selectType,
     part: selectPart,
     highlighted: selectHighlighted,
     selected: selectSelected,
@@ -750,15 +749,14 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           child.startSelection(
             renderer.current,
             camera.current,
-            outlinePass.current,
-            selectType
+            outlinePass.current
           )
         else {
           child.stopSelection()
         }
       }
     })
-  }, [selectEnabled, selectPart, selectType])
+  }, [selectEnabled, selectPart])
 
   // Highlight / Select
   useEffect(() => {

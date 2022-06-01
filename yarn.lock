@@ -4548,6 +4548,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"extract-json-from-string@npm:1.0.1":
+  version: 1.0.1
+  resolution: "extract-json-from-string@npm:1.0.1"
+  checksum: be985ef7bdbd24fec5c975ef200b311aa1281219eb4ee6831f71c30953cb1a831473a8e2b987d58595e9848f013f5528b3dc6887056f7c829a32c485515affc5
+  languageName: node
+  linkType: hard
+
 "extract-zip@npm:^1.0.3":
   version: 1.7.0
   resolution: "extract-zip@npm:1.7.0"
@@ -9983,6 +9990,7 @@ __metadata:
     eslint: 8.15.0
     eslint-config-next: 12.1.6
     express: 4.18.1
+    extract-json-from-string: 1.0.1
     form-data: 4.0.0
     html-react-parser: 1.4.12
     https-proxy-agent: 5.0.1

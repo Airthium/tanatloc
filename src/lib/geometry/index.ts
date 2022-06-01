@@ -1,6 +1,7 @@
 /** @module Lib.Geometry */
 
 import path from 'path'
+import extractJson from 'extract-json-from-string'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IGeometryPart, IGeometryFile, INewGeometryWithData } from '../index.d'
@@ -43,9 +44,9 @@ const add = async (
     })
 
     // Read summary
-    const summary = await Tools.readJSONFile(
-      path.join(GEOMETRY, part[0].glb + '.desc')
-    )
+    const content = await Tools.readFile(path.join(GEOMETRY, part[0].glb))
+    const jsons = extractJson(content.toString())
+    const summary = jsons[0].scenes[0].extras
 
     // Update geometry
     const newGeometry = {

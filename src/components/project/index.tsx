@@ -445,7 +445,8 @@ const Project = (): JSX.Element => {
           <Simulation.BoundaryConditions
             geometry={
               geometry && {
-                id: geometry.id
+                id: geometry.id,
+                summary: geometry.summary
               }
             }
             simulation={{
@@ -848,15 +849,13 @@ const Project = (): JSX.Element => {
               result={
                 result && {
                   glb: result.glb,
-                  originPath: result.originPath,
-                  json: result.json
+                  originPath: result.originPath
                 }
               }
               postprocessing={
                 postprocessing && {
                   glb: postprocessing.glb,
-                  originPath: postprocessing.originPath,
-                  json: postprocessing.json
+                  originPath: postprocessing.originPath
                 }
               }
             />

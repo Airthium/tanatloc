@@ -285,25 +285,12 @@ const GridHelper = (
     const scaleFactor = distanceToTarget / 10 / (controls.minDistance + 1e-3)
 
     // Grids
-
     const gridXZ = gridHelper.children[0]
     const gridXY = gridHelper.children[1]
     const gridYZ = gridHelper.children[2]
-    gridXZ.position.set(
-      0,
-      sign(camFwd.y) * (size.y / 2 + gridOffset * scaleFactor),
-      0
-    )
-    gridXY.position.set(
-      0,
-      0,
-      sign(camFwd.z) * (size.z / 2 + gridOffset * scaleFactor)
-    )
-    gridYZ.position.set(
-      sign(camFwd.x) * (size.x / 2 + gridOffset * scaleFactor),
-      0,
-      0
-    )
+    gridXZ.position.set(0, sign(camFwd.y) * (size.y / 2 + gridOffset), 0)
+    gridXY.position.set(0, 0, sign(camFwd.z) * (size.z / 2 + gridOffset))
+    gridYZ.position.set(sign(camFwd.x) * (size.x / 2 + gridOffset), 0, 0)
 
     // Labels
     const labelsX = gridHelper.children[3]
@@ -311,29 +298,17 @@ const GridHelper = (
     const labelsZ = gridHelper.children[5]
     labelsX.position.set(
       0,
-      sign(camFwd.y) *
-        aMSign(camFwd.y) *
-        (size.y / 2 + labelOffset * scaleFactor),
-      sign(camFwd.z) *
-        aMSign(camFwd.y) *
-        -(size.z / 2 + labelOffset * scaleFactor)
+      sign(camFwd.y) * aMSign(camFwd.y) * (size.y / 2 + labelOffset),
+      sign(camFwd.z) * aMSign(camFwd.y) * -(size.z / 2 + labelOffset)
     )
     labelsY.position.set(
-      sign(camFwd.x) *
-        aMSign(camFwd.x) *
-        (size.x / 2 + labelOffset * scaleFactor),
+      sign(camFwd.x) * aMSign(camFwd.x) * (size.x / 2 + labelOffset),
       0,
-      sign(camFwd.z) *
-        aMSign(camFwd.x) *
-        -(size.z / 2 + labelOffset * scaleFactor)
+      sign(camFwd.z) * aMSign(camFwd.x) * -(size.z / 2 + labelOffset)
     )
     labelsZ.position.set(
-      sign(camFwd.x) *
-        aMSign(camFwd.x) *
-        (size.x / 2 + labelOffset * scaleFactor),
-      sign(camFwd.y) *
-        aMSign(camFwd.x) *
-        -(size.y / 2 + labelOffset * scaleFactor),
+      sign(camFwd.x) * aMSign(camFwd.x) * (size.x / 2 + labelOffset),
+      sign(camFwd.y) * aMSign(camFwd.x) * -(size.y / 2 + labelOffset),
       0
     )
 

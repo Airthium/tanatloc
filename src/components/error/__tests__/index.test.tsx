@@ -6,23 +6,19 @@ import { ServerResponse } from 'http'
 import { NextPageContext } from 'next'
 
 const mockReload = jest.fn()
+const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    reload: () => mockReload()
+    reload: () => mockReload(),
+    query: mockQuery()
   })
-}))
-
-const mockStatus = jest.fn()
-window.URLSearchParams = jest.fn().mockImplementation(() => ({
-  get: () => mockStatus()
 }))
 
 describe('components/error', () => {
   beforeEach(() => {
     mockReload.mockReset()
-
-    mockStatus.mockReset()
-    mockStatus.mockImplementation(() => undefined)
+    mockQuery.mockReset()
+    mockQuery.mockImplementation(() => ({}))
   })
 
   test('render', () => {
@@ -64,7 +60,7 @@ describe('components/error', () => {
   })
 
   test('with electron status code 100', () => {
-    mockStatus.mockImplementation(() => '100')
+    mockQuery.mockImplementation(() => ({ electronStatusCode: '100' }))
     const { unmount } = render(<Error />)
 
     const text = screen.getByRole('heading', {
@@ -76,7 +72,7 @@ describe('components/error', () => {
   })
 
   test('with electron status code 200', () => {
-    mockStatus.mockImplementation(() => '200')
+    mockQuery.mockImplementation(() => ({ electronStatusCode: '200' }))
     const { unmount } = render(<Error />)
 
     const text = screen.getByRole('heading', {

@@ -19,9 +19,7 @@ export interface IProps {
 function Error({ webStatusCode }: IProps): JSX.Element {
   // Data
   const router = useRouter()
-
-  const urlParams: URLSearchParams = new URLSearchParams(window.location.search)
-  const electronStatusCode = urlParams.get('statusCode')
+  const { electronStatusCode }: { electronStatusCode?: string } = router.query
 
   // Render
   let render: JSX.Element

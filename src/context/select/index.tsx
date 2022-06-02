@@ -2,7 +2,7 @@
 
 import { createContext, Dispatch, ReactNode, useReducer } from 'react'
 
-import { IPart, IPartMesh } from '@/lib/three/loaders/PartLoader'
+import { IPart } from '@/lib/three/loaders/PartLoader'
 
 /**
  * Select interface

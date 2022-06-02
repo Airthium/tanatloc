@@ -46,8 +46,9 @@ describe('components/project/geometry', () => {
   }
   const geometry = {
     id: 'id',
-    name: 'name'
-  } as Pick<IFrontGeometriesItem, 'id' | 'name'>
+    name: 'name',
+    summary: {}
+  } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
   const swr = {
     mutateProject: jest.fn(),
     mutateOneGeometry: jest.fn(),

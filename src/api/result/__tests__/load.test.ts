@@ -9,10 +9,7 @@ jest.mock('../../call', () => ({
 
 describe('api/result/load', () => {
   test('call', async () => {
-    await load(
-      { id: 'id' },
-      { originPath: 'originPath', glb: 'glb', json: 'json' }
-    )
+    await load({ id: 'id' }, { originPath: 'originPath', glb: 'glb' })
     expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

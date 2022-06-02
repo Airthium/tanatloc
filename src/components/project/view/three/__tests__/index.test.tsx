@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import ThreeView, { errors } from '@/components/project/view/three'
 import { SelectContext } from '@/context/select'
+import { TGeometrySummary } from '@/database/geometry/get'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -171,7 +172,7 @@ describe('components/project/view/three', () => {
     title: 'title'
   }
   const part = {
-    uuid: 'uuid',
+    summary: {} as TGeometrySummary,
     buffer: Buffer.from('buffer')
   }
 

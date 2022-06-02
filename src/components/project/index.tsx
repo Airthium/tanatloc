@@ -340,7 +340,8 @@ const Project = (): JSX.Element => {
             geometries={geometries}
             geometry={
               geometry && {
-                id: geometry.id
+                id: geometry.id,
+                summary: geometry.summary
               }
             }
             simulation={{

@@ -74,7 +74,7 @@ const Selector = ({
   useEffect(() => {
     const colorsList: TGeometryColor[] = []
     if (type)
-      geometry.summary[type].forEach((element) => {
+      geometry.summary[type]?.forEach((element) => {
         if (element.color) {
           const existingColor = colorsList.find(
             (c) =>
@@ -129,7 +129,7 @@ const Selector = ({
    */
   const selectAll = (): void => {
     if (type)
-      geometry.summary[type].forEach((element) => {
+      geometry.summary[type]?.forEach((element) => {
         if (
           !filter ||
           (filter &&
@@ -151,7 +151,7 @@ const Selector = ({
    */
   const unselectAll = () => {
     if (type)
-      geometry.summary[type].forEach((element) => {
+      geometry.summary[type]?.forEach((element) => {
         if (
           !filter ||
           (filter &&
@@ -173,7 +173,7 @@ const Selector = ({
    */
   const selectSwap = () => {
     if (type)
-      geometry.summary[type].forEach((element) => {
+      geometry.summary[type]?.forEach((element) => {
         if (
           !filter ||
           (filter &&

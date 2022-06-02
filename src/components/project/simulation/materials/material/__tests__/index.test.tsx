@@ -5,6 +5,7 @@ import Material from '@/components/project/simulation/materials/material'
 
 import { ISimulation } from '@/database/simulation/index'
 import { IModelMaterialsValue } from '@/models/index.d'
+import { IFrontGeometriesItem } from '@/api/index.d'
 
 const mockFormula = jest.fn()
 jest.mock(
@@ -42,6 +43,9 @@ jest.mock(
 )
 
 describe('components/project/simulation/materials/material', () => {
+  const geometry = {
+    summary: {}
+  } as Pick<IFrontGeometriesItem, 'summary'>
   const simulation = {
     id: 'id',
     scheme: {
@@ -91,6 +95,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -104,6 +109,7 @@ describe('components/project/simulation/materials/material', () => {
     const { rerender, unmount } = render(
       <Material
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         material={
           {
@@ -120,6 +126,7 @@ describe('components/project/simulation/materials/material', () => {
     rerender(
       <Material
         visible={false}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -162,6 +169,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -203,6 +211,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         material={
           {
@@ -227,6 +236,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
+        geometry={geometry}
         simulation={
           {
             id: 'id',

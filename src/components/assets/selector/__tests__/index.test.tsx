@@ -1,8 +1,11 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Selector from '@/components/assets/selector'
+import { IFrontGeometriesItem } from '@/api/index.d'
+
 import { SelectContext } from '@/context/select'
+
+import Selector from '@/components/assets/selector'
 
 const mockHighlight = jest.fn()
 const mockUnhighlight = jest.fn()
@@ -22,6 +25,9 @@ jest.mock('@/lib/utils', () => ({
 }))
 
 describe('components/assets/selector', () => {
+  const geometry = {
+    summary: {}
+  } as Pick<IFrontGeometriesItem, 'summary'>
   const alreadySelected = [
     {
       label: 'label',
@@ -50,26 +56,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
-          alreadySelected={alreadySelected}
-          updateSelected={updateSelected}
-        />
-      </SelectContext.Provider>
-    )
-
-    unmount()
-  })
-
-  test('empty render', () => {
-    const { unmount } = render(
-      <SelectContext.Provider
-        value={{
-          enabled: true,
-          type: 'faces',
-          selected: [],
-          dispatch: jest.fn()
-        }}
-      >
-        <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -90,6 +77,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -118,6 +106,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -143,6 +132,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -168,6 +158,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -191,6 +182,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -214,6 +206,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />
@@ -238,6 +231,7 @@ describe('components/assets/selector', () => {
         }}
       >
         <Selector
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={updateSelected}
         />

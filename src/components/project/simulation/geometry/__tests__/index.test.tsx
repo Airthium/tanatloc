@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { IFrontSimulationsItem } from '@/api/index.d'
+import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
 
 import Geometry, { errors } from '..'
 
@@ -20,10 +20,13 @@ jest.mock('@/api/simulation', () => ({
 
 describe('components/project/simulation/geometry', () => {
   const geometries = [
-    { id: 'id', name: 'geometry' },
-    { id: 'id2', name: 'other geometry' }
-  ]
-  const geometry = { id: 'id' }
+    { id: 'id', name: 'geometry', summary: {} },
+    { id: 'id2', name: 'other geometry', summary: {} }
+  ] as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
+  const geometry = { id: 'id', summary: {} } as Pick<
+    IFrontGeometriesItem,
+    'id' | 'summary'
+  >
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
@@ -86,7 +89,9 @@ describe('components/project/simulation/geometry', () => {
         geometries={[
           {
             id: 'id',
-            name: 'geometry'
+            name: 'geometry',
+            //@ts-ignore
+            summary: {}
           }
         ]}
         geometry={geometry}

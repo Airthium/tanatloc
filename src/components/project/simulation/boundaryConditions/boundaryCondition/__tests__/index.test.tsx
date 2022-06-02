@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { IFrontSimulationsItem } from '@/api/index.d'
+import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
 
 import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 
@@ -35,6 +35,9 @@ jest.mock(
 )
 
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
+  const geometry = {
+    summary: {}
+  } as Pick<IFrontGeometriesItem, 'summary'>
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
@@ -111,6 +114,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -124,6 +128,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { rerender, unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         boundaryCondition={{
           uuid: 'uuid',
@@ -142,6 +147,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     rerender(
       <BoundaryCondition
         visible={false}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -204,6 +210,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -238,6 +245,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -286,6 +294,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometry={geometry}
         simulation={simulation}
         boundaryCondition={{
           uuid: 'uuid',

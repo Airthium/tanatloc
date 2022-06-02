@@ -5,6 +5,7 @@ import Materials from '@/components/project/simulation/materials'
 
 import { ISimulation } from '@/database/simulation/index'
 import { SelectContext } from '@/context/select'
+import { IFrontGeometriesItem } from '@/api/index.d'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -36,8 +37,9 @@ jest.mock('@/context/select/actions', () => ({
 
 describe('components/project/simulation/materials', () => {
   const geometry = {
-    id: 'id'
-  }
+    id: 'id',
+    summary: {}
+  } as Pick<IFrontGeometriesItem, 'id' | 'summary'>
   const simulation = {
     id: 'id',
     scheme: {

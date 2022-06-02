@@ -73,7 +73,7 @@ describe('lib/result', () => {
     }))
     const load = await Result.load(
       { id: 'id' },
-      { originPath: 'originPath', glb: 'glb', json: 'json' }
+      { originPath: 'originPath', glb: 'glb' }
     )
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(load).toEqual({ uuid: 'uuid', buffer: Buffer.from('readFile') })

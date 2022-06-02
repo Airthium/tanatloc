@@ -1,9 +1,7 @@
 /** @module Components.Project.Geometry */
 
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
-
-import { SelectContext } from '@/context/select'
 
 import Loading from '@/components/loading'
 import {
@@ -230,19 +228,19 @@ const Geometry = ({
               {geometry.summary.dimension === 3 && (
                 <Typography.Text>
                   <span className="text-light">Number of solids:</span>{' '}
-                  {geometry.summary.solids.length}
+                  {geometry.summary.solids?.length ?? 0}
                 </Typography.Text>
               )}
 
               <Typography.Text>
                 <span className="text-light">Number of faces:</span>{' '}
-                {geometry.summary.faces.length}
+                {geometry.summary.faces?.length ?? 0}
               </Typography.Text>
 
               {geometry.summary.dimension === 2 && (
                 <Typography.Text>
                   <span className="text-light">Number of edges:</span>{' '}
-                  {geometry.summary.edges.length}
+                  {geometry.summary.edges?.length ?? 0}
                 </Typography.Text>
               )}
             </>

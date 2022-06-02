@@ -2,8 +2,16 @@
 
 // Bases classes
 
+const traverse = (child, callback) => {
+  callback(child)
+
+  const children = child.children || []
+  for (const subChild of children) {
+    traverse(subChild, callback)
+  }
+}
+
 global.MockObject3D = {
-  traverseChild: {},
   children: []
 }
 class MockObject3D {
@@ -14,7 +22,11 @@ class MockObject3D {
     this.translateX = jest.fn()
     this.translateY = jest.fn()
     this.translateZ = jest.fn()
-    this.traverse = (callback) => callback(global.MockObject3D.traverseChild)
+    this.traverse = (callback) => {
+      global.MockObject3D.children.forEach((child) => {
+        traverse(child, callback)
+      })
+    }
     this.rotateX = jest.fn()
     this.rotateY = jest.fn()
     this.rotateZ = jest.fn()
@@ -138,8 +150,7 @@ class MockCylinderGeometry extends MockBufferGeometry {}
 class MockEdgesGeometry extends MockBufferGeometry {}
 
 global.MockGroup = {
-  children: [],
-  traverseChild: {}
+  children: []
 }
 class MockGroup {
   constructor() {
@@ -149,7 +160,11 @@ class MockGroup {
     this.translateX = jest.fn()
     this.translateY = jest.fn()
     this.translateZ = jest.fn()
-    this.traverse = (callback) => callback(global.MockGroup.traverseChild)
+    this.traverse = (callback) => {
+      global.MockGroup.children.forEach((child) => {
+        traverse(child, callback)
+      })
+    }
     this.rotateX = jest.fn()
     this.rotateY = jest.fn()
     this.rotateZ = jest.fn()

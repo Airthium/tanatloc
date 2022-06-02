@@ -16,6 +16,65 @@ jest.mock('three/examples/jsm/math/Lut', () => ({
 }))
 
 const mockGLTFError = jest.fn()
+const mockFinish = jest.fn(() => ({
+  scene: {
+    children: [
+      {
+        type: 'Object3D',
+        traverse: (callback: Function) => {
+          callback({ type: 'Mesh', material: { color: 'red' } })
+          callback({ type: 'Object3D' })
+        },
+        children: [
+          {
+            type: 'Mesh',
+            geometry: {
+              boundingBox: {
+                min: {},
+                max: {}
+              },
+              dispose: jest.fn()
+            },
+            material: {
+              dispose: jest.fn()
+            },
+            userData: {
+              uuid: 'uuidf1',
+              label: 1
+            }
+          },
+          {
+            type: 'Mesh',
+            geometry: {
+              boundingBox: {
+                min: {},
+                max: {}
+              },
+              dispose: jest.fn()
+            },
+            material: {
+              dispose: jest.fn()
+            },
+            userData: {
+              uuid: 'uuidf2',
+              label: 2
+            }
+          }
+        ],
+        userData: {
+          uuid: 'uuids1',
+          label: 1
+        }
+      }
+    ],
+    userData: {
+      dimension: 3,
+      type: 'geometry3D',
+      solids: [{ uuid: 'uuids1' }],
+      faces: [{ uuid: 'uuidf1' }, { uuid: 'uuidf2' }]
+    }
+  }
+}))
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
@@ -23,60 +82,7 @@ jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
     load = (_: any, finish: Function, progress: Function, error: Function) => {
       progress('progress')
       mockGLTFError(error)
-      finish({
-        scene: {
-          children: [
-            {
-              children: [
-                {
-                  children: [
-                    {
-                      geometry: {
-                        boundingBox: {
-                          min: {},
-                          max: {}
-                        },
-                        dispose: jest.fn()
-                      },
-                      material: {
-                        dispose: jest.fn()
-                      },
-                      userData: {
-                        uuid: 'solid_uuid'
-                      }
-                    }
-                  ]
-                },
-                {
-                  children: [
-                    {
-                      geometry: {
-                        boundingBox: {
-                          min: {},
-                          max: {}
-                        },
-                        dispose: jest.fn()
-                      },
-                      material: {
-                        dispose: jest.fn()
-                      },
-                      userData: {
-                        uuid: 'face_uuid',
-                        number: 'number'
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          userData: {
-            dimension: 2,
-            type: 'geometry',
-            edges: [{ uuid: 'uuid' }]
-          }
-        }
-      })
+      finish(mockFinish())
     }
   }
 }))
@@ -101,44 +107,15 @@ describe('lib/three/loaders/PartLoader', () => {
     if (attribute === 'position') return { array: [] }
   }
   //@ts-ignore
-  global.MockGroup.children = [
-    {
-      children: [
-        {
-          userData: { uuid: 'solid_uuid', number: 'solid_number' },
-          geometry: {
-            dispose: jest.fn,
-            boundingBox: {
-              min: { x: 0, y: 0, z: 0 },
-              max: { x: 1, y: 1, z: 1 }
-            }
-          },
-          material: {
-            dispose: jest.fn
-          }
-        }
-      ]
-    },
-    {
-      children: [
-        {
-          userData: { uuid: 'face_uuid', number: 'face_number' },
-          geometry: {
-            dispose: jest.fn,
-            boundingBox: {
-              min: { x: 0, y: 0, z: 0 },
-              max: { x: 1, y: 1, z: 1 }
-            }
-          },
-          material: {
-            dispose: jest.fn
-          }
-        }
-      ]
-    }
-  ]
+  global.MockObject3D.children = mockFinish().scene.children
   const part = {
-    summary: {} as TGeometrySummary,
+    summary: {
+      uuid: 'uuid',
+      type: 'geometry3D',
+      dimension: 3,
+      solids: [{ uuid: 'uuids1' }],
+      faces: [{ uuid: 'uuidf1' }, { uuid: 'uuidf2' }]
+    } as TGeometrySummary,
     buffer: Buffer.from([])
   }
   const clippingPlane = new Plane()
@@ -172,38 +149,6 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('load', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    await partLoader.load(part, true, clippingPlane)
-
-    await partLoader.load(part, true, clippingPlane)
-
-    // With color
-    //@ts-ignore
-    global.MockGeometry.getAttribute = () => ({
-      count: 3,
-      array: [0.1, 0.2, 0.3]
-    })
-    await partLoader.load(part, true, clippingPlane)
-
-    //@ts-ignore
-    global.MockGeometry.getAttribute = jest.fn
-    await partLoader.load(part, true, clippingPlane)
-
-    //@ts-ignore
-    global.MockGeometry.getAttribute = () => ({
-      count: 3,
-      array: [0, 0, 0]
-    })
-    await partLoader.load(part, true, clippingPlane)
-
-    //@ts-ignore
-    global.MockGeometry.getAttribute = () => ({
-      count: 3,
-      array: [1, 1, 1]
-    })
-    await partLoader.load(part, true, clippingPlane)
-
-    //@ts-ignore
-    global.MockBox3.isEmpty = true
     await partLoader.load(part, true, clippingPlane)
 
     // GLTF error
@@ -242,19 +187,17 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('stopSelection', async () => {
-    //@ts-ignore
-    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.stopSelection()
 
     // Add selection
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
-    mesh.select('face_uuid')
+    mesh.select('uuidf1')
     mesh.stopSelection()
 
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
-    mesh.select('solid_uuid')
+    mesh.select('uuids1')
     mesh.stopSelection()
   })
 
@@ -272,55 +215,104 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(selected).toEqual([])
   })
 
-  test('mouseMove', async () => {
+  test('mouseMove - solids', async () => {
+    let current
+    mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+
+    // Empty
     //@ts-ignore
-    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
+    global.MockRaycaster.intersectObject = []
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+    // No parent
+    //@ts-ignore
+    global.MockRaycaster.intersectObject = [
+      { object: { userData: { uuid: 'uuids1', label: 1 } } }
+    ]
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+    // Parent
+    //@ts-ignore
+    global.MockRaycaster.intersectObject = [
+      { object: { parent: { userData: { uuid: 'uuids1', label: 1 } } } }
+    ]
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+    expect(current).toBe('uuids1')
+  })
+
+  test('mouseMove - faces', async () => {
     let current
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
+    // Empty
+    //@ts-ignore
+    global.MockRaycaster.intersectObject = []
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
+    // Ok
     //@ts-ignore
     global.MockRaycaster.intersectObject = [
-      { object: { userData: { uuid: 'uuid', label: 1 } } }
+      { object: { userData: { uuid: 'uuidf1', label: 1 } } }
     ]
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    expect(current).toBe('uuid')
+    expect(current).toBe('uuidf1')
+  })
+
+  test('mouseMove - default', async () => {
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
+    mesh.startSelection(renderer, camera, outlinePass, 'default')
+
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
   })
 
   test('highlight', async () => {
-    //@ts-ignore
-    global.MockObject3D.traverseChild = { userData: { uuid: 'face_uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
-    mesh.highlight('face_uuid')
-    mesh.highlight('face_uuid')
+    // Solids
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.highlight('uuids1')
+    mesh.stopSelection()
+
+    // Faces
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.highlight('uuidf1')
+    mesh.highlight('uuidf1')
     mesh.highlight('uuid')
+    mesh.stopSelection()
   })
 
   test('unhighlight', async () => {
-    //@ts-ignore
-    global.MockObject3D.traverseChild = { userData: { uuid: 'face_uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
+
+    // Solids
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.unhighlight()
+
+    mesh.select('uuids1')
+    mesh.highlight('uuids1')
+    mesh.unhighlight()
+    mesh.stopSelection()
+
+    // Faces
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
-
     mesh.unhighlight()
 
-    // With selected
-    mesh.select('face_uuid')
-    mesh.highlight('face_uuid')
+    mesh.select('uuidf1')
+    mesh.highlight('uuidf1')
     mesh.unhighlight()
+    mesh.stopSelection()
   })
 
   test('mouseDown', async () => {
-    //@ts-ignore
-    global.MockObject3D.traverseChild = { userData: { uuid: 'face_uuid' } }
     let current
     mouseDownEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
@@ -330,40 +322,47 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseDown()
     expect(mouseDownEvent).toHaveBeenCalledTimes(0)
 
-    mesh.highlight('face_uuid')
+    mesh.highlight('uuidf1')
     mouseDown()
     expect(mouseDownEvent).toHaveBeenCalledTimes(1)
-    expect(current).toBe('face_uuid')
+    expect(current).toBe('uuidf1')
   })
 
   test('select', async () => {
-    //@ts-ignore
-    global.MockObject3D.traverseChild = {
-      userData: { uuid: 'face_uuid', label: 1 }
-    }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
+
+    // Solids
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.select('uuids1')
+    mesh.stopSelection()
+
+    // Faces
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
-
-    mesh.select('face_uuid')
-    mesh.select('face_uuid')
+    mesh.select('uuidf1')
+    mesh.select('uuidf1')
     mesh.select('uuid')
-
     expect(mesh.getSelected()).toEqual([
-      { uuid: 'face_uuid', label: 1 },
-      { uuid: 'face_uuid', label: 1 }
+      { uuid: 'uuidf1', label: 1 },
+      { uuid: 'uuidf1', label: 1 }
     ])
+    mesh.stopSelection()
   })
 
   test('unselect', async () => {
-    //@ts-ignore
-    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
-    mesh.select('face_uuid')
+    // Solids
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.select('uuids1')
     mesh.unselect('uuid')
-    mesh.unselect('face_uuid')
+    mesh.unselect('uuids1')
+
+    // Faces
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.select('uuidf1')
+    mesh.unselect('uuid')
+    mesh.unselect('uuidf1')
   })
 })

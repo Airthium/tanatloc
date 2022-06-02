@@ -83,15 +83,17 @@ describe('lib/three/helpers/SectionViewHelper', () => {
 
   test('dispose', () => {
     //@ts-ignore
-    global.MockGroup.traverseChild = {
-      type: 'Plane',
-      geometry: {
-        dispose: jest.fn
-      },
-      material: {
-        dispose: jest.fn
+    global.MockGroup.children = [
+      {
+        type: 'Plane',
+        geometry: {
+          dispose: jest.fn
+        },
+        material: {
+          dispose: jest.fn
+        }
       }
-    }
+    ]
 
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.dispose()
@@ -99,9 +101,11 @@ describe('lib/three/helpers/SectionViewHelper', () => {
 
   test('dispose - other child', () => {
     //@ts-ignore
-    global.MockGroup.traverseChild = {
-      type: 'Other'
-    }
+    global.MockGroup.children = [
+      {
+        type: 'Other'
+      }
+    ]
 
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.dispose()

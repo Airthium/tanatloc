@@ -62,7 +62,8 @@ describe('lib/three/helpers/GridHelper', () => {
             type: 'Line',
 
             geometry: { dispose: jest.fn },
-            material: { dispose: jest.fn }
+            material: { dispose: jest.fn },
+            scale: { setScalar: jest.fn }
           }
         ]
       },
@@ -70,6 +71,7 @@ describe('lib/three/helpers/GridHelper', () => {
         children: [
           {
             type: 'LabelHelper',
+            scale: { setScalar: jest.fn },
             dispose: jest.fn
           }
         ]
@@ -100,21 +102,11 @@ describe('lib/three/helpers/GridHelper', () => {
   })
 
   test('update', () => {
-    //@ts-ignore
-    global.MockGroup.traverseChild = {
-      type: 'LabelHelper',
-      scale: { setScalar: jest.fn }
-    }
     const grid = GridHelper(renderer, scene, camera, controls)
     grid.update()
   })
 
   test('setVisible', () => {
-    //@ts-ignore
-    global.MockGroup.traverseChild = {
-      type: 'Line',
-      scale: { setScalar: jest.fn }
-    }
     const grid = GridHelper(renderer, scene, camera, controls)
     grid.update()
     grid.setVisible(true)

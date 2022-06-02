@@ -530,7 +530,8 @@ const PartLoader = (
       if (mesh.type === 'Mesh') {
         const partMesh = mesh as IPartMesh
         partMesh.material.color = highlightColor
-      } else if (mesh.type === 'Object3D') {
+      } else {
+        // mesh.type === 'Object3D'
         const partObject = mesh as IPartObject
         partObject.traverse((child) => {
           if (child.type === 'Mesh') {
@@ -557,7 +558,8 @@ const PartLoader = (
         const partMesh = mesh as IPartMesh
         partMesh.material.color =
           index === -1 ? partMesh.material.originalColor : selectColor
-      } else if (mesh.type === 'Object3D') {
+      } else {
+        //mesh.type === 'Object3D'
         const partObject = mesh as IPartObject
         partObject.traverse((child) => {
           if (child.type === 'Mesh') {
@@ -594,7 +596,8 @@ const PartLoader = (
       if (mesh.type === 'Mesh') {
         const partMesh = mesh as IPartMesh
         partMesh.material.color = selectColor
-      } else if (mesh.type === 'Obejct3D') {
+      } else {
+        //mesh.type === 'Object3D'
         const partObject = mesh as IPartObject
         partObject.traverse((child) => {
           if (child.type === 'Mesh') {
@@ -624,7 +627,8 @@ const PartLoader = (
       if (mesh.type === 'Mesh') {
         const partMesh = mesh as IPartMesh
         partMesh.material.color = partMesh.material.originalColor
-      } else if (mesh.type === 'Obejct3D') {
+      } else {
+        //mesh.type === 'Object3D'
         const partObject = mesh as IPartObject
         partObject.traverse((child) => {
           if (child.type === 'Mesh') {

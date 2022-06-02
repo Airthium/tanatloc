@@ -1,3 +1,4 @@
+import { TGeometrySummary } from '@/database/geometry/get'
 import { PerspectiveCamera, Plane, WebGLRenderer } from 'three'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { PartLoader } from '../PartLoader'
@@ -67,7 +68,7 @@ jest.mock('three/examples/jsm/loaders/DRACOLoader', () => ({
 describe('lib/three/loaders/PartLoader', () => {
   global.URL.createObjectURL = jest.fn()
   const part = {
-    uuid: 'uuid',
+    summary: {} as TGeometrySummary,
     buffer: Buffer.from([])
   }
   const renderer = {} as WebGLRenderer

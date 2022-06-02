@@ -24,6 +24,7 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
 import { IGeometryPart } from '@/lib/index.d'
+import { TGeometrySummary } from '@/database/geometry/get'
 
 export interface IPartLoader {
   load: (
@@ -384,22 +385,76 @@ const PartLoader = (
   const mouseMove = (event: MouseEvent): void => {
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, selectionCamera!)
-    const intersects = raycaster.intersectObject(selectionPart!, true)
 
-    console.log(selectionPart)
-    const summary = selectionPart!.userData
-    const elements = summary[selectionType!]
-
-    console.log(elements)
-    //TODO
-
-    if (intersects.length)
-      mouseMoveEvent(
-        selectionPart!,
-        intersects[0].object.userData.uuid,
-        intersects[0].object.userData.label
-      )
-    else mouseMoveEvent(selectionPart!)
+    const summary = selectionPart!.userData as TGeometrySummary
+    let intersects
+    switch (selectionType) {
+      case 'solids':
+        intersects = raycaster.intersectObject(selectionPart!, true)
+        if (intersects.length) {
+          const intersect = intersects[0].object
+          const parent = intersect.parent
+          if (parent)
+            // On a face
+            mouseMoveEvent(
+              selectionPart!,
+              parent.userData.uuid,
+              parent.userData.label
+            )
+        } else mouseMoveEvent(selectionPart!)
+        break
+      case 'faces':
+        if (summary.dimension === 2) {
+          intersects = raycaster.intersectObject(selectionPart!, true)
+          if (intersects.length) {
+            const intersect = intersects[0].object
+            const parent = intersect.parent
+            if (parent?.type === 'Mesh')
+              // On an edge
+              mouseMoveEvent(
+                selectionPart!,
+                parent.userData.uuid,
+                parent.userData.label
+              )
+            // On a face
+            else
+              mouseMoveEvent(
+                selectionPart!,
+                intersect.userData.uuid,
+                intersect.userData.label
+              )
+          } else mouseMoveEvent(selectionPart!)
+        } else {
+          intersects = raycaster.intersectObject(selectionPart!, true)
+          if (intersects.length) {
+            const intersect = intersects[0].object
+            mouseMoveEvent(
+              selectionPart!,
+              intersect.userData.uuid,
+              intersect.userData.label
+            )
+          } else mouseMoveEvent(selectionPart!)
+        }
+        break
+      case 'edges':
+        const edges = summary.edges
+        intersects = raycaster.intersectObject(selectionPart!, true)
+        if (intersects.length) {
+          const intersect = intersects[0].object
+          const edge = edges?.find((e) => e.uuid === intersect.userData.uuid)
+          if (edge)
+            // On an edge
+            mouseMoveEvent(
+              selectionPart!,
+              intersect.userData.uuid,
+              intersect.userData.label
+            )
+          else mouseMoveEvent(selectionPart!)
+        } else mouseMoveEvent(selectionPart!)
+        break
+      default:
+        break
+    }
   }
 
   /**

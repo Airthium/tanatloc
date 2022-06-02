@@ -758,7 +758,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         }
       }
     })
-  }, [selectEnabled, selectPart])
+  }, [selectEnabled, selectPart, selectType])
 
   // Highlight / Select
   useEffect(() => {

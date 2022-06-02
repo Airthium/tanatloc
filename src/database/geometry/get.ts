@@ -14,19 +14,19 @@ export type TGeometrySummary = {
   uuid: string
   type: string
   dimension: number
-  solids: {
+  solids?: {
     name: string
     uuid: string
     label: number
     color?: TGeometryColor
   }[]
-  faces: {
+  faces?: {
     name: string
     uuid: string
     label: number
     color?: TGeometryColor
   }[]
-  edges: {
+  edges?: {
     name: string
     uuid: string
     label: number

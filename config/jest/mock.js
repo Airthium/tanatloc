@@ -2,6 +2,31 @@
 
 // Bases classes
 
+global.MockObject3D = {
+  traverseChild: {},
+  children: []
+}
+class MockObject3D {
+  constructor() {
+    this.add = jest.fn()
+    this.lookAt = jest.fn()
+    this.position = new MockVector3()
+    this.translateX = jest.fn()
+    this.translateY = jest.fn()
+    this.translateZ = jest.fn()
+    this.traverse = (callback) => callback(global.MockObject3D.traverseChild)
+    this.rotateX = jest.fn()
+    this.rotateY = jest.fn()
+    this.rotateZ = jest.fn()
+    this.rotateOnWorldAxis = jest.fn()
+
+    this.children = global.MockObject3D.children
+    this.position = new MockVector3()
+    this.rotation = new MockEuler()
+    this.scale = new MockVector3()
+  }
+}
+
 global.MockGeometry = {
   attributes: {},
   morphAttributes: {},
@@ -77,6 +102,7 @@ class MockBox3 {
     this.isEmpty = () => global.MockBox3.isEmpty
     this.getCenter = jest.fn()
     this.getSize = jest.fn()
+    this.expandByObject = jest.fn()
 
     this.min = new MockVector3()
     this.max = new MockVector3()
@@ -335,6 +361,7 @@ const MockBufferGeometryUtils = {
 }
 
 export const MockThree = {
+  Object3D: MockObject3D,
   BufferGeometry: MockBufferGeometry,
   BufferAttribute: MockBufferAttribute,
   Material: MockMaterial,

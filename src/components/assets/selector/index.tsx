@@ -128,82 +128,79 @@ const Selector = ({
    * Select all
    */
   const selectAll = (): void => {
-    if (type)
-      geometry.summary[type]?.forEach((element) => {
-        if (
-          !filter ||
-          (filter &&
-            filter.r === element.color?.r &&
-            filter.g === element.color?.g &&
-            filter.b === element.color?.b)
+    geometry.summary[type!]?.forEach((element) => {
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
+      )
+        dispatch(
+          select({
+            uuid: element.uuid,
+            label: element.label
+          })
         )
-          dispatch(
-            select({
-              uuid: element.uuid,
-              label: element.label
-            })
-          )
-      })
+    })
   }
 
   /**
    * Unselect all
    */
   const unselectAll = () => {
-    if (type)
-      geometry.summary[type]?.forEach((element) => {
-        if (
-          !filter ||
-          (filter &&
-            filter.r === element.color?.r &&
-            filter.g === element.color?.g &&
-            filter.b === element.color?.b)
+    geometry.summary[type!]?.forEach((element) => {
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
+      )
+        dispatch(
+          unselect({
+            uuid: element.uuid,
+            label: element.label
+          })
         )
-          dispatch(
-            unselect({
-              uuid: element.uuid,
-              label: element.label
-            })
-          )
-      })
+    })
   }
 
   /**
    * Swap selection
    */
   const selectSwap = () => {
-    if (type)
-      geometry.summary[type]?.forEach((element) => {
-        if (
-          !filter ||
-          (filter &&
-            filter.r === element.color?.r &&
-            filter.g === element.color?.g &&
-            filter.b === element.color?.b)
-        ) {
-          if (selected.find((s) => s.uuid === element.uuid))
-            dispatch(
-              unselect({
-                uuid: element.uuid,
-                label: element.label
-              })
-            )
-          else
-            dispatch(
-              select({
-                uuid: element.uuid,
-                label: element.label
-              })
-            )
-        } else {
+    geometry.summary[type!]?.forEach((element) => {
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
+      ) {
+        if (selected.find((s) => s.uuid === element.uuid))
+          dispatch(
+            unselect({
+              uuid: element.uuid,
+              label: element.label
+            })
+          )
+        else
           dispatch(
             select({
               uuid: element.uuid,
               label: element.label
             })
           )
-        }
-      })
+      } else {
+        dispatch(
+          select({
+            uuid: element.uuid,
+            label: element.label
+          })
+        )
+      }
+    })
   }
 
   /**
@@ -292,7 +289,7 @@ const Selector = ({
 
       <div className="full-width marginTop-20">
         {type
-          ? geometry.summary[type]!.map((element, index) => {
+          ? geometry.summary[type]?.map((element, index) => {
               if (display(element)) {
                 let borderColor = 'transparent'
                 let backgroundColor = 'transparent'

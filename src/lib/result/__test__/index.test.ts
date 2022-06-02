@@ -8,6 +8,8 @@ jest.mock('path', () => ({
 const mockArchiver = jest.fn()
 jest.mock('archiver', () => () => mockArchiver())
 
+jest.mock('extract-json-from-string', () => (str: string) => [JSON.parse(str)])
+
 jest.mock('@/config/storage', () => ({}))
 
 const mockSimulationGet = jest.fn()
@@ -18,11 +20,9 @@ jest.mock('../../simulation', () => ({
 const mockReadFile = jest.fn()
 const mockListFiles = jest.fn()
 const mockReadStream = jest.fn()
-const mockReadJSONFile = jest.fn()
 const mockWriteStream = jest.fn()
 jest.mock('../../tools', () => ({
   readFile: async () => mockReadFile(),
-  readJSONFile: async () => mockReadJSONFile(),
   listFiles: async () => mockListFiles(),
   readStream: () => mockReadStream(),
   writeStream: () => mockWriteStream()
@@ -68,15 +68,67 @@ describe('lib/result', () => {
   })
 
   test('load', async () => {
-    mockReadJSONFile.mockImplementation(() => ({
-      uuid: 'uuid'
-    }))
+    const summary = {
+      uuid: 'uuid',
+      dimension: 3,
+      solids: [
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1
+        },
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: { r: 0, g: 0.5, b: 1 }
+        }
+      ],
+      faces: [
+        { uuid: 'uuid', name: 'name', number: 1 },
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: { r: 0, g: 0.5, b: 1 }
+        }
+      ],
+      edges: [
+        { uuid: 'uuid', name: 'name', number: 1 },
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: { r: 0, g: 0.5, b: 1 }
+        }
+      ]
+    }
+    mockReadFile.mockImplementation(() =>
+      JSON.stringify({
+        scenes: [
+          {
+            extras: summary
+          }
+        ]
+      })
+    )
     const load = await Result.load(
       { id: 'id' },
       { originPath: 'originPath', glb: 'glb' }
     )
     expect(mockReadFile).toHaveBeenCalledTimes(1)
-    expect(load).toEqual({ uuid: 'uuid', buffer: Buffer.from('readFile') })
+    expect(load).toEqual({
+      summary,
+      buffer: Buffer.from(
+        JSON.stringify({
+          scenes: [
+            {
+              extras: summary
+            }
+          ]
+        })
+      )
+    })
   })
 
   test('download', () => {

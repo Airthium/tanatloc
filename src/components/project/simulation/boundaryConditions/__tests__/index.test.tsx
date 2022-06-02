@@ -27,12 +27,10 @@ jest.mock(
 const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSetType = jest.fn()
-const mockSetPart = jest.fn()
 jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
-  setType: () => mockSetType(),
-  setPart: () => mockSetPart()
+  setType: () => mockSetType()
 }))
 
 describe('components/project/simulation/boundaryConditions', () => {
@@ -87,7 +85,6 @@ describe('components/project/simulation/boundaryConditions', () => {
     mockEnable.mockReset()
     mockDisable.mockReset()
     mockSetType.mockReset()
-    mockSetPart.mockReset()
 
     setVisible.mockReset()
   })
@@ -106,7 +103,6 @@ describe('components/project/simulation/boundaryConditions', () => {
       </SelectContext.Provider>
     )
 
-    expect(mockSetPart).toHaveBeenCalledTimes(1)
     expect(mockSetType).toHaveBeenCalledTimes(1)
 
     unmount()
@@ -119,7 +115,12 @@ describe('components/project/simulation/boundaryConditions', () => {
       >
         <BoundaryConditions
           geometry={{
-            ...geometry
+            ...geometry,
+            summary: {
+              uuid: 'uuid',
+              type: 'geometry2D',
+              dimension: 2
+            }
           }}
           simulation={simulation}
           swr={swr}
@@ -128,7 +129,6 @@ describe('components/project/simulation/boundaryConditions', () => {
       </SelectContext.Provider>
     )
 
-    expect(mockSetPart).toHaveBeenCalledTimes(1)
     expect(mockSetType).toHaveBeenCalledTimes(1)
 
     unmount()

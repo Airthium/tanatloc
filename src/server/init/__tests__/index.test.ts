@@ -1,4 +1,4 @@
-import init, { initPlugins, initTemplates } from '..'
+import init, { initJobs, initPlugins, initTemplates } from '..'
 
 const mockLoadPlugins = jest.fn()
 const mockRestartJobs = jest.fn()
@@ -31,12 +31,6 @@ describe('src/server/init', () => {
   })
 
   test('initPlugins', async () => {
-    // Restart jobs error
-    mockRestartJobs.mockImplementation(() => {
-      throw new Error('restartJobs error')
-    })
-    await initPlugins()
-
     // Load error
     mockLoadPlugins.mockImplementation(() => {
       throw new Error('loadPlugins error')
@@ -47,6 +41,14 @@ describe('src/server/init', () => {
     //@ts-ignore
     global.tanatloc.plugins = true
     await initPlugins()
+  })
+
+  test('initJobs', async () => {
+    // Restart jobs error
+    mockRestartJobs.mockImplementation(() => {
+      throw new Error('restartJobs error')
+    })
+    await initJobs()
   })
 
   test('initTemplates', async () => {

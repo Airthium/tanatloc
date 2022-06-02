@@ -714,8 +714,12 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   // Dimension
   useEffect(() => {
+    if (!scene.current) return
+
     // Dimension
     if (part?.summary.dimension === 2) {
+      computeSceneBoundingSphere(scene.current)
+
       // Set camera
       const normal = new Vector3(0, 0, 1)
       const up = new Vector3(0, 1, 0)

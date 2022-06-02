@@ -184,6 +184,8 @@ describe('plugins/local/src/lib', () => {
     // Convert error message
     mockConvert.mockImplementation((_, __, callback) => {
       callback({ error: 'Convert error' })
+      callback({ data: 'Data' })
+      return [{ name: 'name', glb: 'glb' }]
     })
     await Local.stopProcess(
       'id',
@@ -193,8 +195,8 @@ describe('plugins/local/src/lib', () => {
     )
 
     // Ok
-    mockConvert.mockImplementation((_, __, callback) => {
-      callback({ data: JSON.stringify({ name: 'name', apth: 'path' }) })
+    mockConvert.mockImplementation(() => {
+      return [{ name: 'name', glb: 'glb' }]
     })
     await Local.stopProcess(
       'id',
@@ -261,10 +263,12 @@ describe('plugins/local/src/lib', () => {
     })
     mockConvert.mockImplementation((_, __, callback) => {
       callback({ data: 'data', error: 'error' })
-      return {
-        json: 'json',
-        glb: 'glb'
-      }
+      return [
+        {
+          json: 'json',
+          glb: 'glb'
+        }
+      ]
     })
 
     // Not meshable
@@ -363,7 +367,7 @@ describe('plugins/local/src/lib', () => {
       expect(true).toBe(false)
     } catch (err) {
     } finally {
-      mockConvert.mockImplementation(() => ({}))
+      mockConvert.mockImplementation(() => [{}])
     }
     // Error
     mockGmsh.mockReset()
@@ -447,7 +451,7 @@ describe('plugins/local/src/lib', () => {
       callback({ error: 'data' })
       return 0
     })
-    mockConvert.mockImplementation(() => ({}))
+    mockConvert.mockImplementation(() => [{}])
     await Local.computeSimulation(
       { id: 'id' },
       {

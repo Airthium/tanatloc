@@ -5,6 +5,8 @@ jest.mock('path', () => ({
   join: (_: string, path: string) => mockPath(path)
 }))
 
+jest.mock('extract-json-from-string', () => (str: string) => [JSON.parse(str)])
+
 jest.mock('@/config/storage', () => ({
   GEOMETRY: 'geometry'
 }))
@@ -26,22 +28,16 @@ jest.mock('../../project', () => ({
 }))
 
 const mockToolsCopyFile = jest.fn()
-const mockToolsCopyDirectory = jest.fn()
 const mockToolsReadFile = jest.fn()
-const mockToolsReadJSONFile = jest.fn()
 const mockToolsWriteFile = jest.fn()
 const mockToolsConvert = jest.fn()
 const mockToolsRemoveFile = jest.fn()
-const mockToolsRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
   copyFile: async (path: string) => mockToolsCopyFile(path),
-  copyDirectory: async (path: string) => mockToolsCopyDirectory(path),
   readFile: async (path: string) => mockToolsReadFile(path),
-  readJSONFile: async (path: string) => mockToolsReadJSONFile(path),
   writeFile: async () => mockToolsWriteFile(),
   convert: async () => mockToolsConvert(),
-  removeFile: async () => mockToolsRemoveFile(),
-  removeDirectory: async () => mockToolsRemoveDirectory()
+  removeFile: async () => mockToolsRemoveFile()
 }))
 
 describe('lib/geometry', () => {
@@ -56,13 +52,10 @@ describe('lib/geometry', () => {
     mockProjectUpdate.mockReset()
 
     mockToolsCopyFile.mockReset()
-    mockToolsCopyDirectory.mockReset()
     mockToolsReadFile.mockReset()
-    mockToolsReadJSONFile.mockReset()
     mockToolsWriteFile.mockReset()
     mockToolsConvert.mockReset()
     mockToolsRemoveFile.mockReset()
-    mockToolsRemoveDirectory.mockReset()
   })
 
   test('add', async () => {
@@ -75,14 +68,15 @@ describe('lib/geometry', () => {
         glb: 'glb'
       }
     ])
+
     const summary = {
       uuid: 'uuid',
+      dimension: 3,
       solids: [
         {
           uuid: 'uuid',
           name: 'name',
-          number: 1,
-          color: undefined
+          number: 1
         },
         {
           uuid: 'uuid',
@@ -92,51 +86,33 @@ describe('lib/geometry', () => {
         }
       ],
       faces: [
-        { uuid: 'uuid', name: 'name', number: 1, color: undefined },
-        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
+        { uuid: 'uuid', name: 'name', number: 1 },
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: { r: 0, g: 0.5, b: 1 }
+        }
       ],
       edges: [
-        { uuid: 'uuid', name: 'name', number: 1, color: undefined },
-        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
+        { uuid: 'uuid', name: 'name', number: 1 },
+        {
+          uuid: 'uuid',
+          name: 'name',
+          number: 1,
+          color: { r: 0, g: 0.5, b: 1 }
+        }
       ]
     }
-    const solid = {
-      uuid: 'uuid'
-    }
-    const solidColor = {
-      uuid: 'uuid',
-      data: {
-        attributes: {
-          color: { itemSize: 3, array: [0, 0.5, 1] }
-        }
-      }
-    }
-    const face = { uuid: 'uuid' }
-    const faceColor = {
-      uuid: 'uuid',
-      data: {
-        attributes: {
-          color: { itemSize: 3, array: [0, 0.5, 1] }
-        }
-      }
-    }
-    const edge = { uuid: 'uuid' }
-    const edgeColor = {
-      uuid: 'uuid',
-      data: {
-        attributes: {
-          color: { itemSize: 3, array: [0, 0.5, 1] }
-        }
-      }
-    }
-    mockToolsReadJSONFile
-      .mockImplementationOnce(() => summary)
-      .mockImplementationOnce(() => solid)
-      .mockImplementationOnce(() => solidColor)
-      .mockImplementationOnce(() => face)
-      .mockImplementationOnce(() => faceColor)
-      .mockImplementationOnce(() => edge)
-      .mockImplementationOnce(() => edgeColor)
+    mockToolsReadFile.mockImplementation(() =>
+      JSON.stringify({
+        scenes: [
+          {
+            extras: summary
+          }
+        ]
+      })
+    )
 
     // Normal
     const geometry = await Geometry.add(
@@ -147,9 +123,8 @@ describe('lib/geometry', () => {
     expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
     expect(mockToolsConvert).toHaveBeenCalledTimes(1)
-    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(7)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
     expect(geometry).toEqual({
-      dimension: 3,
       id: 'id',
       glb: 'glb',
       summary: summary
@@ -170,82 +145,8 @@ describe('lib/geometry', () => {
     expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsConvert).toHaveBeenCalledTimes(1)
-    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(7)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
-  })
-
-  test('add 2d', async () => {
-    mockAdd.mockImplementation(() => ({
-      id: 'id'
-    }))
-    mockGet.mockImplementation(() => ({}))
-    mockToolsConvert.mockImplementation(() => [
-      {
-        glb: 'glb'
-      }
-    ])
-    const summary = {
-      uuid: 'uuid',
-      faces: [
-        {
-          uuid: 'uuid',
-          name: 'name',
-          number: 1,
-          color: undefined
-        },
-        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
-      ],
-      edges: [
-        {
-          uuid: 'uuid',
-          name: 'name',
-          number: 1,
-          color: undefined
-        },
-        { uuid: 'uuid', name: 'name', number: 1, color: { r: 0, g: 0.5, b: 1 } }
-      ]
-    }
-    const face = { uuid: 'uuid' }
-    const faceColor = {
-      uuid: 'uuid',
-      data: {
-        attributes: {
-          color: { itemSize: 3, array: [0, 0.5, 1] }
-        }
-      }
-    }
-    const edge = { uuid: 'uuid' }
-    const edgeColor = {
-      uuid: 'uuid',
-      data: {
-        attributes: {
-          color: { itemSize: 3, array: [0, 0.5, 1] }
-        }
-      }
-    }
-    mockToolsReadJSONFile
-      .mockImplementationOnce(() => summary)
-      .mockImplementationOnce(() => face)
-      .mockImplementationOnce(() => faceColor)
-      .mockImplementationOnce(() => edge)
-      .mockImplementationOnce(() => edgeColor)
-
-    // Normal
-    const geometry = await Geometry.add(
-      { id: 'id' },
-      { name: 'name.step', uid: 'test', buffer: Buffer.from('buffer') }
-    )
-    expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
-    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
-    expect(mockToolsConvert).toHaveBeenCalledTimes(1)
-    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(5)
-    expect(geometry).toEqual({
-      dimension: 2,
-      id: 'id',
-      glb: 'glb',
-      summary: summary
-    })
   })
 
   test('get', async () => {
@@ -276,16 +177,12 @@ describe('lib/geometry', () => {
     await Geometry.del({ id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
-    expect(mockPath).toHaveBeenCalledTimes(3)
+    expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
-    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(2)
 
     // With errors
     mockToolsRemoveFile.mockImplementation(() => {
-      throw new Error()
-    })
-    mockToolsRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
     await Geometry.del({
@@ -294,9 +191,8 @@ describe('lib/geometry', () => {
     })
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
-    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockPath).toHaveBeenCalledTimes(5)
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(5)
-    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(3)
     expect(mockDelete).toHaveBeenCalledTimes(3)
   })
 
@@ -330,17 +226,16 @@ describe('lib/geometry', () => {
   test('readPart', async () => {
     mockPath.mockImplementation((path) => path)
     mockGet.mockImplementation(() => ({
-      glb: 'glb'
+      glb: 'glb',
+      summary: {}
     }))
     mockToolsReadFile.mockImplementation(() => Buffer.from('buffer'))
-    mockToolsReadJSONFile.mockImplementation(() => ({ uuid: 'uuid' }))
 
     const part = await Geometry.readPart({ id: 'id' })
     expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
-    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(1)
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(1)
     expect(part).toEqual({
-      uuid: 'uuid',
+      summary: {},
       buffer: Buffer.from('buffer')
     })
 
@@ -370,8 +265,6 @@ describe('lib/geometry', () => {
     await Geometry.archive({ id: 'id' }, 'to')
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
-    expect(mockToolsCopyDirectory).toHaveBeenCalledTimes(1)
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
-    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
   })
 })

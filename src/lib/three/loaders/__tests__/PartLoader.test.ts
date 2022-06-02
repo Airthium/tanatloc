@@ -19,6 +19,7 @@ const mockGLTFError = jest.fn()
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
+    setKTX2Loader = jest.fn()
     load = (_: any, finish: Function, progress: Function, error: Function) => {
       progress('progress')
       mockGLTFError(error)
@@ -68,7 +69,12 @@ jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
                 }
               ]
             }
-          ]
+          ],
+          userData: {
+            dimension: 2,
+            type: 'geometry',
+            edges: [{ uuid: 'uuid' }]
+          }
         }
       })
     }
@@ -79,6 +85,12 @@ jest.mock('three/examples/jsm/loaders/DRACOLoader', () => ({
   DRACOLoader: class {
     setDecoderPath = jest.fn()
     preload = jest.fn()
+  }
+}))
+
+jest.mock('three/examples/jsm/loaders/KTX2Loader', () => ({
+  KTX2Loader: class {
+    setTranscoderPath = jest.fn()
   }
 }))
 
@@ -230,6 +242,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('stopSelection', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.stopSelection()
@@ -259,6 +273,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('mouseMove', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
     let current
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
@@ -268,14 +284,16 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     //@ts-ignore
-    global.MockRaycaster.intersectObjects = [
-      { object: { userData: { uuid: 'uuid', number: 'number' } } }
+    global.MockRaycaster.intersectObject = [
+      { object: { userData: { uuid: 'uuid', label: 1 } } }
     ]
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     expect(current).toBe('uuid')
   })
 
   test('highlight', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'face_uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -286,6 +304,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('unhighlight', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'face_uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -299,6 +319,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('mouseDown', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'face_uuid' } }
     let current
     mouseDownEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
@@ -315,6 +337,10 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('select', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = {
+      userData: { uuid: 'face_uuid', label: 1 }
+    }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -324,12 +350,14 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.select('uuid')
 
     expect(mesh.getSelected()).toEqual([
-      { uuid: 'face_uuid', number: 'number' },
-      { uuid: 'face_uuid', number: 'number' }
+      { uuid: 'face_uuid', label: 1 },
+      { uuid: 'face_uuid', label: 1 }
     ])
   })
 
   test('unselect', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')

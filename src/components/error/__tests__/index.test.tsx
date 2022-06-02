@@ -12,20 +12,32 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockStatus = jest.fn()
+window.URLSearchParams = jest.fn().mockImplementation(() => ({
+  get: () => mockStatus()
+}))
+
 describe('components/error', () => {
+  beforeEach(() => {
+    mockReload.mockReset()
+
+    mockStatus.mockReset()
+    mockStatus.mockImplementation(() => undefined)
+  })
+
   test('render', () => {
     const { unmount } = render(<Error />)
 
     unmount()
   })
 
-  test('with statusCode', () => {
+  test('with webStatusCode', () => {
     const { unmount } = render(<Error webStatusCode={200} />)
 
     unmount()
   })
 
-  test('refresh', () => {
+  test('refresh without webStatusCode', () => {
     const { unmount } = render(<Error />)
 
     const text = screen.getByRole('heading', {
@@ -38,29 +50,66 @@ describe('components/error', () => {
     unmount()
   })
 
+  test('refresh with webStatusCode', () => {
+    const { unmount } = render(<Error webStatusCode={200} />)
+
+    const text = screen.getByRole('heading', {
+      name: 'Please, refresh the page'
+    })
+    fireEvent.click(text)
+
+    expect(mockReload).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('with electron status code 100', () => {
+    mockStatus.mockImplementation(() => '100')
+    const { unmount } = render(<Error />)
+
+    const text = screen.getByRole('heading', {
+      name: 'An error occurred while installing the application'
+    })
+    fireEvent.click(text)
+
+    unmount()
+  })
+
+  test('with electron status code 200', () => {
+    mockStatus.mockImplementation(() => '200')
+    const { unmount } = render(<Error />)
+
+    const text = screen.getByRole('heading', {
+      name: 'An error occurred while loading the database'
+    })
+    fireEvent.click(text)
+
+    unmount()
+  })
+
   test('getInitialProps', () => {
     let code: { webStatusCode?: number }
 
     const res = {} as ServerResponse
     const err = {} as Error & { statusCode: number | undefined }
     code = Error.getInitialProps({ res, err } as NextPageContext)
-    expect(code).toEqual({ statusCode: undefined })
+    expect(code).toEqual({ webStatusCode: undefined })
 
     res.statusCode = 200
     code = Error.getInitialProps({ res, err } as NextPageContext)
-    expect(code).toEqual({ statusCode: 200 })
+    expect(code).toEqual({ webStatusCode: 200 })
 
     code = Error.getInitialProps({ res: undefined, err } as NextPageContext)
-    expect(code).toEqual({ statusCode: undefined })
+    expect(code).toEqual({ webStatusCode: undefined })
 
     err.statusCode = 200
     code = Error.getInitialProps({ res: undefined, err } as NextPageContext)
-    expect(code).toEqual({ statusCode: 200 })
+    expect(code).toEqual({ webStatusCode: 200 })
 
     code = Error.getInitialProps({
       res: undefined,
       err: null
     } as NextPageContext)
-    expect(code).toEqual({ statusCode: 404 })
+    expect(code).toEqual({ webStatusCode: 404 })
   })
 })

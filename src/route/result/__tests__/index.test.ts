@@ -110,7 +110,7 @@ describe('route/result', () => {
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string), json(string) } }'
+        'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
     })
 
     // Access denied

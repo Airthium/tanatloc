@@ -4,6 +4,7 @@ import path from 'path'
 import extractJson from 'extract-json-from-string'
 
 import { IDataBaseEntry } from '@/database/index.d'
+import { TGeometrySummary } from '@/database/geometry/get'
 import { IGeometryPart, IGeometryFile, INewGeometryWithData } from '../index.d'
 
 import { GEOMETRY } from '@/config/storage'
@@ -46,7 +47,7 @@ const add = async (
     // Read summary
     const content = await Tools.readFile(path.join(GEOMETRY, part[0].glb))
     const jsons = extractJson(content.toString())
-    const summary = jsons[0].scenes[0].extras
+    const summary = jsons[0].scenes[0].extras as TGeometrySummary
 
     // Update geometry
     const newGeometry = {
@@ -75,7 +76,10 @@ const add = async (
     ])
 
     // Return
-    return newGeometry
+    return {
+      ...newGeometry,
+      summary
+    }
   } catch (err) {
     console.warn(err)
     console.warn('-> Delete geometry')

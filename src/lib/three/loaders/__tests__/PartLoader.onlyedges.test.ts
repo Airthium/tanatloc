@@ -19,6 +19,7 @@ const mockGLTFError = jest.fn()
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
+    setKTX2Loader = jest.fn()
     load = (_: any, finish: Function, progress: Function, error: Function) => {
       progress('progress')
       mockGLTFError(error)
@@ -62,6 +63,12 @@ jest.mock('three/examples/jsm/loaders/DRACOLoader', () => ({
   DRACOLoader: class {
     setDecoderPath = jest.fn()
     preload = jest.fn()
+  }
+}))
+
+jest.mock('three/examples/jsm/loaders/KTX2Loader', () => ({
+  KTX2Loader: class {
+    setTranscoderPath = jest.fn()
   }
 }))
 
@@ -144,6 +151,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('highlight', async () => {
+    //@ts-ignore
+    global.MockObject3D.traverseChild = { userData: { uuid: 'uuid' } }
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'edges')

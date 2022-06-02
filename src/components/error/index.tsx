@@ -24,7 +24,7 @@ function Error({ webStatusCode }: IProps): JSX.Element {
   const electronStatusCode = urlParams.get('statusCode')
 
   // Render
-  let render = <></>
+  let render: JSX.Element
   if (electronStatusCode) {
     render = (
       <>

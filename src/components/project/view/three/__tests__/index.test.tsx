@@ -143,7 +143,8 @@ jest.mock('@/context/select/actions', () => ({
   highlight: jest.fn(),
   unhighlight: jest.fn(),
   select: jest.fn(),
-  unselect: jest.fn()
+  unselect: jest.fn(),
+  setPart: jest.fn()
 }))
 
 let mockAnimationCount = 0
@@ -218,14 +219,15 @@ describe('components/project/view/three', () => {
                   userData: {},
                   material: {}
                 }
-              ]
+              ],
+              userData: {
+                lut: count === 1 ? null : {}
+              }
             },
             {
               children: [
                 {
-                  userData: {
-                    lut: count === 1 ? null : {}
-                  },
+                  userData: {},
                   material: {}
                 }
               ]
@@ -339,7 +341,8 @@ describe('components/project/view/three', () => {
     global.MockScene.children = [
       {
         type: 'Part',
-        uuid: 'uuid'
+        uuid: 'uuid',
+        dispose: jest.fn()
       }
     ]
     const { unmount } = render(
@@ -348,29 +351,6 @@ describe('components/project/view/three', () => {
       >
         <ThreeView loading={true} project={project} part={part} />
       </SelectContext.Provider>
-    )
-
-    unmount()
-  })
-
-  test('loaded', async () => {
-    mockPartLoader.mockImplementation(() => {
-      throw new Error('load error')
-    })
-    const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
-        <ThreeView loading={true} project={project} part={part} />
-      </SelectContext.Provider>
-    )
-
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockErroNotification).toHaveBeenLastCalledWith(
-        errors.load,
-        new Error('load error')
-      )
     )
 
     unmount()
@@ -549,19 +529,47 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  // test('dimension 2', () => {
-  //   const { unmount } = render(
-  //     <SelectContext.Provider
-  //       value={{ enabled: false, selected: [], dispatch: jest.fn }}
-  //     >
-  //       <ThreeView
-  //         loading={loading}
-  //         project={project}
-  //         part={{ ...part, dimension: 2 }}
-  //       />
-  //     </SelectContext.Provider>
-  //   )
+  test('dimension 2', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView
+          loading={loading}
+          project={project}
+          part={{
+            ...part,
+            summary: { uuid: 'uuid', type: 'geometry2D', dimension: 2 }
+          }}
+        />
+      </SelectContext.Provider>
+    )
 
-  //   unmount()
-  // })
+    unmount()
+  })
+
+  test('load error', async () => {
+    //@ts-ignore
+    global.MockScene.children = []
+    mockPartLoader.mockImplementation(() => {
+      throw new Error('load error')
+    })
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={true} project={project} part={part} />
+      </SelectContext.Provider>
+    )
+
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.load,
+        new Error('load error')
+      )
+    )
+
+    unmount()
+  })
 })

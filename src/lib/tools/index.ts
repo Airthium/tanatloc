@@ -209,7 +209,6 @@ const convert = async (
   if (code !== 0) {
     const err = new Error('Conversion process failed. Code ' + code + '.')
     data && (err.message += '\nData: ' + data)
-    error && (err.message += '\nError: ' + error)
     throw err
   }
 

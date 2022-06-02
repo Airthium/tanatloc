@@ -1,4 +1,4 @@
-/** @module UPDATE */
+/** @module Update */
 
 import isElectron from 'is-electron'
 import fetch from 'node-fetch'
@@ -6,16 +6,15 @@ import appData from '../../../package.json'
 
 /**
  * Get latest version
- * @returns bool isUpdateNeeded
+ * @returns Update needed
  */
-
 const isUpdateNeeded = async (): Promise<boolean> => {
   const myToken = 'XXX'
   if (!isElectron()) return false
 
   // Get current version from github
   const response: any = await fetch(
-    'https://api.github.com/repos/Airthium/tanatloc/releases/latest',
+    'https://api.github.com/repos/Airthium/tanatloc-electron/releases/latest',
     {
       method: 'GET',
       headers: {
@@ -32,4 +31,5 @@ const isUpdateNeeded = async (): Promise<boolean> => {
   return currentVersion !== json.tag_name
 }
 
-export default isUpdateNeeded
+const Update = { isUpdateNeeded }
+export default Update

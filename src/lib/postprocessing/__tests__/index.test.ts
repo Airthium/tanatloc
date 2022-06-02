@@ -31,12 +31,14 @@ describe('lib/postprocessing', () => {
     mockPvpython.mockImplementation(() => ({ code: 0 }))
     mockConvert.mockImplementation((callback) => {
       callback({
-        data: JSON.stringify({
-          fileName: 'fileName',
-          name: 'name',
-          path: 'path'
-        })
+        data: 'data'
       })
+      return [
+        {
+          name: 'name',
+          glb: 'glb'
+        }
+      ]
     })
 
     const res = await Postprocessing.run(
@@ -50,14 +52,14 @@ describe('lib/postprocessing', () => {
         fileName: 'fileName_filter.vtu',
         name: 'name',
         originPath: 'originPath',
-        json: 'path',
-        glb: 'path.glb'
+        glb: 'glb'
       }
     ])
 
     // Convert error
     mockConvert.mockImplementation((callback) => {
       callback({ error: 'error', data: 'data' })
+      return []
     })
     try {
       await Postprocessing.run(

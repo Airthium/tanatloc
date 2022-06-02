@@ -26,7 +26,33 @@ jest.mock('@/lib/utils', () => ({
 
 describe('components/assets/selector', () => {
   const geometry = {
-    summary: {}
+    summary: {
+      faces: [
+        {
+          name: 'name',
+          uuid: 'uuid',
+          label: 1,
+          color: { r: 0, g: 0, b: 1 }
+        },
+        {
+          name: 'name2',
+          uuid: 'uuid2',
+          label: 2,
+          color: { r: 0, g: 0, b: 1 }
+        },
+        {
+          name: 'name3',
+          uuid: 'uuid3',
+          label: 3,
+          color: { r: 1, g: 0, b: 1 }
+        },
+        {
+          name: 'name4',
+          uuid: 'uuid4',
+          label: 4
+        }
+      ]
+    }
   } as Pick<IFrontGeometriesItem, 'summary'>
   const alreadySelected = [
     {
@@ -51,6 +77,27 @@ describe('components/assets/selector', () => {
         value={{
           enabled: true,
           type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('without type', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: undefined,
           selected: [],
           dispatch: jest.fn()
         }}
@@ -177,7 +224,7 @@ describe('components/assets/selector', () => {
         value={{
           enabled: true,
           type: 'faces',
-          selected: [{ uuid: 'uuid4', label: 4 }],
+          selected: [{ uuid: 'uuid3', label: 3 }],
           dispatch: jest.fn()
         }}
       >

@@ -41,11 +41,6 @@ jest.mock('tar', () => ({
   x: () => mockTarX()
 }))
 
-const mockThreeToGLB = jest.fn()
-jest.mock('three-to-glb', () => ({
-  threeToGlb: () => mockThreeToGLB()
-}))
-
 const mockToThree = jest.fn()
 jest.mock('@/services', () => ({
   toThree: async (path: string, fileIn: string, pathOut: string) =>
@@ -69,9 +64,6 @@ describe('lib/tools', () => {
 
     mockTarC.mockReset()
     mockTarX.mockReset()
-
-    mockThreeToGLB.mockReset()
-    mockThreeToGLB.mockImplementation(() => ({}))
 
     mockToThree.mockReset()
   })
@@ -181,7 +173,6 @@ describe('lib/tools', () => {
     await Tools.convert('location', { name: 'name', target: 'target' }, () => {
       // Empty
     })
-    expect(mockWriteFile).toHaveBeenCalledTimes(1)
 
     // Result
     mockToThree.mockImplementation(() => ({
@@ -198,11 +189,14 @@ describe('lib/tools', () => {
         isResult: true
       }
     )
-    expect(mockWriteFile).toHaveBeenCalledTimes(2)
 
     // Error
     try {
-      mockToThree.mockImplementation(() => ({ code: 0, error: 'error' }))
+      mockToThree.mockImplementation(() => ({
+        code: 0,
+        data: 'data',
+        error: 'error'
+      }))
       await Tools.convert(
         'location',
         { name: 'name', target: 'target' },
@@ -212,16 +206,24 @@ describe('lib/tools', () => {
       )
       expect(true).toBe(false)
     } catch (err: any) {
-      expect(err.message).toBe('Conversion process failed.')
+      expect(err.message).toBe(
+        'Conversion process failed.\nData: data\nError: error'
+      )
       expect(true).toBe(true)
     }
 
     // Wrong code
     try {
-      mockToThree.mockImplementation(() => ({ code: -1 }))
+      mockToThree.mockImplementation(() => ({
+        code: -1,
+        data: 'data'
+      }))
       await Tools.convert('location', { name: 'name', target: 'target' })
       expect(true).toBe(false)
-    } catch (err) {
+    } catch (err: any) {
+      expect(err.message).toBe(
+        'Conversion process failed. Code -1.\nData: data'
+      )
       expect(true).toBe(true)
     }
   })

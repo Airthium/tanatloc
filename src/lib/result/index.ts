@@ -33,10 +33,7 @@ const load = async (
   )
 
   // Read summary
-  const content = await Tools.readFile(
-    path.join(SIMULATION, simulation.id, result.originPath, result.glb)
-  )
-  const jsons = extractJson(content.toString())
+  const jsons = extractJson(buffer.toString())
   const summary = jsons[0].scenes[0].extras
 
   return {

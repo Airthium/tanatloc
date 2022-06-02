@@ -56,6 +56,6 @@
       "@/styles/*": ["src/styles/*"]
     }
   },
-  "include": ["global.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["*.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["dist", ".next", "out", "next.config.js"]
 }

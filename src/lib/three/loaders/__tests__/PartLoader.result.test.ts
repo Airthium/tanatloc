@@ -90,6 +90,25 @@ const mockFinish = jest.fn(() => ({
               label: 1
             },
             add: jest.fn()
+          },
+          {
+            type: 'Line',
+            geometry: {
+              boundingBox: {
+                min: {},
+                max: {}
+              },
+              getAttribute: jest.fn(),
+              dispose: jest.fn()
+            },
+            material: {
+              dispose: jest.fn()
+            },
+            userData: {
+              uuid: 'uuide3',
+              label: 1
+            },
+            add: jest.fn()
           }
         ]
       }

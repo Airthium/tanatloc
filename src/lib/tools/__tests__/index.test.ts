@@ -190,6 +190,21 @@ describe('lib/tools', () => {
       }
     )
 
+    // Result without data
+    mockToThree.mockImplementation(() => ({
+      code: 0
+    }))
+    await Tools.convert(
+      'location',
+      { name: 'name', target: 'target' },
+      () => {
+        // Empty
+      },
+      {
+        isResult: true
+      }
+    )
+
     // Error
     try {
       mockToThree.mockImplementation(() => ({

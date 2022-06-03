@@ -149,7 +149,7 @@ const PartLoader = (
       })
     } else if (part.summary.type === 'result') {
       object.traverse((child) => {
-        if (child.type === 'Mesh') {
+        if (child.type === 'Mesh' || child.type === 'Line') {
           const mesh = child as IPartMesh
           const data = mesh.geometry.getAttribute('data')
           if (data) {
@@ -189,14 +189,16 @@ const PartLoader = (
             }
           }
 
-          // Wireframe
-          const geometry = new WireframeGeometry(mesh.geometry)
-          const material = new LineBasicMaterial({
-            linewidth: 1
-          })
-          const wireframe = new LineSegments(geometry, material)
+          if (child.type === 'Mesh') {
+            // Wireframe
+            const geometry = new WireframeGeometry(mesh.geometry)
+            const material = new LineBasicMaterial({
+              linewidth: 1
+            })
+            const wireframe = new LineSegments(geometry, material)
 
-          mesh.add(wireframe)
+            mesh.add(wireframe)
+          }
 
           mesh.material.vertexColors = true
           mesh.material.clippingPlanes = [clippingPlane]

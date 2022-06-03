@@ -216,6 +216,12 @@ describe('components/project/simulation/postprocessing', () => {
       )
     )
 
+    // Empty
+    mockRun.mockImplementation(() => [])
+    fireEvent.click(run)
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+    await waitFor(() => screen.getByText('No results'))
+
     // Run
     mockRun.mockImplementation(() => [
       {
@@ -234,7 +240,7 @@ describe('components/project/simulation/postprocessing', () => {
       }
     ])
     fireEvent.click(run)
-    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(3))
 
     await waitFor(() => screen.getByRole('button', { name: 'eye' }))
     await waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))

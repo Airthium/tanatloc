@@ -172,13 +172,14 @@ describe('lib/geometry', () => {
     mockGet.mockImplementation(() => ({
       uploadfilename: 'uploadfilename',
       extension: 'extension',
-      glb: 'glb'
+      glb: 'glb',
+      brep: 'brep'
     }))
     await Geometry.del({ id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
-    expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(3)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(3)
     expect(mockDelete).toHaveBeenCalledTimes(2)
 
     // With errors
@@ -187,12 +188,13 @@ describe('lib/geometry', () => {
     })
     await Geometry.del({
       id: 'id',
-      glb: 'glb'
+      glb: 'glb',
+      brep: 'brep'
     })
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
-    expect(mockPath).toHaveBeenCalledTimes(5)
-    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(5)
+    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(8)
     expect(mockDelete).toHaveBeenCalledTimes(3)
   })
 
@@ -260,11 +262,12 @@ describe('lib/geometry', () => {
     // Full
     mockGet.mockImplementation(() => ({
       uploadfilename: 'uploadfilename',
-      glb: 'glb'
+      glb: 'glb',
+      brep: 'brep'
     }))
     await Geometry.archive({ id: 'id' }, 'to')
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
-    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(3)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(3)
   })
 })

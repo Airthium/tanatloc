@@ -188,15 +188,17 @@ const convert = async (
   file: { name: string; target: string },
   callback?: (data: { data?: string; error?: string }) => void,
   param?: { isResult: boolean }
-): Promise<{ name: string; glb: string }[]> => {
+): Promise<{ name: string; glb: string; brep?: string }[]> => {
   const origin = file.name
   const genericGlb = file.target
   const glbTarget = genericGlb + '.glb'
+  const brepTarget = genericGlb + '.brep'
 
   const { code, data, error } = await Services.toThree(
     location,
     origin,
-    param?.isResult ? genericGlb : glbTarget
+    param?.isResult ? genericGlb : glbTarget,
+    brepTarget
   )
   callback?.({ data, error })
 
@@ -222,7 +224,8 @@ const convert = async (
   return [
     {
       name: file.name,
-      glb: glbTarget
+      glb: glbTarget,
+      brep: brepTarget
     }
   ]
 }

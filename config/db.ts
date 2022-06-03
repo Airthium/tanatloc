@@ -402,6 +402,10 @@ export const schemas: Scheme = {
       type: 'TEXT'
     },
     {
+      name: 'brep',
+      type: 'TEXT'
+    },
+    {
       name: 'summary',
       type: 'JSONB'
     },

@@ -89,9 +89,9 @@ try {
 	varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
 		= intN(Mesh)(
 	<% if (dimension === 2) { -%>
-			[<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+			Rho * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
 	<% } else { -%>
-			[<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+			Rho * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 	<% } -%>
 		)
 	<% for (const p of presure) { -%>
@@ -125,32 +125,6 @@ try {
 	real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
 	Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
 
-	<% if (parameters.meshAdaptation.children[0].value) { -%>
-	// Mesh adaptation
-	fespace Hh(Mesh, P0);
-	Hh h = hTriangle;
-	real minh = h[].min;
-	real maxh = h[].max;
-
-	int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
-	for (int i = 0; i < nLoops; ++i) {
-		<% if (dimension === 2) { -%>
-		Mesh = adaptmesh(Mesh, [Ux, Uy], hmin=minh/5., hmax=maxh);
-		<% } else { -%>
-		load "mshmet"
-		load "mmg"
-		real[int] metric = mshmet(Mesh, [Ux, Uy, Uz], aniso=1, hmin=minh/5., hmax=maxh);
-		Mesh = mmg3d(Mesh, metric=metric);
-		<% } -%>
-
-		<%= unknownFunction -%> = <%= unknownFunction -%>;
-
-		matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-		real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
-		Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
-	}
-	<% } -%>
-
 	<%# von Mises stress -%>
 	fespace Sh(Mesh, P2);
 	Sh epsilon11 = dx(Ux);
@@ -173,6 +147,31 @@ try {
 		0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
 		+ 3.*(gamma12^2 + gamma23^2 + gamma13^2)
 	);
+
+	<% if (parameters.meshAdaptation.children[0].value) { -%>
+	// Mesh adaptation
+	fespace Hh(Mesh, P0);
+	Hh h = hTriangle;
+	real minh = h[].min;
+	real maxh = h[].max;
+	int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
+	for (int i = 0; i < nLoops; ++i) {
+		<% if (dimension === 2) { -%>
+		Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
+		<% } else { -%>
+		load "mshmet"
+		load "mmg"
+		real[int] metric = mshmet(Mesh, Sigma, aniso=1, hmin=minh/5., hmax=maxh);
+		Mesh = mmg3d(Mesh, metric=metric);
+		<% } -%>
+
+		<%= unknownFunction -%> = <%= unknownFunction -%>;
+
+		matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+		real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+		Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+	}
+	<% } -%>
 
 	<%# Save -%>
 	<%- include('/blobs/save.edp.ejs', {

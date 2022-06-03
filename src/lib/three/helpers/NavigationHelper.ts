@@ -20,7 +20,7 @@ import {
   WebGLRenderer,
   PerspectiveCamera,
   BufferGeometry,
-  MeshStandardMaterial
+  AmbientLight
 } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 
@@ -160,9 +160,13 @@ const NavigationHelper = (
     cube.add(faceGroup)
   })
 
+  // Light
+  const light = new AmbientLight('#ffffff', 1)
+
   // Scene
   const localScene = new Scene()
   localScene.add(cube)
+  localScene.add(light)
 
   // Camera
   const localCamera = new OrthographicCamera(
@@ -253,7 +257,7 @@ const NavigationHelper = (
       currentlyHighlighted.children.forEach((object) => {
         const mesh = object as Mesh<
           BufferGeometry,
-          MeshStandardMaterial & { previousColor: Color }
+          MeshBasicMaterial & { previousColor: Color }
         >
         if (mesh.material && mesh.material.color) {
           mesh.material.previousColor = mesh.material.color
@@ -269,7 +273,7 @@ const NavigationHelper = (
     previouslyHighlighted &&
       previouslyHighlighted.children &&
       previouslyHighlighted.children.forEach((object) => {
-        const mesh = object as Mesh<BufferGeometry, MeshStandardMaterial>
+        const mesh = object as Mesh<BufferGeometry, MeshBasicMaterial>
         if (mesh.material && mesh.material.color) {
           mesh.material.color = new Color(cubeColor)
         }
@@ -347,7 +351,7 @@ const NavigationHelper = (
     // Cube
     cube.children.forEach((group) => {
       group.children.forEach((child) => {
-        const mesh = child as Mesh<BufferGeometry, MeshStandardMaterial>
+        const mesh = child as Mesh<BufferGeometry, MeshBasicMaterial>
         mesh.geometry.dispose()
         mesh.material.dispose()
       })

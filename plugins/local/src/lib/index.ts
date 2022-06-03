@@ -195,7 +195,7 @@ const computeMesh = async (
 
     // Render template
     await Template.render(
-      geometry.dimension === 2 ? 'gmsh2D' : 'gmsh3D',
+      configuration.dimension === 2 ? 'gmsh2D' : 'gmsh3D',
       {
         ...parameters,
         geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))

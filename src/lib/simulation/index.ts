@@ -6,7 +6,7 @@ import { IDataBaseEntry } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 import { ISimulationGet } from '../index.d'
 
-import { GEOMETRY, SIMULATION } from '@/config/storage'
+import { GEOMETRY, GEOMETRY_RELATIVE, SIMULATION } from '@/config/storage'
 
 import SimulationDB, {
   INewSimulation,
@@ -226,28 +226,18 @@ const run = async (
   // Copy geometry
   const geometryId = configuration.geometry?.value
   if (geometryId) {
-    const geometry = await Geometry.get(geometryId, [
-      'uploadfilename',
-      'extension'
-    ])
-    if (geometry.extension === 'dxf') {
-      // 2D replace (Gmsh can not import DXF)
-      geometry.uploadfilename = geometry.uploadfilename.replace('.dxf', '.brep')
-    }
-    configuration.geometry.file = geometry.uploadfilename
-    configuration.geometry.name = geometry.uploadfilename.replace(
-      '.' + geometry.extension,
-      ''
-    )
-    configuration.geometry.path = 'geometry'
+    const geometry = await Geometry.get(geometryId, ['brep'])
+    configuration.geometry.file = geometry.brep
+    configuration.geometry.name = geometry.brep.replace('.brep', '')
+    configuration.geometry.path = GEOMETRY_RELATIVE
     await Tools.copyFile(
       {
         path: GEOMETRY,
-        file: geometry.uploadfilename
+        file: geometry.brep
       },
       {
         path: path.join(SIMULATION, simulation.id, 'geometry'),
-        file: geometry.uploadfilename
+        file: geometry.brep
       }
     )
   }

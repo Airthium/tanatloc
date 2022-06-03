@@ -10,19 +10,21 @@ import isDocker from 'is-docker'
  * @memberof Services
  * @param bindPath Path
  * @param fileIn In file (POSIX path)
- * @param fileOut Out file (POSIX path)
+ * @param glbOut Out file (POSIX path)
  * @returns Code, data, error
  */
 const toThree = async (
   bindPath: string,
   fileIn: string,
-  fileOut: string
+  glbOut: string,
+  brepOut?: string
 ): Promise<{ code: number; data: string; error: string }> => {
   let command = ''
 
   // Enfore POSIX
   const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)
-  const fileOutPOSIX = fileOut.split(path.sep).join(path.posix.sep)
+  const glbOutPOSIX = glbOut.split(path.sep).join(path.posix.sep)
+  const brepOutPOSIX = brepOut?.split(path.sep).join(path.posix.sep)
 
   // Extension
   const extension = fileInPOSIX.split('.').pop() as string
@@ -30,19 +32,19 @@ const toThree = async (
   // Check extension
   switch (extension.toLowerCase()) {
     case 'step':
-      command = 'StepToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
-      break
     case 'stp':
-      command = 'StepToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
+      command =
+        'StepToGLTF ' + fileInPOSIX + ' ' + glbOutPOSIX + ' ' + brepOutPOSIX
       break
     case 'dxf':
-      command = 'DXFToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
+      command =
+        'DXFToGLTF ' + fileInPOSIX + ' ' + glbOutPOSIX + ' ' + brepOutPOSIX
       break
     case 'msh':
-      command = 'GmshToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
+      command = 'GmshToGLTF ' + fileInPOSIX + ' ' + glbOutPOSIX
       break
     case 'vtu':
-      command = 'VTUToGLTF ' + fileInPOSIX + ' ' + fileOutPOSIX
+      command = 'VTUToGLTF ' + fileInPOSIX + ' ' + glbOutPOSIX
       break
     default:
       throw new Error('Unknown conversion code')

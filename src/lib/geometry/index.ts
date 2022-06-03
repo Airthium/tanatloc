@@ -52,12 +52,18 @@ const add = async (
     // Update geometry
     const newGeometry = {
       ...geometryData,
-      glb: part[0].glb
+      summary,
+      glb: part[0].glb,
+      brep: part[0].brep!
     }
     await GeometryDB.update({ id: geometryData.id }, [
       {
         key: 'glb',
         value: newGeometry.glb
+      },
+      {
+        key: 'brep',
+        value: newGeometry.brep
       },
       {
         key: 'summary',
@@ -76,10 +82,7 @@ const add = async (
     ])
 
     // Return
-    return {
-      ...newGeometry,
-      summary
-    }
+    return newGeometry
   } catch (err) {
     console.warn(err)
     console.warn('-> Delete geometry')
@@ -119,11 +122,16 @@ const update = async (
  * Delete
  * @param geometry Geometry
  */
-const del = async (geometry: { id: string; glb?: string }): Promise<void> => {
+const del = async (geometry: {
+  id: string
+  glb?: string
+  brep?: string
+}): Promise<void> => {
   // Data
   const geometryData = await get(geometry.id, [
     'uploadfilename',
     'glb',
+    'brep',
     'project'
   ])
 
@@ -155,6 +163,20 @@ const del = async (geometry: { id: string; glb?: string }): Promise<void> => {
   if (geometry.glb)
     try {
       await Tools.removeFile(path.join(GEOMETRY, geometry.glb))
+    } catch (err) {
+      console.warn(err)
+    }
+
+  // Delete brep file
+  if (geometryData.brep)
+    try {
+      await Tools.removeFile(path.join(GEOMETRY, geometryData.brep))
+    } catch (err) {
+      console.warn(err)
+    }
+  if (geometry.brep)
+    try {
+      await Tools.removeFile(path.join(GEOMETRY, geometry.brep))
     } catch (err) {
       console.warn(err)
     }
@@ -210,7 +232,7 @@ const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
  */
 const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   // Data
-  const data = await get(geometry.id, ['uploadfilename', 'glb'])
+  const data = await get(geometry.id, ['uploadfilename', 'glb', 'brep'])
 
   // Original file
   if (data.uploadfilename) {
@@ -241,6 +263,20 @@ const archive = async (geometry: { id: string }, to: string): Promise<void> => {
     )
     //remove
     await Tools.removeFile(path.join(GEOMETRY, data.glb))
+  }
+
+  // BRep
+  if (data.brep) {
+    //copy
+    await Tools.copyFile(
+      {
+        path: GEOMETRY,
+        file: data.brep
+      },
+      { path: to, file: data.brep }
+    )
+    //remove
+    await Tools.removeFile(path.join(GEOMETRY, data.brep))
   }
 }
 

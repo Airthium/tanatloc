@@ -49,7 +49,11 @@ const mockFinish = jest.fn(() => ({
                 min: {},
                 max: {}
               },
-              getAttribute: jest.fn(),
+              getAttribute: () => ({
+                count: 3,
+                array: [1, 1, 1]
+              }),
+              setAttribute: jest.fn(),
               dispose: jest.fn()
             },
             material: {
@@ -67,6 +71,25 @@ const mockFinish = jest.fn(() => ({
               uuid: 'uuide2',
               label: 2
             }
+          },
+          {
+            type: 'Mesh',
+            geometry: {
+              boundingBox: {
+                min: {},
+                max: {}
+              },
+              getAttribute: jest.fn(),
+              dispose: jest.fn()
+            },
+            material: {
+              dispose: jest.fn()
+            },
+            userData: {
+              uuid: 'uuide3',
+              label: 1
+            },
+            add: jest.fn()
           }
         ]
       }

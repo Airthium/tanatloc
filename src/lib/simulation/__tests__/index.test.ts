@@ -215,8 +215,7 @@ describe('lib/simulation', () => {
       authorizedplugins: ['key']
     }))
     mockGeometryGet.mockImplementation(() => ({
-      uploadfilename: 'uploadfilename',
-      extension: 'extension'
+      brep: 'file.brep'
     }))
 
     await Simulation.run({ id: 'id' }, { id: 'id' })
@@ -361,8 +360,7 @@ describe('lib/simulation', () => {
       authorizedplugins: ['key']
     }))
     mockGeometryGet.mockImplementation(() => ({
-      uploadfilename: 'uploadfilename',
-      extension: 'dxf'
+      brep: 'file.brep'
     }))
 
     await Simulation.run({ id: 'id' }, { id: 'id' })

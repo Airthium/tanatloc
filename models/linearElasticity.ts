@@ -55,6 +55,13 @@ const LinearElasticity: IModel = {
       title: 'Materials',
       children: [
         {
+          label: 'Density',
+          name: 'Rho',
+          htmlEntity: 'formula',
+          default: 8050,
+          unit: '\\(kg.m^{-3}\\)'
+        },
+        {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',

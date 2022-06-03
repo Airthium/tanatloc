@@ -32,6 +32,7 @@ export interface IGeometryEntityFile {
 export interface INewGeometryWithData extends INewGeometry {
   summary: IGeometry<'summary'[]>['summary']
   glb: IGeometry<'glb'[]>['glb']
+  brep: IGeometry<'brep'[]>['brep']
 }
 
 export interface IGeometryFile {

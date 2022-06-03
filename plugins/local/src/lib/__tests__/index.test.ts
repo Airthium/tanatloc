@@ -329,14 +329,14 @@ describe('plugins/local/src/lib', () => {
       'id',
       'path',
       {
+        dimension: 2,
         geometry: {
           index: 1,
           title: 'Geometry',
           meshable: true,
           name: 'name',
           path: 'path',
-          file: 'file',
-          dimension: 2
+          file: 'file'
         },
         run: {}
       } as IModel['configuration'],

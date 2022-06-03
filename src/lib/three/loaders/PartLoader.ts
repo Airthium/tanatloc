@@ -153,14 +153,19 @@ const PartLoader = (
           const mesh = child as IPartMesh
           const data = mesh.geometry.getAttribute('data')
           if (data) {
-            const min = (data.array as number[]).reduce(
+            let min = (data.array as number[]).reduce(
               (m, currentValue) => Math.min(m, currentValue),
               data.array[0]
             )
-            const max = (data.array as number[]).reduce(
+            let max = (data.array as number[]).reduce(
               (m, currentValue) => Math.max(m, currentValue),
               data.array[0]
             )
+
+            if (min === max) {
+              min = min - 1
+              max = max + 1
+            }
 
             const lut = new Lut()
             lut.setMin(min)
@@ -169,6 +174,7 @@ const PartLoader = (
             const vertexColors = new Float32Array(data.count * 3)
             for (let i = 0; i < data.count; i++) {
               const vertexColor = lut.getColor(data.array[i])
+
               vertexColors[3 * i + 0] = vertexColor.r
               vertexColors[3 * i + 1] = vertexColor.g
               vertexColors[3 * i + 2] = vertexColor.b

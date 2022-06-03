@@ -40,6 +40,7 @@ export type TGeometryGet = (
   | 'extension'
   | 'uploadfilename'
   | 'glb'
+  | 'brep'
   | 'summary'
   | 'project'
 )[]
@@ -49,6 +50,7 @@ export type TGeometryGetOriginalfilename = 'originalfilename'[]
 export type TGeometryGetExtension = 'extension'[]
 export type TGeometryGetUploadfilename = 'uploadfilename'[]
 export type TGeometryGetGlb = 'glb'[]
+export type TGeometryGetBrep = 'brep'[]
 export type TGeometryGetSummary = 'summary'[]
 export type TGeometryGetProject = 'project'[]
 
@@ -59,6 +61,7 @@ export interface IGeometry<T = []> {
   extension: TGeometryGetExtension extends T ? string : never
   uploadfilename: TGeometryGetUploadfilename extends T ? string : never
   glb: TGeometryGetGlb extends T ? string : never
+  brep: TGeometryGetBrep extends T ? string : never
   summary: TGeometryGetSummary extends T ? TGeometrySummary : never
   project: TGeometryGetProject extends T ? string : never
 }

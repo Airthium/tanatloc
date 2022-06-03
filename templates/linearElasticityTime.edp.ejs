@@ -108,9 +108,9 @@ try {
 			  2. * (Rho/dt) * <%= unknownPFunction -%>' * <%= testFunction -%>
 			- (Rho/dt) * <%= unknownPPFunction -%>' * <%= testFunction -%>
 	<% if (dimension === 2) { -%>
-			+ [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+			+ Rho * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
 	<% } else { -%>
-			+ [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+			+ Rho * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 	<% } -%>
 		)
 	<% for (const p of presure) { -%>
@@ -155,27 +155,6 @@ try {
 		// Solve
 		Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
 
-		<% if (parameters.meshAdaptation.children[0].value) { -%>
-		// Mesh adaptation
-		fespace Hh(Mesh, P0);
-		Hh h = hTriangle;
-		real minh = h[].min;
-		real maxh = h[].max;
-	
-		<% if (dimension === 2) { -%>
-		Mesh = adaptmesh(Mesh, [Ux, Uy], hmin=minh/5., hmax=maxh);
-		<% } else { -%>
-		load "mshmet"
-		load "mmg"
-		real[int] metric = mshmet(Mesh, [Ux, Uy, Uz], aniso=0, hmin=minh/5., hmax=maxh);
-		Mesh = mmg3d(Mesh, metric=metric);
-		<% } -%>
-
-		<%= unknownFunction -%> = <%= unknownFunction -%>;
-		
-		LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-		<% } -%>
-	
 		<%# von Mises stress -%>
 		fespace Sh(Mesh, P2);
 		Sh epsilon11 = dx(Ux);
@@ -207,6 +186,27 @@ try {
 		real maxUy = UUy[].max;
 		real maxUz = UUz[].max;
 		real maxU = max(max(abs(maxUx), abs(maxUy)), abs(maxUz));
+
+		<% if (parameters.meshAdaptation.children[0].value) { -%>
+		// Mesh adaptation
+		fespace Hh(Mesh, P0);
+		Hh h = hTriangle;
+		real minh = h[].min;
+		real maxh = h[].max;
+	
+		<% if (dimension === 2) { -%>
+		Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
+		<% } else { -%>
+		load "mshmet"
+		load "mmg"
+		real[int] metric = mshmet(Mesh, Sigma, aniso=0, hmin=minh/5., hmax=maxh);
+		Mesh = mmg3d(Mesh, metric=metric);
+		<% } -%>
+
+		<%= unknownFunction -%> = <%= unknownFunction -%>;
+		
+		LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+		<% } -%>
 
 		// Save data
 		<%- include('/blobs/data.edp.ejs', {

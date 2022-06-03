@@ -215,6 +215,7 @@ const convert = async (
   }
 
   if (param?.isResult) {
+    if (!data) return []
     return data
       .trim()
       .split('\n')

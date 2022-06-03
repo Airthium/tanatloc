@@ -80,7 +80,6 @@ const run = async (
     )
 
   // New results
-  // Return
   return newResults.map((newResult) => ({
     fileName: vtuOut,
     name: newResult.name,

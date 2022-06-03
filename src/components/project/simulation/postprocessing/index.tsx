@@ -260,42 +260,44 @@ const Postprocessing = ({
           {results && (
             <Card size="small" title="Post-processing" extra={filter}>
               <Space direction="vertical" className="full-width">
-                {results.map((res) => (
-                  <Space key={res.glb}>
-                    <Button
-                      icon={
-                        postprocessing?.fileName === res.fileName &&
-                        postprocessing?.name === res.name ? (
-                          <EyeOutlined style={{ color: '#fad114' }} />
-                        ) : (
-                          <EyeInvisibleOutlined />
-                        )
-                      }
-                      onClick={() =>
-                        setResult(
-                          postprocessing?.fileName === res.fileName &&
-                            postprocessing?.name === res.name
-                            ? undefined
-                            : {
-                                type: 'postprocessing',
-                                ...res
-                              }
-                        )
-                      }
-                    />
-                    <Download
-                      simulation={{
-                        id: simulation.id
-                      }}
-                      file={{
-                        name: res.name,
-                        fileName: res.fileName,
-                        originPath: res.originPath
-                      }}
-                    />
-                    {res.name}
-                  </Space>
-                ))}
+                {results.length
+                  ? results.map((res) => (
+                      <Space key={res.glb}>
+                        <Button
+                          icon={
+                            postprocessing?.fileName === res.fileName &&
+                            postprocessing?.name === res.name ? (
+                              <EyeOutlined style={{ color: '#fad114' }} />
+                            ) : (
+                              <EyeInvisibleOutlined />
+                            )
+                          }
+                          onClick={() =>
+                            setResult(
+                              postprocessing?.fileName === res.fileName &&
+                                postprocessing?.name === res.name
+                                ? undefined
+                                : {
+                                    type: 'postprocessing',
+                                    ...res
+                                  }
+                            )
+                          }
+                        />
+                        <Download
+                          simulation={{
+                            id: simulation.id
+                          }}
+                          file={{
+                            name: res.name,
+                            fileName: res.fileName,
+                            originPath: res.originPath
+                          }}
+                        />
+                        {res.name}
+                      </Space>
+                    ))
+                  : 'No results'}
               </Space>
             </Card>
           )}

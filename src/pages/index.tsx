@@ -1,6 +1,6 @@
 /** @module Pages */
 
-import IndexPage from '@/components/indexpage'
+import IndexPage2 from '@/components/indexpage2'
 
 /**
  * Index
@@ -9,7 +9,7 @@ const Index = (): JSX.Element => {
   /**
    * Render
    */
-  return <IndexPage />
+  return <IndexPage2 />
 }
 
 export default Index

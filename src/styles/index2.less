@@ -1,7 +1,85 @@
+.display-flex-around {
+  display: flex;
+  justify-content: space-around;
+}
+
+.display-flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.display-flex-evenly {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.width-30 {
+  width: 30%;
+}
+
+.width-40 {
+  width: 40%;
+}
+
+.width-50 {
+  width: 50%;
+}
+
+.width-60 {
+  width: 60%;
+}
+
+.width-80 {
+  width: 80%;
+}
+
+.margin-element {
+  margin: auto;
+  margin-top: 15vh
+}
+
+.text-center {
+  text-align: center;
+}
+
+
+
 .Index2 {
-    max-width: 100vw;
-    max-height: 100vh;
-  }
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+.Index2 h1 {
+  font-family: 'Saira', sans-serif;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.Index2 h2 {
+  font-family: 'Saira', sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.Index2 h3 {
+  font-family: 'Saira', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.Index2 h4 {
+  font-family: 'Saira', sans-serif;
+  font-size: 20px;
+  font-weight: 100
+}
+
+.bg-white {
+  background: white;
+}
+
+.bg-tanatloc-primary {
+  background:  @tanatloc-primary-color;
+}
 
   .get-started {
       background:  @tanatloc-primary-color;
@@ -11,10 +89,7 @@
   }
   
   .Index2-header {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    background: white;
   }
   
   .Index2-header > * {
@@ -31,23 +106,11 @@
   }
 
   .Index2-navigation {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 60%
-  }
-
-  .Index2-title1 {
-    font-size: 2.5rem;
-    font-weight: bold;
   }
 
   .Index2-models {
-    display: flex;
     align-items: center;
-    justify-content: space-around;
-    width: 80%;
-    background: @tanatloc-primary-color;
   }
 
   .Index2-models-content {
@@ -65,13 +128,11 @@
 
   .Index2-models-text {
       margin: 0 0 0 15px;
-      font-size: 1.2rem;
   }
 
   .Index2-plugins {
-    display: flex;
     align-items: center;
-    justify-content: space-around;
+    max-width: 80%;
   }
 
   .Index2-casestudy {
@@ -83,30 +144,13 @@
   }
 
   .Index2-casestudy-content {
-    display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    width: 50%;
     padding: 0 8% 0 8%;
-  }
-
-  .Index2-casestudy-img-container {
-    width: 50%;
   }
 
   .Index2-casestudy-img {
     width: 100%;
     max-height: 100%;
-  }
-
-  .Index2-step-main-cointainer {
-    margin: auto;
-    margin-top: 15vh;
-    width: 60%;
-  }
-
-  .Index2-step-header {
-    width: 30%;
   }
 
   .Index2-step-body-container {
@@ -115,8 +159,6 @@
   }
 
   .Index2-step-container {
-    display: flex;
-    justify-content: space-between;
     margin-top: 10vh;
   }
 
@@ -138,23 +180,12 @@
     box-shadow: 0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
   }
 
-  .Index2-aboutus-tanatloc-container {
-    display: flex;
-    justify-content: space-evenly;
-    width: 80%;
-    margin: auto;
-    margin-top: 10vh;
-  }
-
   .Index2-aboutus-tanatloc-container-logo {
     max-width: 50%;
   }
 
   .Index2-aboutus-tanatloc-infos {
-    width: 50%;
-    display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: center;
   }
 
@@ -182,13 +213,22 @@
     width: 40%
   }
 
-  .Index2-last {
+  .Index2-footer {
+    width: 100vw;
     background: @tanatloc-primary-color;
     padding: 5vh 5vw;
     margin: auto;
-    margin-top: 15vh;
+    margin-top: 25vh;
     display: flex;
     flex-direction: column;
+  }
+
+  .Index2-footer-infos {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 70%;
+    margin: auto;
   }
   
   .Index2-header img {
@@ -249,4 +289,6 @@
     max-width: 100%;
     margin: auto;
   }
+
+  
   

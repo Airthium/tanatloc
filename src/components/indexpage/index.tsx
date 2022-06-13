@@ -13,6 +13,7 @@ import {
 } from 'antd'
 
 import Side from '@/components/assets/side'
+import Footer from '../footer'
 
 /**
  * Index
@@ -213,6 +214,9 @@ const Index = (): JSX.Element => {
               </div>
             </div>
           </div>
+
+          <Footer />
+
           <div className="Index2-footer">
             <div className="Index2-footer-infos">
               <div style={{ width: '30%' }}>

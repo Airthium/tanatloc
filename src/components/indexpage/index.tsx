@@ -10,6 +10,7 @@ import {
   Steps,
   Typography
 } from 'antd'
+import { SettingOutlined } from '@ant-design/icons'
 
 import Side from '@/components/assets/side'
 import Footer from '../footer'
@@ -122,7 +123,7 @@ const Index = (): JSX.Element => {
                     <Avatar
                       size={64}
                       shape="square"
-                      src="images/indexpage/logo-rescale.png"
+                      src="images/indexpage/logo-rescale.svg"
                     />
                     <Typography.Title level={4}>Rescale</Typography.Title>
                     <Typography.Text className="text-light">
@@ -134,10 +135,10 @@ const Index = (): JSX.Element => {
                     <Avatar
                       size={64}
                       shape="square"
-                      src="images/indexpage/logo-argo.png"
+                      src="images/indexpage/logo-argographics.png"
                     />
                     <Typography.Title level={4}>
-                      Argo Graphics Sharetask
+                      ArgoGraphics Sharetask
                     </Typography.Title>
                     <Typography.Text className="text-light">
                       Paid feature
@@ -148,7 +149,7 @@ const Index = (): JSX.Element => {
                     <Avatar
                       size={64}
                       shape="square"
-                      src="images/indexpage/logo-slurm.png"
+                      src="images/indexpage/logo-slurm.svg"
                     />
                     <Typography.Title level={4}>Slurm</Typography.Title>
                     <Typography.Text className="text-light">
@@ -159,7 +160,7 @@ const Index = (): JSX.Element => {
                     <Avatar
                       size={64}
                       shape="square"
-                      src="images/indexpage/logo-qarnot.png"
+                      src="images/indexpage/logo-qarnot.svg"
                     />
                     <Typography.Title level={4}>
                       Qarnot Computing
@@ -169,7 +170,11 @@ const Index = (): JSX.Element => {
                     </Typography.Text>
                   </div>
                   <div>
-                    <Avatar size={64} shape="square" src="" />
+                    <Avatar
+                      size={64}
+                      shape="square"
+                      icon={<SettingOutlined />}
+                    />
                     <Typography.Title level={4}>
                       Your own plugin
                     </Typography.Title>
@@ -198,7 +203,7 @@ const Index = (): JSX.Element => {
                 <Typography.Text>
                   Denso’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
-                  on-premise via the Argo Sharetask plug-in.
+                  on-premise via the ArgoGraphics Sharetask plug-in.
                 </Typography.Text>
                 <Button type="primary">See more of Tanatloc</Button>
               </>

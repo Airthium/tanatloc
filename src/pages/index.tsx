@@ -1,6 +1,6 @@
 /** @module Pages */
 
-import IndexPage2 from '@/components/indexpage2'
+import IndexPage2 from '@/components/indexpage'
 
 /**
  * Index

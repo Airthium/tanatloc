@@ -1,27 +1,15 @@
 /** @module Components.Index2 */
 
-import { NextRouter, useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { Button, Card, Divider, Layout, Space, Typography } from 'antd'
-import {
-  DashboardOutlined,
-  LoginOutlined,
-  TeamOutlined,
-  CheckSquareOutlined
-} from '@ant-design/icons'
+import { Button, Divider, Layout, Typography } from 'antd'
+import { CheckSquareOutlined } from '@ant-design/icons'
 
-import packageJson from '../../../package.json'
+import Side from '@/components/assets/side'
 
-import { ErrorNotification } from '@/components/assets/notification'
-import MathJax from '@/components/assets/mathjax'
-
-import Utils from '@/lib/utils'
-
-import UserAPI from '@/api/user'
-import { Row, Col } from 'antd'
-import { Avatar, List } from 'antd'
-
-const Index = () => {
+/**
+ * Index
+ * @returns Index
+ */
+const Index = (): JSX.Element => {
   /**
    * Render
    */
@@ -37,36 +25,31 @@ const Index = () => {
         <Button type="primary">Get Started</Button>
       </Layout.Header>
 
-      <Layout.Content
-        style={{
-          backgroundColor: 'white',
-          overflow: 'auto',
-          overflowX: 'hidden'
-        }}
-        className="bg-white Index2-content"
-      >
-        <div className="Index2-cols">
-          <div className="Index2-row Index2-row-content">
-            <h1>Solve your toughest numerical simulation problems</h1>
-            <h4>
-              Tanatloc is a multi-physics FEA software for engineers and
-              researchers. <br />
-              Use the provided models for the most common problems, make your
-              own, or partner with our experts to build one tailored to your
-              needs.
-            </h4>
-            <Button className="no-border get-started" size="small">
-              Get Started
-            </Button>
-          </div>
-          <div className="Index2-row">
+      <Layout.Content className="Index-Content">
+        <Side
+          left={
+            <>
+              <Typography.Title>
+                Solve your toughest numerical simulation problems
+              </Typography.Title>
+              <Typography.Title level={4}>
+                Tanatloc is a multi-physics FEA software for engineers and
+                researchers. <br />
+                Use the provided models for the most common problems, make your
+                own, or partner with our experts to build one tailored to your
+                needs.
+              </Typography.Title>
+              <Button type="primary">Get Started</Button>
+            </>
+          }
+          right={
             <img
               src="images/indexpage/modelisation-a-changer.png"
-              className="Index2-modelisation"
               alt="tanatloc"
             />
-          </div>
-        </div>
+          }
+        />
+
         <div className="display-flex-around bg-tanatloc-primary width-80 margin-element Index2-models">
           <div className="width-30">
             <h2>The most common multi-physics models at your fingertips</h2>

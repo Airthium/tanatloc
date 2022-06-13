@@ -212,7 +212,7 @@ const Index = (): JSX.Element => {
                   Ogawa, at Denso’s Heat Exchanger Development Department,
                   implemented a custom FreeFEM model on TANATLOC with the help
                   of Professor Atsushi Suzuki from Osaka University.
-                </Typography.Text>
+                </Typography.Text><br/>
                 <Typography.Text>
                   Denso’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
@@ -225,6 +225,7 @@ const Index = (): JSX.Element => {
               <img src="images/indexpage/denso-a-changer.png" alt="tanatloc" />
             }
             className="Index-casestudy"
+            leftClassName='Index-casestudy-left'
             rightClassName="Index-casestudy-right"
             id="caseStudy"
           />

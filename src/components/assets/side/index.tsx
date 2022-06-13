@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react"
+
 
 export interface IProps {
   left: JSX.Element
@@ -8,7 +8,7 @@ export interface IProps {
   leftClassName?: string
   rightClassName?: string
   topClassName?: string
-  ref?: MutableRefObject<any>
+  id?: string
 }
 
 const Side = ({
@@ -18,10 +18,11 @@ const Side = ({
   className,
   leftClassName,
   rightClassName,
-  topClassName
+  topClassName,
+  id
 }: IProps): JSX.Element => {
   return (
-    <div className={'default-side ' + (className ?? '')}>
+    <div className={'default-side ' + (className ?? '')} id={id}>
       <div className={'default-side-left ' + (leftClassName ?? '')}>{left}</div>
       <div className={'default-side-right ' + (rightClassName ?? '')}>
         {right}

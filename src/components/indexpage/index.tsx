@@ -13,7 +13,6 @@ import {
 
 import Side from '@/components/assets/side'
 import Footer from '../footer'
-import { useRef } from 'react'
 /**
  * Index
  * @returns Index
@@ -23,13 +22,9 @@ const Index = (): JSX.Element => {
    * Render
    */
 
-  const featuresRef = useRef()
-  const developersRef = useRef()
-  const caseStudyRef = useRef()
-  const aboutUsRef = useRef()
-
-  const scrollToView = (ref: any) => {
-    ref?.current.scrollIntoView({ behavior: 'smooth' })
+  const scrollToView = (id: string) => {
+    const temp = document.getElementById(id)!
+    temp.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -37,16 +32,16 @@ const Index = (): JSX.Element => {
       <Layout.Header className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
 
-        <Button type="text" onClick={() => scrollToView(featuresRef)}>
+        <Button type="text" onClick={() => scrollToView('features')}>
           Features
         </Button>
-        <Button type="text" onClick={() => scrollToView(developersRef)}>
+        <Button type="text" onClick={() => scrollToView('developers')}>
           Developers
         </Button>
-        <Button type="text" onClick={() => scrollToView(caseStudyRef)}>
+        <Button type="text" onClick={() => scrollToView('caseStudy')}>
           Case Studies
         </Button>
-        <Button type="text" onClick={() => scrollToView(aboutUsRef)}>
+        <Button type="text" onClick={() => scrollToView('aboutUs')}>
           About us
         </Button>
         <Button type="primary">Get Started</Button>
@@ -98,7 +93,7 @@ const Index = (): JSX.Element => {
             className="background-primary "
             rightClassName="Index-models padding-50"
             leftClassName="padding-50"
-            ref={featuresRef}
+            id="features"
           />
 
           <Side
@@ -178,7 +173,7 @@ const Index = (): JSX.Element => {
               </>
             }
             rightClassName="padding-50"
-            ref={developersRef}
+            id="developers"
           />
 
           <Side
@@ -205,7 +200,7 @@ const Index = (): JSX.Element => {
             }
             className="Index-casestudy"
             rightClassName="Index-casestudy-right"
-            ref={caseStudyRef}
+            id="caseStudy"
           />
 
           <Card
@@ -280,7 +275,7 @@ const Index = (): JSX.Element => {
             className="Index-about"
             leftClassName="padding-50"
             rightClassName="padding-50"
-            ref={aboutUsRef}
+            id="aboutUs"
           />
 
           <Footer />

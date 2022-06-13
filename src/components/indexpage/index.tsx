@@ -19,17 +19,25 @@ import Footer from '../footer'
  */
 const Index = (): JSX.Element => {
   /**
-   * Render
+   * Scroll to view
+   * @param id
    */
+  const scrollToView = (id: string): void => {
+    const header = document.getElementById('header')
+    const target = document.getElementById(id)
 
-  const scrollToView = (id: string) => {
-    const temp = document.getElementById(id)!
-    temp.scrollIntoView({ behavior: 'smooth' })
+    const index = document.getElementById('index')
+    const y = target?.offsetTop - header?.offsetHeight - 10
+
+    index?.scrollTo({ top: y, behavior: 'smooth' })
   }
 
+  /**
+   * Render
+   */
   return (
-    <Layout className="Index">
-      <Layout.Header className="Index-Header">
+    <Layout id="index" className="Index">
+      <Layout.Header id="header" className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
 
         <Button type="text" onClick={() => scrollToView('features')}>

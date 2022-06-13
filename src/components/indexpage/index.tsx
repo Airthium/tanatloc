@@ -27,9 +27,11 @@ const Index = (): JSX.Element => {
     const target = document.getElementById(id)
 
     const index = document.getElementById('index')
-    const y = target?.offsetTop - header?.offsetHeight - 10
+    if (target && header) {
+      const y = target?.offsetTop - header?.offsetHeight - 10
+      index?.scrollTo({ top: y, behavior: 'smooth' })
+    }
 
-    index?.scrollTo({ top: y, behavior: 'smooth' })
   }
 
   /**
@@ -286,7 +288,7 @@ const Index = (): JSX.Element => {
             id="aboutUs"
           />
 
-          <Footer />
+          <Footer scroll={scrollToView}/>
         </Space>
       </Layout.Content>
     </Layout>

@@ -9,11 +9,15 @@ import {
   Typography
 } from 'antd'
 
+export interface IProps {
+  scroll: (id: string) => void
+}
+
 /**
  * Footer
  * @returns Footer
  */
-const Footer = (): JSX.Element => {
+const Footer = ({ scroll }: IProps): JSX.Element => {
   // Data
   const thanks = [
     '- Professor Fréderic Hecht, Dr. Pierre Jolivet, and the FreeFEM’s contributors',
@@ -21,19 +25,19 @@ const Footer = (): JSX.Element => {
     '- The Open Cascade development team'
   ]
   const navigate = [
-    <Button key="features" type="primary">
+    <Button key="features" type="primary" onClick={() => scroll('features')}>
       Features
     </Button>,
-    <Button key="developers" type="text">
+    <Button key="developers" type="text" onClick={() => scroll('developers')}>
       Developers
     </Button>,
-    <Button key="case_studies" type="text">
+    <Button key="case_studies" type="text" onClick={() => scroll('caseStudy')}>
       Case Studies
     </Button>,
     <Button key="get_started" type="text">
       Get started
     </Button>,
-    <Button key="about_us" type="text">
+    <Button key="about_us" type="text" onClick={() => scroll('aboutUs')}>
       About us
     </Button>
   ]

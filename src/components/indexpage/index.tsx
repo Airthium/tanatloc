@@ -36,7 +36,7 @@ const Index = (): JSX.Element => {
       </Layout.Header>
 
       <Layout.Content className="Index-Content">
-        <Space direction="vertical" size={90}>
+        <Space direction="vertical" size={90} className="full-width">
           <Side
             left={
               <>
@@ -93,41 +93,59 @@ const Index = (): JSX.Element => {
                   dedicated plugins
                 </Typography.Title>
                 <div className="Index-plugins">
-                  <div className="Index-single-plugin">
-                    <Avatar size={64} src="images/indexpage/logo-rescale.png" />
-                    <Typography.Title level={3}>Rescale</Typography.Title>
+                  <div>
+                    <Avatar
+                      size={64}
+                      shape="square"
+                      src="images/indexpage/logo-rescale.png"
+                    />
+                    <Typography.Title level={4}>Rescale</Typography.Title>
                     <Typography.Text className="text-light">
                       Paid feature
                     </Typography.Text>
+                    <Button type="link">Contact us</Button>
                   </div>
-                  <div className="Index-single-plugin">
-                    <Avatar size={64} src="images/indexpage/logo-argo.png" />
-                    <Typography.Title level={3}>
+                  <div>
+                    <Avatar
+                      size={64}
+                      shape="square"
+                      src="images/indexpage/logo-argo.png"
+                    />
+                    <Typography.Title level={4}>
                       Argo Graphics Sharetask
                     </Typography.Title>
                     <Typography.Text className="text-light">
                       Paid feature
                     </Typography.Text>
+                    <Button type="link">Contact us</Button>
                   </div>
-                  <div className="Index-single-plugin">
-                    <Avatar size={64} src="images/indexpage/logo-slurm.png" />
-                    <Typography.Title level={3}>Slurm</Typography.Title>
+                  <div>
+                    <Avatar
+                      size={64}
+                      shape="square"
+                      src="images/indexpage/logo-slurm.png"
+                    />
+                    <Typography.Title level={4}>Slurm</Typography.Title>
                     <Typography.Text className="text-light">
-                      Paid feature
+                      Upcoming
                     </Typography.Text>
                   </div>
-                  <div className="Index-single-plugin">
-                    <Avatar size={64} src="images/indexpage/logo-qarnot.png" />
-                    <Typography.Title level={3}>
+                  <div>
+                    <Avatar
+                      size={64}
+                      shape="square"
+                      src="images/indexpage/logo-qarnot.png"
+                    />
+                    <Typography.Title level={4}>
                       Qarnot Computing
                     </Typography.Title>
                     <Typography.Text className="text-light">
-                      Paid feature
+                      Upcoming
                     </Typography.Text>
                   </div>
-                  <div className="Index-single-plugin">
-                    <Avatar size={64} src="" />
-                    <Typography.Title level={3}>
+                  <div>
+                    <Avatar size={64} shape="square" src="" />
+                    <Typography.Title level={4}>
                       Your own plugin
                     </Typography.Title>
                     <Typography.Text className="text-light">
@@ -137,8 +155,6 @@ const Index = (): JSX.Element => {
                 </div>
               </>
             }
-            rightClassName="Index-plugins-container"
-            mainClassName='Index-plugins-main-container'
           />
 
           <Side
@@ -227,53 +243,7 @@ const Index = (): JSX.Element => {
               </div>
             </div>
           </div>
-
           <Footer />
-
-          <div className="Index2-footer">
-            <div className="Index2-footer-infos">
-              <div style={{ width: '30%' }}>
-                <h3>Thanks</h3>
-                <Typography>
-                  We would like to thank : <br /> - Professor Fréderic Hecht,
-                  Dr. Pierre Jolivet, and the FreeFEM’s contributors <br /> -
-                  Professor Christophe Geuzaine, Professor Jean-François Remacle
-                  and the GMSH contributors <br /> - The Open Cascade
-                  development team <br />
-                  <br /> Without you this software would not have been possible.
-                </Typography>
-              </div>
-              <div>
-                <h3>Navigate</h3>
-                <Typography>
-                  Logo features <br /> Developers <br /> Case Studies <br /> Get
-                  Started <br /> About Us
-                </Typography>
-              </div>
-              <div style={{ width: '30%' }}>
-                <h3>Contact</h3>
-                <Typography>
-                  <b>contact@airthium.com </b> for commercial inquiries{' '}
-                </Typography>
-                <Typography>
-                  <b>Github Issues </b>
-                  for support questions
-                </Typography>
-              </div>
-            </div>
-            <Divider style={{ borderTop: '1px solid black' }} />
-            <div className="Index2-footer-infos">
-              <img
-                src="/images/logo.svg"
-                alt="Tanatloc"
-                className="Index2-logo"
-              />
-              <Typography>
-                Copyright ©{new Date().getFullYear()} - All rights reserved |
-                Design by enora-dvvr.fr
-              </Typography>
-            </div>
-          </div>
         </Space>
       </Layout.Content>
     </Layout>

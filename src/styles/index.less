@@ -1,9 +1,16 @@
 .Index {
+  width: 100%;
+  height: 100%;
   overflow: auto;
-  padding: 20px 100px;
+  overflow-x: hidden;
+  padding: 0 100px;
 }
 
 .Index-Header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 20px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -15,37 +22,20 @@
   margin-right: auto;
 }
 
-.Index-plugins-main-container {
-  align-items: stretch !important;
-}
-
-.Index-plugins-container {
-  display:flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .Index-plugins {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
-.Index-single-plugin {
+.Index-plugins > div {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 30%;
-  margin: 20px 10px;
+  max-width: 160px;
   text-align: center;
 }
-
-.width-50 {
-  width: 50%;
-  max-width: 50%;
-}
-
 
 // .display-flex-around {
 //   display: flex;

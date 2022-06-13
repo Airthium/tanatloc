@@ -1,22 +1,22 @@
 export interface IProps {
   left: JSX.Element
   right: JSX.Element
+  className?: string
   leftClassName?: string
   rightClassName?: string
-  mainClassName?: string
 }
 
 const Side = ({
   left,
   right,
+  className,
   leftClassName,
-  rightClassName,
-  mainClassName
+  rightClassName
 }: IProps): JSX.Element => {
   return (
-    <div className={mainClassName + ' default-side'}>
-      <div className={leftClassName + ' width-50'}>{left}</div>
-      <div className={rightClassName + ' width-50'}>{right}</div>
+    <div className={className + ' default-side'}>
+      <div className={leftClassName + ' default-side-left'}>{left}</div>
+      <div className={rightClassName + ' default-side-right'}>{right}</div>
     </div>
   )
 }

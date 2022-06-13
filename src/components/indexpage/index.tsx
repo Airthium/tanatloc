@@ -77,6 +77,7 @@ const Index = (): JSX.Element => {
                 <Checkbox checked={true}>Termal diffusion</Checkbox>
               </>
             }
+            className="background-primary"
           />
 
           <Side

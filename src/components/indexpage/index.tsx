@@ -92,40 +92,53 @@ const Index = (): JSX.Element => {
                   Solve your numerical problems locally or in the cloud, using
                   dedicated plugins
                 </Typography.Title>
-
-                <Avatar size={64} src="images/indexpage/logo-rescale.png" />
-                <Typography.Title level={3}>Rescale</Typography.Title>
-                <Typography.Text className="text-light">
-                  Paid feature
-                </Typography.Text>
-
-                <Avatar size={64} src="images/indexpage/logo-argo.png" />
-                <Typography.Title level={3}>
-                  Argo Graphics Sharetask
-                </Typography.Title>
-                <Typography.Text className="text-light">
-                  Paid feature
-                </Typography.Text>
-
-                <Avatar size={64} src="images/indexpage/logo-slurm.png" />
-                <Typography.Title level={3}>Slurm</Typography.Title>
-                <Typography.Text className="text-light">
-                  Paid feature
-                </Typography.Text>
-
-                <Avatar size={64} src="images/indexpage/logo-qarnot.png" />
-                <Typography.Title level={3}>Qarnot Computing</Typography.Title>
-                <Typography.Text className="text-light">
-                  Paid feature
-                </Typography.Text>
-
-                <Avatar size={64} src="" />
-                <Typography.Title level={3}>Your own plugin</Typography.Title>
-                <Typography.Text className="text-light">
-                  Paid feature
-                </Typography.Text>
+                <div className="Index-plugins">
+                  <div className="Index-single-plugin">
+                    <Avatar size={64} src="images/indexpage/logo-rescale.png" />
+                    <Typography.Title level={3}>Rescale</Typography.Title>
+                    <Typography.Text className="text-light">
+                      Paid feature
+                    </Typography.Text>
+                  </div>
+                  <div className="Index-single-plugin">
+                    <Avatar size={64} src="images/indexpage/logo-argo.png" />
+                    <Typography.Title level={3}>
+                      Argo Graphics Sharetask
+                    </Typography.Title>
+                    <Typography.Text className="text-light">
+                      Paid feature
+                    </Typography.Text>
+                  </div>
+                  <div className="Index-single-plugin">
+                    <Avatar size={64} src="images/indexpage/logo-slurm.png" />
+                    <Typography.Title level={3}>Slurm</Typography.Title>
+                    <Typography.Text className="text-light">
+                      Paid feature
+                    </Typography.Text>
+                  </div>
+                  <div className="Index-single-plugin">
+                    <Avatar size={64} src="images/indexpage/logo-qarnot.png" />
+                    <Typography.Title level={3}>
+                      Qarnot Computing
+                    </Typography.Title>
+                    <Typography.Text className="text-light">
+                      Paid feature
+                    </Typography.Text>
+                  </div>
+                  <div className="Index-single-plugin">
+                    <Avatar size={64} src="" />
+                    <Typography.Title level={3}>
+                      Your own plugin
+                    </Typography.Title>
+                    <Typography.Text className="text-light">
+                      Paid feature
+                    </Typography.Text>
+                  </div>
+                </div>
               </>
             }
+            rightClassName="Index-plugins-container"
+            mainClassName='Index-plugins-main-container'
           />
 
           <Side

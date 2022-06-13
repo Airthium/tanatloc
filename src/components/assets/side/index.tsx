@@ -1,17 +1,21 @@
 export interface IProps {
   left: JSX.Element
   right: JSX.Element
+  top?: JSX.Element
   className?: string
   leftClassName?: string
   rightClassName?: string
+  topClassName?: string
 }
 
 const Side = ({
   left,
   right,
+  top,
   className,
   leftClassName,
-  rightClassName
+  rightClassName,
+  topClassName
 }: IProps): JSX.Element => {
   return (
     <div className={'default-side ' + (className ?? '')}>
@@ -19,6 +23,9 @@ const Side = ({
       <div className={'default-side-right ' + (rightClassName ?? '')}>
         {right}
       </div>
+      {top && (
+        <div className={'default-side-top ' + (topClassName ?? '')}>{top}</div>
+      )}
     </div>
   )
 }

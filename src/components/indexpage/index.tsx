@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   Checkbox,
-  Divider,
   Layout,
   Space,
   Steps,
@@ -59,6 +58,7 @@ const Index = (): JSX.Element => {
                 alt="tanatloc"
               />
             }
+            leftClassName="padding-50"
           />
 
           <Side
@@ -77,8 +77,9 @@ const Index = (): JSX.Element => {
                 <Checkbox checked={true}>Termal diffusion</Checkbox>
               </>
             }
-            className="background-primary"
-            rightClassName="Index-models"
+            className="background-primary "
+            rightClassName="Index-models padding-50"
+            leftClassName="padding-50"
           />
 
           <Side
@@ -157,6 +158,7 @@ const Index = (): JSX.Element => {
                 </div>
               </>
             }
+            rightClassName="padding-50"
           />
 
           <Side
@@ -217,36 +219,48 @@ const Index = (): JSX.Element => {
             </Steps>
           </Card>
 
-          <div className="Index2-aboutus">
-            <div className="display-flex-evenly width-80 margin-element">
+          <Side
+            left={
               <img
-                src="images/indexpage/AirthiumByTanatloc.png"
-                className="Index2-aboutus-tanatloc-container-logo"
+                src="images/indexpage/TanatlocByAirthium.png"
                 alt="airthium"
               />
-              <div className="width-50 display-flex-around Index2-aboutus-tanatloc-infos">
-                <Typography>
+            }
+            right={
+              <>
+                <Typography.Text>
                   TANATLOC is maintained by Airthium, a US/France based deeptech
                   startup. We build a very robust and highly efficient electric
                   heat engine to decarbonise the planet.
-                </Typography>
-                <h4>Discover the project</h4>
-              </div>
-            </div>
-            <div className="Index2-aboutus-crowdfunding-container">
-              <img
-                src="images/indexpage/airthium-a-changer.png"
-                className="Index2-aboutus-crowdfunding-logo"
-                alt="airthium"
+                </Typography.Text>
+                <Button type="primary">Discover the project</Button>
+              </>
+            }
+            top={
+              <Side
+                left={
+                  <img
+                    src="images/indexpage/airthium-a-changer.png"
+                    alt="airthium"
+                  />
+                }
+                right={
+                  <>
+                    <Typography.Title level={2}>
+                      Support our fight against climate change
+                    </Typography.Title>
+                    <Button>Invest in our crowdfounding</Button>
+                  </>
+                }
+                className="background-primary"
+                rightClassName="padding-50"
               />
-              <div className="Index2-aboutus-crowdfunding">
-                <h2>Support our fight against climate change</h2>
-                <Button style={{ width: '80%', margin: 'auto' }}>
-                  Invest in our crowdfounding
-                </Button>
-              </div>
-            </div>
-          </div>
+            }
+            className="Index-about"
+            leftClassName="padding-50"
+            rightClassName="padding-50"
+          />
+
           <Footer />
         </Space>
       </Layout.Content>

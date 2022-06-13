@@ -1,3 +1,5 @@
+import { MutableRefObject } from "react"
+
 export interface IProps {
   left: JSX.Element
   right: JSX.Element
@@ -6,6 +8,7 @@ export interface IProps {
   leftClassName?: string
   rightClassName?: string
   topClassName?: string
+  ref?: MutableRefObject<any>
 }
 
 const Side = ({

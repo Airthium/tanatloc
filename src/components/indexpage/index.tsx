@@ -13,7 +13,7 @@ import {
 
 import Side from '@/components/assets/side'
 import Footer from '../footer'
-
+import { useRef } from 'react'
 /**
  * Index
  * @returns Index
@@ -22,15 +22,33 @@ const Index = (): JSX.Element => {
   /**
    * Render
    */
+
+  const featuresRef = useRef()
+  const developersRef = useRef()
+  const caseStudyRef = useRef()
+  const aboutUsRef = useRef()
+
+  const scrollToView = (ref: any) => {
+    ref?.current.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <Layout className="Index">
       <Layout.Header className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
 
-        <Button type="text">Features</Button>
-        <Button type="text">Developers</Button>
-        <Button type="text">Case Studies</Button>
-        <Button type="text">About us</Button>
+        <Button type="text" onClick={() => scrollToView(featuresRef)}>
+          Features
+        </Button>
+        <Button type="text" onClick={() => scrollToView(developersRef)}>
+          Developers
+        </Button>
+        <Button type="text" onClick={() => scrollToView(caseStudyRef)}>
+          Case Studies
+        </Button>
+        <Button type="text" onClick={() => scrollToView(aboutUsRef)}>
+          About us
+        </Button>
         <Button type="primary">Get Started</Button>
       </Layout.Header>
 
@@ -80,6 +98,7 @@ const Index = (): JSX.Element => {
             className="background-primary "
             rightClassName="Index-models padding-50"
             leftClassName="padding-50"
+            ref={featuresRef}
           />
 
           <Side
@@ -159,6 +178,7 @@ const Index = (): JSX.Element => {
               </>
             }
             rightClassName="padding-50"
+            ref={developersRef}
           />
 
           <Side
@@ -185,6 +205,7 @@ const Index = (): JSX.Element => {
             }
             className="Index-casestudy"
             rightClassName="Index-casestudy-right"
+            ref={caseStudyRef}
           />
 
           <Card
@@ -259,6 +280,7 @@ const Index = (): JSX.Element => {
             className="Index-about"
             leftClassName="padding-50"
             rightClassName="padding-50"
+            ref={aboutUsRef}
           />
 
           <Footer />

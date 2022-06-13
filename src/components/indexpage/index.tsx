@@ -181,6 +181,8 @@ const Index = (): JSX.Element => {
             right={
               <img src="images/indexpage/denso-a-changer.png" alt="tanatloc" />
             }
+            className="Index-casestudy"
+            rightClassName="Index-casestudy-right"
           />
 
           <Card

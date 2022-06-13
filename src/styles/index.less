@@ -25,9 +25,13 @@
 .Index-models {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
+  align-items: unset !important;
   justify-items: stretch;
-  align-items: center;
   grid-gap: 20px;
+}
+
+.Index-models .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0 !important;
 }
 
 .Index-models .ant-checkbox-inner {
@@ -47,6 +51,15 @@
   align-items: center;
   max-width: 160px;
   text-align: center;
+}
+
+.Index-casestudy {
+  box-shadow: 0px 0px 6px -4px rgba(0, 0, 0, 0.12),
+    0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.Index-casestudy-right {
+  padding: 0 !important;
 }
 
 // .display-flex-around {

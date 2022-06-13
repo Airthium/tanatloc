@@ -32,7 +32,6 @@ const Index = (): JSX.Element => {
       const y = target?.offsetTop - header?.offsetHeight - 10
       index?.scrollTo({ top: y, behavior: 'smooth' })
     }
-
   }
 
   /**
@@ -93,12 +92,24 @@ const Index = (): JSX.Element => {
             }
             right={
               <>
-                <Checkbox checked={true}>Linear elasticity</Checkbox>
-                <Checkbox checked={true}>Linear elasticity over time</Checkbox>
-                <Checkbox checked={true}>Poisson</Checkbox>
-                <Checkbox checked={true}>Stokes</Checkbox>
-                <Checkbox checked={true}>Navier-Stokes over time</Checkbox>
-                <Checkbox checked={true}>Termal diffusion</Checkbox>
+                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                  Linear elasticity
+                </Checkbox>
+                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                  Linear elasticity over time
+                </Checkbox>
+                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                  Poisson
+                </Checkbox>
+                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                  Stokes
+                </Checkbox>
+                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                  Navier-Stokes over time
+                </Checkbox>
+                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                  Termal diffusion
+                </Checkbox>
               </>
             }
             className="background-primary "
@@ -293,7 +304,7 @@ const Index = (): JSX.Element => {
             id="aboutUs"
           />
 
-          <Footer scroll={scrollToView}/>
+          <Footer scroll={scrollToView} />
         </Space>
       </Layout.Content>
     </Layout>

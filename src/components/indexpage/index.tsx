@@ -205,19 +205,25 @@ const Index = (): JSX.Element => {
           <Side
             left={
               <>
-                <Typography.Title level={2}>Case Study</Typography.Title>
-                <Typography.Title level={3}>DENSO</Typography.Title>
+                <div>
+                  <Typography.Title level={2}>Case Study</Typography.Title>
+                  <Typography.Title level={3} className="text-light">
+                    DENSO
+                  </Typography.Title>
+                </div>
                 <Typography.Text>
                   DENSO is a leading automotive and Fortune 500 company. Hiroshi
                   Ogawa, at Denso’s Heat Exchanger Development Department,
                   implemented a custom FreeFEM model on TANATLOC with the help
                   of Professor Atsushi Suzuki from Osaka University.
-                </Typography.Text><br/>
+                </Typography.Text>
+                <br />
                 <Typography.Text>
                   Denso’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
                   on-premise via the ArgoGraphics Sharetask plug-in.
                 </Typography.Text>
+                <br />
                 <Button type="primary">See more of Tanatloc</Button>
               </>
             }
@@ -225,7 +231,7 @@ const Index = (): JSX.Element => {
               <img src="images/indexpage/denso-a-changer.png" alt="tanatloc" />
             }
             className="Index-casestudy"
-            leftClassName='Index-casestudy-left'
+            leftClassName="Index-casestudy-left"
             rightClassName="Index-casestudy-right"
             id="caseStudy"
           />

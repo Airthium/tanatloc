@@ -78,6 +78,7 @@ const Index = (): JSX.Element => {
               </>
             }
             className="background-primary"
+            rightClassName="Index-models"
           />
 
           <Side

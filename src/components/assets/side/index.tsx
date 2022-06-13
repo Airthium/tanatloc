@@ -14,9 +14,9 @@ const Side = ({
   rightClassName
 }: IProps): JSX.Element => {
   return (
-    <div className={className + ' default-side'}>
-      <div className={leftClassName + ' default-side-left'}>{left}</div>
-      <div className={rightClassName + ' default-side-right'}>{right}</div>
+    <div className={'default-side ' + className}>
+      <div className={'default-side-left ' + leftClassName}>{left}</div>
+      <div className={'default-side-right ' + rightClassName}>{right}</div>
     </div>
   )
 }

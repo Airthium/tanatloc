@@ -3,13 +3,14 @@
 import {
   Avatar,
   Button,
+  Card,
   Checkbox,
   Divider,
   Layout,
   Space,
+  Steps,
   Typography
 } from 'antd'
-import { CheckSquareOutlined } from '@ant-design/icons'
 
 import Side from '@/components/assets/side'
 
@@ -150,64 +151,38 @@ const Index = (): JSX.Element => {
             }
           />
 
-          <div className="margin-element width-60">
-            <div className="width-50">
-              <h2>
-                Tanatloc is an FEA software based on FreeFEM, an extremely
+          <Card
+            bordered={false}
+            title="Tanatloc is an FEA software based on FreeFEM, an extremely
                 powerful and versatile open-source PDE solver. It runs locally
-                using an electron build.
-              </h2>
-              <h3 style={{ color: 'gray' }}>
-                Follow these steps to get started :
-              </h3>
-            </div>
-            <div className="Index2-step-body-container">
-              <div className="Index2-step-side-container">
-                <div className="display-flex-between Index2-step-container">
-                  <img src="images/indexpage/List1.png" alt="first step" />
-                  <div className="Index2-step-explanations">
-                    <h2>Install PostgreSQL</h2>
-                    <Typography>
-                      Follow the PostgreSQL installation instruction at:
-                      postgresql.org/download/
-                    </Typography>
-                  </div>
-                </div>
-                <div className="display-flex-between Index2-step-container">
-                  <img src="images/indexpage/List3.png" alt="first step" />
-                  <div className="Index2-step-explanations">
-                    <h2>Tanatloc/worker docker</h2>
-                    <Typography>
-                      Pull the latest tanatloc/worker docker with the command
-                      line : docker pull tanatloc/worker
-                    </Typography>
-                  </div>
-                </div>
-              </div>
-              <div className="Index2-step-side-container">
-                <div className="display-flex-between Index2-step-container">
-                  <img src="images/indexpage/List2.png" alt="first step" />
-                  <div className="Index2-step-explanations">
-                    <h2>Install Docker</h2>
-                    <Typography>
-                      Follow the Docker installation instruction at :
-                      docs.docker.com/get-docker/
-                    </Typography>
-                  </div>
-                </div>
-                <div className="display-flex-between Index2-step-container">
-                  <img src="images/indexpage/List4.png" alt="first step" />
-                  <div className="Index2-step-explanations">
-                    <h2>Download the latest app</h2>
-                    <Typography>
-                      Download the latest app for Linux, MacOS or Windows. The
-                      default login is email : “admin” password : “password”
-                    </Typography>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                using an electron build."
+          >
+            <Typography.Title level={3} className="text-light">
+              Follow these steps to get started:
+            </Typography.Title>
+            <Steps direction="vertical">
+              <Steps.Step
+                title="Install PostgreSQL"
+                description="Follow the PostgreSQL installation instruction at:
+                      postgresql.org/download/"
+              />
+              <Steps.Step
+                title="Tanatloc/worker docker"
+                description="Pull the latest tanatloc/worker docker with the command
+                line: docker pull tanatloc/worker"
+              />
+              <Steps.Step
+                title="Download the latest app"
+                description="Pull the latest tanatloc/worker docker with the command
+                line: docker pull tanatloc/worker"
+              />
+              <Steps.Step
+                title=""
+                description="Download the latest app for Linux, MacOS or Windows."
+              />
+            </Steps>
+          </Card>
+
           <div className="Index2-aboutus">
             <div className="display-flex-evenly width-80 margin-element">
               <img

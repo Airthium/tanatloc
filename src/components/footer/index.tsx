@@ -68,17 +68,25 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
         <Card title="Contact" className="Footer-Card" bordered={false}>
           <Space direction="vertical">
             <div>
-              <Button type="primary">
-                <strong>contact@airthium.com</strong>
-              </Button>
+              <a href="mailto:contact@airthium.com">
+                <Button type="primary">
+                  <strong>contact@airthium.com</strong>
+                </Button>
+              </a>
               <br />
               <Typography.Text>for commercial inquiries</Typography.Text>
             </div>
 
             <div>
-              <Button type="primary">
-                <strong>Github Issues</strong>
-              </Button>
+              <a
+                href="https://github.com/Airthium/tanatloc/issues"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button type="primary">
+                  <strong>Github Issues</strong>
+                </Button>
+              </a>
               <br />
               <Typography.Text>for support questions</Typography.Text>
             </div>

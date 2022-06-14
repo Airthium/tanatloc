@@ -79,12 +79,12 @@ const Index = (): JSX.Element => {
                 <Typography.Title>
                   Solve your toughest numerical simulation problems
                 </Typography.Title>
-                <Typography.Text>
+                <Typography.Text className='Index-text'>
                   Tanatloc is a multi-physics FEA software for engineers and
                   researchers.
                 </Typography.Text>
                 <br />
-                <Typography.Text>
+                <Typography.Text className='Index-text'>
                   Use the provided models for the most common problems, make
                   your own, or partner with our experts to build one tailored to
                   your needs.
@@ -110,23 +110,23 @@ const Index = (): JSX.Element => {
             }
             right={
               <>
-                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                <Checkbox checked={true} style={{ pointerEvents: 'none', fontSize:'20px' }}>
                   Linear elasticity
                 </Checkbox>
-                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                <Checkbox checked={true} style={{ pointerEvents: 'none', fontSize:'20px' }}>
                   Linear elasticity over time
                 </Checkbox>
-                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                <Checkbox checked={true} style={{ pointerEvents: 'none', fontSize:'20px' }}>
                   Poisson
                 </Checkbox>
-                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                <Checkbox checked={true} style={{ pointerEvents: 'none', fontSize:'20px' }}>
                   Stokes
                 </Checkbox>
-                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
+                <Checkbox checked={true} style={{ pointerEvents: 'none', fontSize:'20px' }}>
                   Navier-Stokes over time
                 </Checkbox>
-                <Checkbox checked={true} style={{ pointerEvents: 'none' }}>
-                  Termal diffusion
+                <Checkbox checked={true} style={{ pointerEvents: 'none', fontSize:'20px' }}>
+                  Thermal diffusion
                 </Checkbox>
               </>
             }
@@ -229,14 +229,14 @@ const Index = (): JSX.Element => {
                     DENSO
                   </Typography.Title>
                 </div>
-                <Typography.Text>
+                <Typography.Text className='Index-text'>
                   DENSO is a leading automotive and Fortune 500 company. Hiroshi
                   Ogawa, at Denso’s Heat Exchanger Development Department,
                   implemented a custom FreeFEM model on TANATLOC with the help
                   of Professor Atsushi Suzuki from Osaka University.
                 </Typography.Text>
                 <br />
-                <Typography.Text>
+                <Typography.Text className='Index-text'>
                   Denso’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
                   on-premise via the ArgoGraphics Sharetask plug-in.
@@ -300,7 +300,7 @@ const Index = (): JSX.Element => {
             }
             right={
               <>
-                <Typography.Text>
+                <Typography.Text className='Index-text'>
                   TANATLOC is maintained by Airthium, a US/France based deeptech
                   startup. We build a very robust and highly efficient electric
                   heat engine to decarbonise the planet.

@@ -244,26 +244,30 @@ const Index = (): JSX.Element => {
           >
             <Typography.Title level={3} className="text-light">
               Follow these steps to get started:
-            </Typography.Title>
-            <Steps direction="vertical">
+            </Typography.Title><br/>
+            <Steps direction="vertical" className='Index-steps'>
               <Steps.Step
                 title="Install PostgreSQL"
                 description="Follow the PostgreSQL installation instruction at:
                       postgresql.org/download/"
+                status="process"
+              />
+              <Steps.Step
+                title="Install Docker"
+                description="Follow the Docker installation instruction at : 
+                docs.docker.com/get-docker/"
+                status="process"
               />
               <Steps.Step
                 title="Tanatloc/worker docker"
                 description="Pull the latest tanatloc/worker docker with the command
                 line: docker pull tanatloc/worker"
+                status="process"
               />
               <Steps.Step
                 title="Download the latest app"
-                description="Pull the latest tanatloc/worker docker with the command
-                line: docker pull tanatloc/worker"
-              />
-              <Steps.Step
-                title=""
                 description="Download the latest app for Linux, MacOS or Windows."
+                status='process'
               />
             </Steps>
           </Card>

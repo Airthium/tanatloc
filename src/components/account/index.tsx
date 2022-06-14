@@ -2,6 +2,7 @@
 
 import { NextRouter, useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
+import isElectron from 'is-electron'
 
 import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
@@ -79,15 +80,17 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
               <Delete swr={{ clearUser: swr.clearUser }} />
             </Space>
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Security" key="security">
-            <Space direction="vertical" className="full-width" size={20}>
-              <Password
-                user={{
-                  email: user.email
-                }}
-              />
-            </Space>
-          </Tabs.TabPane>
+          {!isElectron() && (
+            <Tabs.TabPane tab="Security" key="security">
+              <Space direction="vertical" className="full-width" size={20}>
+                <Password
+                  user={{
+                    email: user.email
+                  }}
+                />
+              </Space>
+            </Tabs.TabPane>
+          )}
           <Tabs.TabPane className="no-scroll" tab="HPC Providers" key="hpc">
             <HPC />
           </Tabs.TabPane>

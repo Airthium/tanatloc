@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
+import isElectron from 'is-electron'
 
 import { LIMIT } from '@/config/string'
 
@@ -253,7 +254,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
                 { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
               ]}
             >
-              <Input />
+              <Input disabled={isElectron()} />
             </Form.Item>
 
             <Form.Item

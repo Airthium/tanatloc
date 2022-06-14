@@ -1,5 +1,6 @@
 /** @module Components.Index2 */
 
+import { useRouter } from 'next/router'
 import {
   Avatar,
   Button,
@@ -11,6 +12,9 @@ import {
   Typography
 } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
+import isElectron from 'is-electron'
+
+import { login } from '@/api/login'
 
 import Side from '@/components/assets/side'
 import Footer from '../footer'
@@ -19,6 +23,17 @@ import Footer from '../footer'
  * @returns Index
  */
 const Index = (): JSX.Element => {
+  // Data
+  const router = useRouter()
+
+  if (isElectron()) {
+    login({
+      email: 'admin',
+      password: 'password'
+    })
+    router.push('/dashboard')
+  }
+
   /**
    * Scroll to view
    * @param id
@@ -244,8 +259,9 @@ const Index = (): JSX.Element => {
           >
             <Typography.Title level={3} className="text-light">
               Follow these steps to get started:
-            </Typography.Title><br/>
-            <Steps direction="vertical" className='Index-steps'>
+            </Typography.Title>
+            <br />
+            <Steps direction="vertical" className="Index-steps">
               <Steps.Step
                 title="Install PostgreSQL"
                 description="Follow the PostgreSQL installation instruction at:
@@ -267,7 +283,7 @@ const Index = (): JSX.Element => {
               <Steps.Step
                 title="Download the latest app"
                 description="Download the latest app for Linux, MacOS or Windows."
-                status='process'
+                status="process"
               />
             </Steps>
           </Card>

@@ -11,6 +11,7 @@ import {
   LogoutOutlined,
   TeamOutlined
 } from '@ant-design/icons'
+import isElectron from 'is-electron'
 
 import packageJson from '../../../package.json'
 
@@ -207,11 +208,12 @@ const Dashboard = () => {
             {
               key: menuItems.organizations.key,
               icon: <TeamOutlined />,
-              label: menuItems.organizations.label
+              label: menuItems.organizations.label,
+              className: isElectron() ? 'display-none' : ''
             },
             {
               key: menuItems.administration.key,
-              className: user.superuser ? '' : 'display-none',
+              className: user.superuser && !isElectron() ? '' : 'display-none',
               icon: <ControlOutlined />,
               label: menuItems.administration.label
             },

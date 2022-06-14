@@ -404,7 +404,7 @@ export const downloadScreenshot = (
 
     const image = renderer.domElement.toDataURL()
 
-    var a = document.createElement('a')
+    const a = document.createElement('a')
     a.href = image.replace('image/png', 'image/octet-stream')
     a.download = project.title + '_' + new Date().toLocaleDateString() + '.png'
     a.click()

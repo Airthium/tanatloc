@@ -21,7 +21,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
   // Data
   const thanks = [
     '- Professor Fréderic Hecht, Dr. Pierre Jolivet, and the FreeFEM’s contributors',
-    '- Professor Christophe Geuzaine, Professor Jean-François Remacle and the GMSH contributors',
+    '- Professor Christophe Geuzaine, Professor Jean-François Remacle and the Gmsh contributors',
     '- The Open Cascade development team'
   ]
   const navigate = [

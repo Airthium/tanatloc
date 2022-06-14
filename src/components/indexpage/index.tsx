@@ -80,13 +80,17 @@ const Index = (): JSX.Element => {
                 <Typography.Title>
                   Solve your toughest numerical simulation problems
                 </Typography.Title>
-                <Typography.Title level={4}>
+                <Typography.Text>
                   Tanatloc is a multi-physics FEA software for engineers and
-                  researchers. <br />
+                  researchers.
+                </Typography.Text>
+                <br />
+                <Typography.Text>
                   Use the provided models for the most common problems, make
                   your own, or partner with our experts to build one tailored to
                   your needs.
-                </Typography.Title>
+                </Typography.Text>
+                <br />
                 <Button type="primary">Get Started</Button>
               </>
             }
@@ -251,13 +255,13 @@ const Index = (): JSX.Element => {
             id="caseStudy"
           />
 
-          <Card
-            bordered={false}
-            title="Tanatloc is an FEA software based on FreeFEM, an extremely
-                powerful and versatile open-source PDE solver. It runs locally
-                using an electron build."
-          >
-            <Typography.Title level={3} className="text-light">
+          <div>
+            <Typography.Title level={2}>
+              Tanatloc is an FEA software based on FreeFEM, an extremely
+              powerful and versatile open-source PDE solver. It runs locally
+              using an electron build.
+            </Typography.Title>
+            <Typography.Title level={4} className="text-light">
               Follow these steps to get started:
             </Typography.Title>
             <br />
@@ -286,7 +290,7 @@ const Index = (): JSX.Element => {
                 status="process"
               />
             </Steps>
-          </Card>
+          </div>
 
           <Side
             left={

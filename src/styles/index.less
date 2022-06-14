@@ -40,7 +40,6 @@
 
 .Index-plugins {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
 }
@@ -67,7 +66,6 @@
 
 .Index-casestudy-left {
   width: 70%;
-  align-items: flex-start !important;
 }
 
 .Index-casestudy-left h3 {
@@ -80,9 +78,27 @@
 
 .Index-steps {
   width: 50%;
-  text-align: center;
   margin: auto;
-  margin-bottom: 30px;
+}
+
+.Index-steps .ant-steps-item {
+  margin-bottom: 20px;
+}
+
+.Index-steps .ant-steps-item-icon {
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  font-size: 32px;
+}
+
+.Index-steps .ant-steps-item-tail {
+  top: 32px !important;
+  left: 32px !important;
+}
+
+.Index-steps .ant-steps-item-tail::after {
+  height: 30px !important;
 }
 
 .Index .ant-steps-item-title {

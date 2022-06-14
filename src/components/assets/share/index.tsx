@@ -11,6 +11,7 @@ import {
   Typography
 } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
+import isElectron from 'is-electron'
 
 import { LinkButton } from '../button'
 import Dialog from '@/components/assets/dialog'
@@ -302,7 +303,8 @@ const Share = ({
             'no-background ' +
             (style?.buttonLight ? 'text-light ' : '') +
             (style?.buttonDark ? ' text-dark ' : '') +
-            (style?.buttonBordered ? ' ' : 'no-border ')
+            (style?.buttonBordered ? ' ' : 'no-border ') +
+            (isElectron() ? 'display-none ' : ' ')
           }
           key="share"
           disabled={disabled}

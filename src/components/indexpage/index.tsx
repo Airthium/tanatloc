@@ -68,7 +68,9 @@ const Index = (): JSX.Element => {
         <Button type="text" onClick={() => scrollToView('aboutUs')}>
           About us
         </Button>
-        <Button type="primary">Get Started</Button>
+        <Button type="primary" onClick={() => scrollToView('getStarted')}>
+          Get Started
+        </Button>
       </Layout.Header>
 
       <Layout.Content className="Index-Content">
@@ -90,13 +92,19 @@ const Index = (): JSX.Element => {
                   your needs.
                 </Typography.Text>
                 <br />
-                <Button type="primary">Get Started</Button>
+                <Button
+                  type="primary"
+                  onClick={() => scrollToView('getStarted')}
+                >
+                  Get Started
+                </Button>
               </>
             }
             right={
               <img
-                src="images/indexpage/modelisation-a-changer.png"
+                src="images/indexpage/capture1.png"
                 alt="tanatloc"
+                className="img-shadow"
               />
             }
             leftClassName="padding-50"
@@ -139,8 +147,9 @@ const Index = (): JSX.Element => {
           <Side
             left={
               <img
-                src="images/indexpage/capture-a-changer.png"
+                src="images/indexpage/capture2.png"
                 alt="tanatloc"
+                className="img-shadow"
               />
             }
             right={
@@ -241,20 +250,18 @@ const Index = (): JSX.Element => {
                   calculations are deployed seamlessly on the cloud or on
                   on-premise via the ArgoGraphics Sharetask plug-in.
                 </Typography.Text>
-                <br />
-                <Button type="primary">See more of Tanatloc</Button>
+                {/* <br />
+                <Button type="primary">See more of Tanatloc</Button> */}
               </>
             }
-            right={
-              <img src="images/indexpage/denso-a-changer.png" alt="tanatloc" />
-            }
+            right={<img src="images/indexpage/denso.jpg" alt="tanatloc" />}
             className="Index-casestudy"
-            leftClassName="Index-casestudy-left"
+            leftClassName="Index-casestudy-left padding-50"
             rightClassName="Index-casestudy-right"
             id="caseStudy"
           />
 
-          <div>
+          <div id="getStarted">
             <Typography.Title level={2}>
               Tanatloc is an FEA software based on FreeFEM, an extremely
               powerful and versatile open-source PDE solver. It runs locally
@@ -266,26 +273,58 @@ const Index = (): JSX.Element => {
             <br />
             <Steps direction="vertical" className="Index-steps">
               <Steps.Step
-                title="Install PostgreSQL"
-                description="Follow the PostgreSQL installation instruction at:
-                      postgresql.org/download/"
-                status="process"
-              />
-              <Steps.Step
                 title="Install Docker"
-                description="Follow the Docker installation instruction at : 
-                docs.docker.com/get-docker/"
+                description={
+                  <>
+                    Follow the Docker installation instruction at
+                    <br />
+                    <a
+                      href="https://docs.docker.com/get-docker/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      docs.docker.com/get-docker
+                    </a>
+                  </>
+                }
                 status="process"
               />
               <Steps.Step
-                title="Tanatloc/worker docker"
-                description="Pull the latest tanatloc/worker docker with the command
-                line: docker pull tanatloc/worker"
+                title="Tanatloc worker docker"
+                description={
+                  <Typography>
+                    Pull the latest tanatloc/worker docker with the command
+                    line:
+                    <br />
+                    <Typography.Text code copyable>
+                      docker pull tanatloc/worker
+                    </Typography.Text>
+                  </Typography>
+                }
+                status="process"
+              />
+              <Steps.Step
+                title="PostgreSQL docker"
+                description={
+                  <Typography>
+                    Pull the latest postgres docker with the command line:
+                    <br />
+                    <Typography.Text code copyable>
+                      docker pull postgres
+                    </Typography.Text>
+                  </Typography>
+                }
                 status="process"
               />
               <Steps.Step
                 title="Download the latest app"
-                description="Download the latest app for Linux, MacOS or Windows."
+                description={
+                  <>
+                    Download the latest app for Linux, MacOS or Windows.
+                    <br />
+                    <Button type="primary">Upcoming</Button>
+                  </>
+                }
                 status="process"
               />
             </Steps>
@@ -305,27 +344,38 @@ const Index = (): JSX.Element => {
                   startup. We build a very robust and highly efficient electric
                   heat engine to decarbonise the planet.
                 </Typography.Text>
-                <Button type="primary">Discover the project</Button>
+                <br />
+                <a
+                  href="https://airthium.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button type="primary">Discover the project</Button>
+                </a>
               </>
             }
             top={
               <Side
-                left={
-                  <img
-                    src="images/indexpage/airthium-a-changer.png"
-                    alt="airthium"
-                  />
-                }
+                left={<></>}
                 right={
                   <>
                     <Typography.Title level={2}>
                       Support our fight against climate change
                     </Typography.Title>
-                    <Button className='Index-aboutus-button'>Invest in our crowdfounding</Button>
+                    <a
+                      href="https://wefunder.com/airthium"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Button size="large">
+                        <strong>Invest in our crowdfounding</strong>
+                      </Button>
+                    </a>
                   </>
                 }
                 className="background-primary"
-                rightClassName="padding-50 height-80"
+                leftClassName="Index-about-turbine"
+                rightClassName="padding-50"
               />
             }
             className="Index-about"

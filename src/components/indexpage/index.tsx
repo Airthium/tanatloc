@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import {
   Avatar,
   Button,
-  Card,
   Checkbox,
   Layout,
   Space,
@@ -322,11 +321,11 @@ const Index = (): JSX.Element => {
                     <Typography.Title level={2}>
                       Support our fight against climate change
                     </Typography.Title>
-                    <Button>Invest in our crowdfounding</Button>
+                    <Button className='Index-aboutus-button'>Invest in our crowdfounding</Button>
                   </>
                 }
                 className="background-primary"
-                rightClassName="padding-50"
+                rightClassName="padding-50 height-80"
               />
             }
             className="Index-about"

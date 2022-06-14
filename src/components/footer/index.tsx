@@ -1,3 +1,5 @@
+/** @module Component.Footer */
+
 import {
   Button,
   Card,
@@ -34,7 +36,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
     <Button key="case_studies" type="text" onClick={() => scroll('caseStudy')}>
       Case Studies
     </Button>,
-    <Button key="get_started" type="text">
+    <Button key="get_started" type="text" onClick={() => scroll('getStarted')}>
       Get started
     </Button>,
     <Button key="about_us" type="text" onClick={() => scroll('aboutUs')}>

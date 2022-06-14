@@ -98,7 +98,9 @@ describe('components/project/simulation/run/log', () => {
     await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Normal
-    mockSimulationLog.mockImplementationOnce(() => ({ log: 'log' }))
+    mockSimulationLog.mockImplementationOnce(() => ({
+      log: Buffer.from('log')
+    }))
     fireEvent.click(logButton)
     await waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(2))
 

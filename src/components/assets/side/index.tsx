@@ -1,4 +1,4 @@
-
+/** @module Components.Assets.Side */
 
 export interface IProps {
   left: JSX.Element
@@ -11,6 +11,11 @@ export interface IProps {
   id?: string
 }
 
+/**
+ * Side
+ * @param props Props
+ * @returns Side
+ */
 const Side = ({
   left,
   right,
@@ -21,6 +26,9 @@ const Side = ({
   topClassName,
   id
 }: IProps): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <div className={'default-side ' + (className ?? '')} id={id}>
       <div className={'default-side-left ' + (leftClassName ?? '')}>{left}</div>

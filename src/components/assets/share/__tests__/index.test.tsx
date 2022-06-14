@@ -11,6 +11,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 const mockLinkButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   LinkButton: (props: any) => mockLinkButton(props)
@@ -77,6 +80,9 @@ describe('components/assets/share', () => {
   beforeEach(() => {
     mockPush.mockReset()
 
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockLinkButton.mockReset()
     mockLinkButton.mockImplementation(() => <div />)
 
@@ -91,6 +97,15 @@ describe('components/assets/share', () => {
   })
 
   test('render', () => {
+    const { unmount } = render(
+      <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />
     )

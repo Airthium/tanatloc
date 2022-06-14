@@ -14,6 +14,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   ErrorNotification: (title: string, err: Error) =>
@@ -97,6 +100,9 @@ describe('components/dashboard', () => {
     mockPush.mockReset()
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
+
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
 
     mockErrorNotification.mockReset()
 
@@ -255,6 +261,14 @@ describe('components/dashboard', () => {
     const { unmount } = render(<Dashboard />)
 
     screen.getAllByText(/git-dev-hash/)
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
+    mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
+    const { unmount } = render(<Dashboard />)
 
     unmount()
   })

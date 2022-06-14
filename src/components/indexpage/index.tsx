@@ -17,7 +17,7 @@ import { login } from '@/api/login'
 import UserAPI from '@/api/user'
 
 import Side from '@/components/assets/side'
-import Footer from '../footer'
+import Footer from '@/components/footer'
 /**
  * Index
  * @returns Index
@@ -46,7 +46,7 @@ const Index = (): JSX.Element => {
     const index = document.getElementById('index')
     if (target && header) {
       const y = target?.offsetTop - header?.offsetHeight - 10
-      index?.scrollTo({ top: y, behavior: 'smooth' })
+      index?.scrollTo?.({ top: y, behavior: 'smooth' })
     }
   }
 

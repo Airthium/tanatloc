@@ -363,7 +363,7 @@ const computeSimulation = async (
 
         pid && (simulationTask.pid = pid)
 
-        data && (simulationTask.error += 'Error: ' + error + '\n')
+        data && (simulationTask.log += data + '\n')
         error && (simulationTask.error += 'Error: ' + error + '\n')
 
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
@@ -481,6 +481,7 @@ const processOutput = async (
   try {
     const log = await Tools.readFile(path.join(simulationPath, logFileName))
     task.log = log.toString()
+    update()
   } catch (err) {}
 
   // Result / data

@@ -206,7 +206,9 @@ const Index = (): JSX.Element => {
                     <Typography.Text className="text-light">
                       Paid feature
                     </Typography.Text>
-                    <Button type="link">Contact us</Button>
+                    <a href="mailto:contact@airthium.com">
+                      <Button type="link">Contact us</Button>
+                    </a>
                   </div>
                   <div>
                     <Avatar
@@ -220,7 +222,9 @@ const Index = (): JSX.Element => {
                     <Typography.Text className="text-light">
                       Paid feature
                     </Typography.Text>
-                    <Button type="link">Contact us</Button>
+                    <a href="mailto:contact@airthium.com">
+                      <Button type="link">Contact us</Button>
+                    </a>
                   </div>
                   <div>
                     <Avatar

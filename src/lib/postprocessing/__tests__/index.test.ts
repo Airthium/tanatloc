@@ -1,5 +1,8 @@
 import Postprocessing from '..'
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 jest.mock('@/config/storage', () => ({
   SIMULATION: 'SIMULATION'
 }))
@@ -20,6 +23,9 @@ jest.mock('@/lib/tools', () => ({
 
 describe('lib/postprocessing', () => {
   beforeEach(() => {
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockPvpython.mockReset()
 
     mockCopyFile.mockReset()
@@ -110,5 +116,36 @@ describe('lib/postprocessing', () => {
     } catch (err: any) {
       expect(err.message).toBe('Post-processing script failed. Code 1')
     }
+  })
+
+  test('run electron', async () => {
+    mockIsElectron.mockImplementation(() => true)
+    mockPvpython.mockImplementation(() => ({ code: 0 }))
+    mockConvert.mockImplementation((callback) => {
+      callback({
+        data: 'data'
+      })
+      return [
+        {
+          name: 'name',
+          glb: 'glb'
+        }
+      ]
+    })
+
+    const res = await Postprocessing.run(
+      { id: 'id' },
+      { fileName: 'fileName.vtu', originPath: 'originPath' },
+      'filter',
+      ['']
+    )
+    expect(res).toEqual([
+      {
+        fileName: 'fileName_filter.vtu',
+        name: 'name',
+        originPath: 'originPath',
+        glb: 'glb'
+      }
+    ])
   })
 })

@@ -540,8 +540,8 @@ const createAdmin = async (): Promise<void> => {
     await query(
       'INSERT INTO ' +
         tables.USERS +
-        " (email, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
-      ['admin', password, [], true, Date.now() / 1000, true]
+        " (email, password, workspaces, isValidated, lastModificationDate, superuser, authorizedplugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6, $7)",
+      ['admin', password, [], true, Date.now() / 1000, true, ['local']]
     )
     console.info(' Administrator account:')
     console.info(' - email: admin')

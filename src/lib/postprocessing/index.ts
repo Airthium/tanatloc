@@ -1,6 +1,7 @@
 /** @module Lib.Postprocessing */
 
 import path from 'path'
+import isElectron from 'is-electron'
 
 import { SIMULATION } from '@/config/storage'
 
@@ -27,7 +28,12 @@ const run = async (
   // Script
   const script = filter + '.py'
   await Tools.copyFile(
-    { path: './postprocessing', file: script },
+    {
+      path: isElectron()
+        ? `${process.resourcesPath}/postprocessing`
+        : './dist/postprocessing',
+      file: script
+    },
     { path: resultPath, file: script }
   )
 

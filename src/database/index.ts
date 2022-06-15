@@ -40,9 +40,15 @@ export const checkdB = async (): Promise<boolean> => {
   // Docker postgres
   try {
     // Existing tanatloc-postgres docker
-    const id = execSync(
+    let id = execSync(
       'docker container ls -a --filter "name=tanatloc-postgres" -q'
     )
+
+    if (!id.length) {
+      id = execSync(
+        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -d postgres'
+      )
+    }
 
     if (!id.length) throw new Error()
 
@@ -56,6 +62,9 @@ export const checkdB = async (): Promise<boolean> => {
     process.env.DB_HOST = host.toString().replace('\n', '')
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')
+
+    // Wait postgres start
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     return true
   } catch (err) {}

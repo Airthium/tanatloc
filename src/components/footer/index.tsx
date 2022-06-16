@@ -11,6 +11,10 @@ import {
   Typography
 } from 'antd'
 
+import packageJson from '../../../package.json'
+
+import Utils from '@/lib/utils'
+
 export interface IProps {
   scroll: (id: string) => void
 }
@@ -43,6 +47,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       About us
     </Button>
   ]
+  const gitVersion = Utils.getGitVersion()
 
   /**
    * Render item
@@ -98,7 +103,10 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       <Divider className="Footer-Divider" />
       <div className="Footer-footer">
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Typography>Copyright© {new Date().getFullYear()}</Typography>
+        <Typography>
+          Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
+          {gitVersion && <>({gitVersion})</>}
+        </Typography>
       </div>
     </Layout.Footer>
   )

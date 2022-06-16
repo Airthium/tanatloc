@@ -3,10 +3,27 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Footer from '..'
 
+const mockGitVersion = jest.fn()
+jest.mock('@/lib/utils', () => ({
+  getGitVersion: () => mockGitVersion()
+}))
+
 describe('components/footer', () => {
   const scroll = jest.fn()
 
+  beforeEach(() => {
+    mockGitVersion.mockReset()
+    mockGitVersion.mockImplementation(() => 'git-version')
+  })
+
   test('render', () => {
+    const { unmount } = render(<Footer scroll={scroll} />)
+
+    unmount()
+  })
+
+  test('without git version', () => {
+    mockGitVersion.mockImplementation(() => undefined)
     const { unmount } = render(<Footer scroll={scroll} />)
 
     unmount()

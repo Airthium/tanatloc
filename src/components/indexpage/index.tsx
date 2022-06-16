@@ -58,7 +58,7 @@ const Index = (): JSX.Element => {
     <Layout id="index" className="Index">
       <Layout.Header id="header" className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Menu mode="horizontal">
+        <Menu mode="horizontal" className='Index-Menu'>
           <Menu.Item>
             <Button type="text" onClick={() => scrollToView('features')}>
               Features

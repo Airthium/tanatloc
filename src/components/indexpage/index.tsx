@@ -7,7 +7,6 @@ import {
   Checkbox,
   Layout,
   Menu,
-  MenuProps,
   Space,
   Steps,
   Typography
@@ -51,6 +50,7 @@ const Index = (): JSX.Element => {
       index?.scrollTo?.({ top: y, behavior: 'smooth' })
     }
   }
+
   /**
    * Render
    */
@@ -62,7 +62,6 @@ const Index = (): JSX.Element => {
           mode="horizontal"
           triggerSubMenuAction="click"
           onClick={(e) => console.log(e)}
-          style={{minWidth: '60%'}}
         >
           <Menu.Item>
             <Button type="text" onClick={() => scrollToView('features')}>

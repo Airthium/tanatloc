@@ -6,6 +6,8 @@ import {
   Button,
   Checkbox,
   Layout,
+  Menu,
+  MenuProps,
   Space,
   Steps,
   Typography
@@ -49,7 +51,6 @@ const Index = (): JSX.Element => {
       index?.scrollTo?.({ top: y, behavior: 'smooth' })
     }
   }
-
   /**
    * Render
    */
@@ -57,22 +58,39 @@ const Index = (): JSX.Element => {
     <Layout id="index" className="Index">
       <Layout.Header id="header" className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
+        <Menu
+          mode="horizontal"
+          triggerSubMenuAction="click"
+          onClick={(e) => console.log(e)}
+          style={{minWidth: '60%'}}
+        >
+          <Menu.Item>
+            <Button type="text" onClick={() => scrollToView('features')}>
+              Features
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button type="text" onClick={() => scrollToView('developers')}>
+              Developers
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button type="text" onClick={() => scrollToView('caseStudy')}>
+              Case Studies
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button type="text" onClick={() => scrollToView('aboutUs')}>
+              About us
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button type="primary" onClick={() => scrollToView('getStarted')}>
+              Get Started
+            </Button>
+          </Menu.Item>
+        </Menu>
 
-        <Button type="text" onClick={() => scrollToView('features')}>
-          Features
-        </Button>
-        <Button type="text" onClick={() => scrollToView('developers')}>
-          Developers
-        </Button>
-        <Button type="text" onClick={() => scrollToView('caseStudy')}>
-          Case Studies
-        </Button>
-        <Button type="text" onClick={() => scrollToView('aboutUs')}>
-          About us
-        </Button>
-        <Button type="primary" onClick={() => scrollToView('getStarted')}>
-          Get Started
-        </Button>
         {!loadingUser &&
           (user ? (
             <Button

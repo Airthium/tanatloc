@@ -227,7 +227,8 @@ const Dashboard = () => {
               key: menuItems.logout.key,
               danger: true,
               icon: <LogoutOutlined />,
-              label: menuItems.logout.label
+              label: menuItems.logout.label,
+              className: isElectron() ? 'display-none' : ''
             },
             {
               key: 'version',

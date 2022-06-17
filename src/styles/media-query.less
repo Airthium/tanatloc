@@ -8,6 +8,12 @@
         padding: 0 20px !important
     }
 
+    .Index-Header {
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        padding: 20px 10px
+    }
+
     .Index-models {
         display: flex !important;
         flex-direction: column !important;
@@ -22,6 +28,11 @@
         padding: 20px !important
     }
 
+    .Index-plugins {
+        margin: auto;
+        margin-top: 20px;
+    }
+
     .Index-plugins > div {
         width: 50%;
         align-items: center;
@@ -29,5 +40,57 @@
 
     .Index-steps {
         width: unset !important;
+    }
+
+    .Index-button {
+        display: none;
+    }
+
+    .Footer-head {
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+      }
+
+    Footer {
+    background: @tanatloc-primary-color !important;
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    }
+
+    .ant-layout-footer {
+        padding: unset;
+        padding-bottom: 20px;
+    }
+
+    .Footer-head ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .Footer-head .Footer-Card li:first-child {
+        padding-top: 12px !important;
+    }
+
+    .Footer-Card .ant-space {
+        flex-direction: row;
+    }
+
+    .Footer-footer {
+        display: unset;
+        justify-content: unset;
+    }
+
+    .Footer-footer img {
+        display: none
+    }
+
+    .Footer-footer .ant-typography {
+        text-align: right;
+        margin-right: 20px;
+    }
+
+    .Index-crowdfunding a {
+        margin: auto;
     }
 }

@@ -429,7 +429,7 @@ const Index = (): JSX.Element => {
                 }
                 className="background-primary"
                 leftClassName="Index-about-turbine"
-                rightClassName="Index-padding-50"
+                rightClassName="Index-padding-50 Index-crowdfunding"
               />
             }
             className="Index-about"

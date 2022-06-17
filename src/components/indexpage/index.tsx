@@ -139,7 +139,7 @@ const Index = (): JSX.Element => {
                 className="img-shadow"
               />
             }
-            leftClassName="padding-50"
+            leftClassName="Index-padding-50"
           />
 
           <Side
@@ -189,8 +189,8 @@ const Index = (): JSX.Element => {
               </>
             }
             className="background-primary "
-            rightClassName="Index-models padding-50"
-            leftClassName="padding-50"
+            rightClassName="Index-models Index-padding-50"
+            leftClassName="Index-padding-50"
             id="features"
           />
 
@@ -279,7 +279,7 @@ const Index = (): JSX.Element => {
                 </div>
               </>
             }
-            rightClassName="padding-50"
+            rightClassName="Index-padding-50"
             id="developers"
           />
 
@@ -310,7 +310,7 @@ const Index = (): JSX.Element => {
             }
             right={<img src="images/indexpage/denso.jpg" alt="tanatloc" />}
             className="Index-casestudy"
-            leftClassName="Index-casestudy-left padding-50"
+            leftClassName="Index-casestudy-left Index-padding-50"
             rightClassName="Index-casestudy-right"
             id="caseStudy"
           />
@@ -429,12 +429,12 @@ const Index = (): JSX.Element => {
                 }
                 className="background-primary"
                 leftClassName="Index-about-turbine"
-                rightClassName="padding-50"
+                rightClassName="Index-padding-50"
               />
             }
             className="Index-about"
-            leftClassName="padding-50"
-            rightClassName="padding-50"
+            leftClassName="Index-padding-50"
+            rightClassName="Index-padding-50"
             id="aboutUs"
           />
 

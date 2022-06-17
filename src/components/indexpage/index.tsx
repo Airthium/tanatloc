@@ -58,33 +58,55 @@ const Index = (): JSX.Element => {
     <Layout id="index" className="Index">
       <Layout.Header id="header" className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Menu mode="horizontal" className='Index-Menu'>
-          <Menu.Item>
-            <Button type="text" onClick={() => scrollToView('features')}>
-              Features
-            </Button>
-          </Menu.Item>
-          <Menu.Item>
-            <Button type="text" onClick={() => scrollToView('developers')}>
-              Developers
-            </Button>
-          </Menu.Item>
-          <Menu.Item>
-            <Button type="text" onClick={() => scrollToView('caseStudy')}>
-              Case Studies
-            </Button>
-          </Menu.Item>
-          <Menu.Item>
-            <Button type="text" onClick={() => scrollToView('aboutUs')}>
-              About us
-            </Button>
-          </Menu.Item>
-          <Menu.Item>
-            <Button type="primary" onClick={() => scrollToView('getStarted')}>
-              Get Started
-            </Button>
-          </Menu.Item>
-        </Menu>
+        <Menu
+          mode="horizontal"
+          className="Index-Menu"
+          items={[
+            {
+              key: 'features',
+              label: (
+                <Button type="text" onClick={() => scrollToView('features')}>
+                  Features
+                </Button>
+              )
+            },
+            {
+              key: 'developers',
+              label: (
+                <Button type="text" onClick={() => scrollToView('developers')}>
+                  Developers
+                </Button>
+              )
+            },
+            {
+              key: 'caseStudy',
+              label: (
+                <Button type="text" onClick={() => scrollToView('caseStudy')}>
+                  Case Studies
+                </Button>
+              )
+            },
+            {
+              key: 'aboutUs',
+              label: (
+                <Button type="text" onClick={() => scrollToView('aboutUs')}>
+                  About us
+                </Button>
+              )
+            },
+            {
+              key: 'getStarted',
+              label: (
+                <Button
+                  type="primary"
+                  onClick={() => scrollToView('getStarted')}
+                >
+                  Get Started
+                </Button>
+              )
+            }
+          ]}
+        />
 
         {!loadingUser &&
           (user ? (

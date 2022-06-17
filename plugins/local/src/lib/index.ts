@@ -358,12 +358,11 @@ const computeSimulation = async (
     const code = await Services.freefem(
       simulationPath,
       path.join(runPath, id + '.edp'),
-      async ({ pid, data, error }) => {
+      async ({ pid, error }) => {
         simulationTask.status = 'process'
 
         pid && (simulationTask.pid = pid)
 
-        data && (simulationTask.log += data + '\n')
         error && (simulationTask.error += 'Error: ' + error + '\n')
 
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
@@ -530,19 +529,16 @@ const processResults = async (
 
       try {
         // Convert
-
         const newResults = await Tools.convert(
           path.join(simulationPath, runPath, resultPath),
           {
             name: resFile,
             target: partPath
           },
-          ({ data, error }) => {
+          ({ error }) => {
             error &&
               (task.warning +=
                 'Warning: Result converting process failed (' + error + ')\n')
-
-            data && (task.log += data + '\n')
           },
           { isResult: true }
         )

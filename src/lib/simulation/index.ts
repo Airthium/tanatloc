@@ -226,18 +226,23 @@ const run = async (
   // Copy geometry
   const geometryId = configuration.geometry?.value
   if (geometryId) {
-    const geometry = await Geometry.get(geometryId, ['brep'])
-    configuration.geometry.file = geometry.brep
-    configuration.geometry.name = geometry.brep.replace('.brep', '')
+    const geometry = await Geometry.get(geometryId, [
+      'name',
+      'uploadfilename',
+      'brep'
+    ])
+    configuration.geometry.file =
+      configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
+    configuration.geometry.name = geometry.name
     configuration.geometry.path = GEOMETRY_RELATIVE
     await Tools.copyFile(
       {
         path: GEOMETRY,
-        file: geometry.brep
+        file: configuration.geometry.file
       },
       {
         path: path.join(SIMULATION, simulation.id, 'geometry'),
-        file: geometry.brep
+        file: configuration.geometry.file
       }
     )
   }

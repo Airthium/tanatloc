@@ -345,6 +345,7 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
+          dimension: 2,
           geometry: {
             value: 'id'
           },

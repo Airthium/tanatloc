@@ -249,10 +249,10 @@ const Index = (): JSX.Element => {
                     <Avatar
                       size={64}
                       shape="square"
-                      src="images/indexpage/logo-argographics.png"
+                      src="images/indexpage/logo-ancl.jpg"
                     />
                     <Typography.Title level={4}>
-                      ArgoGraphics Sharetask
+                      ANCL Sharetask
                     </Typography.Title>
                     <Typography.Text className="text-light">
                       Paid feature
@@ -316,15 +316,15 @@ const Index = (): JSX.Element => {
                 </div>
                 <Typography.Text className="Index-text">
                   DENSO is a leading automotive and Fortune 500 company. Hiroshi
-                  Ogawa, at Denso’s Heat Exchanger Development Department,
-                  implemented a custom FreeFEM model on TANATLOC with the help
-                  of Professor Atsushi Suzuki from Osaka University.
+                  Ogawa, at DENSO’s Heat Exchanger R&D Division, implemented a
+                  custom FreeFEM model on TANATLOC with the help of Professor
+                  Atsushi Suzuki from Osaka University.
                 </Typography.Text>
                 <br />
                 <Typography.Text className="Index-text">
-                  Denso’s Solder Filling model was added to TANATLOC, and the
+                  DENSO’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
-                  on-premise via the ArgoGraphics Sharetask plug-in.
+                  on-premise via the ANCL Sharetask plug-in.
                 </Typography.Text>
                 {/* <br />
                 <Button type="primary">See more of Tanatloc</Button> */}

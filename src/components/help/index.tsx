@@ -2,6 +2,7 @@
 
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
+import Workflow from './doc/workflow'
 import Workspace from './doc/workspace'
 import Project from './doc/project'
 import HPC from './doc/hpc'
@@ -30,6 +31,7 @@ const Help = (): JSX.Element => {
       />
       <Layout.Content className="scroll">
         <Space direction="vertical" className="full-width" size={20}>
+          <Workflow />
           <Workspace />
           <Project />
           <HPC />

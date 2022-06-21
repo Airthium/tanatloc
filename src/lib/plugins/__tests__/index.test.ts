@@ -54,7 +54,8 @@ jest.mock('../../simulation', () => ({
         }
       ]
     }
-  ]
+  ],
+  update: async () => undefined
 }))
 
 jest.mock('../../tools', () => ({

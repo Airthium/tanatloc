@@ -26,3 +26,7 @@
 ## Misc (Debug)
 
 - deploy without mail server, go to login after signup, not in /send
+
+## Bugs
+
+- boundary conditions modification / supression

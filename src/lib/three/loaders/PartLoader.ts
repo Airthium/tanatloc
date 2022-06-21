@@ -645,6 +645,9 @@ const PartLoader = (
           }
         })
       }
+
+      // To avoid strange face disapear on unselect
+      mesh.visible = true
     }
   }
 

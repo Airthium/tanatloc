@@ -459,10 +459,9 @@ const Index = (): JSX.Element => {
             rightClassName="Index-padding-50"
             id="aboutUs"
           />
-
-          <Footer scroll={scrollToView} />
         </Space>
       </Layout.Content>
+      <Footer scroll={scrollToView} />
     </Layout>
   )
 }

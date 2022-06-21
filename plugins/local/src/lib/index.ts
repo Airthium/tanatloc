@@ -114,7 +114,7 @@ const getRefinements = (
         boundaryKey
       ] as IModelTypedBoundaryCondition
 
-      if (boundaryCondition.values && boundaryCondition.refineFactor) {
+      if (boundaryCondition.values?.length && boundaryCondition.refineFactor) {
         refinements.push({
           type: 'factor',
           factor: boundaryCondition.refineFactor,

@@ -3,6 +3,7 @@
 import { NextRouter, useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
+import isElectron from 'is-electron'
 
 import Loading from '@/components/loading'
 import { ErrorNotification, FormError } from '@/components/assets/notification'
@@ -77,6 +78,20 @@ const Login = (): JSX.Element => {
 
   // Router
   const router = useRouter()
+
+  // Electron
+  useEffect(() => {
+    if (isElectron()) {
+      login({
+        email: 'admin',
+        password: 'password'
+      })
+        .then(() => {
+          router.push('/dashboard')
+        })
+        .catch()
+    }
+  }, [router])
 
   // Error
   useEffect(() => {

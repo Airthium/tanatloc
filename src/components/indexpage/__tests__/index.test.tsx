@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Index from '..'
 
@@ -76,12 +76,12 @@ describe('components/indexpage', () => {
     unmount()
   })
 
-  test('electron', () => {
+  test('electron', async () => {
     mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Index />)
 
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenLastCalledWith('/dashboard')
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })

@@ -95,17 +95,6 @@ export const restartJobs = async (): Promise<void> => {
         ))
     })
   )
-
-  for (let simulation of simulations) {
-    for (let task of simulation.tasks || []) {
-      if (task?.status === 'wait' || task?.status === 'process') {
-        try {
-        } catch (err) {
-          // Set task to error
-        }
-      }
-    }
-  }
 }
 
 /**

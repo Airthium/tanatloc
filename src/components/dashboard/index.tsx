@@ -24,7 +24,6 @@ import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
 import Help from '@/components/help'
 
-// import { login } from '@/api/login'
 import UserAPI from '@/api/user'
 import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
@@ -142,14 +141,6 @@ const Dashboard = () => {
 
   // Router
   const router = useRouter()
-
-  // useEffect(() => {
-  //   if (isElectron())
-  //     login({
-  //       email: 'admin',
-  //       password: 'password'
-  //     })
-  // }, [])
 
   // Not logged -> go to login page
   useEffect(() => {

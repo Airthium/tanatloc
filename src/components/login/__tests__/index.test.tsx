@@ -12,6 +12,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 jest.mock('@/components/loading', () => () => <div />)
 
 const mockErrorNotification = jest.fn()
@@ -54,6 +57,9 @@ describe('components/login', () => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
 
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockErrorNotification.mockReset()
     mockFormError.mockReset()
     mockFormError.mockImplementation(() => <div />)
@@ -71,6 +77,16 @@ describe('components/login', () => {
 
   test('render', () => {
     const { unmount } = render(<Login />)
+
+    unmount()
+  })
+
+  test('electron', async () => {
+    mockIsElectron.mockImplementation(() => true)
+    const { unmount } = render(<Login />)
+
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })

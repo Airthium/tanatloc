@@ -139,6 +139,14 @@ describe('components/dashboard', () => {
     unmount()
   })
 
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
+    mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
+    const { unmount } = render(<Dashboard />)
+
+    unmount()
+  })
+
   test('loading', () => {
     mockLoadingUser.mockImplementation(() => true)
     const { unmount } = render(<Dashboard />)
@@ -261,14 +269,6 @@ describe('components/dashboard', () => {
     const { unmount } = render(<Dashboard />)
 
     screen.getAllByText(/git-dev-hash/)
-
-    unmount()
-  })
-
-  test('electron', () => {
-    mockIsElectron.mockImplementation(() => true)
-    mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
-    const { unmount } = render(<Dashboard />)
 
     unmount()
   })

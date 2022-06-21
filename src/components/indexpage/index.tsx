@@ -1,6 +1,7 @@
 /** @module Components.Index2 */
 
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import {
   Avatar,
   Button,
@@ -28,13 +29,19 @@ const Index = (): JSX.Element => {
   const router = useRouter()
   const [user, { loadingUser }] = UserAPI.useUser()
 
-  if (isElectron()) {
-    login({
-      email: 'admin',
-      password: 'password'
-    })
-    router.push('/dashboard')
-  }
+  // Electron
+  useEffect(() => {
+    if (isElectron()) {
+      login({
+        email: 'admin',
+        password: 'password'
+      })
+        .then(() => {
+          router.push('/dashboard')
+        })
+        .catch()
+    }
+  }, [router])
 
   /**
    * Scroll to view

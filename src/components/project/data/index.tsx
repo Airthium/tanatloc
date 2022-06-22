@@ -319,6 +319,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                   size="small"
                   dataSource={table?.data}
                   columns={table?.columns}
+                  pagination={false}
                 />
               </div>
             </div>

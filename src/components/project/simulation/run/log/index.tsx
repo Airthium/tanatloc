@@ -1,7 +1,15 @@
 /** @module Components.Project.Simulation.Run.Log */
 
 import { useState } from 'react'
-import { Button, Drawer, Modal, Tabs, Tooltip } from 'antd'
+import {
+  Button,
+  Collapse,
+  Drawer,
+  Modal,
+  Tabs,
+  Tooltip,
+  Typography
+} from 'antd'
 import { FileTextOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 
@@ -104,11 +112,43 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {step.link.label}
+                    <Button type="primary">{step.link.label}</Button>
                   </a>
                   <br />
                 </>
               )}
+              <Collapse ghost>
+                {step.warning && (
+                  <Collapse.Panel
+                    key="warnings"
+                    className="warning-collapse"
+                    header={
+                      <Typography.Text type="warning">Warnings</Typography.Text>
+                    }
+                  >
+                    {parse(
+                      step.warning
+                        .replace(/\n\n/g, '\n')
+                        .replace(/\n/g, '<br />') || ''
+                    )}
+                  </Collapse.Panel>
+                )}
+                {step.error && (
+                  <Collapse.Panel
+                    key="errors"
+                    className="error-collapse"
+                    header={
+                      <Typography.Text type="danger">Errors</Typography.Text>
+                    }
+                  >
+                    {parse(
+                      step.error
+                        .replace(/\n\n/g, '\n')
+                        .replace(/\n/g, '<br />') || ''
+                    )}
+                  </Collapse.Panel>
+                )}
+              </Collapse>
               {parse(
                 step.pluginLog
                   ?.replace(/\n\n/g, '\n')
@@ -116,14 +156,6 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
               )}
               {parse(
                 step.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
-              )}
-              {parse(
-                step.warning?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ||
-                  ''
-              )}
-              {parse(
-                step.error?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ||
-                  ''
               )}
             </Tabs.TabPane>
           ))}

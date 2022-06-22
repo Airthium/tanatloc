@@ -497,8 +497,71 @@ const processOutput = async (
     await processResults(id, resultLines, simulationPath, task, update)
 
     // Data
-    await processData(id, dataLines, simulationPath, task, update)
+    await processDatas(id, dataLines, simulationPath, task, update)
   } catch (err) {}
+}
+
+/**
+ * Process result
+ * @param id Id
+ * @param result Result
+ * @param simulationPath Simulation Path
+ * @param task Task
+ * @param update Update
+ */
+const processResult = async (
+  id: string,
+  result: string,
+  simulationPath: string,
+  task: ISimulationTask,
+  update: () => void
+): Promise<void> => {
+  // Already existing result
+  if (!results[id]) results[id] = []
+  if (results[id].includes(result)) return
+  results[id].push(result)
+
+  // New result
+  const resFile = result.replace('PROCESS VTU FILE', '').trim()
+  const partPath = resFile.replace('.vtu', '')
+  try {
+    // Convert
+    const newResults = await Tools.convert(
+      path.join(simulationPath, runPath, resultPath),
+      {
+        name: resFile,
+        target: partPath
+      },
+      ({ error }) => {
+        error &&
+          (task.warning +=
+            'Warning: Result converting process failed (' + error + ')\n')
+      },
+      { isResult: true }
+    )
+    update()
+
+    // Add to task
+    task.files = [
+      ...(task.files || []),
+      ...newResults.map((res) => ({
+        type: 'result',
+        fileName: resFile,
+        originPath: path.join(runPath, resultPath),
+        name: res.name,
+        glb: res.glb
+      }))
+    ]
+    update()
+  } catch (err: any) {
+    task.warning +=
+      'Warning: Unable to convert result file (' + err.message + ')\n'
+    update()
+
+    // Remove line from existing results
+    const index = results[id].findIndex((l) => l === result)
+    results[id].splice(index, 1)
+  }
 }
 
 /**
@@ -518,56 +581,51 @@ const processResults = async (
 ): Promise<void> => {
   // Get result
   await Promise.all(
-    resultLines.map(async (line) => {
-      // Already existing result
-      if (results[id].includes(line)) return
-      results[id].push(line)
-
-      // New result
-      const resFile = line.replace('PROCESS VTU FILE', '').trim()
-      const partPath = resFile.replace('.vtu', '')
-
-      try {
-        // Convert
-        const newResults = await Tools.convert(
-          path.join(simulationPath, runPath, resultPath),
-          {
-            name: resFile,
-            target: partPath
-          },
-          ({ error }) => {
-            error &&
-              (task.warning +=
-                'Warning: Result converting process failed (' + error + ')\n')
-          },
-          { isResult: true }
-        )
-        update()
-
-        // Add to task
-        task.files = [
-          ...(task.files || []),
-          ...newResults.map((result) => ({
-            type: 'result',
-            fileName: resFile,
-            originPath: path.join(runPath, resultPath),
-            name: result.name,
-            glb: result.glb
-          }))
-        ]
-        update()
-      } catch (err: any) {
-        console.error(err)
-        task.warning +=
-          'Warning: Unable to convert result file (' + err.message + ')\n'
-        update()
-
-        // Remove line from existing results
-        const index = results[id].findIndex((l) => l === line)
-        results[id].splice(index, 1)
-      }
-    })
+    resultLines.map(async (line) =>
+      processResult(id, line, simulationPath, task, update)
+    )
   )
+}
+
+/**
+ * Process data
+ * @param id Id
+ * @param data Data
+ * @param simulationPath Simulation path
+ * @param task Task
+ * @param update Update
+ */
+const processData = async (
+  id: string,
+  data: string,
+  simulationPath: string,
+  task: ISimulationTask,
+  update: () => void
+): Promise<void> => {
+  // Already existing data
+  if (!datas[id]) datas[id] = []
+  if (datas[id].includes(data)) return
+  datas[id].push(data)
+
+  // New data
+  const dataFile = data.replace('PROCESS DATA FILE', '').trim()
+
+  try {
+    // Read file
+    const dPath = path.join(simulationPath, runPath, dataPath, dataFile)
+    const dContent = await Tools.readFile(dPath)
+
+    // Add to tasks
+    task.datas = [...(task.datas || []), JSON.parse(dContent.toString())]
+    update()
+  } catch (err: any) {
+    task.warning += 'Warning: Unable to read data file (' + err.message + ')\n'
+    update()
+
+    // Remove line from existing datas
+    const index = datas[id].findIndex((l) => l === data)
+    datas[id].splice(index, 1)
+  }
 }
 
 /**
@@ -578,7 +636,7 @@ const processResults = async (
  * @param task Task
  * @param update Update task
  */
-const processData = async (
+const processDatas = async (
   id: string,
   dataLines: string[],
   simulationPath: string,
@@ -587,32 +645,9 @@ const processData = async (
 ): Promise<void> => {
   // Get data
   await Promise.all(
-    dataLines.map(async (line) => {
-      // Already existing data
-      if (datas[id].includes(line)) return
-      datas[id].push(line)
-
-      // New data
-      const dataFile = line.replace('PROCESS DATA FILE', '').trim()
-
-      try {
-        // Read file
-        const dPath = path.join(simulationPath, runPath, dataPath, dataFile)
-        const dContent = await Tools.readFile(dPath)
-
-        // Add to tasks
-        task.datas = [...(task.datas || []), JSON.parse(dContent.toString())]
-        update()
-      } catch (err: any) {
-        task.warning +=
-          'Warning: Unable to read data file (' + err.message + ')\n'
-        update()
-
-        // Remove line from existing datas
-        const index = datas[id].findIndex((l) => l === line)
-        datas[id].splice(index, 1)
-      }
-    })
+    dataLines.map(async (line) =>
+      processData(id, line, simulationPath, task, update)
+    )
   )
 }
 
@@ -648,6 +683,8 @@ const Local = {
   clean,
   startProcess,
   stopProcess,
+  processResult,
+  processData,
   files: {
     log: logFileName,
     data: dataFileName,

@@ -29,7 +29,9 @@ describe('components/project/simulation/run/log', () => {
       link: {
         label: 'link',
         href: '#'
-      }
+      },
+      warning: 'warnings',
+      error: 'errors'
     },
     {
       index: 1,

@@ -203,23 +203,13 @@ try {
 
 		// Save data
 		real netFlow = intN1(Mesh)(<%= U -%>' * <%= N -%>);
-		<%- include('/blobs/data.edp.ejs', {
-			path: run.dataPath,
-			name: '"netFlow_"+timeIter',
-			dataName: 'Net flow',
-			index: 1,
-			x: 't',
-			y: 'netFlow'
-		}) -%>
-
 		real div = intN(Mesh)(Div(U)) / intN(Mesh)(1);
 		<%- include('/blobs/data.edp.ejs', {
 			path: run.dataPath,
-			name: '"div_"+timeIter',
-			dataName: 'Divergence',
-			index: 2,
+			fileName: '"iter_"+timeIter',
+			dataNames: ['Net flow', 'Divergence', ],
 			x: 't',
-			y: 'div'
+			ys: ['netFlow', 'div']
 		}) -%>
 
 		// Save coupling

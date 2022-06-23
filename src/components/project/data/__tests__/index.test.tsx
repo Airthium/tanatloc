@@ -48,30 +48,48 @@ describe('components/project/data', () => {
     unmount()
   })
 
+  test('no data', () => {
+    const data = { tasks: [{ datas: [] }] }
+    mockSimulation.mockImplementation(() => data)
+
+    const { unmount } = render(<Data simulation={simulation} />)
+
+    unmount()
+  })
+
+  test('no data names (old format)', () => {
+    const data = {
+      tasks: [
+        {
+          datas: [
+            {
+              name: 'name'
+            }
+          ]
+        }
+      ]
+    }
+    mockSimulation.mockImplementation(() => data)
+
+    const { unmount } = render(<Data simulation={simulation} />)
+
+    unmount()
+  })
+
   test('with data', () => {
     const data = {
       tasks: [
         {
           datas: [
             {
-              name: 'data name',
+              names: ['data name', 'data_name2'],
               x: 0,
-              y: 0
+              ys: [0, 0]
             },
             {
-              name: 'data name',
+              names: ['data name', 'data_name2'],
               x: 1,
-              y: 1
-            },
-            {
-              name: 'data name 2',
-              x: 0,
-              y: 0
-            },
-            {
-              name: 'data name 2',
-              x: 2,
-              y: 2
+              ys: [1, 2]
             }
           ]
         },
@@ -108,14 +126,9 @@ describe('components/project/data', () => {
         {
           datas: [
             {
-              name: 'data name',
+              names: ['data name', 'data name 2'],
               x: 0,
-              y: 0
-            },
-            {
-              name: 'data name 2',
-              x: 2,
-              y: 2
+              ys: [0, 2]
             }
           ]
         },

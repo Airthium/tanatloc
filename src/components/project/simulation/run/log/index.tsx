@@ -129,7 +129,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                     {parse(
                       step.warning
                         .replace(/\n\n/g, '\n')
-                        .replace(/\n/g, '<br />') || ''
+                        .replace(/\n/g, '<br />')
                     )}
                   </Collapse.Panel>
                 )}
@@ -142,9 +142,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                     }
                   >
                     {parse(
-                      step.error
-                        .replace(/\n\n/g, '\n')
-                        .replace(/\n/g, '<br />') || ''
+                      step.error.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
                     )}
                   </Collapse.Panel>
                 )}

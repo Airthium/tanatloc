@@ -187,64 +187,15 @@ try {
 		real maxUz = UUz[].max;
 		real maxU = max(max(abs(maxUx), abs(maxUy)), abs(maxUz));
 
-		<% if (parameters.meshAdaptation.children[0].value) { -%>
-		// Mesh adaptation
-		fespace Hh(Mesh, P0);
-		Hh h = hTriangle;
-		real minh = h[].min;
-		real maxh = h[].max;
-	
-		<% if (dimension === 2) { -%>
-		Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
-		<% } else { -%>
-		load "mshmet"
-		load "mmg"
-		real[int] metric = mshmet(Mesh, Sigma, aniso=0, hmin=minh/5., hmax=maxh);
-		Mesh = mmg3d(Mesh, metric=metric);
-		<% } -%>
-
-		<%= unknownFunction -%> = <%= unknownFunction -%>;
-		
-		LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-		<% } -%>
-
 		// Save data
 		<%- include('/blobs/data.edp.ejs', {
 			path: run.dataPath,
-			name: '"maxUx_"+timeIter',
-			dataName: 'Max displacement (x)',
-			index: 1,
+			fileName: '"iter_"+timeIter',
+			dataNames: ['Max displacement (magnitude)', 'Max displacement (x)', 'Max displacement (y)', 'Max displacement (z)'],
 			x: 't',
-			y: 'maxUx'
+			ys: ['maxU', 'maxUx', 'maxUy', 'maxUz']
 		}) -%>
 
-		<%- include('/blobs/data.edp.ejs', {
-			path: run.dataPath,
-			name: '"maxUy_"+timeIter',
-			dataName: 'Max displacement (y)',
-			index: 1,
-			x: 't',
-			y: 'maxUy'
-		}) -%>
-
-		<%- include('/blobs/data.edp.ejs', {
-			path: run.dataPath,
-			name: '"maxUz_"+timeIter',
-			dataName: 'Max displacement (z)',
-			index: 1,
-			x: 't',
-			y: 'maxUz'
-		}) -%>
-
-		<%- include('/blobs/data.edp.ejs', {
-			path: run.dataPath,
-			name: '"maxU_"+timeIter',
-			dataName: 'Max displacement',
-			index: 1,
-			x: 't',
-			y: 'maxU'
-		}) -%>
-	
 		// Save results
 		<%- include('/blobs/save.edp.ejs', {
 			solution: {
@@ -256,6 +207,29 @@ try {
 				order: [1, 1, 1, 1, 1, 1, 1, 1]
 			}
 		}); -%>
+
+		<% if (parameters.meshAdaptation.children[0].value) { -%>
+		if (timeIter < nbIter - 1) {
+			// Mesh adaptation
+			fespace Hh(Mesh, P0);
+			Hh h = hTriangle;
+			real minh = h[].min;
+			real maxh = h[].max;
+
+			<% if (dimension === 2) { -%>
+			Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
+			<% } else { -%>
+			load "mshmet"
+			load "mmg"
+			real[int] metric = mshmet(Mesh, Sigma, aniso=0, hmin=minh/5., hmax=maxh);
+			Mesh = mmg3d(Mesh, metric=metric);
+			<% } -%>
+
+			<%= unknownFunction -%> = <%= unknownFunction -%>;
+			
+			LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+		}
+		<% } -%>
 	}
 
 	appendLog("End");

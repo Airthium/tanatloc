@@ -123,8 +123,9 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   }>()
   const [table, setTable] = useState<{
     columns: TableColumnsType<object>
-    data: { key: number; x: number; [key: string]: number }[]
+    data: any[]
   }>()
+  // { key: number; x: number; [key: string]: number }[]
   const [columnSelection, setColumnSelection] = useState<
     { checked: boolean }[]
   >([])
@@ -139,7 +140,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
 
-  // Data effect
+  // Table
   useEffect(() => {
     const tasks = currentSimulation?.tasks
 
@@ -150,56 +151,52 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
         if (task?.datas) tasksData.push(...task.datas)
       })
 
+      if (!tasksData.length) return
+
       // Aggregate data
       tasksData.sort((a, b) => a.x - b.x)
 
-      const names = tasksData
-        .filter(
-          (value, index, self) =>
-            self.findIndex((s) => s.name === value.name) === index
-        )
-        .map((d) => d.name)
+      if (!tasksData[0].names) return
 
+      const names = tasksData[0].names
       const camelNames = names.map((n) => camelCase(n))
 
-      const tableColumns: TableColumnsType<object> = names.map((n, index) => ({
-        align: 'center',
-        title: (
-          <Space>
-            {n}
-            <Checkbox
-              checked={columnSelection[index]?.checked}
-              onChange={(event) =>
-                setColumnSelection(onCheck(event, index, columnSelection))
-              }
-            >
-              <LineChartOutlined />
-            </Checkbox>
-          </Space>
-        ),
-        dataIndex: camelNames[index],
-        key: camelNames[index]
-      }))
+      const tableColumns: TableColumnsType<object> = names.map(
+        (name, index) => ({
+          align: 'center',
+          title: (
+            <Space>
+              {name}
+              <Checkbox
+                checked={columnSelection[index]?.checked}
+                onChange={(event) =>
+                  setColumnSelection(onCheck(event, index, columnSelection))
+                }
+              >
+                <LineChartOutlined />
+              </Checkbox>
+            </Space>
+          ),
+          dataIndex: camelNames[index],
+          key: camelNames[index]
+        })
+      )
       tableColumns.unshift({
         title: '',
         dataIndex: 'x',
         key: 'x'
       })
 
-      const tableData: { key: number; x: number; [key: string]: number }[] = []
-      tasksData.forEach((d, index) => {
-        const existingIndex = tableData.findIndex((t) => t.x === d.x)
-        if (existingIndex === -1)
-          tableData.push({
-            key: index,
-            x: d.x,
-            [camelCase(d.name)]: d.y
-          })
-        else {
-          tableData[existingIndex] = {
-            ...tableData[existingIndex],
-            [camelCase(d.name)]: d.y
-          }
+      const tableData = tasksData.map((data, index) => {
+        const ys: { [key: string]: number } = {}
+        data.names.forEach((_, nameIndex) => {
+          ys[camelNames[nameIndex]] = data.ys[nameIndex]
+        })
+
+        return {
+          key: index,
+          x: data.x,
+          ...ys
         }
       })
 
@@ -208,7 +205,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     }
   }, [currentSimulation?.tasks, columnSelection])
 
-  // Check effect
+  // Plot
   useEffect(() => {
     const tableData = table?.data
     if (!infos || !tableData?.length) return

@@ -668,4 +668,24 @@ describe('plugins/local/src/lib', () => {
       { index: 1, label: 'label', pid: '0', status: 'process' }
     ])
   })
+
+  test('processResult', async () => {
+    await Local.processResult(
+      'new_id',
+      'result',
+      'path',
+      { index: 1, label: 'task', status: 'process' },
+      () => undefined
+    )
+  })
+
+  test('processData', async () => {
+    await Local.processData(
+      'new_id',
+      'data',
+      'path',
+      { index: 1, label: 'task', status: 'process' },
+      () => undefined
+    )
+  })
 })

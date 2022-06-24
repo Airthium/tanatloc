@@ -9,7 +9,8 @@ import {
   Space,
   Table,
   TableColumnsType,
-  Tooltip
+  Tooltip,
+  Typography
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { LineChartOutlined } from '@ant-design/icons'
@@ -56,43 +57,39 @@ export const errors = {
 export const onCheck = (
   event: CheckboxChangeEvent,
   index: number,
-  columnSelection: { checked: boolean }[]
-): { checked: boolean }[] => {
+  columnSelection: boolean[]
+): boolean[] => {
   const checked = event.target.checked
 
   const newSelection = [...columnSelection]
-  newSelection[index] = {
-    checked
-  }
+  newSelection[index] = checked
+
   return newSelection
 }
 
 /**
  * Export CSV
  * @param simulation Simulation
- * @param table Table
- * @param infos Infos
+ * @param datas Datas
+ * @param names Names
+ * @param camelNames Camel names
  */
 export const exportCSV = (
   simulation: Pick<IFrontSimulationsItem, 'name'>,
-  table: { columns: TableColumnsType<object>; data: Array<any> },
-  infos: {
-    names: string[]
-    camelNames: string[]
-  }
+  datas: { key: number; x: number; [key: string]: number }[],
+  names: string[],
+  camelNames: string[]
 ): void => {
   const separator = ','
   let CSV = ''
 
-  const tableData = table?.data
-
   // Header
-  CSV = 'x' + separator + infos.names.join(separator) + '\n'
+  CSV = 'x' + separator + names.join(separator) + '\n'
 
   // Data
-  tableData.forEach((data) => {
+  datas.forEach((data) => {
     CSV += data.x
-    infos?.camelNames?.forEach((name) => {
+    camelNames?.forEach((name) => {
       data[name] !== undefined && (CSV += separator + data[name])
     })
     CSV += '\n'
@@ -117,18 +114,12 @@ export const exportCSV = (
 const Data = ({ simulation }: IProps): JSX.Element | null => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
-  const [infos, setInfos] = useState<{
-    names: string[]
-    camelNames: string[]
-  }>()
-  const [table, setTable] = useState<{
-    columns: TableColumnsType<object>
-    data: any[]
-  }>()
-  // { key: number; x: number; [key: string]: number }[]
-  const [columnSelection, setColumnSelection] = useState<
-    { checked: boolean }[]
-  >([])
+  const [datas, setDatas] =
+    useState<{ key: number; x: number; [key: string]: number }[]>()
+  const [names, setNames] = useState<string[]>()
+  const [camelNames, setCamelNames] = useState<string[]>()
+  const [columns, setColumns] = useState<TableColumnsType<object>>()
+  const [columnSelection, setColumnSelection] = useState<boolean[]>([true])
   const [plot, setPlot] = useState<{
     data: { x: number }[]
     min: number
@@ -140,84 +131,104 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
 
-  // Table
+  // Datas
   useEffect(() => {
     const tasks = currentSimulation?.tasks
 
-    if (tasks) {
-      // Get tasks data
-      const tasksData: IFrontSimulationTask['datas'] = []
-      tasks.forEach((task) => {
-        if (task?.datas) tasksData.push(...task.datas)
-      })
-
-      if (!tasksData.length) return
-
-      // Aggregate data
-      tasksData.sort((a, b) => a.x - b.x)
-
-      if (!tasksData[0].names) return
-
-      const names = tasksData[0].names
-      const camelNames = names.map((n) => camelCase(n))
-
-      const tableColumns: TableColumnsType<object> = names.map(
-        (name, index) => ({
-          align: 'center',
-          title: (
-            <Space>
-              {name}
-              <Checkbox
-                checked={columnSelection[index]?.checked}
-                onChange={(event) =>
-                  setColumnSelection(onCheck(event, index, columnSelection))
-                }
-              >
-                <LineChartOutlined />
-              </Checkbox>
-            </Space>
-          ),
-          dataIndex: camelNames[index],
-          key: camelNames[index]
-        })
-      )
-      tableColumns.unshift({
-        title: '',
-        dataIndex: 'x',
-        key: 'x'
-      })
-
-      const tableData = tasksData.map((data, index) => {
-        const ys: { [key: string]: number } = {}
-        data.names.forEach((_, nameIndex) => {
-          ys[camelNames[nameIndex]] = data.ys[nameIndex]
-        })
-
-        return {
-          key: index,
-          x: data.x,
-          ...ys
-        }
-      })
-
-      setInfos({ names, camelNames })
-      setTable({ columns: tableColumns, data: tableData })
+    if (!tasks) {
+      setDatas(undefined)
+      setNames(undefined)
+      setCamelNames(undefined)
+      return
     }
-  }, [currentSimulation?.tasks, columnSelection])
+
+    // Get datas
+    const tasksDatas: IFrontSimulationTask['datas'] = tasks
+      .map((task) => task.datas)
+      .filter((t) => t)
+      .flatMap((t) => t)
+
+    if (!tasksDatas.length || !tasksDatas[0].names) {
+      setNames(undefined)
+      setCamelNames(undefined)
+      return
+    }
+
+    // Sort
+    tasksDatas.sort((a, b) => a.x - b.x)
+
+    const newNames = tasksDatas[0].names
+    const newCamelNames = newNames.map((name: string) => camelCase(name))
+
+    const newDatas = tasksDatas.map((data, index) => {
+      const ys: { [key: string]: number } = {}
+      data.names.forEach((_, nameIndex) => {
+        ys[newCamelNames[nameIndex]] = data.ys[nameIndex]
+      })
+
+      return {
+        key: index,
+        x: data.x,
+        ...ys
+      }
+    })
+
+    setDatas(newDatas)
+    setNames(newNames)
+    setCamelNames(newCamelNames)
+  }, [currentSimulation])
+
+  // Table
+  useEffect(() => {
+    if (!datas || !names || !camelNames) {
+      setColumns(undefined)
+      return
+    }
+
+    const tableColumns: TableColumnsType<object> = names.map((name, index) => ({
+      align: 'center',
+      className:
+        'Data-column' + (columnSelection[index] ? ' Data-column-selected' : ''),
+      title: (
+        <Space>
+          {name}
+          <Checkbox
+            checked={columnSelection[index]}
+            onChange={(event) =>
+              setColumnSelection(onCheck(event, index, columnSelection))
+            }
+          >
+            <LineChartOutlined style={{ fontSize: 20 }} />
+          </Checkbox>
+        </Space>
+      ),
+      dataIndex: camelNames[index],
+      key: camelNames[index]
+    }))
+    tableColumns.unshift({
+      title: '',
+      dataIndex: 'x',
+      key: 'x'
+    })
+
+    setColumns(tableColumns)
+  }, [datas, names, camelNames, columnSelection])
 
   // Plot
   useEffect(() => {
-    const tableData = table?.data
-    if (!infos || !tableData?.length) return
+    if (!datas || !names || !camelNames) {
+      setPlot(undefined)
+      return
+    }
 
     // Set lines
     const keys: string[] = []
     const lines = columnSelection
       .map((selection, index) => {
-        if (!selection?.checked) return
+        if (!selection) return
 
-        const key = infos.camelNames[index]
-        const name = infos.names[index]
+        const key = camelNames[index]
+        const name = names[index]
 
         keys.push(key)
 
@@ -235,7 +246,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       .filter((l) => l) as JSX.Element[]
 
     // Set data
-    const data = tableData
+    const data = datas
       .map((d) => {
         const part: { x: number; [key: string]: number } = { x: d.x }
         keys.forEach((key) => {
@@ -249,13 +260,13 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
 
     setPlot({ data, min, max, lines })
-  }, [table?.data, columnSelection, infos])
+  }, [datas, names, camelNames, columnSelection])
 
   /**
    * Render
    */
   if (!simulation) return null
-  if (!table?.data?.length) return null
+  if (!datas || !names || !camelNames) return null
   return (
     <Layout
       style={{
@@ -292,33 +303,41 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
           maskClosable={false}
           height="50vh"
           bodyStyle={{ height: '100%', overflow: 'hidden' }}
+          extra={
+            <DownloadButton
+              bordered
+              loading={downloading}
+              disabled={!datas}
+              onDownload={() => {
+                setDownloading(true)
+                try {
+                  exportCSV(simulation, datas, names, camelNames)
+                } catch (err) {
+                  ErrorNotification(errors.download, err)
+                } finally {
+                  setDownloading(false)
+                }
+              }}
+            >
+              Export CSV
+            </DownloadButton>
+          }
         >
-          <div style={{ display: 'flex', height: '100%' }}>
-            <div style={{ height: '100%', width: '50%' }}>
-              <DownloadButton
-                loading={downloading}
-                disabled={!infos || !table}
-                onDownload={() => {
-                  setDownloading(true)
-                  try {
-                    exportCSV(simulation, table, infos!)
-                  } catch (err) {
-                    ErrorNotification(errors.download, err)
-                  } finally {
-                    setDownloading(false)
-                  }
-                }}
-              >
-                Export CSV
-              </DownloadButton>
-              <div style={{ height: '100%', width: '100%', overflow: 'auto' }}>
-                <Table
-                  size="small"
-                  dataSource={table?.data}
-                  columns={table?.columns}
-                  pagination={false}
-                />
-              </div>
+          <div style={{ display: 'flex', height: '100%', padding: '10px' }}>
+            <div
+              style={{
+                display: 'flex',
+                height: '100%',
+                width: '50%',
+                overflow: 'auto'
+              }}
+            >
+              <Table
+                size="small"
+                dataSource={datas}
+                columns={columns}
+                pagination={false}
+              />
             </div>
 
             <ResponsiveContainer width="50%" height="100%">

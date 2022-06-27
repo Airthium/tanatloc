@@ -124,7 +124,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           </Space>
         </Space>
       </Modal>
-      <Space direction="vertical">
+      <Space direction="vertical" className="full-width">
         {cloudServer && (
           <>
             <Typography.Text>
@@ -151,6 +151,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           </>
         )}
         <Button
+          className="full-width"
           disabled={disabled}
           type={cloudServer ? 'link' : 'primary'}
           icon={<CloudServerOutlined />}

@@ -15,6 +15,7 @@ export interface IModel {
   sequential?: boolean
   version: string
   description: string
+  variables: { name: string; value: string }[]
   configuration: {
     dimension?: number
     geometry: IModelGeometry

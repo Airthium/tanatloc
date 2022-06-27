@@ -472,7 +472,7 @@ const Project = (): JSX.Element => {
   const setSimulationPanelRun = useCallback(
     (current: ISimulation): void => {
       setPanel(
-        <Panel visible={true} title={'Run'} onClose={onPanelClose}>
+        <Panel visible={panelVisible} title={'Run'} onClose={onPanelClose}>
           <Simulation.Run
             simulation={{
               id: current.id,
@@ -485,12 +485,13 @@ const Project = (): JSX.Element => {
               }
             }
             setResult={setResult}
+            setVisible={(visible) => setPanelVisible(visible)}
             swr={{ mutateOneSimulation }}
           />
         </Panel>
       )
     },
-    [result, mutateOneSimulation, onPanelClose]
+    [result, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**

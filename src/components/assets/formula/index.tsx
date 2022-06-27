@@ -48,7 +48,7 @@ const Formula = ({
 }: IProps): JSX.Element => {
   // State
   const [internalValue, setInternalValue] = useState<string>(
-    String(defaultValue)
+    String(defaultValue ?? 0)
   )
   const [internalChecked, setInternalChecked] = useState<boolean>(
     !!defaultChecked
@@ -61,7 +61,7 @@ const Formula = ({
 
   // Default value
   useEffect(() => {
-    setInternalValue(String(defaultValue))
+    setInternalValue(defaultValue ? String(defaultValue) : '0')
   }, [defaultValue])
 
   // Default checked

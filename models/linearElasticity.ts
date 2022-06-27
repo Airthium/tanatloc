@@ -44,6 +44,20 @@ const LinearElasticity: IModel = {
     See <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>.
   </p>
   `,
+  variables: [
+    {
+      name: 'Displacement (x)',
+      value: 'Ux'
+    },
+    {
+      name: 'Displacement (y)',
+      value: 'Uy'
+    },
+    {
+      name: 'Displacement (z)',
+      value: 'Uz'
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,

@@ -28,6 +28,7 @@ import {
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import Sensors from './sensors'
 import CloudServer from './cloudServer'
 import Log from './log'
 import Results from './results'
@@ -39,6 +40,7 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   result?: Pick<IFrontResult, 'name' | 'fileName'>
   setResult: (result?: IFrontResult) => void
+  setVisible: (visible: boolean) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -125,7 +127,13 @@ export const onStop = async (
  * Run
  * @param props Props
  */
-const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
+const Run = ({
+  simulation,
+  result,
+  setResult,
+  setVisible,
+  swr
+}: IProps): JSX.Element => {
   // State
   const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)
@@ -216,6 +224,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
       <Layout>
         <Layout.Content>
           <Space direction="vertical" className="full-width">
+            <Sensors setVisible={setVisible} />
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}

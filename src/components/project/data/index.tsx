@@ -9,8 +9,7 @@ import {
   Space,
   Table,
   TableColumnsType,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { LineChartOutlined } from '@ant-design/icons'

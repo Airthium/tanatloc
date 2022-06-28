@@ -14,6 +14,7 @@ import {
   Plane,
   Raycaster,
   Vector2,
+  Vector3,
   WebGLRenderer,
   WireframeGeometry
 } from 'three'
@@ -61,7 +62,7 @@ export interface IPart extends Object3D {
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type: string
+    type: 'solids' | 'faces' | 'edges' | 'point'
   ) => void
   stopSelection: () => void
   getHighlighted: () => { uuid: string; label: number | string } | null
@@ -79,7 +80,12 @@ export interface IPart extends Object3D {
  * @param mouseDownEvent Mouse down event
  */
 const PartLoader = (
-  mouseMoveEvent: (part: IPart, uuid?: string, label?: number) => void,
+  mouseMoveEvent: (
+    part: IPart,
+    uuid?: string,
+    label?: number,
+    point?: Vector3
+  ) => void,
   mouseDownEvent: (part: IPart, uuid: string, label: number) => void
 ): IPartLoader => {
   // Highlight color
@@ -229,7 +235,7 @@ const PartLoader = (
       renderer: WebGLRenderer,
       camera: PerspectiveCamera,
       outlinePass: OutlinePass,
-      type: string
+      type: 'solids' | 'faces' | 'edges' | 'point'
     ) => startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection()
     object.getHighlighted = () => highlighted
@@ -289,7 +295,7 @@ const PartLoader = (
   // highlight / selection Variables
   let raycaster = new Raycaster()
   let selectionPart: IPart | null = null
-  let selectionType: string | null = null
+  let selectionType: 'solids' | 'faces' | 'edges' | 'point' | null = null
   let selectionRenderer: WebGLRenderer | null = null
   let selectionCamera: PerspectiveCamera | null = null
   let selectionOutlinePass: OutlinePass | null = null
@@ -309,7 +315,7 @@ const PartLoader = (
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type: string
+    type: 'solids' | 'faces' | 'edges' | 'point'
   ): void => {
     selectionPart = part
     selectionType = type
@@ -460,7 +466,13 @@ const PartLoader = (
           else mouseMoveEvent(selectionPart!)
         } else mouseMoveEvent(selectionPart!)
         break
-      default:
+      case 'point':
+        intersects = raycaster.intersectObject(selectionPart!, true)
+        if (intersects.length) {
+          const intersect = intersects[0]
+
+          mouseMoveEvent(selectionPart!, undefined, undefined, intersect.point)
+        } else mouseMoveEvent(selectionPart!)
         break
     }
   }

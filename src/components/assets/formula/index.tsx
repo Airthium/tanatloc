@@ -121,7 +121,7 @@ const Formula = ({
    * Render
    */
   return (
-    <Space className={className} align="start">
+    <Space className={'full-width space-full-width ' + className} align="start">
       {defaultChecked !== undefined && (
         <Checkbox checked={internalChecked} onChange={onCheckboxChange} />
       )}
@@ -132,7 +132,7 @@ const Formula = ({
             value={internalValue}
             onChange={onInputChange}
             addonAfter={
-              <Space>
+              <Space className="full-width">
                 <MathJax.Inline text={unit as string} />
                 {saving ? (
                   <LoadingOutlined spin className="color-orange" />

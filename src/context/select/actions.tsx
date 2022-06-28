@@ -1,6 +1,7 @@
 /** @module Context.Select.Actions */
 
 import { IPart } from '@/lib/three/loaders/PartLoader'
+import { Vector3 } from 'three'
 
 import { actionTypes, ISelect, ISelectAction } from '.'
 
@@ -29,7 +30,9 @@ export const clear = (): ISelectAction => {
  * Set type
  * @param type Type
  */
-export const setType = (type: 'solids' | 'faces' | 'edges'): ISelectAction => {
+export const setType = (
+  type: 'solids' | 'faces' | 'edges' | 'point'
+): ISelectAction => {
   return { type: actionTypes.SETTYPE, value: type }
 }
 
@@ -78,5 +81,12 @@ export const unselect = ({ uuid, label }: ISelect): ISelectAction => {
   return {
     type: actionTypes.UNSELECT,
     value: { uuid, label: label }
+  }
+}
+
+export const setPoint = (point?: Vector3): ISelectAction => {
+  return {
+    type: actionTypes.SETPOINT,
+    value: point
   }
 }

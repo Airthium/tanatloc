@@ -165,6 +165,11 @@ export interface IModelInitializationValue {
   values?: string[]
 }
 
+export interface IModelSensor {
+  point: { x: number; y: number; z: number }
+  formula: string
+}
+
 /**
  * Boundary conditions
  */
@@ -220,4 +225,5 @@ export interface IModelRun extends IModelCommon {
     parameters?: { key: string; value?: string; options?: string[] }[]
   }[]
   cloudServer?: IClientPlugin
+  sensors?: IModelSensor[]
 }

@@ -5,7 +5,6 @@ import {
   useRef,
   useState,
   useEffect,
-  MutableRefObject,
   Dispatch,
   useCallback,
   useContext
@@ -59,7 +58,10 @@ import WebGL from 'three/examples/jsm/capabilities/WebGL'
 import { AxisHelper } from '@/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '@/lib/three/helpers/NavigationHelper'
 import { GridHelper, IGridHelper } from '@/lib/three/helpers/GridHelper'
-import { SelectionHelper } from '@/lib/three/helpers/SelectionHelper'
+import {
+  ISelectionHelper,
+  SelectionHelper
+} from '@/lib/three/helpers/SelectionHelper'
 import {
   ISectionViewHelper,
   SectionViewHelper
@@ -68,6 +70,7 @@ import {
   ColorbarHelper,
   IColorbarHelper
 } from '@/lib/three/helpers/ColorbarHelper'
+import { IPointHelper, PointHelper } from '@/lib/three/helpers/PointHelper'
 
 import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 import { IGeometryPart } from '@/lib/index.d'
@@ -78,7 +81,8 @@ import {
   select,
   unhighlight,
   unselect,
-  setPart
+  setPart,
+  setPoint
 } from '@/context/select/actions'
 
 import { IFrontProject } from '@/api/index.d'
@@ -258,6 +262,7 @@ export const loadPart = async (
     gridHelper: IGridHelper
     sectionViewHelper: ISectionViewHelper
     colorbarHelper: IColorbarHelper
+    pointHelper: IPointHelper
   },
   dispatch: Dispatch<ISelectAction>
 ): Promise<void> => {
@@ -265,11 +270,14 @@ export const loadPart = async (
   const mouseMoveEvent = (
     child: IPart,
     uuid?: string,
-    label?: number
+    label?: number,
+    point?: Vector3
   ): void => {
     if (uuid) {
       child.highlight(uuid)
       setTimeout(() => dispatch(highlight({ uuid, label: label! })), 1)
+    } else if (point) {
+      dispatch(setPoint(point))
     } else {
       child.unhighlight()
       setTimeout(() => dispatch(unhighlight()), 1)
@@ -299,11 +307,13 @@ export const loadPart = async (
   scene.add(mesh)
   computeSceneBoundingSphere(scene)
 
-  // Grid
-  helpers.gridHelper.update()
-
   // Zoom
   zoomToFit(scene, camera, controls)
+
+  // Grid
+  helpers.gridHelper.update()
+  helpers.gridHelper.update()
+  helpers.gridHelper.setVisible(true)
 
   // Colorbar
   if (mesh.children[0].userData.lut) {
@@ -313,8 +323,8 @@ export const loadPart = async (
     helpers.colorbarHelper.setVisible(false)
   }
 
-  helpers.gridHelper.update()
-  helpers.gridHelper.setVisible(true)
+  // Point
+  helpers.pointHelper.build()
 }
 
 /**
@@ -420,17 +430,18 @@ export const downloadScreenshot = (
  */
 const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   // Ref
-  const mount: MutableRefObject<any> = useRef(null)
-  const scene: MutableRefObject<any> = useRef()
-  const camera: MutableRefObject<any> = useRef()
-  const renderer: MutableRefObject<any> = useRef()
-  const outlinePass: MutableRefObject<any> = useRef()
-  const effectComposer: MutableRefObject<any> = useRef()
-  const controls: MutableRefObject<any> = useRef()
-  const gridHelper: MutableRefObject<any> = useRef()
-  const selectionHelper: MutableRefObject<any> = useRef()
-  const sectionViewHelper: MutableRefObject<any> = useRef()
-  const colorbarHelper: MutableRefObject<any> = useRef()
+  const mount = useRef<HTMLDivElement>(null)
+  const scene = useRef<Scene & { boundingBox: Box3; boundingSphere: Sphere }>()
+  const camera = useRef<PerspectiveCamera>()
+  const renderer = useRef<WebGLRenderer>()
+  const outlinePass = useRef<OutlinePass>()
+  const effectComposer = useRef<EffectComposer>()
+  const controls = useRef<TrackballControls>()
+  const gridHelper = useRef<IGridHelper>()
+  const selectionHelper = useRef<ISelectionHelper>()
+  const sectionViewHelper = useRef<ISectionViewHelper>()
+  const colorbarHelper = useRef<IColorbarHelper>()
+  const pointHelper = useRef<IPointHelper>()
 
   // State
   const [transparent, setTransparent] = useState<boolean>(false)
@@ -447,6 +458,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     part: selectPart,
     highlighted: selectHighlighted,
     selected: selectSelected,
+    point: selectPoint,
     type: selectType,
     dispatch
   } = useContext(SelectContext)
@@ -460,12 +472,17 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
     const currentMount = mount.current
 
+    if (!currentMount) return
+
     let width = currentMount.clientWidth
     let height = currentMount.clientHeight
     let frameId: number | undefined
 
     // Scene
-    scene.current = new Scene()
+    scene.current = new Scene() as Scene & {
+      boundingBox: Box3
+      boundingSphere: Sphere
+    }
 
     // Camera
     camera.current = new PerspectiveCamera(50, width / height, 0.1, 1000)
@@ -566,24 +583,27 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     colorbarHelper.current = ColorbarHelper(renderer.current)
     colorbarHelper.current.setVisible(false)
 
+    // PointHelper
+    pointHelper.current = PointHelper(scene.current)
+
     /**
      * Render scene
      */
     const renderScene = () => {
-      controls.current.update()
+      controls.current!.update()
 
-      renderer.current.setViewport(0, 0, width, height)
-      renderer.current.render(scene.current, camera.current)
+      renderer.current!.setViewport(0, 0, width, height)
+      renderer.current!.render(scene.current!, camera.current!)
 
-      gridHelper.current.update()
+      gridHelper.current!.update()
 
-      effectComposer.current.render()
+      effectComposer.current!.render()
 
       axisHelper.render()
 
       navigationHelper.render()
 
-      colorbarHelper.current.render()
+      colorbarHelper.current!.render()
     }
 
     /**
@@ -592,12 +612,12 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     const handleResize = (): void => {
       width = currentMount.clientWidth
       height = currentMount.clientHeight
-      camera.current.aspect = width / height
-      camera.current.updateProjectionMatrix()
+      camera.current!.aspect = width / height
+      camera.current!.updateProjectionMatrix()
 
-      renderer.current.setSize(width, height)
+      renderer.current!.setSize(width, height)
 
-      effectComposer.current.setSize(width, height)
+      effectComposer.current!.setSize(width, height)
 
       axisHelper.resize({
         newOffsetWidth: width - 155,
@@ -651,19 +671,19 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
       window.removeEventListener('resize', handleResize)
 
-      currentMount.removeChild(renderer.current.domElement)
+      currentMount.removeChild(renderer.current!.domElement)
 
       // Clean scene
-      scene.current.children.forEach((child: Object3D) => {
-        scene.current.remove(child)
+      scene.current!.children.forEach((child: Object3D) => {
+        scene.current!.remove(child)
       })
 
       // Dispose
       axisHelper.dispose()
       navigationHelper.dispose()
-      gridHelper.current.dispose()
-      sectionViewHelper.current.dispose()
-      selectionHelper.current.dispose()
+      gridHelper.current!.dispose()
+      sectionViewHelper.current!.dispose()
+      selectionHelper.current!.dispose()
     }
   }, [router])
 
@@ -672,16 +692,16 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
     // Check part update
     const currentPart = scene.current.children.find(
-      (child: IPart) =>
-        child.type === 'Part' && child.uuid === part?.summary.uuid
+      (child) => child.type === 'Part' && child.uuid === part?.summary.uuid
     )
     if (currentPart) return
 
     // Clean scene
-    scene.current.children.forEach((child: IPart) => {
+    scene.current.children.forEach((child) => {
       if (child.type === 'Part') {
-        scene.current.remove(child)
-        child.dispose()
+        const partChild = child as IPart
+        scene.current!.remove(partChild)
+        partChild.dispose()
       }
     })
 
@@ -691,24 +711,28 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         part,
         transparent,
         scene.current,
-        camera.current,
-        controls.current,
+        camera.current!,
+        controls.current!,
         {
-          gridHelper: gridHelper.current,
-          sectionViewHelper: sectionViewHelper.current,
-          colorbarHelper: colorbarHelper.current
+          gridHelper: gridHelper.current!,
+          sectionViewHelper: sectionViewHelper.current!,
+          colorbarHelper: colorbarHelper.current!,
+          pointHelper: pointHelper.current!
         },
         dispatch
       ).catch((err) => {
         ErrorNotification(errors.load, err)
-        computeSceneBoundingSphere(scene.current)
+        computeSceneBoundingSphere(scene.current!)
       })
     } else {
       // Scene
       computeSceneBoundingSphere(scene.current)
 
       // Grid
-      gridHelper.current.update()
+      gridHelper.current!.update()
+
+      // PointHelper
+      pointHelper.current?.build()
     }
   }, [part, transparent, dispatch])
 
@@ -727,20 +751,20 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       const center = new Vector3()
       scene.current.boundingBox.getCenter(center)
 
-      const distance = camera.current.position.distanceTo(
-        controls.current.target
+      const distance = camera.current!.position.distanceTo(
+        controls.current!.target
       )
       const interval = normal.clone().multiplyScalar(distance)
       const newPosition = center.add(interval)
 
-      camera.current.position.copy(newPosition)
-      camera.current.up.copy(up)
+      camera.current!.position.copy(newPosition)
+      camera.current!.up.copy(up)
 
       // Stop rotate
-      controls.current.noRotate = true
+      controls.current!.noRotate = true
     } else {
       // Activate rotate
-      controls.current.noRotate = false
+      controls.current!.noRotate = false
     }
   }, [part])
 
@@ -748,17 +772,18 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   useEffect(() => {
     if (!scene.current) return
 
-    scene.current.children.forEach((child: IPart) => {
+    scene.current.children.forEach((child) => {
       if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
+        const partChild = child as IPart
         if (selectEnabled)
-          child.startSelection(
-            renderer.current,
-            camera.current,
-            outlinePass.current,
+          partChild.startSelection(
+            renderer.current!,
+            camera.current!,
+            outlinePass.current!,
             selectType!
           )
         else {
-          child.stopSelection()
+          partChild.stopSelection()
         }
       }
     })
@@ -768,20 +793,21 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   useEffect(() => {
     if (!scene.current) return
 
-    scene.current.children.forEach((child: IPart) => {
+    scene.current.children.forEach((child) => {
       if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
+        const partChild = child as IPart
         // Highlight
-        child.highlight(selectHighlighted?.uuid)
+        partChild.highlight(selectHighlighted?.uuid)
 
         // Selection
-        const selected = child.getSelected()
+        const selected = partChild.getSelected()
 
         // Select
         const plus = selectSelected.filter(
           (s) => !selected.find((ss) => ss.uuid === s.uuid)
         )
         plus.forEach((p) => {
-          p.uuid && child.select(p.uuid)
+          p.uuid && partChild.select(p.uuid)
         })
 
         // Unselect
@@ -789,11 +815,18 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           (s) => !selectSelected.find((ss) => ss.uuid === s.uuid)
         )
         minus.forEach((m) => {
-          child.unselect(m.uuid)
+          partChild.unselect(m.uuid)
         })
       }
     })
   }, [selectPart, selectHighlighted, selectSelected])
+
+  // Point
+  useEffect(() => {
+    if (!scene.current) return
+
+    pointHelper.current?.update(selectPoint)
+  }, [selectPoint])
 
   /**
    * Toggle transparent
@@ -801,9 +834,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
    */
   const toggleTransparent = useCallback((checked: boolean) => {
     setTransparent(checked)
-    scene.current.children.forEach((child: IPart) => {
+    scene.current!.children.forEach((child) => {
       if (child.type === 'Part') {
-        child.setTransparent(checked)
+        const partChild = child as IPart
+        partChild.setTransparent(checked)
       }
     })
   }, [])
@@ -815,8 +849,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     const active = !sectionView
     setSectionView(active)
     active
-      ? sectionViewHelper.current.start()
-      : sectionViewHelper.current.stop()
+      ? sectionViewHelper.current!.start()
+      : sectionViewHelper.current!.stop()
   }, [sectionView])
 
   /**
@@ -843,9 +877,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                             try {
                               await takeScreenshot(
                                 project,
-                                scene.current,
-                                camera.current,
-                                renderer.current
+                                scene.current!,
+                                camera.current!,
+                                renderer.current!
                               )
                             } finally {
                               setScreenshot(false)
@@ -867,9 +901,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                             try {
                               downloadScreenshot(
                                 project,
-                                scene.current,
-                                camera.current,
-                                renderer.current
+                                scene.current!,
+                                camera.current!,
+                                renderer.current!
                               )
                             } finally {
                               setSavingScreenshot(false)
@@ -895,7 +929,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
               defaultChecked
               checkedChildren={<BorderlessTableOutlined />}
               unCheckedChildren={<BorderlessTableOutlined />}
-              onChange={(checked) => toggleGrid(gridHelper.current, checked)}
+              onChange={(checked) => toggleGrid(gridHelper.current!, checked)}
             />
           </Tooltip>
           <Tooltip title="Set transparency" placement="right">
@@ -913,7 +947,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           <Tooltip title="Zoom out" placement="right">
             <Button
               icon={<ZoomOutOutlined />}
-              onMouseDown={() => zoomOut(camera.current, controls.current)}
+              onMouseDown={() => zoomOut(camera.current!, controls.current!)}
               onMouseUp={zoomStop}
               onMouseOut={zoomStop}
             />
@@ -922,14 +956,14 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             <Button
               icon={<CompressOutlined />}
               onClick={() =>
-                zoomToFit(scene.current, camera.current, controls.current)
+                zoomToFit(scene.current!, camera.current!, controls.current!)
               }
             />
           </Tooltip>
           <Tooltip title="Zoom in" placement="right">
             <Button
               icon={<ZoomInOutlined />}
-              onMouseDown={() => zoomIn(camera.current, controls.current)}
+              onMouseDown={() => zoomIn(camera.current!, controls.current!)}
               onMouseUp={zoomStop}
               onMouseOut={zoomStop}
             />
@@ -938,9 +972,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             <Button
               icon={<SelectOutlined />}
               onClick={() =>
-                selectionHelper.current.isEnabled()
-                  ? selectionHelper.current.end()
-                  : selectionHelper.current.start()
+                selectionHelper.current!.isEnabled()
+                  ? selectionHelper.current!.end()
+                  : selectionHelper.current!.start()
               }
             />
           </Tooltip>
@@ -962,14 +996,14 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
               <Tooltip title="Hide plane" placement="left">
                 <Button
                   icon={<EyeInvisibleOutlined />}
-                  onClick={() => sectionViewHelper.current.toggleVisible()}
+                  onClick={() => sectionViewHelper.current!.toggleVisible()}
                 />
               </Tooltip>
               <Tooltip title="Snap to X" placement="left">
                 <Button
                   className="ant-btn-icon-only"
                   onClick={() =>
-                    sectionViewHelper.current.toAxis(new Vector3(-1, 0, 0))
+                    sectionViewHelper.current!.toAxis(new Vector3(-1, 0, 0))
                   }
                 >
                   X
@@ -979,7 +1013,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                 <Button
                   className="ant-btn-icon-only"
                   onClick={() =>
-                    sectionViewHelper.current.toAxis(new Vector3(0, -1, 0))
+                    sectionViewHelper.current!.toAxis(new Vector3(0, -1, 0))
                   }
                 >
                   Y
@@ -989,7 +1023,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
                 <Button
                   className="ant-btn-icon-only"
                   onClick={() =>
-                    sectionViewHelper.current.toAxis(new Vector3(0, 0, -1))
+                    sectionViewHelper.current!.toAxis(new Vector3(0, 0, -1))
                   }
                 >
                   Z
@@ -997,7 +1031,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
               </Tooltip>
               <Tooltip title="Flip" placement="left">
                 <Button
-                  onClick={() => sectionViewHelper.current.flip()}
+                  onClick={() => sectionViewHelper.current!.flip()}
                   icon={<RetweetOutlined />}
                 />
               </Tooltip>

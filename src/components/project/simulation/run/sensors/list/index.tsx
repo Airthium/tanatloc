@@ -9,8 +9,10 @@ import {
 
 import { SelectContext } from '@/context/select'
 import { disable, enable, setPoint } from '@/context/select/actions'
-import Delete from '../delete'
+
 import { EditButton } from '@/components/assets/button'
+
+import Delete from '../delete'
 
 /**
  * Props

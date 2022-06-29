@@ -29,6 +29,12 @@ jest.mock(
   () => (props: any) => mockResults(props)
 )
 
+const mockSensors = jest.fn()
+jest.mock(
+  '@/components/project/simulation/run/sensors',
+  () => (props: any) => mockSensors(props)
+)
+
 const mockRun = jest.fn()
 const mockStop = jest.fn()
 const mockUpdate = jest.fn()
@@ -88,6 +94,9 @@ describe('components/project/simulation/run', () => {
 
     mockResults.mockReset()
     mockResults.mockImplementation(() => <div />)
+
+    mockSensors.mockReset()
+    mockSensors.mockImplementation(() => <div />)
 
     mockRun.mockReset()
     mockStop.mockReset()

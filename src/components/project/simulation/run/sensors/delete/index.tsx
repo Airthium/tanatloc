@@ -10,11 +10,11 @@ import { ISelectAction, SelectContext } from '@/context/select'
 import { setPoint } from '@/context/select/actions'
 
 import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
 import Utils from '@/lib/utils'
-import { ErrorNotification } from '@/components/assets/notification'
 
 /**
  * Props
@@ -30,7 +30,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   udpate: 'Unable to update the simulation'
 }
 
@@ -79,6 +79,7 @@ export const onDelete = async (
     // Local
     swr.mutateOneSimulation(newSimulation)
   } catch (err) {
+    console.log(err)
     ErrorNotification(errors.udpate, err)
     throw err
   }

@@ -18,6 +18,7 @@ describe('context', () => {
     expect(actionTypes.UNHIGHLIGHT).toBeDefined()
     expect(actionTypes.SELECT).toBeDefined()
     expect(actionTypes.UNSELECT).toBeDefined()
+    expect(actionTypes.SETPOINT).toBeDefined()
   })
 
   test('SelectContext', () => {
@@ -91,6 +92,19 @@ describe('context', () => {
       value: { uuid: 'uuid', label: 4 }
     })
     expect(res.selected).toEqual([])
+
+    // Set point
+    res = selectReducer(res, {
+      type: actionTypes.SETPOINT,
+      value: { x: 0, y: 1, z: 2 }
+    })
+    expect(res.point).toEqual({ x: 0, y: 1, z: 2 })
+
+    res = selectReducer(res, {
+      type: actionTypes.SETPOINT,
+      value: undefined
+    })
+    expect(res.point).toEqual(undefined)
 
     // Default
     res = selectReducer(res, { type: 'unknown' })

@@ -29,7 +29,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   name: 'You need to define a name',
   point: 'You need to select a point',
   formula: 'You need to define a formula',

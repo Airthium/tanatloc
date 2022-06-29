@@ -60,9 +60,9 @@ const Sensors = ({ simulation, setVisible, swr }: IProps): JSX.Element => {
    * On close
    */
   const onClose = useCallback(() => {
-    setSensorVisible(false)
     setSensor(undefined)
     setVisible(true)
+    setSensorVisible(false)
   }, [setVisible])
 
   /**

@@ -99,7 +99,7 @@ const Sensor = ({
     } else {
       setSelectionEnabled(true)
       dispatch(enable())
-      setTimeout(() => window.addEventListener('click', stopSelection), 500)
+      setTimeout(() => window.addEventListener('click', stopSelection), 50)
     }
   }, [selectionEnabled, stopSelection, dispatch])
 

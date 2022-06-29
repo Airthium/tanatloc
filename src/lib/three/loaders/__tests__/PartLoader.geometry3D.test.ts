@@ -183,7 +183,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
 
-    mesh.startSelection(renderer, camera, outlinePass, 'others')
+    mesh.startSelection(renderer, camera, outlinePass, 'edges')
   })
 
   test('stopSelection', async () => {
@@ -264,13 +264,13 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(current).toBe('uuidf1')
   })
 
-  test('mouseMove - default', async () => {
-    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'default')
+  // test('mouseMove - default', async () => {
+  //   const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+  //   const mesh = await partLoader.load(part, true, clippingPlane)
+  //   mesh.startSelection(renderer, camera, outlinePass, 'default')
 
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-  })
+  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+  // })
 
   test('highlight', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)

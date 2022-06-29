@@ -224,7 +224,13 @@ const Run = ({
       <Layout>
         <Layout.Content>
           <Space direction="vertical" className="full-width">
-            <Sensors setVisible={setVisible} />
+            <Sensors
+              simulation={simulation}
+              setVisible={setVisible}
+              swr={{
+                mutateOneSimulation: swr.mutateOneSimulation
+              }}
+            />
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}

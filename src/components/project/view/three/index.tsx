@@ -277,7 +277,7 @@ export const loadPart = async (
       child.highlight(uuid)
       setTimeout(() => dispatch(highlight({ uuid, label: label! })), 1)
     } else if (point) {
-      dispatch(setPoint(point))
+      dispatch(setPoint({ x: point.x, y: point.y, z: point.z }))
     } else {
       child.unhighlight()
       setTimeout(() => dispatch(unhighlight()), 1)
@@ -825,7 +825,11 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   useEffect(() => {
     if (!scene.current) return
 
-    pointHelper.current?.update(selectPoint)
+    pointHelper.current?.update(
+      selectPoint
+        ? new Vector3(selectPoint.x, selectPoint.y, selectPoint.z)
+        : undefined
+    )
   }, [selectPoint])
 
   /**

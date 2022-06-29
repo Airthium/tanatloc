@@ -1,21 +1,20 @@
-/** @module Components.Project.Simulation.Materials.Delete */
-
 import { Dispatch, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
-import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem
+} from '@/api/index.d'
 
 import { ISelectAction, SelectContext } from '@/context/select'
-import { unselect } from '@/context/select/actions'
+import { setPoint } from '@/context/select/actions'
+
+import { DeleteButton } from '@/components/assets/button'
+
+import SimulationAPI from '@/api/simulation'
 
 import Utils from '@/lib/utils'
-
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
-import SimulationAPI from '@/api/simulation'
+import { ErrorNotification } from '@/components/assets/notification'
 
 /**
  * Props
@@ -29,14 +28,18 @@ export interface IProps {
 }
 
 /**
- * Error
+ * Errors
  */
-export const errors = {
-  update: 'Unable to delete the material'
+const errors = {
+  udpate: 'Unable to update the simulation'
 }
 
 /**
  * On delete
+ * @param simulation Simulation
+ * @param index Index
+ * @param dispatch Disptach
+ * @param swr SWR
  */
 export const onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
@@ -50,26 +53,17 @@ export const onDelete = async (
     // New simulation
     const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const materials = newSimulation.scheme.configuration.materials!
-    const material = materials.values![index]
+    // Local
+    const run = newSimulation.scheme.configuration.run
 
-    // (unselect)
-    material.selected.forEach((s) => {
-      dispatch(unselect(s))
-    })
+    // Unselect
+    dispatch(setPoint())
 
     // Remove value
-    materials.values = [
-      ...materials.values!.slice(0, index),
-      ...materials.values!.slice(index + 1)
+    run.sensors = [
+      ...run.sensors!.slice(0, index),
+      ...run.sensors!.slice(index + 1)
     ]
-
-    // Diff
-    const diff = {
-      ...materials,
-      done: !!materials.values.length
-    }
 
     // API
     await SimulationAPI.update({ id: simulation.id }, [
@@ -77,15 +71,15 @@ export const onDelete = async (
         key: 'scheme',
         type: 'json',
         method: 'set',
-        path: ['configuration', 'materials'],
-        value: diff
+        path: ['configuration', 'run'],
+        value: run
       }
     ])
 
     // Local
     swr.mutateOneSimulation(newSimulation)
   } catch (err) {
-    ErrorNotification(errors.update, err)
+    ErrorNotification(errors.udpate, err)
     throw err
   }
 }
@@ -97,12 +91,12 @@ export const onDelete = async (
  */
 const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>()
 
   // Data
   const { dispatch } = useContext(SelectContext)
-  const materials = simulation.scheme.configuration.materials!
-  const material = materials.values![index]
+  const run = simulation.scheme.configuration.run
+  const sensor = run.sensors![index]
 
   /**
    * Render
@@ -112,8 +106,8 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
       loading={loading}
       text={
         <>
-          Are you sure you want to delete the material{' '}
-          <Typography.Text strong>{material.material.label}</Typography.Text>
+          Are you sure you want to delete the sensor{' '}
+          <Typography.Text strong>{sensor.name}</Typography.Text>
         </>
       }
       onDelete={async () => {

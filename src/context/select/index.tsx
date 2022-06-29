@@ -3,7 +3,6 @@
 import { createContext, Dispatch, ReactNode, useReducer } from 'react'
 
 import { IPart } from '@/lib/three/loaders/PartLoader'
-import { Vector3 } from 'three'
 
 /**
  * Select interface
@@ -22,7 +21,7 @@ export interface ISelectState {
   part?: IPart
   highlighted?: ISelect
   selected: ISelect[]
-  point?: Vector3
+  point?: ISelectPoint
   dispatch: Dispatch<ISelectAction>
 }
 
@@ -31,7 +30,16 @@ export interface ISelectState {
  */
 export interface ISelectAction {
   type: string
-  value?: string | Vector3 | ISelect | IPart
+  value?: string | ISelectPoint | ISelect | IPart
+}
+
+/**
+ * Select point
+ */
+export interface ISelectPoint {
+  x: number
+  y: number
+  z: number
 }
 
 /**
@@ -121,7 +129,7 @@ export const selectReducer = (
     case actionTypes.SETPOINT:
       return {
         ...state,
-        point: action.value as Vector3
+        point: action.value as ISelectPoint
       }
     default:
       return state

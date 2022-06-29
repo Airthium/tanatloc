@@ -1,9 +1,8 @@
 /** @module Context.Select.Actions */
 
 import { IPart } from '@/lib/three/loaders/PartLoader'
-import { Vector3 } from 'three'
 
-import { actionTypes, ISelect, ISelectAction } from '.'
+import { actionTypes, ISelect, ISelectAction, ISelectPoint } from '.'
 
 /**
  * Enable
@@ -84,7 +83,7 @@ export const unselect = ({ uuid, label }: ISelect): ISelectAction => {
   }
 }
 
-export const setPoint = (point?: Vector3): ISelectAction => {
+export const setPoint = (point?: ISelectPoint): ISelectAction => {
   return {
     type: actionTypes.SETPOINT,
     value: point

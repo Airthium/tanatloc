@@ -34,7 +34,7 @@
     "**/config/depcheck/**",
     "**/config/jest/**"
   ],
-  "plugin": "typedoc-plugin-airthium",
+  "plugin": ["typedoc-plugin-airthium"],
   "theme": "airthium",
   "entryPointStrategy": "expand",
   "out": "../../doc",

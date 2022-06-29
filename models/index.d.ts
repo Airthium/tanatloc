@@ -15,7 +15,7 @@ export interface IModel {
   sequential?: boolean
   version: string
   description: string
-  variables: { name: string; value: string }[]
+  variables?: { name: string; value: string }[]
   configuration: {
     dimension?: number
     geometry: IModelGeometry
@@ -166,6 +166,7 @@ export interface IModelInitializationValue {
 }
 
 export interface IModelSensor {
+  name: string
   point: { x: number; y: number; z: number }
   formula: string
 }

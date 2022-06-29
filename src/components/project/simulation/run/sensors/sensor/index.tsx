@@ -1,40 +1,150 @@
+/** @module Components.Simulation.Project.Run.Sensor */
+
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { Button, Card, Drawer, Space, Tooltip, Typography } from 'antd'
-import { CloseOutlined, PushpinOutlined } from '@ant-design/icons'
+import { Button, Card, Drawer, Input, Space, Tooltip, Typography } from 'antd'
+import {
+  CloseOutlined,
+  ExclamationCircleOutlined,
+  PushpinOutlined
+} from '@ant-design/icons'
 
 import { IModelSensor } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import { SelectContext } from '@/context/select'
 import { disable, enable, setPoint, setType } from '@/context/select/actions'
 
 import Formula from '@/components/assets/formula'
 import { AddButton, CancelButton, EditButton } from '@/components/assets/button'
-import { Vector3 } from 'three'
 
+import SimulationAPI from '@/api/simulation'
+
+import Utils from '@/lib/utils'
+import { ErrorNotification } from '@/components/assets/notification'
+
+/**
+ * Props
+ */
 export interface IProps {
   visible?: boolean
-  sensor?: {}
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  sensor?: IModelSensor
   onClose: () => void
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
 }
 
-const Sensor = ({ visible, sensor, onClose }: IProps): JSX.Element => {
-  const [current, setCurrent] = useState<IModelSensor>()
+/**
+ * Errors
+ */
+const errors = {
+  update: 'Unable to update the simulation',
+  name: 'You need to define a name',
+  point: 'You need to define a point',
+  formula: 'You need to define a formula'
+}
+
+/**
+ * On add
+ * @param simulation Simulation
+ * @param sensor Sensor
+ * @param swr SWR
+ */
+export const onAdd = async (
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  sensor: IModelSensor,
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
+) => {
+  try {
+    const newSimulation = Utils.deepCopy(simulation)
+
+    // Update local
+    const run = newSimulation.scheme.configuration.run
+
+    // Diff
+    const diff = {
+      ...run,
+      sensors: [...(run.sensors || []), sensor]
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: diff
+      }
+    ])
+
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
+ * Sensor
+ * @param props Props
+ * @returns Sensor
+ */
+const Sensor = ({
+  visible,
+  simulation,
+  sensor,
+  onClose,
+  swr
+}: IProps): JSX.Element => {
+  const [loading, setLoading] = useState<boolean>()
   const [selectionEnabled, setSelectionEnabled] = useState<boolean>()
+  const [name, setName] = useState<string>()
+  const [formula, setFormula] = useState<string>()
+  const [error, setError] = useState<string>()
 
   const { point, dispatch } = useContext(SelectContext)
-
-  const stopSelection = useCallback(() => {
-    console.log('stop selection')
-    setSelectionEnabled(false)
-    dispatch(disable())
-    window.removeEventListener('click', stopSelection)
-  }, [dispatch])
 
   // Set point type
   useEffect(() => {
     dispatch(setType('point'))
   }, [dispatch])
 
+  // Default name
+  useEffect(() => {
+    if (!sensor) {
+      const run = simulation.scheme.configuration.run
+      setName('Sensor ' + (run.sensors ? run.sensors.length + 1 : 1))
+    }
+  }, [simulation, sensor])
+
+  // Edit
+  useEffect(() => {
+    if (sensor) {
+      dispatch(
+        setPoint({ x: sensor.point.x, y: sensor.point.y, z: sensor.point.z })
+      )
+      setFormula(sensor.formula)
+    }
+  }, [sensor, dispatch])
+
+  /**
+   * Stop selection
+   */
+  const stopSelection = useCallback(() => {
+    setSelectionEnabled(false)
+    dispatch(disable())
+    window.removeEventListener('click', stopSelection)
+  }, [dispatch])
+
+  /**
+   * Start selection
+   */
   const startSelection = useCallback(() => {
     if (selectionEnabled) {
       stopSelection()
@@ -45,23 +155,59 @@ const Sensor = ({ visible, sensor, onClose }: IProps): JSX.Element => {
     }
   }, [selectionEnabled, stopSelection, dispatch])
 
-  const onPosition = (x: number, y: number, z: number): void => {
-    dispatch(setPoint(new Vector3(x, y, z)))
-  }
+  /**
+   * On position
+   * @param x Point X
+   * @param y Point Y
+   * @param z Point Z
+   */
+  const onPosition = useCallback(
+    (x: number, y: number, z: number): void => {
+      dispatch(setPoint({ x, y, z }))
+    },
+    [dispatch]
+  )
 
-  const onFormula = (formula: string) => {
-    setCurrent((prev) => ({
-      ...prev,
-      formula
-    }))
-  }
+  /**
+   * On formula
+   * @param formula Formula
+   */
+  const onFormula = useCallback((newFormula: string) => {
+    setFormula(newFormula)
+  }, [])
 
+  /**
+   * Close
+   */
   const close = useCallback(() => {
-    setCurrent(undefined)
+    setFormula(undefined)
     dispatch(setPoint())
     onClose()
   }, [dispatch, onClose])
 
+  /**
+   * On edit
+   */
+  const onEdit = useCallback(() => {
+    if (!point || !formula) return
+
+    const newSensor = {
+      point: {
+        x: point.x,
+        y: point.y,
+        z: point.z
+      },
+      formula
+    }
+
+    // console.log(newSensor)
+
+    close()
+  }, [point, formula, close])
+
+  /**
+   * Render
+   */
   return (
     <Drawer
       className="sensor"
@@ -77,11 +223,46 @@ const Sensor = ({ visible, sensor, onClose }: IProps): JSX.Element => {
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <CancelButton onCancel={close} />
           {sensor ? (
-            <EditButton needMargin onEdit={console.log}>
+            <EditButton needMargin onEdit={onEdit}>
               Edit
             </EditButton>
           ) : (
-            <AddButton needMargin onAdd={console.log}>
+            <AddButton
+              loading={loading}
+              needMargin
+              onAdd={async () => {
+                setLoading(true)
+                try {
+                  // Check
+                  if (!name) {
+                    setError(errors.name)
+                    setLoading(false)
+                    return
+                  }
+
+                  if (!point) {
+                    setError(errors.point)
+                    setLoading(false)
+                    return
+                  }
+
+                  if (!formula) {
+                    setError(errors.formula)
+                    setLoading(false)
+                    return
+                  }
+
+                  setError(undefined)
+
+                  await onAdd(simulation, { name, point, formula }, swr)
+
+                  setLoading(false)
+                  onClose()
+                } catch (err) {
+                  setLoading(false)
+                }
+              }}
+            >
               Add
             </AddButton>
           )}
@@ -89,6 +270,10 @@ const Sensor = ({ visible, sensor, onClose }: IProps): JSX.Element => {
       }
     >
       <Space direction="vertical" className="full-width">
+        <Card size="small">
+          <Typography.Text>Name</Typography.Text>
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
+        </Card>
         <Card size="small">
           <Space direction="vertical" className="full-width">
             <Space
@@ -129,8 +314,18 @@ const Sensor = ({ visible, sensor, onClose }: IProps): JSX.Element => {
           </Space>
         </Card>
         <Card size="small" className="no-border-bottom">
-          <Formula label="Formula" onValueChange={onFormula} />
+          <Formula
+            label="Formula"
+            defaultValue={formula}
+            onValueChange={onFormula}
+          />
         </Card>
+
+        {error && (
+          <Typography.Text>
+            <ExclamationCircleOutlined style={{ color: 'red' }} /> {error}
+          </Typography.Text>
+        )}
       </Space>
     </Drawer>
   )

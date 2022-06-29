@@ -74,6 +74,7 @@ describe('components/project/simulation/run', () => {
     name: 'name'
   } as IFrontResult
   const setResult = jest.fn()
+  const setVisible = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
@@ -126,6 +127,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -140,6 +142,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -161,6 +164,7 @@ describe('components/project/simulation/run', () => {
         }
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -186,6 +190,7 @@ describe('components/project/simulation/run', () => {
         }
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -225,6 +230,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -266,6 +272,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -282,6 +289,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -322,6 +330,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )
@@ -360,6 +369,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setVisible={setVisible}
         swr={swr}
       />
     )

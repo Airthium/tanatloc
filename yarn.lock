@@ -9971,7 +9971,7 @@ __metadata:
     tar: 6.1.11
     three: 0.141.0
     typedoc: 0.23.1
-    typedoc-plugin-airthium: "https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.4"
+    typedoc-plugin-airthium: ../typedoc-plugin-airthium
     typescript: 4.7.4
     url-join: 4.0.1
     uuid: 8.3.2
@@ -10273,12 +10273,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.4":
+"typedoc-plugin-airthium@file:../typedoc-plugin-airthium::locator=tanatloc%40workspace%3A.":
   version: 1.0.4
-  resolution: "typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#commit=e47a739c5f195bc9c743b498d4d151110cc8080c"
+  resolution: "typedoc-plugin-airthium@file:../typedoc-plugin-airthium#../typedoc-plugin-airthium::hash=f456f0&locator=tanatloc%40workspace%3A."
   peerDependencies:
-    typedoc: 0.22.15
-  checksum: 297d845426e1dcd3bfc2a9d0edc782952827acdfdc3451fc7fc04fd275d3f135780aed1a5a6fde61530d9578d7010c636ef1933425114627b40224dc0f096d84
+    typedoc: 0.23.1
+  checksum: bd785e87cc1faeb635f3c5f4c7e9d38cff1dfbe4f5159c229d692503a512c15265b8afe78c1aa777929d763a09162bafec90d2b1b5154b4cd62c22f0ac6d8062
   languageName: node
   linkType: hard
 

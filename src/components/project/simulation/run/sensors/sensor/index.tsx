@@ -18,12 +18,10 @@ import { SelectContext } from '@/context/select'
 import { disable, enable, setPoint, setType } from '@/context/select/actions'
 
 import Formula from '@/components/assets/formula'
-import { AddButton, CancelButton, EditButton } from '@/components/assets/button'
+import { CancelButton } from '@/components/assets/button'
 
-import SimulationAPI from '@/api/simulation'
-
-import Utils from '@/lib/utils'
-import { ErrorNotification } from '@/components/assets/notification'
+import Edit from '../edit'
+import Add from '../add'
 
 /**
  * Props
@@ -31,62 +29,10 @@ import { ErrorNotification } from '@/components/assets/notification'
 export interface IProps {
   visible?: boolean
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  sensor?: IModelSensor
+  sensor?: IModelSensor & { index: number }
   onClose: () => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
-  }
-}
-
-/**
- * Errors
- */
-const errors = {
-  update: 'Unable to update the simulation',
-  name: 'You need to define a name',
-  point: 'You need to define a point',
-  formula: 'You need to define a formula'
-}
-
-/**
- * On add
- * @param simulation Simulation
- * @param sensor Sensor
- * @param swr SWR
- */
-export const onAdd = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  sensor: IModelSensor,
-  swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
-  }
-) => {
-  try {
-    const newSimulation = Utils.deepCopy(simulation)
-
-    // Update local
-    const run = newSimulation.scheme.configuration.run
-
-    // Diff
-    const diff = {
-      ...run,
-      sensors: [...(run.sensors || []), sensor]
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: diff
-      }
-    ])
-
-    swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
-    ErrorNotification(errors.update, err)
   }
 }
 
@@ -102,12 +48,13 @@ const Sensor = ({
   onClose,
   swr
 }: IProps): JSX.Element => {
-  const [loading, setLoading] = useState<boolean>()
+  // State
   const [selectionEnabled, setSelectionEnabled] = useState<boolean>()
   const [name, setName] = useState<string>()
   const [formula, setFormula] = useState<string>()
   const [error, setError] = useState<string>()
 
+  // Data
   const { point, dispatch } = useContext(SelectContext)
 
   // Set point type
@@ -126,6 +73,7 @@ const Sensor = ({
   // Edit
   useEffect(() => {
     if (sensor) {
+      setName(sensor.name)
       dispatch(
         setPoint({ x: sensor.point.x, y: sensor.point.y, z: sensor.point.z })
       )
@@ -180,30 +128,12 @@ const Sensor = ({
    * Close
    */
   const close = useCallback(() => {
+    setName(undefined)
     setFormula(undefined)
+    setError(undefined)
     dispatch(setPoint())
     onClose()
   }, [dispatch, onClose])
-
-  /**
-   * On edit
-   */
-  const onEdit = useCallback(() => {
-    if (!point || !formula) return
-
-    const newSensor = {
-      point: {
-        x: point.x,
-        y: point.y,
-        z: point.z
-      },
-      formula
-    }
-
-    // console.log(newSensor)
-
-    close()
-  }, [point, formula, close])
 
   /**
    * Render
@@ -223,48 +153,26 @@ const Sensor = ({
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <CancelButton onCancel={close} />
           {sensor ? (
-            <EditButton needMargin onEdit={onEdit}>
-              Edit
-            </EditButton>
-          ) : (
-            <AddButton
-              loading={loading}
-              needMargin
-              onAdd={async () => {
-                setLoading(true)
-                try {
-                  // Check
-                  if (!name) {
-                    setError(errors.name)
-                    setLoading(false)
-                    return
-                  }
-
-                  if (!point) {
-                    setError(errors.point)
-                    setLoading(false)
-                    return
-                  }
-
-                  if (!formula) {
-                    setError(errors.formula)
-                    setLoading(false)
-                    return
-                  }
-
-                  setError(undefined)
-
-                  await onAdd(simulation, { name, point, formula }, swr)
-
-                  setLoading(false)
-                  onClose()
-                } catch (err) {
-                  setLoading(false)
-                }
+            <Edit
+              simulation={simulation}
+              sensor={{
+                ...sensor,
+                name: name!,
+                point: point!,
+                formula: formula!
               }}
-            >
-              Add
-            </AddButton>
+              onError={setError}
+              onClose={close}
+              swr={swr}
+            />
+          ) : (
+            <Add
+              simulation={simulation}
+              sensor={{ name: name!, point: point!, formula: formula! }}
+              onError={setError}
+              onClose={close}
+              swr={swr}
+            />
           )}
         </div>
       }

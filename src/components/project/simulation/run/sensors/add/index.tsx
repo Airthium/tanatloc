@@ -1,19 +1,16 @@
-/** @module Components.Project.Simulation.Materials.Add */
-
 import { useState } from 'react'
-import { v4 as uuid } from 'uuid'
 
-import { IModelMaterialsValue } from '@/models/index.d'
+import {
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem
+} from '@/api/index.d'
+import { IModelSensor } from '@/models/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -21,54 +18,48 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  material: Omit<IModelMaterialsValue, 'uuid'>
+  sensor: IModelSensor
+  onError: (error?: string) => void
+  onClose: () => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
-  onError: (desc?: string) => void
-  onClose: () => void
 }
 
 /**
  * Errors
  */
-export const errors = {
-  material: 'You need to define a material',
-  selected: 'You need to select a solid',
-  update: 'Unable to add the material'
+const errors = {
+  name: 'You need to define a name',
+  point: 'You need to select a point',
+  formula: 'You need to define a formula',
+  update: 'Unable to update simulation'
 }
 
 /**
  * On add
  * @param simulation Simulation
- * @param material Material
+ * @param sensor Sensor
  * @param swr SWR
  */
 export const onAdd = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  material: Omit<IModelMaterialsValue, 'uuid'>,
+  sensor: IModelSensor,
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
-): Promise<void> => {
+) => {
   try {
-    // New material
-    const newMaterial = Utils.deepCopy(material) as IModelMaterialsValue
-
-    // Set uuid
-    newMaterial.uuid = uuid()
-
     // New simulation
     const newSimulation = Utils.deepCopy(simulation)
 
     // Update local
-    const materials = newSimulation.scheme.configuration.materials!
-    materials.values = [...(materials.values || []), newMaterial]
+    const run = newSimulation.scheme.configuration.run
 
     // Diff
     const diff = {
-      ...materials,
-      done: true
+      ...run,
+      sensors: [...(run.sensors || []), sensor]
     }
 
     // API
@@ -77,7 +68,7 @@ export const onAdd = async (
         key: 'scheme',
         type: 'json',
         method: 'set',
-        path: ['configuration', 'materials'],
+        path: ['configuration', 'run'],
         value: diff
       }
     ])
@@ -97,13 +88,13 @@ export const onAdd = async (
  */
 const Add = ({
   simulation,
-  material,
-  swr,
+  sensor,
   onError,
-  onClose
+  onClose,
+  swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>()
 
   /**
    * Render
@@ -116,21 +107,29 @@ const Add = ({
         setLoading(true)
         try {
           // Check
-          if (!material.material) {
-            onError(errors.material)
+          if (!sensor.name) {
+            onError(errors.name)
             setLoading(false)
             return
           }
 
-          if (!material.selected?.length) {
-            onError(errors.selected)
+          if (!sensor.point) {
+            onError(errors.point)
             setLoading(false)
             return
           }
+
+          if (!sensor.formula) {
+            onError(errors.formula)
+            setLoading(false)
+            return
+          }
+
           onError()
 
-          await onAdd(simulation, material, swr)
+          await onAdd(simulation, sensor, swr)
 
+          // Close
           setLoading(false)
           onClose()
         } catch (err) {

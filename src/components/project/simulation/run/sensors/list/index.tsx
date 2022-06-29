@@ -10,18 +10,20 @@ import {
 import { SelectContext } from '@/context/select'
 import { disable, enable, setPoint } from '@/context/select/actions'
 import Delete from '../delete'
+import { EditButton } from '@/components/assets/button'
 
 /**
  * Props
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  onEdit: (sensor: IModelSensor & { index: number }) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 }
 
-const List = ({ simulation, swr }: IProps): JSX.Element => {
+const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
   // Data
   const run = simulation.scheme.configuration.run
   const { dispatch } = useContext(SelectContext)
@@ -59,7 +61,12 @@ const List = ({ simulation, swr }: IProps): JSX.Element => {
           onMouseEnter={() => highlight(sensor)}
           onMouseLeave={unhighlight}
           actions={[
-            'edit',
+            <EditButton
+              key="edit"
+              onEdit={() => {
+                onEdit({ ...sensor, index })
+              }}
+            />,
             <Delete
               key="delete"
               simulation={simulation}

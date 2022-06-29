@@ -8,6 +8,7 @@ import {
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem
 } from '@/api/index.d'
+import { IModelSensor } from '@/models/index.d'
 
 import Sensor from './sensor'
 import List from './list'
@@ -31,16 +32,29 @@ export interface IProps {
 const Sensors = ({ simulation, setVisible, swr }: IProps): JSX.Element => {
   // State
   const [sensorVisible, setSensorVisible] = useState<boolean>()
-  const [sensor, setSensor] = useState<any>()
+  const [sensor, setSensor] = useState<IModelSensor & { index: number }>()
 
   /**
    * on add
    */
   const onAdd = useCallback(() => {
     setSensor(undefined)
-    setSensorVisible(true)
     setVisible(false)
+    setSensorVisible(true)
   }, [setVisible])
+
+  /**
+   * On edit
+   * @param sensor Sensor
+   */
+  const onEdit = useCallback(
+    (toEdit: IModelSensor & { index: number }) => {
+      setSensor(toEdit)
+      setVisible(false)
+      setSensorVisible(true)
+    },
+    [setVisible]
+  )
 
   /**
    * On close
@@ -73,7 +87,7 @@ const Sensors = ({ simulation, setVisible, swr }: IProps): JSX.Element => {
         >
           Add a sensor
         </Button>
-        <List simulation={simulation} swr={swr} />
+        <List simulation={simulation} onEdit={onEdit} swr={swr} />
       </Space>
     </Card>
   )

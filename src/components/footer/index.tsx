@@ -1,4 +1,4 @@
-/** @module Component.Footer */
+/** @module Components.Footer */
 
 import {
   Button,

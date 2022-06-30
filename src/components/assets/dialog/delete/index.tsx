@@ -54,8 +54,10 @@ const DeleteDialog = ({
         <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
       }
       okText="Delete"
-      closable={true}
+      closable={false}
+      maskClosable={false}
       visible={visible}
+      cancelButtonProps={{ loading: loading }}
       onCancel={() => onCancel()}
       onOk={async () => {
         try {
@@ -64,8 +66,7 @@ const DeleteDialog = ({
           ErrorNotification(errors.onOk, err, false)
         }
       }}
-      okButtonProps={{ danger: true }}
-      confirmLoading={loading}
+      okButtonProps={{ danger: true, loading: loading }}
     >
       <Space align="start">
         <ExclamationCircleTwoTone twoToneColor="#ff4d4f" />

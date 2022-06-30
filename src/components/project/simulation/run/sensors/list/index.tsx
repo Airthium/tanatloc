@@ -1,3 +1,5 @@
+/** @module Components.Simulation.Project.Run.Sensors.List */
+
 import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'
 

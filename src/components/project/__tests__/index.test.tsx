@@ -69,7 +69,8 @@ jest.mock('../simulation', () => {
         onClick={() => {
           count++
           if (count === 1) props.setResult({})
-          else props.setResult()
+          else if (count === 2) props.setResult()
+          else props.setVisible(false)
         }}
       />
     ),
@@ -821,6 +822,8 @@ describe('components/project', () => {
 
     const postprocessing = screen.getByRole('Simulation.Postprocessing')
     fireEvent.click(postprocessing)
+
+    fireEvent.click(run)
 
     fireEvent.click(run)
 

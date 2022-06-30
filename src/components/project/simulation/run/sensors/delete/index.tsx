@@ -1,3 +1,5 @@
+/** @module Components.Simulation.Project.Run.Sensors.Delete */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Typography } from 'antd'
 

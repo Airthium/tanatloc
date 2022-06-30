@@ -1,3 +1,5 @@
+/** @module Components.Simulation.Project.Run.Sensors.Add */
+
 import { useState } from 'react'
 
 import {

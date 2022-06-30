@@ -43,7 +43,7 @@ describe('components/assets/dialog', () => {
       </DeleteDialog>
     )
 
-    const button = screen.getByRole('button', { name: 'Close' })
+    const button = screen.getByRole('button', { name: 'Cancel' })
     fireEvent.click(button)
 
     unmount()

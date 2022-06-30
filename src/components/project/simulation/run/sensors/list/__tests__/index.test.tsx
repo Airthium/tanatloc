@@ -12,6 +12,10 @@ jest.mock('@/components/assets/button', () => ({
 const mockDelete = jest.fn()
 jest.mock('../../delete', () => (props: any) => mockDelete(props))
 
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => callback()
+})
+
 describe('components/project/simulation/run/sensors/list', () => {
   const simulation = {
     id: 'id',
@@ -65,7 +69,7 @@ describe('components/project/simulation/run/sensors/list', () => {
     unmount()
   })
 
-  test('onEdit', () => {
+  test('onEdit', async () => {
     mockEditButton.mockImplementation((props) => (
       <div role="Edit" onClick={props.onEdit} />
     ))
@@ -75,6 +79,8 @@ describe('components/project/simulation/run/sensors/list', () => {
 
     const edit = screen.getByRole('Edit')
     fireEvent.click(edit)
+
+    await new Promise((resolve) => setTimeout(resolve, 50))
 
     expect(onEdit).toHaveBeenCalledTimes(1)
 

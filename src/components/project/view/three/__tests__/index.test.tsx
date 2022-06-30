@@ -125,6 +125,14 @@ jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   })
 }))
 
+jest.mock('@/lib/three/helpers/PointHelper', () => ({
+  PointHelper: () => ({
+    build: jest.fn(),
+    update: jest.fn(),
+    dispose: jest.fn()
+  })
+}))
+
 const mockPartLoader = jest.fn()
 jest.mock('@/lib/three/loaders/PartLoader', () => {
   let count = 0
@@ -144,7 +152,8 @@ jest.mock('@/context/select/actions', () => ({
   unhighlight: jest.fn(),
   select: jest.fn(),
   unselect: jest.fn(),
-  setPart: jest.fn()
+  setPart: jest.fn(),
+  setPoint: jest.fn()
 }))
 
 let mockAnimationCount = 0
@@ -195,6 +204,7 @@ describe('components/project/view/three', () => {
         },
         'uuid'
       )
+      mouseMove({}, undefined, undefined, { x: 0, y: 1, z: 2 })
       mouseDown(
         {
           getSelected: () => [{ uuid: 'uuid', label: 1 }],
@@ -288,7 +298,12 @@ describe('components/project/view/three', () => {
   test('render', () => {
     const { unmount } = render(
       <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+        value={{
+          enabled: false,
+          selected: [],
+          point: { x: 0, y: 1, z: 2 },
+          dispatch: jest.fn
+        }}
       >
         <ThreeView loading={loading} project={project} part={part} />
       </SelectContext.Provider>

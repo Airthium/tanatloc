@@ -160,6 +160,7 @@ class MockGroup {
     this.translateX = jest.fn()
     this.translateY = jest.fn()
     this.translateZ = jest.fn()
+    this.remove = jest.fn()
     this.traverse = (callback) => {
       global.MockGroup.children.forEach((child) => {
         traverse(child, callback)

@@ -470,9 +470,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       return
     }
 
-    const currentMount = mount.current
-
-    if (!currentMount) return
+    const currentMount = mount.current!
 
     let width = currentMount.clientWidth
     let height = currentMount.clientHeight
@@ -684,6 +682,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       gridHelper.current!.dispose()
       sectionViewHelper.current!.dispose()
       selectionHelper.current!.dispose()
+      pointHelper.current!.dispose()
     }
   }, [router])
 

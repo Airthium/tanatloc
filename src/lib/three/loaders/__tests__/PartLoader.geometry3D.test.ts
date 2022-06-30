@@ -184,6 +184,8 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
 
     mesh.startSelection(renderer, camera, outlinePass, 'edges')
+
+    mesh.startSelection(renderer, camera, outlinePass, 'point')
   })
 
   test('stopSelection', async () => {
@@ -264,13 +266,23 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(current).toBe('uuidf1')
   })
 
-  // test('mouseMove - default', async () => {
-  //   const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-  //   const mesh = await partLoader.load(part, true, clippingPlane)
-  //   mesh.startSelection(renderer, camera, outlinePass, 'default')
+  test('mouseMove - point', async () => {
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
+    mesh.startSelection(renderer, camera, outlinePass, 'point')
 
-  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-  // })
+    // Empty
+    //@ts-ignore
+    global.MockRaycaster.intersectObject = []
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+    // Ok
+    //@ts-ignore
+    global.MockRaycaster.intersectObject = [
+      { object: { userData: { uuid: 'uuidf1', label: 1 } } }
+    ]
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+  })
 
   test('highlight', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)

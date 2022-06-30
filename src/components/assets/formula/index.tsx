@@ -61,7 +61,7 @@ const Formula = ({
 
   // Default value
   useEffect(() => {
-    setInternalValue(defaultValue ? String(defaultValue) : '0')
+    setInternalValue(String(defaultValue ?? 0))
   }, [defaultValue])
 
   // Default checked

@@ -10078,8 +10078,8 @@ __metadata:
 
 "typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.5":
   version: 1.0.5
-  resolution: "typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#commit=e7384fcdec43d0ef5ba5b9f17755db4ae31497bb"
-  checksum: 231d39163ce4edaca68661ac4295aa6620b5ae0228a6c8dd5323c9ae7f0e63a5a1897212e25f20c9d8af7a6bc54ae000923b1e4f26d3ed8f529e4122065a0f35
+  resolution: "typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#commit=682ff72f239e37ba3fe902abc9d4582266565ac8"
+  checksum: d43bc222c83e4622c943007faef11197e6ff11dca885fb256ed7a1e0658a48acf3e4c04f63a970ddd9f2d50c9ccbecaed475db675bcde231f66c74732e5302f9
   languageName: node
   linkType: hard
 

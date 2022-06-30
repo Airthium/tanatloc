@@ -13,7 +13,6 @@ import DeleteDialog from './delete'
  */
 export interface IProps {
   visible: boolean
-  closable?: boolean
   loading?: boolean
   title: string
   initialValues?: object
@@ -53,7 +52,6 @@ export const errors = {
  */
 const Dialog = ({
   visible,
-  closable = true,
   loading,
   title,
   initialValues,
@@ -83,8 +81,8 @@ const Dialog = ({
         <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
       }
       visible={visible}
-      closable={closable}
-      maskClosable={closable}
+      closable={false}
+      maskClosable={false}
       onCancel={
         onCancel &&
         (() => {
@@ -94,6 +92,7 @@ const Dialog = ({
       }
       cancelButtonProps={{
         ...cancelButtonProps,
+        loading: loading,
         style: { display: onCancel ? 'inline-block' : 'none' }
       }}
       cancelText={cancelButtonText}
@@ -112,9 +111,9 @@ const Dialog = ({
       okText={okButtonText}
       okButtonProps={{
         ...okButtonProps,
+        loading: loading,
         style: { display: onOk ? 'inline-block' : 'none' }
       }}
-      confirmLoading={loading}
     >
       <Form form={form} layout="vertical" initialValues={initialValues}>
         {children}

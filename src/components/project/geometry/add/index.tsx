@@ -116,7 +116,6 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       visible={visible}
       onCancel={() => setVisible(false)}
       cancelButtonProps={{ loading: loading }}
-      closable={!loading}
     >
       <Space direction="vertical" className="full-width">
         <Upload

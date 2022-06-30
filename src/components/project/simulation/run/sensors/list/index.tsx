@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'
 
 import { IModelSensor } from '@/models/index.d'
@@ -26,6 +26,9 @@ export interface IProps {
 }
 
 const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
+  // State
+  const [enabled, setEnabled] = useState<boolean>(true)
+
   // Data
   const run = simulation.scheme.configuration.run
   const { dispatch } = useContext(SelectContext)
@@ -46,9 +49,9 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
    * Unhighlight
    */
   const unhighlight = useCallback(() => {
-    dispatch(setPoint())
+    enabled && dispatch(setPoint())
     dispatch(disable())
-  }, [dispatch])
+  }, [enabled, dispatch])
 
   /**
    * Render
@@ -66,7 +69,9 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
             <EditButton
               key="edit"
               onEdit={() => {
+                setEnabled(false)
                 onEdit({ ...sensor, index })
+                setTimeout(() => setEnabled(true), 500)
               }}
             />,
             <Delete

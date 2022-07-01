@@ -36,6 +36,10 @@ jest.mock('@/templates', () => ({
   key: 'file'
 }))
 
+jest.mock('@/templates/tools', () => ({
+  indent: jest.fn()
+}))
+
 describe('lib/template', () => {
   beforeEach(() => {
     mockElectron.mockReset()

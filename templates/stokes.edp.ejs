@@ -1,83 +1,83 @@
 try {
-	<%# Headers -%>
-	<%- include('/blobs/headers.edp.ejs') -%>
+<%# Headers -%>
+<%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>
 
-	<%# Dimension -%>
-	<%- include('/blobs/dimensioning.edp.ejs', {
-		dimension
-	}); -%>
+<%# Dimension -%>
+<%- helpers.indent(include('/blobs/dimensioning.edp.ejs', {
+	dimension
+}), 1) -%>
 
-	<%# Mesh -%>
-	<%
-	const mesh = geometry.mesh
-	mesh.name = 'Mesh'
-	-%>
-	<%- include('/blobs/mesh.edp.ejs', {
-		dimension,
-		mesh
-	}); -%>
+<%# Mesh -%>
+<%
+const mesh = geometry.mesh
+mesh.name = 'Mesh'
+-%>
+<%- helpers.indent(include('/blobs/mesh.edp.ejs', {
+	dimension,
+	mesh
+}), 1) -%>
 
-	<%# Materials -%>
-	<%- include('/blobs/materials.edp.ejs', {
-		materials
-	}) -%>
+<%# Materials -%>
+<%- helpers.indent(include('/blobs/materials.edp.ejs', {
+	materials
+}), 1) -%>
 
-	<%# Finite element space -%>
-	<%
-	const finiteElementSpace = parameters.finiteElementSpace.children[0]
-	finiteElementSpace.name = 'Uh'
-	-%>
-	<%- include('/blobs/fespace.edp.ejs', {
-		mesh,
-		finiteElementSpace
-	}); -%>
+<%# Finite element space -%>
+<%
+const finiteElementSpace = parameters.finiteElementSpace.children[0]
+finiteElementSpace.name = 'Uh'
+-%>
+<%- helpers.indent(include('/blobs/fespace.edp.ejs', {
+	mesh,
+	finiteElementSpace
+}), 1) -%>
 
-	<%# Finite element function -%>
-	<%
-	let feFunction = ['Ux', 'Uy', 'Uz', 'p']
+<%# Finite element function -%>
+<%
+let feFunction = ['Ux', 'Uy', 'Uz', 'p']
 
-	let unknownFunction = '[Ux, Uy, Uz, p]'
-	let testFunction = '[Uhx, Uhy, Uhz, ph]'
-	let freeFunction = '[mUx, mUy, mUz, mp]'
+let unknownFunction = '[Ux, Uy, Uz, p]'
+let testFunction = '[Uhx, Uhy, Uhz, ph]'
+let freeFunction = '[mUx, mUy, mUz, mp]'
 
-	let U = '[Ux, Uy, Uz]'
-	let Uh = '[Uhx, Uhy, Uhz]'
-	let N = '[N.x, N.y, N.z]'
+let U = '[Ux, Uy, Uz]'
+let Uh = '[Uhx, Uhy, Uhz]'
+let N = '[N.x, N.y, N.z]'
 
-	if (dimension === 2) {
-		feFunction = ['Ux', 'Uy', 'p']
+if (dimension === 2) {
+	feFunction = ['Ux', 'Uy', 'p']
 
-		unknownFunction = '[Ux, Uy, p]'
-		testFunction = '[Uhx, Uhy, ph]'
-		freeFunction = '[mUx, mUy, mp]'
+	unknownFunction = '[Ux, Uy, p]'
+	testFunction = '[Uhx, Uhy, ph]'
+	freeFunction = '[mUx, mUy, mp]'
 
-		U = '[Ux, Uy]'
-		Uh = '[Uhx, Uhy]'
-		N = '[N.x, N.y]'
-	}
-	-%>
-	<%- include('/blobs/fespaceFunction.edp.ejs', {
-		finiteElementSpace,
-		finiteElementFunction: feFunction
-	}); -%>
+	U = '[Ux, Uy]'
+	Uh = '[Uhx, Uhy]'
+	N = '[N.x, N.y]'
+}
+-%>
+<%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
+	finiteElementSpace,
+	finiteElementFunction: feFunction
+}), 1) -%>
 
-	<%# Macro -%>
-	<%- include('/blobs/macro.edp.ejs', {
-		dimension,
-		type: ['vectorialGradient', 'vectorialDivergence']
-	}); -%>
+<%# Macro -%>
+<%- helpers.indent(include('/blobs/macro.edp.ejs', {
+	dimension,
+	type: ['vectorialGradient', 'vectorialDivergence']
+}), 1) -%>
 
-	<%# Problem -%>
-	<% 
-	const wall = boundaryConditions.wall.values || []
-	const freeOutlet = boundaryConditions.freeOutlet.values || []
-	const dirichlet = boundaryConditions.dirichlet.values || []
-	const neumann = boundaryConditions.neumann.values || []
-	const rhs = parameters.rightHandSide.children
-	const rhsX = rhs[0].value ?? rhs[0].default
-	const rhsY = rhs[1].value ?? rhs[1].default
-	const rhsZ = rhs[2].value ?? rhs[2].default
-	-%>
+<%# Problem -%>
+<% 
+const wall = boundaryConditions.wall.values ?? []
+const freeOutlet = boundaryConditions.freeOutlet.values ?? []
+const dirichlet = boundaryConditions.dirichlet.values ?? []
+const neumann = boundaryConditions.neumann.values ?? []
+const rhs = parameters.rightHandSide.children
+const rhsX = rhs[0].value ?? rhs[0].default
+const rhsY = rhs[1].value ?? rhs[1].default
+const rhsZ = rhs[2].value ?? rhs[2].default
+-%>
 	//Problem
 	appendLog("Define the problem...");
 
@@ -87,87 +87,91 @@ try {
 			- p * Div(Uh)
 			- Div(U) * ph
 		)
-	<% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
+<% for (const d of dirichlet) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
 		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=0<% } -%>
 		)
-	<% } -%>
-	<% for (const w of wall) { -%>
-		+ on(<%= w.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
-	<% } -%>
+<% } -%>
+<% for (const w of wall) { -%>
+		+ on(<%= w.selected.map(s => s.label).filter(s => s).join(', ') -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
+<% } -%>
 		;
 
 	varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
 		= intN(Mesh)(
-		<% if (dimension === 2) { -%>
+<% if (dimension === 2) { -%>
 			[<%- rhsX -%>, <%- rhsY -%>]' * <%= Uh %>
-		<% } else { -%>
+<% } else { -%>
 			[<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= Uh %>
-		<% } -%>
+<% } -%>
 		)
-	<% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join() -%>)(
+<% for (const n of neumann) { -%>
+		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
 			(<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
-	<% } -%>
-	<% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
+<% } -%>
+<% for (const d of dirichlet) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
 		<% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, mUz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>)
-	<% } -%>
-	<% for (const w of wall) { -%>
-		+ on(<%= w.selected.map(s => s.label).filter(s => s).join() -%>, mUx=0, mUy=0<% if (dimension !== 2) { -%> , mUz=0<% } -%>)
-	<% } -%>
+<% } -%>
+<% for (const w of wall) { -%>
+		+ on(<%= w.selected.map(s => s.label).filter(s => s).join(', ') -%>, mUx=0, mUy=0<% if (dimension !== 2) { -%> , mUz=0<% } -%>)
+<% } -%>
 		;
 
-	<%# Solver -%>
-	<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
-	<%- include('/blobs/solver.edp.ejs', {
-		solver
-	}); -%>
+<%# Solver -%>
+<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
+<%- helpers.indent(include('/blobs/solver.edp.ejs', {
+	solver
+}), 1) -%>
 
-
-	<%# Solve -%>
+<%# Solve -%>
 	matrix Stokes = vStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 	real[int] StokesRHS = vStokesRHS(0, <%= finiteElementSpace.name -%>);
 
 	// Solve
 	Ux[] = Stokes^-1 * StokesRHS;
 
-	<%# Save -%>
+<%# Save -%>
 	// Save data
 	real netFlow = intN1(Mesh)(<%= U -%>' * <%= N -%>);
 	real div = intN(Mesh)(Div(U)) / intN(Mesh)(1);
-	<%- include('/blobs/data.edp.ejs', {
-		path: run.dataPath,
-		fileName: '"stokes"',
-		dataNames: ['Net flow', 'Divergence'],
-		x: '0',
-		ys: ['netFlow', 'div']
-	}) -%>
+<%- helpers.indent(include('/blobs/data.edp.ejs', {
+	path: run.dataPath,
+	fileName: '"stokes"',
+	dataNames: ['Net flow', 'Divergence'],
+	x: '0',
+	ys: ['netFlow', 'div']
+}), 1) -%>
 
-	// Save coupling
-	<%- include('/blobs/coupling.edp.ejs', {
-		path: run.couplingPath,
+<%# Sensors -%>
+<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
+	path: run.dataPath,
+	x: 0,
+	sensors: run.sensors
+}), 1) -%>
+
+<%- helpers.indent(include('/blobs/coupling.edp.ejs', {
+	path: run.couplingPath,
+	mesh: mesh.name,
+	name: '"Result_"',
+	data: dimension === 2 ? ['Ux', 'Uy'] : ['Ux', 'Uy', 'Uz']
+}), 1) -%>
+
+<%- helpers.indent(include('/blobs/save.edp.ejs', {
+	solution: {
+		path: run.resultPath,
+		name: '"Result"',
 		mesh: mesh.name,
-		name: '"Result_"',
-		data: dimension === 2 ? ['Ux', 'Uy'] : ['Ux', 'Uy', 'Uz']
-	}); -%>
-
-	// Save results
-	<%- include('/blobs/save.edp.ejs', {
-		solution: {
-			path: run.resultPath,
-			name: '"Result"',
-			mesh: mesh.name,
-			sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'p'],
-			dataName: run.results.map(r => r.name),
-			order: [1, 1]
-		}
-	}); -%>
+		sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'p'],
+		dataName: run.results.map(r => r.name),
+		order: [1, 1]
+	}
+}), 1) -%>
 
 	appendLog("End");
 } catch(...) {

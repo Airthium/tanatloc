@@ -2,29 +2,25 @@
 appendLog("Save result...");
 
 load "iovtk"
-{
+if (mpirank == 0) {
 	fespace PV(<%= solution.mesh -%>, P1);
-<% for (const sol of solution.sol) { -%>
-<% if (Array.isArray(sol)) { -%>
-<% for (var j = 0; j < sol.length; j++) { -%>
-<% if (sol[j] !== '0') { -%>
+<% for (const sol of solution.sol) {
+	if (Array.isArray(sol)) {
+		for (let j = 0; j < sol.length; ++j) {
+			if (sol[j] !== '0') { -%>
 	PV <%= sol[j] -%><%= sol[j] -%> = <%= sol[j] -%>;
-<% } -%>
-<% } -%>
-<% } else { -%>
+<% }}} else { -%>
 	PV <%= sol -%><%= sol -%> = <%= sol -%>;
 <% } -%>
-
 <% } -%>
+
 	string DataName = "<%= solution.dataName.join(' ') -%>";
 	int[int] Order = [<% for (var i = 0; i < solution.order.length; i++) { -%><%= solution.order[i] -%><% if (i != solution.order.length-1) { -%>, <% } -%><% } -%>];
 
 	savevtk("<%= solution.path %>/" + <%- solution.name %> + ".vtu", <%= solution.mesh -%>, <% for (var i = 0; i < solution.sol.length; i++) { if (Array.isArray(solution.sol[i])) { -%>[<% for (var j = 0; j < solution.sol[i].length; j++) { -%><% if (solution.sol[i][j] === '0') { -%>0<% } else { -%><%= solution.sol[i][j] -%><%= solution.sol[i][j] -%><% } -%><% if (j != solution.sol[i].length-1) { -%>, <% } -%><% } -%>]<% } else {-%><%= solution.sol[i] -%><%= solution.sol[i] -%><% } if (i != solution.sol.length-1) { -%>, <% } -%><% } -%>, dataname=DataName, order=Order, bin=false);
-}
 
-if (mpirank == 0) {
 	ofstream processOut("process_data.log", append);
 	string saveOutput = "PROCESS VTU FILE " + <%- solution.name %> + ".vtu";
 	processOut << saveOutput << endl;
 }
-
+// End Save

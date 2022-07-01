@@ -1,6 +1,6 @@
 // Solver
 <% if (
-		solver.value === "UMFPACK"
+	solver.value === "UMFPACK"
 	|| solver.value === "CG"
 	|| solver.value === "Cholesky"
 	|| solver.value === "Crout"
@@ -18,3 +18,4 @@ func solver = "<%= solver.value -%>";
 load "MUMPS"
 func solver = sparsesolver;
 <% } -%>
+// End Solver

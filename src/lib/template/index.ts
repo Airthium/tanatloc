@@ -8,6 +8,7 @@ import Tools from '../tools'
 import Plugins from '../plugins'
 
 import Templates from '@/templates'
+import { indent } from '@/templates/tools'
 
 export interface ITemplates {
   [key: string]: AsyncTemplateFunction
@@ -95,7 +96,10 @@ const render = async (
   // Compile
   const template = tanatloc?.templates?.[key]
   if (!template) throw new Error('Unable to find the model!')
-  const script = await template(parameters)
+  const script = await template({
+    helpers: { indent },
+    ...parameters
+  })
 
   // Save
   if (save) await Tools.writeFile(save.location, save.name, script)

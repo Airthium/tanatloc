@@ -81,7 +81,6 @@ export const onDelete = async (
     // Local
     swr.mutateOneSimulation(newSimulation)
   } catch (err) {
-    console.log(err)
     ErrorNotification(errors.udpate, err)
     throw err
   }

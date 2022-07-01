@@ -188,10 +188,10 @@ const computeMesh = async (
     }
 
     // Build mesh
-    const geoFile = geometry.name + '.geo'
-    const mshFile = geometry.name + '.msh'
-    const meshPath = geometry.name + '_mesh'
-    const partPath = geometry.name
+    const geoFile = geometry.file + '.geo'
+    const mshFile = geometry.file + '.msh'
+    const meshPath = geometry.file + '_mesh'
+    const partPath = geometry.file
 
     // Render template
     await Template.render(

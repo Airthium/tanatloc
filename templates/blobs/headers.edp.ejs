@@ -1,40 +1,41 @@
 // Headers
 if (mpirank == 0) {
-    // Log file
-    ofstream logOut("process_log.log");
+	// Log file
+	ofstream logOut("process_log.log");
 
-    // Date
-    logOut << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
-    
-    // Process file
-    ofstream processOut("process_data.log");
+	// Date
+	logOut << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
+
+	// Process file
+	ofstream processOut("process_data.log");
 }
 
 func int appendLog (string str) {
-    if (mpirank == 0) {
-        // Log file
-        ofstream logOut("process_log.log", append);
+	if (mpirank == 0) {
+		// Log file
+		ofstream logOut("process_log.log", append);
 
-        logOut << str << endl;
-    }
+		logOut << str << endl;
+	}
 }
 
 func int appendWarning (string str) {
-    if (mpirank == 0) {
-        // Log file
-        ofstream logOut("process_log.log", append);
+	if (mpirank == 0) {
+		// Log file
+		ofstream logOut("process_log.log", append);
 
-        logOut << "WARNING:" << endl;
-        logOut << str << endl;
-    }
+		logOut << "WARNING:" << endl;
+		logOut << str << endl;
+	}
 }
 
 func int appendError (string str) {
-    if (mpirank == 0) {
-        // Log file
-        ofstream logOut("process_log.log", append);
+	if (mpirank == 0) {
+		// Log file
+		ofstream logOut("process_log.log", append);
 
-        logOut << "Error:" << endl;
-        logOut << str << endl;
-    }
+		logOut << "Error:" << endl;
+		logOut << str << endl;
+	}
 }
+// End Headers

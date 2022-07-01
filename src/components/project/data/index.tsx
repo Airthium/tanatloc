@@ -156,20 +156,28 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     // Sort
     tasksDatas.sort((a, b) => a.x - b.x)
 
-    const newNames = tasksDatas[0].names
+    const newNames = tasksDatas
+      .map((data) => data.names)
+      .flatMap((n) => n)
+      .filter(
+        (value, index, self) => self.findIndex((s) => s === value) === index
+      )
     const newCamelNames = newNames.map((name: string) => camelCase(name))
 
-    const newDatas = tasksDatas.map((data, index) => {
-      const ys: { [key: string]: number } = {}
-      data.names.forEach((_, nameIndex) => {
-        ys[newCamelNames[nameIndex]] = data.ys[nameIndex]
+    const newDatas: { key: number; x: number; [key: string]: number }[] = []
+    tasksDatas.forEach((data, index) => {
+      data.names.forEach((name, nameIndex) => {
+        const existing = newDatas.find((d) => d.x === data.x)
+        if (!existing) {
+          newDatas.push({
+            key: index,
+            x: data.x,
+            [camelCase(name)]: data.ys[nameIndex]
+          })
+        } else {
+          existing[camelCase(name)] = data.ys[nameIndex]
+        }
       })
-
-      return {
-        key: index,
-        x: data.x,
-        ...ys
-      }
     })
 
     setDatas(newDatas)

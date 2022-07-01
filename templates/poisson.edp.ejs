@@ -1,51 +1,51 @@
 try {
-	<%# Headers -%>
-	<%- include('/blobs/headers.edp.ejs') -%>
+<%# Headers -%>
+<%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>
 
-	<%# Dimension -%>
-	<%- include('/blobs/dimensioning.edp.ejs', {
-		dimension
-	}); -%>
+<%# Dimension -%>
+<%- helpers.indent(include('/blobs/dimensioning.edp.ejs', {
+	dimension
+}), 1) -%>
 
-	<%# Mesh -%>
-	<%
-	const mesh = geometry.mesh
-	mesh.name = 'Mesh'
-	-%>
-	<%- include('/blobs/mesh.edp.ejs', {
-		dimension,
-		mesh
-	}); -%>
+<%# Mesh -%>
+<%
+const mesh = geometry.mesh
+mesh.name = 'Mesh'
+-%>
+<%- helpers.indent(include('/blobs/mesh.edp.ejs', {
+	dimension,
+	mesh
+}), 1) -%>
 
-	<%# Finite element space -%>
-	<%
-	const finiteElementSpace = parameters.finiteElementSpace.children[0]
-	finiteElementSpace.name = 'Uh'
-	-%>
-	<%- include('/blobs/fespace.edp.ejs', {
-		mesh,
-		finiteElementSpace
-	}); -%>
+<%# Finite element space -%>
+<%
+const finiteElementSpace = parameters.finiteElementSpace.children[0]
+finiteElementSpace.name = 'Uh'
+-%>
+<%- helpers.indent(include('/blobs/fespace.edp.ejs', {
+	mesh,
+	finiteElementSpace
+}), 1) -%>
 
-	<%# Finite element function -%>
-	<%- include('/blobs/fespaceFunction.edp.ejs', {
-		finiteElementSpace,
-		finiteElementFunction: ['u']
-	}); -%>
+<%# Finite element function -%>
+<%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
+	finiteElementSpace,
+	finiteElementFunction: ['u']
+}), 1) -%>
 
-	<%# Macro -%>
-	<%- include('/blobs/macro.edp.ejs', {
-		dimension,
-		type: ['scalarGradient']
-	}); -%>
+<%# Macro -%>
+<%- helpers.indent(include('/blobs/macro.edp.ejs', {
+	dimension,
+	type: ['scalarGradient']
+}), 1) -%>
 
-	<%# Problem -%>
-	<%
-	const dirichlet = boundaryConditions.dirichlet.values || []
-	const neumann = boundaryConditions.neumann.values || []
-	const rhs = parameters.rightHandSide.children[0]
-	const rhsValue = rhs.value ?? rhs.default
-	-%>
+<%# Problem -%>
+<%
+const dirichlet = boundaryConditions.dirichlet.values ?? []
+const neumann = boundaryConditions.neumann.values ?? []
+const rhs = parameters.rightHandSide.children[0]
+const rhsValue = rhs.value ?? rhs.default
+-%>
 	// Problem
 	appendLog("Define the problem...");
 
@@ -53,32 +53,32 @@ try {
 		= intN(Mesh)(
 			grad(u)' * grad(uh)
 		)
-	<% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>, u=0)
-	<% } -%>
+<% for (const d of dirichlet) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>, u=0)
+<% } -%>
 		;
 
 	varf vLaplacianRHS (u, uh)
 		= intN(Mesh)(
 			(<%- rhsValue -%>) * uh
 		)
-	<% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join() %>) {
+<% for (const n of neumann) { -%>
+		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join(', ') %>) {
 			(<%- n.values[0].value ?? n.values[0].default %>) * uh
 		}
-	<% } -%>
-	<% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
-	<% } -%>
+<% } -%>
+<% for (const d of dirichlet) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
+<% } -%>
 		;
 
-	<%# Solver -%>
-	<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
-	<%- include('/blobs/solver.edp.ejs', {
-		solver
-	}) -%>
+<%# Solver -%>
+<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
+<%- helpers.indent(include('/blobs/solver.edp.ejs', {
+	solver
+}), 1) -%>
 
-	<%# Solve -%>
+<%# Solve -%>
 	// Solve
 	appendLog("Solve the problem...");
 
@@ -86,17 +86,24 @@ try {
 	real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
 	u[] = Laplacian^-1 * LaplacianRHS;
 
-	<%# Save -%>
-	<%- include('/blobs/save.edp.ejs', {
-		solution: {
-			path: run.resultPath,
-			name: '"Result"',
-			mesh: mesh.name,
-			sol: ['u'],
-			dataName: run.results.map(r => r.name),
-			order: [1]
-		}
-	}); -%>
+<%# Sensors -%>
+<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
+	path: run.dataPath,
+	x: 0,
+	sensors: run.sensors
+}), 1) -%>
+
+<%# Save -%>
+<%- helpers.indent(include('/blobs/save.edp.ejs', {
+	solution: {
+		path: run.resultPath,
+		name: '"Result"',
+		mesh: mesh.name,
+		sol: ['u'],
+		dataName: run.results.map(r => r.name),
+		order: [1]
+	}
+}), 1) -%>
 
 	appendLog("End");
 } catch(...) {

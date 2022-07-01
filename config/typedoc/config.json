@@ -38,5 +38,6 @@
   "theme": "airthium",
   "entryPointStrategy": "expand",
   "out": "../../doc",
-  "readme": "../../README.md"
+  "readme": "../../README.md",
+  "includeVersion": true
 }

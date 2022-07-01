@@ -1,4 +1,4 @@
-/** @module Components.Simulation.BoundaryConditions.List */
+/** @module Components.Project.Simulation.BoundaryConditions.List */
 
 import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'

@@ -51,6 +51,8 @@ export interface IPartObject extends Object3D {
   children: (IPartObject | IPartMesh)[]
 }
 
+export type ISelectionType = 'solids' | 'faces' | 'edges' | 'point'
+
 export interface IPart extends Object3D {
   type: 'Part'
   uuid: string
@@ -62,7 +64,7 @@ export interface IPart extends Object3D {
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type: 'solids' | 'faces' | 'edges' | 'point'
+    type: ISelectionType
   ) => void
   stopSelection: () => void
   getHighlighted: () => { uuid: string; label: number | string } | null
@@ -235,7 +237,7 @@ const PartLoader = (
       renderer: WebGLRenderer,
       camera: PerspectiveCamera,
       outlinePass: OutlinePass,
-      type: 'solids' | 'faces' | 'edges' | 'point'
+      type: ISelectionType
     ) => startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection()
     object.getHighlighted = () => highlighted
@@ -295,7 +297,7 @@ const PartLoader = (
   // highlight / selection Variables
   let raycaster = new Raycaster()
   let selectionPart: IPart | null = null
-  let selectionType: 'solids' | 'faces' | 'edges' | 'point' | null = null
+  let selectionType: ISelectionType | null = null
   let selectionRenderer: WebGLRenderer | null = null
   let selectionCamera: PerspectiveCamera | null = null
   let selectionOutlinePass: OutlinePass | null = null
@@ -315,7 +317,7 @@ const PartLoader = (
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
     outlinePass: OutlinePass,
-    type: 'solids' | 'faces' | 'edges' | 'point'
+    type: ISelectionType
   ): void => {
     selectionPart = part
     selectionType = type

@@ -10,8 +10,13 @@ import {
   promises as fs
 } from 'fs'
 import tar from 'tar'
+import crypto from 'crypto'
+
+import SecurityDB from '@/database/security'
 
 import Services from '@/services'
+
+const algorithm = 'aes-256-ctr'
 
 /**
  * Path to posix
@@ -231,6 +236,57 @@ const convert = async (
   ]
 }
 
+/**
+ * Get encrypt pass
+ * @returns Encrypt pass
+ */
+const getEncryptPass = async (): Promise<string> =>
+  (await SecurityDB.get(['encrypt_pass'])).encrypt_pass
+
+/**
+ * Encrypt text
+ * @param text Text
+ * @returns Hash
+ */
+const encrypt = async (
+  text: string
+): Promise<{ iv: string; content: string }> => {
+  const encryptPass = await getEncryptPass()
+  const iv = crypto.randomBytes(16)
+  const cipher = crypto.createCipheriv(algorithm, encryptPass, iv)
+  const encrypted = Buffer.concat([cipher.update(text), cipher.final()])
+
+  return {
+    iv: iv.toString('hex'),
+    content: encrypted.toString('hex')
+  }
+}
+
+/**
+ * Decrypt hash
+ * @param hash Hash
+ * @returns Decrypted text
+ */
+const decrypt = async ({
+  iv,
+  content
+}: {
+  iv: string
+  content: string
+}): Promise<string> => {
+  const encryptPass = await getEncryptPass()
+  const decipher = crypto.createDecipheriv(
+    algorithm,
+    encryptPass,
+    Buffer.from(iv, 'hex')
+  )
+  const decrypted = Buffer.concat([
+    decipher.update(Buffer.from(content, 'hex')),
+    decipher.final()
+  ])
+  return decrypted.toString()
+}
+
 const Tools = {
   toPosix,
   createPath,
@@ -247,6 +303,8 @@ const Tools = {
   unarchive,
   readStream,
   writeStream,
-  convert
+  convert,
+  encrypt,
+  decrypt
 }
 export default Tools

@@ -1,6 +1,6 @@
 /** @module Database.User.Get */
 
-import { IPlugin } from '@/plugins/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { tables } from '@/config/db'
 
@@ -57,7 +57,7 @@ export interface IUser<T = [], Key = 'id'> {
   organizations?: TUserGetOrganizations extends T ? string[] : never[]
   workspaces?: TUserGetWorkspaces extends T ? string[] : never[]
   authorizedplugins?: TUserGetAuthorizedplugins extends T ? string[] : never[]
-  plugins?: TUserGetPlugins extends T ? IPlugin[] : never[]
+  plugins?: TUserGetPlugins extends T ? IClientPlugin[] : never[]
 }
 
 /**

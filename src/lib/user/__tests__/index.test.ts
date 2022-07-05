@@ -53,6 +53,10 @@ jest.mock('../../group', () => ({
   update: async () => mockGroupUpdate()
 }))
 
+jest.mock('../../tools', () => ({
+  decrypt: async (str: string) => str
+}))
+
 describe('lib/user', () => {
   beforeEach(() => {
     mockAdd.mockReset()
@@ -126,7 +130,10 @@ describe('lib/user', () => {
       organizations: [],
       workspaces: [],
       authorizedplugins: [],
-      plugins: []
+      plugins: [
+        { configuration: { key: { secret: true } } },
+        { configuration: { key: { secret: true, value: '1' } } }
+      ]
     }))
     user = await User.get('id', [
       'email',
@@ -141,7 +148,10 @@ describe('lib/user', () => {
       organizations: [],
       workspaces: [],
       authorizedplugins: [],
-      plugins: []
+      plugins: [
+        { configuration: { key: { secret: true } } },
+        { configuration: { key: { secret: true, value: 1 } } }
+      ]
     })
   })
 

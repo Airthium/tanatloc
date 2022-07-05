@@ -2,6 +2,7 @@
 
 import { Pool, PoolClient } from 'pg'
 import format from 'pg-format'
+import crypto from 'crypto'
 
 import { IDataBaseResponse } from '@/database/index.d'
 
@@ -122,6 +123,10 @@ export const createDatabase = async (): Promise<void> => {
 const createTables = async (): Promise<void> => {
   console.info(' == Create dB tables == ')
   try {
+    // Security
+    console.info(' + Security table')
+    await createSecurityTable()
+
     // System
     console.info(' + System table')
     await createSystemTable()
@@ -453,6 +458,25 @@ const createTable = async (
     )
     extra && (await extra())
   }
+}
+
+/**
+ * Generate 32 bytes hash
+ * @returns 32 bytes hash
+ */
+const generate32bytes = (): string => {
+  return crypto.randomBytes(16).toString('hex')
+}
+
+/**
+ * Create security table
+ */
+const createSecurityTable = async (): Promise<void> => {
+  await createTable(tables.SECURITY, async () =>
+    query('INSERT INTO ' + tables.SECURITY + ' (encrypt_pass) VALUES ($1)', [
+      generate32bytes()
+    ])
+  )
 }
 
 /**

@@ -1,12 +1,30 @@
 /** @module Components.Assets.Notification.Error */
 
-import { Collapse, notification, Space, Typography } from 'antd'
+import { Button, Collapse, notification, Space, Typography } from 'antd'
 
 import { ICallError } from '@/api/index.d'
 
 import Sentry from '@/lib/sentry'
 
-let serverError = false
+let serverNotification: string | undefined
+const opened: string[] = []
+let closeNotification: string | undefined
+
+/**
+ * Close all
+ */
+export const closeAll = () => {
+  if (serverNotification) {
+    notification.close(serverNotification)
+    serverNotification = undefined
+  }
+
+  opened.forEach((notif) => notification.close(notif))
+  opened.length = 0
+
+  notification.close(closeNotification!)
+  closeNotification = undefined
+}
 
 /**
  * Error notification
@@ -21,23 +39,29 @@ const ErrorNotification = (
   display: boolean = true
 ): void => {
   if (err?.message === 'Failed to fetch') {
-    if (!serverError) {
+    if (!serverNotification) {
+      const key = 'server_error'
+      opened.push(key)
       notification.error({
+        key,
         message: 'Server error',
         description:
           'Server is disconnected, please check your internet connection.',
         duration: 0,
         onClose: () => {
-          serverError = false
+          serverNotification = undefined
         }
       })
-      serverError = true
+      serverNotification = key
     }
     return
   }
 
-  display &&
+  if (display) {
+    const key = 'error_' + opened.length
+    opened.push(key)
     notification.error({
+      key,
       message: title,
       description: err && (
         <>
@@ -62,8 +86,25 @@ const ErrorNotification = (
       ),
       duration: 0
     })
+  }
   err && console.error(err)
   err && Sentry.captureException(err)
+
+  if (opened.length > 1 && !closeNotification) {
+    const key = 'close_all'
+    notification.info({
+      key,
+      message: (
+        <Button type="primary" onClick={closeAll}>
+          Close all
+        </Button>
+      ),
+      description: 'Close all error notifications',
+      duration: 0,
+      placement: 'top'
+    })
+    closeNotification = key
+  }
 }
 
 export default ErrorNotification

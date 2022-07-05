@@ -9,6 +9,7 @@ import { IClientPlugin } from '@/plugins/index.d'
 
 import User from '../user'
 import Plugins from '../plugins'
+import Tools from '../tools'
 
 /**
  * Add
@@ -29,12 +30,6 @@ const add = async (
       LIMIT
     )
 
-  // Get
-  const userData = await User.get(user.id, ['plugins'])
-
-  // Update user
-  userData.plugins = [...(userData.plugins || []), plugin]
-
   // Plugin initialization
   if (plugin.needInit) {
     const plugins = await Plugins.serverList()
@@ -44,6 +39,21 @@ const add = async (
       merge(plugin, init)
     }
   }
+
+  // Encrypt
+  for (const key in plugin.configuration) {
+    const config = plugin.configuration[key]
+    if (config.secret && config.value)
+      plugin.configuration[key].value = JSON.stringify(
+        await Tools.encrypt(config.value)
+      )
+  }
+
+  // Get
+  const userData = await User.get(user.id, ['plugins'])
+
+  // Update user
+  userData.plugins = [...(userData.plugins || []), plugin]
 
   // Update
   await User.update(user, [{ key: 'plugins', value: userData.plugins }])
@@ -95,6 +105,20 @@ const update = async (
     }
     plugin.needReInit = false
   }
+
+  // Encrypt
+  userData.plugins = await Promise.all(
+    userData.plugins.map(async (p) => {
+      for (const key in p.configuration) {
+        const config = p.configuration[key]
+        if (config.secret && config.value)
+          p.configuration[key].value = JSON.stringify(
+            await Tools.encrypt(config.value)
+          )
+      }
+      return p
+    })
+  )
 
   userData.plugins = [
     ...userData.plugins.slice(0, index),

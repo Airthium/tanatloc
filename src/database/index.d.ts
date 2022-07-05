@@ -3,11 +3,11 @@
 export interface IDataBaseEntry {
   key: string
   value: any
-  type?: string
-  method?: string
-  path?: Array<string>
+  type?: 'crypt' | 'date' | 'array' | 'json'
+  method?: 'append' | 'remove' | 'set' | 'erase'
+  path?: string[]
 }
 
 export interface IDataBaseResponse {
-  rows: Array<any>
+  rows: any[]
 }

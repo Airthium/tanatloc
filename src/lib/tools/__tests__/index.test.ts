@@ -41,6 +41,22 @@ jest.mock('tar', () => ({
   x: () => mockTarX()
 }))
 
+jest.mock('crypto', () => ({
+  randomBytes: () => 'randomBytes',
+  createCipheriv: () => ({
+    update: () => Buffer.from('update'),
+    final: () => Buffer.from('final')
+  }),
+  createDecipheriv: () => ({
+    update: () => Buffer.from('update'),
+    final: () => Buffer.from('final')
+  })
+}))
+
+jest.mock('@/database/security', () => ({
+  get: async () => ''
+}))
+
 const mockToThree = jest.fn()
 jest.mock('@/services', () => ({
   toThree: async (path: string, fileIn: string, pathOut: string) =>
@@ -241,5 +257,21 @@ describe('lib/tools', () => {
       )
       expect(true).toBe(true)
     }
+  })
+
+  test('encrypt', async () => {
+    const res = await Tools.encrypt('string')
+    expect(res).toEqual({
+      iv: 'randomBytes',
+      content: Buffer.concat([
+        Buffer.from('update'),
+        Buffer.from('final')
+      ]).toString('hex')
+    })
+  })
+
+  test('decrypt', async () => {
+    const res = await Tools.decrypt({ iv: 'randomBytes', content: 'content' })
+    expect(res).toBe('updatefinal')
   })
 })

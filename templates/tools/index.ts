@@ -1,3 +1,5 @@
+/** @module Templates.Tools */
+
 /**
  * Indent
  * @param text Text

@@ -1,7 +1,9 @@
 /** @module Lib.User */
 
 import { IDataBaseEntry } from '@/database/index.d'
+import { TUserGetKey } from '@/database/user/get'
 import { IUserGet, IUserWithData } from '../index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -13,7 +15,7 @@ import Workspace from '../workspace'
 import Email from '../email'
 import System from '../system'
 import Group from '../group'
-import { TUserGetKey } from '@/database/user/get'
+import Tools from '../tools'
 
 /**
  * Add
@@ -68,9 +70,37 @@ const get = async <T extends TUserGet>(
   if (data.includes('authorizedplugins') && !userData.authorizedplugins)
     userData.authorizedplugins = []
 
-  if (data.includes('plugins') && !userData.plugins) userData.plugins = []
+  if (data.includes('plugins'))
+    if (userData.plugins) {
+      //@ts-ignore
+      userData.plugins = await decrypt(userData.plugins)
+    } else {
+      userData.plugins = []
+    }
 
   return userData as IUserGet<T>
+}
+
+/**
+ * Decrypt
+ * @param plugins Plugins
+ * @returns Decrypted plugins
+ */
+const decrypt = async (plugins: IClientPlugin[]): Promise<IClientPlugin[]> => {
+  return Promise.all(
+    plugins.map(async (plugin) => {
+      for (const key in plugin.configuration) {
+        const config = plugin.configuration[key]
+        if (config.secret && config.value) {
+          plugin.configuration[key].value = await Tools.decrypt(
+            JSON.parse(config.value)
+          )
+        }
+      }
+      return plugin
+    })
+  )
+  // return plugins
 }
 
 /**

@@ -57,6 +57,7 @@ export const DATABASE: string = process.env.DB_DATABASE || 'tanatloc2'
 export const PASSWORD: string = process.env.DB_PASSWORD || 'tanatloc'
 
 export interface Tables {
+  SECURITY: string
   SYSTEM: string
   USERS: string
   ORGANIZATIONS: string
@@ -73,6 +74,7 @@ export interface Tables {
  * Tables names
  */
 export const tables: Tables = {
+  SECURITY: 'tanatloc_security',
   SYSTEM: 'tanatloc_system',
   USERS: 'tanatloc_users',
   ORGANIZATIONS: 'tanatloc_organizations',
@@ -98,6 +100,13 @@ export interface Scheme {
  * Tables schemes
  */
 export const schemas: Scheme = {
+  [tables.SECURITY]: [
+    {
+      name: 'encrypt_pass',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    }
+  ],
   [tables.SYSTEM]: [
     {
       name: 'allowsignup',

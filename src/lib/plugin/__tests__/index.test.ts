@@ -23,6 +23,10 @@ jest.mock('../../plugins', () => ({
   ]
 }))
 
+jest.mock('../../tools', () => ({
+  encrypt: async (str: string) => str
+}))
+
 describe('lib/plugin', () => {
   beforeEach(() => {
     mockInit.mockReset()
@@ -52,12 +56,18 @@ describe('lib/plugin', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mockInit).toHaveBeenCalledTimes(1)
 
-    // Name
+    // Name & secret
     await Plugin.add(
       { id: 'id' },
       {
         key: 'key',
-        configuration: { name: { label: 'name', type: 'type', value: 'name' } }
+        configuration: {
+          name: { label: 'name', type: 'type', value: 'name' },
+          secret: {
+            secret: true,
+            value: 'secret'
+          }
+        }
       }
     )
   })
@@ -87,7 +97,15 @@ describe('lib/plugin', () => {
 
     // Re-init
     mockGet.mockImplementation(() => ({
-      plugins: [{ uuid: 'uuid' }]
+      plugins: [
+        {
+          uuid: 'uuid',
+          configuration: {
+            secret: { secret: true, value: 'secret' },
+            nosecret: {}
+          }
+        }
+      ]
     }))
     await Plugin.update(
       { id: 'id' },
@@ -111,12 +129,14 @@ describe('lib/plugin', () => {
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
 
-    // Name
+    // Name & secret
     await Plugin.update(
       { id: 'id' },
       {
         uuid: 'uuid',
-        configuration: { name: { label: 'name', type: 'type', value: 'name' } }
+        configuration: {
+          name: { label: 'name', type: 'type', value: 'name' }
+        }
       }
     )
   })

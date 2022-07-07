@@ -30,8 +30,10 @@ jest.mock('../../group', () => ({
 }))
 
 const mockOrganizationGet = jest.fn()
+const mockOrganizationGetByUser = jest.fn()
 jest.mock('../../organization', () => ({
-  get: async () => mockOrganizationGet()
+  get: async () => mockOrganizationGet(),
+  getByUser: async () => mockOrganizationGetByUser()
 }))
 
 const mockDelProject = jest.fn()
@@ -168,12 +170,14 @@ describe('lib/workspace', () => {
   test('getByUser', async () => {
     // With workspaces, organizations & groups
     mockUserGet.mockImplementation(() => ({
-      workspaces: ['id', 'id'],
-      organizations: ['organizationid']
+      workspaces: ['id', 'id']
     }))
-    mockOrganizationGet.mockImplementation(() => ({
-      groups: ['groupid']
-    }))
+    mockOrganizationGetByUser.mockImplementation(() => [
+      {
+        id: 'organizationid',
+        groups: [{ id: 'groupid', name: 'name' }]
+      }
+    ])
     mockGroupGet.mockImplementation(() => ({
       id: 'groupid',
       name: 'name',
@@ -199,8 +203,7 @@ describe('lib/workspace', () => {
         owners: [
           {
             id: 'ownerid',
-            workspaces: ['id', 'id'],
-            organizations: ['organizationid']
+            workspaces: ['id', 'id']
           }
         ],
         users: [],
@@ -213,8 +216,7 @@ describe('lib/workspace', () => {
         owners: [
           {
             id: 'ownerid',
-            workspaces: ['id', 'id'],
-            organizations: ['organizationid']
+            workspaces: ['id', 'id']
           }
         ],
         users: [],
@@ -227,8 +229,7 @@ describe('lib/workspace', () => {
         owners: [
           {
             id: 'ownerid',
-            workspaces: ['id', 'id'],
-            organizations: ['organizationid']
+            workspaces: ['id', 'id']
           }
         ],
         users: [],

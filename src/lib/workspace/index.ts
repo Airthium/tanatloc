@@ -183,8 +183,8 @@ const getWorkspaces = async (workspaces: string[]): Promise<TWorkspace[]> => {
  */
 const getByUser = async ({ id }: { id: string }): Promise<TWorkspace[]> => {
   // Get workspaces'ids
-  const user = await User.get(id, ['organizations', 'workspaces'])
-
+  const user = await User.get(id, ['workspaces'])
+  const organizations = await Organization.getByUser({ id }, ['groups'])
   const workspaces = []
 
   // Get local workspaces
@@ -192,70 +192,61 @@ const getByUser = async ({ id }: { id: string }): Promise<TWorkspace[]> => {
   workspaces.push(...localWorkspaces)
 
   // Get organizations workspaces & projects
-  if (user.organizations) {
-    const groupsWorkspaces: TWorkspace[] = []
-    const groupsProjects: TWorkspace[] = []
-    await Promise.all(
-      user.organizations.map(async (organization) => {
-        const organizationData = await Organization.get(organization, [
-          'groups'
-        ])
-        if (organizationData.groups) {
-          await Promise.all(
-            organizationData.groups.map(async (group) => {
-              const groupData = await Group.get(group, [
-                'name',
-                'workspaces',
-                'projects'
-              ])
+  const groupsWorkspaces: TWorkspace[] = []
+  const groupsProjects: TWorkspace[] = []
+  await Promise.all(
+    organizations.map(async (organization) => {
+      await Promise.all(
+        organization.groups.map(async (group) => {
+          const groupData = await Group.get(group.id, [
+            'name',
+            'workspaces',
+            'projects'
+          ])
 
-              // Workspaces
-              if (groupData.workspaces.length) {
-                const groupWorkspaces = await getWorkspaces(
-                  groupData.workspaces
-                )
+          // Workspaces
+          if (groupData.workspaces.length) {
+            const groupWorkspaces = await getWorkspaces(groupData.workspaces)
 
-                groupsWorkspaces.push(
-                  ...groupWorkspaces.filter(
-                    (w) => !w.owners.find((o) => o.id === id)
-                  )
-                )
-              }
+            groupsWorkspaces.push(
+              ...groupWorkspaces.filter(
+                (w) => !w.owners.find((o) => o.id === id)
+              )
+            )
+          }
 
-              // Projects
-              if (groupData.projects.length) {
-                const customGroup = {
-                  id: group,
-                  name: groupData.name
-                } as IGroupWithData<'name'[]>
-                const customWorkspace = {
-                  id: groupData.id,
-                  name: 'Projects from ' + groupData.name,
-                  owners: [],
-                  users: [],
-                  groups: [customGroup],
-                  projects: groupData.projects,
-                  archivedprojects: []
-                }
-                groupsProjects.push(customWorkspace)
-              }
-            })
-          )
-        }
-      })
-    )
+          // Projects
+          if (groupData.projects.length) {
+            const customGroup = {
+              id: group.id,
+              name: groupData.name
+            } as IGroupWithData<'name'[]>
+            const customWorkspace = {
+              id: groupData.id,
+              name: 'Projects from ' + groupData.name,
+              owners: [],
+              users: [],
+              groups: [customGroup],
+              projects: groupData.projects,
+              archivedprojects: []
+            }
+            groupsProjects.push(customWorkspace)
+          }
+        })
+      )
+    })
+  )
 
-    // Make unique
-    const uniqueGroupWorkspaces = groupsWorkspaces.filter(
-      (value, index, self) => self.findIndex((s) => s.id === value.id) === index
-    )
-    const uniqueGroupProjects = groupsProjects.filter(
-      (value, index, self) => self.findIndex((s) => s.id === value.id) === index
-    )
+  // Make unique
+  const uniqueGroupWorkspaces = groupsWorkspaces.filter(
+    (value, index, self) => self.findIndex((s) => s.id === value.id) === index
+  )
+  const uniqueGroupProjects = groupsProjects.filter(
+    (value, index, self) => self.findIndex((s) => s.id === value.id) === index
+  )
 
-    workspaces.push(...uniqueGroupWorkspaces)
-    workspaces.push(...uniqueGroupProjects)
-  }
+  workspaces.push(...uniqueGroupWorkspaces)
+  workspaces.push(...uniqueGroupProjects)
 
   return workspaces
 }

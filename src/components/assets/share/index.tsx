@@ -308,6 +308,7 @@ const Share = ({
           }
           key="share"
           disabled={disabled}
+          type={disabled ? 'link' : undefined}
           icon={<ShareAltOutlined />}
           onClick={() => setVisible(true)}
         />

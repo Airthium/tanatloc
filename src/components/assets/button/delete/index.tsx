@@ -66,6 +66,7 @@ const DeleteButton = ({
           className={'no-background ' + (bordered ? '' : 'no-border')}
           danger
           disabled={disabled}
+          type={disabled ? 'link' : undefined}
           loading={loading}
           icon={<DeleteOutlined />}
           onClick={() => setVisible(true)}

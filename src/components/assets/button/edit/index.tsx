@@ -59,7 +59,7 @@ const EditButton = ({
         }
         disabled={disabled}
         loading={loading}
-        type={primary ? 'primary' : 'default'}
+        type={disabled ? 'link' : primary ? 'primary' : 'default'}
         icon={<EditOutlined />}
         onClick={onEdit}
       >

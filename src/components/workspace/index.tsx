@@ -107,7 +107,7 @@ const Workspace = ({
               style={{ width: 500 }}
               suffix={<SearchOutlined className="text-light" />}
             />
-            {workspace?.owners?.find((o) => o.id === user.id) && (
+            {workspace?.owners?.find((o) => o.id === user.id) ? (
               <>
                 <ProjectAdd
                   workspace={{
@@ -146,6 +146,8 @@ const Workspace = ({
                   />
                 </Space>
               </>
+            ) : (
+              <div />
             )}
           </Space>
         }

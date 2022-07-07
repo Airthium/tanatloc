@@ -44,6 +44,11 @@ const EditButton = ({
   children,
   onEdit
 }: IProps): JSX.Element => {
+  let type: 'link' | 'primary' | 'default'
+  if (disabled) type = 'link'
+  else if (primary) type = 'primary'
+  else type = 'default'
+
   /**
    * Render
    */
@@ -59,7 +64,7 @@ const EditButton = ({
         }
         disabled={disabled}
         loading={loading}
-        type={disabled ? 'link' : primary ? 'primary' : 'default'}
+        type={type}
         icon={<EditOutlined />}
         onClick={onEdit}
       >

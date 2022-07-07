@@ -104,6 +104,19 @@ describe('components/assets/share', () => {
     unmount()
   })
 
+  test('disabled', () => {
+    const { unmount } = render(
+      <Share
+        disabled={true}
+        project={project}
+        organizations={organizations}
+        swr={projectSwr}
+      />
+    )
+
+    unmount()
+  })
+
   test('electron', () => {
     mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(

@@ -20,6 +20,14 @@ describe('components/assets/button/add', () => {
     unmount()
   })
 
+  test('disabled', () => {
+    const { unmount } = render(
+      <EditButton disabled={true} loading={mockLoading()} onEdit={mockOnEdit} />
+    )
+
+    unmount()
+  })
+
   test('style', () => {
     const { unmount } = render(
       <EditButton

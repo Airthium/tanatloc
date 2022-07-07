@@ -25,6 +25,18 @@ describe('components/assets/button/delete', () => {
     unmount()
   })
 
+  test('disabled', () => {
+    const { unmount } = render(
+      <DeleteButton
+        disabled={true}
+        loading={mockLoading()}
+        onDelete={mockOnDelete}
+      />
+    )
+
+    unmount()
+  })
+
   test('bordered', () => {
     const { unmount } = render(
       <DeleteButton loading={mockLoading()} bordered onDelete={mockOnDelete} />

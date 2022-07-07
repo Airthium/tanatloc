@@ -1,7 +1,15 @@
 /** @module Components.Administration.Users */
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Badge, Table, Space, TableColumnsType } from 'antd'
+import {
+  Badge,
+  Table,
+  Space,
+  TableColumnsType,
+  Popover,
+  Button,
+  Card
+} from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -63,24 +71,25 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   // Data
   const authorizedpluginsRender = (authorizedplugins: string[]) => {
     authorizedplugins.sort()
+    const list = authorizedplugins.map((authorizedplugin) => {
+      const plugin = plugins?.find((p) => p.key === authorizedplugin)
+      if (!plugin) return
+      else
+        return (
+          <Badge.Ribbon
+            key={authorizedplugin}
+            text={plugin.category}
+            style={{ marginTop: '-15px' }}
+          >
+            <Card size="small">{plugin.name}</Card>
+          </Badge.Ribbon>
+        )
+    })
+    const content = <Space direction="vertical">{list}</Space>
     return (
-      <Space wrap={true}>
-        {authorizedplugins.map((authorizedplugin) => {
-          const plugin = plugins?.find((p) => p.key === authorizedplugin)
-          if (!plugin) return
-          else
-            return (
-              <Badge
-                key={authorizedplugin}
-                size="small"
-                count={plugin.category}
-                offset={[5, -5]}
-              >
-                {plugin.name}
-              </Badge>
-            )
-        })}
-      </Space>
+      <Popover content={content}>
+        <Button>{list.length} plugins</Button>
+      </Popover>
     )
   }
 

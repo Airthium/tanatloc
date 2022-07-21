@@ -404,17 +404,87 @@ const monitoring = async (
   id: string,
   _: any,
   tasks: ISimulationTask[],
-  simulationTask: any
+  simulationTask: ISimulationTask
 ): Promise<void> => {
+  checkResults(id, simulationTask)
+  checkDatas(id, simulationTask)
+
   const simulationPath = path.join(SIMULATION, id)
   await stopProcess(id, simulationPath, simulationTask, () =>
     updateTasks(id, tasks)
   )
+
+  simulationTask.status = 'finish'
+  updateTasks(id, tasks)
 }
 
 const interval: { [key: string]: SetIntervalAsyncTimer } = {}
 const results: { [key: string]: string[] } = {}
 const datas: { [key: string]: string[] } = {}
+
+/**
+ * Check results
+ * @param id Simulation id
+ * @param task Simulation task
+ */
+const checkResults = async (
+  id: string,
+  task: ISimulationTask
+): Promise<string[]> => {
+  const simulationPath = path.join(SIMULATION, id)
+
+  if (task.files) {
+    // Existing files
+    const existingFiles = (
+      await Tools.listFiles(path.join(simulationPath, runPath, resultPath))
+    ).map((file) => file.name)
+
+    // In task results
+    const files = task.files
+      .map((file) => {
+        if (existingFiles.includes(file.fileName)) return file
+      })
+      .filter((f) => f) as ISimulationTaskFile[]
+
+    // Update
+    task.files = files
+    results[id] = files.map((file) => file.fileName)
+  }
+
+  return results[id]
+}
+
+/**
+ * Check datas
+ * @param id Simulation id
+ * @param task Simulation task
+ */
+const checkDatas = async (
+  id: string,
+  task: ISimulationTask
+): Promise<string[]> => {
+  const simulationPath = path.join(SIMULATION, id)
+
+  if (task.datas) {
+    // Existing files
+    const existingFiles = (
+      await Tools.listFiles(path.join(simulationPath, runPath, resultPath))
+    ).map((file) => file.name)
+
+    // In task datas
+    const files = task.datas
+      .map((file) => {
+        if (existingFiles.includes(file.fileName)) return file
+      })
+      .filter((f) => f) as ISimulationTask['datas']
+
+    // Update
+    task.datas = files
+    datas[id] = files!.map((file) => file.fileName)
+  }
+
+  return datas[id]
+}
 
 /**
  * Start process results & datas
@@ -616,7 +686,10 @@ const processData = async (
     const dContent = await Tools.readFile(dPath)
 
     // Add to tasks
-    task.datas = [...(task.datas || []), JSON.parse(dContent.toString())]
+    task.datas = [
+      ...(task.datas || []),
+      { fileName: data, ...JSON.parse(dContent.toString()) }
+    ]
     update()
   } catch (err: any) {
     task.warning += 'Warning: Unable to read data file (' + err.message + ')\n'
@@ -681,6 +754,8 @@ const Local = {
   // Can be used in other plugins
   updateTasks,
   clean,
+  checkResults,
+  checkDatas,
   startProcess,
   stopProcess,
   processResult,

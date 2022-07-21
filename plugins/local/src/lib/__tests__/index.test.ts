@@ -47,6 +47,7 @@ jest.mock('@/lib/tools', () => ({
     callback: Function,
     param: { isResult: boolean }
   ) => mockConvert(path, file, callback, param),
+  listFiles: async () => [{ name: 'fileName' }],
   removeFile: async () => mockRemoveFile(),
   removeDirectory: async () => mockRemoveDirectory()
 }))
@@ -641,7 +642,11 @@ describe('plugins/local/src/lib', () => {
       'id',
       '_',
       [{ index: 1, label: 'label', status: 'wait' }],
-      []
+      {
+        index: 1,
+        label: 'Task',
+        status: 'finish'
+      }
     )
   })
 

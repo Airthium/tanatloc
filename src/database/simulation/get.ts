@@ -36,7 +36,7 @@ export interface ISimulationTask {
   file?: ISimulationTaskFile
   files?: ISimulationTaskFile[]
   plugin?: string
-  datas?: { names: string[]; x: number; ys: number[] }[]
+  datas?: { fileName: string; names: string[]; x: number; ys: number[] }[]
 }
 
 export type TSimulationGetName = 'name'[]

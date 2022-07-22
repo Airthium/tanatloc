@@ -35,6 +35,7 @@ jest.mock('@/services', () => ({
 const mockCreatePath = jest.fn()
 const mockReadFile = jest.fn()
 const mockConvert = jest.fn()
+const mockListFiles = jest.fn()
 const mockRemoveFile = jest.fn()
 const mockRemoveDirectory = jest.fn()
 jest.mock('@/lib/tools', () => ({
@@ -47,7 +48,7 @@ jest.mock('@/lib/tools', () => ({
     callback: Function,
     param: { isResult: boolean }
   ) => mockConvert(path, file, callback, param),
-  listFiles: async () => [{ name: 'fileName' }],
+  listFiles: async () => mockListFiles(),
   removeFile: async () => mockRemoveFile(),
   removeDirectory: async () => mockRemoveDirectory()
 }))
@@ -66,6 +67,7 @@ describe('plugins/local/src/lib', () => {
     mockConvert.mockReset()
     mockCreatePath.mockReset()
     mockReadFile.mockReset()
+    mockListFiles.mockReset()
     mockRemoveFile.mockReset()
     mockRemoveDirectory.mockReset()
 
@@ -109,6 +111,44 @@ describe('plugins/local/src/lib', () => {
     await Local.clean('path')
     expect(mockRemoveFile).toHaveBeenCalledTimes(6)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(4)
+  })
+
+  test('checkResults', async () => {
+    // No files
+    await Local.checkResults('id', { files: undefined } as ISimulationTask)
+
+    // Files, no existing
+    mockListFiles.mockImplementation(() => [])
+    await Local.checkResults('id', {
+      files: [{ fileName: 'file1' }]
+    } as ISimulationTask)
+
+    // Files, existing
+    mockListFiles.mockImplementation(() => [
+      { isFile: () => true, name: 'file1' }
+    ])
+    await Local.checkResults('id', {
+      files: [{ fileName: 'file1' }]
+    } as ISimulationTask)
+  })
+
+  test('checkDatas', async () => {
+    // No files
+    await Local.checkDatas('id', { datas: undefined } as ISimulationTask)
+
+    // Datas, no existing
+    mockListFiles.mockImplementation(() => [])
+    await Local.checkDatas('id', {
+      datas: [{ fileName: 'file1' }]
+    } as ISimulationTask)
+
+    // Files, existing
+    mockListFiles.mockImplementation(() => [
+      { isFile: () => true, name: 'file1' }
+    ])
+    await Local.checkDatas('id', {
+      datas: [{ fileName: 'file1' }]
+    } as ISimulationTask)
   })
 
   test('startProcess', () => {

@@ -96,6 +96,23 @@ describe('components/workspace', () => {
     unmount()
   })
 
+  test('not owner', () => {
+    const { unmount } = render(
+      <Workspace
+        user={user}
+        page="page"
+        workspace={{
+          ...workspace,
+          owners: [{ id: 'id1' } as IFrontWorkspacesItem['owners'][0]]
+        }}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
   test('error', () => {
     mockErrorNotificationProjects.mockImplementation(() => true)
     const { unmount } = render(

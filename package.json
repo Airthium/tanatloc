@@ -40,9 +40,11 @@
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {
+    "ace-builds": "^1.8.0",
     "electron": "19.0.6",
     "electron-serve": "1.1.0",
-    "electron-store": "8.0.2"
+    "electron-store": "8.0.2",
+    "react-ace": "^10.1.0"
   },
   "devDependencies": {
     "@ant-design/icons": "4.7.0",

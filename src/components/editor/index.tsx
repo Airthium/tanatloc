@@ -1,9 +1,12 @@
 /** @module Components.Editor */
 
-import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import { Layout, Steps, Menu, Typography, Divider } from 'antd'
+import { useRouter } from 'next/router'
+import { useState, Dispatch, SetStateAction } from 'react'
+import { Layout, Steps, Divider } from 'antd'
 import { GoBack } from '@/components/assets/button'
+import dynamic from 'next/dynamic'
+
+const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
 export interface IStep {
   title: string
@@ -42,7 +45,8 @@ const Editor = () => {
     useState(-1)
   // Data
   const router = useRouter()
-
+  const safeCode = (str: string) => str?.replace(/[^A-Z0-9]+/gi, '')
+  const [code, setCode] = useState('')
   /**
    * Handle dashboard
    */
@@ -56,7 +60,7 @@ const Editor = () => {
    * On steps change
    * @param current Current step
    */
-   const onStepsChange = (number: number): void => {
+  const onStepsChange = (number: number): void => {
     setCurrent(number)
   }
 
@@ -88,7 +92,9 @@ const Editor = () => {
         </Steps>
       </Layout.Sider>
 
-      <Layout.Content className="no-scroll"></Layout.Content>
+      <Layout.Content className="no-scroll">
+        <DynamicCodeEditor />
+      </Layout.Content>
     </Layout>
   )
 }

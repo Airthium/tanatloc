@@ -1,24 +1,46 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json5'
-import 'ace-builds/src-noconflict/theme-github'
+import 'ace-builds/src-noconflict/theme-chrome'
+
+export interface IProps {
+  model?: string
+}
 
 /**
  * JSON code
  */
-const JSONCode = () => {
+const JSONCode = ({ model }: IProps): JSX.Element => {
+  // State
+  const [code, setCode] = useState<string>()
+
+  // Model
+  useEffect(() => {
+    setCode(model)
+  }, [model])
+
+  /**
+   * On change
+   * @param newCode New code
+   */
+  const onChange = useCallback((newCode: string): void => {
+    setCode(newCode)
+  }, [])
+
   /**
    * Render
    */
   return (
     <AceEditor
       width="100%"
-      height="100%"
-      mode="json"
-      theme="github"
+      height="calc(100% - 64px)"
+      fontSize={16}
+      mode="json5"
+      theme="chrome"
       name="json_editor"
-      value={'bla'}
+      value={code}
       editorProps={{ $blockScrolling: true }}
+      onChange={onChange}
     />
   )
 }

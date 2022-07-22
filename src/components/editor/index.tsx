@@ -1,14 +1,17 @@
 /** @module Components.Editor */
 
-import { useRouter } from 'next/router'
-import { useState, Dispatch, SetStateAction, useEffect } from 'react'
-import { Layout, Steps, Menu, Space, Button, Form, Input } from 'antd'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import { useState, useEffect, useCallback } from 'react'
+import { Layout, Steps, Menu, Space, Button, Dropdown } from 'antd'
+import { SaveOutlined, ShareAltOutlined } from '@ant-design/icons'
 
 import { DeleteButton, EditButton, GoBack } from '@/components/assets/button'
 
 import UserAPI from '@/api/user'
-import { SaveOutlined, ShareAltOutlined } from '@ant-design/icons'
+
+import Models from '@/models'
+import Templates from '@/templates'
 
 const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
@@ -19,11 +22,6 @@ export interface IStep {
 }
 
 const steps: IStep[] = [
-  {
-    title: 'Check title and description',
-    description: 'Title, description, category, ...',
-    status: 'wait'
-  },
   {
     title: 'Check template format',
     description: 'EJS + FreeFEM',
@@ -45,8 +43,11 @@ const steps: IStep[] = [
  * Editor
  */
 const Editor = () => {
-  const [current, setCurrent]: [number, Dispatch<SetStateAction<number>>] =
-    useState(-1)
+  // Sate
+  const [stepsStatus, setStepsStatus] = useState<IStep['status'][]>([])
+  const [model, setModel] = useState<string>()
+  const [template, setTemplate] = useState<string>()
+
   // Data
   const router = useRouter()
   const [user, { loadingUser }] = UserAPI.useUser()
@@ -59,20 +60,28 @@ const Editor = () => {
   /**
    * Handle dashboard
    */
-  const handleDashboard = () => {
+  const handleDashboard = useCallback(() => {
     router.push({
       pathname: '/dashboard'
     })
+  }, [router])
+
+  const loadModel = ({ key }: { key: string }): void => {
+    // Model
+    const currentModel = Models[+key]
+    setModel(JSON.stringify(currentModel, null, '  '))
+
+    // Template
+    const modelKey = currentModel.algorithm
+    const templateFile = Templates[modelKey as keyof typeof Templates]
+    fetch('/templates/' + templateFile).then((res) =>
+      res.text().then((text) => setTemplate(text))
+    )
   }
 
   /**
-   * On steps change
-   * @param number Current step
+   * Render
    */
-  const onStepsChange = (number: number): void => {
-    setCurrent(number)
-  }
-
   return (
     <Layout className="Editor">
       <Layout.Sider theme="light" width="256">
@@ -97,35 +106,42 @@ const Editor = () => {
           ]}
         />
 
-        <Steps
-          className="Editor-Steps"
-          direction="vertical"
-          current={current}
-          onChange={onStepsChange}
-        >
-          {steps.map((step) => (
+        <Steps className="Editor-Steps" direction="vertical">
+          {steps.map((step, index) => (
             <Steps.Step
               key={step.title}
               title={step.title}
               description={step.description}
-              status={step.status}
+              status={stepsStatus[index] ?? step.status}
             />
           ))}
         </Steps>
       </Layout.Sider>
 
       <Layout.Content className="no-scroll">
-        <Layout.Header style={{ height: 'unset' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Form>
-              <Form.Item label="Name">
-                <Input />
-              </Form.Item>
-              <Form.Item label="Description">
-                <Input />
-              </Form.Item>
-            </Form>
-
+        <Layout.Header className="Editor-Header">
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start'
+            }}
+          >
+            <Space>
+              <Dropdown
+                overlay={
+                  <Menu
+                    items={Models.map((m, index) => ({
+                      key: index,
+                      label: m.name,
+                      onClick: loadModel
+                    }))}
+                  />
+                }
+              >
+                <Button type="primary">Load existing model</Button>
+              </Dropdown>
+            </Space>
             <Space>
               <EditButton bordered onEdit={() => {}} />
               <Button icon={<SaveOutlined />} />
@@ -134,7 +150,8 @@ const Editor = () => {
             </Space>
           </div>
         </Layout.Header>
-        <DynamicCodeEditor />
+
+        <DynamicCodeEditor model={model} template={template} />
       </Layout.Content>
     </Layout>
   )

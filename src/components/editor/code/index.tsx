@@ -1,13 +1,20 @@
 import React from 'react'
-import AceEditor from 'react-ace'
-import FreefemCode from './freefem_editor'
+import FreeFEMCode from './freefem_editor'
 import JsonCode from './json_editor'
 
-export default function Code() {
+/**
+ * Code
+ */
+const Code = () => {
+  /**
+   * Render
+   */
   return (
-    <div style={{ display: 'flex' }}>
-      <FreefemCode />
+    <div className="Editor-code">
+      <FreeFEMCode />
       <JsonCode />
     </div>
   )
 }
+
+export default Code

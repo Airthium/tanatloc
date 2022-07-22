@@ -1,17 +1,26 @@
 import React from 'react'
 import AceEditor from 'react-ace'
-import 'ace-builds/src-noconflict/mode-javascript'
+import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/theme-github'
 
-export default function JsonCode() {
+/**
+ * JSON code
+ */
+const JSONCode = () => {
+  /**
+   * Render
+   */
   return (
     <AceEditor
       width="100%"
-      value={'bla'}
-      mode="javascript"
+      height="100%"
+      mode="json"
       theme="github"
-      name="UNIQUE_ID_OF_DIV"
+      name="json_editor"
+      value={'bla'}
       editorProps={{ $blockScrolling: true }}
     />
   )
 }
+
+export default JSONCode

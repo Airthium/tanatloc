@@ -1,10 +1,13 @@
 /** @module Components.Editor */
 
 import { useRouter } from 'next/router'
-import { useState, Dispatch, SetStateAction } from 'react'
-import { Layout, Steps, Divider } from 'antd'
-import { GoBack } from '@/components/assets/button'
+import { useState, Dispatch, SetStateAction, useEffect } from 'react'
+import { Layout, Steps, Menu } from 'antd'
 import dynamic from 'next/dynamic'
+
+import { GoBack } from '@/components/assets/button'
+
+import UserAPI from '@/api/user'
 
 const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
@@ -38,15 +41,20 @@ const steps: IStep[] = [
 ]
 
 /**
- * Dashboard
+ * Editor
  */
 const Editor = () => {
   const [current, setCurrent]: [number, Dispatch<SetStateAction<number>>] =
     useState(-1)
   // Data
   const router = useRouter()
-  const safeCode = (str: string) => str?.replace(/[^A-Z0-9]+/gi, '')
-  const [code, setCode] = useState('')
+  const [user, { loadingUser }] = UserAPI.useUser()
+
+  // Not logged -> go to login page
+  useEffect(() => {
+    if (!loadingUser && !user) router.replace('/')
+  }, [user, loadingUser, router])
+
   /**
    * Handle dashboard
    */
@@ -58,25 +66,38 @@ const Editor = () => {
 
   /**
    * On steps change
-   * @param current Current step
+   * @param number Current step
    */
   const onStepsChange = (number: number): void => {
     setCurrent(number)
   }
 
   return (
-    <Layout className="Dashboard">
-      <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
+    <Layout className="Editor">
+      <Layout.Sider theme="light" width="256">
         <div className="logo">
           <img src="/images/logo.svg" alt="Tanatloc" />
         </div>
-        <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
-        <Divider
-          style={{ width: '250px', minWidth: 'unset', margin: '10px 25px' }}
+        <Menu
+          mode="inline"
+          items={[
+            {
+              key: 'menu-go-back',
+              disabled: true,
+              style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
+              label: (
+                <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
+              )
+            },
+            {
+              type: 'divider',
+              className: 'Editor-Menu-Divider'
+            }
+          ]}
         />
 
         <Steps
-          className="editor-steps"
+          className="Editor-Steps"
           direction="vertical"
           current={current}
           onChange={onStepsChange}

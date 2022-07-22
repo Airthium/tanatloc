@@ -2154,6 +2154,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ace-builds@npm:1.8.0":
+  version: 1.8.0
+  resolution: "ace-builds@npm:1.8.0"
+  checksum: 92f1814df1135c9c8cc9577de20cd34474f6dfd4097db3980b5138bdb4fc92aa86734a91d16979f45abad13b8025d1970ce11c93582c27a10528f0367c1ecd2f
+  languageName: node
+  linkType: hard
+
+"ace-builds@npm:^1.4.14":
+  version: 1.8.1
+  resolution: "ace-builds@npm:1.8.1"
+  checksum: 978f9f159c7adae6afe6f9398fb4dfea177a41a5c7949e90d96f809c1f7a5998996c165a2dd314801f9708bcee66280a4ba4cbea17a31bbb0080172d1b74df9c
+  languageName: node
+  linkType: hard
+
 "acorn-globals@npm:^6.0.0":
   version: 6.0.0
   resolution: "acorn-globals@npm:6.0.0"
@@ -3674,6 +3688,13 @@ __metadata:
   version: 2.1.0
   resolution: "detect-node@npm:2.1.0"
   checksum: 832184ec458353e41533ac9c622f16c19f7c02d8b10c303dfd3a756f56be93e903616c0bb2d4226183c9351c15fc0b3dba41a17a2308262afabcfa3776e6ae6e
+  languageName: node
+  linkType: hard
+
+"diff-match-patch@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "diff-match-patch@npm:1.0.5"
+  checksum: 841522d01b09cccbc4e4402cf61514a81b906349a7d97b67222390f2d35cf5df277cb23959eeed212d5e46afb5629cebab41b87918672c5a05c11c73688630e3
   languageName: node
   linkType: hard
 
@@ -6505,6 +6526,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: e403047ddb03181c9d0e92df9556570e2b67e0f0a930fcbbbd779370972368f5568e914f913e93f3b08f6d492abc71e14d4e9b7a18916c31fa04bd2306efe545
+  languageName: node
+  linkType: hard
+
+"lodash.isequal@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.isequal@npm:4.5.0"
+  checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
+  languageName: node
+  linkType: hard
+
 "lodash.isplainobject@npm:^4.0.6":
   version: 4.0.6
   resolution: "lodash.isplainobject@npm:4.0.6"
@@ -7971,7 +8006,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.8.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -8653,6 +8688,22 @@ __metadata:
   bin:
     rc: ./cli.js
   checksum: 2e26e052f8be2abd64e6d1dabfbd7be03f80ec18ccbc49562d31f617d0015fbdbcf0f9eed30346ea6ab789e0fdfe4337f033f8016efdbee0df5354751842080e
+  languageName: node
+  linkType: hard
+
+"react-ace@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "react-ace@npm:10.1.0"
+  dependencies:
+    ace-builds: ^1.4.14
+    diff-match-patch: ^1.0.5
+    lodash.get: ^4.4.2
+    lodash.isequal: ^4.5.0
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ^0.13.0 || ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^0.13.0 || ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 8fc67e02f911dcc31cf474df97c06f2ba5b5f402d9ed425895e479e2daddf4894a2cd0e81744b37b7f2b07109cfe4470fc5ebeed305d648c596e3442142e4823
   languageName: node
   linkType: hard
 
@@ -9717,6 +9768,7 @@ __metadata:
     "@types/three": 0.142.0
     "@types/url-join": 4.0.1
     "@types/uuid": 8.3.4
+    ace-builds: 1.8.0
     antd: 4.21.7
     archiver: 5.3.1
     babel-jest: 28.1.3
@@ -9756,6 +9808,7 @@ __metadata:
     prettier: 2.7.1
     prop-types: 15.8.1
     react: 18.2.0
+    react-ace: ^10.1.0
     react-dom: 18.2.0
     recharts: 2.1.12
     set-interval-async: 2.0.3

@@ -42,7 +42,8 @@
   "dependencies": {
     "electron": "19.0.8",
     "electron-serve": "1.1.0",
-    "electron-store": "8.0.2"
+    "electron-store": "8.0.2",
+    "react-ace": "^10.1.0"
   },
   "devDependencies": {
     "@ant-design/icons": "4.7.0",
@@ -70,6 +71,7 @@
     "@types/three": "0.142.0",
     "@types/url-join": "4.0.1",
     "@types/uuid": "8.3.4",
+    "ace-builds": "1.8.0",
     "antd": "4.21.7",
     "archiver": "5.3.1",
     "babel-jest": "28.1.3",

@@ -105,7 +105,13 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Typography>
           Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
-          {gitVersion && <>({gitVersion})</>}
+          {gitVersion && <>({gitVersion})</>} | Design by{' '}
+          <a
+            href="enora-dvvr.fr"
+            style={{ color: 'black', fontWeight: 'bold' }}
+          >
+            Enora Duvivier
+          </a>
         </Typography>
       </div>
     </Layout.Footer>

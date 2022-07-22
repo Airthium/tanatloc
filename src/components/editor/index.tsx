@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/router'
 import { useState, Dispatch, SetStateAction, useEffect } from 'react'
-import { Layout, Steps, Menu } from 'antd'
+import { Layout, Steps, Menu, Space, Button, Form, Input } from 'antd'
 import dynamic from 'next/dynamic'
 
-import { GoBack } from '@/components/assets/button'
+import { DeleteButton, EditButton, GoBack } from '@/components/assets/button'
 
 import UserAPI from '@/api/user'
+import { SaveOutlined, ShareAltOutlined } from '@ant-design/icons'
 
 const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
@@ -114,6 +115,25 @@ const Editor = () => {
       </Layout.Sider>
 
       <Layout.Content className="no-scroll">
+        <Layout.Header style={{ height: 'unset' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Form>
+              <Form.Item label="Name">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Description">
+                <Input />
+              </Form.Item>
+            </Form>
+
+            <Space>
+              <EditButton bordered onEdit={() => {}} />
+              <Button icon={<SaveOutlined />} />
+              <Button icon={<ShareAltOutlined />} />
+              <DeleteButton bordered onDelete={async () => {}} />
+            </Space>
+          </div>
+        </Layout.Header>
         <DynamicCodeEditor />
       </Layout.Content>
     </Layout>

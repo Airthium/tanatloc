@@ -102,8 +102,12 @@
 }
 
 .Index-steps {
-  width: 50%;
   margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 25px;
+  column-gap: 25px;
 }
 
 .Index-steps .ant-steps-item {
@@ -116,11 +120,15 @@
   height: 64px;
   line-height: 64px;
   font-size: 32px;
+  background-color: white !important;
+}
+
+.Index-steps .ant-steps-icon {
+  color: @tanatloc-primary-color !important;
 }
 
 .Index-steps .ant-steps-item-tail {
-  top: 26px !important;
-  left: 32px !important;
+  display: none !important;
 }
 
 .Index .ant-steps-item-title {

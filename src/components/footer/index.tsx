@@ -31,7 +31,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
     '- The Open Cascade development team'
   ]
   const navigate = [
-    <Button key="features" type="primary" onClick={() => scroll('features')}>
+    <Button key="features" type="text" onClick={() => scroll('features')}>
       Features
     </Button>,
     <Button key="developers" type="text" onClick={() => scroll('developers')}>
@@ -76,7 +76,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
           <Space direction="vertical">
             <div>
               <a href="mailto:contact@airthium.com">
-                <Button type="primary">
+                <Button type="text">
                   <strong>contact@airthium.com</strong>
                 </Button>
               </a>
@@ -90,7 +90,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Button type="primary">
+                <Button type="text">
                   <strong>Github Issues</strong>
                 </Button>
               </a>
@@ -104,13 +104,10 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       <div className="Footer-footer">
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Typography>
-          Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
+          Copyright© {new Date().getFullYear()} | version {packageJson.version}{' '}
           {gitVersion && <>({gitVersion})</>} | Design by{' '}
-          <a
-            href="enora-dvvr.fr"
-            style={{ color: 'black', fontWeight: 'bold' }}
-          >
-            Enora Duvivier
+          <a href="http://enora-dvvr.fr/" target="_blank" rel="noreferrer">
+            <strong className="text-dark">Enora Duvivier</strong>
           </a>
         </Typography>
       </div>

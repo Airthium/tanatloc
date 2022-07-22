@@ -92,7 +92,7 @@ const Dialog = ({
       }
       cancelButtonProps={{
         ...cancelButtonProps,
-        loading: loading,
+        disabled: loading,
         style: { display: onCancel ? 'inline-block' : 'none' }
       }}
       cancelText={cancelButtonText}

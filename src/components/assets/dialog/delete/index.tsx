@@ -57,7 +57,7 @@ const DeleteDialog = ({
       closable={false}
       maskClosable={false}
       visible={visible}
-      cancelButtonProps={{ loading: loading }}
+      cancelButtonProps={{ disabled: loading }}
       onCancel={() => onCancel()}
       onOk={async () => {
         try {

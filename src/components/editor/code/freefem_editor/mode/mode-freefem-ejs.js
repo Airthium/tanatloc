@@ -7,14 +7,14 @@ ace.define(
     'ace/lib/oop',
     'ace/mode/text_highlight_rules'
   ],
-  function (require, exports, module) {
+  function (require, exports, _module) {
     'use strict'
 
-    var oop = require('../lib/oop')
-    var TextHighlightRules =
+    const oop = require('../lib/oop')
+    const TextHighlightRules =
       require('./text_highlight_rules').TextHighlightRules
 
-    var DocCommentHighlightRules = function () {
+    const DocCommentHighlightRules = function () {
       this.$rules = {
         start: [
           {
@@ -69,18 +69,19 @@ ace.define(
     'ace/mode/doc_comment_highlight_rules',
     'ace/mode/text_highlight_rules'
   ],
-  function (require, exports, module) {
+  function (require, exports, _module) {
     'use strict'
 
-    var oop = require('../lib/oop')
-    var DocCommentHighlightRules =
+    const oop = require('../lib/oop')
+    const DocCommentHighlightRules =
       require('./doc_comment_highlight_rules').DocCommentHighlightRules
-    var TextHighlightRules =
+    const TextHighlightRules =
       require('./text_highlight_rules').TextHighlightRules
-    var identifierRe = '[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*'
+    const identifierRe =
+      '[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*'
 
-    var JavaScriptHighlightRules = function (options) {
-      var keywordMapper = this.createKeywordMapper(
+    const JavaScriptHighlightRules = function (options) {
+      const keywordMapper = this.createKeywordMapper(
         {
           'variable.language':
             'Array|Boolean|Date|Function|Iterator|Number|Object|RegExp|String|Proxy|' + // Constructors
@@ -106,10 +107,10 @@ ace.define(
         },
         'identifier'
       )
-      var kwBeforeRe =
+      const kwBeforeRe =
         'case|do|else|finally|in|instanceof|return|throw|try|typeof|yield|void'
 
-      var escapedRe =
+      const escapedRe =
         '\\\\(?:x[0-9a-fA-F]{2}|' + // hex
         'u[0-9a-fA-F]{4}|' + // unicode
         'u{[0-9a-fA-F]{1,6}}|' + // es6 unicode
@@ -555,8 +556,8 @@ ace.define(
     oop.inherits(JavaScriptHighlightRules, TextHighlightRules)
 
     function JSX() {
-      var tagRegex = identifierRe.replace('\\d', '\\d\\-')
-      var jsxTag = {
+      const tagRegex = identifierRe.replace('\\d', '\\d\\-')
+      const jsxTag = {
         onMatch: function (val, state, stack) {
           var offset = val.charAt(1) == '/' ? 2 : 1
           if (offset == 1) {
@@ -592,7 +593,7 @@ ace.define(
         nextState: 'jsx'
       }
       this.$rules.start.unshift(jsxTag)
-      var jsxJsRule = {
+      const jsxJsRule = {
         regex: '{',
         token: 'paren.quasi.start',
         push: 'start'
@@ -700,18 +701,19 @@ ace.define(
     'ace/mode/doc_comment_highlight_rules',
     'ace/mode/text_highlight_rules'
   ],
-  function (require, exports, module) {
+  function (require, exports, _module) {
     'use strict'
 
-    var oop = require('../lib/oop')
-    var DocCommentHighlightRules =
+    const oop = require('../lib/oop')
+    const DocCommentHighlightRules =
       require('./doc_comment_highlight_rules').DocCommentHighlightRules
-    var TextHighlightRules =
+    const TextHighlightRules =
       require('./text_highlight_rules').TextHighlightRules
-    var identifierRe = '[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*'
+    const identifierRe =
+      '[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*'
 
-    var FreefemHighlightRules = function (options) {
-      var keywordMapper = this.createKeywordMapper(
+    const FreefemHighlightRules = function (options) {
+      const keywordMapper = this.createKeywordMapper(
         {
           'variable.language':
             'Array|Boolean|Date|Function|Iterator|Number|Object|RegExp|String|Proxy|' + // Constructors
@@ -737,10 +739,10 @@ ace.define(
         },
         'identifier'
       )
-      var kwBeforeRe =
+      const kwBeforeRe =
         'case|do|else|finally|in|instanceof|return|throw|try|typeof|yield|void'
 
-      var escapedRe =
+      const escapedRe =
         '\\\\(?:x[0-9a-fA-F]{2}|' + // hex
         'u[0-9a-fA-F]{4}|' + // unicode
         'u{[0-9a-fA-F]{1,6}}|' + // es6 unicode
@@ -1212,12 +1214,12 @@ ace.define(
 ace.define(
   'ace/mode/matching_brace_outdent',
   ['require', 'exports', 'module', 'ace/range'],
-  function (require, exports, module) {
+  function (require, exports, _module) {
     'use strict'
 
-    var Range = require('../range').Range
+    const Range = require('../range').Range
 
-    var MatchingBraceOutdent = function () {}
+    const MatchingBraceOutdent = function () {}
 
     ;(function () {
       this.checkOutdent = function (line, input) {
@@ -1227,17 +1229,20 @@ ace.define(
       }
 
       this.autoOutdent = function (doc, row) {
-        var line = doc.getLine(row)
-        var match = line.match(/^(\s*\})/)
+        const line = doc.getLine(row)
+        const match = line.match(/^(\s*\})/)
 
         if (!match) return 0
 
-        var column = match[1].length
-        var openBracePos = doc.findMatchingBracket({ row: row, column: column })
+        const column = match[1].length
+        const openBracePos = doc.findMatchingBracket({
+          row: row,
+          column: column
+        })
 
         if (!openBracePos || openBracePos.row == row) return 0
 
-        var indent = this.$getIndent(doc.getLine(openBracePos.row))
+        const indent = this.$getIndent(doc.getLine(openBracePos.row))
         doc.replace(new Range(row, 0, row, column - 1), indent)
       }
 
@@ -1263,11 +1268,11 @@ ace.define(
   function (require, exports, module) {
     'use strict'
 
-    var oop = require('../../lib/oop')
-    var Range = require('../../range').Range
-    var BaseFoldMode = require('./fold_mode').FoldMode
+    const oop = require('../../lib/oop')
+    const Range = require('../../range').Range
+    const BaseFoldMode = require('./fold_mode').FoldMode
 
-    var FoldMode = (exports.FoldMode = function (commentRegex) {
+    const FoldMode = (exports.FoldMode = function (commentRegex) {
       if (commentRegex) {
         this.foldingStartMarker = new RegExp(
           this.foldingStartMarker.source.replace(
@@ -1292,7 +1297,7 @@ ace.define(
       this.startRegionRe = /^\s*(\/\*|\/\/)#?region\b/
       this._getFoldWidgetBase = this.getFoldWidget
       this.getFoldWidget = function (session, foldStyle, row) {
-        var line = session.getLine(row)
+        const line = session.getLine(row)
 
         if (this.singleLineBlockCommentRe.test(line)) {
           if (
@@ -1302,7 +1307,7 @@ ace.define(
             return ''
         }
 
-        var fw = this._getFoldWidgetBase(session, foldStyle, row)
+        const fw = this._getFoldWidgetBase(session, foldStyle, row)
 
         if (!fw && this.startRegionRe.test(line)) return 'start' // lineCommentRegionStart
 
@@ -1315,19 +1320,19 @@ ace.define(
         row,
         forceMultiline
       ) {
-        var line = session.getLine(row)
+        const line = session.getLine(row)
 
         if (this.startRegionRe.test(line))
           return this.getCommentRegionBlock(session, line, row)
 
-        var match = line.match(this.foldingStartMarker)
+        let match = line.match(this.foldingStartMarker)
         if (match) {
-          var i = match.index
+          const i = match.index
 
           if (match[1])
             return this.openingBracketBlock(session, match[1], row, i)
 
-          var range = session.getCommentFoldRange(row, i + match[0].length, 1)
+          let range = session.getCommentFoldRange(row, i + match[0].length, 1)
 
           if (range && !range.isMultiLine()) {
             if (forceMultiline) {
@@ -1340,9 +1345,9 @@ ace.define(
 
         if (foldStyle === 'markbegin') return
 
-        var match = line.match(this.foldingStopMarker)
+        match = line.match(this.foldingStopMarker)
         if (match) {
-          var i = match.index + match[0].length
+          const i = match.index + match[0].length
 
           if (match[1])
             return this.closingBracketBlock(session, match[1], row, i)
@@ -1352,19 +1357,19 @@ ace.define(
       }
 
       this.getSectionRange = function (session, row) {
-        var line = session.getLine(row)
-        var startIndent = line.search(/\S/)
-        var startRow = row
-        var startColumn = line.length
+        let line = session.getLine(row)
+        const startIndent = line.search(/\S/)
+        const startRow = row
+        const startColumn = line.length
         row = row + 1
-        var endRow = row
-        var maxRow = session.getLength()
+        let endRow = row
+        const maxRow = session.getLength()
         while (++row < maxRow) {
           line = session.getLine(row)
-          var indent = line.search(/\S/)
+          const indent = line.search(/\S/)
           if (indent === -1) continue
           if (startIndent > indent) break
-          var subRange = this.getFoldWidgetRange(session, 'all', row)
+          const subRange = this.getFoldWidgetRange(session, 'all', row)
 
           if (subRange) {
             if (subRange.start.row <= startRow) {
@@ -1386,15 +1391,15 @@ ace.define(
         )
       }
       this.getCommentRegionBlock = function (session, line, row) {
-        var startColumn = line.search(/\s*$/)
-        var maxRow = session.getLength()
-        var startRow = row
+        const startColumn = line.search(/\s*$/)
+        const maxRow = session.getLength()
+        const startRow = row
 
-        var re = /^\s*(?:\/\*|\/\/|--)#?(end)?region\b/
-        var depth = 1
+        const re = /^\s*(?:\/\*|\/\/|--)#?(end)?region\b/
+        let depth = 1
         while (++row < maxRow) {
           line = session.getLine(row)
-          var m = re.exec(line)
+          const m = re.exec(line)
           if (!m) continue
           if (m[1]) depth--
           else depth++
@@ -1402,7 +1407,7 @@ ace.define(
           if (!depth) break
         }
 
-        var endRow = row
+        const endRow = row
         if (endRow > startRow) {
           return new Range(startRow, startColumn, endRow, line.length)
         }
@@ -1428,17 +1433,17 @@ ace.define(
   function (require, exports, module) {
     'use strict'
 
-    var oop = require('../lib/oop')
-    var TextMode = require('./text').Mode
-    var JavaScriptHighlightRules =
+    const oop = require('../lib/oop')
+    const TextMode = require('./text').Mode
+    const JavaScriptHighlightRules =
       require('./javascript_highlight_rules').JavaScriptHighlightRules
-    var MatchingBraceOutdent =
+    const MatchingBraceOutdent =
       require('./matching_brace_outdent').MatchingBraceOutdent
-    var WorkerClient = require('../worker/worker_client').WorkerClient
-    var CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour
-    var CStyleFoldMode = require('./folding/cstyle').FoldMode
+    const WorkerClient = require('../worker/worker_client').WorkerClient
+    const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour
+    const CStyleFoldMode = require('./folding/cstyle').FoldMode
 
-    var Mode = function () {
+    const Mode = function () {
       this.HighlightRules = JavaScriptHighlightRules
 
       this.$outdent = new MatchingBraceOutdent()
@@ -1452,18 +1457,18 @@ ace.define(
       this.$quotes = { '"': '"', "'": "'", '`': '`' }
 
       this.getNextLineIndent = function (state, line, tab) {
-        var indent = this.$getIndent(line)
+        let indent = this.$getIndent(line)
 
-        var tokenizedLine = this.getTokenizer().getLineTokens(line, state)
-        var tokens = tokenizedLine.tokens
-        var endState = tokenizedLine.state
+        const tokenizedLine = this.getTokenizer().getLineTokens(line, state)
+        const tokens = tokenizedLine.tokens
+        const endState = tokenizedLine.state
 
         if (tokens.length && tokens[tokens.length - 1].type == 'comment') {
           return indent
         }
 
         if (state == 'start' || state == 'no_regex') {
-          var match = line.match(/^.*(?:\bcase\b.*:|[\{\(\[])\s*$/)
+          const match = line.match(/^.*(?:\bcase\b.*:|[\{\(\[])\s*$/)
           if (match) {
             indent += tab
           }
@@ -1471,7 +1476,7 @@ ace.define(
           if (endState == 'start' || endState == 'no_regex') {
             return ''
           }
-          var match = line.match(/^\s*(\/?)\*/)
+          const match = line.match(/^\s*(\/?)\*/)
           if (match) {
             if (match[1]) {
               indent += ' '
@@ -1483,16 +1488,16 @@ ace.define(
         return indent
       }
 
-      this.checkOutdent = function (state, line, input) {
+      this.checkOutdent = function (_state, line, input) {
         return this.$outdent.checkOutdent(line, input)
       }
 
-      this.autoOutdent = function (state, doc, row) {
+      this.autoOutdent = function (_state, doc, row) {
         this.$outdent.autoOutdent(doc, row)
       }
 
       this.createWorker = function (session) {
-        var worker = new WorkerClient(
+        const worker = new WorkerClient(
           ['ace'],
           'ace/mode/javascript_worker',
           'JavaScriptWorker'
@@ -1535,17 +1540,17 @@ ace.define(
   function (require, exports, module) {
     'use strict'
 
-    var oop = require('../lib/oop')
-    var TextMode = require('./text').Mode
-    var FreefemHighlightRules =
+    const oop = require('../lib/oop')
+    const TextMode = require('./text').Mode
+    const FreefemHighlightRules =
       require('./freefem_highlight_rules').FreefemHighlightRules
-    var MatchingBraceOutdent =
+    const MatchingBraceOutdent =
       require('./matching_brace_outdent').MatchingBraceOutdent
-    var WorkerClient = require('../worker/worker_client').WorkerClient
-    var CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour
-    var CStyleFoldMode = require('./folding/cstyle').FoldMode
+    const WorkerClient = require('../worker/worker_client').WorkerClient
+    const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour
+    const CStyleFoldMode = require('./folding/cstyle').FoldMode
 
-    var Mode = function () {
+    const Mode = function () {
       this.HighlightRules = FreefemHighlightRules
 
       this.$outdent = new MatchingBraceOutdent()
@@ -1559,18 +1564,18 @@ ace.define(
       this.$quotes = { '"': '"', "'": "'", '`': '`' }
 
       this.getNextLineIndent = function (state, line, tab) {
-        var indent = this.$getIndent(line)
+        let indent = this.$getIndent(line)
 
-        var tokenizedLine = this.getTokenizer().getLineTokens(line, state)
-        var tokens = tokenizedLine.tokens
-        var endState = tokenizedLine.state
+        const tokenizedLine = this.getTokenizer().getLineTokens(line, state)
+        const tokens = tokenizedLine.tokens
+        const endState = tokenizedLine.state
 
         if (tokens.length && tokens[tokens.length - 1].type == 'comment') {
           return indent
         }
 
         if (state == 'start' || state == 'no_regex') {
-          var match = line.match(/^.*(?:\bcase\b.*:|[\{\(\[])\s*$/)
+          const match = line.match(/^.*(?:\bcase\b.*:|[\{\(\[])\s*$/)
           if (match) {
             indent += tab
           }
@@ -1578,7 +1583,7 @@ ace.define(
           if (endState == 'start' || endState == 'no_regex') {
             return ''
           }
-          var match = line.match(/^\s*(\/?)\*/)
+          const match = line.match(/^\s*(\/?)\*/)
           if (match) {
             if (match[1]) {
               indent += ' '
@@ -1590,16 +1595,16 @@ ace.define(
         return indent
       }
 
-      this.checkOutdent = function (state, line, input) {
+      this.checkOutdent = function (_state, line, input) {
         return this.$outdent.checkOutdent(line, input)
       }
 
-      this.autoOutdent = function (state, doc, row) {
+      this.autoOutdent = function (_state, doc, row) {
         this.$outdent.autoOutdent(doc, row)
       }
 
       this.createWorker = function (session) {
-        var worker = new WorkerClient(
+        const worker = new WorkerClient(
           ['ace'],
           'ace/mode/javascript_worker',
           'JavaScriptWorker'
@@ -1626,7 +1631,7 @@ ace.define(
 )
 
 ace.define(
-  'ace/mode/ejs',
+  'ace/mode/freefem-ejs',
   [
     'require',
     'exports',
@@ -1638,22 +1643,22 @@ ace.define(
     'ace/mode/javascript',
     'ace/mode/freefem'
   ],
-  function (require, exports, module) {
+  function (require, exports, _module) {
     'use strict'
 
-    var oop = require('../lib/oop')
-    var JavaScriptHighlightRules =
+    const oop = require('../lib/oop')
+    const JavaScriptHighlightRules =
       require('./javascript_highlight_rules').JavaScriptHighlightRules
-    var FreefemHighlightRules =
+    const FreefemHighlightRules =
       require('./freefem_highlight_rules').FreefemHighlightRules
 
-    var EjsHighlightRules = function (start, end) {
+    const EjsHighlightRules = function (start, end) {
       FreefemHighlightRules.call(this)
 
       if (!start) start = '(?:<%|<\\?|{{)'
       if (!end) end = '(?:%>|\\?>|}})'
 
-      for (var i in this.$rules) {
+      for (const i in this.$rules) {
         this.$rules[i].unshift({
           token: 'markup.list.meta.tag',
           regex: start + '(?![>}])[-=]?',
@@ -1685,11 +1690,10 @@ ace.define(
 
     exports.EjsHighlightRules = EjsHighlightRules
 
-    var oop = require('../lib/oop')
-    var JavaScriptMode = require('./javascript').Mode
-    var FreefemMode = require('./freefem').Mode
+    const JavaScriptMode = require('./javascript').Mode
+    const FreefemMode = require('./freefem').Mode
 
-    var Mode = function () {
+    const Mode = function () {
       FreefemMode.call(this)
       this.HighlightRules = EjsHighlightRules
       this.createModeDelegates({
@@ -1706,7 +1710,7 @@ ace.define(
   }
 )
 ;(function () {
-  ace.require(['ace/mode/ejs'], function (m) {
+  ace.require(['ace/mode/freefem-ejs'], function (m) {
     if (typeof module == 'object' && typeof exports == 'object' && module) {
       module.exports = m
     }

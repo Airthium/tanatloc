@@ -36,7 +36,7 @@ const FreeFEMCode = ({ template }: IProps): JSX.Element => {
       height="calc(100% - 64px)"
       fontSize={16}
       theme="chrome"
-      mode="ejs"
+      mode="freefem-ejs"
       name="freefem_editor"
       value={code}
       editorProps={{ $blockScrolling: true, $showPrintMargin: false }}

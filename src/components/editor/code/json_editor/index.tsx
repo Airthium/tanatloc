@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json5'
-import 'ace-builds/src-noconflict/theme-chrome'
+import 'ace-builds/src-noconflict/theme-sqlserver'
 
 export interface IProps {
   model?: string

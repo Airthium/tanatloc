@@ -36,7 +36,7 @@ const JSONCode = ({ model }: IProps): JSX.Element => {
       height="calc(100% - 64px)"
       fontSize={16}
       mode="json5"
-      theme="chrome"
+      theme="sqlserver"
       name="json_editor"
       value={code}
       editorProps={{ $blockScrolling: true }}

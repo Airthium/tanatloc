@@ -35,7 +35,7 @@ const FreeFEMCode = ({ template }: IProps): JSX.Element => {
       width="100%"
       height="calc(100% - 64px)"
       fontSize={16}
-      theme="chrome"
+      theme="sqlserver"
       mode="freefem-ejs"
       name="freefem_editor"
       value={code}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import AceEditor from 'react-ace'
-import 'ace-builds/src-noconflict/mode-ejs'
 import 'ace-builds/src-noconflict/theme-chrome'
+import './mode/mode-freefem-ejs'
 
 export interface IProps {
   template?: string

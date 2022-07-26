@@ -3,16 +3,26 @@ import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json5'
 import 'ace-builds/src-noconflict/theme-sqlserver'
 
+/**
+ * IProps
+ */
 export interface IProps {
   model?: string
+  setModel: (str?: string) => void
 }
+
+/**
+ * Save delay
+ */
+const saveDelay = 1500
 
 /**
  * JSON code
  */
-const JSONCode = ({ model }: IProps): JSX.Element => {
+const JSONCode = ({ model, setModel }: IProps): JSX.Element => {
   // State
   const [code, setCode] = useState<string>()
+  const [updating, setUpdating] = useState<number>(0)
 
   // Model
   useEffect(() => {
@@ -20,12 +30,32 @@ const JSONCode = ({ model }: IProps): JSX.Element => {
   }, [model])
 
   /**
+   * On change (delayed)
+   * @param newCode New code
+   */
+  const onChangeDelayed = useCallback(
+    (newCode?: string): void => {
+      if (updating) clearTimeout(updating)
+      const id = setTimeout(() => {
+        setModel(newCode)
+      }, saveDelay)
+      setUpdating(+id)
+    },
+    [updating, setModel]
+  )
+
+  /**
    * On change
    * @param newCode New code
    */
-  const onChange = useCallback((newCode: string): void => {
-    setCode(newCode)
-  }, [])
+  const onChange = useCallback(
+    (newCode?: string): void => {
+      setCode(newCode)
+
+      onChangeDelayed(newCode)
+    },
+    [onChangeDelayed]
+  )
 
   /**
    * Render

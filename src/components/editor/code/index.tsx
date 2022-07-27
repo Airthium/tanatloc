@@ -7,6 +7,7 @@ export interface IProps {
   template?: string
   setModel: (str?: string) => void
   setTemplate: (str?: string) => void
+  setTemplateCursor: (cursor?: { row: number; column: number }) => void
 }
 
 /**
@@ -16,14 +17,19 @@ const Code = ({
   model,
   template,
   setModel,
-  setTemplate
+  setTemplate,
+  setTemplateCursor
 }: IProps): JSX.Element => {
   /**
    * Render
    */
   return (
     <div className="Editor-code">
-      <FreeFEMCode template={template} setTemplate={setTemplate} />
+      <FreeFEMCode
+        template={template}
+        setTemplate={setTemplate}
+        setCursor={setTemplateCursor}
+      />
       <JsonCode model={model} setModel={setModel} />
     </div>
   )

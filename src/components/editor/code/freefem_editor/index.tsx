@@ -9,6 +9,7 @@ import './mode/mode-freefem-ejs'
 export interface IProps {
   template?: string
   setTemplate: (str?: string) => void
+  setCursor: (cursor?: { row: number; column: number }) => void
 }
 
 /**
@@ -19,10 +20,13 @@ const saveDelay = 1500
 /**
  * FreeFEM code
  */
-const FreeFEMCode = ({ template, setTemplate }: IProps): JSX.Element => {
+const FreeFEMCode = ({
+  template,
+  setTemplate,
+  setCursor
+}: IProps): JSX.Element => {
   // State
   const [code, setCode] = useState<string>()
-  const [cursor, setCursor] = useState<{ row: number; column: number }>()
   const [updating, setUpdating] = useState<number>(0)
 
   // Template
@@ -58,13 +62,18 @@ const FreeFEMCode = ({ template, setTemplate }: IProps): JSX.Element => {
     [onChangeDelayed]
   )
 
-  const onCursorChange = (selection: any): void => {
-    setCursor({
-      row: selection.cursor.row,
-      column: selection.cursor.column
-    })
-  }
-  console.log(cursor)
+  /**
+   * On cursor change
+   */
+  const onCursorChange = useCallback(
+    (selection: any): void => {
+      setCursor({
+        row: selection.cursor.row,
+        column: selection.cursor.column
+      })
+    },
+    [setCursor]
+  )
 
   /**
    * Render

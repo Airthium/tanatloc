@@ -52,7 +52,12 @@ const Editor = () => {
   }>({})
   const [name, setName] = useState<string>()
   const [model, setModel] = useState<string>()
+
   const [template, setTemplate] = useState<string>()
+  const [templateCursor, setTemplateCursor] = useState<{
+    row: number
+    column: number
+  }>()
 
   const [modelsVisible, setModelsVisible] = useState<boolean>(false)
   const [modelsLoading, setModelsLoading] = useState<boolean>(false)
@@ -138,6 +143,9 @@ const Editor = () => {
     })
   }, [router])
 
+  /**
+   * On new
+   */
   const onNew = () => {
     setName(undefined)
     setTemplate(
@@ -150,21 +158,36 @@ const Editor = () => {
 	dimension
 }), 1) -%>
 
-
+// WRITE YOUR TEMPLATE HERE
 
 } catch(...) {
-  appendError("An internal error occurs");
-  exit(-1);
-}`
+\tappendError("An internal error occurs");
+\texit(-1);
+}
+`
     )
-    setModel('')
+    setModel(
+      JSON.stringify(
+        {
+          category: 'Category',
+          name: 'My new model',
+          algorithm: 'Algorithm',
+          code: 'FreeFEM',
+          version: '1.0.0',
+          description: '',
+          configuration: {}
+        },
+        null,
+        '\t'
+      ) + '\n'
+    )
   }
 
   /**
    * Load model
    * @param key Key
    */
-  const loadModel = async (key: number): Promise<void> => {
+  const loadModel = useCallback(async (key: number): Promise<void> => {
     setModelsLoading(true)
 
     try {
@@ -185,16 +208,43 @@ const Editor = () => {
     } finally {
       setModelsLoading(false)
     }
-  }
+  }, [])
 
-  const addHeader = () => {
-    setTemplate(
-      (template || '') +
-        "<%# Headers -%>\n<%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>\n"
+  const addOnTemplateCursor = useCallback(
+    (text: string): void => {
+      if (!templateCursor) {
+        setTemplate((template || '') + text)
+      } else {
+        const row = templateCursor.row
+        const rows = (template || '').split('\n')
+        const newTemplate = [
+          ...rows.slice(0, row + 1),
+          ...text.split('\n'),
+          ...rows.slice(row + 1)
+        ]
+        setTemplate(newTemplate.join('\n'))
+      }
+    },
+    [template, templateCursor]
+  )
+
+  /**
+   * Add header
+   */
+  const addHeader = useCallback(() => {
+    addOnTemplateCursor(
+      "<%# Headers -%>\n<%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>\n"
     )
-  }
+  }, [addOnTemplateCursor])
 
-  const addDimension = () => {}
+  /**
+   * Add dimension
+   */
+  const addDimension = useCallback(() => {
+    addOnTemplateCursor(
+      "<%# Dimension -%>\n<%- helpers.indent(include('/blobs/dimensioning.edp.ejs', {\n\tdimension\n}), 1) -%>\n"
+    )
+  }, [addOnTemplateCursor])
 
   /**
    * Render
@@ -348,6 +398,7 @@ const Editor = () => {
           template={template}
           setModel={setModel}
           setTemplate={setTemplate}
+          setTemplateCursor={setTemplateCursor}
         />
       </Layout.Content>
     </Layout>

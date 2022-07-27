@@ -1,36 +1,19 @@
-import React from 'react'
-import FreeFEMCode from './freefem_editor'
-import JsonCode from './json_editor'
+import dynamic from 'next/dynamic'
 
-export interface IProps {
-  model?: string
-  template?: string
-  setModel: (str?: string) => void
-  setTemplate: (str?: string) => void
-  setTemplateCursor: (cursor?: { row: number; column: number }) => void
-}
+const FreeFEMCode = dynamic(() => import('./freefem_editor'), { ssr: false })
+const JSONCode = dynamic(() => import('./json_editor'), { ssr: false })
 
 /**
  * Code
  */
-const Code = ({
-  model,
-  template,
-  setModel,
-  setTemplate,
-  setTemplateCursor
-}: IProps): JSX.Element => {
+const Code = (): JSX.Element => {
   /**
    * Render
    */
   return (
     <div className="Editor-code">
-      <FreeFEMCode
-        template={template}
-        setTemplate={setTemplate}
-        setCursor={setTemplateCursor}
-      />
-      <JsonCode model={model} setModel={setModel} />
+      <FreeFEMCode />
+      <JSONCode />
     </div>
   )
 }

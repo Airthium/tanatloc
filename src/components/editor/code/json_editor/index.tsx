@@ -1,48 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext } from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json5'
 import 'ace-builds/src-noconflict/theme-sqlserver'
-
-/**
- * IProps
- */
-export interface IProps {
-  model?: string
-  setModel: (str?: string) => void
-}
-
-/**
- * Save delay
- */
-const saveDelay = 1500
+import { EditorContext } from '@/context/editor'
+import { setModel } from '@/context/editor/actions'
 
 /**
  * JSON code
  */
-const JSONCode = ({ model, setModel }: IProps): JSX.Element => {
-  // State
-  const [code, setCode] = useState<string>()
-  const [updating, setUpdating] = useState<number>(0)
-
-  // Model
-  useEffect(() => {
-    setCode(model)
-  }, [model])
-
-  /**
-   * On change (delayed)
-   * @param newCode New code
-   */
-  const onChangeDelayed = useCallback(
-    (newCode?: string): void => {
-      if (updating) clearTimeout(updating)
-      const id = setTimeout(() => {
-        setModel(newCode)
-      }, saveDelay)
-      setUpdating(+id)
-    },
-    [updating, setModel]
-  )
+const JSONCode = (): JSX.Element => {
+  // Data
+  const { model, dispatch } = useContext(EditorContext)
 
   /**
    * On change
@@ -50,11 +18,9 @@ const JSONCode = ({ model, setModel }: IProps): JSX.Element => {
    */
   const onChange = useCallback(
     (newCode?: string): void => {
-      setCode(newCode)
-
-      onChangeDelayed(newCode)
+      dispatch(setModel(newCode || ''))
     },
-    [onChangeDelayed]
+    [dispatch]
   )
 
   /**
@@ -68,7 +34,7 @@ const JSONCode = ({ model, setModel }: IProps): JSX.Element => {
       mode="json5"
       theme="sqlserver"
       name="json_editor"
-      value={code}
+      value={model}
       editorProps={{ $blockScrolling: true }}
       onChange={onChange}
     />

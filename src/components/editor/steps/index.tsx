@@ -89,22 +89,20 @@ const StatusSteps = ({ setName }: IProps) => {
       <Steps.Step
         title="Check template format"
         description="EJS + FreeFEM"
-        status={status['template'] ?? 'wait'}
+        status={status.template ?? 'wait'}
         disabled={true}
       />
       <Steps.Step
         title="Check description format"
         description="JSON"
-        status={status['model'] ?? 'wait'}
+        status={status.model ?? 'wait'}
         disabled={true}
       />
       <Steps.Step
         title="Test template + description"
         description="Run template on Tanatloc server"
         status={status['test'] ?? 'wait'}
-        disabled={
-          !(status['template'] === 'finish' && status['model'] === 'finish')
-        }
+        disabled={!(status.template === 'finish' && status.model === 'finish')}
       />
     </Steps>
   )

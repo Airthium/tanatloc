@@ -45,7 +45,7 @@ export const setPart = (part: IPart): ISelectAction => {
 
 /**
  * Highlight
- * @param value { uuid, label }
+ * @param value Value
  */
 export const highlight = ({ uuid, label }: ISelect): ISelectAction => {
   return {
@@ -63,7 +63,7 @@ export const unhighlight = (): ISelectAction => {
 
 /**
  * Select
- * @param value { uuid, label }
+ * @param value Value
  */
 export const select = ({ uuid, label }: ISelect): ISelectAction => {
   return {
@@ -74,7 +74,7 @@ export const select = ({ uuid, label }: ISelect): ISelectAction => {
 
 /**
  * Unselect
- * @param value { uuid, label }
+ * @param value Value
  */
 export const unselect = ({ uuid, label }: ISelect): ISelectAction => {
   return {
@@ -83,6 +83,10 @@ export const unselect = ({ uuid, label }: ISelect): ISelectAction => {
   }
 }
 
+/**
+ * Set point
+ * @param point Point
+ */
 export const setPoint = (point?: ISelectPoint): ISelectAction => {
   return {
     type: actionTypes.SETPOINT,

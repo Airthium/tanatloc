@@ -45,7 +45,7 @@ export const onNew = (dispatch: Dispatch<IEditorAction>) => {
         },
         null,
         '\t'
-      )
+      ) + '\n'
     )
   )
 }

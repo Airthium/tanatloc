@@ -295,73 +295,73 @@ const addMacros = (
   dispatch(setCursor({ row: (cursor?.row || 5) + 0, column: 0 }))
 }
 
-/**
- * Add solver
- * @param template Template
- * @param model Model
- * @param cursor Cursor
- * @param dispatch Dispatch
- */
-const addSolver = (
-  template: string,
-  model: string,
-  cursor: IEditorCursor | undefined,
-  dispatch: Dispatch<IEditorAction>
-): void => {
-  // // Template
-  // addOnCursor(
-  //   template,
-  //   "<%# Finite element space -%>\n<%\nconst finiteElementSpace = parameters.finiteElementSpace.children[0]\nfiniteElementSpace.name = 'FiniteElementSpaceName'\n-%>\n<%- helpers.indent(include('/blobs/fespace.edp.ejs', {\n\tmesh,\n\tfiniteElementSpace\n}), 1) -%>\n",
-  //   cursor,
-  //   dispatch
-  // )
-  // dispatch(setCursor({ row: (cursor?.row || 9) + 0, column: 0 }))
-  // // Model
-  // let modelJSON: Partial<
-  //   Omit<IModel, 'configuration'> & {
-  //     configuration: Partial<IModel['configuration']>
-  //   }
-  // >
-  // try {
-  //   modelJSON = JSON.parse(model)
-  // } catch (err) {
-  //   modelJSON = {}
-  // }
-  // const index = Object.keys(modelJSON.configuration || {}).length
-  // modelJSON.configuration = {
-  //   ...(modelJSON.configuration || {}),
-  //   parameters: {
-  //     index: index + 1,
-  //     title: 'Parameters',
-  //     ...(modelJSON.configuration?.parameters || {}),
-  //     finiteElementSpace: {
-  //       advanced: true,
-  //       label: 'Finite element space',
-  //       ...((modelJSON.configuration?.parameters
-  //         ?.finiteElementSpace as object) || {}),
-  //       children: [
-  //         ...((modelJSON.configuration?.parameters?.finiteElementSpace as any)
-  //           ?.children || []),
-  //         {
-  //           label: 'Finite element space label',
-  //           label2D: 'Finite element space label (2D)',
-  //           htmlEntity: 'select',
-  //           options: [
-  //             {
-  //               label: 'Option label',
-  //               value: 'Option value',
-  //               value2D: 'Option value (2D)'
-  //             }
-  //           ],
-  //           default: 'Default option',
-  //           default2D: 'Default option (2D)'
-  //         }
-  //       ]
-  //     }
-  //   }
-  // }
-  // dispatch(setModel(JSON.stringify(modelJSON, null, '  ')))
-}
+// /**
+//  * Add solver
+//  * @param template Template
+//  * @param model Model
+//  * @param cursor Cursor
+//  * @param dispatch Dispatch
+//  */
+// const addSolver = (
+//   template: string,
+//   model: string,
+//   cursor: IEditorCursor | undefined,
+//   dispatch: Dispatch<IEditorAction>
+// ): void => {
+//   // // Template
+//   // addOnCursor(
+//   //   template,
+//   //   "<%# Finite element space -%>\n<%\nconst finiteElementSpace = parameters.finiteElementSpace.children[0]\nfiniteElementSpace.name = 'FiniteElementSpaceName'\n-%>\n<%- helpers.indent(include('/blobs/fespace.edp.ejs', {\n\tmesh,\n\tfiniteElementSpace\n}), 1) -%>\n",
+//   //   cursor,
+//   //   dispatch
+//   // )
+//   // dispatch(setCursor({ row: (cursor?.row || 9) + 0, column: 0 }))
+//   // // Model
+//   // let modelJSON: Partial<
+//   //   Omit<IModel, 'configuration'> & {
+//   //     configuration: Partial<IModel['configuration']>
+//   //   }
+//   // >
+//   // try {
+//   //   modelJSON = JSON.parse(model)
+//   // } catch (err) {
+//   //   modelJSON = {}
+//   // }
+//   // const index = Object.keys(modelJSON.configuration || {}).length
+//   // modelJSON.configuration = {
+//   //   ...(modelJSON.configuration || {}),
+//   //   parameters: {
+//   //     index: index + 1,
+//   //     title: 'Parameters',
+//   //     ...(modelJSON.configuration?.parameters || {}),
+//   //     finiteElementSpace: {
+//   //       advanced: true,
+//   //       label: 'Finite element space',
+//   //       ...((modelJSON.configuration?.parameters
+//   //         ?.finiteElementSpace as object) || {}),
+//   //       children: [
+//   //         ...((modelJSON.configuration?.parameters?.finiteElementSpace as any)
+//   //           ?.children || []),
+//   //         {
+//   //           label: 'Finite element space label',
+//   //           label2D: 'Finite element space label (2D)',
+//   //           htmlEntity: 'select',
+//   //           options: [
+//   //             {
+//   //               label: 'Option label',
+//   //               value: 'Option value',
+//   //               value2D: 'Option value (2D)'
+//   //             }
+//   //           ],
+//   //           default: 'Default option',
+//   //           default2D: 'Default option (2D)'
+//   //         }
+//   //       ]
+//   //     }
+//   //   }
+//   // }
+//   // dispatch(setModel(JSON.stringify(modelJSON, null, '  ')))
+// }
 
 /**
  * Blobs
@@ -476,7 +476,7 @@ const Blobs = () => {
             </div>
             <Button
               className="full-width"
-              onClick={() => addSolver(template, model, cursor, dispatch)}
+              // onClick={() => addSolver(template, model, cursor, dispatch)}
             >
               Solver
             </Button>

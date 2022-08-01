@@ -5,6 +5,7 @@ import { Button, Card, Drawer, Space, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IModelMaterialsChild, IModelMaterialsValue } from '@/models/index.d'
+import { IMaterialDatabase } from '@/config/materials'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -18,7 +19,7 @@ import {
   IFrontGeometriesItem
 } from '@/api/index.d'
 
-import DataBase, { IMaterialDatabase } from '../database'
+import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
 

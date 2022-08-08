@@ -1,21 +1,12 @@
-const withPlugins = require('next-compose-plugins')
 const withAntdLess = require('next-plugin-antd-less')
 
 const { DSN } = require('./config/sentry.js')
 
 const basePath = ''
 
-const plugins = [
-  [
-    withAntdLess,
-    {
-      lessVarsFilePath: './src/styles/global.less',
-      lessVarsFilePathAppendToEndOfContent: true
-    }
-  ]
-]
-
-module.exports = withPlugins([...plugins], {
+module.exports = withAntdLess({
+  lessVarsFilePath: './src/styles/global.less',
+  lessVarsFilePathAppendToEndOfContent: true,
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
       config.resolve.alias['@sentry/node'] = '@sentry/browser'

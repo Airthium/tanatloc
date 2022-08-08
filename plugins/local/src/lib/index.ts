@@ -526,6 +526,7 @@ const stopProcess = async (
   update: () => void
 ): Promise<void> => {
   if (interval[id]) {
+    //@ts-ignore
     clearIntervalAsync(interval[id])
     delete interval[id]
   }
@@ -731,6 +732,7 @@ const processDatas = async (
  */
 const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
   if (interval[id]) {
+    //@ts-ignore
     clearIntervalAsync(interval[id])
     delete interval[id]
   }

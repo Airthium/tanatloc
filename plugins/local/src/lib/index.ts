@@ -299,11 +299,12 @@ const computeSimulation = async (
   // Configuration
   const configuration = scheme.configuration
 
-  // Clean previous simulation
-  await clean(simulationPath)
-
   // Create tasks
   const tasks: ISimulationTask[] = []
+  updateTasks(id, tasks)
+
+  // Clean previous simulation
+  await clean(simulationPath)
 
   // Ensure dimension
   configuration.dimension ?? (configuration.dimension = 3)
@@ -433,6 +434,8 @@ const checkResults = async (
 ): Promise<string[]> => {
   const simulationPath = path.join(SIMULATION, id)
 
+  results[id] = []
+
   if (task.files) {
     // Existing files
     const existingFiles = (
@@ -464,6 +467,8 @@ const checkDatas = async (
   task: ISimulationTask
 ): Promise<string[]> => {
   const simulationPath = path.join(SIMULATION, id)
+
+  datas[id] = []
 
   if (task.datas) {
     // Existing files
@@ -569,7 +574,9 @@ const processOutput = async (
 
     // Data
     await processDatas(id, dataLines, simulationPath, task, update)
-  } catch (err) {}
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 /**

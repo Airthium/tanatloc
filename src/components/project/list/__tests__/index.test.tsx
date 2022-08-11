@@ -49,8 +49,8 @@ describe('component/project/list', () => {
   const projects = [{ id: 'id' } as TProject, { id: 'id' } as TProject]
   const organizations: Pick<
     IFrontOrganizationsItem,
-    'id' | 'name' | 'groups'
-  >[] = [{ id: 'id', name: 'name', groups: [] }]
+    'id' | 'name' | 'owners' | 'users' | 'groups'
+  >[] = [{ id: 'id', name: 'name', owners: [], users: [], groups: [] }]
   const swr = {
     mutateOneWorkspace: jest.fn,
     delOneProject: jest.fn,

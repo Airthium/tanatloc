@@ -574,9 +574,7 @@ const processOutput = async (
 
     // Data
     await processDatas(id, dataLines, simulationPath, task, update)
-  } catch (err) {
-    console.error(err)
-  }
+  } catch (err) {}
 }
 
 /**

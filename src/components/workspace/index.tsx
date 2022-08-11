@@ -33,7 +33,10 @@ export interface IProps {
     IFrontWorkspacesItem,
     'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
   >
-  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
+  organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'users' | 'owners' | 'groups'
+  >[]
   swr: {
     delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
@@ -75,11 +78,6 @@ const Workspace = ({
       loadingProjects
     }
   ] = ProjectAPI.useProjects(workspace?.projects)
-  const organizationsData = organizations.map((organization) => ({
-    id: organization.id,
-    name: organization.name,
-    groups: organization.groups
-  }))
 
   // Projects error
   useEffect(() => {
@@ -134,7 +132,7 @@ const Workspace = ({
                       groups: workspace.groups,
                       users: workspace.users
                     }}
-                    organizations={organizationsData}
+                    organizations={organizations}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
                     style={{ buttonDark: true, buttonBordered: true }}
                   />
@@ -184,7 +182,7 @@ const Workspace = ({
             projects: workspace.projects
           }}
           projects={projects}
-          organizations={organizationsData}
+          organizations={organizations}
           filter={filter}
           sorter={sorter}
           swr={{

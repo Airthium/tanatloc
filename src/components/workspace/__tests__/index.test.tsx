@@ -61,8 +61,8 @@ describe('components/workspace', () => {
   }
   const organizations: Pick<
     IFrontOrganizationsItem,
-    'id' | 'name' | 'groups'
-  >[] = [{ id: 'id', name: 'name', groups: [] }]
+    'id' | 'name' | 'owners' | 'users' | 'groups'
+  >[] = [{ id: 'id', name: 'name', owners: [], users: [], groups: [] }]
   const swr = { delOneWorkspace: jest.fn(), mutateOneWorkspace: jest.fn() }
 
   beforeEach(() => {

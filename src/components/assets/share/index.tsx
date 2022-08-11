@@ -36,7 +36,10 @@ export interface IProps {
   disabled?: boolean
   workspace?: Pick<IFrontWorkspacesItem, 'id' | 'name' | 'users' | 'groups'>
   project?: Pick<IFrontProjectsItem, 'id' | 'title' | 'users' | 'groups'>
-  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
+  organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'owners' | 'users' | 'groups'
+  >[]
   swr: {
     mutateOneWorkspace?: (workspace: IFrontMutateWorkspacesItem) => void
     mutateOneProject?: (project: IFrontMutateProjectsItem) => void
@@ -124,6 +127,24 @@ export const onShare = async (
 }
 
 /**
+ * User title
+ * @param user User
+ * @returns Title
+ */
+export const userTitle = (user: {
+  email: string
+  lastname?: string
+  firstname?: string
+}): string => {
+  let title = user.email
+  if (user.lastname || user.firstname) {
+    title = user.lastname ? user.lastname + ' ' : ''
+    title += user.firstname || ''
+  }
+  return title
+}
+
+/**
  * Share
  * @param props Props
  * @description Props list:
@@ -158,17 +179,17 @@ const Share = ({
   useEffect(() => {
     const parent = workspace || project
 
-    const defaultGroups = parent?.groups?.map((g) => g.id)
-    const defaultUsers = parent?.users?.map((u) => u.id)
+    const defaultGroups = parent?.groups.map((g) => g.id)
+    const defaultUsers = parent?.users.map((u) => u.id)
 
-    setGroupsSelected(defaultGroups as string[])
-    setUsersSelected(defaultUsers as string[])
+    setGroupsSelected(defaultGroups || [])
+    setUsersSelected(defaultUsers || [])
   }, [workspace, project])
 
   useEffect(() => {
     // Tree data
     const groupsData = organizations.map((organization) => {
-      const groups = organization.groups?.map((group) => {
+      const groups = organization.groups.map((group) => {
         return {
           key: group.id,
           title: group.name,
@@ -187,32 +208,39 @@ const Share = ({
       }
     })
 
-    const usersData = organizations
-      .map((organization) => {
-        return organization.groups
-          ?.map((group) => {
-            return group.users?.map((user) => {
-              let title = user.email
-              if (user.lastname || user.firstname) {
-                title = user.lastname ? user.lastname + ' ' : ''
-                title += user.firstname || ''
-              }
-              return {
-                key: user.id,
-                title,
-                value: user.id,
-                type: 'user'
-              }
-            })
-          })
-          .flatMap((g) => g)
+    const users: { key: string; title: string; value: string; type: 'user' }[] =
+      []
+    organizations.forEach((organization) => {
+      organization.owners.forEach((owner) => {
+        users.push({
+          key: owner.id,
+          title: userTitle(owner),
+          value: owner.id,
+          type: 'user'
+        })
       })
-      .flatMap((o) => o)
-      .filter((o) => o)
+      organization.users.forEach((user) => {
+        users.push({
+          key: user.id,
+          title: userTitle(user),
+          value: user.id,
+          type: 'user'
+        })
+      })
+      organization.groups.forEach((group) => {
+        group.users.forEach((user) => {
+          users.push({
+            key: user.id,
+            title: userTitle(user),
+            value: user.id,
+            type: 'user'
+          })
+        })
+      })
+    })
 
-    const uniqueUsersData = usersData.filter(
-      (user, index, self) =>
-        self.findIndex((s) => s?.key === user?.key) === index
+    const uniqueUsersData = users.filter(
+      (user, index, self) => self.findIndex((s) => s.key === user.key) === index
     )
 
     setTreeGroupsData(groupsData)
@@ -220,7 +248,7 @@ const Share = ({
   }, [organizations])
 
   let selector = null
-  if (treeGroupsData?.length)
+  if (treeGroupsData.length)
     selector = (
       <>
         <Form.Item

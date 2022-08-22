@@ -419,7 +419,7 @@ const monitoring = async (
   updateTasks(id, tasks)
 }
 
-const interval: { [key: string]: SetIntervalAsyncTimer } = {}
+const interval: { [key: string]: SetIntervalAsyncTimer<any> } = {}
 const results: { [key: string]: string[] } = {}
 const datas: { [key: string]: string[] } = {}
 
@@ -504,7 +504,7 @@ const startProcess = (
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
-): SetIntervalAsyncTimer => {
+): SetIntervalAsyncTimer<any> => {
   if (!interval[id]) {
     results[id] = []
     datas[id] = []

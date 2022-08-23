@@ -183,13 +183,25 @@ const getWorkspaces = async (workspaces: string[]): Promise<TWorkspace[]> => {
  */
 const getByUser = async ({ id }: { id: string }): Promise<TWorkspace[]> => {
   // Get workspaces'ids
-  const user = await User.get(id, ['workspaces'])
+  const user = await User.get(id, ['projects', 'workspaces'])
   const organizations = await Organization.getByUser({ id }, ['groups'])
   const workspaces = []
 
   // Get local workspaces
   const localWorkspaces = await getWorkspaces(user.workspaces)
   workspaces.push(...localWorkspaces)
+
+  // Get local projects
+  if (user.projects?.length)
+    workspaces.push({
+      id: 'shared',
+      name: 'Shared projects',
+      owners: [],
+      users: [],
+      groups: [],
+      projects: user.projects,
+      archivedprojects: []
+    })
 
   // Get organizations workspaces & projects
   const groupsWorkspaces: TWorkspace[] = []
@@ -200,9 +212,12 @@ const getByUser = async ({ id }: { id: string }): Promise<TWorkspace[]> => {
         organization.groups.map(async (group) => {
           const groupData = await Group.get(group.id, [
             'name',
+            'users',
             'workspaces',
             'projects'
           ])
+
+          if (!groupData.users.find((u) => u === id)) return
 
           // Workspaces
           if (groupData.workspaces.length) {
@@ -289,6 +304,46 @@ const deleteFromGroup = async (
 }
 
 /**
+ * Add to user
+ * @param user User
+ * @param workspace Workspace
+ */
+const addToUser = async (
+  user: { id: string },
+  workspace: { id: string }
+): Promise<void> => {
+  const userData = await User.get(user.id, ['workspaces'])
+  if (!userData.workspaces.includes(workspace.id))
+    await User.update({ id: user.id }, [
+      {
+        key: 'workspaces',
+        type: 'array',
+        method: 'append',
+        value: workspace.id
+      }
+    ])
+}
+
+/**
+ * Delete from user
+ * @param user User
+ * @param workspace Workspace
+ */
+const deleteFromUser = async (
+  user: { id: string },
+  workspace: { id: string }
+) => {
+  await User.update({ id: user.id }, [
+    {
+      key: 'workspaces',
+      type: 'array',
+      method: 'remove',
+      value: workspace.id
+    }
+  ])
+}
+
+/**
  * Update
  * @param workspace Workspace
  * @param data Data
@@ -297,12 +352,12 @@ const update = async (
   workspace: { id: string },
   data: IDataBaseEntry[]
 ): Promise<void> => {
-  // Get data
-  const workspaceData = await getWithData(workspace.id, ['groups'])
-
   // Check groups
   const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
   if (groupsUpdate) {
+    // Get data
+    const workspaceData = await getWithData(workspace.id, ['groups'])
+
     // Deleted groups
     const deleted = workspaceData.groups.filter(
       (g) => !groupsUpdate.value.includes(g.id)
@@ -321,6 +376,34 @@ const update = async (
     await Promise.all(
       added.map(async (group) => {
         await addToGroup({ id: group }, workspace)
+      })
+    )
+  }
+
+  // Check users
+  const usersUpdate = data.find((d) => d.key === 'users' && !d.type)
+  if (usersUpdate) {
+    // Get data
+    const workspaceData = await getWithData(workspace.id, ['users'])
+
+    // Deleted users
+    const deleted = workspaceData.users.filter(
+      (u) => !usersUpdate.value.includes(u.id)
+    )
+
+    await Promise.all(
+      deleted.map(async (user) => {
+        await deleteFromUser(user, workspace)
+      })
+    )
+
+    // Added users
+    const added: string[] = usersUpdate.value.filter(
+      (user: string) => !workspaceData.users.find((u) => u.id === user)
+    )
+    await Promise.all(
+      added.map(async (user) => {
+        await addToUser({ id: user }, workspace)
       })
     )
   }

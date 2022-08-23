@@ -24,12 +24,10 @@ export interface IWorkspace<T = []> {
   id: string
   name: TWorkspaceGetName extends T ? string : never
   owners: TWorkspaceGetOwners extends T ? string[] : never[]
-  users?: TWorkspaceGetUsers extends T ? string[] : never[]
-  groups?: TWorkspaceGetGroups extends T ? string[] : never[]
-  projects?: TWorkspaceGetProjects extends T ? string[] : never[]
-  archivedprojects?: TWorkspaceGetArchivedprojects extends T
-    ? object[]
-    : never[]
+  users: TWorkspaceGetUsers extends T ? string[] : never[]
+  groups: TWorkspaceGetGroups extends T ? string[] : never[]
+  projects: TWorkspaceGetProjects extends T ? string[] : never[]
+  archivedprojects: TWorkspaceGetArchivedprojects extends T ? object[] : never[]
 }
 
 /**

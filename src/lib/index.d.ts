@@ -157,6 +157,7 @@ export interface IUserGet<T = []>
     'organizations' | 'workspaces' | 'authorizedplugins' | 'plugins'
   > {
   organizations: 'organizations'[] extends T ? string[] : never[]
+  projects: 'projects'[] extends T ? string[] : never[]
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   authorizedplugins: 'authorizedplugins'[] extends T ? string[] : never[]
   plugins: 'plugins'[] extends T ? IClientPlugin[] : never[]

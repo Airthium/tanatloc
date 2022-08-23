@@ -64,6 +64,8 @@ const get = async <T extends TUserGet>(
   if (data.includes('organizations') && !userData.organizations)
     userData.organizations = []
 
+  if (data.includes('projects') && !userData.projects) userData.projects = []
+
   if (data.includes('workspaces') && !userData.workspaces)
     userData.workspaces = []
 

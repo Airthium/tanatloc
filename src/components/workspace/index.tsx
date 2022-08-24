@@ -152,15 +152,22 @@ const Workspace = ({
       >
         {workspace.users?.length || workspace.groups?.length ? (
           <div className="inWorkspace-shared">
-            <span className="marginRight-10">
-              This workspace is shared with:
-            </span>
-            <Avatar.Group maxCount={5}>
-              {workspace.users?.map((u) => Utils.userToAvatar(u))}
-            </Avatar.Group>
-            <Avatar.Group maxCount={5}>
-              {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
-            </Avatar.Group>
+            <div>
+              <span className="marginRight-10">Admin:</span>
+              <Avatar.Group maxCount={5}>
+                {workspace.owners?.map((u) => Utils.userToAvatar(u))}
+              </Avatar.Group>
+            </div>
+
+            <div>
+              <span className="marginRight-10">Shared with:</span>
+              <Avatar.Group maxCount={5}>
+                {workspace.users?.map((u) => Utils.userToAvatar(u))}
+              </Avatar.Group>
+              <Avatar.Group maxCount={5}>
+                {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
+              </Avatar.Group>
+            </div>
           </div>
         ) : null}
       </PageHeader>

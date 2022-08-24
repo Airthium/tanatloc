@@ -69,6 +69,7 @@ describe('install/dB', () => {
   test('admin & exists', async () => {
     let fixConstraint = true
     let fix = true
+    let fixUnused = true
     mockQuery.mockImplementation((query) => {
       if (query.includes('SELECT id FROM')) return { rows: [] }
       else if (
@@ -89,24 +90,26 @@ describe('install/dB', () => {
           ]
         }
       else if (query.includes('SELECT column_name'))
-        return {
-          rows: [
-            {
-              column_name: 'name',
-              data_type: 'jsonb'
-            },
-            {
-              column_name: 'owners',
-              data_type: 'ARRAY',
-              is_nullable: 'NO'
-            },
-            {
-              column_name: 'id',
-              data_type: 'UUID',
-              is_nullable: 'YES'
-            }
-          ]
-        }
+        if (fixUnused)
+          return {
+            rows: [
+              {
+                column_name: 'name',
+                data_type: 'jsonb'
+              },
+              {
+                column_name: 'owners',
+                data_type: 'UUID[]',
+                is_nullable: 'NO'
+              },
+              {
+                column_name: 'id',
+                data_type: 'UUID',
+                is_nullable: 'YES'
+              }
+            ]
+          }
+        else return { rows: [] }
       else if (query.includes('ALTER TABLE'))
         if (query.includes('ALTER COLUMN') && query.includes('TEXT')) {
           if (fixConstraint) return {}
@@ -130,6 +133,10 @@ describe('install/dB', () => {
 
     fixConstraint = false
     fix = false
+    await createDatabase()
+
+    // No fix unused
+    fixUnused = false
     await createDatabase()
   })
 

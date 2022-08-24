@@ -228,6 +228,7 @@ const checkSchema = async (table: string): Promise<void> => {
       const index = existingColumns.findIndex(
         (e) => e.column_name === configColumn.name
       )
+
       const column = existingColumns[index]
 
       if (!column) {
@@ -235,11 +236,10 @@ const checkSchema = async (table: string): Promise<void> => {
       } else {
         await checkType(table, column, configColumn)
         await checkConstraint(table, column, configColumn)
+        existingColumns.splice(index, 1)
       }
-
-      existingColumns.splice(index, 1)
     } catch (err) {
-      console.warn('Unable to fix ' + table + '/' + configColumn.name)
+      console.warn('   ⚠ Unable to fix ' + table + '/' + configColumn.name)
       console.warn(err)
     }
   }

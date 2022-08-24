@@ -202,6 +202,10 @@ export const schemas: Scheme = {
       type: 'UUID[]'
     },
     {
+      name: 'projects',
+      type: 'UUID[]'
+    },
+    {
       name: 'authorizedplugins',
       type: 'TEXT[]'
     },

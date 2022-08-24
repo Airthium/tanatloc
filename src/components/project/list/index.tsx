@@ -51,7 +51,10 @@ export interface IProps {
     | 'users'
     | 'groups'
   >[]
-  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
+  organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'owners' | 'users' | 'groups'
+  >[]
   filter?: string
   sorter?: string
   swr: {
@@ -310,11 +313,7 @@ const ProjectList = ({
                     groups: project.groups,
                     users: project.users
                   }}
-                  organizations={organizations.map((organization) => ({
-                    id: organization.id,
-                    name: organization.name,
-                    groups: organization.groups
-                  }))}
+                  organizations={organizations}
                   swr={{ mutateOneProject: swr.mutateOneProject }}
                   style={{
                     buttonDark: true

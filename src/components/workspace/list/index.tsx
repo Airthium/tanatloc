@@ -40,7 +40,10 @@ export interface IProps {
     IFrontWorkspacesItem,
     'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
   >[]
-  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
+  organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'owners' | 'users' | 'groups'
+  >[]
   swr: {
     addOneWorkspace: (workspace: IFrontNewWorkspace) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void

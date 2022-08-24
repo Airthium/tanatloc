@@ -153,7 +153,7 @@ const getGroups = async (
 const getWithData = async <T extends TProjectGet>(
   id: string,
   data: T
-): Promise<IProjectWithData> => {
+): Promise<IProjectWithData<T>> => {
   const project = await get(id, data)
 
   // Check archived
@@ -183,7 +183,7 @@ const getWithData = async <T extends TProjectGet>(
     owners: ownersData,
     users: usersData,
     groups: groupsData
-  } as IProjectWithData
+  } as IProjectWithData<T>
 }
 
 /**
@@ -214,6 +214,43 @@ const deleteFromGroup = async (
   project: { id: string }
 ) => {
   await Group.update({ id: group.id }, [
+    {
+      key: 'projects',
+      type: 'array',
+      method: 'remove',
+      value: project.id
+    }
+  ])
+}
+
+/**
+ * Add to user
+ * @param user User
+ * @param project Project
+ */
+const addToUser = async (user: { id: string }, project: { id: string }) => {
+  const userData = await User.get(user.id, ['projects'])
+  if (!userData.projects.includes(project.id))
+    await User.update({ id: user.id }, [
+      {
+        key: 'projects',
+        type: 'array',
+        method: 'append',
+        value: project.id
+      }
+    ])
+}
+
+/**
+ * Delete from user
+ * @param user User
+ * @param project Project
+ */
+const deleteFromUser = async (
+  user: { id: string },
+  project: { id: string }
+) => {
+  await User.update({ id: user.id }, [
     {
       key: 'projects',
       type: 'array',
@@ -263,6 +300,34 @@ const update = async (
     await Promise.all(
       added.map(async (group) => {
         await addToGroup({ id: group }, project)
+      })
+    )
+  }
+
+  // Check users
+  const usersUpdate = data.find((d) => d.key === 'users' && !d.type)
+  if (usersUpdate) {
+    // Get data
+    const projectData = await getWithData(project.id, ['users'])
+
+    // Deleted users
+    const deleted = projectData.users.filter(
+      (u) => !usersUpdate.value.includes(u.id)
+    )
+
+    await Promise.all(
+      deleted.map(async (user) => {
+        await deleteFromUser(user, project)
+      })
+    )
+
+    // Added users
+    const added: string[] = usersUpdate.value.filter(
+      (user: string) => !projectData.users.find((u) => u.id === user)
+    )
+    await Promise.all(
+      added.map(async (user) => {
+        await addToUser({ id: user }, project)
       })
     )
   }

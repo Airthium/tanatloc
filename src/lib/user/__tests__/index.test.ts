@@ -111,6 +111,7 @@ describe('lib/user', () => {
     let user = await User.get('id', [
       'email',
       'organizations',
+      'projects',
       'workspaces',
       'authorizedplugins',
       'plugins'
@@ -119,6 +120,7 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       organizations: [],
+      projects: [],
       workspaces: [],
       authorizedplugins: [],
       plugins: []
@@ -128,6 +130,7 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       organizations: [],
+      projects: [],
       workspaces: [],
       authorizedplugins: [],
       plugins: [
@@ -138,6 +141,7 @@ describe('lib/user', () => {
     user = await User.get('id', [
       'email',
       'organizations',
+      'projects',
       'workspaces',
       'authorizedplugins',
       'plugins'
@@ -146,6 +150,7 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       organizations: [],
+      projects: [],
       workspaces: [],
       authorizedplugins: [],
       plugins: [

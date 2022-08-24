@@ -299,11 +299,12 @@ const computeSimulation = async (
   // Configuration
   const configuration = scheme.configuration
 
-  // Clean previous simulation
-  await clean(simulationPath)
-
   // Create tasks
   const tasks: ISimulationTask[] = []
+  updateTasks(id, tasks)
+
+  // Clean previous simulation
+  await clean(simulationPath)
 
   // Ensure dimension
   configuration.dimension ?? (configuration.dimension = 3)
@@ -418,7 +419,7 @@ const monitoring = async (
   updateTasks(id, tasks)
 }
 
-const interval: { [key: string]: SetIntervalAsyncTimer } = {}
+const interval: { [key: string]: SetIntervalAsyncTimer<any> } = {}
 const results: { [key: string]: string[] } = {}
 const datas: { [key: string]: string[] } = {}
 
@@ -432,6 +433,8 @@ const checkResults = async (
   task: ISimulationTask
 ): Promise<string[]> => {
   const simulationPath = path.join(SIMULATION, id)
+
+  results[id] = []
 
   if (task.files) {
     // Existing files
@@ -464,6 +467,8 @@ const checkDatas = async (
   task: ISimulationTask
 ): Promise<string[]> => {
   const simulationPath = path.join(SIMULATION, id)
+
+  datas[id] = []
 
   if (task.datas) {
     // Existing files
@@ -499,7 +504,7 @@ const startProcess = (
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
-): SetIntervalAsyncTimer => {
+): SetIntervalAsyncTimer<any> => {
   if (!interval[id]) {
     results[id] = []
     datas[id] = []

@@ -55,6 +55,18 @@ describe('components/assets/share', () => {
     {
       id: 'id0',
       name: 'organization name',
+      owners: [
+        {
+          id: 'ownerid',
+          email: 'owneremail'
+        }
+      ],
+      users: [
+        {
+          id: 'userid',
+          email: 'useremail'
+        }
+      ],
       groups: [
         {
           id: 'id',
@@ -99,6 +111,14 @@ describe('components/assets/share', () => {
   test('render', () => {
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
+
+    unmount()
+  })
+
+  test('no workspace & project', () => {
+    const { unmount } = render(
+      <Share organizations={organizations} swr={projectSwr} />
     )
 
     unmount()

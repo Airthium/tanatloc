@@ -27,9 +27,11 @@ jest.mock('../../avatar', () => ({
 
 const mockUserGet = jest.fn()
 const mockUserGetWithData = jest.fn()
+const mockUserUpdate = jest.fn()
 jest.mock('../../user', () => ({
   get: async (val: any) => mockUserGet(val),
-  getWithData: async () => mockUserGetWithData()
+  getWithData: async () => mockUserGetWithData(),
+  update: async () => mockUserUpdate()
 }))
 
 const mockGroupGet = jest.fn()
@@ -95,6 +97,7 @@ describe('lib/project', () => {
 
     mockUserGet.mockReset()
     mockUserGetWithData.mockReset()
+    mockUpdate.mockReset()
 
     mockGroupGet.mockReset()
     mockGroupGetWithData.mockReset()
@@ -233,27 +236,40 @@ describe('lib/project', () => {
   test('update', async () => {
     mockGet.mockImplementation(() => ({}))
     mockGroupGet.mockImplementation(() => ({ projects: [] }))
-    await Project.update({ id: 'id' }, [{ key: 'groups', value: ['id'] }])
-    expect(mockGet).toHaveBeenCalledTimes(1)
+    mockUserGet.mockImplementation(() => ({ projects: [] }))
+    await Project.update({ id: 'id' }, [
+      { key: 'groups', value: ['id'] },
+      { key: 'users', value: ['id'] }
+    ])
+    expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    // With groups
+    // With groups & users
     mockGet.mockImplementation(() => ({
-      groups: ['id1']
+      groups: ['id1'],
+      users: ['id1']
     }))
-    await Project.update({ id: 'id' }, [{ key: 'groups', value: ['id'] }])
-    expect(mockGet).toHaveBeenCalledTimes(2)
+
+    await Project.update({ id: 'id' }, [
+      { key: 'groups', value: ['id'] },
+      { key: 'users', value: ['id'] }
+    ])
+    expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
-    // No groups update
+    // No groups update, no users update
     await Project.update({ id: 'id' }, [])
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
 
-    // Already in group
+    // Already in group, already in users
     mockGroupGet.mockImplementation(() => ({ projects: ['id'] }))
-    await Project.update({ id: 'id' }, [{ key: 'groups', value: ['id'] }])
-    expect(mockGet).toHaveBeenCalledTimes(3)
+    mockUserGet.mockImplementation(() => ({ projects: ['id'] }))
+    await Project.update({ id: 'id' }, [
+      { key: 'groups', value: ['id'] },
+      { key: 'users', value: ['id'] }
+    ])
+    expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
 
     // Update title

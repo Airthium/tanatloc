@@ -170,7 +170,8 @@ describe('lib/workspace', () => {
   test('getByUser', async () => {
     // With workspaces, organizations & groups
     mockUserGet.mockImplementation(() => ({
-      workspaces: ['id', 'id']
+      workspaces: ['id', 'id'],
+      projects: ['id']
     }))
     mockOrganizationGetByUser.mockImplementation(() => [
       {
@@ -181,6 +182,7 @@ describe('lib/workspace', () => {
     mockGroupGet.mockImplementation(() => ({
       id: 'groupid',
       name: 'name',
+      users: ['id'],
       workspaces: ['id'],
       projects: ['projectid']
     }))
@@ -203,7 +205,8 @@ describe('lib/workspace', () => {
         owners: [
           {
             id: 'ownerid',
-            workspaces: ['id', 'id']
+            workspaces: ['id', 'id'],
+            projects: ['id']
           }
         ],
         users: [],
@@ -216,7 +219,8 @@ describe('lib/workspace', () => {
         owners: [
           {
             id: 'ownerid',
-            workspaces: ['id', 'id']
+            workspaces: ['id', 'id'],
+            projects: ['id']
           }
         ],
         users: [],
@@ -224,12 +228,22 @@ describe('lib/workspace', () => {
         projects: []
       },
       {
+        id: 'shared',
+        name: 'Shared projects',
+        owners: [],
+        users: [],
+        groups: [],
+        projects: ['id'],
+        archivedprojects: []
+      },
+      {
         id: 'id',
         name: 'name',
         owners: [
           {
             id: 'ownerid',
-            workspaces: ['id', 'id']
+            workspaces: ['id', 'id'],
+            projects: ['id']
           }
         ],
         users: [],
@@ -262,7 +276,11 @@ describe('lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
     // Without group data
-    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
+    mockGroupGet.mockImplementation(() => ({
+      workspaces: [],
+      projects: [],
+      users: ['id']
+    }))
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(8)
@@ -272,9 +290,12 @@ describe('lib/workspace', () => {
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
-    // Without groups
-    mockOrganizationGet.mockImplementation(() => ({}))
-    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
+    // Without group user
+    mockGroupGet.mockImplementation(() => ({
+      workspaces: [],
+      projects: [],
+      users: []
+    }))
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(10)
@@ -284,46 +305,70 @@ describe('lib/workspace', () => {
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
+    // Without groups
+    mockOrganizationGet.mockImplementation(() => ({}))
+    await Workspace.getByUser({ id: 'id' })
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(12)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(17)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
+
     // Without workspaces & organizations
     mockUserGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
 
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(10)
+    expect(mockGet).toHaveBeenCalledTimes(12)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(15)
+    expect(mockUserGet).toHaveBeenCalledTimes(18)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
   })
 
   test('update', async () => {
     mockGet.mockImplementation(() => ({}))
-    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
     await Workspace.update({ id: 'id' }, [])
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
-    // With groups
+    // With groups & users
+    mockGroupGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
+    mockUserGet.mockImplementation(() => ({ workspaces: [], projects: [] }))
     mockGet.mockImplementation(() => ({
-      groups: ['groupid']
+      groups: ['groupid'],
+      users: ['userid']
     }))
-    await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
+    await Workspace.update({ id: 'id' }, [
+      { key: 'groups', value: ['id1'] },
+      { key: 'users', value: ['id1'] }
+    ])
 
-    // Already in group
+    // Already in group & users
     mockGroupGet.mockImplementation(() => ({
       workspaces: ['id'],
       projects: []
     }))
-    mockGet.mockImplementation(() => ({
-      groups: ['groupid']
+    mockUserGet.mockImplementation(() => ({
+      workspaces: ['id'],
+      projects: []
     }))
-    await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
+    mockGet.mockImplementation(() => ({
+      groups: ['groupid'],
+      users: ['userid']
+    }))
+    await Workspace.update({ id: 'id' }, [
+      { key: 'groups', value: ['id1'] },
+      { key: 'users', value: ['id1'] }
+    ])
 
     // Update name
     await Workspace.update({ id: 'id' }, [{ key: 'name', value: 'name' }])

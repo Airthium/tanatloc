@@ -33,7 +33,10 @@ export interface IProps {
     IFrontWorkspacesItem,
     'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
   >
-  organizations: Pick<IFrontOrganizationsItem, 'id' | 'name' | 'groups'>[]
+  organizations: Pick<
+    IFrontOrganizationsItem,
+    'id' | 'name' | 'users' | 'owners' | 'groups'
+  >[]
   swr: {
     delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
@@ -75,11 +78,6 @@ const Workspace = ({
       loadingProjects
     }
   ] = ProjectAPI.useProjects(workspace?.projects)
-  const organizationsData = organizations.map((organization) => ({
-    id: organization.id,
-    name: organization.name,
-    groups: organization.groups
-  }))
 
   // Projects error
   useEffect(() => {
@@ -134,7 +132,7 @@ const Workspace = ({
                       groups: workspace.groups,
                       users: workspace.users
                     }}
-                    organizations={organizationsData}
+                    organizations={organizations}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
                     style={{ buttonDark: true, buttonBordered: true }}
                   />
@@ -154,15 +152,22 @@ const Workspace = ({
       >
         {workspace.users?.length || workspace.groups?.length ? (
           <div className="inWorkspace-shared">
-            <span className="marginRight-10">
-              This workspace is shared with:
-            </span>
-            <Avatar.Group maxCount={5}>
-              {workspace.users?.map((u) => Utils.userToAvatar(u))}
-            </Avatar.Group>
-            <Avatar.Group maxCount={5}>
-              {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
-            </Avatar.Group>
+            <div>
+              <span className="marginRight-10">Admin:</span>
+              <Avatar.Group maxCount={5}>
+                {workspace.owners?.map((u) => Utils.userToAvatar(u))}
+              </Avatar.Group>
+            </div>
+
+            <div>
+              <span className="marginRight-10">Shared with:</span>
+              <Avatar.Group maxCount={5}>
+                {workspace.users?.map((u) => Utils.userToAvatar(u))}
+              </Avatar.Group>
+              <Avatar.Group maxCount={5}>
+                {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
+              </Avatar.Group>
+            </div>
           </div>
         ) : null}
       </PageHeader>
@@ -184,7 +189,7 @@ const Workspace = ({
             projects: workspace.projects
           }}
           projects={projects}
-          organizations={organizationsData}
+          organizations={organizations}
           filter={filter}
           sorter={sorter}
           swr={{

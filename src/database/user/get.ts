@@ -18,6 +18,7 @@ export type TUserGet = (
   | 'password'
   | 'passwordlastchange'
   | 'organizations'
+  | 'projects'
   | 'workspaces'
   | 'authorizedplugins'
   | 'plugins'
@@ -35,6 +36,7 @@ export type TUserGetSuperuser = 'superuser'[]
 export type TUserGetPassword = 'password'[]
 export type TUserGetPasswordlastchange = 'passwordlastchange'[]
 export type TUserGetOrganizations = 'organizations'[]
+export type TUserGetProjects = 'projects'[]
 export type TUserGetWorkspaces = 'workspaces'[]
 export type TUserGetAuthorizedplugins = 'authorizedplugins'[]
 export type TUserGetPlugins = 'plugins'[]
@@ -55,6 +57,7 @@ export interface IUser<T = [], Key = 'id'> {
   password: TUserGetPassword extends T ? string : never
   passwordlastchanged: TUserGetPasswordlastchange extends T ? Date : never
   organizations?: TUserGetOrganizations extends T ? string[] : never[]
+  projects?: TUserGetWorkspaces extends T ? string[] : never[]
   workspaces?: TUserGetWorkspaces extends T ? string[] : never[]
   authorizedplugins?: TUserGetAuthorizedplugins extends T ? string[] : never[]
   plugins?: TUserGetPlugins extends T ? IClientPlugin[] : never[]

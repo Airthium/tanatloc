@@ -8,11 +8,12 @@ import {
   Checkbox,
   Layout,
   Menu,
+  Popover,
   Space,
   Steps,
   Typography
 } from 'antd'
-import { SettingOutlined } from '@ant-design/icons'
+import { BarsOutlined, SettingOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
 import { login } from '@/api/login'
@@ -20,6 +21,57 @@ import UserAPI from '@/api/user'
 
 import Side from '@/components/assets/side'
 import Footer from '@/components/footer'
+
+/**
+ * Scroll to view
+ * @param id
+ */
+const scrollToView = (id: string): void => {
+  const header = document.getElementById('header')
+  const target = document.getElementById(id)
+
+  const index = document.getElementById('index')
+  if (target && header) {
+    const y = target?.offsetTop - header?.offsetHeight - 10
+    index?.scrollTo?.({ top: y, behavior: 'smooth' })
+  }
+}
+
+const menuItems = [
+  {
+    key: 'features',
+    label: (
+      <Button type="text" onClick={() => scrollToView('features')}>
+        Features
+      </Button>
+    )
+  },
+  {
+    key: 'developers',
+    label: (
+      <Button type="text" onClick={() => scrollToView('developers')}>
+        Developers
+      </Button>
+    )
+  },
+  {
+    key: 'caseStudy',
+    label: (
+      <Button type="text" onClick={() => scrollToView('caseStudy')}>
+        Case Studies
+      </Button>
+    )
+  },
+  {
+    key: 'aboutUs',
+    label: (
+      <Button type="text" onClick={() => scrollToView('aboutUs')}>
+        About us
+      </Button>
+    )
+  }
+]
+
 /**
  * Index
  * @returns Index
@@ -43,19 +95,27 @@ const Index = (): JSX.Element => {
     }
   }, [router])
 
-  /**
-   * Scroll to view
-   * @param id
-   */
-  const scrollToView = (id: string): void => {
-    const header = document.getElementById('header')
-    const target = document.getElementById(id)
-
-    const index = document.getElementById('index')
-    if (target && header) {
-      const y = target?.offsetTop - header?.offsetHeight - 10
-      index?.scrollTo?.({ top: y, behavior: 'smooth' })
-    }
+  let loginButton = null
+  if (process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' && !loadingUser) {
+    if (user)
+      loginButton = (
+        <Button
+          type="primary"
+          className="Index-login-button"
+          onClick={() => router.push('/dashboard')}
+        >
+          Dashboard
+        </Button>
+      )
+    else
+      loginButton = (
+        <Button
+          className="Index-login-button"
+          onClick={() => router.push('/login')}
+        >
+          Login
+        </Button>
+      )
   }
 
   /**
@@ -65,73 +125,28 @@ const Index = (): JSX.Element => {
     <Layout id="index" className="Index">
       <Layout.Header id="header" className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Menu
-          mode="horizontal"
-          className="Index-Menu"
-          items={[
-            {
-              key: 'features',
-              label: (
-                <Button type="text" onClick={() => scrollToView('features')}>
-                  Features
-                </Button>
-              )
-            },
-            {
-              key: 'developers',
-              label: (
-                <Button type="text" onClick={() => scrollToView('developers')}>
-                  Developers
-                </Button>
-              )
-            },
-            {
-              key: 'caseStudy',
-              label: (
-                <Button type="text" onClick={() => scrollToView('caseStudy')}>
-                  Case Studies
-                </Button>
-              )
-            },
-            {
-              key: 'aboutUs',
-              label: (
-                <Button type="text" onClick={() => scrollToView('aboutUs')}>
-                  About us
-                </Button>
-              )
-            },
-            {
-              key: 'getStarted',
-              label: (
-                <Button
-                  type="primary"
-                  onClick={() => scrollToView('getStarted')}
-                >
-                  Get Started
-                </Button>
-              )
-            }
-          ]}
-        />
+        <Menu mode="horizontal" className="Index-Menu" items={menuItems} />
+        <div className="Index-Menu-mobile">
+          <Popover content={<Menu mode="inline" items={menuItems} />}>
+            <BarsOutlined style={{ fontSize: 32 }} />
+          </Popover>
+        </div>
 
-        {!loadingUser &&
-          (user ? (
-            <Button
-              type="primary"
-              className="Index-button"
-              onClick={() => router.push('/dashboard')}
-            >
-              Dashboard
-            </Button>
-          ) : (
-            <Button
-              className="Index-button"
-              onClick={() => router.push('/login')}
-            >
-              Login
-            </Button>
-          ))}
+        <Button
+          className="Index-getstarted"
+          type="primary"
+          onClick={() => {
+            if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
+              scrollToView('getStarted')
+            } else {
+              router.push('/signup')
+            }
+          }}
+        >
+          Get Started
+        </Button>
+
+        {loginButton}
       </Layout.Header>
 
       <Layout.Content className="Index-Content">
@@ -155,7 +170,13 @@ const Index = (): JSX.Element => {
                 <br />
                 <Button
                   type="primary"
-                  onClick={() => scrollToView('getStarted')}
+                  onClick={() => {
+                    if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
+                      scrollToView('getStarted')
+                    } else {
+                      router.push('/signup')
+                    }
+                  }}
                 >
                   Get Started
                 </Button>
@@ -322,10 +343,14 @@ const Index = (): JSX.Element => {
                   </Typography.Title>
                 </div>
                 <Typography.Text className="Index-text">
-                  DENSO is a leading automotive and Fortune 500 company. Hiroshi
-                  Ogawa, at DENSO’s Heat Exchanger R&D Division, implemented a
-                  custom FreeFEM model on TANATLOC with the help of Professor
-                  Atsushi Suzuki from Osaka University.
+                  DENSO is a leading Japanese automotive and Fortune 500
+                  company.
+                </Typography.Text>
+                <br />
+                <Typography.Text className="Index-text">
+                  Hiroshi Ogawa, at DENSO’s Heat Exchanger R&D Division,
+                  implemented a custom FreeFEM model on TANATLOC with the help
+                  of Professor Atsushi Suzuki from Osaka University.
                 </Typography.Text>
                 <br />
                 <Typography.Text className="Index-text">
@@ -333,8 +358,6 @@ const Index = (): JSX.Element => {
                   calculations are deployed seamlessly on the cloud or on
                   on-premise via the ANCL Sharetask plug-in.
                 </Typography.Text>
-                {/* <br />
-                <Button type="primary">See more of Tanatloc</Button> */}
               </>
             }
             right={<img src="images/indexpage/denso.jpg" alt="tanatloc" />}

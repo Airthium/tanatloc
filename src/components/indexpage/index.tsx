@@ -1,7 +1,7 @@
 /** @module Components.Index2 */
 
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import {
   Avatar,
   Button,
@@ -95,6 +95,18 @@ const Index = (): JSX.Element => {
     }
   }, [router])
 
+  /**
+   * Get started
+   */
+  const getStarted = useCallback(() => {
+    if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
+      scrollToView('getStarted')
+    } else {
+      router.push('/signup')
+    }
+  }, [router])
+
+  // Login button
   let loginButton = null
   if (process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' && !loadingUser) {
     if (user)
@@ -135,13 +147,7 @@ const Index = (): JSX.Element => {
         <Button
           className="Index-getstarted"
           type="primary"
-          onClick={() => {
-            if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
-              scrollToView('getStarted')
-            } else {
-              router.push('/signup')
-            }
-          }}
+          onClick={getStarted}
         >
           Get Started
         </Button>
@@ -168,16 +174,7 @@ const Index = (): JSX.Element => {
                   your needs.
                 </Typography.Text>
 
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
-                      scrollToView('getStarted')
-                    } else {
-                      router.push('/signup')
-                    }
-                  }}
-                >
+                <Button type="primary" onClick={getStarted}>
                   Get Started
                 </Button>
               </Space>

@@ -153,21 +153,21 @@ const Index = (): JSX.Element => {
         <Space direction="vertical" size={90} className="full-width">
           <Side
             left={
-              <>
-                <Typography.Title>
+              <Space direction="vertical" size={20}>
+                <Typography.Title style={{ marginBottom: 0 }}>
                   Solve your toughest numerical simulation problems
                 </Typography.Title>
                 <Typography.Text className="Index-text">
                   Tanatloc is a multi-physics FEA software for engineers and
                   researchers.
                 </Typography.Text>
-                <br />
+
                 <Typography.Text className="Index-text">
                   Use the provided models for the most common problems, make
                   your own, or partner with our experts to build one tailored to
                   your needs.
                 </Typography.Text>
-                <br />
+
                 <Button
                   type="primary"
                   onClick={() => {
@@ -180,7 +180,7 @@ const Index = (): JSX.Element => {
                 >
                   Get Started
                 </Button>
-              </>
+              </Space>
             }
             right={
               <img
@@ -335,30 +335,35 @@ const Index = (): JSX.Element => {
 
           <Side
             left={
-              <>
+              <Space direction="vertical" size={20}>
                 <div>
                   <Typography.Title level={2}>Case Study</Typography.Title>
-                  <Typography.Title level={3} className="text-light">
+                  <Typography.Title
+                    level={3}
+                    className="text-light"
+                    style={{ marginBottom: 0 }}
+                  >
                     DENSO
                   </Typography.Title>
                 </div>
+
                 <Typography.Text className="Index-text">
                   DENSO is a leading Japanese automotive and Fortune 500
                   company.
                 </Typography.Text>
-                <br />
+
                 <Typography.Text className="Index-text">
                   Hiroshi Ogawa, at DENSO’s Heat Exchanger R&D Division,
                   implemented a custom FreeFEM model on TANATLOC with the help
                   of Professor Atsushi Suzuki from Osaka University.
                 </Typography.Text>
-                <br />
+
                 <Typography.Text className="Index-text">
                   DENSO’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
                   on-premise via the ANCL Sharetask plug-in.
                 </Typography.Text>
-              </>
+              </Space>
             }
             right={<img src="images/indexpage/denso.jpg" alt="tanatloc" />}
             className="Index-casestudy"
@@ -444,13 +449,13 @@ const Index = (): JSX.Element => {
               />
             }
             right={
-              <>
+              <Space direction="vertical" size={20}>
                 <Typography.Text className="Index-text">
                   TANATLOC is maintained by Airthium, a US/France based deeptech
                   startup. We build a very robust and highly efficient electric
                   heat engine to decarbonise the planet.
                 </Typography.Text>
-                <br />
+
                 <a
                   href="https://airthium.com/"
                   target="_blank"
@@ -458,7 +463,7 @@ const Index = (): JSX.Element => {
                 >
                   <Button type="primary">Discover the project</Button>
                 </a>
-              </>
+              </Space>
             }
             top={
               <Side

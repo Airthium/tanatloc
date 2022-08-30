@@ -60,16 +60,21 @@
 }
 
 .Index-plugins {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  width: 100%;
+  column-width: 160px;
+  column-gap: 0;
 }
 
 .Index-plugins > div {
+  break-inside: avoid-column;
+  page-break-inside: avoid;
+  width: 160px;
+  max-width: 160px;
+  height: 160px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 160px;
   text-align: center;
 }
 

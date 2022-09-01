@@ -13,6 +13,7 @@ import {
   Steps,
   Typography
 } from 'antd'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { BarsOutlined, SettingOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
@@ -36,41 +37,6 @@ const scrollToView = (id: string): void => {
     index?.scrollTo?.({ top: y, behavior: 'smooth' })
   }
 }
-
-const menuItems = [
-  {
-    key: 'features',
-    label: (
-      <Button type="text" onClick={() => scrollToView('features')}>
-        Features
-      </Button>
-    )
-  },
-  {
-    key: 'developers',
-    label: (
-      <Button type="text" onClick={() => scrollToView('developers')}>
-        Developers
-      </Button>
-    )
-  },
-  {
-    key: 'caseStudy',
-    label: (
-      <Button type="text" onClick={() => scrollToView('caseStudy')}>
-        Case Studies
-      </Button>
-    )
-  },
-  {
-    key: 'aboutUs',
-    label: (
-      <Button type="text" onClick={() => scrollToView('aboutUs')}>
-        About us
-      </Button>
-    )
-  }
-]
 
 /**
  * Index
@@ -106,6 +72,15 @@ const Index = (): JSX.Element => {
     }
   }, [router])
 
+  // Get started button
+  let getStartedButton = null
+  if (!user)
+    getStartedButton = (
+      <Button className="Index-getstarted" type="primary" onClick={getStarted}>
+        Get Started
+      </Button>
+    )
+
   // Login button
   let loginButton = null
   if (process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' && !loadingUser) {
@@ -130,6 +105,44 @@ const Index = (): JSX.Element => {
       )
   }
 
+  const menuItems = [
+    {
+      key: 'features',
+      label: (
+        <Button type="text" onClick={() => scrollToView('features')}>
+          Features
+        </Button>
+      )
+    },
+    {
+      key: 'developers',
+      label: (
+        <Button type="text" onClick={() => scrollToView('developers')}>
+          Developers
+        </Button>
+      )
+    },
+    {
+      key: 'caseStudy',
+      label: (
+        <Button type="text" onClick={() => scrollToView('caseStudy')}>
+          Case Studies
+        </Button>
+      )
+    },
+    {
+      key: 'aboutUs',
+      label: (
+        <Button type="text" onClick={() => scrollToView('aboutUs')}>
+          About us
+        </Button>
+      )
+    },
+    !user && { key: 'getStarted', label: getStartedButton },
+    process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' &&
+      !loadingUser && { key: 'login', label: loginButton }
+  ].filter((m) => m) as ItemType[]
+
   /**
    * Render
    */
@@ -139,19 +152,15 @@ const Index = (): JSX.Element => {
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Menu mode="horizontal" className="Index-Menu" items={menuItems} />
         <div className="Index-Menu-mobile">
-          <Popover content={<Menu mode="inline" items={menuItems} />}>
+          <Popover
+            content={<Menu mode="inline" items={menuItems} />}
+            placement="leftBottom"
+          >
             <BarsOutlined style={{ fontSize: 32 }} />
           </Popover>
         </div>
 
-        <Button
-          className="Index-getstarted"
-          type="primary"
-          onClick={getStarted}
-        >
-          Get Started
-        </Button>
-
+        {getStartedButton}
         {loginButton}
       </Layout.Header>
 

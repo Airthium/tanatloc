@@ -19,3 +19,5 @@
 - deploy without mail server, go to login after signup, not in /send
 
 ## Bugs
+
+- dxf import multiple parts

@@ -57,8 +57,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenLastCalledWith('/dashboard')
+    expect(mockPush).toHaveBeenCalledTimes(3)
 
     unmount()
   })
@@ -70,8 +69,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenLastCalledWith('/login')
+    expect(mockPush).toHaveBeenCalledTimes(5)
 
     unmount()
   })
@@ -82,6 +80,17 @@ describe('components/indexpage', () => {
 
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
+
+    unmount()
+  })
+
+  test('server mode', () => {
+    mockUser.mockImplementation(() => undefined)
+    process.env.NEXT_PUBLIC_SERVER_MODE = 'frontpage'
+    const { unmount } = render(<Index />)
+
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
 
     unmount()
   })

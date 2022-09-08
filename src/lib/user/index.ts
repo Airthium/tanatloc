@@ -94,9 +94,12 @@ const decrypt = async (plugins: IClientPlugin[]): Promise<IClientPlugin[]> => {
       for (const key in plugin.configuration) {
         const config = plugin.configuration[key]
         if (config.secret && config.value) {
-          plugin.configuration[key].value = await Tools.decrypt(
-            JSON.parse(config.value)
-          )
+          try {
+            const valueJSON = JSON.parse(config.value)
+            plugin.configuration[key].value = await Tools.decrypt(valueJSON)
+          } catch (err) {
+            plugin.configuration[key].value = config.value
+          }
         }
       }
       return plugin

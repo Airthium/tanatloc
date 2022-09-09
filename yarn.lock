@@ -7822,10 +7822,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-native@https://github.com/Airthium/pg-native.git#3.0.1":
+"pg-native@https://github.com/Airthium/pg-native.git#3.0.0":
   version: 3.0.0
-  resolution: "pg-native@https://github.com/Airthium/pg-native.git#commit=022d72db62b6d5b7d9591766c7f78c428404857e"
-  checksum: 2a8c0a1f104dde50046ff1e685644922ff510b4c3f6c038e88880dbd043d715f6151f4444bb6cd900eb46cbb079d2734772e6a3622f1e79c106855f4728b79ce
+  resolution: "pg-native@https://github.com/Airthium/pg-native.git#commit=b867f98612501b4f4274535e78f1791691560011"
+  checksum: 40f2d2609537447585faf6d0fb7d335d679c0f40b3df462b0eaa30149f0d9fa64ebd2fde20c0dcc3c8ee2f67a0db8bf801b79363f2252f360559e585fa5657ec
   languageName: node
   linkType: hard
 
@@ -9939,7 +9939,7 @@ __metadata:
     passport-local: 1.0.0
     pg: 8.8.0
     pg-format: "https://github.com/Airthium/pg-format.git#1.0.8"
-    pg-native: "https://github.com/Airthium/pg-native.git#3.0.1"
+    pg-native: "https://github.com/Airthium/pg-native.git#3.0.0"
     prettier: 2.7.1
     prop-types: 15.8.1
     react: 18.2.0

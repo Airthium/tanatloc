@@ -101,7 +101,7 @@
     "passport-local": "1.0.0",
     "pg": "8.8.0",
     "pg-format": "https://github.com/Airthium/pg-format.git#1.0.8",
-    "pg-native": "https://github.com/Airthium/pg-native.git#3.0.1",
+    "pg-native": "https://github.com/Airthium/pg-native.git#3.0.0",
     "prettier": "2.7.1",
     "prop-types": "15.8.1",
     "react": "18.2.0",

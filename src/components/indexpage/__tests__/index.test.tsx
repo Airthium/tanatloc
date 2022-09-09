@@ -57,7 +57,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(3)
+    expect(mockPush).toHaveBeenCalledTimes(6)
 
     unmount()
   })
@@ -69,7 +69,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(5)
+    expect(mockPush).toHaveBeenCalledTimes(8)
 
     unmount()
   })

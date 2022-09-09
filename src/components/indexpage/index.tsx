@@ -251,7 +251,7 @@ const Index = (): JSX.Element => {
           />
 
           <div id="developers">
-            <>
+            <div className=" padding-50">
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
@@ -317,7 +317,7 @@ const Index = (): JSX.Element => {
                   </Typography.Text>
                 </div>
               </div>
-            </>
+            </div>
             <img
               src="images/indexpage/capture2.png"
               alt="tanatloc"

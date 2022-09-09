@@ -18,6 +18,10 @@ then
     git merge dev
     git push
 
+    git checkout front
+    git merge dev
+    git push
+
     git checkout master
     git merge dev
     git push

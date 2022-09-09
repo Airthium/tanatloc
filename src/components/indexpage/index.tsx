@@ -443,7 +443,7 @@ const Index = (): JSX.Element => {
                       type="primary"
                       onClick={() =>
                         router.push(
-                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0-beta.11/Tanatloc.Setup.1.0.0-beta.11.exe'
+                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc.Setup.1.0.0.exe'
                         )
                       }
                     >
@@ -454,7 +454,7 @@ const Index = (): JSX.Element => {
                       type="primary"
                       onClick={() =>
                         router.push(
-                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0-beta.11/Tanatloc-1.0.0-beta.11.dmg'
+                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.dmg'
                         )
                       }
                     >
@@ -465,7 +465,7 @@ const Index = (): JSX.Element => {
                       type="primary"
                       onClick={() =>
                         router.push(
-                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0-beta.11/Tanatloc-1.0.0-beta.11.AppImage'
+                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.AppImage'
                         )
                       }
                     >

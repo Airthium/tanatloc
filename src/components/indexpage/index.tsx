@@ -250,94 +250,80 @@ const Index = (): JSX.Element => {
             id="features"
           />
 
-          <Side
-            left={
-              <img
-                src="images/indexpage/capture2.png"
-                alt="tanatloc"
-                className="img-shadow"
-              />
-            }
-            right={
-              <>
-                <Typography.Title level={2}>
-                  Solve your numerical problems locally or in the cloud, using
-                  dedicated plugins
-                </Typography.Title>
-                <div className="Index-plugins">
-                  <div>
-                    <Avatar
-                      size={64}
-                      shape="square"
-                      src="images/indexpage/logo-rescale.svg"
-                    />
-                    <Typography.Title level={4}>Rescale</Typography.Title>
-                    <Typography.Text className="text-light">
-                      Paid feature
-                    </Typography.Text>
-                    <a href="mailto:contact@airthium.com">
-                      <Button type="link">Contact us</Button>
-                    </a>
-                  </div>
-                  <div>
-                    <Avatar
-                      size={64}
-                      shape="square"
-                      src="images/indexpage/logo-ancl.jpg"
-                    />
-                    <Typography.Title level={4}>
-                      ANCL Sharetask
-                    </Typography.Title>
-                    <Typography.Text className="text-light">
-                      Paid feature
-                    </Typography.Text>
-                    <a href="mailto:contact@airthium.com">
-                      <Button type="link">Contact us</Button>
-                    </a>
-                  </div>
-                  <div>
-                    <Avatar
-                      size={64}
-                      shape="square"
-                      src="images/indexpage/logo-slurm.svg"
-                    />
-                    <Typography.Title level={4}>Slurm</Typography.Title>
-                    <Typography.Text className="text-light">
-                      Upcoming
-                    </Typography.Text>
-                  </div>
-                  <div>
-                    <Avatar
-                      size={64}
-                      shape="square"
-                      src="images/indexpage/logo-qarnot.svg"
-                    />
-                    <Typography.Title level={4}>
-                      Qarnot Computing
-                    </Typography.Title>
-                    <Typography.Text className="text-light">
-                      Upcoming
-                    </Typography.Text>
-                  </div>
-                  <div>
-                    <Avatar
-                      size={64}
-                      shape="square"
-                      icon={<SettingOutlined />}
-                    />
-                    <Typography.Title level={4}>
-                      Your own plugin
-                    </Typography.Title>
-                    <Typography.Text className="text-light">
-                      Paid feature
-                    </Typography.Text>
-                  </div>
+          <div id="developers">
+            <>
+              <Typography.Title level={2}>
+                Solve your numerical problems locally or in the cloud, using
+                dedicated plugins
+              </Typography.Title>
+              <div className="Index-plugins">
+                <div>
+                  <Avatar
+                    size={64}
+                    shape="square"
+                    src="images/indexpage/logo-rescale.svg"
+                  />
+                  <Typography.Title level={4}>Rescale</Typography.Title>
+                  <Typography.Text className="text-light">
+                    Paid feature
+                  </Typography.Text>
+                  <a href="mailto:contact@airthium.com">
+                    <Button type="link">Contact us</Button>
+                  </a>
                 </div>
-              </>
-            }
-            rightClassName="Index-padding-50"
-            id="developers"
-          />
+                <div>
+                  <Avatar
+                    size={64}
+                    shape="square"
+                    src="images/indexpage/logo-ancl.jpg"
+                  />
+                  <Typography.Title level={4}>ANCL Sharetask</Typography.Title>
+                  <Typography.Text className="text-light">
+                    Paid feature
+                  </Typography.Text>
+                  <a href="mailto:contact@airthium.com">
+                    <Button type="link">Contact us</Button>
+                  </a>
+                </div>
+                <div>
+                  <Avatar
+                    size={64}
+                    shape="square"
+                    src="images/indexpage/logo-slurm.svg"
+                  />
+                  <Typography.Title level={4}>Slurm</Typography.Title>
+                  <Typography.Text className="text-light">
+                    Upcoming
+                  </Typography.Text>
+                </div>
+                <div>
+                  <Avatar
+                    size={64}
+                    shape="square"
+                    src="images/indexpage/logo-qarnot.svg"
+                  />
+                  <Typography.Title level={4}>
+                    Qarnot Computing
+                  </Typography.Title>
+                  <Typography.Text className="text-light">
+                    Upcoming
+                  </Typography.Text>
+                </div>
+                <div>
+                  <Avatar size={64} shape="square" icon={<SettingOutlined />} />
+                  <Typography.Title level={4}>Your own plugin</Typography.Title>
+                  <Typography.Text className="text-light">
+                    Paid feature
+                  </Typography.Text>
+                </div>
+              </div>
+            </>
+            <img
+              src="images/indexpage/capture2.png"
+              alt="tanatloc"
+              className="img-shadow"
+            />
+          </div>
 
           <Side
             left={
@@ -371,9 +357,15 @@ const Index = (): JSX.Element => {
                 </Typography.Text>
               </Space>
             }
-            right={<img src="images/indexpage/denso.jpg" alt="tanatloc" />}
+            right={
+              <img
+                src="images/indexpage/denso.jpg"
+                alt="tanatloc"
+                className="Index-case-study Index-padding-50"
+              />
+            }
             className="Index-casestudy"
-            leftClassName="Index-casestudy-left Index-padding-50"
+            leftClassName="Index-casestudy-left Index-padding-50 full-width"
             rightClassName="Index-casestudy-right"
             id="caseStudy"
           />

@@ -3,7 +3,7 @@ name: FrontPage
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   deploy:

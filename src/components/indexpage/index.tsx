@@ -439,7 +439,39 @@ const Index = (): JSX.Element => {
                   <>
                     Download the latest app for Linux, MacOS or Windows.
                     <br />
-                    <Button type="primary">Upcoming</Button>
+                    <Button
+                      type="primary"
+                      onClick={() =>
+                        router.push(
+                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0-beta.11/Tanatloc.Setup.1.0.0-beta.11.exe'
+                        )
+                      }
+                    >
+                      <img src="/images/indexpage/windows.svg" alt="" />
+                      Windows
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() =>
+                        router.push(
+                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0-beta.11/Tanatloc-1.0.0-beta.11.dmg'
+                        )
+                      }
+                    >
+                      <img src="/images/indexpage/MacOS.svg" alt="" />
+                      MacOS
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() =>
+                        router.push(
+                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0-beta.11/Tanatloc-1.0.0-beta.11.AppImage'
+                        )
+                      }
+                    >
+                      <img src="/images/indexpage/Linux.svg" alt="" />
+                      Linux
+                    </Button>
                   </>
                 }
                 status="process"

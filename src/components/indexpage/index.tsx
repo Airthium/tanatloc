@@ -117,7 +117,10 @@ const Index = (): JSX.Element => {
     {
       key: 'developers',
       label: (
-        <Button type="text" onClick={() => scrollToView('developers')}>
+        <Button
+          type="text"
+          onClick={() => window.open('https://github.com/Airthium', '_blank')}
+        >
           Developers
         </Button>
       )
@@ -302,9 +305,7 @@ const Index = (): JSX.Element => {
                     shape="square"
                     src="images/indexpage/logo-qarnot.svg"
                   />
-                  <Typography.Title level={4}>
-                    Qarnot Computing
-                  </Typography.Title>
+                  <Typography.Title level={4}>Qarnot HPC</Typography.Title>
                   <Typography.Text className="text-light">
                     Upcoming
                   </Typography.Text>
@@ -353,7 +354,7 @@ const Index = (): JSX.Element => {
                 <Typography.Text className="Index-text">
                   DENSO’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
-                  on-premise via the ANCL Sharetask plug-in.
+                  on-premise server via the ANCL Sharetask plug-in.
                 </Typography.Text>
               </Space>
             }

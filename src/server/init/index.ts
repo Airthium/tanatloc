@@ -1,7 +1,28 @@
+import { execSync } from 'child_process'
+
 import { loadPlugins, restartJobs } from '@/lib/plugins'
 import { loadTemplates } from '@/lib/template'
 
 import { initDatabase } from './database'
+
+/**
+ * Init dockers
+ */
+export const initDockers = async (): Promise<void> => {
+  // tanatloc/worker
+  try {
+    execSync('docker image inspect tanatloc/worker')
+  } catch (err) {
+    execSync('docker pull tanatloc/worker')
+  }
+
+  // postgres
+  try {
+    execSync('docker image inspect postgres')
+  } catch (err) {
+    execSync('docker pull postgres')
+  }
+}
 
 /**
  * Init plugins
@@ -44,6 +65,9 @@ export const initTemplates = async (): Promise<void> => {
  * Init
  */
 const init = async (): Promise<void> => {
+  // Check dockers
+  await initDockers()
+
   // Start database
   await initDatabase()
 

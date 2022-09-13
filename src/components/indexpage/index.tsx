@@ -8,6 +8,7 @@ import {
   Checkbox,
   Layout,
   Menu,
+  Modal,
   Popover,
   Space,
   Steps,
@@ -70,6 +71,111 @@ const Index = (): JSX.Element => {
     } else {
       router.push('/signup')
     }
+  }, [router])
+
+  /**
+   * On Windows download
+   */
+  const onWindowsDownload = useCallback(() => {
+    Modal.confirm({
+      title: 'Windows',
+      content: (
+        <>
+          Before run Tanatloc, make sure:
+          <ul>
+            <li>
+              docker daemon is running (you must restart your computer after
+              docker install)
+            </li>
+            <li>
+              <Typography.Text code>tanatloc/worker</Typography.Text> Docker
+              image is available
+            </li>
+            <li>
+              <Typography.Text code>postgres</Typography.Text> Docker image is
+              available
+            </li>
+          </ul>
+        </>
+      ),
+      okText: 'Download',
+      onOk: () =>
+        router.push(
+          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc.Setup.1.0.0.exe'
+        )
+    })
+  }, [router])
+
+  /**
+   * On MacOS download
+   */
+  const onMacOSDownload = useCallback(() => {
+    Modal.confirm({
+      title: 'MacOS',
+      content: (
+        <>
+          Before run Tanatloc, make sure:
+          <ul>
+            <li>
+              docker daemon is running (you must restart your computer after
+              docker install)
+            </li>
+            <li>
+              <Typography.Text code>tanatloc/worker</Typography.Text> Docker
+              image is available
+            </li>
+            <li>
+              <Typography.Text code>postgres</Typography.Text> Docker image is
+              available
+            </li>
+          </ul>
+        </>
+      ),
+      okText: 'Download',
+      onOk: () =>
+        router.push(
+          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.dmg'
+        )
+    })
+  }, [router])
+
+  /**
+   * On Linux download
+   */
+  const onLinuxDownload = useCallback(() => {
+    Modal.confirm({
+      title: 'Linux',
+      content: (
+        <>
+          Before run Tanatloc, make sure:
+          <ul>
+            <li>
+              docker daemon is running (you must restart your computer after
+              docker install)
+            </li>
+            <li>
+              <Typography.Text code>tanatloc/worker</Typography.Text> Docker
+              image is available
+            </li>
+            <li>
+              <Typography.Text code>postgres</Typography.Text> Docker image is
+              available
+            </li>
+            <li>
+              Allow execution of the AppImage using{' '}
+              <Typography.Text code>
+                chmod +x ./Tanatloc-x.x.x.AppImage
+              </Typography.Text>
+            </li>
+          </ul>
+        </>
+      ),
+      okText: 'Download',
+      onOk: () =>
+        router.push(
+          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.AppImage'
+        )
+    })
   }, [router])
 
   // Get started button
@@ -395,6 +501,7 @@ const Index = (): JSX.Element => {
                     >
                       docs.docker.com/get-docker
                     </a>
+                    . Then, restart your computer.
                   </>
                 }
                 status="process"
@@ -432,36 +539,15 @@ const Index = (): JSX.Element => {
                   <>
                     Download the latest app for Linux, MacOS or Windows.
                     <br />
-                    <Button
-                      type="primary"
-                      onClick={() =>
-                        router.push(
-                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc.Setup.1.0.0.exe'
-                        )
-                      }
-                    >
+                    <Button type="primary" onClick={onWindowsDownload}>
                       <img src="/images/indexpage/windows.svg" alt="" />
                       Windows
                     </Button>
-                    <Button
-                      type="primary"
-                      onClick={() =>
-                        router.push(
-                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.dmg'
-                        )
-                      }
-                    >
+                    <Button type="primary" onClick={onMacOSDownload}>
                       <img src="/images/indexpage/MacOS.svg" alt="" />
                       MacOS
                     </Button>
-                    <Button
-                      type="primary"
-                      onClick={() =>
-                        router.push(
-                          'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.AppImage'
-                        )
-                      }
-                    >
+                    <Button type="primary" onClick={onLinuxDownload}>
                       <img src="/images/indexpage/Linux.svg" alt="" />
                       Linux
                     </Button>

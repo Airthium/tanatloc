@@ -40,7 +40,7 @@ else
     docker restart ${id}
 fi
 export DB_ADMIN_PASSWORD=password
-export DB_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}"))
+export DB_HOST=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}"))
 ```
 
 - `yarn`

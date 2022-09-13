@@ -1,4 +1,5 @@
 ![Node](https://github.com/Airthium/tanatloc/workflows/Node/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Airthium_tanatloc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
 
 # Tanatloc
 

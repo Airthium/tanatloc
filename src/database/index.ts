@@ -44,21 +44,32 @@ export const checkdB = async (): Promise<boolean> => {
       'docker container ls -a --filter "name=tanatloc-postgres" -q'
     )
 
+    if (id.length)
+      console.info(
+        'Tanatloc postgres docker already exists (' + id.toString().trim() + ')'
+      )
+
     if (!id.length) {
       id = execSync(
         'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -d postgres'
       )
-    }
 
-    if (!id.length) throw new Error()
+      if (!id.length)
+        throw new Error('Unable to create Tanatloc postgres docker')
+
+      console.info(
+        'Tanatloc postgres docker created (' + id.toString().trim() + ')'
+      )
+    }
 
     // Restart docker container
     execSync('docker restart ' + id.toString())
 
     // Get docker host
     const host = execSync(
-      'docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
+      'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
     )
+    console.info('docker host: ' + host.toString())
     process.env.DB_HOST = host.toString().replace('\n', '')
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')

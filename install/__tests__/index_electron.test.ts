@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import '..'
+import main from '..'
 
 jest.mock('is-electron', () => () => true)
 
@@ -17,7 +17,7 @@ jest.mock('../createPaths', () => ({
 }))
 
 describe('install', () => {
-  test('call', () => {
-    // Empty
+  test('call', async () => {
+    await main()
   })
 })

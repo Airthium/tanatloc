@@ -59,7 +59,9 @@ describe('install/dB', () => {
 
   test('database error', async () => {
     mockClient.mockImplementation(() => ({}))
-    await createDatabase()
+    try {
+      await createDatabase()
+    } catch (err) {}
   })
 
   test('empty', async () => {
@@ -144,6 +146,8 @@ describe('install/dB', () => {
     mockQuery.mockImplementation(() => {
       throw new Error()
     })
-    await createDatabase()
+    try {
+      await createDatabase()
+    } catch (err) {}
   })
 })

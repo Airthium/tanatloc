@@ -111,6 +111,7 @@ export const createDatabase = async (): Promise<void> => {
   } catch (err) {
     console.error('dB creation failed!')
     console.error(err)
+    throw err
   } finally {
     //@ts-ignore
     Object.defineProperty(global.tanatloc, 'complete', { value: true })
@@ -174,6 +175,7 @@ const createTables = async (): Promise<void> => {
   } catch (err) {
     console.error('dB tables creation failed!')
     console.error(err)
+    throw err
   }
 }
 

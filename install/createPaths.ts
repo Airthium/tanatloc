@@ -35,6 +35,7 @@ const createPath = async (path: string): Promise<void> => {
       console.warn(' ⚠ ' + path + ' directory already exists')
     } else {
       console.error(' ⚠ Unable to create ' + path)
+      throw err
     }
   }
 }

@@ -31,13 +31,14 @@ const Simple = (): JSX.Element => {
 
 export interface IProps {
   text?: string | React.ReactElement | React.ReactElement[]
+  description?: string | React.ReactElement | React.ReactElement[]
 }
 
 /**
  * Loading
  * @returns Loading
  */
-const Loading = ({ text }: IProps): JSX.Element => {
+const Loading = ({ text, description }: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -47,9 +48,12 @@ const Loading = ({ text }: IProps): JSX.Element => {
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>
       <Card className="Loading">
-        <Space>
-          <Spin size="large" />
-          {text ?? 'Loading, please wait...'}
+        <Space direction="vertical">
+          <Space>
+            <Spin size="large" />
+            {text ?? 'Loading, please wait...'}
+          </Space>
+          {description}
         </Space>
       </Card>
     </Layout>

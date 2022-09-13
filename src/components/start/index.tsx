@@ -27,7 +27,6 @@ const Start = () => {
         }
         description={status}
       />
-      {status}
     </>
   )
 }

@@ -22,6 +22,9 @@ const main = async (): Promise<void> => {
   }
 }
 
-main()
-  .then(() => console.info('End.'))
-  .catch((err) => console.error(err))
+if (!isElectron())
+  main()
+    .then(() => console.info('End.'))
+    .catch((err) => console.error(err))
+
+export default main

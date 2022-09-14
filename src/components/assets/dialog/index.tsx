@@ -80,7 +80,7 @@ const Dialog = ({
       title={
         <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
       }
-      visible={visible}
+      open={visible}
       closable={false}
       maskClosable={false}
       onCancel={

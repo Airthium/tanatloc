@@ -85,25 +85,31 @@ const Administration = (): JSX.Element => {
         <Tabs
           className="inDashboard-Tabs"
           type="card"
+          items={[
+            {
+              key: tabItems.users.key,
+              label: tabItems.users.label,
+              children: (
+                <Users
+                  users={users}
+                  swr={{ addOneUser, mutateOneUser, delOneUser }}
+                />
+              )
+            },
+            {
+              key: tabItems.registration.key,
+              label: tabItems.registration.label,
+              children: <Registration />
+            },
+            {
+              key: tabItems.plugins.key,
+              label: tabItems.plugins.label,
+              children: <Plugins />
+            }
+          ]}
           defaultActiveKey={tab || 'default'}
           onChange={(key) => onChange(router, key)}
-        >
-          <Tabs.TabPane tab={tabItems.users.label} key={tabItems.users.key}>
-            <Users
-              users={users}
-              swr={{ addOneUser, mutateOneUser, delOneUser }}
-            />
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab={tabItems.registration.label}
-            key={tabItems.registration.key}
-          >
-            <Registration />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab={tabItems.plugins.label} key={tabItems.plugins.key}>
-            <Plugins />
-          </Tabs.TabPane>
-        </Tabs>
+        />
       </Layout.Content>
     </Layout>
   )

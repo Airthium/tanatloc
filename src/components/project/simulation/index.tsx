@@ -170,7 +170,7 @@ const Selector = ({
    */
   return (
     <Modal
-      visible={visible}
+      open={visible}
       title="Create simulation"
       okText="Create"
       okButtonProps={{ loading: loading }}
@@ -299,7 +299,7 @@ const Updater = ({
             Update
           </>
         }
-        visible={needUpdate}
+        open={needUpdate}
         onOk={async () => {
           setLoading(true)
           try {

@@ -422,7 +422,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
         Pick a material
       </Button>
       <Modal
-        visible={visible}
+        open={visible}
         title="Material database"
         onCancel={() => setVisible(false)}
         onOk={() => onMaterialSelect(current!)}

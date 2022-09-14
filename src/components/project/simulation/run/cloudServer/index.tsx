@@ -69,7 +69,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   return (
     <Card size="small" title="Computational resource">
       <Modal
-        visible={visible}
+        open={visible}
         title="Computational resource"
         okButtonProps={{
           disabled: true,

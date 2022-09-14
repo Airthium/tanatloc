@@ -79,85 +79,94 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
     <>
       <Drawer
         title="Log"
-        visible={visible}
+        open={visible}
         onClose={() => setVisible(false)}
         width="50%"
       >
-        <Tabs>
-          {steps?.map((step) => (
-            <Tabs.TabPane tab={step.label} key={step.label}>
-              {step.systemLog && (
-                <>
-                  <Button
-                    loading={loading}
-                    onClick={async () => {
-                      setLoading(true)
-                      try {
-                        await getCompleteLog(simulation, step)
-                      } catch (err) {
-                      } finally {
-                        setLoading(false)
+        <Tabs
+          items={steps?.map((step) => ({
+            key: step.label,
+            label: step.label,
+            children: (
+              <>
+                {step.systemLog && (
+                  <>
+                    <Button
+                      loading={loading}
+                      onClick={async () => {
+                        setLoading(true)
+                        try {
+                          await getCompleteLog(simulation, step)
+                        } catch (err) {
+                        } finally {
+                          setLoading(false)
+                        }
+                      }}
+                    >
+                      Complete log
+                    </Button>
+                    <br />
+                  </>
+                )}
+                {step.link && (
+                  <>
+                    <a
+                      href={'https://' + step.link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Button type="primary">{step.link.label}</Button>
+                    </a>
+                    <br />
+                  </>
+                )}
+                <Collapse ghost>
+                  {step.warning && (
+                    <Collapse.Panel
+                      key="warnings"
+                      className="warning-collapse"
+                      header={
+                        <Typography.Text type="warning">
+                          Warnings
+                        </Typography.Text>
                       }
-                    }}
-                  >
-                    Complete log
-                  </Button>
-                  <br />
-                </>
-              )}
-              {step.link && (
-                <>
-                  <a
-                    href={'https://' + step.link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Button type="primary">{step.link.label}</Button>
-                  </a>
-                  <br />
-                </>
-              )}
-              <Collapse ghost>
-                {step.warning && (
-                  <Collapse.Panel
-                    key="warnings"
-                    className="warning-collapse"
-                    header={
-                      <Typography.Text type="warning">Warnings</Typography.Text>
-                    }
-                  >
-                    {parse(
-                      step.warning
-                        .replace(/\n\n/g, '\n')
-                        .replace(/\n/g, '<br />')
-                    )}
-                  </Collapse.Panel>
+                    >
+                      {parse(
+                        step.warning
+                          .replace(/\n\n/g, '\n')
+                          .replace(/\n/g, '<br />')
+                      )}
+                    </Collapse.Panel>
+                  )}
+                  {step.error && (
+                    <Collapse.Panel
+                      key="errors"
+                      className="error-collapse"
+                      header={
+                        <Typography.Text type="danger">Errors</Typography.Text>
+                      }
+                    >
+                      {parse(
+                        step.error
+                          .replace(/\n\n/g, '\n')
+                          .replace(/\n/g, '<br />')
+                      )}
+                    </Collapse.Panel>
+                  )}
+                </Collapse>
+                {parse(
+                  step.pluginLog
+                    ?.replace(/\n\n/g, '\n')
+                    .replace(/\n/g, '<br />') || ''
                 )}
-                {step.error && (
-                  <Collapse.Panel
-                    key="errors"
-                    className="error-collapse"
-                    header={
-                      <Typography.Text type="danger">Errors</Typography.Text>
-                    }
-                  >
-                    {parse(
-                      step.error.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
-                    )}
-                  </Collapse.Panel>
+                {parse(
+                  step.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ||
+                    ''
                 )}
-              </Collapse>
-              {parse(
-                step.pluginLog
-                  ?.replace(/\n\n/g, '\n')
-                  .replace(/\n/g, '<br />') || ''
-              )}
-              {parse(
-                step.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
-              )}
-            </Tabs.TabPane>
-          ))}
-        </Tabs>
+              </>
+            )
+          }))}
+        />
       </Drawer>
       <Tooltip title="Log">
         <Button

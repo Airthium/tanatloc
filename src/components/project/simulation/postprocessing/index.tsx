@@ -215,7 +215,7 @@ const Postprocessing = ({
           title="Post-processing"
           closable={true}
           onClose={() => setVisible(false)}
-          visible={visible}
+          open={visible}
           mask={false}
           maskClosable={false}
         >

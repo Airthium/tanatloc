@@ -1,6 +1,6 @@
 /** @module Components.Project.List */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -101,12 +101,31 @@ const ProjectList = ({
   sorter,
   swr
 }: IProps): JSX.Element => {
+  // Ref
+  const containerRef = useRef<HTMLDivElement>(null)
+
   // State
   const [loading, setLoading] = useState<boolean>(true)
   const [list, setList] = useState<IListItem[]>([])
+  const [height, setHeight] = useState<number>(100)
 
   // Router
   const router = useRouter()
+
+  // Height
+  useEffect(() => {
+    const div = containerRef.current
+    if (!div) return
+
+    const offsets = div.getBoundingClientRect()
+    const top = offsets.top
+
+    const totalHeight = window.innerHeight
+
+    const newHeight = totalHeight - top
+
+    if (newHeight !== height) setHeight(newHeight)
+  })
 
   // List
   useEffect(() => {
@@ -228,134 +247,140 @@ const ProjectList = ({
     )
   else
     return (
-      <Space className="marginBottom-20" wrap={true} align="start" size={20}>
-        {list.map((project) => {
-          return (
-            <Card
-              key={project.id}
-              title={
-                <>
-                  <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }}>
-                    {project.title}
-                  </Typography.Paragraph>
-                  {project.archived && <Tag>Archived</Tag>}
-                </>
-              }
-              className={'Project-Card' + (project.archived ? ' archive' : '')}
-              cover={
-                <Carousel
-                  className="Project-Carousel"
-                  dots={{ className: 'Project-Carousel-dots' }}
-                >
-                  <div
-                    className={
-                      'Project-Carousel-snapshot' +
-                      (project.archived ? ' archive' : '')
-                    }
-                    onClick={() =>
-                      !project.archived && openProject({ id: project.id })
-                    }
+      <div ref={containerRef} style={{ height: height }}>
+        <Space className="marginBottom-20" wrap={true} align="start" size={20}>
+          {list.map((project) => {
+            return (
+              <Card
+                key={project.id}
+                title={
+                  <>
+                    <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }}>
+                      {project.title}
+                    </Typography.Paragraph>
+                    {project.archived && <Tag>Archived</Tag>}
+                  </>
+                }
+                className={
+                  'Project-Card' + (project.archived ? ' archive' : '')
+                }
+                cover={
+                  <Carousel
+                    className="Project-Carousel"
+                    dots={{ className: 'Project-Carousel-dots' }}
                   >
-                    {project.snapshotRender}
-                  </div>
-                  <div
-                    className={
-                      'Project-Carousel-description' +
-                      (project.archived ? ' archive' : '')
-                    }
-                    onClick={() =>
-                      !project.archived && openProject({ id: project.id })
-                    }
-                  >
-                    {project.descriptionRender}
-                  </div>
-                </Carousel>
-              }
-              actions={[
-                <Delete
-                  key="delete"
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  workspace={{
-                    id: workspace.id,
-                    projects: workspace.projects
-                  }}
-                  project={{
-                    id: project.id,
-                    title: project.title
-                  }}
-                  swr={{
-                    mutateOneWorkspace: swr.mutateOneWorkspace,
-                    delOneProject: swr.delOneProject
-                  }}
-                />,
-                <Archive
-                  key="archive"
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  workspace={{
-                    id: workspace.id
-                  }}
-                  project={{
-                    archived: project.archived,
-                    id: project.id,
-                    title: project.title
-                  }}
-                  swr={{
-                    mutateOneWorkspace: swr.mutateOneWorkspace,
-                    mutateOneProject: swr.mutateOneProject
-                  }}
-                />,
-                <Share
-                  key="share"
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  project={{
-                    id: project.id,
-                    title: project.title,
-                    groups: project.groups,
-                    users: project.users
-                  }}
-                  organizations={organizations}
-                  swr={{ mutateOneProject: swr.mutateOneProject }}
-                  style={{
-                    buttonDark: true
-                  }}
-                />,
-                <Edit
-                  key="edit"
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  project={{
-                    id: project.id,
-                    title: project.title,
-                    description: project.description
-                  }}
-                  swr={{ mutateOneProject: swr.mutateOneProject }}
-                />
-              ]}
-            >
-              <div
-                style={{
-                  padding: '6px 0',
-                  display: 'grid',
-                  gridTemplateColumns: '10fr 1fr 20fr',
-                  gridTemplateRows: 'auto auto'
-                }}
+                    <div
+                      className={
+                        'Project-Carousel-snapshot' +
+                        (project.archived ? ' archive' : '')
+                      }
+                      onClick={() =>
+                        !project.archived && openProject({ id: project.id })
+                      }
+                    >
+                      {project.snapshotRender}
+                    </div>
+                    <div
+                      className={
+                        'Project-Carousel-description' +
+                        (project.archived ? ' archive' : '')
+                      }
+                      onClick={() =>
+                        !project.archived && openProject({ id: project.id })
+                      }
+                    >
+                      {project.descriptionRender}
+                    </div>
+                  </Carousel>
+                }
+                actions={[
+                  <Delete
+                    key="delete"
+                    disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                    workspace={{
+                      id: workspace.id,
+                      projects: workspace.projects
+                    }}
+                    project={{
+                      id: project.id,
+                      title: project.title
+                    }}
+                    swr={{
+                      mutateOneWorkspace: swr.mutateOneWorkspace,
+                      delOneProject: swr.delOneProject
+                    }}
+                  />,
+                  <Archive
+                    key="archive"
+                    disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                    workspace={{
+                      id: workspace.id
+                    }}
+                    project={{
+                      archived: project.archived,
+                      id: project.id,
+                      title: project.title
+                    }}
+                    swr={{
+                      mutateOneWorkspace: swr.mutateOneWorkspace,
+                      mutateOneProject: swr.mutateOneProject
+                    }}
+                  />,
+                  <Share
+                    key="share"
+                    disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                    project={{
+                      id: project.id,
+                      title: project.title,
+                      groups: project.groups,
+                      users: project.users
+                    }}
+                    organizations={organizations}
+                    swr={{ mutateOneProject: swr.mutateOneProject }}
+                    style={{
+                      buttonDark: true
+                    }}
+                  />,
+                  <Edit
+                    key="edit"
+                    disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                    project={{
+                      id: project.id,
+                      title: project.title,
+                      description: project.description
+                    }}
+                    swr={{ mutateOneProject: swr.mutateOneProject }}
+                  />
+                ]}
               >
-                <div>Admin:</div>
-                <div />
-                <div>Shared with:</div>
-                <Avatar.Group maxCount={5}>{project.ownersRender}</Avatar.Group>
-                <Divider
-                  type="vertical"
-                  style={{ height: '80%', borderColor: '#f0f0f0' }}
-                />
-                <Avatar.Group>
-                  {project.usersRender}
-                  {project.groupsRender}
-                </Avatar.Group>
-              </div>
-            </Card>
-          )
-        })}
-      </Space>
+                <div
+                  style={{
+                    padding: '6px 0',
+                    display: 'grid',
+                    gridTemplateColumns: '10fr 1fr 20fr',
+                    gridTemplateRows: 'auto auto'
+                  }}
+                >
+                  <div>Admin:</div>
+                  <div />
+                  <div>Shared with:</div>
+                  <Avatar.Group maxCount={5}>
+                    {project.ownersRender}
+                  </Avatar.Group>
+                  <Divider
+                    type="vertical"
+                    style={{ height: '80%', borderColor: '#f0f0f0' }}
+                  />
+                  <Avatar.Group>
+                    {project.usersRender}
+                    {project.groupsRender}
+                  </Avatar.Group>
+                </div>
+              </Card>
+            )
+          })}
+        </Space>
+      </div>
     )
 }
 

@@ -25,7 +25,7 @@ const Start = () => {
             Tanatloc is starting, please wait...
           </Typography.Title>
         }
-        description={status}
+        description={status?.split(';')}
       />
     </>
   )

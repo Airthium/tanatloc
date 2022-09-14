@@ -20,8 +20,13 @@ import {
  * Check database
  * @returns Valid
  */
-export const checkdB = async (): Promise<boolean> => {
+export const checkdB = async (
+  status?: string[],
+  setStatus?: (status: string[]) => Promise<void>
+): Promise<boolean> => {
   console.info('Check database...')
+  status?.push('Check database...')
+  setStatus?.(status!)
 
   // Legacy postgres
   try {
@@ -44,11 +49,6 @@ export const checkdB = async (): Promise<boolean> => {
       'docker container ls -a --filter "name=tanatloc-postgres" -q'
     )
 
-    if (id.length)
-      console.info(
-        'Tanatloc postgres docker already exists (' + id.toString().trim() + ')'
-      )
-
     if (!id.length) {
       id = execSync(
         'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -d postgres'
@@ -60,6 +60,10 @@ export const checkdB = async (): Promise<boolean> => {
       console.info(
         'Tanatloc postgres docker created (' + id.toString().trim() + ')'
       )
+    } else {
+      console.info(
+        'Tanatloc postgres docker already exists (' + id.toString().trim() + ')'
+      )
     }
 
     // Restart docker container
@@ -70,6 +74,8 @@ export const checkdB = async (): Promise<boolean> => {
       'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
     )
     console.info('docker host: ' + host.toString())
+    status?.push('Database found on ' + host.toString())
+    setStatus?.(status!)
     process.env.DB_HOST = host.toString().replace('\n', '')
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')

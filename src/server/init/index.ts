@@ -8,11 +8,16 @@ import { initDatabase } from './database'
 /**
  * Init dockers
  */
-export const initDockers = async (): Promise<void> => {
+export const initDockers = async (
+  status?: string[],
+  setStatus?: (status: string[]) => Promise<void>
+): Promise<void> => {
   // tanatloc/worker
   try {
     execSync('docker image inspect tanatloc/worker')
   } catch (err) {
+    status?.push('Pulling tanatloc/worker')
+    setStatus?.(status!)
     execSync('docker pull tanatloc/worker')
   }
 
@@ -20,6 +25,8 @@ export const initDockers = async (): Promise<void> => {
   try {
     execSync('docker image inspect postgres')
   } catch (err) {
+    status?.push('Pulling postgres')
+    setStatus?.(status!)
     execSync('docker pull postgres')
   }
 }
@@ -64,17 +71,28 @@ export const initTemplates = async (): Promise<void> => {
 /**
  * Init
  */
-const init = async (): Promise<void> => {
+const init = async (
+  status?: string[],
+  setStatus?: (status: string[]) => Promise<void>
+): Promise<void> => {
   // Check dockers
-  await initDockers()
+  status?.push('Initialize Dockers')
+  setStatus?.(status!)
+  await initDockers(status, setStatus)
 
   // Start database
-  await initDatabase()
+  status?.push('Initialize Database')
+  setStatus?.(status!)
+  await initDatabase(status, setStatus)
 
   // Load plugins
+  status?.push('Initialize Plugins')
+  setStatus?.(status!)
   await initPlugins()
 
   // Load templates
+  status?.push('Initialize Templates')
+  setStatus?.(status!)
   await initTemplates()
 
   // Restart jobs

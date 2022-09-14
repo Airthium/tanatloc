@@ -31,7 +31,7 @@ const Simple = (): JSX.Element => {
 
 export interface IProps {
   text?: string | React.ReactElement | React.ReactElement[]
-  description?: string | React.ReactElement | React.ReactElement[]
+  description?: string[]
 }
 
 /**
@@ -48,13 +48,17 @@ const Loading = ({ text, description }: IProps): JSX.Element => {
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>
       <Card className="Loading">
-        <Space direction="vertical">
-          <Space>
-            <Spin size="large" />
-            {text ?? 'Loading, please wait...'}
-          </Space>
-          {description}
+        <Space>
+          <Spin size="large" />
+          {text ?? 'Loading, please wait...'}
         </Space>
+        {description && (
+          <div className="Loading-description">
+            {description?.map((desc, index) => (
+              <div key={index}>{desc}</div>
+            ))}
+          </div>
+        )}
       </Card>
     </Layout>
   )

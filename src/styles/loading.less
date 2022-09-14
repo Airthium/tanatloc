@@ -1,3 +1,17 @@
 .Loading {
   margin: auto !important;
 }
+
+.Loading .ant-card-body {
+  max-height: 50vh;
+  overflow: hidden;
+}
+
+.Loading-description {
+  overflow: auto;
+  margin-top: 10px;
+}
+
+.Loading-description > div::before {
+  content: '- ';
+}

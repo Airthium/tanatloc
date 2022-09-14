@@ -17,7 +17,7 @@ export const initDockers = async (
     execSync('docker image inspect tanatloc/worker')
   } catch (err) {
     status?.push('Pulling tanatloc/worker')
-    setStatus?.(status!)
+    await setStatus?.(status!)
     execSync('docker pull tanatloc/worker')
   }
 
@@ -26,7 +26,7 @@ export const initDockers = async (
     execSync('docker image inspect postgres')
   } catch (err) {
     status?.push('Pulling postgres')
-    setStatus?.(status!)
+    await setStatus?.(status!)
     execSync('docker pull postgres')
   }
 }
@@ -77,22 +77,22 @@ const init = async (
 ): Promise<void> => {
   // Check dockers
   status?.push('Initialize Dockers')
-  setStatus?.(status!)
+  await setStatus?.(status!)
   await initDockers(status, setStatus)
 
   // Start database
   status?.push('Initialize Database')
-  setStatus?.(status!)
+  await setStatus?.(status!)
   await initDatabase(status, setStatus)
 
   // Load plugins
   status?.push('Initialize Plugins')
-  setStatus?.(status!)
+  await setStatus?.(status!)
   await initPlugins()
 
   // Load templates
   status?.push('Initialize Templates')
-  setStatus?.(status!)
+  await setStatus?.(status!)
   await initTemplates()
 
   // Restart jobs

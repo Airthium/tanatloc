@@ -19,16 +19,16 @@ const main = async (
   console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
 
   status?.push('Start installation')
-  setStatus?.(status!)
+  await setStatus?.(status!)
 
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
     status?.push('Create database')
-    setStatus?.(status!)
+    await setStatus?.(status!)
     await createDatabase()
 
     status?.push('Create paths')
-    setStatus?.(status!)
+    await setStatus?.(status!)
     await createPaths()
   }
 }

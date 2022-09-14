@@ -26,7 +26,7 @@ export const checkdB = async (
 ): Promise<boolean> => {
   console.info('Check database...')
   status?.push('Check database...')
-  setStatus?.(status!)
+  await setStatus?.(status!)
 
   // Legacy postgres
   try {
@@ -75,7 +75,7 @@ export const checkdB = async (
     )
     console.info('docker host: ' + host.toString())
     status?.push('Database found on ' + host.toString())
-    setStatus?.(status!)
+    await setStatus?.(status!)
     process.env.DB_HOST = host.toString().replace('\n', '')
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')

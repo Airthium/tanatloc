@@ -12,6 +12,12 @@ describe('components/loading', () => {
     unmount()
   })
 
+  test('description', () => {
+    const { unmount } = render(<Loading description={['test']} />)
+
+    unmount()
+  })
+
   test('simple', () => {
     const { unmount } = render(<Loading.Simple />)
 

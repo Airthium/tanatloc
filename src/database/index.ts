@@ -49,7 +49,7 @@ export const checkdB = async (params?: {
 
     if (!id.length) {
       id = execSync(
-        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -d postgres'
+        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres'
       )
 
       if (!id.length)
@@ -73,7 +73,6 @@ export const checkdB = async (params?: {
     )
     console.info('docker host: ' + host.toString())
     await params?.addStatus('Database found on ' + host.toString())
-    process.env.DB_HOST = host.toString().replace('\n', '')
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')
 

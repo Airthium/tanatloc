@@ -59,6 +59,12 @@ const toThree = async (
       let data = ''
       let error = ''
 
+      // Check docker version
+      let dockerVersion = 'engine'
+      const docker = execSync('docker version')
+      if (docker.includes('Docker Desktop')) dockerVersion = 'desktop'
+
+      // User
       const user =
         process.platform === 'win32'
           ? 1000
@@ -67,16 +73,21 @@ const toThree = async (
         process.platform === 'win32'
           ? 1000
           : execSync('id -g').toString().trim()
-      const run = spawn('docker', [
-        'run',
-        '--volume=' + bindPath + ':/three',
-        '--user=' + user + ':' + group,
-        '-w=/three',
-        'tanatloc/worker:latest',
-        '/bin/bash',
-        '-c',
-        command
-      ])
+
+      // Command
+      const run = spawn(
+        'docker',
+        [
+          'run',
+          '--volume=' + bindPath + ':/three',
+          dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
+          '-w=/three',
+          'tanatloc/worker:latest',
+          '/bin/bash',
+          '-c',
+          command
+        ].filter((a) => a)
+      )
 
       run.stdout.on('data', (stdout: Buffer) => {
         stdout && (data += stdout.toString())

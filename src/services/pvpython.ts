@@ -37,6 +37,12 @@ const pvpython = async (
         { cwd: bindPath }
       )
     } else {
+      // Check docker version
+      let dockerVersion = 'engine'
+      const docker = execSync('docker version')
+      if (docker.includes('Docker Desktop')) dockerVersion = 'desktop'
+
+      // User
       const user =
         process.platform === 'win32'
           ? 1000
@@ -45,18 +51,23 @@ const pvpython = async (
         process.platform === 'win32'
           ? 1000
           : execSync('id -g').toString().trim()
-      run = spawn('docker', [
-        'run',
-        '--volume=' + bindPath + ':/pvpython',
-        '--user=' + user + ':' + group,
-        '-w=/pvpython',
-        'tanatloc/worker:latest',
-        'pvpython',
-        scriptPOSIX,
-        fileInPOSIX,
-        fileOutPOSIX,
-        ...parameters
-      ])
+
+      // Command
+      run = spawn(
+        'docker',
+        [
+          'run',
+          '--volume=' + bindPath + ':/pvpython',
+          dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
+          '-w=/pvpython',
+          'tanatloc/worker:latest',
+          'pvpython',
+          scriptPOSIX,
+          fileInPOSIX,
+          fileOutPOSIX,
+          ...parameters
+        ].filter((a) => a)
+      )
     }
 
     run.stdout.on('data', (stdout: Buffer) => {

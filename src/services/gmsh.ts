@@ -62,6 +62,12 @@ const gmsh = async (
         }
       )
     } else {
+      // Check docker version
+      let dockerVersion = 'engine'
+      const docker = execSync('docker version')
+      if (docker.includes('Docker Desktop')) dockerVersion = 'desktop'
+
+      // User
       const user =
         process.platform === 'win32'
           ? 1000
@@ -70,22 +76,27 @@ const gmsh = async (
         process.platform === 'win32'
           ? 1000
           : execSync('id -g').toString().trim()
-      run = spawn('docker', [
-        'run',
-        '--volume=' + bindPath + ':/mesh',
-        '--user=' + user + ':' + group,
-        '-w=/mesh',
-        'tanatloc/worker:latest',
-        'gmsh',
-        '-3',
-        fileInPOSIX,
-        '-o',
-        fileOutPOSIX,
-        '-format',
-        'msh2',
-        '-clcurv',
-        '10'
-      ])
+
+      // Command
+      run = spawn(
+        'docker',
+        [
+          'run',
+          '--volume=' + bindPath + ':/mesh',
+          dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
+          '-w=/mesh',
+          'tanatloc/worker:latest',
+          'gmsh',
+          '-3',
+          fileInPOSIX,
+          '-o',
+          fileOutPOSIX,
+          '-format',
+          'msh2',
+          '-clcurv',
+          '10'
+        ].filter((a) => a)
+      )
     }
 
     callback({ pid: run.pid })

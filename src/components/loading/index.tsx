@@ -32,7 +32,7 @@ const Simple = (): JSX.Element => {
 
 export interface IProps {
   text?: string | React.ReactElement | React.ReactElement[]
-  description?: string[]
+  status?: string[]
   errors?: string[]
 }
 
@@ -40,8 +40,7 @@ export interface IProps {
  * Loading
  * @returns Loading
  */
-const Loading = ({ text, description, errors }: IProps): JSX.Element => {
-  console.log(errors)
+const Loading = ({ text, status, errors }: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -53,7 +52,7 @@ const Loading = ({ text, description, errors }: IProps): JSX.Element => {
       <Card
         className="Loading"
         bodyStyle={
-          !description?.length && !errors?.length
+          !status?.length && !errors?.length
             ? {
                 padding: 0
               }
@@ -114,10 +113,10 @@ const Loading = ({ text, description, errors }: IProps): JSX.Element => {
             })}
           </div>
         ) : null}
-        {description?.length ? (
-          <div className="Loading-description">
+        {status?.length ? (
+          <div className="Loading-status">
             Tasks:
-            {description.map((desc, index) => (
+            {status.map((desc, index) => (
               <div key={index}>{desc}</div>
             ))}
           </div>

@@ -24,10 +24,10 @@ const main = async (params?: IParams): Promise<void> => {
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
     await params?.addStatus('Create database')
-    createDatabase()
+    await createDatabase()
 
     await params?.addStatus('Create paths')
-    createPaths()
+    await createPaths()
   }
 }
 

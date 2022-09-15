@@ -12,8 +12,13 @@ describe('components/loading', () => {
     unmount()
   })
 
-  test('description', () => {
-    const { unmount } = render(<Loading description={['test']} />)
+  test('status, err', () => {
+    const { unmount } = render(
+      <Loading
+        status={['test']}
+        errors={['error', 'docker: command not found', 'ENETUNREACH']}
+      />
+    )
 
     unmount()
   })

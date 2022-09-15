@@ -9,7 +9,6 @@ export const initDatabase = async (params?: {
   if (!tanatloc?.pool) {
     const check = await checkdB(params)
     if (!check) throw new Error('Database not found')
-    console.log('Start here')
     tanatloc.pool = startdB()
   }
 }

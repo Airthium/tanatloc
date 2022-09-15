@@ -444,7 +444,7 @@ const Index = (): JSX.Element => {
             <br />
             <Steps direction="vertical" className="Index-steps">
               <Steps.Step
-                title="Install Docker"
+                title="Install Docker Desktop"
                 description={
                   <>
                     Follow the Docker installation instruction at

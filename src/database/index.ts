@@ -75,6 +75,7 @@ export const checkdB = async (params?: {
     await params?.addStatus('Database found on ' + host.toString())
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')
+    process.env.DB_ADMIN ?? (process.env.DB_ADMIN = 'postgres')
 
     // Wait postgres start
     await new Promise((resolve) => setTimeout(resolve, 1000))

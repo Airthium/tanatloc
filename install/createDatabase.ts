@@ -38,9 +38,9 @@ export const createDatabase = async (): Promise<void> => {
 
     // Pool
     pool = new Pool({
-      host: process.env.DB_HOST || HOST,
+      host: HOST,
       port: PORT,
-      user: ADMIN,
+      user: process.env.DB_ADMIN || ADMIN,
       database: ADMIN_DATABASE,
       password: process.env.DB_ADMIN_PASSWORD || ADMIN_PASSWORD
     })
@@ -90,7 +90,7 @@ export const createDatabase = async (): Promise<void> => {
 
     // New pool
     pool = new Pool({
-      host: process.env.DB_HOST || HOST,
+      host: HOST,
       port: PORT,
       database: DATABASE,
       user: USER,

@@ -4,9 +4,9 @@
 
 Object.defineProperty(process, 'env', { value: { CI: 0 } })
 
-import '../'
+import install from '../'
 
-jest.mock('is-electron', () => () => false)
+jest.mock('is-electron', () => () => true)
 
 const mockExecSync = jest.fn()
 jest.mock('child_process', () => ({
@@ -24,7 +24,20 @@ jest.mock('../createPaths', () => ({
 }))
 
 describe('install', () => {
+  beforeEach(() => {
+    mockExecSync.mockReset()
+    mockExecSync
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+      .mockImplementationOnce(() => '')
+  })
+
   test('call', () => {
-    // Empty
+    install({ addStatus: async () => undefined })
   })
 })

@@ -1,10 +1,5 @@
 import init, { initJobs, initPlugins, initTemplates } from '..'
 
-const mockExecSync = jest.fn()
-jest.mock('child_process', () => ({
-  execSync: () => mockExecSync()
-}))
-
 const mockLoadPlugins = jest.fn()
 const mockRestartJobs = jest.fn()
 jest.mock('@/lib/plugins', () => ({
@@ -24,17 +19,6 @@ jest.mock('../database', () => ({
 
 describe('src/server/init', () => {
   beforeEach(() => {
-    mockExecSync.mockReset()
-    mockExecSync
-      .mockImplementationOnce(() => {
-        throw new Error()
-      })
-      .mockImplementationOnce(() => '')
-      .mockImplementationOnce(() => {
-        throw new Error()
-      })
-      .mockImplementationOnce(() => '')
-
     Object.defineProperty(global, 'tanatloc', { value: {}, configurable: true })
   })
 

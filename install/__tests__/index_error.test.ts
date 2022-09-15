@@ -2,9 +2,16 @@
  * @jest-environment node
  */
 
+Object.defineProperty(process, 'env', { value: { CI: 0 } })
+
 import '..'
 
 jest.mock('is-electron', () => () => false)
+
+const mockExecSync = jest.fn()
+jest.mock('child_process', () => ({
+  execSync: () => mockExecSync()
+}))
 
 jest.mock('../copyAssets', () => ({
   copyAssets: jest.fn(() => {

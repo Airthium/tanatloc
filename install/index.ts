@@ -1,6 +1,7 @@
 /** @module Install */
 
 import isElectron from 'is-electron'
+import { execSync } from 'child_process'
 
 import { createDatabase } from './createDatabase'
 import { createPaths } from './createPaths'
@@ -8,6 +9,29 @@ import { copyAssets } from './copyAssets'
 
 export interface IParams {
   addStatus: (status: string) => Promise<void>
+}
+
+/**
+ * Init dockers
+ */
+export const initDockers = async (params?: {
+  addStatus: (status: string) => Promise<void>
+}): Promise<void> => {
+  // tanatloc/worker
+  try {
+    execSync('docker image inspect tanatloc/worker')
+  } catch (err) {
+    await params?.addStatus('Pulling tanatloc/worker')
+    execSync('docker pull tanatloc/worker')
+  }
+
+  // postgres
+  try {
+    execSync('docker image inspect postgres')
+  } catch (err) {
+    await params?.addStatus('Pulling postgres')
+    execSync('docker pull postgres')
+  }
 }
 
 /**
@@ -23,6 +47,9 @@ const main = async (params?: IParams): Promise<void> => {
 
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
+    await params?.addStatus('Initialize dockers')
+    await initDockers(params)
+
     await params?.addStatus('Create database')
     await createDatabase()
 

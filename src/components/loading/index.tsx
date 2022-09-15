@@ -93,7 +93,11 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
                     Please verify Docker is correctly installed and running.
                   </Card>
                 )
-              else if (err.includes('ENETUNREACH') || err.includes('ETIMEOUT'))
+              else if (
+                err.includes('EHOSTUNREACH') ||
+                err.includes('ENETUNREACH') ||
+                err.includes('ETIMEOUT')
+              )
                 child = (
                   <Card>
                     There is an error with your PostgreSQL installation.
@@ -111,6 +115,9 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
                 </div>
               )
             })}
+            <Typography.Title level={5} style={{ color: 'red' }}>
+              Please restart the application
+            </Typography.Title>
           </div>
         ) : null}
         {status?.length ? (

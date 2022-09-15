@@ -12,7 +12,7 @@ import Loading from '../loading'
 const Start = () => {
   //Data
   const router = useRouter()
-  const { status }: { status?: string } = router.query
+  const { status, err }: { status?: string; err?: string } = router.query
 
   /**
    * Render
@@ -25,7 +25,8 @@ const Start = () => {
             Tanatloc is starting, please wait...
           </Typography.Title>
         }
-        description={status?.split(';')}
+        description={status?.length ? status?.split(';') : []}
+        errors={err?.length ? err?.split(';') : []}
       />
     </>
   )

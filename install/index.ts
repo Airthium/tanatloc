@@ -6,30 +6,28 @@ import { createDatabase } from './createDatabase'
 import { createPaths } from './createPaths'
 import { copyAssets } from './copyAssets'
 
+export interface IParams {
+  addStatus: (status: string) => Promise<void>
+}
+
 /**
  * Main
  */
-const main = async (
-  status?: string[],
-  setStatus?: (status: string[]) => Promise<void>
-): Promise<void> => {
+const main = async (params?: IParams): Promise<void> => {
   console.info('/__   \\__ _ _ __   __ _| |_| | ___   ___ ')
   console.info("  / /\\/ _` | '_ \\ / _` | __| |/ _ \\ / __|")
   console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')
   console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
 
-  status?.push('Start installation')
-  await setStatus?.(status!)
+  await params?.addStatus('Start installation')
 
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
-    status?.push('Create database')
-    await setStatus?.(status!)
-    await createDatabase()
+    await params?.addStatus('Create database')
+    createDatabase()
 
-    status?.push('Create paths')
-    await setStatus?.(status!)
-    await createPaths()
+    await params?.addStatus('Create paths')
+    createPaths()
   }
 }
 

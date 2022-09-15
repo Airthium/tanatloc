@@ -20,13 +20,11 @@ import {
  * Check database
  * @returns Valid
  */
-export const checkdB = async (
-  status?: string[],
-  setStatus?: (status: string[]) => Promise<void>
-): Promise<boolean> => {
+export const checkdB = async (params?: {
+  addStatus: (status: string) => Promise<void>
+}): Promise<boolean> => {
   console.info('Check database...')
-  status?.push('Check database...')
-  await setStatus?.(status!)
+  await params?.addStatus('Check database...')
 
   // Legacy postgres
   try {
@@ -74,8 +72,7 @@ export const checkdB = async (
       'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
     )
     console.info('docker host: ' + host.toString())
-    status?.push('Database found on ' + host.toString())
-    await setStatus?.(status!)
+    await params?.addStatus('Database found on ' + host.toString())
     process.env.DB_HOST = host.toString().replace('\n', '')
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')

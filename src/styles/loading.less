@@ -1,17 +1,27 @@
 .Loading {
   margin: auto !important;
+  max-width: 80%;
 }
 
 .Loading .ant-card-body {
   max-height: 50vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .Loading-description {
-  overflow: auto;
   margin-top: 10px;
 }
 
 .Loading-description > div::before {
   content: '- ';
+}
+
+.Loading-errors {
+  margin-top: 10px;
+  color: red;
+}
+
+.Loading-errors .ant-card {
+  border-color: red;
+  color: red;
 }

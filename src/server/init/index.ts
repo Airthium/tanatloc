@@ -8,16 +8,14 @@ import { initDatabase } from './database'
 /**
  * Init dockers
  */
-export const initDockers = async (
-  status?: string[],
-  setStatus?: (status: string[]) => Promise<void>
-): Promise<void> => {
+export const initDockers = async (params?: {
+  addStatus: (status: string) => Promise<void>
+}): Promise<void> => {
   // tanatloc/worker
   try {
     execSync('docker image inspect tanatloc/worker')
   } catch (err) {
-    status?.push('Pulling tanatloc/worker')
-    await setStatus?.(status!)
+    await params?.addStatus('Pulling tanatloc/worker')
     execSync('docker pull tanatloc/worker')
   }
 
@@ -25,8 +23,7 @@ export const initDockers = async (
   try {
     execSync('docker image inspect postgres')
   } catch (err) {
-    status?.push('Pulling postgres')
-    await setStatus?.(status!)
+    await params?.addStatus('Pulling postgres')
     execSync('docker pull postgres')
   }
 }
@@ -45,6 +42,9 @@ export const initPlugins = async (): Promise<void> => {
   }
 }
 
+/**
+ * Init jobs
+ */
 export const initJobs = async (): Promise<void> => {
   try {
     await restartJobs()
@@ -71,28 +71,23 @@ export const initTemplates = async (): Promise<void> => {
 /**
  * Init
  */
-const init = async (
-  status?: string[],
-  setStatus?: (status: string[]) => Promise<void>
-): Promise<void> => {
+const init = async (params?: {
+  addStatus: (status: string) => Promise<void>
+}): Promise<void> => {
   // Check dockers
-  status?.push('Initialize Dockers')
-  await setStatus?.(status!)
-  await initDockers(status, setStatus)
+  await params?.addStatus('Initialize Dockers')
+  await initDockers(params)
 
   // Start database
-  status?.push('Initialize Database')
-  await setStatus?.(status!)
-  await initDatabase(status, setStatus)
+  await params?.addStatus('Initialize Database')
+  await initDatabase(params)
 
   // Load plugins
-  status?.push('Initialize Plugins')
-  await setStatus?.(status!)
+  await params?.addStatus('Initialize Plugins')
   await initPlugins()
 
   // Load templates
-  status?.push('Initialize Templates')
-  await setStatus?.(status!)
+  await params?.addStatus('Initialize Templates')
   await initTemplates()
 
   // Restart jobs

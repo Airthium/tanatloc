@@ -1,6 +1,7 @@
 /** @module Components.Loading */
 
-import { Card, Layout, Space, Spin } from 'antd'
+import { WarningOutlined } from '@ant-design/icons'
+import { Card, Layout, Space, Spin, Typography } from 'antd'
 
 /**
  * Simple
@@ -32,13 +33,15 @@ const Simple = (): JSX.Element => {
 export interface IProps {
   text?: string | React.ReactElement | React.ReactElement[]
   description?: string[]
+  errors?: string[]
 }
 
 /**
  * Loading
  * @returns Loading
  */
-const Loading = ({ text, description }: IProps): JSX.Element => {
+const Loading = ({ text, description, errors }: IProps): JSX.Element => {
+  console.log(errors)
   /**
    * Render
    */
@@ -47,18 +50,78 @@ const Loading = ({ text, description }: IProps): JSX.Element => {
       <div className="logo">
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>
-      <Card className="Loading">
-        <Space>
-          <Spin size="large" />
-          {text ?? 'Loading, please wait...'}
-        </Space>
-        {description && (
+      <Card
+        className="Loading"
+        bodyStyle={
+          !description?.length && !errors?.length
+            ? {
+                padding: 0
+              }
+            : undefined
+        }
+        title={
+          <Space>
+            {errors?.length ? (
+              <>
+                <WarningOutlined style={{ fontSize: '32px', color: 'red' }} />
+                <Typography.Title level={3} className="no-margin">
+                  An error occurs
+                </Typography.Title>
+              </>
+            ) : (
+              <>
+                <Spin size="large" />
+
+                {text ?? 'Loading, please wait...'}
+              </>
+            )}
+          </Space>
+        }
+      >
+        {errors?.length ? (
+          <div className="Loading-errors">
+            Errors:
+            {errors.map((err, index) => {
+              let child = null
+              if (
+                err.includes('docker: command not found') ||
+                err.includes('Is the docker daemon running')
+              )
+                child = (
+                  <Card>
+                    There is an error with your Docker installation.
+                    <br />
+                    Please verify Docker is correctly installed and running.
+                  </Card>
+                )
+              else if (err.includes('ENETUNREACH') || err.includes('ETIMEOUT'))
+                child = (
+                  <Card>
+                    There is an error with your PostgreSQL installation.
+                    <br />
+                    Please verify postgres Docker container
+                    &quot;tanatloc-postgres&quot; is correctly installed and
+                    running.
+                  </Card>
+                )
+
+              return (
+                <div key={index}>
+                  {err}
+                  {child}
+                </div>
+              )
+            })}
+          </div>
+        ) : null}
+        {description?.length ? (
           <div className="Loading-description">
-            {description?.map((desc, index) => (
+            Tasks:
+            {description.map((desc, index) => (
               <div key={index}>{desc}</div>
             ))}
           </div>
-        )}
+        ) : null}
       </Card>
     </Layout>
   )

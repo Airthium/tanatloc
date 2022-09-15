@@ -8,6 +8,8 @@ import main from '..'
 
 jest.mock('is-electron', () => () => true)
 
+jest.mock('is-docker', () => () => false)
+
 const mockExecSync = jest.fn()
 jest.mock('child_process', () => ({
   execSync: () => mockExecSync()

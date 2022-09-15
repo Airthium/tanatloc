@@ -1,6 +1,7 @@
 /** @module Install */
 
 import isElectron from 'is-electron'
+import isDocker from 'is-docker'
 import { execSync } from 'child_process'
 
 import { createDatabase } from './createDatabase'
@@ -47,8 +48,10 @@ const main = async (params?: IParams): Promise<void> => {
 
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
-    await params?.addStatus('Initialize dockers')
-    await initDockers(params)
+    if (!isDocker()) {
+      await params?.addStatus('Initialize dockers')
+      await initDockers(params)
+    }
 
     await params?.addStatus('Create database')
     await createDatabase()

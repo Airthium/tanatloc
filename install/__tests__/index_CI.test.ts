@@ -4,6 +4,8 @@
 
 Object.defineProperty(process, 'env', { value: { CI: 1 } })
 
+jest.mock('is-docker', () => () => false)
+
 import '..'
 
 jest.mock('is-electron', () => () => false)

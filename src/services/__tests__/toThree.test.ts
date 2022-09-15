@@ -45,30 +45,30 @@ describe('services/toThree', () => {
 
     // Step
     res = await toThree('path', 'file.step', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(2)
+    expect(mockExecSync).toHaveBeenCalledTimes(3)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(res.code).toBe(0)
 
     res = await toThree('path', 'file.stp', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(4)
+    expect(mockExecSync).toHaveBeenCalledTimes(6)
     expect(mockSpawn).toHaveBeenCalledTimes(2)
     expect(res.code).toBe(0)
 
     // Dxf
     res = await toThree('path', 'file.dxf', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(6)
+    expect(mockExecSync).toHaveBeenCalledTimes(9)
     expect(mockSpawn).toHaveBeenCalledTimes(3)
     expect(res.code).toBe(0)
 
     // Msh
     res = await toThree('path', 'file.msh', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(8)
+    expect(mockExecSync).toHaveBeenCalledTimes(12)
     expect(mockSpawn).toHaveBeenCalledTimes(4)
     expect(res.code).toBe(0)
 
     // VTU
     res = await toThree('path', 'file.vtu', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(10)
+    expect(mockExecSync).toHaveBeenCalledTimes(15)
     expect(mockSpawn).toHaveBeenCalledTimes(5)
     expect(res.code).toBe(0)
 
@@ -79,7 +79,7 @@ describe('services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(10)
+      expect(mockExecSync).toHaveBeenCalledTimes(15)
       expect(mockSpawn).toHaveBeenCalledTimes(5)
     }
 
@@ -101,9 +101,41 @@ describe('services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(12)
+      expect(mockExecSync).toHaveBeenCalledTimes(18)
       expect(mockSpawn).toHaveBeenCalledTimes(6)
     }
+  })
+
+  test('toThree - linux - docker desktop', async () => {
+    Object.defineProperty(process, 'platform', {
+      value: 'linux',
+      configurable: true
+    })
+    let res: { code: number }
+
+    // Normal
+    mockExecSync.mockImplementation(() => 'Docker Desktop')
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: (_: any, callback: Function) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (_: any, callback: Function) => {
+          callback('stderr')
+        }
+      },
+      on: (arg: string, callback: Function) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+
+    // Step
+    res = await toThree('path', 'file.step', 'pathout')
+    expect(mockExecSync).toHaveBeenCalledTimes(3)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(res.code).toBe(0)
   })
 
   test('toThree - win32', async () => {
@@ -132,30 +164,30 @@ describe('services/toThree', () => {
 
     // Step
     res = await toThree('path', 'file.step', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockExecSync).toHaveBeenCalledTimes(1)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(res.code).toBe(0)
 
     res = await toThree('path', 'file.stp', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockExecSync).toHaveBeenCalledTimes(2)
     expect(mockSpawn).toHaveBeenCalledTimes(2)
     expect(res.code).toBe(0)
 
     // Dxf
     res = await toThree('path', 'file.dxf', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockExecSync).toHaveBeenCalledTimes(3)
     expect(mockSpawn).toHaveBeenCalledTimes(3)
     expect(res.code).toBe(0)
 
     // Msh
     res = await toThree('path', 'file.msh', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockExecSync).toHaveBeenCalledTimes(4)
     expect(mockSpawn).toHaveBeenCalledTimes(4)
     expect(res.code).toBe(0)
 
     // VTU
     res = await toThree('path', 'file.vtu', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockExecSync).toHaveBeenCalledTimes(5)
     expect(mockSpawn).toHaveBeenCalledTimes(5)
     expect(res.code).toBe(0)
 
@@ -166,7 +198,7 @@ describe('services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(0)
+      expect(mockExecSync).toHaveBeenCalledTimes(5)
       expect(mockSpawn).toHaveBeenCalledTimes(5)
     }
 
@@ -188,7 +220,7 @@ describe('services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(0)
+      expect(mockExecSync).toHaveBeenCalledTimes(6)
       expect(mockSpawn).toHaveBeenCalledTimes(6)
     }
   })

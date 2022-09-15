@@ -45,7 +45,7 @@ describe('services/freefem', () => {
       }
     }))
     const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(2)
+    expect(mockExecSync).toHaveBeenCalledTimes(3)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
 
@@ -71,9 +71,37 @@ describe('services/freefem', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(4)
+      expect(mockExecSync).toHaveBeenCalledTimes(6)
       expect(mockSpawn).toHaveBeenCalledTimes(2)
     }
+  })
+
+  test('freefem - linux - docker desktop', async () => {
+    Object.defineProperty(process, 'platform', {
+      value: 'linux',
+      configurable: true
+    })
+    // Normal
+    mockExecSync.mockImplementation(() => 'Docker Desktop')
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: (_: any, callback: Function) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (_: any, callback: Function) => {
+          callback('stderr')
+        }
+      },
+      on: (arg: string, callback: Function) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    const code = await freefem('path', 'script', mockCallback)
+    expect(mockExecSync).toHaveBeenCalledTimes(3)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(code).toBe(0)
   })
 
   test('freefem - win32', async () => {
@@ -98,7 +126,7 @@ describe('services/freefem', () => {
       }
     }))
     const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockExecSync).toHaveBeenCalledTimes(1)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
 
@@ -124,7 +152,7 @@ describe('services/freefem', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(0)
+      expect(mockExecSync).toHaveBeenCalledTimes(2)
       expect(mockSpawn).toHaveBeenCalledTimes(2)
     }
   })

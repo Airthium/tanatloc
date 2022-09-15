@@ -12,7 +12,7 @@ describe('config/db', () => {
   test('global', () => {
     expect(config.ADMIN).toBe('postgres')
     expect(config.ADMIN_DATABASE).toBe('postgres')
-    expect(config.ADMIN_PASSWORD).toBe('')
+    expect(config.ADMIN_PASSWORD).toBe('password')
     expect(config.USER).toBe('tanatlocuser')
     expect(config.HOST).toBe('localhost')
     expect(config.PORT).toBe(5432)

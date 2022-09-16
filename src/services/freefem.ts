@@ -4,6 +4,8 @@ import { execSync, spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
 
+import docker from './docker'
+
 /**
  * FreeFEM service
  * @param  bindPath Path
@@ -39,38 +41,24 @@ const freefem = async (
     } else {
       // Check docker version
       let dockerVersion = 'engine'
-      const docker = execSync('docker version')
-      if (docker.includes('Docker Desktop')) dockerVersion = 'desktop'
+      {
+        const dockerFullVersion = execSync('docker version')
+        if (dockerFullVersion.includes('Docker Desktop'))
+          dockerVersion = 'desktop'
+      }
 
-      // User
-      const user =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -u').toString().trim()
-      const group =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -g').toString().trim()
-
-      // Command
-      run = spawn(
-        'docker',
-        [
-          'run',
-          '--rm',
-          '--volume=' + bindPath + ':/run',
-          dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
-          '-w=/run',
-          'tanatloc/worker:latest',
-          'ff-mpirun',
-          dockerVersion === 'desktop' ? '--allow-run-as-root' : '',
-          '-np',
-          '1',
-          scriptPOSIX,
-          '-ns',
-          '> log'
-        ].filter((a) => a)
-      )
+      const command = [
+        'ff-mpirun',
+        dockerVersion === 'desktop' ? '--allow-run-as-root' : '',
+        '-np',
+        '1',
+        scriptPOSIX,
+        '-ns',
+        '> log'
+      ]
+        .filter((c) => c)
+        .join(' ')
+      run = docker(bindPath, command)
     }
 
     callback({ pid: run.pid })

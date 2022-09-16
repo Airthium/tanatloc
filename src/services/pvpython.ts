@@ -1,8 +1,10 @@
 /** @module Services.Pvpython */
 
-import { execSync, spawn } from 'child_process'
+import { spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
+
+import docker from './docker'
 
 /**
  * pvpython service
@@ -37,37 +39,14 @@ const pvpython = async (
         { cwd: bindPath }
       )
     } else {
-      // Check docker version
-      let dockerVersion = 'engine'
-      const docker = execSync('docker version')
-      if (docker.includes('Docker Desktop')) dockerVersion = 'desktop'
-
-      // User
-      const user =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -u').toString().trim()
-      const group =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -g').toString().trim()
-
-      // Command
-      run = spawn(
-        'docker',
-        [
-          'run',
-          '--volume=' + bindPath + ':/pvpython',
-          dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
-          '-w=/pvpython',
-          'tanatloc/worker:latest',
-          'pvpython',
-          scriptPOSIX,
-          fileInPOSIX,
-          fileOutPOSIX,
-          ...parameters
-        ].filter((a) => a)
-      )
+      const command = [
+        'pvpython',
+        scriptPOSIX,
+        fileInPOSIX,
+        fileOutPOSIX,
+        ...parameters
+      ].join(' ')
+      run = docker(bindPath, command)
     }
 
     run.stdout.on('data', (stdout: Buffer) => {

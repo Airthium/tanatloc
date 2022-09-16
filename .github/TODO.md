@@ -21,7 +21,3 @@
 ## Bugs
 
 - dxf import multiple parts
-
-## Docker
-
-- stop postgres docker at stop

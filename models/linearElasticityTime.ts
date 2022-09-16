@@ -104,6 +104,18 @@ const LinearElasticityTime: IModel = {
           }
         ]
       },
+      gravity: {
+        advanced: true,
+        label: 'Gravity',
+        children: [
+          {
+            label: 'Standard gravity',
+            htmlEntity: 'formula',
+            default: 9.81,
+            unit: '\\(m.s^{-2}\\)'
+          }
+        ]
+      },
       time: {
         label: 'Time',
         children: [

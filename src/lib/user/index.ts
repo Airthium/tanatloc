@@ -105,7 +105,6 @@ const decrypt = async (plugins: IClientPlugin[]): Promise<IClientPlugin[]> => {
       return plugin
     })
   )
-  // return plugins
 }
 
 /**

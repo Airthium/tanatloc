@@ -1,8 +1,5 @@
 import { add } from '../add'
 
-const mockElectron = jest.fn()
-jest.mock('is-electron', () => () => mockElectron())
-
 const mockQuery = jest.fn()
 jest.mock('../..', () => ({
   query: async (query: string) => mockQuery(query)
@@ -10,7 +7,6 @@ jest.mock('../..', () => ({
 
 describe('database/user/add', () => {
   beforeEach(() => {
-    mockElectron.mockReset()
     mockQuery.mockReset()
   })
 
@@ -33,19 +29,6 @@ describe('database/user/add', () => {
     user = await add({ email: 'email', password: 'password' })
     expect(user).toEqual({
       alreadyExists: true
-    })
-  })
-
-  test('electron', async () => {
-    mockElectron.mockImplementation(() => true)
-    mockQuery.mockImplementation((query) => {
-      if (query.includes('SELECT')) return { rows: [] }
-      else return { rows: [{ id: 'id' }] }
-    })
-    const user = await add({ email: 'email', password: 'password' })
-    expect(user).toEqual({
-      id: 'id',
-      email: 'email'
     })
   })
 })

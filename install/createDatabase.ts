@@ -3,6 +3,8 @@
 import { Pool, PoolClient } from 'pg'
 import format from 'pg-format'
 import crypto from 'crypto'
+import isElectron from 'is-electron'
+import { v4 as uuid } from 'uuid'
 
 import { IDataBaseResponse } from '@/database/index.d'
 
@@ -21,6 +23,9 @@ import {
 import { query } from '@/database'
 
 import { initDatabase } from '@/server/init/database'
+
+import { IClientPlugin } from '@/plugins/index.d'
+import Local from '@/plugins/local'
 
 /**
  * Create database
@@ -563,11 +568,22 @@ const createAdmin = async (): Promise<void> => {
 
     const password = 'password'
 
+    const plugins: IClientPlugin[] = []
+    if (isElectron()) {
+      const localPlugin: IClientPlugin = JSON.parse(
+        JSON.stringify(Local.client)
+      )
+      localPlugin.configuration.name.value = 'My computer'
+      localPlugin.uuid = uuid()
+
+      plugins.push(localPlugin)
+    }
+
     await query(
       'INSERT INTO ' +
         tables.USERS +
-        " (email, password, workspaces, isValidated, lastModificationDate, superuser, authorizedplugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6, $7)",
-      ['admin', password, [], true, Date.now() / 1000, true, ['local']]
+        " (email, password, workspaces, isValidated, lastModificationDate, superuser, authorizedplugins, plugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6, $7, $8)",
+      ['admin', password, [], true, Date.now() / 1000, true, ['local'], plugins]
     )
     console.info(' Administrator account:')
     console.info(' - email: admin')

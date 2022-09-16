@@ -81,7 +81,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
         <Space direction="vertical">
           <Typography.Text>
             Your computational resource does not appear in this list? Create one
-            in your
+            in your{' '}
             <LinkButton
               onClick={() =>
                 router.push({

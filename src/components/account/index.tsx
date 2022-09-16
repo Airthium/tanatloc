@@ -59,7 +59,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
           }}
           swr={{ mutateUser: swr.mutateUser }}
         />
-        <Delete swr={{ clearUser: swr.clearUser }} />
+        {!isElectron() && <Delete swr={{ clearUser: swr.clearUser }} />}
       </Space>
     )
   })

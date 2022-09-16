@@ -250,7 +250,10 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               label="Email"
               name="email"
               rules={[
-                { type: 'email', message: 'This is not a valid email' },
+                {
+                  type: isElectron() ? 'string' : 'email',
+                  message: 'This is not a valid email'
+                },
                 { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
               ]}
             >

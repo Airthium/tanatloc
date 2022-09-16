@@ -97,7 +97,7 @@ export const build2DCheckbox = (
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
 ) => (
-  <Form layout="vertical" key={key}>
+  <Form layout="horizontal" key={key}>
     <Form.Item label={child.label2D || child.label}>
       <Checkbox
         defaultChecked={child.value as boolean}
@@ -163,7 +163,7 @@ const buildCheckbox = (
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
 ) => (
-  <Form layout="vertical" key={key}>
+  <Form layout="horizontal" key={key}>
     <Form.Item label={child.label}>
       <Checkbox
         defaultChecked={child.value as boolean}

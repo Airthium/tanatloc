@@ -87,7 +87,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Tooltip title="Copy">
+    <Tooltip title="Copy simulation">
       <Button
         className="no-border"
         loading={loading}

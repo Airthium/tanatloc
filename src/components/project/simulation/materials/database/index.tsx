@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
 import { DatabaseOutlined } from '@ant-design/icons'
+import { string } from 'prop-types'
 
 /**
  * Props
@@ -359,9 +360,12 @@ const materialDatabase: IMaterialDatabase = {
 const DataBase = ({ onSelect }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>()
-  const [secondLevel, setSecondLevel] = useState<{
+  const [firstLevel, setFirstLevel] = useState<{
     key: string
     children: IMaterialDatabase['key']['children']
+  }>()
+  const [secondLevel, setSecondLevel] = useState<{
+    key: string
   }>()
   const [current, setCurrent] =
     useState<IMaterialDatabase['key']['children'][0]>()
@@ -376,10 +380,12 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
   const onFirstLevel = useCallback(({ key }: { key: string }) => {
     const subDatabase = materialDatabase[key]
 
-    setSecondLevel({
+    console.log(key, subDatabase)
+    setFirstLevel({
       key,
       children: subDatabase.children
     })
+    setSecondLevel(undefined)
     setCurrent(undefined)
   }, [])
 
@@ -389,12 +395,14 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    */
   const onSecondLevel = useCallback(
     ({ key }: { key: string }) => {
-      const subDatabase = materialDatabase[secondLevel!.key]
+      console.log(key)
+      const subDatabase = materialDatabase[firstLevel!.key]
       const child = subDatabase.children.find((c) => c.key === key)
 
+      setSecondLevel({ key })
       setCurrent(child)
     },
-    [secondLevel]
+    [firstLevel]
   )
 
   /**
@@ -443,10 +451,11 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
               />
               <Menu
                 mode="inline"
-                items={secondLevel?.children.map((child) => ({
+                items={firstLevel?.children.map((child) => ({
                   key: child.key,
                   label: child.label
                 }))}
+                selectedKeys={secondLevel?.key ? [secondLevel?.key] : []}
                 onClick={onSecondLevel}
               />
               {current && (

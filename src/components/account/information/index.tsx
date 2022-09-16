@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
+import { Rule } from 'antd/lib/form'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
@@ -249,13 +250,17 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             <Form.Item
               label="Email"
               name="email"
-              rules={[
-                {
-                  type: isElectron() ? 'string' : 'email',
-                  message: 'This is not a valid email'
-                },
-                { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
-              ]}
+              rules={
+                [
+                  isElectron()
+                    ? {
+                        type: 'email',
+                        message: 'This is not a valid email'
+                      }
+                    : undefined,
+                  { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
+                ].filter((r) => r) as Rule[]
+              }
             >
               <Input disabled={isElectron()} />
             </Form.Item>

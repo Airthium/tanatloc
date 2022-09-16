@@ -9,7 +9,7 @@ describe('database/goemetry/add', () => {
     const res = await add({ id: 'id' }, { name: 'name.step', uid: 'test' })
     expect(res).toEqual({
       id: 'id',
-      name: 'name.step',
+      name: 'name',
       originalfilename: 'name.step',
       extension: 'step',
       uploadfilename: 'test.step'

@@ -3,7 +3,6 @@
 import { useCallback, useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
 import { DatabaseOutlined } from '@ant-design/icons'
-import { string } from 'prop-types'
 
 /**
  * Props

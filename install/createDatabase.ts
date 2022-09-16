@@ -24,9 +24,6 @@ import { query } from '@/database'
 
 import { initDatabase } from '@/server/init/database'
 
-import { IClientPlugin } from '@/plugins/index.d'
-import Local from '@/plugins/local'
-
 /**
  * Create database
  * @description Create the Tanatloc database with `pgcrypto` extension
@@ -568,13 +565,35 @@ const createAdmin = async (): Promise<void> => {
 
     const password = 'password'
 
-    const plugins: IClientPlugin[] = []
+    const plugins = []
     if (isElectron()) {
-      const localPlugin: IClientPlugin = JSON.parse(
-        JSON.stringify(Local.client)
-      )
-      localPlugin.configuration.name.value = 'My computer'
-      localPlugin.uuid = uuid()
+      const localPlugin = {
+        uuid: uuid(),
+        name: 'Local',
+        description: '<p>Local</p>',
+        configuration: {
+          name: {
+            label: 'Name',
+            type: 'input',
+            rules: [
+              { required: true, message: 'Name is required' },
+              { max: 50, message: 'Max ' + 50 + ' characters' }
+            ],
+            value: 'My computer'
+          },
+          gmshPath: {
+            label: 'Gmsh path',
+            type: 'input',
+            tooltip: 'Fill this input to use a local version of Gmsh'
+          },
+          freefemPath: {
+            label: 'FreeFEM path (ff-mpirun)',
+            type: 'input',
+            tooltip: 'Fill this input to use a local version of FreeFEM'
+          }
+        },
+        inUseConfiguration: {}
+      }
 
       plugins.push(localPlugin)
     }

@@ -1,3 +1,5 @@
+/** @module Services.Docker */
+
 import { ChildProcessWithoutNullStreams, execSync, spawn } from 'child_process'
 import fs from 'fs'
 import { v4 as uuid } from 'uuid'

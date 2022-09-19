@@ -113,6 +113,7 @@ const ProjectList = ({
   const router = useRouter()
 
   // Height
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const div = containerRef.current
     if (!div) return

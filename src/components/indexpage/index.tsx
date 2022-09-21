@@ -1,4 +1,4 @@
-/** @module Components.Index2 */
+/** @module Components.Index */
 
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'

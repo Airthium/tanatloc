@@ -5,6 +5,20 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@airthium/pg-format@npm:1.0.9":
+  version: 1.0.9
+  resolution: "@airthium/pg-format@npm:1.0.9"
+  checksum: 10353053779256846f6078b1f0743e22299a8bd5480bcdc0b85aee0ec2cc2b20aa5930041744d30a2f535aa2b020f6f68979f7f79bd5e05a9fef9ab8eadef87e
+  languageName: node
+  linkType: hard
+
+"@airthium/typedoc-plugin-airthium@npm:1.0.6":
+  version: 1.0.6
+  resolution: "@airthium/typedoc-plugin-airthium@npm:1.0.6"
+  checksum: d69c2944e0c0c779da9c96046a234b281d36760717a3f40548c8c6d08080a982b02051bf2cc9db62d2b5bd6954db47564b44112c7d97b7a4d1276bd60eb8c60a
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.2.0
   resolution: "@ampproject/remapping@npm:2.2.0"
@@ -7641,13 +7655,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-format@https://github.com/Airthium/pg-format.git#1.0.8":
-  version: 1.0.8
-  resolution: "pg-format@https://github.com/Airthium/pg-format.git#commit=b69774c29d6779add1686c30bc4c7eea4cfc4d64"
-  checksum: 54df051b7d19c2c5fd36fbfbd516899bd2aa0a3a0906bd09b60be090a10b40b10ebd17d282f73a1cf3ef794ea73a716451c02e8689df89ba2b0d496c850d9c08
-  languageName: node
-  linkType: hard
-
 "pg-int8@npm:1.0.1":
   version: 1.0.1
   resolution: "pg-int8@npm:1.0.1"
@@ -7655,10 +7662,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-native@https://github.com/Airthium/pg-native.git#3.0.1":
-  version: 3.0.0
-  resolution: "pg-native@https://github.com/Airthium/pg-native.git#commit=022d72db62b6d5b7d9591766c7f78c428404857e"
-  checksum: 2a8c0a1f104dde50046ff1e685644922ff510b4c3f6c038e88880dbd043d715f6151f4444bb6cd900eb46cbb079d2734772e6a3622f1e79c106855f4728b79ce
+"pg-native@npm:@airthium/pg-native@3.0.2":
+  version: 3.0.2
+  resolution: "@airthium/pg-native@npm:3.0.2"
+  checksum: 631dd060f2805dfcc04cfe47d4ac42831f4e6316c4087d1a3f1947d9869f7c2ea5864be63f25b605e59b15bf99033598dd7ace7a1d5874b824576c8f34a0f388
   languageName: node
   linkType: hard
 
@@ -9695,6 +9702,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
+    "@airthium/pg-format": 1.0.9
+    "@airthium/typedoc-plugin-airthium": 1.0.6
     "@ant-design/icons": 4.7.0
     "@babel/core": 7.19.1
     "@hapi/iron": 7.0.0
@@ -9754,8 +9763,7 @@ __metadata:
     passport: 0.6.0
     passport-local: 1.0.0
     pg: 8.8.0
-    pg-format: "https://github.com/Airthium/pg-format.git#1.0.8"
-    pg-native: "https://github.com/Airthium/pg-native.git#3.0.1"
+    pg-native: "npm:@airthium/pg-native@3.0.2"
     prettier: 2.7.1
     prop-types: 15.8.1
     react: 18.2.0
@@ -9767,7 +9775,6 @@ __metadata:
     tar: 6.1.11
     three: 0.144.0
     typedoc: 0.23.15
-    typedoc-plugin-airthium: "https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.6"
     typescript: 4.8.3
     url-join: 4.0.1
     uuid: 9.0.0
@@ -10051,13 +10058,6 @@ __metadata:
     media-typer: 0.3.0
     mime-types: ~2.1.24
   checksum: 2c8e47675d55f8b4e404bcf529abdf5036c537a04c2b20177bcf78c9e3c1da69da3942b1346e6edb09e823228c0ee656ef0e033765ec39a70d496ef601a0c657
-  languageName: node
-  linkType: hard
-
-"typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#1.0.6":
-  version: 1.0.5
-  resolution: "typedoc-plugin-airthium@https://github.com/Airthium/typedoc-plugin-airthium.git#commit=15260c9b91087b51aff884b35c1aac8a89cfc153"
-  checksum: b7f81616a29cdb1da028269465fddd5899b84e058dee43c8681f50d51cf0dd48fb988e50439df4ffae90aa506ef9a90d20cd9cf980bb71a1fccb65b69197c0f2
   languageName: node
   linkType: hard
 

@@ -7,6 +7,7 @@
 ## Models (Long term)
 
 - Linearelasticity: cylindrical coordinates
+  BC force with normal or with components
 
 ## Electron (Long term)
 

@@ -1,3 +1,5 @@
+/** @module Components.Help.Doc.About */
+
 import { Card, Typography } from 'antd'
 import os from 'os'
 

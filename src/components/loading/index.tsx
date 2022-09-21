@@ -41,6 +41,9 @@ export interface IProps {
  * @returns Loading
  */
 const Loading = ({ text, status, errors }: IProps): JSX.Element => {
+  // Data
+  const lastStatus = errors?.length ? 'error' : 'process'
+
   /**
    * Render
    */
@@ -126,13 +129,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
               {status.map((desc, index) => (
                 <Steps.Step
                   key={index}
-                  status={
-                    index === status.length - 1
-                      ? errors?.length
-                        ? 'error'
-                        : 'process'
-                      : 'finish'
-                  }
+                  status={index === status.length - 1 ? lastStatus : 'finish'}
                   title={desc}
                 />
               ))}

@@ -32,7 +32,6 @@ describe('install', () => {
       .mockImplementationOnce(() => {
         throw new Error()
       })
-      .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => {
         throw new Error()
       })

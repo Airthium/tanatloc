@@ -284,9 +284,7 @@ const Updater = ({
           closable: false,
           okButtonProps: { hidden: true }
         })
-        onUpdate(simulation, models, swr)
-          .catch()
-          .finally(() => Modal.destroyAll())
+        onUpdate(simulation, models, swr).finally(() => Modal.destroyAll())
       }
     }
   }, [simulation, models, swr])

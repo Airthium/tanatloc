@@ -8,7 +8,6 @@ import {
   Checkbox,
   Layout,
   Menu,
-  Modal,
   Popover,
   Space,
   Steps,
@@ -17,6 +16,8 @@ import {
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { BarsOutlined, SettingOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
+
+import packageJson from '../../../package.json'
 
 import { login } from '@/api/login'
 import UserAPI from '@/api/user'
@@ -79,56 +80,23 @@ const Index = (): JSX.Element => {
    */
   const onDownload = useCallback(
     (key: string) => {
-      Modal.confirm({
-        title: key,
-        content: (
-          <>
-            Before run Tanatloc, make sure:
-            <ul>
-              <li>
-                docker daemon is running (you must restart your computer after
-                docker install)
-              </li>
-              <li>
-                <Typography.Text code>tanatloc/worker</Typography.Text> Docker
-                image is available
-              </li>
-              <li>
-                <Typography.Text code>postgres</Typography.Text> Docker image is
-                available
-              </li>
-              {key === 'Linux' && (
-                <li>
-                  Allow execution of the AppImage using{' '}
-                  <Typography.Text code>
-                    chmod +x ./Tanatloc-x.x.x.AppImage
-                  </Typography.Text>
-                </li>
-              )}
-            </ul>
-          </>
-        ),
-        okText: 'Download',
-        onOk: () => {
-          switch (key) {
-            case 'Windows':
-              router.push(
-                'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc.Setup.1.0.0.exe'
-              )
-              break
-            case 'MacOS':
-              router.push(
-                'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.dmg'
-              )
-              break
-            case 'Linux':
-              router.push(
-                'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.AppImage'
-              )
-              break
-          }
-        }
-      })
+      switch (key) {
+        case 'Windows':
+          router.push(
+            'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc.Setup.1.0.0.exe'
+          )
+          break
+        case 'MacOS':
+          router.push(
+            'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.dmg'
+          )
+          break
+        case 'Linux':
+          router.push(
+            'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.AppImage'
+          )
+          break
+      }
     },
     [router]
   )
@@ -456,34 +424,16 @@ const Index = (): JSX.Element => {
                     >
                       docs.docker.com/get-docker
                     </a>
-                    . Then, restart your computer.
+                    . Then, reboot your computer.
                   </>
                 }
                 status="process"
               />
               <Steps.Step
-                title="Tanatloc worker docker"
+                title="Disk space"
                 description={
                   <Typography>
-                    Pull the latest tanatloc/worker docker with the command
-                    line:
-                    <br />
-                    <Typography.Text code copyable>
-                      docker pull tanatloc/worker
-                    </Typography.Text>
-                  </Typography>
-                }
-                status="process"
-              />
-              <Steps.Step
-                title="PostgreSQL docker"
-                description={
-                  <Typography>
-                    Pull the latest postgres docker with the command line:
-                    <br />
-                    <Typography.Text code copyable>
-                      docker pull postgres
-                    </Typography.Text>
+                    Make sure you have at least 10GB of free disk space
                   </Typography>
                 }
                 status="process"
@@ -510,6 +460,19 @@ const Index = (): JSX.Element => {
                       Linux
                     </Button>
                   </>
+                }
+                status="process"
+              />
+              <Steps.Step
+                title="Linux only: Allow execution of the AppImage"
+                description={
+                  <Typography>
+                    Allow execution of the AppImage using:
+                    <br />
+                    <Typography.Text code>
+                      chmod +x ./Tanatloc-{packageJson.version}.AppImage
+                    </Typography.Text>
+                  </Typography>
                 }
                 status="process"
               />

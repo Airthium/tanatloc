@@ -50,15 +50,15 @@ const init = async (params?: {
   addStatus: (status: string) => Promise<void>
 }): Promise<void> => {
   // Start database
-  await params?.addStatus('Initialize Database')
+  await params?.addStatus('Initializing Database')
   await initDatabase(params)
 
   // Load plugins
-  await params?.addStatus('Initialize Plugins')
+  await params?.addStatus('Initializing Plugins')
   await initPlugins()
 
   // Load templates
-  await params?.addStatus('Initialize Templates')
+  await params?.addStatus('Initializing Templates')
   await initTemplates()
 
   // Restart jobs

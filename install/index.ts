@@ -20,11 +20,9 @@ export const initDockers = async (params?: {
 }): Promise<void> => {
   // tanatloc/worker
   try {
-    execSync('docker image inspect tanatloc/worker')
-  } catch (err) {
-    await params?.addStatus('Pulling tanatloc/worker')
+    await params?.addStatus('Updating tanatloc/worker')
     execSync('docker pull tanatloc/worker')
-  }
+  } catch (err) {}
 
   // postgres
   try {
@@ -44,19 +42,19 @@ const main = async (params?: IParams): Promise<void> => {
   console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')
   console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
 
-  await params?.addStatus('Start installation')
+  await params?.addStatus('Starting installation')
 
   if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
     if (!isDocker()) {
-      await params?.addStatus('Initialize dockers')
+      await params?.addStatus('Initializing dockers')
       await initDockers(params)
     }
 
-    await params?.addStatus('Create database')
+    await params?.addStatus('Creating database')
     await createDatabase()
 
-    await params?.addStatus('Create paths')
+    await params?.addStatus('Creating paths')
     await createPaths()
   }
 }

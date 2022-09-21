@@ -1,7 +1,7 @@
 /** @module Components.Loading */
 
 import { WarningOutlined } from '@ant-design/icons'
-import { Card, Layout, Space, Spin, Typography } from 'antd'
+import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
 
 /**
  * Simple
@@ -79,7 +79,6 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
       >
         {errors?.length ? (
           <div className="Loading-errors">
-            Errors:
             {errors.map((err, index) => {
               let child = null
               if (
@@ -90,7 +89,8 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
                   <Card>
                     There is an error with your Docker installation.
                     <br />
-                    Please verify Docker is correctly installed and running.
+                    Please verify that Docker is correctly installed and
+                    running.
                   </Card>
                 )
               else if (
@@ -102,7 +102,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
                   <Card>
                     There is an error with your PostgreSQL installation.
                     <br />
-                    Please verify postgres Docker container
+                    Please verify that postgres Docker container
                     &quot;tanatloc-postgres&quot; is correctly installed and
                     running.
                   </Card>
@@ -122,10 +122,21 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
         ) : null}
         {status?.length ? (
           <div className="Loading-status">
-            Tasks:
-            {status.map((desc, index) => (
-              <div key={index}>{desc}</div>
-            ))}
+            <Steps direction="vertical">
+              {status.map((desc, index) => (
+                <Steps.Step
+                  key={index}
+                  status={
+                    index === status.length - 1
+                      ? errors?.length
+                        ? 'error'
+                        : 'process'
+                      : 'finish'
+                  }
+                  title={desc}
+                />
+              ))}
+            </Steps>
           </div>
         ) : null}
       </Card>

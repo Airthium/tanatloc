@@ -13,8 +13,6 @@ import {
 
 import packageJson from '../../../package.json'
 
-import Utils from '@/lib/utils'
-
 export interface IProps {
   scroll: (id: string) => void
 }
@@ -47,7 +45,6 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       About us
     </Button>
   ]
-  const gitVersion = Utils.getGitVersion()
 
   /**
    * Render item
@@ -105,7 +102,15 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Typography>
           Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
-          {gitVersion && <>({gitVersion})</>}
+          - Design by{' '}
+          <a
+            href="http://enora-dvvr.fr/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-dark"
+          >
+            Enora Duvivier
+          </a>
         </Typography>
       </div>
     </Layout.Footer>

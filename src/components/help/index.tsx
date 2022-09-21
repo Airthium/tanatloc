@@ -8,6 +8,7 @@ import Project from './doc/project'
 import HPC from './doc/hpc'
 import Administration from './doc/administration'
 import Organizations from './doc/organizations'
+import About from './doc/about'
 
 /**
  * Help
@@ -27,6 +28,15 @@ const Help = (): JSX.Element => {
             Help
           </Typography.Title>
         }
+        extra={
+          <a
+            href="https://github.com/Airthium/tanatloc/issues/new/choose"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open an issue
+          </a>
+        }
         footer={<Divider />}
       />
       <Layout.Content className="scroll">
@@ -37,6 +47,7 @@ const Help = (): JSX.Element => {
           <HPC />
           <Organizations />
           <Administration />
+          <About />
         </Space>
       </Layout.Content>
     </Layout>

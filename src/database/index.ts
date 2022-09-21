@@ -24,7 +24,7 @@ export const checkdB = async (params?: {
   addStatus: (status: string) => Promise<void>
 }): Promise<boolean> => {
   console.info('Check database...')
-  await params?.addStatus('Check database...')
+  await params?.addStatus('Checking database...')
 
   // Legacy postgres
   try {

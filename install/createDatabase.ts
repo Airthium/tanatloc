@@ -3,7 +3,6 @@
 import { Pool, PoolClient } from 'pg'
 import format from '@airthium/pg-format'
 import crypto from 'crypto'
-import isElectron from 'is-electron'
 import { v4 as uuid } from 'uuid'
 
 import { IDataBaseResponse } from '@/database/index.d'
@@ -565,44 +564,50 @@ const createAdmin = async (): Promise<void> => {
 
     const password = 'password'
 
-    const plugins = []
-    if (isElectron()) {
-      const localPlugin = {
-        uuid: uuid(),
-        name: 'Local',
-        description: '<p>Local</p>',
-        configuration: {
-          name: {
-            label: 'Name',
-            type: 'input',
-            rules: [
-              { required: true, message: 'Name is required' },
-              { max: 50, message: 'Max ' + 50 + ' characters' }
-            ],
-            value: 'My computer'
-          },
-          gmshPath: {
-            label: 'Gmsh path',
-            type: 'input',
-            tooltip: 'Fill this input to use a local version of Gmsh'
-          },
-          freefemPath: {
-            label: 'FreeFEM path (ff-mpirun)',
-            type: 'input',
-            tooltip: 'Fill this input to use a local version of FreeFEM'
-          }
+    const localPlugin = {
+      category: 'HPC',
+      key: 'local',
+      uuid: uuid(),
+      name: 'Local',
+      description: '<p>Local</p>',
+      configuration: {
+        name: {
+          label: 'Name',
+          type: 'input',
+          rules: [
+            { required: true, message: 'Name is required' },
+            { max: 50, message: 'Max ' + 50 + ' characters' }
+          ],
+          value: 'My computer'
         },
-        inUseConfiguration: {}
-      }
-
-      plugins.push(localPlugin)
+        gmshPath: {
+          label: 'Gmsh path',
+          type: 'input',
+          tooltip: 'Fill this input to use a local version of Gmsh'
+        },
+        freefemPath: {
+          label: 'FreeFEM path (ff-mpirun)',
+          type: 'input',
+          tooltip: 'Fill this input to use a local version of FreeFEM'
+        }
+      },
+      inUseConfiguration: {}
     }
 
     await query(
       'INSERT INTO ' +
         tables.USERS +
         " (email, password, workspaces, isValidated, lastModificationDate, superuser, authorizedplugins, plugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6, $7, $8)",
-      ['admin', password, [], true, Date.now() / 1000, true, ['local'], plugins]
+      [
+        'admin',
+        password,
+        [],
+        true,
+        Date.now() / 1000,
+        true,
+        ['local'],
+        [localPlugin]
+      ]
     )
     console.info(' Administrator account:')
     console.info(' - email: admin')

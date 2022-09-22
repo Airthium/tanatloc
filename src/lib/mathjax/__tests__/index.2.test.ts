@@ -6,12 +6,8 @@ Object.defineProperty(global, 'setTimeout', {
   }
 })
 
-describe('lib/mathjax', () => {
+describe('lib/mathjax (2)', () => {
   test('mathjaxRefresh', async () => {
-    // No mathjax
-    window.MathJax = undefined
-    mathjaxRefresh()
-
     // typesetPromise failed
     window.MathJax = {
       typesetPromise: async () => {

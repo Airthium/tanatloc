@@ -1734,13 +1734,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mathjax@npm:^0.0.37":
-  version: 0.0.37
-  resolution: "@types/mathjax@npm:0.0.37"
-  checksum: 8fe8f0dac3271a848dc0070c49ec8604c53abdc0a442308e357f215ed4d68102ed5e57e2f989cde447ebcf929efd2bc64b5a986b159c5cb50963546aa20d1a81
-  languageName: node
-  linkType: hard
-
 "@types/mime@npm:*":
   version: 3.0.1
   resolution: "@types/mime@npm:3.0.1"
@@ -9725,7 +9718,6 @@ __metadata:
     "@types/express": 4.17.14
     "@types/jest": 29.0.3
     "@types/lodash": 4.14.185
-    "@types/mathjax": ^0.0.37
     "@types/node": 17.0.2
     "@types/passport": 1.0.11
     "@types/passport-local": 1.0.34

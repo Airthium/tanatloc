@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
 
-import { useState, useEffect, ChangeEvent, useCallback } from 'react'
+import { useState, useEffect, ChangeEvent, useCallback, useMemo } from 'react'
 import {
   Button,
   Card,
@@ -148,82 +148,88 @@ const BoundaryCondition = ({
    * On name
    * @param event Event
    */
-  const onName = (event: ChangeEvent<HTMLInputElement>): void => {
+  const onName = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
     const name = event.target.value
     setCurrent((prevCurrent) => ({
       ...(prevCurrent as IModelBoundaryConditionValue),
       name: name
     }))
-  }
+  }, [])
 
   /**
    * On type
    * @param event Event
    */
-  const onType = (event: RadioChangeEvent): void => {
-    const key = event.target.value
-    const type = types.find(
-      (t) => t.key === key
-    ) as IModelTypedBoundaryCondition & {
-      key: string
-    }
-    const typedBoundaryCondition = boundaryConditions[
-      key
-    ] as IModelTypedBoundaryCondition
+  const onType = useCallback(
+    (event: RadioChangeEvent): void => {
+      const key = event.target.value
+      const type = types.find(
+        (t) => t.key === key
+      ) as IModelTypedBoundaryCondition & {
+        key: string
+      }
+      const typedBoundaryCondition = boundaryConditions[
+        key
+      ] as IModelTypedBoundaryCondition
 
-    const values = typedBoundaryCondition.children?.map((child) => ({
-      checked: true,
-      value: child.default
-    }))
+      const values = typedBoundaryCondition.children?.map((child) => ({
+        checked: true,
+        value: child.default
+      }))
 
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelBoundaryConditionValue),
-      type: {
-        key: type.key,
-        label: type.label,
-        children: type.children
-      },
-      values: values
-    }))
-  }
+      setCurrent((prevCurrent) => ({
+        ...(prevCurrent as IModelBoundaryConditionValue),
+        type: {
+          key: type.key,
+          label: type.label,
+          children: type.children
+        },
+        values: values
+      }))
+    },
+    [boundaryConditions, types]
+  )
 
   /**
    * On value change
    * @param index Index
    * @param value Value
    */
-  const onValueChange = (index: number, value: string): void => {
+  const onValueChange = useCallback((index: number, value: string): void => {
     setCurrent((prevCurrent) => ({
       ...(prevCurrent as IModelBoundaryConditionValue),
       values: [
-        ...current!.values!.slice(0, index),
+        ...prevCurrent!.values!.slice(0, index),
         {
-          checked: current!.values![index].checked,
+          checked: prevCurrent!.values![index].checked,
           value
         },
-        ...current!.values!.slice(index + 1)
+        ...prevCurrent!.values!.slice(index + 1)
       ]
     }))
-  }
+  }, [])
 
   /**
    * On checked change
    * @param index Index
    * @param checked Checked
    */
-  const onCheckedChange = (index: number, checked: boolean): void => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelBoundaryConditionValue),
-      values: [
-        ...current!.values!.slice(0, index),
-        {
-          checked,
-          value: current!.values![index].value
-        },
-        ...current!.values!.slice(index + 1)
-      ]
-    }))
-  }
+  const onCheckedChange = useCallback(
+    (index: number, checked: boolean): void => {
+      setCurrent((prevCurrent) => ({
+        ...(prevCurrent as IModelBoundaryConditionValue),
+        values: [
+          ...prevCurrent!.values!.slice(0, index),
+          {
+            checked,
+            value: prevCurrent!.values![index].value
+          },
+          ...prevCurrent!.values!.slice(index + 1)
+        ]
+      }))
+    },
+    []
+  )
 
   /**
    * On selected
@@ -235,6 +241,36 @@ const BoundaryCondition = ({
       selected: selected
     }))
   }, [])
+
+  // Inputs
+  const inputs = useMemo(() => {
+    if (current?.type && current.type?.children) {
+      return (
+        <Card>
+          {current.type.children.map((child, index) => {
+            if (dimension === 2 && child.only3D) return
+            return (
+              <Formula
+                className="marginBottom-10"
+                key={index}
+                label={child.label}
+                defaultValue={String(current.values![index].value)}
+                defaultChecked={
+                  current.type.children!.length > 1
+                    ? current.values![index].checked
+                    : undefined
+                }
+                onValueChange={(value) => onValueChange(index, value)}
+                onCheckedChange={(checked) => onCheckedChange(index, checked)}
+                unit={child.unit}
+              />
+            )
+          })}
+        </Card>
+      )
+    }
+    return null
+  }, [current, dimension, onCheckedChange, onValueChange])
 
   /**
    * Render
@@ -357,29 +393,8 @@ const BoundaryCondition = ({
           </Form>
         </Card>
 
-        {current?.type && current.type?.children && (
-          <Card>
-            {current.type.children.map((child, index) => {
-              if (dimension === 2 && child.only3D) return
-              return (
-                <Formula
-                  className="marginBottom-10"
-                  key={index}
-                  label={child.label}
-                  defaultValue={String(current.values![index].value)}
-                  defaultChecked={
-                    current.type.children!.length > 1
-                      ? current.values![index].checked
-                      : undefined
-                  }
-                  onValueChange={(value) => onValueChange(index, value)}
-                  onCheckedChange={(checked) => onCheckedChange(index, checked)}
-                  unit={child.unit}
-                />
-              )
-            })}
-          </Card>
-        )}
+        {inputs}
+
         <Selector
           geometry={geometry}
           alreadySelected={alreadySelected}

@@ -1,6 +1,6 @@
 /** @module Components.Assets.Mathjax */
 
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import parse from 'html-react-parser'
 
@@ -25,13 +25,33 @@ export interface IPropsInline {
  * @param props Props
  */
 const Inline = ({ text }: IPropsInline): JSX.Element => {
+  // State
+  const [content, setContent] = useState<string>()
+
+  // Ref
+  const element = useRef<HTMLDivElement>(null)
+
+  // Update text
   useEffect(() => {
+    if (!text) setContent('')
+    else if (text.includes('\\(') && text.includes('\\)')) setContent(text)
+    else setContent('\\(' + text + '\\)')
+
     mathjaxRefresh()
   }, [text])
 
-  if (!text) return <></>
-  else if (text.includes('\\(') && text.includes('\\)')) return <>{text}</>
-  else return <>\({text}\)</>
+  // Update MathJax
+  useEffect(() => {
+    const div = element.current
+    if (!div) return
+
+    mathjaxRefresh([div])
+  }, [content])
+
+  /**
+   * Render
+   */
+  return <div ref={element}>{content}</div>
 }
 
 export interface IPropsFormula {
@@ -43,13 +63,33 @@ export interface IPropsFormula {
  * @param props Props
  */
 const Formula = ({ text }: IPropsFormula) => {
+  // State
+  const [content, setContent] = useState<string>()
+
+  // Ref
+  const element = useRef<HTMLDivElement>(null)
+
+  // Update text
   useEffect(() => {
+    if (!text) setContent('')
+    else if (text.includes('$$')) setContent(text)
+    else setContent('$$' + text + '$$')
+
     mathjaxRefresh()
   }, [text])
 
-  if (!text) return <></>
-  else if (text.includes('$$')) return <>{text}</>
-  else return <>$${text}$$</>
+  // Update MathJax
+  useEffect(() => {
+    const div = element.current
+    if (!div) return
+
+    mathjaxRefresh([div])
+  }, [content])
+
+  /**
+   * Render
+   */
+  return <div ref={element}>{content}</div>
 }
 
 export interface IPropsHtml {
@@ -61,12 +101,32 @@ export interface IPropsHtml {
  * @param props Props
  */
 const Html = ({ html }: IPropsHtml): JSX.Element => {
+  // State
+  const [content, setContent] = useState<string | JSX.Element | JSX.Element[]>()
+
+  // Ref
+  const element = useRef<HTMLDivElement>(null)
+
+  // Update text
   useEffect(() => {
+    if (!html) setContent('')
+    else setContent(parse(html))
+
     mathjaxRefresh()
   }, [html])
 
-  if (!html) return <></>
-  else return <>{parse(html)}</>
+  // Update MathJax
+  useEffect(() => {
+    const div = element.current
+    if (!div) return
+
+    mathjaxRefresh([div])
+  }, [content])
+
+  /**
+   * Render
+   */
+  return <div ref={element}>{content}</div>
 }
 
 const MathJax = { Head, Inline, Formula, Html }

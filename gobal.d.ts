@@ -14,7 +14,7 @@ declare global {
 
   interface Window {
     MathJax?: {
-      typesetPromise: () => Promise<void>
+      typesetPromise: (element?: HTMLDivElement[]) => Promise<void>
     }
   }
 }

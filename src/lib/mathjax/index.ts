@@ -6,15 +6,15 @@ let nRetry = 0
 /**
  * MathJax refresh (using typesetPromise)
  */
-export const mathjaxRefresh = (): void => {
+export const mathjaxRefresh = (elements?: HTMLDivElement[]): void => {
   if (!window.MathJax) {
-    mathjaxRetry(mathjaxRefresh)
+    mathjaxRetry(() => mathjaxRefresh(elements))
     return
   }
 
-  window.MathJax.typesetPromise().catch(() => {
+  window.MathJax.typesetPromise(elements).catch(() => {
     console.warn('MathJax::typeset failed')
-    mathjaxRetry(mathjaxRefresh)
+    mathjaxRetry(() => mathjaxRefresh(elements))
   })
 }
 

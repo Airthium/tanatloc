@@ -379,7 +379,6 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
   const onFirstLevel = useCallback(({ key }: { key: string }) => {
     const subDatabase = materialDatabase[key]
 
-    console.log(key, subDatabase)
     setFirstLevel({
       key,
       children: subDatabase.children
@@ -394,7 +393,6 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    */
   const onSecondLevel = useCallback(
     ({ key }: { key: string }) => {
-      console.log(key)
       const subDatabase = materialDatabase[firstLevel!.key]
       const child = subDatabase.children.find((c) => c.key === key)
 

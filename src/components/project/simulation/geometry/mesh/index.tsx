@@ -68,6 +68,18 @@ export const onMeshGlobalType = async (
         value: diff
       }
     ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
+      }
+    ])
 
     // Local
     swr.mutateOneSimulation(newSimulation)
@@ -115,6 +127,18 @@ export const onMeshGlobalSize = async (
         method: 'set',
         path: ['configuration', 'geometry'],
         value: diff
+      }
+    ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
       }
     ])
 

@@ -206,6 +206,18 @@ export const onDone = async (
         value: diff
       }
     ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
+      }
+    ])
 
     swr.mutateOneSimulation(newSimulation)
   } catch (err) {
@@ -256,6 +268,18 @@ export const onChange = async (
         method: 'set',
         path: ['configuration', 'parameters'],
         value: diff
+      }
+    ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
       }
     ])
 

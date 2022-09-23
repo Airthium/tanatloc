@@ -64,6 +64,10 @@ export const onSelect = async (
       geometry: {
         ...newSimulation.scheme.configuration.geometry,
         done: true
+      },
+      run: {
+        ...newSimulation.scheme.configuration.run,
+        done: false
       }
     }
 

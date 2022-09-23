@@ -177,7 +177,7 @@ describe('components/project/simulation/parameters', () => {
     // Formula
     const formulas = screen.getAllByRole('Formula')
     fireEvent.click(formulas[0])
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     // Update error
     mockUpdate.mockImplementation(() => {
@@ -185,7 +185,7 @@ describe('components/project/simulation/parameters', () => {
     })
     value = undefined
     fireEvent.click(formulas[1])
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -209,13 +209,13 @@ describe('components/project/simulation/parameters', () => {
     const option2 = options2[1]
     fireEvent.click(option2)
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
     fireEvent.click(checkbox)
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(9))
 
     unmount()
   })
@@ -247,13 +247,13 @@ describe('components/project/simulation/parameters', () => {
     const option2 = options2[1]
     fireEvent.click(option2)
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
     fireEvent.click(checkbox)
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
 
     unmount()
   })

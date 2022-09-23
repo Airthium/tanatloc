@@ -113,7 +113,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
@@ -126,7 +126,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

@@ -109,4 +109,28 @@ describe('components/indexpage', () => {
 
     unmount()
   })
+
+  test('drawers', () => {
+    const { unmount } = render(<Index />)
+
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
+
+    const closes = screen.getAllByRole('button', { name: 'Close' })
+    closes.forEach((close) => fireEvent.click(close))
+
+    // Re-open
+    buttons.forEach((button) => fireEvent.click(button))
+    const collapse = screen.getByRole('button', {
+      name: 'right "There is an error with your Docker installation." error'
+    })
+    fireEvent.click(collapse)
+
+    const link = screen.getByRole('button', {
+      name: 'Docker Desktop instructions'
+    })
+    fireEvent.click(link)
+
+    unmount()
+  })
 })

@@ -1,12 +1,15 @@
 /** @module Components.Index */
 
 import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Avatar,
   Button,
   Checkbox,
+  Collapse,
+  Drawer,
   Layout,
+  List,
   Menu,
   Popover,
   Space,
@@ -14,7 +17,7 @@ import {
   Typography
 } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { BarsOutlined, SettingOutlined } from '@ant-design/icons'
+import { BarsOutlined, BugOutlined, SettingOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
 import packageJson from '../../../package.json'
@@ -45,6 +48,10 @@ const scrollToView = (id: string): void => {
  * @returns Index
  */
 const Index = (): JSX.Element => {
+  // State
+  const [dockerOpen, setDockerOpen] = useState<boolean>(false)
+  const [troubleshootingOpen, setTroubleshootingOpen] = useState<boolean>(false)
+
   // Data
   const router = useRouter()
   const [user, { loadingUser }] = UserAPI.useUser()
@@ -180,6 +187,129 @@ const Index = (): JSX.Element => {
    */
   return (
     <Layout id="index" className="Index">
+      <Drawer
+        open={dockerOpen}
+        title="Docker Desktop installation instruction"
+        width={500}
+        bodyStyle={{ marginTop: 16 }}
+        onClose={() => setDockerOpen(false)}
+      >
+        <Typography>
+          Once Docker Desktop is installed and you have reboooted your computer,
+          open Docker Desktop.
+        </Typography>
+        <br />
+        <List bordered>
+          <List.Item>
+            <Collapse>
+              <Collapse.Panel
+                key="access"
+                header='If you have "Docker Desktop - Access denied"'
+              >
+                <Typography>
+                  You must add the{' '}
+                  <Typography.Text code>docker-users</Typography.Text> group to
+                  the current user.
+                </Typography>
+                <Typography>
+                  Run <strong>Computer Management</strong> as an administrator
+                  and navigate to <strong>Local Users and Groups</strong> &gt;{' '}
+                  <strong>Groups</strong> &gt; <strong>docker-users</strong>.
+                  Then, right-click to add user to the group.
+                </Typography>
+                <Typography>Log out and log back in.</Typography>
+                <Typography>You can now start Docker Desktop</Typography>
+                <a
+                  href="https://docs.docker.com/desktop/faqs/windowsfaqs/#why-do-i-see-the-docker-desktop-access-denied-error-message-when-i-try-to-start-docker-desktop"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Source
+                </a>
+              </Collapse.Panel>
+            </Collapse>
+          </List.Item>
+          <List.Item>Accept the terms and conditions</List.Item>
+          <List.Item>
+            Install missing dependencies if needed (WSL2 backend)
+          </List.Item>
+          <List.Item>
+            Docker Desktop should display &quot;Docker Desktop running&quot;
+          </List.Item>
+        </List>
+        <br />
+        <Typography>
+          In case of trouble, you can have a look on the{' '}
+          <a
+            href="https://docs.docker.com/desktop/faqs/general/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Docker Desktop FAQ
+          </a>{' '}
+          or on the Tanatloc electron{' '}
+          <a
+            href="https://github.com/Airthium/tanatloc-electron/issues"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Github Issues
+          </a>
+        </Typography>
+      </Drawer>
+      <Drawer
+        open={troubleshootingOpen}
+        title="Troubleshooting"
+        width={500}
+        bodyStyle={{ marginTop: 16 }}
+        onClose={() => setTroubleshootingOpen(false)}
+      >
+        <Collapse>
+          <Collapse.Panel key="appiamge" header="Linux AppImage">
+            <Typography>Allow execution of the AppImage using:</Typography>
+            <Typography.Text code>
+              chmod +x ./Tanatloc-{packageJson.version}.AppImage
+            </Typography.Text>
+            <Typography>
+              Or right-click{' '}
+              <strong>Tanatloc-{packageJson.version}.AppImage</strong> &gt;
+              <strong>Properties</strong> &gt; <strong>Permissions</strong> and
+              check Allow executing file as program
+            </Typography>
+          </Collapse.Panel>
+          <Collapse.Panel
+            key="docker"
+            header='"There is an error with your Docker installation." error'
+          >
+            <Typography>
+              Open Docker Desktop and check all is working fine.
+            </Typography>
+            <Typography>
+              You can have a look on specific{' '}
+              <Button
+                size="small"
+                onClick={() => {
+                  setTroubleshootingOpen(false)
+                  setDockerOpen(true)
+                }}
+              >
+                Docker Desktop instructions
+              </Button>
+              .
+            </Typography>
+          </Collapse.Panel>
+          <Collapse.Panel
+            key="postgres"
+            header='"There is an error with your PostgreSQL installation." error'
+          >
+            <Typography>Open Docker Desktop &gt; Containers</Typography>
+            <Typography>
+              You should see a container named &quot;tanatloc-postgres&quot;, if
+              not try to restart Tanatloc app.
+            </Typography>
+          </Collapse.Panel>
+        </Collapse>
+      </Drawer>
       <Layout.Header id="header" className="Index-Header">
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Menu mode="horizontal" className="Index-Menu" items={menuItems} />
@@ -415,16 +545,24 @@ const Index = (): JSX.Element => {
                 title="Install Docker Desktop"
                 description={
                   <>
-                    Follow the Docker installation instruction at
-                    <br />
-                    <a
-                      href="https://docs.docker.com/get-docker/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      docs.docker.com/get-docker
-                    </a>
-                    . Then, reboot your computer.
+                    <Typography>
+                      Follow the Docker installation instruction at{' '}
+                      <a
+                        href="https://docs.docker.com/get-docker/"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        docs.docker.com/get-docker
+                      </a>
+                      . Then, reboot your computer.
+                    </Typography>
+                    <Typography>
+                      Start Docker Desktop and make sure{' '}
+                      <Button size="small" onClick={() => setDockerOpen(true)}>
+                        all is working
+                      </Button>
+                      .
+                    </Typography>
                   </>
                 }
                 status="process"
@@ -432,9 +570,16 @@ const Index = (): JSX.Element => {
               <Steps.Step
                 title="Disk space"
                 description={
-                  <Typography>
-                    Make sure you have at least 10GB of free disk space
-                  </Typography>
+                  <>
+                    <Typography>
+                      Make sure you have at least 10GB of free disk space
+                    </Typography>
+                    <Typography>
+                      This space is used for the installation only, make sure
+                      you have enougth space to store the upcoming simulations
+                      results
+                    </Typography>
+                  </>
                 }
                 status="process"
               />
@@ -442,37 +587,42 @@ const Index = (): JSX.Element => {
                 title="Download the latest app"
                 description={
                   <>
-                    Download the latest app for Linux, MacOS or Windows.
-                    <br />
+                    <Typography>
+                      Download the latest app for Linux, MacOS or Windows.
+                    </Typography>
                     <Button
                       type="primary"
+                      className="download"
                       onClick={() => onDownload('Windows')}
                     >
                       <img src="/images/indexpage/windows.svg" alt="" />
                       Windows
                     </Button>
-                    <Button type="primary" onClick={() => onDownload('MacOS')}>
+                    <Button
+                      type="primary"
+                      className="download"
+                      onClick={() => onDownload('MacOS')}
+                    >
                       <img src="/images/indexpage/MacOS.svg" alt="" />
                       MacOS
                     </Button>
-                    <Button type="primary" onClick={() => onDownload('Linux')}>
+                    <Button
+                      type="primary"
+                      className="download"
+                      onClick={() => onDownload('Linux')}
+                    >
                       <img src="/images/indexpage/Linux.svg" alt="" />
                       Linux
                     </Button>
-                  </>
-                }
-                status="process"
-              />
-              <Steps.Step
-                title="Linux only: Allow execution of the AppImage"
-                description={
-                  <Typography>
-                    Allow execution of the AppImage using:
                     <br />
-                    <Typography.Text code>
-                      chmod +x ./Tanatloc-{packageJson.version}.AppImage
-                    </Typography.Text>
-                  </Typography>
+                    <Button
+                      size="small"
+                      icon={<BugOutlined />}
+                      onClick={() => setTroubleshootingOpen(true)}
+                    >
+                      Troubleshooting
+                    </Button>
+                  </>
                 }
                 status="process"
               />

@@ -1,8 +1,10 @@
 /** @module Services.Gmsh */
 
-import { execSync, spawn } from 'child_process'
+import { spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
+
+import docker from './docker'
 
 /**
  * Gmsh service
@@ -62,20 +64,7 @@ const gmsh = async (
         }
       )
     } else {
-      const user =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -u').toString().trim()
-      const group =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -g').toString().trim()
-      run = spawn('docker', [
-        'run',
-        '--volume=' + bindPath + ':/mesh',
-        '--user=' + user + ':' + group,
-        '-w=/mesh',
-        'tanatloc/worker:latest',
+      const command = [
         'gmsh',
         '-3',
         fileInPOSIX,
@@ -85,7 +74,8 @@ const gmsh = async (
         'msh2',
         '-clcurv',
         '10'
-      ])
+      ].join(' ')
+      run = docker(bindPath, command)
     }
 
     callback({ pid: run.pid })

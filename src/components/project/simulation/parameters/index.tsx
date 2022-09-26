@@ -97,7 +97,7 @@ export const build2DCheckbox = (
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
 ) => (
-  <Form layout="vertical" key={key}>
+  <Form layout="horizontal" key={key}>
     <Form.Item label={child.label2D || child.label}>
       <Checkbox
         defaultChecked={child.value as boolean}
@@ -163,7 +163,7 @@ const buildCheckbox = (
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
 ) => (
-  <Form layout="vertical" key={key}>
+  <Form layout="horizontal" key={key}>
     <Form.Item label={child.label}>
       <Checkbox
         defaultChecked={child.value as boolean}
@@ -204,6 +204,18 @@ export const onDone = async (
         method: 'set',
         path: ['configuration', 'parameters'],
         value: diff
+      }
+    ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
       }
     ])
 
@@ -256,6 +268,18 @@ export const onChange = async (
         method: 'set',
         path: ['configuration', 'parameters'],
         value: diff
+      }
+    ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
       }
     ])
 

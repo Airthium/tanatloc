@@ -22,7 +22,8 @@ export const ADMIN_DATABASE: string =
  * Admin password
  * @description Set by `DB_ADMIN_PASSWORD` or empty string
  */
-export const ADMIN_PASSWORD: string = process.env.DB_ADMIN_PASSWORD || ''
+export const ADMIN_PASSWORD: string =
+  process.env.DB_ADMIN_PASSWORD || 'password'
 
 /**
  * User

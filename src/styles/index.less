@@ -11,12 +11,14 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 20px 0;
+  margin: 0 -100px;
+  padding: 20px 120px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: white;
   margin-bottom: 90px;
+  box-shadow: 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
 }
 
 .Index-Header ul {
@@ -61,15 +63,21 @@
 
 .Index-plugins {
   display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  justify-content: space-around;
+  column-width: 160px;
+  column-gap: 0;
 }
 
 .Index-plugins > div {
+  break-inside: avoid-column;
+  page-break-inside: avoid;
+  width: 160px;
+  max-width: 160px;
+  height: 160px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 160px;
   text-align: center;
 }
 
@@ -81,6 +89,17 @@
 
 .Index-plugins .ant-avatar > img {
   object-fit: contain !important;
+  margin: auto;
+}
+
+#developers {
+  display: flex;
+  flex-direction: column;
+}
+
+#developers img {
+  max-width: 80%;
+  align-self: center;
 }
 
 .Index-casestudy {
@@ -114,6 +133,10 @@
   margin-bottom: 20px;
 }
 
+.Index-steps .ant-steps-item-title {
+  margin-top: -8px;
+}
+
 .Index-steps .ant-steps-item-icon {
   margin-top: 10px;
   width: 64px;
@@ -135,6 +158,16 @@
   font-weight: bold;
 }
 
+.Index-steps button.download {
+  height: 40px;
+  margin: 5px;
+}
+
+.Index-steps img {
+  height: 30px;
+  margin-right: 3px;
+}
+
 .Index-about {
   box-shadow: 0px 0px 6px -4px rgba(0, 0, 0, 0.12),
     0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
@@ -151,7 +184,16 @@
 }
 
 .Index-Menu {
-  width: calc(50% - 100px);
+  width: 100%;
+}
+
+.Index-Menu .Index-login-button,
+.Index-Menu .Index-getstarted {
+  display: none;
+}
+
+.Index-Menu-mobile {
+  display: none;
 }
 
 .Index-padding-50 {

@@ -135,7 +135,10 @@ describe('lib/user', () => {
       authorizedplugins: [],
       plugins: [
         { configuration: { key: { secret: true } } },
-        { configuration: { key: { secret: true, value: '1' } } }
+        { configuration: { key: { secret: true, value: 'not a json' } } },
+        {
+          configuration: { key: { secret: true, value: '{ "json": "test" }' } }
+        }
       ]
     }))
     user = await User.get('id', [
@@ -155,7 +158,10 @@ describe('lib/user', () => {
       authorizedplugins: [],
       plugins: [
         { configuration: { key: { secret: true } } },
-        { configuration: { key: { secret: true, value: 1 } } }
+        { configuration: { key: { secret: true, value: 'not a json' } } },
+        {
+          configuration: { key: { secret: true, value: { json: 'test' } } }
+        }
       ]
     })
   })

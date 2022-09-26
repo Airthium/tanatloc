@@ -1,8 +1,9 @@
 /** @module Install.CreateDatabase */
 
 import { Pool, PoolClient } from 'pg'
-import format from 'pg-format'
+import format from '@airthium/pg-format'
 import crypto from 'crypto'
+import { v4 as uuid } from 'uuid'
 
 import { IDataBaseResponse } from '@/database/index.d'
 
@@ -38,9 +39,9 @@ export const createDatabase = async (): Promise<void> => {
 
     // Pool
     pool = new Pool({
-      host: process.env.DB_HOST || HOST,
+      host: HOST,
       port: PORT,
-      user: ADMIN,
+      user: process.env.DB_ADMIN || ADMIN,
       database: ADMIN_DATABASE,
       password: process.env.DB_ADMIN_PASSWORD || ADMIN_PASSWORD
     })
@@ -90,7 +91,7 @@ export const createDatabase = async (): Promise<void> => {
 
     // New pool
     pool = new Pool({
-      host: process.env.DB_HOST || HOST,
+      host: HOST,
       port: PORT,
       database: DATABASE,
       user: USER,
@@ -111,6 +112,7 @@ export const createDatabase = async (): Promise<void> => {
   } catch (err) {
     console.error('dB creation failed!')
     console.error(err)
+    throw err
   } finally {
     //@ts-ignore
     Object.defineProperty(global.tanatloc, 'complete', { value: true })
@@ -174,6 +176,7 @@ const createTables = async (): Promise<void> => {
   } catch (err) {
     console.error('dB tables creation failed!')
     console.error(err)
+    throw err
   }
 }
 
@@ -561,11 +564,50 @@ const createAdmin = async (): Promise<void> => {
 
     const password = 'password'
 
+    const localPlugin = {
+      category: 'HPC',
+      key: 'local',
+      uuid: uuid(),
+      name: 'Local',
+      description: '<p>Local</p>',
+      configuration: {
+        name: {
+          label: 'Name',
+          type: 'input',
+          rules: [
+            { required: true, message: 'Name is required' },
+            { max: 50, message: 'Max ' + 50 + ' characters' }
+          ],
+          value: 'My computer'
+        },
+        gmshPath: {
+          label: 'Gmsh path',
+          type: 'input',
+          tooltip: 'Fill this input to use a local version of Gmsh'
+        },
+        freefemPath: {
+          label: 'FreeFEM path (ff-mpirun)',
+          type: 'input',
+          tooltip: 'Fill this input to use a local version of FreeFEM'
+        }
+      },
+      inUseConfiguration: {}
+    }
+
     await query(
       'INSERT INTO ' +
         tables.USERS +
-        " (email, password, workspaces, isValidated, lastModificationDate, superuser, authorizedplugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6, $7)",
-      ['admin', password, [], true, Date.now() / 1000, true, ['local']]
+        " (email, password, workspaces, isValidated, lastModificationDate, superuser, authorizedplugins, plugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6, $7, $8)",
+      [
+        'admin',
+        password,
+        [],
+        true,
+        Date.now() / 1000,
+        true,
+        ['local'],
+        [localPlugin]
+      ]
     )
     console.info(' Administrator account:')
     console.info(' - email: admin')

@@ -69,7 +69,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   return (
     <Card size="small" title="Computational resource">
       <Modal
-        visible={visible}
+        open={visible}
         title="Computational resource"
         okButtonProps={{
           disabled: true,
@@ -81,7 +81,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
         <Space direction="vertical">
           <Typography.Text>
             Your computational resource does not appear in this list? Create one
-            in your
+            in your{' '}
             <LinkButton
               onClick={() =>
                 router.push({

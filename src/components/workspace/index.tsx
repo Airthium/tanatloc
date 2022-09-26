@@ -173,13 +173,24 @@ const Workspace = ({
       </PageHeader>
       <Tabs
         className="inWorkspace-Tabs"
+        items={[
+          {
+            key: 'modifiedDesc',
+            label: 'Last modified'
+          },
+          {
+            key: 'alphaAsc',
+            label: 'Name (A-Z)'
+          },
+          {
+            key: 'alphaDesc',
+            label: 'Name (Z-A)'
+          }
+        ]}
         defaultActiveKey="modifiedDesc"
         onChange={(key) => setSorter(key)}
-      >
-        <Tabs.TabPane tab="Last modified" key="modifiedDesc" />
-        <Tabs.TabPane tab="Name (A-Z)" key="alphaAsc" />
-        <Tabs.TabPane tab="Name (Z-A)" key="alphaDesc" />
-      </Tabs>
+      />
+
       <Layout.Content className="scroll">
         <ProjectList
           user={user}

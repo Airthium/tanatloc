@@ -16,7 +16,7 @@ depcheck.special.customTypedoc = (fileName) => {
     Object.values(packageJson.scripts).forEach((script) => {
       if (script.includes('typedoc')) {
         newDeps.push('typedoc')
-        newDeps.push('typedoc-plugin-airthium')
+        newDeps.push('@airthium/typedoc-plugin-airthium')
       }
     })
   }

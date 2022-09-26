@@ -1,7 +1,13 @@
 import { mathjaxRefresh } from '..'
 
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => {
+    callback()
+  }
+})
+
 describe('lib/mathjax', () => {
-  test('mathjaxRefresh', () => {
+  test('mathjaxRefresh', async () => {
     // No mathjax
     window.MathJax = undefined
     mathjaxRefresh()
@@ -21,13 +27,5 @@ describe('lib/mathjax', () => {
       }
     }
     mathjaxRefresh()
-
-    // Max retry
-    window.MathJax = {
-      typesetPromise: async () => {
-        throw new Error('typesetPromise error')
-      }
-    }
-    for (let i = 0; i < 1000; ++i) mathjaxRefresh()
   })
 })

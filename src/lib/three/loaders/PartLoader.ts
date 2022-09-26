@@ -76,6 +76,111 @@ export interface IPart extends Object3D {
 }
 
 /**
+ * Load mesh
+ * @param object Object
+ * @param clippingPlane Clipping plane
+ */
+const loadMesh = (object: IPart, clippingPlane: Plane): void => {
+  object.traverse((child) => {
+    if (child.type === 'Mesh') {
+      const mesh = child as IPartMesh
+
+      // Wireframe
+      const geometry = new WireframeGeometry(mesh.geometry)
+      const material = new LineBasicMaterial({
+        color: mesh.material.color,
+        linewidth: 1
+      })
+      const wireframe = new LineSegments(geometry, material)
+
+      mesh.add(wireframe)
+
+      mesh.material.visible = false
+      mesh.material.clippingPlanes = [clippingPlane]
+    }
+  })
+}
+
+/**
+ * Load result
+ * @param object Object
+ * @param clippingPlane Plane
+ */
+const loadResult = (object: IPart, clippingPlane: Plane): void => {
+  object.traverse((child) => {
+    if (child.type === 'Mesh' || child.type === 'Line') {
+      const mesh = child as IPartMesh
+      const data = mesh.geometry.getAttribute('data')
+      if (data) {
+        let min = (data.array as number[]).reduce(
+          (m, currentValue) => Math.min(m, currentValue),
+          data.array[0]
+        )
+        let max = (data.array as number[]).reduce(
+          (m, currentValue) => Math.max(m, currentValue),
+          data.array[0]
+        )
+
+        if (min === max) {
+          min = min - 1
+          max = max + 1
+        }
+
+        const lut = new Lut()
+        lut.setMin(min)
+        lut.setMax(max)
+
+        const vertexColors = new Float32Array(data.count * 3)
+        for (let i = 0; i < data.count; i++) {
+          const vertexColor = lut.getColor(data.array[i])
+
+          vertexColors[3 * i + 0] = vertexColor.r
+          vertexColors[3 * i + 1] = vertexColor.g
+          vertexColors[3 * i + 2] = vertexColor.b
+        }
+        mesh.geometry.setAttribute(
+          'color',
+          new Float32BufferAttribute(vertexColors, 3)
+        )
+        mesh.userData = {
+          ...mesh.userData,
+          lut
+        }
+      }
+
+      if (child.type === 'Mesh') {
+        // Wireframe
+        const geometry = new WireframeGeometry(mesh.geometry)
+        const material = new LineBasicMaterial({
+          linewidth: 1
+        })
+        const wireframe = new LineSegments(geometry, material)
+
+        mesh.add(wireframe)
+      }
+
+      mesh.material.vertexColors = true
+      mesh.material.clippingPlanes = [clippingPlane]
+    }
+  })
+}
+
+/**
+ * Load geometry
+ * @param object Object
+ * @param clippingPlane Clipping plane
+ */
+const loadGeometry = (object: IPart, clippingPlane: Plane): void => {
+  object.traverse((child) => {
+    if (child.type === 'Mesh') {
+      const mesh = child as IPartMesh
+      mesh.material.clippingPlanes = [clippingPlane]
+      mesh.material.originalColor = mesh.material.color
+    }
+  })
+}
+
+/**
  * PartLoader
  * @memberof Lib.Three.Loaders
  * @param mouseMoveEvent Mouse move event
@@ -136,94 +241,13 @@ const PartLoader = (
     object.userData = scene.userData
 
     // Set material
-    if (part.summary.type === 'mesh') {
-      object.traverse((child) => {
-        if (child.type === 'Mesh') {
-          const mesh = child as IPartMesh
-
-          // Wireframe
-          const geometry = new WireframeGeometry(mesh.geometry)
-          const material = new LineBasicMaterial({
-            color: mesh.material.color,
-            linewidth: 1
-          })
-          const wireframe = new LineSegments(geometry, material)
-
-          mesh.add(wireframe)
-
-          mesh.material.visible = false
-          mesh.material.clippingPlanes = [clippingPlane]
-        }
-      })
-    } else if (part.summary.type === 'result') {
-      object.traverse((child) => {
-        if (child.type === 'Mesh' || child.type === 'Line') {
-          const mesh = child as IPartMesh
-          const data = mesh.geometry.getAttribute('data')
-          if (data) {
-            let min = (data.array as number[]).reduce(
-              (m, currentValue) => Math.min(m, currentValue),
-              data.array[0]
-            )
-            let max = (data.array as number[]).reduce(
-              (m, currentValue) => Math.max(m, currentValue),
-              data.array[0]
-            )
-
-            if (min === max) {
-              min = min - 1
-              max = max + 1
-            }
-
-            const lut = new Lut()
-            lut.setMin(min)
-            lut.setMax(max)
-
-            const vertexColors = new Float32Array(data.count * 3)
-            for (let i = 0; i < data.count; i++) {
-              const vertexColor = lut.getColor(data.array[i])
-
-              vertexColors[3 * i + 0] = vertexColor.r
-              vertexColors[3 * i + 1] = vertexColor.g
-              vertexColors[3 * i + 2] = vertexColor.b
-            }
-            mesh.geometry.setAttribute(
-              'color',
-              new Float32BufferAttribute(vertexColors, 3)
-            )
-            mesh.userData = {
-              ...mesh.userData,
-              lut
-            }
-          }
-
-          if (child.type === 'Mesh') {
-            // Wireframe
-            const geometry = new WireframeGeometry(mesh.geometry)
-            const material = new LineBasicMaterial({
-              linewidth: 1
-            })
-            const wireframe = new LineSegments(geometry, material)
-
-            mesh.add(wireframe)
-          }
-
-          mesh.material.vertexColors = true
-          mesh.material.clippingPlanes = [clippingPlane]
-        }
-      })
-    } else if (
+    if (part.summary.type === 'mesh') loadMesh(object, clippingPlane)
+    else if (part.summary.type === 'result') loadResult(object, clippingPlane)
+    else if (
       part.summary.type === 'geometry3D' ||
       part.summary.type === 'geometry2D'
-    ) {
-      object.traverse((child) => {
-        if (child.type === 'Mesh') {
-          const mesh = child as IPartMesh
-          mesh.material.clippingPlanes = [clippingPlane]
-          mesh.material.originalColor = mesh.material.color
-        }
-      })
-    }
+    )
+      loadGeometry(object, clippingPlane)
 
     // Transparency
     setTransparent(object, transparent)
@@ -395,6 +419,99 @@ const PartLoader = (
   }
 
   /**
+   * Solids select
+   */
+  const solidsSelect = () => {
+    const intersects = raycaster.intersectObject(selectionPart!, true)
+    if (intersects.length) {
+      const intersect = intersects[0].object
+      const parent = intersect.parent
+      if (parent)
+        // On a face
+        mouseMoveEvent(
+          selectionPart!,
+          parent.userData.uuid,
+          parent.userData.label
+        )
+    } else mouseMoveEvent(selectionPart!)
+  }
+
+  /**
+   * Faces select
+   */
+  const facesSelect = () => {
+    const summary = selectionPart!.userData as TGeometrySummary
+
+    let intersects
+    if (summary.dimension === 2) {
+      intersects = raycaster.intersectObject(selectionPart!, true)
+      if (intersects.length) {
+        const intersect = intersects[0].object
+        const parent = intersect.parent
+        if (parent?.type === 'Mesh')
+          // On an edge
+          mouseMoveEvent(
+            selectionPart!,
+            parent.userData.uuid,
+            parent.userData.label
+          )
+        // On a face
+        else
+          mouseMoveEvent(
+            selectionPart!,
+            intersect.userData.uuid,
+            intersect.userData.label
+          )
+      } else mouseMoveEvent(selectionPart!)
+    } else {
+      intersects = raycaster.intersectObject(selectionPart!, true)
+      if (intersects.length) {
+        const intersect = intersects[0].object
+        mouseMoveEvent(
+          selectionPart!,
+          intersect.userData.uuid,
+          intersect.userData.label
+        )
+      } else mouseMoveEvent(selectionPart!)
+    }
+  }
+
+  /**
+   * Edges select
+   */
+  const edgesSelect = () => {
+    const summary = selectionPart!.userData as TGeometrySummary
+
+    let intersects
+    const edges = summary.edges
+    intersects = raycaster.intersectObject(selectionPart!, true)
+    if (intersects.length) {
+      const intersect = intersects[0].object
+      const edge = edges?.find((e) => e.uuid === intersect.userData.uuid)
+      if (edge)
+        // On an edge
+        mouseMoveEvent(
+          selectionPart!,
+          intersect.userData.uuid,
+          intersect.userData.label
+        )
+      else mouseMoveEvent(selectionPart!)
+    } else mouseMoveEvent(selectionPart!)
+  }
+
+  /**
+   * Point select
+   */
+  const pointSelect = () => {
+    const intersects = raycaster.intersectObject(selectionPart!, true)
+    if (intersects.length) {
+      const intersect = intersects[0]
+
+      mouseMoveEvent(selectionPart!, undefined, undefined, intersect.point)
+    } else mouseMoveEvent(selectionPart!)
+  }
+
+  /**
    * Mouse move
    * @param event Event
    */
@@ -402,79 +519,18 @@ const PartLoader = (
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, selectionCamera!)
 
-    const summary = selectionPart!.userData as TGeometrySummary
-    let intersects
     switch (selectionType) {
       case 'solids':
-        intersects = raycaster.intersectObject(selectionPart!, true)
-        if (intersects.length) {
-          const intersect = intersects[0].object
-          const parent = intersect.parent
-          if (parent)
-            // On a face
-            mouseMoveEvent(
-              selectionPart!,
-              parent.userData.uuid,
-              parent.userData.label
-            )
-        } else mouseMoveEvent(selectionPart!)
+        solidsSelect()
         break
       case 'faces':
-        if (summary.dimension === 2) {
-          intersects = raycaster.intersectObject(selectionPart!, true)
-          if (intersects.length) {
-            const intersect = intersects[0].object
-            const parent = intersect.parent
-            if (parent?.type === 'Mesh')
-              // On an edge
-              mouseMoveEvent(
-                selectionPart!,
-                parent.userData.uuid,
-                parent.userData.label
-              )
-            // On a face
-            else
-              mouseMoveEvent(
-                selectionPart!,
-                intersect.userData.uuid,
-                intersect.userData.label
-              )
-          } else mouseMoveEvent(selectionPart!)
-        } else {
-          intersects = raycaster.intersectObject(selectionPart!, true)
-          if (intersects.length) {
-            const intersect = intersects[0].object
-            mouseMoveEvent(
-              selectionPart!,
-              intersect.userData.uuid,
-              intersect.userData.label
-            )
-          } else mouseMoveEvent(selectionPart!)
-        }
+        facesSelect()
         break
       case 'edges':
-        const edges = summary.edges
-        intersects = raycaster.intersectObject(selectionPart!, true)
-        if (intersects.length) {
-          const intersect = intersects[0].object
-          const edge = edges?.find((e) => e.uuid === intersect.userData.uuid)
-          if (edge)
-            // On an edge
-            mouseMoveEvent(
-              selectionPart!,
-              intersect.userData.uuid,
-              intersect.userData.label
-            )
-          else mouseMoveEvent(selectionPart!)
-        } else mouseMoveEvent(selectionPart!)
+        edgesSelect()
         break
       case 'point':
-        intersects = raycaster.intersectObject(selectionPart!, true)
-        if (intersects.length) {
-          const intersect = intersects[0]
-
-          mouseMoveEvent(selectionPart!, undefined, undefined, intersect.point)
-        } else mouseMoveEvent(selectionPart!)
+        pointSelect()
         break
     }
   }
@@ -570,30 +626,29 @@ const PartLoader = (
    */
   const unhighlight = (): void => {
     const mesh = findObject(selectionPart!, highlighted?.uuid)
-
-    if (mesh) {
-      removeOutlineOn(mesh)
-      // Check selection
-      const index = selected.findIndex((s) => s.uuid === mesh.userData.uuid)
-      // Unhighlight
-      if (mesh.type === 'Mesh') {
-        const partMesh = mesh as IPartMesh
-        partMesh.material.color =
-          index === -1 ? partMesh.material.originalColor : selectColor
-      } else {
-        //mesh.type === 'Object3D'
-        const partObject = mesh as IPartObject
-        partObject.traverse((child) => {
-          if (child.type === 'Mesh') {
-            const subMesh = child as IPartMesh
-            subMesh.material.color =
-              index === -1 ? subMesh.material.originalColor : selectColor
-          }
-        })
-      }
-    }
-
     highlighted = null
+
+    if (!mesh) return
+
+    removeOutlineOn(mesh)
+    // Check selection
+    const index = selected.findIndex((s) => s.uuid === mesh.userData.uuid)
+    // Unhighlight
+    if (mesh.type === 'Mesh') {
+      const partMesh = mesh as IPartMesh
+      partMesh.material.color =
+        index === -1 ? partMesh.material.originalColor : selectColor
+    } else {
+      //mesh.type === 'Object3D'
+      const partObject = mesh as IPartObject
+      partObject.traverse((child) => {
+        if (child.type === 'Mesh') {
+          const subMesh = child as IPartMesh
+          subMesh.material.color =
+            index === -1 ? subMesh.material.originalColor : selectColor
+        }
+      })
+    }
   }
 
   /**

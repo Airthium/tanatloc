@@ -160,16 +160,12 @@ const WorkspacesList = ({
             <Tabs
               type="editable-card"
               className="inDashboard-Tabs no-scroll"
-              defaultActiveKey={workspaceId || '1'}
-              onEdit={() => setVisible(true)}
-            >
-              {workspaces.map((workspace) => (
-                <Tabs.TabPane
-                  className="no-scroll"
-                  tab={workspace.name}
-                  key={workspace.id}
-                  closable={false}
-                >
+              items={workspaces.map((workspace) => ({
+                key: workspace.id,
+                label: workspace.name,
+                className: 'no-scroll',
+                closable: false,
+                children: (
                   <Workspace
                     user={user}
                     page={page || menuItems.workspaces.key}
@@ -187,9 +183,11 @@ const WorkspacesList = ({
                       mutateOneWorkspace: swr.mutateOneWorkspace
                     }}
                   />
-                </Tabs.TabPane>
-              ))}
-            </Tabs>
+                )
+              }))}
+              defaultActiveKey={workspaceId || '1'}
+              onEdit={() => setVisible(true)}
+            />
           </>
         ) : (
           <>

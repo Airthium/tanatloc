@@ -32,7 +32,17 @@ describe('lib/three/helpers/ColorbarHelper', () => {
   //@ts-ignore
   global.MockScene.children = [
     {
-      dispose: jest.fn()
+      remove: jest.fn(),
+      children: [
+        {
+          type: 'LabelHelper',
+          dispose: jest.fn()
+        },
+        {
+          type: 'Sprite',
+          dispose: jest.fn()
+        }
+      ]
     }
   ]
 
@@ -67,5 +77,10 @@ describe('lib/three/helpers/ColorbarHelper', () => {
   test('render', () => {
     const colorbarHelper = ColorbarHelper(renderer)
     colorbarHelper.render()
+  })
+
+  test('dispose', () => {
+    const colorbarHelper = ColorbarHelper(renderer)
+    colorbarHelper.dispose()
   })
 })

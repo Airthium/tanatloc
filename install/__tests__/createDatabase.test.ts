@@ -17,6 +17,9 @@ jest.mock('pg', () => ({
   }))
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 const mockInit = jest.fn()
 jest.mock('@/server/init/database', () => ({
   initDatabase: async () => mockInit()
@@ -24,6 +27,9 @@ jest.mock('@/server/init/database', () => ({
 
 describe('install/dB', () => {
   beforeEach(() => {
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockClient.mockImplementation(() => ({
       query: async () => ({
         rowCount: 0
@@ -59,7 +65,9 @@ describe('install/dB', () => {
 
   test('database error', async () => {
     mockClient.mockImplementation(() => ({}))
-    await createDatabase()
+    try {
+      await createDatabase()
+    } catch (err) {}
   })
 
   test('empty', async () => {
@@ -144,6 +152,17 @@ describe('install/dB', () => {
     mockQuery.mockImplementation(() => {
       throw new Error()
     })
+    try {
+      await createDatabase()
+    } catch (err) {}
+  })
+
+  test('electron', async () => {
+    mockQuery.mockImplementation((query) => {
+      if (query.includes('SELECT id FROM')) return { rows: [] }
+      else return { rows: [{ exists: true }] }
+    })
+    mockIsElectron.mockImplementation(() => true)
     await createDatabase()
   })
 })

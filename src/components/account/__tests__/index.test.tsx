@@ -12,6 +12,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 jest.mock('../information', () => () => <div />)
 
 jest.mock('../password', () => () => <div />)
@@ -31,9 +34,18 @@ describe('components/account', () => {
     mockReplace.mockReset()
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
+
+    mockIsElectron.mockReset()
   })
 
   test('render', () => {
+    const { unmount } = render(<Account user={user} swr={swr} />)
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Account user={user} swr={swr} />)
 
     unmount()

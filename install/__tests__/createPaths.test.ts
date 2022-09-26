@@ -29,6 +29,8 @@ describe('install/storage', () => {
     mockMkdir.mockImplementation(() => {
       throw new Error()
     })
-    await createPaths()
+    try {
+      await createPaths()
+    } catch (err) {}
   })
 })

@@ -11,7 +11,7 @@ describe('config/db', () => {
     const config = await import('../db')
     expect(config.ADMIN).toBe(process.env.USER)
     expect(config.ADMIN_DATABASE).toBe('postgres')
-    expect(config.ADMIN_PASSWORD).toBe('')
+    expect(config.ADMIN_PASSWORD).toBe('password')
     expect(config.USER).toBe('tanatlocuser')
     expect(config.HOST).toBe('localhost')
     expect(config.PORT).toBe(5432)

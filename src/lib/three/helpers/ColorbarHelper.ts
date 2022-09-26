@@ -2,6 +2,7 @@
 
 import {
   CanvasTexture,
+  Group,
   OrthographicCamera,
   Scene,
   SpriteMaterial,
@@ -11,13 +12,14 @@ import {
 } from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
-import { LabelHelper } from './LabelHelper'
+import { ILabelHelper, LabelHelper } from './LabelHelper'
 import NumberHelper from './NumberHelper'
 
 export interface IColorbarHelper {
   render: () => void
   setLUT: (lut: Lut) => void
   setVisible: (visible: boolean) => void
+  dispose: () => void
 }
 
 export interface IColorbarHelperSprite extends Sprite {
@@ -36,15 +38,16 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 2, 1)
   colorCamera.position.set(0, 0, 1)
 
-  let sprite: IColorbarHelperSprite
+  const group = new Group()
+  colorScene.add(group)
 
   /**
    * Set visible
    * @param visible Visible
    */
   const setVisible = (visible: boolean): void => {
-    colorScene.children.forEach((child) => {
-      child.visible = visible
+    colorScene.children.forEach((group) => {
+      group.children.forEach((child) => (child.visible = visible))
     })
   }
 
@@ -52,10 +55,17 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * Clean scene (local)
    */
   const clearScene = (): void => {
-    colorScene.children.forEach((child) =>
-      (child as IColorbarHelperSprite).dispose()
+    colorScene.children.forEach((group) =>
+      group.children.forEach((child) => {
+        const label = child as ILabelHelper
+        if (label.type === 'LabelHelper') label.dispose()
+
+        const sprite = child as IColorbarHelperSprite
+        if (sprite.type === 'Sprite') sprite.dispose()
+
+        group.remove(child)
+      })
     )
-    colorScene.clear()
   }
 
   /**
@@ -70,13 +80,13 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     lut.setMax(lutData.maxV)
 
     const map = new CanvasTexture(lut.createCanvas())
-    const material = new SpriteMaterial({ map: map })
-    sprite = new Sprite(material) as IColorbarHelperSprite
+    const material = new SpriteMaterial({ map: map, depthWrite: false })
+    const sprite = new Sprite(material) as IColorbarHelperSprite
     sprite.material.rotation = -Math.PI / 2
     sprite.scale.x = 0.2
     sprite.scale.y = 1.2
     sprite.dispose = sprite.material.dispose
-    colorScene.add(sprite)
+    group.add(sprite)
 
     setLabels(lut)
   }
@@ -104,8 +114,8 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     maxLabel.scale.x = 0.4
     maxLabel.scale.y = 2.8
 
-    colorScene.add(minLabel)
-    colorScene.add(maxLabel)
+    group.add(minLabel)
+    group.add(maxLabel)
   }
 
   /**
@@ -122,7 +132,11 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     renderer.render(colorScene, colorCamera)
   }
 
-  return { render, setLUT, setVisible }
+  const dispose = () => {
+    clearScene()
+  }
+
+  return { render, setLUT, setVisible, dispose }
 }
 
 export { ColorbarHelper }

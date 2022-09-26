@@ -81,6 +81,18 @@ export const onAdd = async (
         value: diff
       }
     ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
+      }
+    ])
 
     // Local
     swr.mutateOneSimulation(newSimulation)

@@ -2,9 +2,18 @@
  * @jest-environment node
  */
 
-import '..'
+Object.defineProperty(process, 'env', { value: { CI: 0 } })
+
+import main from '..'
 
 jest.mock('is-electron', () => () => true)
+
+jest.mock('is-docker', () => () => false)
+
+const mockExecSync = jest.fn()
+jest.mock('child_process', () => ({
+  execSync: () => mockExecSync()
+}))
 
 jest.mock('../copyAssets', () => ({
   copyAssets: jest.fn
@@ -17,7 +26,7 @@ jest.mock('../createPaths', () => ({
 }))
 
 describe('install', () => {
-  test('call', () => {
-    // Empty
+  test('call', async () => {
+    await main()
   })
 })

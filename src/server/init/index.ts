@@ -17,6 +17,9 @@ export const initPlugins = async (): Promise<void> => {
   }
 }
 
+/**
+ * Init jobs
+ */
 export const initJobs = async (): Promise<void> => {
   try {
     await restartJobs()
@@ -43,14 +46,19 @@ export const initTemplates = async (): Promise<void> => {
 /**
  * Init
  */
-const init = async (): Promise<void> => {
+const init = async (params?: {
+  addStatus: (status: string) => Promise<void>
+}): Promise<void> => {
   // Start database
-  await initDatabase()
+  await params?.addStatus('Initializing Database')
+  await initDatabase(params)
 
   // Load plugins
+  await params?.addStatus('Initializing Plugins')
   await initPlugins()
 
   // Load templates
+  await params?.addStatus('Initializing Templates')
   await initTemplates()
 
   // Restart jobs

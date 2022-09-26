@@ -1,9 +1,8 @@
 /** @module Components.Project.Simulation */
 
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
+import { Layout, Menu, Modal, Select } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
 
@@ -170,7 +169,7 @@ const Selector = ({
    */
   return (
     <Modal
-      visible={visible}
+      open={visible}
       title="Create simulation"
       okText="Create"
       okButtonProps={{ loading: loading }}
@@ -262,8 +261,6 @@ const Updater = ({
   swr
 }: IUpdaterProps): JSX.Element | null => {
   // State
-  const [needUpdate, setNeedUpdate] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<IModel[]>([])
 
   // Models
@@ -280,47 +277,22 @@ const Updater = ({
       const added = addedDiff(simulation.scheme, currentModel)
       const updated = updatedDiff(simulation.scheme, currentModel)
 
-      if (Object.keys(added).length || Object.keys(updated).length)
-        setNeedUpdate(true)
-      else setNeedUpdate(false)
+      if (Object.keys(added).length || Object.keys(updated).length) {
+        Modal.info({
+          title: 'Update',
+          content: 'Your model need an update, please wait.',
+          closable: false,
+          okButtonProps: { hidden: true }
+        })
+        onUpdate(simulation, models, swr).finally(() => Modal.destroyAll())
+      }
     }
-  }, [simulation, models])
+  }, [simulation, models, swr])
 
   /**
    * Render
    */
-  if (!simulation) return null
-  else
-    return (
-      <Modal
-        title={
-          <>
-            <WarningOutlined style={{ color: 'orange', marginRight: '5px' }} />
-            Update
-          </>
-        }
-        visible={needUpdate}
-        onOk={async () => {
-          setLoading(true)
-          try {
-            await onUpdate(simulation, models, swr)
-          } finally {
-            setLoading(false)
-            setNeedUpdate(false)
-          }
-        }}
-        okText="OK"
-        confirmLoading={loading}
-        onCancel={() => setNeedUpdate(false)}
-        cancelButtonProps={{ disabled: true }}
-        maskClosable={false}
-      >
-        <Space direction="vertical">
-          <Typography.Text>Your model needs an update!</Typography.Text>
-          <Typography.Text strong>Update now?</Typography.Text>
-        </Space>
-      </Modal>
-    )
+  return null
 }
 
 const Simulation = {

@@ -167,17 +167,6 @@ const Dashboard = () => {
     if (errorWorkspaces) ErrorNotification(errors.workspaces, errorWorkspaces)
   }, [errorUser, errorOrganizations, errorWorkspaces])
 
-  let gitVersion = ''
-  if (
-    process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
-    process.env.NEXT_PUBLIC_SOURCE_COMMIT
-  )
-    gitVersion =
-      'git-' +
-      process.env.NEXT_PUBLIC_SOURCE_BRANCH +
-      '-' +
-      process.env.NEXT_PUBLIC_SOURCE_COMMIT
-
   /**
    * Render
    */
@@ -239,8 +228,7 @@ const Dashboard = () => {
                   className="text-light"
                   ellipsis={{ tooltip: true }}
                 >
-                  version {packageJson.version}{' '}
-                  {gitVersion && <>({gitVersion})</>}
+                  version {packageJson.version}
                 </Typography.Text>
               )
             }

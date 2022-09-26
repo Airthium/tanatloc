@@ -80,7 +80,7 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
       <Dialog
         visible={visible}
         loading={loading}
-        title="Edit a workspace"
+        title="Edit the workspace"
         initialValues={{ name: workspace.name }}
         onCancel={() => setVisible(false)}
         onOk={async (values) => {

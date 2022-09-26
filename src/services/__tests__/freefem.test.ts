@@ -7,8 +7,11 @@ jest.mock('child_process', () => ({
   spawn: () => mockSpawn()
 }))
 
+const mockIsDocker = jest.fn()
+jest.mock('is-docker', () => () => mockIsDocker())
+
 const mockDocker = jest.fn()
-jest.mock('is-docker', () => () => mockDocker())
+jest.mock('../docker', () => () => mockDocker())
 
 describe('services/freefem', () => {
   const mockCallback = jest.fn()
@@ -18,18 +21,70 @@ describe('services/freefem', () => {
     mockExecSync.mockImplementation(() => '')
     mockSpawn.mockReset()
 
+    mockIsDocker.mockReset()
+
     mockDocker.mockReset()
 
     mockCallback.mockReset()
   })
 
-  test('freefem - linux', async () => {
+  test('call', async () => {
+    // Normal
+    mockDocker.mockImplementation(() => ({
+      stdout: {
+        on: (_: any, callback: Function) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (_: any, callback: Function) => {
+          callback('stderr')
+        }
+      },
+      on: (arg: string, callback: Function) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    const code = await freefem('path', 'script', mockCallback)
+    expect(mockExecSync).toHaveBeenCalledTimes(1)
+    expect(mockSpawn).toHaveBeenCalledTimes(0)
+    expect(code).toBe(0)
+
+    // Error
+    try {
+      mockDocker.mockImplementation(() => ({
+        stdout: {
+          on: () => {
+            // Empty
+          }
+        },
+        stderr: {
+          on: () => {
+            // Empty
+          }
+        },
+        on: (arg: string, callback: Function) => {
+          if (arg === 'error') callback('error')
+        }
+      }))
+      await freefem('path', 'script', mockCallback)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    } finally {
+      expect(mockExecSync).toHaveBeenCalledTimes(2)
+      expect(mockSpawn).toHaveBeenCalledTimes(0)
+    }
+  })
+
+  test('docker desktop', async () => {
     Object.defineProperty(process, 'platform', {
       value: 'linux',
       configurable: true
     })
     // Normal
-    mockSpawn.mockImplementation(() => ({
+    mockExecSync.mockImplementation(() => 'Docker Desktop')
+    mockDocker.mockImplementation(() => ({
       stdout: {
         on: (_: any, callback: Function) => {
           callback('stdout')
@@ -45,92 +100,13 @@ describe('services/freefem', () => {
       }
     }))
     const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(2)
-    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(mockExecSync).toHaveBeenCalledTimes(1)
+    expect(mockSpawn).toHaveBeenCalledTimes(0)
     expect(code).toBe(0)
-
-    // Error
-    try {
-      mockSpawn.mockImplementation(() => ({
-        stdout: {
-          on: () => {
-            // Empty
-          }
-        },
-        stderr: {
-          on: () => {
-            // Empty
-          }
-        },
-        on: (arg: string, callback: Function) => {
-          if (arg === 'error') callback('error')
-        }
-      }))
-      await freefem('path', 'script', mockCallback)
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(true).toBe(true)
-    } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(4)
-      expect(mockSpawn).toHaveBeenCalledTimes(2)
-    }
-  })
-
-  test('freefem - win32', async () => {
-    Object.defineProperty(process, 'platform', {
-      value: 'win32',
-      configurable: true
-    })
-    // Normal
-    mockSpawn.mockImplementation(() => ({
-      stdout: {
-        on: (_: any, callback: Function) => {
-          callback('stdout')
-        }
-      },
-      stderr: {
-        on: (_: any, callback: Function) => {
-          callback('stderr')
-        }
-      },
-      on: (arg: string, callback: Function) => {
-        if (arg === 'close') callback(0)
-      }
-    }))
-    const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
-    expect(mockSpawn).toHaveBeenCalledTimes(1)
-    expect(code).toBe(0)
-
-    // Error
-    try {
-      mockSpawn.mockImplementation(() => ({
-        stdout: {
-          on: () => {
-            // Empty
-          }
-        },
-        stderr: {
-          on: () => {
-            // Empty
-          }
-        },
-        on: (arg: string, callback: Function) => {
-          if (arg === 'error') callback('error')
-        }
-      }))
-      await freefem('path', 'script', mockCallback)
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(true).toBe(true)
-    } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(0)
-      expect(mockSpawn).toHaveBeenCalledTimes(2)
-    }
   })
 
   test('isDocker', async () => {
-    mockDocker.mockImplementation(() => true)
+    mockIsDocker.mockImplementation(() => true)
 
     mockSpawn.mockImplementation(() => ({
       stdout: {

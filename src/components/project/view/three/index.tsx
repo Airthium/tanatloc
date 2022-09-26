@@ -682,6 +682,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       gridHelper.current!.dispose()
       sectionViewHelper.current!.dispose()
       selectionHelper.current!.dispose()
+      colorbarHelper.current!.dispose()
       pointHelper.current!.dispose()
     }
   }, [router])

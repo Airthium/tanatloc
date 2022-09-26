@@ -1,8 +1,10 @@
 /** @module Services.ToThree */
 
-import { execSync, spawn } from 'child_process'
+import { execSync } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
+
+import docker from './docker'
 
 /**
  * toThree service
@@ -59,24 +61,7 @@ const toThree = async (
       let data = ''
       let error = ''
 
-      const user =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -u').toString().trim()
-      const group =
-        process.platform === 'win32'
-          ? 1000
-          : execSync('id -g').toString().trim()
-      const run = spawn('docker', [
-        'run',
-        '--volume=' + bindPath + ':/three',
-        '--user=' + user + ':' + group,
-        '-w=/three',
-        'tanatloc/worker:latest',
-        '/bin/bash',
-        '-c',
-        command
-      ])
+      const run = docker(bindPath, command)
 
       run.stdout.on('data', (stdout: Buffer) => {
         stdout && (data += stdout.toString())

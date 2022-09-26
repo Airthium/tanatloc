@@ -29,6 +29,7 @@ describe('database', () => {
     }
 
     mockExecSync.mockReset()
+    mockExecSync.mockImplementation(() => 'id')
 
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => 'query')
@@ -45,27 +46,38 @@ describe('database', () => {
       throw new Error('query error')
     })
     res = await checkdB()
-    expect(res).toBe(false)
+    expect(res).toBe(true)
 
     // Second wrong, no id
-    mockExecSync.mockImplementation(() => '')
+    mockExecSync
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => '')
     res = await checkdB()
     expect(res).toBe(false)
 
     // Second wrong, no docker
     mockExecSync
-      .mockImplementation(() => 'id')
-      .mockImplementation(() => {
-        throw new Error('execSync error')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => {
+        throw new Error('no docker')
       })
     res = await checkdB()
     expect(res).toBe(false)
 
+    // Second ok
+    mockExecSync
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => 'id')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => 'host')
+    res = await checkdB()
+    expect(res).toBe(true)
+
     // Second wrong, docker inspect error
     mockExecSync
-      .mockImplementation(() => 'id')
-      .mockImplementation(() => true)
-      .mockImplementation(() => {
+      .mockImplementationOnce(() => 'id')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => {
         throw new Error('execSync error')
       })
     res = await checkdB()
@@ -73,9 +85,9 @@ describe('database', () => {
 
     // Second true
     mockExecSync
-      .mockImplementation(() => 'id')
-      .mockImplementation(() => true)
-      .mockImplementation(() => 'host')
+      .mockImplementationOnce(() => 'id')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => 'host')
     res = await checkdB()
     expect(res).toBe(true)
   })

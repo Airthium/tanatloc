@@ -22,6 +22,7 @@ export const add = async (
   project: { id: string },
   geometry: { name: string; uid: string }
 ): Promise<INewGeometry> => {
+  const name = geometry.name.split('.').shift()
   const extension = geometry.name.split('.').pop()
   const uploadFileName = geometry.uid + '.' + extension
 
@@ -29,11 +30,11 @@ export const add = async (
     'INSERT INTO ' +
       tables.GEOMETRIES +
       ' (name, originalfilename, extension, uploadfilename, project) VALUES ($1, $1, $2, $3, $4) RETURNING id',
-    [geometry.name, extension, uploadFileName, project.id]
+    [name, extension, uploadFileName, project.id]
   )
 
   const newGeometry = response.rows[0]
-  newGeometry && (newGeometry.name = geometry.name)
+  newGeometry && (newGeometry.name = name)
   newGeometry && (newGeometry.originalfilename = geometry.name)
   newGeometry && (newGeometry.extension = extension)
   newGeometry && (newGeometry.uploadfilename = uploadFileName)

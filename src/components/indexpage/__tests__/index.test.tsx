@@ -32,6 +32,21 @@ jest.mock('@/components/assets/side', () => (props: any) => (
 ))
 jest.mock('@/components/footer', () => () => <div />)
 
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  const Modal = {
+    confirm: (params: any) => {
+      params.onOk()
+    }
+  }
+
+  return {
+    ...antd,
+    Modal
+  }
+})
+
 describe('components/indexpage', () => {
   beforeEach(() => {
     mockPush.mockReset()
@@ -57,8 +72,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenLastCalledWith('/dashboard')
+    expect(mockPush).toHaveBeenCalledTimes(6)
 
     unmount()
   })
@@ -70,8 +84,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenLastCalledWith('/login')
+    expect(mockPush).toHaveBeenCalledTimes(8)
 
     unmount()
   })
@@ -82,6 +95,41 @@ describe('components/indexpage', () => {
 
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
+
+    unmount()
+  })
+
+  test('server mode', () => {
+    mockUser.mockImplementation(() => undefined)
+    process.env.NEXT_PUBLIC_SERVER_MODE = 'frontpage'
+    const { unmount } = render(<Index />)
+
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
+
+    unmount()
+  })
+
+  test('drawers', () => {
+    const { unmount } = render(<Index />)
+
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
+
+    const closes = screen.getAllByRole('button', { name: 'Close' })
+    closes.forEach((close) => fireEvent.click(close))
+
+    // Re-open
+    buttons.forEach((button) => fireEvent.click(button))
+    const collapse = screen.getByRole('button', {
+      name: 'right "There is an error with your Docker installation." error'
+    })
+    fireEvent.click(collapse)
+
+    const link = screen.getByRole('button', {
+      name: 'Docker Desktop instructions'
+    })
+    fireEvent.click(link)
 
     unmount()
   })

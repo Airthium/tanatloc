@@ -21,7 +21,7 @@ jobs:
           echo "::set-output name=version::$VERSION"
 
       - name: Create release
-        id: create_release
+        continue-on-error: true
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

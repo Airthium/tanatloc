@@ -96,7 +96,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     const fine = screen.getByText('Fine')
 
     fireEvent.click(fine)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
@@ -104,7 +104,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Manual
     const manual = screen.getByText('Manual')
     fireEvent.click(manual)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
@@ -113,7 +113,7 @@ describe('components/project/simulation/geometry/mesh', () => {
 
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )
@@ -145,7 +145,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Fine
     const fine = screen.getByText('Fine')
     fireEvent.click(fine)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
@@ -153,7 +153,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Manual
     const manual = screen.getByText('Manual')
     fireEvent.click(manual)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
@@ -163,7 +163,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Formula
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )
@@ -173,7 +173,7 @@ describe('components/project/simulation/geometry/mesh', () => {
       throw new Error('update error')
     })
     fireEvent.click(formula)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -185,7 +185,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Auto error
     const newAuto = screen.getByText('Automatic')
     fireEvent.click(newAuto)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

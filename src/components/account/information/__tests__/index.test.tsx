@@ -6,6 +6,9 @@ import Information, { errors } from '..'
 const mockUpload = jest.fn()
 jest.mock('antd/lib/upload', () => (props: any) => mockUpload(props))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 const mockSuccessNotification = jest.fn()
 const mockErrorNotification = jest.fn()
 const mockFormError = jest.fn()
@@ -57,6 +60,9 @@ describe('components/account/information', () => {
     mockUpload.mockReset()
     mockUpload.mockImplementation(() => <div />)
 
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockSuccessNotification.mockReset()
     mockErrorNotification.mockReset()
     mockFormError.mockReset()
@@ -72,6 +78,13 @@ describe('components/account/information', () => {
   })
 
   test('render', () => {
+    const { unmount } = render(<Information user={user} swr={swr} />)
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Information user={user} swr={swr} />)
 
     unmount()

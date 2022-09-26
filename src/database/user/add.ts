@@ -1,7 +1,5 @@
 /** @module Database.User.Add */
 
-import isElectron from 'is-electron'
-
 import { tables } from '@/config/db'
 
 import { query } from '..'
@@ -35,15 +33,8 @@ export const add = async (user: {
   const response = await query(
     'INSERT INTO ' +
       tables.USERS +
-      " (email, password, isvalidated, lastmodificationdate, superuser, authorizedplugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5, $6) returning id",
-    [
-      user.email,
-      user.password,
-      false,
-      Date.now(),
-      false,
-      isElectron() ? ['local'] : []
-    ]
+      " (email, password, isvalidated, lastmodificationdate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5) returning id",
+    [user.email, user.password, false, Date.now(), false]
   )
 
   const newUser = response.rows[0]

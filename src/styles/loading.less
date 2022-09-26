@@ -1,3 +1,28 @@
 .Loading {
   margin: auto !important;
+  max-width: 80%;
+}
+
+.Loading .ant-card-body {
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.Loading-status {
+  margin-top: 10px;
+}
+
+.Loading-status > div::before {
+  content: '- ';
+}
+
+.Loading-errors {
+  margin-top: 10px;
+  color: red;
+}
+
+.Loading-errors .ant-card {
+  margin: 10px 0;
+  border-color: red;
+  color: red;
 }

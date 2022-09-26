@@ -305,7 +305,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
           placement="bottom"
           closable={true}
           onClose={() => setVisible(false)}
-          visible={visible}
+          open={visible}
           mask={false}
           maskClosable={false}
           height="50vh"

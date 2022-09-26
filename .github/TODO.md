@@ -7,6 +7,7 @@
 ## Models (Long term)
 
 - Linearelasticity: cylindrical coordinates
+  BC force with normal or with components
 
 ## Electron (Long term)
 
@@ -19,3 +20,5 @@
 - deploy without mail server, go to login after signup, not in /send
 
 ## Bugs
+
+- dxf import multiple parts

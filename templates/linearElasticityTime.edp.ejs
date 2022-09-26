@@ -29,6 +29,7 @@ finiteElementSpace.name = 'Uh'
 -%>
 <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
 	mesh,
+	dimension,
 	finiteElementSpace
 }), 1) -%>
 
@@ -66,9 +67,10 @@ const unknownPPFunction = dimension === 2 ? '[Uppx, Uppy]' : '[Uppx, Uppy, Uppz]
 	real t = 0.;
 	real T = <%= parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
 	real dt = <%= parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
-
+	
 	real Mu = E/(2.*(1.+Nu));
 	real Lambda = E*Nu/((1.+ Nu)*(1.-2.*Nu));
+	real g = <%= parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
 
 <%# Problem -%>
 <%
@@ -110,9 +112,9 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 			  2. * (Rho/dt) * <%= unknownPFunction -%>' * <%= testFunction -%>
 			- (Rho/dt) * <%= unknownPPFunction -%>' * <%= testFunction -%>
 <% if (dimension === 2) { -%>
-			+ Rho * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+			+ Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
 <% } else { -%>
-			+ Rho * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+			+ Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 <% } -%>
 		)
 <% for (const p of presure) { -%>

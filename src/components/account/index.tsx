@@ -44,6 +44,45 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
   const router = useRouter()
   const { tab }: { tab?: string } = router.query
 
+  const tabItems = []
+  tabItems.push({
+    key: 'personal',
+    label: 'Personal Information',
+    children: (
+      <Space direction="vertical" className="full-width" size={20}>
+        <Information
+          user={{
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            avatar: user.avatar
+          }}
+          swr={{ mutateUser: swr.mutateUser }}
+        />
+        {!isElectron() && <Delete swr={{ clearUser: swr.clearUser }} />}
+      </Space>
+    )
+  })
+  if (!isElectron())
+    tabItems.push({
+      key: 'security',
+      label: 'Security',
+      children: (
+        <Space direction="vertical" className="full-width" size={20}>
+          <Password
+            user={{
+              email: user.email
+            }}
+          />
+        </Space>
+      )
+    })
+  tabItems.push({
+    key: 'hpc',
+    label: 'HPC Providers',
+    children: <HPC />
+  })
+
   /**
    * Render
    */
@@ -63,38 +102,10 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
         <Tabs
           className="inDashboard-Tabs no-scroll"
           type="card"
+          items={tabItems}
           defaultActiveKey={tab || 'personal'}
           onChange={(key) => onChange(router, key)}
-        >
-          <Tabs.TabPane tab="Personal Information" key="personal">
-            <Space direction="vertical" className="full-width" size={20}>
-              <Information
-                user={{
-                  email: user.email,
-                  firstname: user.firstname,
-                  lastname: user.lastname,
-                  avatar: user.avatar
-                }}
-                swr={{ mutateUser: swr.mutateUser }}
-              />
-              <Delete swr={{ clearUser: swr.clearUser }} />
-            </Space>
-          </Tabs.TabPane>
-          {!isElectron() && (
-            <Tabs.TabPane tab="Security" key="security">
-              <Space direction="vertical" className="full-width" size={20}>
-                <Password
-                  user={{
-                    email: user.email
-                  }}
-                />
-              </Space>
-            </Tabs.TabPane>
-          )}
-          <Tabs.TabPane className="no-scroll" tab="HPC Providers" key="hpc">
-            <HPC />
-          </Tabs.TabPane>
-        </Tabs>
+        />
       </Layout.Content>
     </Layout>
   )

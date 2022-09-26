@@ -122,11 +122,21 @@ const Formula = ({
    */
   return (
     <Space className={'full-width space-full-width ' + className} align="start">
-      {defaultChecked !== undefined && (
-        <Checkbox checked={internalChecked} onChange={onCheckboxChange} />
-      )}
       <Form layout="vertical">
-        <Form.Item label={label}>
+        <Form.Item
+          label={
+            <>
+              {defaultChecked !== undefined && (
+                <Checkbox
+                  checked={internalChecked}
+                  onChange={onCheckboxChange}
+                  style={{ marginRight: '5px' }}
+                />
+              )}
+              {label}
+            </>
+          }
+        >
           <Input
             disabled={disabled}
             value={internalValue}

@@ -100,36 +100,46 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
           {organization.name}
         </Typography.Title>
       </div>
-      <Tabs>
-        <Tabs.TabPane tab="Users" key="users">
-          <Users
-            organization={{
-              id: organization.id,
-              owners: organization.owners,
-              pendingowners: organization.pendingowners,
-              users: organization.users,
-              pendingusers: organization.pendingusers
-            }}
-            swr={{
-              mutateOneOrganization: swr.mutateOneOrganization,
-              loadingOrganizations: swr.loadingOrganizations
-            }}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Groups" key="groups">
-          <Groups
-            organization={{
-              id: organization.id,
-              owners: organization.owners,
-              users: organization.users,
-              groups: organization.groups
-            }}
-            swr={{
-              mutateOneOrganization: swr.mutateOneOrganization
-            }}
-          />
-        </Tabs.TabPane>
-      </Tabs>
+      <Tabs
+        items={[
+          {
+            key: 'users',
+            label: 'Users',
+            children: (
+              <Users
+                organization={{
+                  id: organization.id,
+                  owners: organization.owners,
+                  pendingowners: organization.pendingowners,
+                  users: organization.users,
+                  pendingusers: organization.pendingusers
+                }}
+                swr={{
+                  mutateOneOrganization: swr.mutateOneOrganization,
+                  loadingOrganizations: swr.loadingOrganizations
+                }}
+              />
+            )
+          },
+          {
+            key: 'groups',
+            label: 'Groups',
+            children: (
+              <Groups
+                organization={{
+                  id: organization.id,
+                  owners: organization.owners,
+                  users: organization.users,
+                  groups: organization.groups
+                }}
+                swr={{
+                  mutateOneOrganization: swr.mutateOneOrganization
+                }}
+              />
+            )
+          }
+        ]}
+      />
     </>
   )
 }

@@ -121,7 +121,8 @@ jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   ColorbarHelper: () => ({
     setVisible: jest.fn(),
     setLUT: jest.fn(),
-    render: jest.fn()
+    render: jest.fn(),
+    dispose: jest.fn()
   })
 }))
 

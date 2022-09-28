@@ -90,17 +90,29 @@ const Index = (): JSX.Element => {
       switch (key) {
         case 'Windows':
           router.push(
-            'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc.Setup.1.0.0.exe'
+            'https://github.com/Airthium/tanatloc-electron/releases/download/v' +
+              packageJson.version +
+              '/Tanatloc.Setup.' +
+              packageJson.version +
+              '.exe'
           )
           break
         case 'MacOS':
           router.push(
-            'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.dmg'
+            'https://github.com/Airthium/tanatloc-electron/releases/download/v' +
+              packageJson.version +
+              '/Tanatloc-' +
+              packageJson.version +
+              '.dmg'
           )
           break
         case 'Linux':
           router.push(
-            'https://github.com/Airthium/tanatloc-electron/releases/download/v1.0.0/Tanatloc-1.0.0.AppImage'
+            'https://github.com/Airthium/tanatloc-electron/releases/download/v' +
+              packageJson.version +
+              '/Tanatloc-' +
+              packageJson.version +
+              '.AppImage'
           )
           break
       }

@@ -66,7 +66,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
             'avatar',
             'superuser',
             'authorizedplugins',
-            'plugins'
+            'plugins',
+            'models'
           ])
           res.status(200).json({ user })
         } catch (err: any) {

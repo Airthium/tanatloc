@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
 import { Layout, Menu, Space, Button, Typography, Divider } from 'antd'
-import { SaveOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { ShareAltOutlined } from '@ant-design/icons'
 
 import { DeleteButton, GoBack } from '@/components/assets/button'
 
@@ -15,6 +15,7 @@ import StatusSteps from './steps'
 import Blobs from './blobs'
 import New from './new'
 import Load from './load'
+import Save from './save'
 import Code from './code'
 
 /**
@@ -89,7 +90,7 @@ const Editor = () => {
               <Space>
                 <New />
                 <Load />
-                <Button icon={<SaveOutlined />} />
+                <Save />
                 <Button icon={<ShareAltOutlined />} />
                 <DeleteButton
                   bordered

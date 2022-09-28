@@ -207,8 +207,12 @@ export const schemas: Scheme = {
       type: 'UUID[]'
     },
     {
-      name: 'truc',
-      type: 'TEXT'
+      name: 'models',
+      type: 'TEXT[]'
+    },
+    {
+      name: 'templates',
+      type: 'TEXT[]'
     },
     {
       name: 'authorizedplugins',

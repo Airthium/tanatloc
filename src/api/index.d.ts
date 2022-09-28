@@ -184,6 +184,7 @@ export interface IFrontUser
       | 'superuser'
       | 'authorizedplugins'
       | 'plugins'
+      | 'models'
     )[]
   > {}
 

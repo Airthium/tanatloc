@@ -67,29 +67,35 @@ const Load = () => {
         loading={loading}
         onCancel={() => setVisible(false)}
       >
-        <Tabs>
-          <Tabs.TabPane tab="Tanatloc models">
-            <Space direction="vertical" className="full-width">
-              {Models.map((m, index) => (
-                <Button
-                  key={index}
-                  onClick={async () => {
-                    setLoading(true)
-                    try {
-                      await onLoad(index, dispatch)
-                    } finally {
-                      setLoading(false)
-                      setVisible(false)
-                    }
-                  }}
-                  className="full-width"
-                >
-                  {m.name}
-                </Button>
-              ))}
-            </Space>
-          </Tabs.TabPane>
-        </Tabs>
+        <Tabs
+          items={[
+            {
+              key: 'models',
+              label: 'Tanatloc models',
+              children: (
+                <Space direction="vertical" className="full-width">
+                  {Models.map((m, index) => (
+                    <Button
+                      key={index}
+                      onClick={async () => {
+                        setLoading(true)
+                        try {
+                          await onLoad(index, dispatch)
+                        } finally {
+                          setLoading(false)
+                          setVisible(false)
+                        }
+                      }}
+                      className="full-width"
+                    >
+                      {m.name}
+                    </Button>
+                  ))}
+                </Space>
+              )
+            }
+          ]}
+        />
       </Dialog>
       <Tooltip title="Open model">
         <Button

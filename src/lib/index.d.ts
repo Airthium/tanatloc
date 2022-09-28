@@ -154,13 +154,14 @@ export interface ISimulationGet<T = []> extends Omit<ISimulation<T>, 'tasks'> {
 export interface IUserGet<T = []>
   extends Omit<
     IUser<T>,
-    'organizations' | 'workspaces' | 'authorizedplugins' | 'plugins'
+    'organizations' | 'workspaces' | 'authorizedplugins' | 'plugins' | 'models'
   > {
   organizations: 'organizations'[] extends T ? string[] : never[]
   projects: 'projects'[] extends T ? string[] : never[]
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   authorizedplugins: 'authorizedplugins'[] extends T ? string[] : never[]
   plugins: 'plugins'[] extends T ? IClientPlugin[] : never[]
+  models: 'models'[] extends T ? string[] : never[]
 }
 
 export interface IUserWithData<T = []> extends Omit<IUserGet<T>, 'avatar'> {

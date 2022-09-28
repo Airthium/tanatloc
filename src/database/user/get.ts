@@ -22,6 +22,8 @@ export type TUserGet = (
   | 'workspaces'
   | 'authorizedplugins'
   | 'plugins'
+  | 'models'
+  | 'templates'
 )[]
 export type TUserGetKey = 'id' | 'email'
 
@@ -40,6 +42,8 @@ export type TUserGetProjects = 'projects'[]
 export type TUserGetWorkspaces = 'workspaces'[]
 export type TUserGetAuthorizedplugins = 'authorizedplugins'[]
 export type TUserGetPlugins = 'plugins'[]
+export type TUserGetModels = 'models'[]
+export type TUserGetTemplates = 'templates'[]
 
 export interface IUser<T = [], Key = 'id'> {
   id:
@@ -61,6 +65,8 @@ export interface IUser<T = [], Key = 'id'> {
   workspaces?: TUserGetWorkspaces extends T ? string[] : never[]
   authorizedplugins?: TUserGetAuthorizedplugins extends T ? string[] : never[]
   plugins?: TUserGetPlugins extends T ? IClientPlugin[] : never[]
+  models?: TUserGetModels extends T ? string[] : never[]
+  templates?: TUserGetTemplates extends T ? string[] : never[]
 }
 
 /**

@@ -51,10 +51,10 @@ const main = async (params?: IParams): Promise<void> => {
       await initDockers(params)
     }
 
-    await params?.addStatus('Creating database')
+    await params?.addStatus('Initializing database')
     await createDatabase()
 
-    await params?.addStatus('Creating paths')
+    await params?.addStatus('Initializing paths')
     await createPaths()
   }
 }

@@ -22,9 +22,11 @@ import {
  */
 export const checkdB = async (params?: {
   addStatus: (status: string) => Promise<void>
-}): Promise<boolean> => {
+}): Promise<void> => {
   console.info('Check database...')
   await params?.addStatus('Checking database...')
+
+  let error = 'Database not found'
 
   // Legacy postgres
   try {
@@ -37,7 +39,8 @@ export const checkdB = async (params?: {
     })
     await checkPool.query('SELECT NOW()')
     await checkPool.end()
-    return true
+
+    return
   } catch (err) {}
 
   // Docker postgres
@@ -56,11 +59,13 @@ export const checkdB = async (params?: {
         throw new Error('Unable to create Tanatloc postgres docker')
 
       console.info(
-        'Tanatloc postgres docker created (' + id.toString().trim() + ')'
+        '- Tanatloc postgres docker created (' + id.toString().trim() + ')'
       )
     } else {
       console.info(
-        'Tanatloc postgres docker already exists (' + id.toString().trim() + ')'
+        '- Tanatloc postgres docker already exists (' +
+          id.toString().trim() +
+          ')'
       )
     }
 
@@ -71,7 +76,7 @@ export const checkdB = async (params?: {
     const host = execSync(
       'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
     )
-    console.info('docker host: ' + host.toString().trim())
+    console.info('- docker host: ' + host.toString().trim())
     await params?.addStatus('Database found on ' + host.toString().trim())
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')
@@ -80,26 +85,34 @@ export const checkdB = async (params?: {
     // Wait postgres start
     let ready: boolean = false
     let iter = 0
+    console.info('- Starting database...')
     while (!ready && iter < 100) {
       try {
-        startdB()
-        ready = true
-        console.info('Database ready')
-        await params?.addStatus('Checking database...')
-      } catch (err) {
         iter++
+        const checkPool = new Pool({
+          host: HOST,
+          port: PORT,
+          user: ADMIN,
+          database: 'postgres',
+          password: 'password'
+        })
+        await checkPool.query('SELECT NOW()')
+        checkPool.end()
+        ready = true
+        console.info('- Database ready')
+        await params?.addStatus('Database ready')
+      } catch (err) {
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
 
-    if (!ready) throw new Error('Database not found')
+    error = 'Unable to start database'
+    if (!ready) throw new Error()
 
-    await stopdB()
-
-    return true
+    return
   } catch (err) {}
 
-  return false
+  throw new Error(error)
 }
 
 /**
@@ -110,7 +123,7 @@ export const startdB = (): Pool => {
   console.info('Start database...')
   return new Pool({
     user: USER,
-    host: process.env.DB_HOST || HOST,
+    host: HOST,
     database: DATABASE,
     password: PASSWORD,
     port: PORT

@@ -14,12 +14,16 @@ describe('src/server/init/database', () => {
 
   test('initDatabase', async () => {
     // No database
+    mockCheckdB.mockImplementation(() => {
+      throw new Error('Database not found')
+    })
     try {
       await initDatabase()
     } catch (err: any) {
       expect(err.message).toBe('Database not found')
     }
     expect(mockCheckdB).toHaveBeenCalledTimes(1)
+    expect(mockStartdB).toHaveBeenCalledTimes(0)
 
     // Database
     mockCheckdB.mockImplementation(() => true)

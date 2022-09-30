@@ -71,14 +71,28 @@ export const checkdB = async (params?: {
     const host = execSync(
       'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
     )
-    console.info('docker host: ' + host.toString())
-    await params?.addStatus('Database found on ' + host.toString())
+    console.info('docker host: ' + host.toString().trim())
+    await params?.addStatus('Database found on ' + host.toString().trim())
     process.env.DB_ADMIN_PASSWORD ??
       (process.env.DB_ADMIN_PASSWORD = 'password')
     process.env.DB_ADMIN ?? (process.env.DB_ADMIN = 'postgres')
 
     // Wait postgres start
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    let ready: boolean = false
+    let iter = 0
+    while (!ready && iter < 100) {
+      try {
+        startdB()
+        ready = true
+        console.info('Database ready')
+        await params?.addStatus('Checking database...')
+      } catch (err) {
+        iter++
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      }
+    }
+
+    await stopdB()
 
     return true
   } catch (err) {}

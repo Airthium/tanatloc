@@ -92,6 +92,8 @@ export const checkdB = async (params?: {
       }
     }
 
+    if (!ready) throw new Error('Database not found')
+
     await stopdB()
 
     return true

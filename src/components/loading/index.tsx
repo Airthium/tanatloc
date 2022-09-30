@@ -57,7 +57,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
   }, [status, errors])
 
   // Display
-  const display = status?.length || errors?.length
+  const display = !!status?.length || !!errors?.length
 
   /**
    * Render

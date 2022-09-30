@@ -36,7 +36,9 @@ describe('install/dB', () => {
       }),
       release: jest.fn()
     }))
-    mockQuery.mockImplementation(() => ({ rows: [{}] }))
+    mockQuery.mockImplementation(() => ({
+      rows: [{ email: 'admin', authorizedplugins: [], plugins: [] }]
+    }))
 
     Object.defineProperty(global, 'tanatloc', {
       value: {
@@ -79,7 +81,7 @@ describe('install/dB', () => {
     let fix = true
     let fixUnused = true
     mockQuery.mockImplementation((query) => {
-      if (query.includes('SELECT id FROM')) return { rows: [] }
+      if (query.includes('SELECT * FROM')) return { rows: [] }
       else if (
         query.includes('SELECT column_name') &&
         query.includes('tanatloc_system')
@@ -157,9 +159,12 @@ describe('install/dB', () => {
     } catch (err) {}
   })
 
-  test('electron', async () => {
+  test('admin', async () => {
     mockQuery.mockImplementation((query) => {
-      if (query.includes('SELECT id FROM')) return { rows: [] }
+      if (query.includes('SELECT * FROM'))
+        return {
+          rows: [{ email: 'admin', authorizedplugins: ['loal'], plugins: [{}] }]
+        }
       else return { rows: [{ exists: true }] }
     })
     mockIsElectron.mockImplementation(() => true)

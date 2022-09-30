@@ -24,6 +24,39 @@ import { query } from '@/database'
 import { initDatabase } from '@/server/init/database'
 
 /**
+ * Local plugin
+ */
+const localPlugin = {
+  category: 'HPC',
+  key: 'local',
+  uuid: uuid(),
+  name: 'Local',
+  description: '<p>Local</p>',
+  configuration: {
+    name: {
+      label: 'Name',
+      type: 'input',
+      rules: [
+        { required: true, message: 'Name is required' },
+        { max: 50, message: 'Max ' + 50 + ' characters' }
+      ],
+      value: 'My computer'
+    },
+    gmshPath: {
+      label: 'Gmsh path',
+      type: 'input',
+      tooltip: 'Fill this input to use a local version of Gmsh'
+    },
+    freefemPath: {
+      label: 'FreeFEM path (ff-mpirun)',
+      type: 'input',
+      tooltip: 'Fill this input to use a local version of FreeFEM'
+    }
+  },
+  inUseConfiguration: {}
+}
+
+/**
  * Create database
  * @description Create the Tanatloc database with `pgcrypto` extension
  */
@@ -558,41 +591,11 @@ const createLinkTable = async (): Promise<void> => {
  * Create administrator
  */
 const createAdmin = async (): Promise<void> => {
-  const { rows } = await query('SELECT id FROM ' + tables.USERS, [])
+  const { rows } = await query('SELECT * FROM ' + tables.USERS, [])
   if (rows.length === 0) {
     console.info(' *** Create Administrator *** ')
 
     const password = 'password'
-
-    const localPlugin = {
-      category: 'HPC',
-      key: 'local',
-      uuid: uuid(),
-      name: 'Local',
-      description: '<p>Local</p>',
-      configuration: {
-        name: {
-          label: 'Name',
-          type: 'input',
-          rules: [
-            { required: true, message: 'Name is required' },
-            { max: 50, message: 'Max ' + 50 + ' characters' }
-          ],
-          value: 'My computer'
-        },
-        gmshPath: {
-          label: 'Gmsh path',
-          type: 'input',
-          tooltip: 'Fill this input to use a local version of Gmsh'
-        },
-        freefemPath: {
-          label: 'FreeFEM path (ff-mpirun)',
-          type: 'input',
-          tooltip: 'Fill this input to use a local version of FreeFEM'
-        }
-      },
-      inUseConfiguration: {}
-    }
 
     await query(
       'INSERT INTO ' +
@@ -612,5 +615,27 @@ const createAdmin = async (): Promise<void> => {
     console.info(' Administrator account:')
     console.info(' - email: admin')
     console.info(' - password: ' + password)
+  } else {
+    console.info(' *** Check Administrator *** ')
+
+    const user = rows.find((row) => row.email === 'admin')
+
+    const authorizedplugins = user.authorizedplugins
+    if (authorizedplugins.length === 0) {
+      console.info(' - Update authorized plugins')
+      await query(
+        'UPDATE ' + tables.USERS + ' SET authorizedplugins = $1 WHERE id=$2',
+        [['local'], user.id]
+      )
+    }
+
+    const plugins = user.plugins
+    if (plugins.length === 0) {
+      console.info(' - Update local plugin')
+      await query('UPDATE ' + tables.USERS + ' SET plugins=$1 WHERE id=$2', [
+        [localPlugin],
+        user.id
+      ])
+    }
   }
 }

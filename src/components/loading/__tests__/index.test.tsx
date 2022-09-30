@@ -5,20 +5,22 @@ import Loading from '@/components/loading'
 
 jest.mock('@/components/background', () => 'background')
 
+Element.prototype.scrollTo = () => {}
+
 describe('components/loading', () => {
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<Loading />)
 
     unmount()
   })
 
-  test('status', () => {
+  test('status', async () => {
     const { unmount } = render(<Loading status={['test1', 'test2']} />)
 
     unmount()
   })
 
-  test('status, err', () => {
+  test('status, err', async () => {
     const { unmount } = render(
       <Loading
         status={['test1', 'test2']}

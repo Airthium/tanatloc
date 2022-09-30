@@ -21,6 +21,10 @@ jest.mock('pg', () => {
   }
 })
 
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => callback()
+})
+
 describe('database', () => {
   beforeEach(() => {
     //@ts-ignore
@@ -38,22 +42,21 @@ describe('database', () => {
   test('checkdB', async () => {
     // First good
     mockQuery.mockImplementation(() => true)
-    let res = await checkdB()
-    expect(res).toBe(true)
+    await checkdB()
 
-    // First wrong
+    // First wrong, no id
     mockQuery.mockImplementation(() => {
       throw new Error('query error')
     })
-    res = await checkdB()
-    expect(res).toBe(true)
-
-    // Second wrong, no id
     mockExecSync
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => '')
-    res = await checkdB()
-    expect(res).toBe(false)
+    try {
+      await checkdB()
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('Database not found')
+    }
 
     // Second wrong, no docker
     mockExecSync
@@ -61,35 +64,37 @@ describe('database', () => {
       .mockImplementationOnce(() => {
         throw new Error('no docker')
       })
-    res = await checkdB()
-    expect(res).toBe(false)
+    try {
+      await checkdB()
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('Database not found')
+    }
 
-    // Second ok
+    // Second wrong, does not start
     mockExecSync
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => 'id')
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => 'host')
-    res = await checkdB()
-    expect(res).toBe(true)
+    try {
+      await checkdB()
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('Unable to start database')
+    }
 
-    // Second wrong, docker inspect error
-    mockExecSync
-      .mockImplementationOnce(() => 'id')
-      .mockImplementationOnce(() => '')
+    // Second true, already exists, start
+    mockQuery
       .mockImplementationOnce(() => {
-        throw new Error('execSync error')
+        throw new Error('query error')
       })
-    res = await checkdB()
-    expect(res).toBe(false)
-
-    // Second true
+      .mockImplementation(() => '')
     mockExecSync
       .mockImplementationOnce(() => 'id')
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => 'host')
-    res = await checkdB()
-    expect(res).toBe(true)
+    await checkdB()
   })
 
   test('startdB', async () => {

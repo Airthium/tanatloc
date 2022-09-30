@@ -1,7 +1,8 @@
 /** @module Components.Loading */
 
-import { WarningOutlined } from '@ant-design/icons'
+import { useEffect, useRef } from 'react'
 import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
+import { WarningOutlined } from '@ant-design/icons'
 
 /**
  * Simple
@@ -41,8 +42,22 @@ export interface IProps {
  * @returns Loading
  */
 const Loading = ({ text, status, errors }: IProps): JSX.Element => {
+  // Ref
+  const contentRef = useRef<HTMLDivElement>(null)
+
   // Data
   const lastStatus = errors?.length ? 'error' : 'process'
+
+  // Scroll down
+  useEffect(() => {
+    const content = contentRef.current
+    if (!content) return
+    if (errors?.length) content.scrollTo({ top: 0, behavior: 'smooth' })
+    else content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' })
+  }, [status, errors])
+
+  // Display
+  const display = !!status?.length || !!errors?.length
 
   /**
    * Render
@@ -54,13 +69,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
       </div>
       <Card
         className="Loading"
-        bodyStyle={
-          !status?.length && !errors?.length
-            ? {
-                padding: 0
-              }
-            : undefined
-        }
+        bodyStyle={{ padding: 0 }}
         title={
           <Space>
             {errors?.length ? (
@@ -80,60 +89,66 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
           </Space>
         }
       >
-        {errors?.length ? (
-          <div className="Loading-errors">
-            {errors.map((err, index) => {
-              let child = null
-              if (
-                err.includes('docker: command not found') ||
-                err.includes('Is the docker daemon running')
-              )
-                child = (
-                  <Card>
-                    There is an error with your Docker installation.
-                    <br />
-                    Please verify that Docker is correctly installed and
-                    running.
-                  </Card>
-                )
-              else if (
-                err.includes('EHOSTUNREACH') ||
-                err.includes('ENETUNREACH') ||
-                err.includes('ETIMEOUT')
-              )
-                child = (
-                  <Card>
-                    There is an error with your PostgreSQL installation.
-                    <br />
-                    Please verify that postgres Docker container
-                    &quot;tanatloc-postgres&quot; is correctly installed and
-                    running.
-                  </Card>
-                )
+        {display ? (
+          <div ref={contentRef} className="Loading-content">
+            {errors?.length ? (
+              <div className="Loading-errors">
+                {errors.map((err, index) => {
+                  let child = null
+                  if (
+                    err.includes('docker: command not found') ||
+                    err.includes('Is the docker daemon running')
+                  )
+                    child = (
+                      <Card>
+                        There is an error with your Docker installation.
+                        <br />
+                        Please verify that Docker is correctly installed and
+                        running.
+                      </Card>
+                    )
+                  else if (
+                    err.includes('EHOSTUNREACH') ||
+                    err.includes('ENETUNREACH') ||
+                    err.includes('ETIMEOUT')
+                  )
+                    child = (
+                      <Card>
+                        There is an error with your PostgreSQL installation.
+                        <br />
+                        Please verify that postgres Docker container
+                        &quot;tanatloc-postgres&quot; is correctly installed and
+                        running.
+                      </Card>
+                    )
 
-              return (
-                <div key={index}>
-                  {err}
-                  {child}
-                </div>
-              )
-            })}
-            <Typography.Title level={5} style={{ color: 'red' }}>
-              Please restart the application
-            </Typography.Title>
-          </div>
-        ) : null}
-        {status?.length ? (
-          <div className="Loading-status">
-            <Steps direction="vertical">
-              {status.map((desc, index) => (
-                <Steps.Step
-                  key={index}
-                  status={index === status.length - 1 ? lastStatus : 'finish'}
-                  title={desc}
-                />
-              ))}
-            </Steps>
+                  return (
+                    <div key={index}>
+                      {err}
+                      {child}
+                    </div>
+                  )
+                })}
+                <Typography.Title level={5} style={{ color: 'red' }}>
+                  Please restart the application
+                </Typography.Title>
+              </div>
+            ) : null}
+            {status?.length ? (
+              <div className="Loading-status">
+                <Steps direction="vertical">
+                  {status.map((desc, index) => (
+                    <Steps.Step
+                      key={index}
+                      status={
+                        index === status.length - 1 ? lastStatus : 'finish'
+                      }
+                      title={desc}
+                    />
+                  ))}
+                </Steps>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </Card>

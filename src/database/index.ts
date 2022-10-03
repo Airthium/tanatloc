@@ -28,21 +28,6 @@ export const checkdB = async (params?: {
 
   let error = 'Database not found'
 
-  // Legacy postgres
-  try {
-    const checkPool = new Pool({
-      host: HOST,
-      port: PORT,
-      user: ADMIN,
-      database: ADMIN_DATABASE,
-      password: ADMIN_PASSWORD
-    })
-    await checkPool.query('SELECT NOW()')
-    await checkPool.end()
-
-    return
-  } catch (err) {}
-
   // Docker postgres
   try {
     // Existing tanatloc-postgres docker
@@ -108,6 +93,21 @@ export const checkdB = async (params?: {
 
     error = 'Unable to start database'
     if (!ready) throw new Error()
+
+    return
+  } catch (err) {}
+
+  // Legacy postgres
+  try {
+    const checkPool = new Pool({
+      host: HOST,
+      port: PORT,
+      user: ADMIN,
+      database: ADMIN_DATABASE,
+      password: ADMIN_PASSWORD
+    })
+    await checkPool.query('SELECT NOW()')
+    await checkPool.end()
 
     return
   } catch (err) {}

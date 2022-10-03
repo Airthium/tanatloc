@@ -40,61 +40,30 @@ describe('database', () => {
   })
 
   test('checkdB', async () => {
-    // First good
-    mockQuery.mockImplementation(() => true)
+    // Docker no id
+    mockExecSync.mockImplementation(() => '')
     await checkdB()
 
-    // First wrong, no id
-    mockQuery.mockImplementation(() => {
-      throw new Error('query error')
-    })
-    mockExecSync
-      .mockImplementationOnce(() => '')
-      .mockImplementationOnce(() => '')
-    try {
-      await checkdB()
-      expect(true).toBe(false)
-    } catch (err: any) {
-      expect(err.message).toBe('Database not found')
-    }
-
-    // Second wrong, no docker
-    mockExecSync
-      .mockImplementationOnce(() => '')
-      .mockImplementationOnce(() => {
-        throw new Error('no docker')
-      })
-    try {
-      await checkdB()
-      expect(true).toBe(false)
-    } catch (err: any) {
-      expect(err.message).toBe('Database not found')
-    }
-
-    // Second wrong, does not start
+    // Docker, id on run
     mockExecSync
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => 'id')
-      .mockImplementationOnce(() => '')
-      .mockImplementationOnce(() => 'host')
+    await checkdB()
+
+    // Docker, id on container
+    mockExecSync.mockImplementation(() => 'id')
+    await checkdB()
+
+    // Docker not ready
+    mockQuery.mockImplementation(() => {
+      throw new Error('query error')
+    })
     try {
       await checkdB()
       expect(true).toBe(false)
     } catch (err: any) {
       expect(err.message).toBe('Unable to start database')
     }
-
-    // Second true, already exists, start
-    mockQuery
-      .mockImplementationOnce(() => {
-        throw new Error('query error')
-      })
-      .mockImplementation(() => '')
-    mockExecSync
-      .mockImplementationOnce(() => 'id')
-      .mockImplementationOnce(() => '')
-      .mockImplementationOnce(() => 'host')
-    await checkdB()
   })
 
   test('startdB', async () => {

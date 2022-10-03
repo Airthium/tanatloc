@@ -29,7 +29,7 @@ const Editor = () => {
 
   // Data
   const router = useRouter()
-  const [user, { loadingUser }] = UserAPI.useUser()
+  const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -92,7 +92,10 @@ const Editor = () => {
               <Space>
                 <New />
                 <Load />
-                <Save user={{ id: user.id, models: user.models }} />
+                <Save
+                  user={{ id: user.id, models: user.models }}
+                  swr={{ mutateUser }}
+                />
                 <Button icon={<ShareAltOutlined />} />
                 <DeleteButton
                   bordered

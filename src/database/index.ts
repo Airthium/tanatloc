@@ -3,7 +3,14 @@
 import { execSync } from 'child_process'
 import { Pool } from 'pg'
 
-import { IDataBaseEntry, IDataBaseResponse } from './index.d'
+import {
+  IDataBaseEntry,
+  IDataBaseEntryArray,
+  IDataBaseEntryCrypt,
+  IDataBaseEntryDate,
+  IDataBaseEntryJSON,
+  IDataBaseResponse
+} from './index.d'
 
 import {
   ADMIN,
@@ -204,16 +211,16 @@ export const updater = async (
   data.forEach((d) => {
     switch (d.type) {
       case 'crypt':
-        cryptUpdater(d, args, queryTextMiddle)
+        cryptUpdater(d as IDataBaseEntryCrypt, args, queryTextMiddle)
         break
       case 'date':
-        dateUpdater(d, args, queryTextMiddle)
+        dateUpdater(d as IDataBaseEntryDate, args, queryTextMiddle)
         break
       case 'array':
-        arrayUpdater(d, args, queryTextMiddle)
+        arrayUpdater(d as IDataBaseEntryArray, args, queryTextMiddle)
         break
       case 'json':
-        jsonUpdater(d, args, queryTextMiddle)
+        jsonUpdater(d as IDataBaseEntryJSON, args, queryTextMiddle)
         break
       default:
         args.push(d.value)
@@ -230,7 +237,7 @@ export const updater = async (
  * @param queryText Query text
  */
 const cryptUpdater = (
-  data: IDataBaseEntry,
+  data: IDataBaseEntryCrypt,
   args: Array<string>,
   queryText: Array<string>
 ): void => {
@@ -245,7 +252,7 @@ const cryptUpdater = (
  * @param queryText Query text
  */
 const dateUpdater = (
-  data: IDataBaseEntry,
+  data: IDataBaseEntryDate,
   args: Array<string>,
   queryText: Array<string>
 ): void => {
@@ -260,7 +267,7 @@ const dateUpdater = (
  * @param queryText Query text
  */
 const arrayUpdater = (
-  data: IDataBaseEntry,
+  data: IDataBaseEntryArray,
   args: Array<string>,
   queryText: Array<string>
 ): void => {
@@ -277,8 +284,16 @@ const arrayUpdater = (
         data.key + ' = array_remove(' + data.key + ', $' + args.length + ')'
       )
       break
+    case 'set':
+      args.push(String(data.index))
+      args.push(data.value)
+      queryText.push(
+        data.key + '[$' + (args.length - 1) + '] = $' + args.length
+      )
+      break
     default:
       throw new Error(
+        //@ts-ignore
         'No method ' + (data.method || 'specified') + ' for array update'
       )
   }
@@ -291,7 +306,7 @@ const arrayUpdater = (
  * @param queryText Query text
  */
 const jsonUpdater = (
-  data: IDataBaseEntry,
+  data: IDataBaseEntryJSON,
   args: Array<string>,
   queryText: Array<string>
 ) => {
@@ -303,7 +318,7 @@ const jsonUpdater = (
           ' = jsonb_set(' +
           data.key +
           ", '{" +
-          data.path?.join(',') +
+          data.path.join(',') +
           "}', $" +
           args.length +
           ')'
@@ -315,13 +330,14 @@ const jsonUpdater = (
           ' = jsonb_set(' +
           data.key +
           ", '{" +
-          data.path?.join(',') +
+          data.path.join(',') +
           "}', 'null'" +
           ')'
       )
       break
     default:
       throw new Error(
+        //@ts-ignore
         'No method ' + (data.method || 'specified') + ' for json update'
       )
   }

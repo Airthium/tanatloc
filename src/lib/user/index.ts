@@ -72,23 +72,39 @@ const get = async <T extends TUserGet>(
   if (data.includes('authorizedplugins') && !userData.authorizedplugins)
     userData.authorizedplugins = []
 
-  if (data.includes('plugins'))
-    if (userData.plugins) {
-      //@ts-ignore
-      userData.plugins = await decrypt(userData.plugins)
-    } else {
-      userData.plugins = []
-    }
+  if (data.includes('plugins')) await setPluginsData(userData)
 
-  if (data.includes('models'))
-    if (userData.models) {
-      //@ts-ignore
-      userData.models = userData.models.map((model) => JSON.parse(model))
-    } else {
-      userData.models = []
-    }
+  if (data.includes('models')) setModelsData(userData)
 
   return userData as IUserGet<T>
+}
+
+/**
+ * Set plugins data
+ * @param userData User data
+ */
+const setPluginsData = async (
+  userData: Partial<IUser<TUserGet>>
+): Promise<void> => {
+  if (userData.plugins) {
+    //@ts-ignore
+    userData.plugins = await decrypt(userData.plugins)
+  } else {
+    userData.plugins = []
+  }
+}
+
+/**
+ * Set models data
+ * @param userData User data
+ */
+const setModelsData = (userData: Partial<IUser<TUserGet>>): void => {
+  if (userData.models) {
+    //@ts-ignore
+    userData.models = userData.models.map((model) => JSON.parse(model))
+  } else {
+    userData.models = []
+  }
 }
 
 /**

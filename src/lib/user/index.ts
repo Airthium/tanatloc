@@ -80,6 +80,14 @@ const get = async <T extends TUserGet>(
       userData.plugins = []
     }
 
+  if (data.includes('models'))
+    if (userData.models) {
+      //@ts-ignore
+      userData.models = userData.models.map((model) => JSON.parse(model))
+    } else {
+      userData.models = []
+    }
+
   return userData as IUserGet<T>
 }
 

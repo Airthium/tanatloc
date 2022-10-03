@@ -17,6 +17,7 @@ import New from './new'
 import Load from './load'
 import Save from './save'
 import Code from './code'
+import Loading from '../loading'
 
 /**
  * Editor
@@ -47,6 +48,7 @@ const Editor = () => {
   /**
    * Render
    */
+  if (loadingUser || !user) return <Loading />
   return (
     <EditorProvider>
       <Layout className="Editor">
@@ -90,7 +92,7 @@ const Editor = () => {
               <Space>
                 <New />
                 <Load />
-                <Save />
+                <Save user={{ id: user.id, models: user.models }} />
                 <Button icon={<ShareAltOutlined />} />
                 <DeleteButton
                   bordered

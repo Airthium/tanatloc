@@ -1,11 +1,22 @@
 import { useContext, useState } from 'react'
-import { Button } from 'antd'
+import { Button, Modal } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
+
+import { IModel } from '@/models/index.d'
+import { IFrontUser } from '@/api/index.d'
 
 import { EditorContext } from '@/context/editor'
 
-import UserAPI from '@/api/user'
 import { ErrorNotification } from '@/components/assets/notification'
+
+import UserAPI from '@/api/user'
+
+/**
+ * Props
+ */
+export interface IProps {
+  user: Pick<IFrontUser, 'id' | 'models'>
+}
 
 /**
  * Errors
@@ -20,29 +31,43 @@ const errors = {
  * @param model Model
  * @param template Template
  */
-const onSave = async (model: string, template: string): Promise<void> => {
+const onSave = async (
+  user: Pick<IFrontUser, 'id' | 'models'>,
+  model: IModel,
+  template: string
+): Promise<void> => {
   try {
-    // API
-    await UserAPI.update([
-      {
-        key: 'models',
-        type: 'array',
-        method: 'append',
-        value: model
-      },
-      {
-        key: 'templates',
-        type: 'array',
-        method: 'append',
-        value: template
-      }
-    ])
+    // Check existing model
+    const existing = user.models.find((m) => m.algorithm === model.algorithm)
+    if (!existing) {
+      Modal.confirm({
+        title:
+          'A model with the same algorithm entry already exists. Do you want to override it?',
+        onOk: async () => {
+          // // API
+          // await UserAPI.update([
+          //   {
+          //     key: 'models',
+          //     type: 'array',
+          //     method: 'append',
+          //     value: model
+          //   },
+          //   {
+          //     key: 'templates',
+          //     type: 'array',
+          //     method: 'append',
+          //     value: template
+          //   }
+          // ])
+        }
+      })
+    }
   } catch (err) {
     ErrorNotification(errors.save, err)
   }
 }
 
-const Save = (): JSX.Element => {
+const Save = ({ user }: IProps): JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -58,7 +83,7 @@ const Save = (): JSX.Element => {
       icon={<SaveOutlined />}
       onClick={async () => {
         setLoading(true)
-        await onSave(model, template)
+        await onSave(user, model, template)
         setLoading(false)
       }}
     />

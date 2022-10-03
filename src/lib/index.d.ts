@@ -9,6 +9,7 @@ import { IProject } from '@/database/project'
 import { IOrganization } from '@/database/organization'
 import { ISimulation } from '@/database/simulation'
 import { IClientPlugin } from '@/plugins'
+import { IModel } from '@/models'
 
 /**
  * Geometry
@@ -161,7 +162,7 @@ export interface IUserGet<T = []>
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   authorizedplugins: 'authorizedplugins'[] extends T ? string[] : never[]
   plugins: 'plugins'[] extends T ? IClientPlugin[] : never[]
-  models: 'models'[] extends T ? string[] : never[]
+  models: 'models'[] extends T ? IModel[] : never[]
 }
 
 export interface IUserWithData<T = []> extends Omit<IUserGet<T>, 'avatar'> {

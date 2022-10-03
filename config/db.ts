@@ -208,7 +208,7 @@ export const schemas: Scheme = {
     },
     {
       name: 'models',
-      type: 'TEXT[]'
+      type: 'JSONB[]'
     },
     {
       name: 'templates',

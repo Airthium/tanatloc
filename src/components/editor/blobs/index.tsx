@@ -17,7 +17,7 @@ import Materials from './materials'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addOnCursor = (
+export const addOnCursor = (
   template: string,
   text: string,
   cursor: IEditorCursor | undefined,
@@ -43,7 +43,7 @@ const addOnCursor = (
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addHeader = (
+export const addHeader = (
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -64,7 +64,7 @@ const addHeader = (
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addDimension = (
+export const addDimension = (
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -79,7 +79,7 @@ const addDimension = (
   dispatch(setCursor({ row: (cursor?.row || 0) + 4, column: 0 }))
 }
 
-const addMesh = (
+export const addMesh = (
   values: { name: string },
   template: string,
   model: string,
@@ -133,7 +133,7 @@ const addMesh = (
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addMaterials = (
+export const addMaterials = (
   values: { label: string; name: string; default: string; unit: string }[],
   template: string,
   model: string,
@@ -191,7 +191,7 @@ const addMaterials = (
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addFiniteElementSpace = (
+export const addFiniteElementSpace = (
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
@@ -259,7 +259,7 @@ const addFiniteElementSpace = (
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addFiniteElementFunction = (
+export const addFiniteElementFunction = (
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -280,7 +280,7 @@ const addFiniteElementFunction = (
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const addMacros = (
+export const addMacros = (
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>

@@ -26,7 +26,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   json: 'Model definition not valid',
   check: 'Unable to check',
   save: 'Unable to save'
@@ -71,9 +71,9 @@ const onSave = async (
           await save(user, swr, modelJSON, template, index)
         }
       })
+    } else {
+      await save(user, swr, modelJSON, template)
     }
-
-    await save(user, swr, modelJSON, template)
   } catch (err) {
     ErrorNotification(errors.check, err)
   }

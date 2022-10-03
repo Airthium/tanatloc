@@ -6,6 +6,7 @@ import { Layout, Menu, Space, Button, Typography, Divider } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
 import { DeleteButton, GoBack } from '@/components/assets/button'
+import Loading from '@/components/loading'
 
 import UserAPI from '@/api/user'
 
@@ -17,7 +18,6 @@ import New from './new'
 import Load from './load'
 import Save from './save'
 import Code from './code'
-import Loading from '../loading'
 
 /**
  * Editor

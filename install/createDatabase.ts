@@ -621,7 +621,7 @@ const createAdmin = async (): Promise<void> => {
     const user = rows.find((row) => row.email === 'admin')
 
     const authorizedplugins = user.authorizedplugins
-    if (authorizedplugins.length === 0) {
+    if (!authorizedplugins?.length) {
       console.info(' - Update authorized plugins')
       await query(
         'UPDATE ' + tables.USERS + ' SET authorizedplugins = $1 WHERE id=$2',
@@ -630,7 +630,7 @@ const createAdmin = async (): Promise<void> => {
     }
 
     const plugins = user.plugins
-    if (plugins.length === 0) {
+    if (!plugins?.length) {
       console.info(' - Update local plugin')
       await query('UPDATE ' + tables.USERS + ' SET plugins=$1 WHERE id=$2', [
         [localPlugin],

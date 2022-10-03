@@ -1,6 +1,9 @@
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Space, Tabs, Tooltip } from 'antd'
 
+import { IFrontUser } from '@/api/index.d'
+import { IModel } from '@/models/index.d'
+
 import Dialog from '@/components/assets/dialog'
 
 import Models from '@/models'
@@ -13,6 +16,13 @@ import { EditorContext, IEditorAction } from '@/context/editor'
 import { FolderOpenOutlined } from '@ant-design/icons'
 
 /**
+ * Props
+ */
+export interface IProps {
+  user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
+}
+
+/**
  * Errors
  */
 const errors = {
@@ -20,11 +30,11 @@ const errors = {
 }
 
 /**
- * Load model
+ * Load tanatloc model
  * @param key Key
  * @param dispatch Dispatch
  */
-export const onLoad = async (
+export const onTanatlocLoad = async (
   key: number,
   dispatch: Dispatch<IEditorAction>
 ): Promise<void> => {
@@ -44,11 +54,25 @@ export const onLoad = async (
   }
 }
 
+export const onMyLoad = async (
+  model: IModel,
+  template: string,
+  dispatch: Dispatch<IEditorAction>
+): Promise<void> => {
+  try {
+    dispatch(setModel(JSON.stringify(model, null, '\t')))
+    dispatch(setTemplate(template))
+  } catch (err) {
+    ErrorNotification(errors.load, err)
+  }
+}
+
 /**
  * Load
+ * @param props Props
  * @returns Load
  */
-const Load = () => {
+const Load = ({ user }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -80,7 +104,33 @@ const Load = () => {
                       onClick={async () => {
                         setLoading(true)
                         try {
-                          await onLoad(index, dispatch)
+                          await onTanatlocLoad(index, dispatch)
+                        } finally {
+                          setLoading(false)
+                          setVisible(false)
+                        }
+                      }}
+                      className="full-width"
+                    >
+                      {m.name}
+                    </Button>
+                  ))}
+                </Space>
+              )
+            },
+            {
+              key: 'personalModels',
+              label: 'My models',
+              children: (
+                <Space direction="vertical" className="full-width">
+                  {user.models.map((m, index) => (
+                    <Button
+                      key={index}
+                      onClick={async () => {
+                        setLoading(true)
+                        try {
+                          await onMyLoad(m, user.templates[index], dispatch)
+                          console.log('TODO')
                         } finally {
                           setLoading(false)
                           setVisible(false)

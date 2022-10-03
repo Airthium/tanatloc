@@ -185,6 +185,7 @@ export interface IFrontUser
       | 'authorizedplugins'
       | 'plugins'
       | 'models'
+      | 'templates'
     )[]
   > {}
 

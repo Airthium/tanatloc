@@ -91,7 +91,13 @@ const Editor = () => {
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
                 <New />
-                <Load />
+                <Load
+                  user={{
+                    id: user.id,
+                    models: user.models,
+                    templates: user.templates
+                  }}
+                />
                 <Save
                   user={{ id: user.id, models: user.models }}
                   swr={{ mutateUser }}

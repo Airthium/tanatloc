@@ -76,6 +76,8 @@ const get = async <T extends TUserGet>(
 
   if (data.includes('models')) setModelsData(userData)
 
+  if (data.includes('templates') && !userData.templates) userData.templates = []
+
   return userData as IUserGet<T>
 }
 

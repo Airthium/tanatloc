@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { Steps } from 'antd'
 import { EditorContext } from '@/context/editor'
+import { setModelValid, setTemplateValid } from '@/context/editor/actions'
 
 /**
  * Props
@@ -19,7 +20,7 @@ const StatusSteps = ({ setName }: IProps) => {
     [key: string]: 'wait' | 'process' | 'finish' | 'error'
   }>({})
 
-  const { template, model } = useContext(EditorContext)
+  const { template, model, dispatch } = useContext(EditorContext)
 
   // Check template
   useEffect(() => {
@@ -29,6 +30,7 @@ const StatusSteps = ({ setName }: IProps) => {
         template: 'wait',
         test: 'wait'
       }))
+      dispatch(setTemplateValid(false))
       return
     }
 
@@ -39,10 +41,11 @@ const StatusSteps = ({ setName }: IProps) => {
         template: 'finish',
         test: prev.model === 'finish' ? 'process' : 'wait'
       }))
+      dispatch(setTemplateValid(true))
     } catch (err) {
       setStatus((prev) => ({ ...prev, template: 'error', test: 'wait' }))
     }
-  }, [template])
+  }, [template, dispatch])
 
   // Check model
   useEffect(() => {
@@ -52,6 +55,7 @@ const StatusSteps = ({ setName }: IProps) => {
         model: 'wait',
         test: 'wait'
       }))
+      dispatch(setModelValid(false))
       return
     }
 
@@ -75,14 +79,16 @@ const StatusSteps = ({ setName }: IProps) => {
         model: 'finish',
         test: prev.model === 'finish' ? 'process' : 'wait'
       }))
+      dispatch(setModelValid(true))
     } catch (err) {
       setStatus((prev) => ({
         ...prev,
         model: 'error',
         test: 'wait'
       }))
+      dispatch(setModelValid(false))
     }
-  }, [model, setName])
+  }, [model, setName, dispatch])
 
   return (
     <Steps className="Editor-Steps" direction="vertical" onChange={console.log}>

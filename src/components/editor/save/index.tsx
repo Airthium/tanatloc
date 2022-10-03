@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Modal } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
@@ -157,18 +157,25 @@ const save = async (
  */
 const Save = ({ user, swr }: IProps): JSX.Element => {
   // State
+  const [disabled, setDisabled] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Data
-  const { model, template } = useContext(EditorContext)
+  const { model, template, templateValid, modelValid } =
+    useContext(EditorContext)
 
-  console.log(user)
+  // Valid
+  useEffect(() => {
+    if (templateValid && modelValid) setDisabled(false)
+    else setDisabled(true)
+  }, [templateValid, modelValid])
 
   /**
    * Render
    */
   return (
     <Button
+      disabled={disabled}
       loading={loading}
       icon={<SaveOutlined />}
       onClick={async () => {

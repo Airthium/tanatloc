@@ -13,3 +13,11 @@ export const setModel = (model: string): IEditorAction => {
 export const setCursor = (cursor: IEditorCursor): IEditorAction => {
   return { type: actionTypes.SETCURSOR, value: cursor }
 }
+
+export const setTemplateValid = (valid: boolean): IEditorAction => {
+  return { type: actionTypes.SETTEMPLATEVALID, value: valid }
+}
+
+export const setModelValid = (valid: boolean): IEditorAction => {
+  return { type: actionTypes.SETMODELVALID, value: valid }
+}

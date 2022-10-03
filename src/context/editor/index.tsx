@@ -12,11 +12,13 @@ export interface IEditorState {
   model: string
   cursor?: IEditorCursor
   dispatch: Dispatch<IEditorAction>
+  templateValid: boolean
+  modelValid: boolean
 }
 
 export interface IEditorAction {
   type: string
-  value: string | IEditorCursor
+  value: boolean | string | IEditorCursor
 }
 
 /**
@@ -25,7 +27,9 @@ export interface IEditorAction {
 export const initialState: IEditorState = {
   template: '',
   model: '',
-  dispatch: () => undefined
+  dispatch: () => undefined,
+  templateValid: false,
+  modelValid: false
 }
 
 /**
@@ -34,7 +38,9 @@ export const initialState: IEditorState = {
 export const actionTypes = {
   SETTEMPLATE: 'SETTEMPLATE',
   SETMODEL: 'SETMODEL',
-  SETCURSOR: 'SETCURSOR'
+  SETCURSOR: 'SETCURSOR',
+  SETTEMPLATEVALID: 'SETTEMPLATEVALID',
+  SETMODELVALID: 'SETMODELVALID'
 }
 
 /**
@@ -64,6 +70,16 @@ export const editorReducer = (
       return {
         ...state,
         cursor: action.value as IEditorCursor
+      }
+    case actionTypes.SETTEMPLATEVALID:
+      return {
+        ...state,
+        templateValid: action.value as boolean
+      }
+    case actionTypes.SETMODELVALID:
+      return {
+        ...state,
+        modelValid: action.value as boolean
       }
     default:
       return state

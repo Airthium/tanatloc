@@ -62,6 +62,7 @@ module.exports = {
     '<rootDir>/config/jest/',
     '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
+    '<rootDir>/src/components/editor/code/freefem_editor/mode/mode-freefem-ejs.js',
     '<rootDir>/tests/'
   ]
 }

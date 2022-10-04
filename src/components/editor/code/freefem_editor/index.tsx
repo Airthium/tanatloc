@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef } from 'react'
+import { useCallback, useContext } from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/theme-sqlserver'
 import './mode/mode-freefem-ejs'
@@ -12,9 +12,6 @@ import { setCursor, setTemplate } from '@/context/editor/actions'
 const FreeFEMCode = (): JSX.Element => {
   // Data
   const { template, dispatch } = useContext(EditorContext)
-
-  // Ref
-  const editorRef = useRef<AceEditor>()
 
   /**
    * On change
@@ -47,8 +44,6 @@ const FreeFEMCode = (): JSX.Element => {
    */
   return (
     <AceEditor
-      // @ts-ignore
-      ref={editorRef}
       width="100%"
       height="calc(100% - 64px)"
       fontSize={16}

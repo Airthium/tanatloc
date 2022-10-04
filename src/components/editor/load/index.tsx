@@ -1,19 +1,18 @@
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Space, Tabs, Tooltip } from 'antd'
+import { FolderOpenOutlined } from '@ant-design/icons'
 
 import { IFrontUser } from '@/api/index.d'
 import { IModel } from '@/models/index.d'
 
-import Dialog from '@/components/assets/dialog'
+import { setModel, setTemplate } from '@/context/editor/actions'
+import { EditorContext, IEditorAction } from '@/context/editor'
 
 import Models from '@/models'
 import Templates from '@/templates'
 
+import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
-
-import { setModel, setTemplate } from '@/context/editor/actions'
-import { EditorContext, IEditorAction } from '@/context/editor'
-import { FolderOpenOutlined } from '@ant-design/icons'
 
 /**
  * Props
@@ -25,7 +24,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   load: 'Unable to load model'
 }
 
@@ -54,6 +53,12 @@ export const onTanatlocLoad = async (
   }
 }
 
+/**
+ * Load personal model
+ * @param model Model
+ * @param template Template
+ * @param dispatch Dispatch
+ */
 export const onMyLoad = async (
   model: IModel,
   template: string,
@@ -130,7 +135,6 @@ const Load = ({ user }: IProps): JSX.Element => {
                         setLoading(true)
                         try {
                           await onMyLoad(m, user.templates[index], dispatch)
-                          console.log('TODO')
                         } finally {
                           setLoading(false)
                           setVisible(false)

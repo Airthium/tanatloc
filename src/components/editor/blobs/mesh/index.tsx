@@ -8,9 +8,9 @@ export interface IProps {
 }
 
 /**
- * Geometry
+ * Mesh
  * @param props Props
- * @returns Geometry
+ * @returns Mesh
  */
 const Mesh = ({ onAdd }: IProps): JSX.Element => {
   // State

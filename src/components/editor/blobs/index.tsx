@@ -1,11 +1,11 @@
 import { Dispatch, useContext } from 'react'
 import { Button, Collapse, Space, Tooltip } from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+
+import { IModel } from '@/models/index.d'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor, setModel, setTemplate } from '@/context/editor/actions'
-
-import { IModel } from '@/models/index.d'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 
 import Mesh from './mesh'
 import Materials from './materials'

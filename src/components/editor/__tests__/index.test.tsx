@@ -88,16 +88,4 @@ describe('component/editor', () => {
 
     unmount()
   })
-
-  test('delete', () => {
-    mockDeleteButton.mockImplementation((props) => (
-      <div role="DeleteButton" onClick={props.onDelete} />
-    ))
-    const { unmount } = render(<Editor />)
-
-    const del = screen.getByRole('DeleteButton')
-    fireEvent.click(del)
-
-    unmount()
-  })
 })

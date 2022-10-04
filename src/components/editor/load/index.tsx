@@ -2,7 +2,7 @@ import { Dispatch, useContext, useState } from 'react'
 import { Button, Space, Tabs, Tooltip } from 'antd'
 import { FolderOpenOutlined } from '@ant-design/icons'
 
-import { IFrontUser } from '@/api/index.d'
+import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 import { IModel } from '@/models/index.d'
 
 import { setModel, setTemplate } from '@/context/editor/actions'
@@ -14,11 +14,16 @@ import Templates from '@/templates'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Delete from '../delete'
+
 /**
  * Props
  */
 export interface IProps {
   user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
+  swr: {
+    mutateUser: (user: Partial<IFrontMutateUser>) => void
+  }
 }
 
 /**
@@ -77,7 +82,7 @@ export const onMyLoad = async (
  * @param props Props
  * @returns Load
  */
-const Load = ({ user }: IProps): JSX.Element => {
+const Load = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -91,7 +96,7 @@ const Load = ({ user }: IProps): JSX.Element => {
   return (
     <>
       <Dialog
-        title="Open model"
+        title="Models browser"
         visible={visible}
         loading={loading}
         onCancel={() => setVisible(false)}
@@ -104,21 +109,30 @@ const Load = ({ user }: IProps): JSX.Element => {
               children: (
                 <Space direction="vertical" className="full-width">
                   {Models.map((m, index) => (
-                    <Button
+                    <div
                       key={index}
-                      onClick={async () => {
-                        setLoading(true)
-                        try {
-                          await onTanatlocLoad(index, dispatch)
-                        } finally {
-                          setLoading(false)
-                          setVisible(false)
-                        }
+                      className="display-flex"
+                      style={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
                       }}
-                      className="full-width"
                     >
                       {m.name}
-                    </Button>
+                      <Tooltip title="Open">
+                        <Button
+                          onClick={async () => {
+                            setLoading(true)
+                            try {
+                              await onTanatlocLoad(index, dispatch)
+                            } finally {
+                              setLoading(false)
+                              setVisible(false)
+                            }
+                          }}
+                          icon={<FolderOpenOutlined />}
+                        />
+                      </Tooltip>
+                    </div>
                   ))}
                 </Space>
               )
@@ -129,21 +143,37 @@ const Load = ({ user }: IProps): JSX.Element => {
               children: (
                 <Space direction="vertical" className="full-width">
                   {user.models.map((m, index) => (
-                    <Button
+                    <div
                       key={index}
-                      onClick={async () => {
-                        setLoading(true)
-                        try {
-                          await onMyLoad(m, user.templates[index], dispatch)
-                        } finally {
-                          setLoading(false)
-                          setVisible(false)
-                        }
+                      className="display-flex"
+                      style={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
                       }}
-                      className="full-width"
                     >
                       {m.name}
-                    </Button>
+                      <div>
+                        <Tooltip title="Open">
+                          <Button
+                            onClick={async () => {
+                              setLoading(true)
+                              try {
+                                await onMyLoad(
+                                  m,
+                                  user.templates[index],
+                                  dispatch
+                                )
+                              } finally {
+                                setLoading(false)
+                                setVisible(false)
+                              }
+                            }}
+                            icon={<FolderOpenOutlined />}
+                          />
+                        </Tooltip>
+                        <Delete user={user} index={index} swr={swr} />
+                      </div>
+                    </div>
                   ))}
                 </Space>
               )
@@ -151,7 +181,7 @@ const Load = ({ user }: IProps): JSX.Element => {
           ]}
         />
       </Dialog>
-      <Tooltip title="Open model">
+      <Tooltip title="Browse existing model">
         <Button
           icon={<FolderOpenOutlined />}
           onClick={() => setVisible(true)}

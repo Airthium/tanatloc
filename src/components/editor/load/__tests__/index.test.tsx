@@ -12,21 +12,30 @@ jest.mock('@/components/assets/notification', () => ({
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
+const mockDelete = jest.fn()
+jest.mock('../../delete', () => (props: any) => mockDelete(props))
+
 describe('components/editor/load', () => {
   const user = { id: 'id', models: [], templates: [] }
+  const swr = { mutateUser: jest.fn() }
 
   beforeEach(() => {
     mockErrorNotification.mockReset()
+
+    mockDelete.mockReset()
+    mockDelete.mockImplementation(() => <div />)
+
+    swr.mutateUser.mockReset()
   })
 
   test('render', () => {
-    const { unmount } = render(<Load user={user} />)
+    const { unmount } = render(<Load user={user} swr={swr} />)
 
     unmount()
   })
 
   test('button', () => {
-    const { unmount } = render(<Load user={user} />)
+    const { unmount } = render(<Load user={user} swr={swr} />)
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -38,7 +47,7 @@ describe('components/editor/load', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
-    const { unmount } = render(<Load user={user} />)
+    const { unmount } = render(<Load user={user} swr={swr} />)
 
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
@@ -48,9 +57,9 @@ describe('components/editor/load', () => {
 
   test('Tanatloc load', async () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    const { unmount } = render(<Load user={user} />)
+    const { unmount } = render(<Load user={user} swr={swr} />)
 
-    const button = screen.getByRole('button', { name: 'Linear elasticity' })
+    const button = screen.getAllByRole('button', { name: 'folder-open' })[0]
 
     // Fetch ok
     //@ts-ignore
@@ -82,13 +91,13 @@ describe('components/editor/load', () => {
   test('personal load', async () => {
     user.models = [{ name: 'personal model' } as never]
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    const { unmount } = render(<Load user={user} />)
+    const { unmount } = render(<Load user={user} swr={swr} />)
 
     // Switch tab
     const tab = screen.getByRole('tab', { name: 'My models' })
     fireEvent.click(tab)
 
-    const button = screen.getByRole('button', { name: 'personal model' })
+    const button = screen.getAllByRole('button', { name: 'folder-open' })[0]
     fireEvent.click(button)
 
     unmount()
@@ -109,7 +118,7 @@ describe('components/editor/load', () => {
           }
         }}
       >
-        <Load user={user} />
+        <Load user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
@@ -117,7 +126,7 @@ describe('components/editor/load', () => {
     const tab = screen.getByRole('tab', { name: 'My models' })
     fireEvent.click(tab)
 
-    const button = screen.getByRole('button', { name: 'personal model' })
+    const button = screen.getAllByRole('button', { name: 'folder-open' })[0]
     fireEvent.click(button)
 
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))

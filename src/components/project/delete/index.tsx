@@ -92,6 +92,7 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
           <Alert
             type="error"
             message="If you delete the project, you will no longer be able to restore the archive"
+            style={{ marginTop: '16px' }}
           />
         </>
       }

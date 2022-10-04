@@ -9,6 +9,7 @@ import { setCursor, setModel, setTemplate } from '@/context/editor/actions'
 
 import Mesh from './mesh'
 import Materials from './materials'
+import FiniteElementSpace from './finiteElementSpace'
 
 /**
  * Add on cursor
@@ -126,13 +127,6 @@ export const addMesh = (
   dispatch(setModel(JSON.stringify(modelJSON, null, '  ')))
 }
 
-/**
- * Add Materials
- * @param template Template
- * @param model Model
- * @param cursor Cursor
- * @param dispatch Dispatch
- */
 export const addMaterials = (
   values: { label: string; name: string; default: string; unit: string }[],
   template: string,
@@ -192,6 +186,7 @@ export const addMaterials = (
  * @param dispatch Dispatch
  */
 export const addFiniteElementSpace = (
+  values: { name: string },
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
@@ -200,7 +195,9 @@ export const addFiniteElementSpace = (
   // Template
   addOnCursor(
     template,
-    "<%# Finite element space -%>\n<%\nconst finiteElementSpace = parameters.finiteElementSpace.children[0]\nfiniteElementSpace.name = 'FiniteElementSpaceName'\n-%>\n<%- helpers.indent(include('/blobs/fespace.edp.ejs', {\n\tmesh,\n\tfiniteElementSpace\n}), 1) -%>\n",
+    "<%# Finite element space -%>\n<%\nconst finiteElementSpace = parameters.finiteElementSpace.children[0]\nfiniteElementSpace.name = '" +
+      values.name +
+      "'\n-%>\n<%- helpers.indent(include('/blobs/fespace.edp.ejs', {\n\tmesh,\n\tfiniteElementSpace\n}), 1) -%>\n",
     cursor,
     dispatch
   )
@@ -406,41 +403,12 @@ const Blobs = () => {
                 addMaterials(values, template, model, cursor, dispatch)
               }
             />
-            {/* <Button
-              className="full-width"
-              onClick={() => addMesh(template, model, cursor, dispatch)}
-            >
-              Mesh
-            </Button> */}
-            {/* <div className="full-width">
-              <Button
-                style={{ width: 'calc(100% - 20px)', marginRight: '6px' }}
-                onClick={() => addMaterials(template, model, cursor, dispatch)}
-              >
-                Materials
-              </Button>
-              <Tooltip
-                title={
-                  <>
-                    Available materials:
-                    <ul>
-                      <li>todo</li>
-                      <li>todo</li>
-                    </ul>
-                  </>
-                }
-              >
-                <QuestionCircleOutlined />
-              </Tooltip>
-            </div> */}
-            <Button
-              className="full-width"
-              onClick={() =>
-                addFiniteElementSpace(template, model, cursor, dispatch)
+            <FiniteElementSpace
+              onAdd={(values) =>
+                addFiniteElementSpace(values, template, model, cursor, dispatch)
               }
-            >
-              Finite element space
-            </Button>
+            />
+
             <Button
               className="full-width"
               onClick={() =>

@@ -30,5 +30,8 @@ describe('context/editor', () => {
 
     newState = editorReducer(state, { type: 'SETMODELVALID', value: true })
     expect(newState.modelValid).toBe(true)
+
+    newState = editorReducer(state, { type: 'UNKNOWN', value: true })
+    expect(newState).toEqual(state)
   })
 })

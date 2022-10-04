@@ -68,7 +68,64 @@ describe('components/editor/steps', () => {
     unmount()
   })
 
-  test('with wrong model', () => {
+  test('with context, dispatch error', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify(testModel),
+          dispatch: jest
+            .fn()
+            .mockImplementationOnce(() => {
+              throw new Error('dispatch error')
+            })
+            .mockImplementation(() => undefined),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetTemplateValid).toHaveBeenCalledTimes(1)
+    expect(mockSetTemplateValid).toHaveBeenLastCalledWith(true)
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(true)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+    expect(setName).toHaveBeenLastCalledWith('name')
+
+    unmount()
+  })
+
+  test('with model, no category', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify({
+            ...testModel,
+            category: undefined
+          }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('with model, no name', () => {
     const { unmount } = render(
       <EditorContext.Provider
         value={{
@@ -86,12 +143,172 @@ describe('components/editor/steps', () => {
       </EditorContext.Provider>
     )
 
-    expect(mockSetTemplateValid).toHaveBeenCalledTimes(1)
-    expect(mockSetTemplateValid).toHaveBeenLastCalledWith(true)
     expect(mockSetModelValid).toHaveBeenCalledTimes(1)
     expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
 
     expect(setName).toHaveBeenCalledTimes(0)
+
+    unmount()
+  })
+
+  test('with model, no algorithm', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify({
+            ...testModel,
+            algorithm: undefined
+          }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('with model, no code', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify({
+            ...testModel,
+            code: undefined
+          }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('with model, no version', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify({
+            ...testModel,
+            version: undefined
+          }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('with model, no configuration', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify({
+            ...testModel,
+            configuration: undefined
+          }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('with model, no configuration.geometry', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify({
+            ...testModel,
+            configuration: {}
+          }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
+
+    expect(setName).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('prev', () => {
+    const { rerender, unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: 'template',
+          model: JSON.stringify(testModel),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    rerender(
+      <EditorContext.Provider
+        value={{
+          template: 'template2',
+          model: JSON.stringify({ ...testModel, name: 'new name' }),
+          dispatch: jest.fn(),
+          templateValid: false,
+          modelValid: false
+        }}
+      >
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
 
     unmount()
   })

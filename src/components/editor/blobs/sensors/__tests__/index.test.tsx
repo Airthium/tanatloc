@@ -1,7 +1,6 @@
-import { EditorContext } from '@/context/editor'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Mesh from '..'
+import Sensors from '..'
 
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
@@ -17,13 +16,13 @@ describe('components/editor/blobs/mesh', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Mesh />)
+    const { unmount } = render(<Sensors />)
 
     unmount()
   })
 
   test('button', () => {
-    const { unmount } = render(<Mesh />)
+    const { unmount } = render(<Sensors />)
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -35,7 +34,7 @@ describe('components/editor/blobs/mesh', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
-    const { unmount } = render(<Mesh />)
+    const { unmount } = render(<Sensors />)
 
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
@@ -47,31 +46,7 @@ describe('components/editor/blobs/mesh', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onOk} />
     ))
-    const { unmount } = render(<Mesh />)
-
-    const dialog = screen.getByRole('Dialog')
-    fireEvent.click(dialog)
-
-    unmount()
-  })
-
-  test('onAdd, with context', () => {
-    mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
-    ))
-    const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: "include('/blobs/mesh.edp.ejs'",
-          model: '',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
-        <Mesh />
-      </EditorContext.Provider>
-    )
+    const { unmount } = render(<Sensors />)
 
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)

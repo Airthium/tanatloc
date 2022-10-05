@@ -1,5 +1,7 @@
+/** @module Components.Editor.Blobs */
+
 import { Dispatch } from 'react'
-import { Button, Collapse, Space } from 'antd'
+import { Collapse, Space } from 'antd'
 
 import { IEditorAction, IEditorCursor } from '@/context/editor'
 import { setTemplate } from '@/context/editor/actions'

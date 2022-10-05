@@ -24,14 +24,24 @@ import { addOnCursor } from '..'
  * @param dispatch Dispatch
  */
 export const onAdd = (
-  values: { label: string; name: string; default: string; unit: string }[],
+  values: { materials: { symbol: number; default: string }[] },
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
 ): void => {
-  if (!values) return
-  if (!values.length) return
+  if (!values.materials) return
+  if (!values.materials.length) return
+
+  const materials = values.materials.map(
+    (material: { symbol: number; default: string }) => {
+      const symbol = availableSymbols[material.symbol]
+      const label = symbol.label
+      const name = symbol.symbol
+      const unit = symbol.unit
+      return { label, name, default: material.default, unit }
+    }
+  )
 
   // Template
   if (!template.includes("include('/blobs/materials.edp.ejs'")) {
@@ -68,12 +78,12 @@ export const onAdd = (
       ...(modelJSON.configuration?.materials || {}),
       children: [
         ...(modelJSON.configuration?.materials?.children || []),
-        ...values.map((value) => ({
-          label: value.label,
-          name: value.name,
+        ...materials.map((material) => ({
+          label: material.label,
+          name: material.name,
           htmlEntity: 'formula',
-          default: +value.default,
-          unit: value.unit
+          default: +material.default,
+          unit: material.unit
         }))
       ]
     }
@@ -105,16 +115,7 @@ const Materials = (): JSX.Element => {
         onOk={async (values) => {
           setLoading(true)
 
-          const materials = values.materials.map(
-            (material: { symbol: number; default: string }) => {
-              const symbol = availableSymbols[material.symbol]
-              const label = symbol.label
-              const name = symbol.symbol
-              const unit = symbol.unit
-              return { label, name, default: material.default, unit }
-            }
-          )
-          onAdd(materials, template, model, cursor, dispatch)
+          onAdd(values, template, model, cursor, dispatch)
 
           setLoading(false)
           setVisible(false)

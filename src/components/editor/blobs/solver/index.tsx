@@ -1,3 +1,5 @@
+/** @module Components.Editor.Blobs.Solver */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Checkbox, Form } from 'antd'
 

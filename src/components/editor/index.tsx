@@ -15,7 +15,7 @@ import EditorProvider from '@/context/editor'
 import StatusSteps from './steps'
 import Blobs from './blobs'
 import New from './new'
-import Load from './load'
+import Browser from './browser'
 import Save from './save'
 import Code from './code'
 
@@ -91,7 +91,7 @@ const Editor = () => {
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
                 <New />
-                <Load
+                <Browser
                   user={{
                     id: user.id,
                     models: user.models,

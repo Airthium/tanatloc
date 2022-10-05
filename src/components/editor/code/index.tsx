@@ -1,7 +1,9 @@
+/** @module Components.Editor.Code */
+
 import dynamic from 'next/dynamic'
 
-const FreeFEMCode = dynamic(() => import('./freefem_editor'), { ssr: false })
-const JSONCode = dynamic(() => import('./json_editor'), { ssr: false })
+const FreeFEMCode = dynamic(() => import('./freefem'), { ssr: false })
+const JSONCode = dynamic(() => import('./json'), { ssr: false })
 
 /**
  * Code

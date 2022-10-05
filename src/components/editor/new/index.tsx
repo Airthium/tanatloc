@@ -1,3 +1,5 @@
+/** @module Components.Editor.New */
+
 import { Dispatch, useContext } from 'react'
 import { FileAddOutlined } from '@ant-design/icons'
 import { Button, Tooltip } from 'antd'

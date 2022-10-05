@@ -1,3 +1,5 @@
+/** @module Components.Editor.Blobs.Data */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
@@ -95,7 +97,7 @@ const Data = (): JSX.Element => {
                         }}
                         onClick={() => remove(field.name)}
                       />
-                      Scalar result {index + 1}
+                      Data {index + 1}
                     </div>
                   }
                 >
@@ -122,7 +124,7 @@ const Data = (): JSX.Element => {
                   style={{ width: '60%' }}
                   icon={<PlusOutlined />}
                 >
-                  Add scalar result
+                  Add data
                 </Button>
                 <Form.ErrorList errors={errors} />
               </Form.Item>

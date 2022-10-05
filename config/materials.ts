@@ -1,3 +1,5 @@
+/** @module Config.Materials */
+
 export interface IMaterialDatabaseSymbol {
   label: string
   symbol: string

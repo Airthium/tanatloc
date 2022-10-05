@@ -31,6 +31,14 @@ describe('components/loading', () => {
     unmount()
   })
 
+  test('err', async () => {
+    const { unmount } = render(
+      <Loading errors={['error', 'docker: command not found', 'ENETUNREACH']} />
+    )
+
+    unmount()
+  })
+
   test('simple', () => {
     const { unmount } = render(<Loading.Simple />)
 

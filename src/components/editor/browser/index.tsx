@@ -1,3 +1,5 @@
+/** @module Components.Editor.Browser */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Space, Tabs, Tooltip } from 'antd'
 import { FolderOpenOutlined } from '@ant-design/icons'
@@ -82,7 +84,7 @@ export const onMyLoad = async (
  * @param props Props
  * @returns Load
  */
-const Load = ({ user, swr }: IProps): JSX.Element => {
+const Browser = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -191,4 +193,4 @@ const Load = ({ user, swr }: IProps): JSX.Element => {
   )
 }
 
-export default Load
+export default Browser

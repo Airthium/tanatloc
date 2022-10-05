@@ -11,6 +11,7 @@ import { setCursor, setModel } from '@/context/editor/actions'
 import Dialog from '@/components/assets/dialog'
 
 import { addOnCursor } from '..'
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 /**
  * On add
@@ -21,12 +22,18 @@ import { addOnCursor } from '..'
  * @param dispatch Dispatch
  */
 export const onAdd = (
-  values: { name: string },
+  values: {
+    name: string
+    options: { label: string; value: string; value2D: string }[]
+  },
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
 ): void => {
+  if (!values.options) return
+  if (!values.options.length) return
+
   // Template
   addOnCursor(
     template,
@@ -75,15 +82,9 @@ finiteElementSpace.name = '${values.name}'
             label: 'Finite element space label',
             label2D: 'Finite element space label (2D)',
             htmlEntity: 'select',
-            options: [
-              {
-                label: 'Option label',
-                value: 'Option value',
-                value2D: 'Option value (2D)'
-              }
-            ],
-            default: 'Default option',
-            default2D: 'Default option (2D)'
+            options: values.options,
+            default: values.options[0].value,
+            default2D: values.options[0].value2D
           }
         ]
       }
@@ -126,6 +127,63 @@ const FiniteElementSpace = (): JSX.Element => {
         <Form.Item name="name" label="Name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
+        <Form.List name="datas">
+          {(fields, { add, remove }, { errors }) => (
+            <>
+              {fields.map((field, index) => (
+                <Form.Item
+                  key={field.key}
+                  label={
+                    <div>
+                      <MinusCircleOutlined
+                        style={{
+                          fontSize: '16px',
+                          color: 'red',
+                          marginRight: '10px'
+                        }}
+                        onClick={() => remove(field.name)}
+                      />
+                      Option {index + 1}
+                    </div>
+                  }
+                >
+                  <Form.Item
+                    name={[field.name, 'label']}
+                    label="Display name"
+                    rules={[{ required: true }]}
+                  >
+                    <Input placeholder="P1" />
+                  </Form.Item>
+                  <Form.Item
+                    name={[field.name, 'value']}
+                    label="Value"
+                    rules={[{ required: true }]}
+                  >
+                    <Input placeholder="[P1, P1, P1]" />
+                  </Form.Item>
+                  <Form.Item
+                    name={[field.name, 'value2D']}
+                    label="Value 2D"
+                    rules={[{ required: true }]}
+                  >
+                    <Input placeholder="[P1, P1]" />
+                  </Form.Item>
+                </Form.Item>
+              ))}
+              <Form.Item>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  style={{ width: '60%' }}
+                  icon={<PlusOutlined />}
+                >
+                  Add data
+                </Button>
+                <Form.ErrorList errors={errors} />
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
       </Dialog>
       <Button className="full-width" onClick={() => setVisible(true)}>
         Finite element space

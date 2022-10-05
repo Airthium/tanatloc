@@ -1,3 +1,5 @@
+/** @module Components.Editor.Blobs.Sensors */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Form, Input } from 'antd'
 

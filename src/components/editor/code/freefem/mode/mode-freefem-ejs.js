@@ -1,3 +1,5 @@
+/** @module Components.Editor.Code.FreeFEMEditor.Mode */
+
 ace.define(
   'ace/mode/doc_comment_highlight_rules',
   [

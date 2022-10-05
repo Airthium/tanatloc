@@ -1,116 +1,42 @@
-import { EditorContext } from '@/context/editor'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
-import Blobs from '..'
+import Blobs, { addOnCursor } from '..'
 
-jest.mock('../mesh', () => (props: any) => (
-  <div role="Mesh" onClick={props.onAdd} />
-))
-jest.mock('../materials', () => (props: any) => (
-  <div role="Materials" onClick={() => props.onAdd([{}])} />
-))
+jest.mock('../header', () => () => <div />)
+jest.mock('../dimension', () => () => <div />)
+jest.mock('../mesh', () => () => <div />)
+jest.mock('../materials', () => () => <div />)
+jest.mock('../finiteElementSpace', () => () => <div />)
+jest.mock('../finiteElementFunction', () => () => <div />)
+jest.mock('../macros', () => () => <div />)
+jest.mock('../solver', () => () => <div />)
+jest.mock('../save', () => () => <div />)
+jest.mock('../data', () => () => <div />)
+jest.mock('../sensors', () => () => <div />)
 
 describe('components/editor/blobs', () => {
+  const dispatch = jest.fn()
+  beforeEach(() => {
+    dispatch.mockReset()
+  })
+
   test('render', () => {
     const { unmount } = render(<Blobs />)
 
     unmount()
   })
 
-  test('with cursor', () => {
-    const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: '',
-          model: '',
-          cursor: { row: 1, column: 2 },
-          modelValid: true,
-          templateValid: true,
-          dispatch: jest.fn()
-        }}
-      >
-        <Blobs />
-      </EditorContext.Provider>
-    )
+  test('addOnCursor', () => {
+    addOnCursor('', 'text', undefined, dispatch)
+    expect(dispatch).toHaveBeenCalledTimes(1)
 
-    const collpase = screen.getByRole('button', { name: 'right Head' })
-    fireEvent.click(collpase)
+    addOnCursor('template', 'text', undefined, dispatch)
+    expect(dispatch).toHaveBeenCalledTimes(2)
 
-    const header = screen.getByRole('button', { name: 'Header' })
-    fireEvent.click(header)
+    addOnCursor('', 'text', { row: 0, column: 0 }, dispatch)
+    expect(dispatch).toHaveBeenCalledTimes(3)
 
-    unmount()
-  })
-
-  test('Head', () => {
-    const { unmount } = render(<Blobs />)
-
-    const collpase = screen.getByRole('button', { name: 'right Head' })
-    fireEvent.click(collpase)
-
-    const header = screen.getByRole('button', { name: 'Header' })
-    fireEvent.click(header)
-
-    const dimension = screen.getByRole('button', { name: 'Dimension' })
-    fireEvent.click(dimension)
-
-    unmount()
-  })
-
-  test('Components', () => {
-    const { unmount } = render(<Blobs />)
-
-    const collpase = screen.getByRole('button', { name: 'right Components' })
-    fireEvent.click(collpase)
-
-    const mesh = screen.getByRole('Mesh')
-    fireEvent.click(mesh)
-
-    const materials = screen.getByRole('Materials')
-    fireEvent.click(materials)
-
-    const finiteElementSpace = screen.getByRole('button', {
-      name: 'Finite element space'
-    })
-    fireEvent.click(finiteElementSpace)
-
-    const finiteElementFunction = screen.getByRole('button', {
-      name: 'Finite element function'
-    })
-    fireEvent.click(finiteElementFunction)
-
-    const macros = screen.getByRole('button', { name: 'Macros' })
-    fireEvent.click(macros)
-
-    unmount()
-  })
-
-  test('Components with context', () => {
-    const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template:
-            "include('/blobs/mesh.edp.ejs') include('/blobs/materials.edp.ejs')",
-          model: '',
-          cursor: { row: 1, column: 2 },
-          modelValid: true,
-          templateValid: true,
-          dispatch: jest.fn()
-        }}
-      >
-        <Blobs />
-      </EditorContext.Provider>
-    )
-
-    const collpase = screen.getByRole('button', { name: 'right Components' })
-    fireEvent.click(collpase)
-
-    const mesh = screen.getByRole('Mesh')
-    fireEvent.click(mesh)
-
-    const materials = screen.getByRole('Materials')
-    fireEvent.click(materials)
-
-    unmount()
+    addOnCursor('template', 'text', { row: 0, column: 0 }, dispatch)
+    expect(dispatch).toHaveBeenCalledTimes(4)
   })
 })

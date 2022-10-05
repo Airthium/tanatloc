@@ -1,3 +1,5 @@
+/** @module Components.Editor.Steps */
+
 import { useContext, useEffect, useState } from 'react'
 import { Steps } from 'antd'
 

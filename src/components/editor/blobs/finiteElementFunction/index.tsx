@@ -1,11 +1,14 @@
+/** @module Components.Editor.Blobs.FiniteElementFunction */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Form, Input, Typography } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
 
-import { addOnCursor } from '..'
 import Dialog from '@/components/assets/dialog'
+
+import { addOnCursor } from '..'
 
 /**
  * On add

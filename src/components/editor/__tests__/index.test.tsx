@@ -28,7 +28,7 @@ jest.mock('@/api/user', () => ({
 jest.mock('../steps', () => () => <div />)
 jest.mock('../blobs', () => () => <div />)
 jest.mock('../new', () => () => <div />)
-jest.mock('../load', () => () => <div />)
+jest.mock('../browser', () => () => <div />)
 jest.mock('../save', () => () => <div />)
 jest.mock('../code', () => () => <div />)
 

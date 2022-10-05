@@ -1,3 +1,5 @@
+/** @module Components.Editor.Blobs.Save */
+
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
@@ -12,6 +14,39 @@ import Dialog from '@/components/assets/dialog'
 import { addOnCursor } from '..'
 
 /**
+ * Get in template
+ * @param values Values
+ * @returns Results, Order
+ */
+const getInTemplate = (values: {
+  scalarResults?: { name: string; variable: string }[]
+  vectorialResults?: {
+    name: string
+    variable1: string
+    variable2: string
+    variable3: string
+  }[]
+}): { results: string; order: string } => {
+  const scalarResults = values.scalarResults
+    ?.map((result) => `'${result.variable}'`)
+    ?.join(', ')
+  const vectorialResults = values.vectorialResults
+    ?.map(
+      (result) =>
+        `dimension === 2 ? ['${result.variable1}', '${result.variable2}', '0'] : ['${result.variable1}', '${result.variable2}', '${result.variable3}']`
+    )
+    ?.join(', ')
+  const results =
+    (scalarResults ? scalarResults + ', ' : '') + (vectorialResults ?? '')
+
+  const scalarOrder = values.scalarResults?.map((_) => 1)?.join(', ')
+  const vectorialOrder = values.vectorialResults?.map((_) => 1)?.join(', ')
+  const order = (scalarOrder ? scalarOrder + ', ' : '') + (vectorialOrder ?? '')
+
+  return { results, order }
+}
+
+/**
  * On add
  * @param values Values
  * @param template Template
@@ -19,7 +54,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const onAdd = (
+export const onAdd = (
   values: {
     scalarResults?: { name: string; variable: string }[]
     vectorialResults?: {
@@ -37,30 +72,8 @@ const onAdd = (
   if (!values.scalarResults && !values.vectorialResults) return
   if (!values.scalarResults?.length && !values.vectorialResults?.length) return
 
-  const inTemplateScalarResult = values.scalarResults
-    ?.map((result) => `'${result.variable}'`)
-    ?.join(', ')
-  const inTemplateVectorialResult = values.vectorialResults
-    ?.map(
-      (result) =>
-        `dimension === 2 ? ['${result.variable1}', '${result.variable2}', '0'] : ['${result.variable1}', '${result.variable2}', '${result.variable3}']`
-    )
-    ?.join(', ')
-
-  const inTemplateResults =
-    (inTemplateScalarResult ? inTemplateScalarResult + ', ' : '') +
-    (inTemplateVectorialResult ?? '')
-
-  const inTemplateScalarOrder = values.scalarResults?.map((_) => 1)?.join(', ')
-  const inTemplatevectorialOrder = values.vectorialResults
-    ?.map((_) => 1)
-    ?.join(', ')
-
-  const inTemplateOrder =
-    (inTemplateScalarOrder ? inTemplateScalarOrder + ', ' : '') +
-    (inTemplatevectorialOrder ?? '')
-
   // Template
+  const inTemplate = getInTemplate(values)
   addOnCursor(
     template,
     `<%# Save -%>
@@ -69,9 +82,9 @@ const onAdd = (
         path: run.resultPath,
         name: '"Result"',
         mesh: mesh.name,
-        sol: [${inTemplateResults}],
+        sol: [${inTemplate.results}],
         dataName: run.results.map(r => r.name),
-        order: [${inTemplateOrder}]
+        order: [${inTemplate.order}]
     }
 }) -%>
 `,

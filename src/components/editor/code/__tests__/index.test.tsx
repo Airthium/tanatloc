@@ -2,8 +2,8 @@ import { render } from '@testing-library/react'
 
 import Code from '..'
 
-jest.mock('../freefem_editor', () => () => <div />)
-jest.mock('../json_editor', () => () => <div />)
+jest.mock('../freefem', () => () => <div />)
+jest.mock('../json', () => () => <div />)
 
 describe('components/editor/code', () => {
   test('render', () => {

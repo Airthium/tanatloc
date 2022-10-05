@@ -1,16 +1,13 @@
-/** @module Components.Editor.Blobs.FiniteElementSpace */
-
 import { Dispatch, useContext, useState } from 'react'
-import { Button, Form, Input } from 'antd'
-
-import { IModel } from '@/models/index.d'
+import { Button, Checkbox, Form } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor, setModel } from '@/context/editor/actions'
 
-import Dialog from '@/components/assets/dialog'
+import { IModel } from '@/models/index.d'
 
 import { addOnCursor } from '..'
+import Dialog from '@/components/assets/dialog'
 
 /**
  * On add
@@ -20,8 +17,8 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
-  values: { name: string },
+const onAdd = (
+  values: { solvers: string[] },
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
@@ -30,16 +27,11 @@ export const onAdd = (
   // Template
   addOnCursor(
     template,
-    `<%# Finite element space -%>
-<%
-const finiteElementSpace = parameters.finiteElementSpace.children[0]
-finiteElementSpace.name = '${values.name}'
--%>
-<%- include('/blobs/fespace.edp.ejs', {
-  mesh,
-  finiteElementSpace
-}) -%>
-`,
+    `<%# Solver -%>
+<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
+<%- include('/blobs/solver.edp.ejs', {
+    solver
+}) -%>`,
     cursor,
     dispatch
   )
@@ -63,27 +55,21 @@ finiteElementSpace.name = '${values.name}'
       index: index + 1,
       title: 'Parameters',
       ...(modelJSON.configuration?.parameters || {}),
-      finiteElementSpace: {
+      solver: {
         advanced: true,
-        label: 'Finite element space',
-        ...((modelJSON.configuration?.parameters
-          ?.finiteElementSpace as object) || {}),
+        label: 'Solver',
+        ...((modelJSON.configuration?.parameters?.solver as object) || {}),
         children: [
-          ...((modelJSON.configuration?.parameters?.finiteElementSpace as any)
-            ?.children || []),
+          ...((modelJSON.configuration?.parameters?.solver as any)?.children ||
+            []),
           {
-            label: 'Finite element space label',
-            label2D: 'Finite element space label (2D)',
+            label: 'System resolution',
             htmlEntity: 'select',
-            options: [
-              {
-                label: 'Option label',
-                value: 'Option value',
-                value2D: 'Option value (2D)'
-              }
-            ],
-            default: 'Default option',
-            default2D: 'Default option (2D)'
+            options: values.solvers.map((solver) => ({
+              label: solver,
+              value: solver
+            })),
+            default: 'MUMPS'
           }
         ]
       }
@@ -91,12 +77,11 @@ finiteElementSpace.name = '${values.name}'
   }
   dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
 }
-
 /**
- * Finite element space
- * @returns FiniteElementSpace
+ * Solver
+ * @returns Solver
  */
-const FiniteElementSpace = (): JSX.Element => {
+const Solver = (): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -104,13 +89,25 @@ const FiniteElementSpace = (): JSX.Element => {
   // Context
   const { template, model, cursor, dispatch } = useContext(EditorContext)
 
+  // Data
+  const options = [
+    'UMFPCK',
+    'CG',
+    'Cholesky',
+    'Crout',
+    'GMRES',
+    'LU',
+    'sparsesolver',
+    'MUMPS'
+  ]
+
   /**
    * Render
    */
   return (
     <>
       <Dialog
-        title="Finite element space"
+        title="Solver"
         visible={visible}
         loading={loading}
         onOk={async (values) => {
@@ -123,15 +120,18 @@ const FiniteElementSpace = (): JSX.Element => {
         }}
         onCancel={() => setVisible(false)}
       >
-        <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-          <Input />
+        <Form.Item name="solvers" label="Availables">
+          <Checkbox.Group
+            options={options}
+            style={{ display: 'flex', flexDirection: 'column' }}
+          />
         </Form.Item>
       </Dialog>
       <Button className="full-width" onClick={() => setVisible(true)}>
-        Finite element space
+        Solver
       </Button>
     </>
   )
 }
 
-export default FiniteElementSpace
+export default Solver

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Menu, Space, Button, Typography, Divider } from 'antd'
+import { Layout, Menu, Space, Button, Typography, Divider, Tooltip } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
 import { GoBack } from '@/components/assets/button'
@@ -103,7 +103,9 @@ const Editor = () => {
                   user={{ id: user.id, models: user.models }}
                   swr={{ mutateUser }}
                 />
-                <Button icon={<ShareAltOutlined />} />
+                <Tooltip title="Coming soon">
+                  <Button disabled icon={<ShareAltOutlined />} />
+                </Tooltip>
               </Space>
             </div>
           </Layout.Header>

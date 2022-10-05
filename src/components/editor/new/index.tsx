@@ -14,12 +14,12 @@ export const onNew = (dispatch: Dispatch<IEditorAction>) => {
     setTemplate(
       `try{
 <%# Headers -%>
-<%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>
+<%- include('/blobs/headers.edp.ejs') -%>
 
 <%# Dimension -%>
-<%- helpers.indent(include('/blobs/dimensioning.edp.ejs', {
+<%- include('/blobs/dimensioning.edp.ejs', {
 \tdimension
-}), 1) -%>
+}) -%>
 
 // WRITE YOUR TEMPLATE HERE
 

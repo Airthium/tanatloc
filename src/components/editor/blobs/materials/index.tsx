@@ -1,19 +1,97 @@
-import { useState } from 'react'
+/** @module Components.Editor.Blobs.Materials */
+
+import { Dispatch, useContext, useState } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
-import Dialog from '@/components/assets/dialog'
+import { IModel } from '@/models/index.d'
+
+import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
+import { setCursor, setModel } from '@/context/editor/actions'
+
 import { availableSymbols } from '@/config/materials'
 
-export interface IProps {
-  onAdd: (
-    values: { label: string; name: string; default: string; unit: string }[]
-  ) => void
+import Dialog from '@/components/assets/dialog'
+
+import { addOnCursor } from '..'
+
+/**
+ * On add
+ * @param values Values
+ * @param template Template
+ * @param model Model
+ * @param cursor Cursor
+ * @param dispatch Dispatch
+ */
+export const onAdd = (
+  values: { label: string; name: string; default: string; unit: string }[],
+  template: string,
+  model: string,
+  cursor: IEditorCursor | undefined,
+  dispatch: Dispatch<IEditorAction>
+): void => {
+  if (!values) return
+  if (!values.length) return
+
+  // Template
+  if (!template.includes("include('/blobs/materials.edp.ejs'")) {
+    addOnCursor(
+      template,
+      `<%# Material -%>
+<%- include('/blobs/materials.edp.ejs', {
+  materials
+}) -%>
+`,
+      cursor,
+      dispatch
+    )
+    dispatch(setCursor({ row: (cursor?.row || 4) + 0, column: 0 }))
+  }
+
+  // Model
+  let modelJSON: Partial<
+    Omit<IModel, 'configuration'> & {
+      configuration: Partial<IModel['configuration']>
+    }
+  >
+  try {
+    modelJSON = JSON.parse(model)
+  } catch (err) {
+    modelJSON = {}
+  }
+  const index = Object.keys(modelJSON.configuration || {}).length
+  modelJSON.configuration = {
+    ...(modelJSON.configuration || {}),
+    materials: {
+      index: index + 1,
+      title: 'Materials',
+      ...(modelJSON.configuration?.materials || {}),
+      children: [
+        ...(modelJSON.configuration?.materials?.children || []),
+        ...values.map((value) => ({
+          label: value.label,
+          name: value.name,
+          htmlEntity: 'formula',
+          default: +value.default,
+          unit: value.unit
+        }))
+      ]
+    }
+  }
+  dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
 }
 
-const Materials = ({ onAdd }: IProps): JSX.Element => {
+/**
+ * Materials
+ * @returns Materials
+ */
+const Materials = (): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { template, model, cursor, dispatch } = useContext(EditorContext)
 
   /**
    * Render
@@ -23,7 +101,10 @@ const Materials = ({ onAdd }: IProps): JSX.Element => {
       <Dialog
         title="Materials"
         visible={visible}
+        loading={loading}
         onOk={async (values) => {
+          setLoading(true)
+
           const materials = values.materials.map(
             (material: { symbol: number; default: string }) => {
               const symbol = availableSymbols[material.symbol]
@@ -33,7 +114,9 @@ const Materials = ({ onAdd }: IProps): JSX.Element => {
               return { label, name, default: material.default, unit }
             }
           )
-          onAdd(materials)
+          onAdd(materials, template, model, cursor, dispatch)
+
+          setLoading(false)
           setVisible(false)
         }}
         onCancel={() => setVisible(false)}

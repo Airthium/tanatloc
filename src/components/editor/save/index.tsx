@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Button, Modal } from 'antd'
+import { Button, Modal, Tooltip } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
@@ -174,16 +174,18 @@ const Save = ({ user, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Button
-      disabled={disabled}
-      loading={loading}
-      icon={<SaveOutlined />}
-      onClick={async () => {
-        setLoading(true)
-        await onSave(user, swr, model, template)
-        setLoading(false)
-      }}
-    />
+    <Tooltip title="Save">
+      <Button
+        disabled={disabled}
+        loading={loading}
+        icon={<SaveOutlined />}
+        onClick={async () => {
+          setLoading(true)
+          await onSave(user, swr, model, template)
+          setLoading(false)
+        }}
+      />
+    </Tooltip>
   )
 }
 

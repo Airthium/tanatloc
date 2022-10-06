@@ -176,7 +176,7 @@ export interface IModelSensor {
  * Boundary conditions
  */
 export interface IModelBoundaryConditions extends IModelCommon {
-  [type: string]: number | string | IModelTypedBoundaryCondition
+  [type: string]: boolean | number | string | IModelTypedBoundaryCondition
 }
 
 export interface IModelTypedBoundaryCondition {

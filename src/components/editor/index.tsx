@@ -10,9 +10,9 @@ import {
   Typography,
   Divider,
   Tooltip,
-  message
+  notification
 } from 'antd'
-import { CloseOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { ShareAltOutlined } from '@ant-design/icons'
 
 import { GoBack } from '@/components/assets/button'
 import Loading from '@/components/loading'
@@ -47,16 +47,16 @@ const Editor = () => {
 
   // Beta version message
   useEffect(() => {
-    message.warning({
-      content: (
+    notification.warning({
+      message: 'This is a beta version',
+      description: (
         <>
-          This is a beta version, you may encounter unexpected bugs
-          <CloseOutlined
-            onClick={() => message.destroy()}
-            style={{ position: 'absolute', top: 10 }}
-          />
+          <br />
+          - You may encounter unexpected bugs
+          <br />- Some features are not totally functionnal
         </>
       ),
+      placement: 'top',
       duration: 0
     })
   }, [])

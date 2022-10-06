@@ -1,10 +1,12 @@
 /** @module Components.Editor.Steps */
 
 import { useContext, useEffect, useState } from 'react'
-import { Steps } from 'antd'
+import { Button, Steps } from 'antd'
 
 import { EditorContext } from '@/context/editor'
 import { setModelValid, setTemplateValid } from '@/context/editor/actions'
+
+import { checkModel } from './utils'
 
 /**
  * Props
@@ -20,7 +22,10 @@ export interface IProps {
 const StatusSteps = ({ setName }: IProps) => {
   //State
   const [status, setStatus] = useState<{
-    [key: string]: 'wait' | 'process' | 'finish' | 'error'
+    [key: string]: {
+      status: 'wait' | 'process' | 'finish' | 'error'
+      err?: string
+    }
   }>({})
 
   const { template, model, dispatch } = useContext(EditorContext)
@@ -30,24 +35,25 @@ const StatusSteps = ({ setName }: IProps) => {
     if (!template) {
       setStatus((prev) => ({
         ...prev,
-        template: 'wait',
-        test: 'wait'
+        template: {
+          status: 'wait',
+          err: ''
+        },
+        test: {
+          status: 'wait'
+        }
       }))
       dispatch(setTemplateValid(false))
       return
     }
 
-    try {
-      // TODO
-      setStatus((prev) => ({
-        ...prev,
-        template: 'finish',
-        test: prev.model === 'finish' ? 'process' : 'wait'
-      }))
-      dispatch(setTemplateValid(true))
-    } catch (err) {
-      setStatus((prev) => ({ ...prev, template: 'error', test: 'wait' }))
-    }
+    // Check template
+    setStatus((prev) => ({
+      ...prev,
+      template: { status: 'finish' },
+      test: { status: prev.model?.status === 'finish' ? 'process' : 'wait' }
+    }))
+    dispatch(setTemplateValid(true))
   }, [template, dispatch])
 
   // Check model
@@ -55,8 +61,8 @@ const StatusSteps = ({ setName }: IProps) => {
     if (!model) {
       setStatus((prev) => ({
         ...prev,
-        model: 'wait',
-        test: 'wait'
+        model: { status: 'wait' },
+        test: { status: 'wait' }
       }))
       dispatch(setModelValid(false))
       return
@@ -67,27 +73,21 @@ const StatusSteps = ({ setName }: IProps) => {
 
       if (modelJSON.name) setName(modelJSON.name)
 
-      if (!modelJSON.category) throw new Error('missing category')
-      if (!modelJSON.name) throw new Error('missing name')
-      if (!modelJSON.algorithm) throw new Error('missing algorithm')
-      if (!modelJSON.code) throw new Error('missing code')
-      if (!modelJSON.version) throw new Error('missing version')
-      if (!modelJSON.configuration) throw new Error('missing configuration')
-      if (!modelJSON.configuration.geometry)
-        throw new Error('missing configuration.geometry')
-      // TODO ...
+      checkModel(modelJSON)
 
       setStatus((prev) => ({
         ...prev,
-        model: 'finish',
-        test: prev.model === 'finish' ? 'process' : 'wait'
+        model: { status: 'finish' },
+        test: {
+          status: prev.template?.status === 'finish' ? 'process' : 'wait'
+        }
       }))
       dispatch(setModelValid(true))
-    } catch (err) {
+    } catch (err: any) {
       setStatus((prev) => ({
         ...prev,
-        model: 'error',
-        test: 'wait'
+        model: { status: 'error', err: err.message },
+        test: { status: 'wait' }
       }))
       dispatch(setModelValid(false))
     }
@@ -97,21 +97,33 @@ const StatusSteps = ({ setName }: IProps) => {
     <Steps className="Editor-Steps" direction="vertical">
       <Steps.Step
         title="Check template format"
-        description="EJS + FreeFEM"
-        status={status.template ?? 'wait'}
-        disabled={true}
+        description={status.template?.err ?? 'EJS + FreeFEM'}
+        status={status.template?.status ?? 'wait'}
       />
       <Steps.Step
         title="Check description format"
-        description="JSON"
-        status={status.model ?? 'wait'}
-        disabled={true}
+        description={status.model?.err?.replace(/\./g, ' > ') ?? 'JSON'}
+        status={status.model?.status ?? 'wait'}
       />
       <Steps.Step
         title="Test template + description"
-        description="Run template on Tanatloc server"
-        status={status['test'] ?? 'wait'}
-        disabled={!(status.template === 'finish' && status.model === 'finish')}
+        description={
+          <>
+            <Button
+              disabled={
+                !(
+                  status.template?.status === 'finish' &&
+                  status.model?.status === 'finish'
+                )
+              }
+              onClick={console.log}
+            >
+              Run
+            </Button>{' '}
+            template on Tanatloc server
+          </>
+        }
+        status={status.test?.status ?? 'wait'}
       />
     </Steps>
   )

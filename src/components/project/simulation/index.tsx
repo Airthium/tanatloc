@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation */
 
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Menu, Modal, Select } from 'antd'
+import { Layout, Menu, Modal, Select, Tabs } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
@@ -38,7 +38,7 @@ import Postprocessing from './postprocessing'
  */
 export interface ISelectorProps {
   visible: boolean
-  user?: Pick<IFrontUser, 'authorizedplugins'>
+  user?: Pick<IFrontUser, 'authorizedplugins' | 'models'>
   onOk: (model: IModel) => Promise<void>
   onCancel: () => void
 }
@@ -131,10 +131,10 @@ const Selector = ({
   }, [models])
 
   /**
-   * On select
+   * On Tanatloc select
    * @param data Data
    */
-  const onSelect = useCallback(
+  const onTanatlocSelect = useCallback(
     ({ key }: { key: string }): void => {
       const model = models.find((m) => m.algorithm === key)
       setCurrent(Utils.deepCopy(model!))
@@ -142,8 +142,20 @@ const Selector = ({
     [models]
   )
 
+  /**
+   * On User select
+   * @param data Data
+   */
+  const onUserSelect = useCallback(
+    ({ key }: { key: string }): void => {
+      const model = user!.models.find((m) => m.algorithm === key)
+      setCurrent(Utils.deepCopy(model))
+    },
+    [user]
+  )
+
   // Menu items
-  const menuItems: ItemType[] = [
+  const tanatlocMenuItems: ItemType[] = [
     {
       key: 'category',
       disabled: true,
@@ -161,8 +173,30 @@ const Selector = ({
   ]
   models.forEach((model) => {
     if (!category || model.category === category)
-      menuItems.push({ key: model.algorithm, label: model.name })
+      tanatlocMenuItems.push({ key: model.algorithm, label: model.name })
   })
+
+  const userMenuItems: ItemType[] = [
+    {
+      key: 'category',
+      disabled: true,
+      label: (
+        <Select
+          className="full-width"
+          options={categories}
+          allowClear
+          showArrow={false}
+          placeholder="Category filter"
+          onChange={(value) => setCategory(value)}
+        />
+      )
+    }
+  ]
+  user &&
+    user.models.forEach((model) => {
+      if (!category || model.category === category)
+        userMenuItems.push({ key: model.algorithm, label: model.name })
+    })
 
   /**
    * Render
@@ -185,13 +219,35 @@ const Selector = ({
       width="80%"
     >
       <Layout>
-        <Layout.Sider theme="light">
-          <Menu mode="inline" items={menuItems} onSelect={onSelect} />
+        <Layout.Sider theme="light" width={300}>
+          <Tabs
+            items={[
+              {
+                key: 'tanatloc',
+                label: 'Tanatloc algorithm',
+                children: (
+                  <Menu
+                    mode="inline"
+                    items={tanatlocMenuItems}
+                    onSelect={onTanatlocSelect}
+                  />
+                )
+              },
+              {
+                key: 'personal',
+                label: 'User algorithm',
+                children: (
+                  <Menu
+                    mode="inline"
+                    items={userMenuItems}
+                    onSelect={onUserSelect}
+                  />
+                )
+              }
+            ]}
+          />
         </Layout.Sider>
-        <Layout.Content
-          style={{ padding: '20px', height: '60vh', overflow: 'auto' }}
-          className="simulation-selector"
-        >
+        <Layout.Content className="simulation-selector">
           <MathJax.Html html={current?.description} />
         </Layout.Content>
       </Layout>

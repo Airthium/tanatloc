@@ -104,7 +104,10 @@ const save = async (
           key: 'models',
           type: 'array',
           method: 'append',
-          value: model
+          value: {
+            ...model,
+            user: user.id
+          }
         },
         {
           key: 'templates',
@@ -131,7 +134,10 @@ const save = async (
           type: 'array',
           method: 'set',
           index: index,
-          value: model
+          value: {
+            ...model,
+            user: user.id
+          }
         },
         {
           key: 'templates',

@@ -186,6 +186,7 @@ describe('components/project', () => {
       id: 'ids1',
       name: 'Simulation 1',
       scheme: {
+        user: 'id',
         configuration: {
           dimension: 2,
           geometry: {
@@ -351,7 +352,7 @@ describe('components/project', () => {
     fireEvent.click(simulations)
 
     const simulation1 = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 1'
+      name: 'code-sandbox audit Simulation 1'
     })
     fireEvent.click(simulation1)
 
@@ -649,7 +650,7 @@ describe('components/project', () => {
 
     // Open simulation 1
     const simulation1 = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 1'
+      name: 'code-sandbox audit Simulation 1'
     })
     fireEvent.click(simulation1)
 
@@ -808,7 +809,7 @@ describe('components/project', () => {
     fireEvent.click(simulations)
 
     const simulation1 = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 1'
+      name: 'code-sandbox audit Simulation 1'
     })
     fireEvent.click(simulation1)
 

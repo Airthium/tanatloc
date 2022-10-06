@@ -126,7 +126,12 @@ describe('components/editor/save', () => {
     await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
-        { key: 'models', method: 'append', type: 'array', value: {} },
+        {
+          key: 'models',
+          method: 'append',
+          type: 'array',
+          value: { user: 'id' }
+        },
         { key: 'templates', method: 'append', type: 'array', value: 'template' }
       ])
     )
@@ -159,7 +164,12 @@ describe('components/editor/save', () => {
     await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
-        { key: 'models', method: 'append', type: 'array', value: {} },
+        {
+          key: 'models',
+          method: 'append',
+          type: 'array',
+          value: { user: 'id' }
+        },
         { key: 'templates', method: 'append', type: 'array', value: 'template' }
       ])
     )
@@ -208,7 +218,7 @@ describe('components/editor/save', () => {
           method: 'set',
           index: 0,
           type: 'array',
-          value: { algorithm: 'algorithm' }
+          value: { algorithm: 'algorithm', user: 'id' }
         },
         {
           key: 'templates',
@@ -262,7 +272,7 @@ describe('components/editor/save', () => {
           method: 'set',
           index: 0,
           type: 'array',
-          value: { algorithm: 'algorithm' }
+          value: { algorithm: 'algorithm', user: 'id' }
         },
         {
           key: 'templates',

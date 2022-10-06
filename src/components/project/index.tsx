@@ -2,7 +2,7 @@
 
 import { NextRouter, useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Layout, Menu, Typography } from 'antd'
+import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
   CodeSandboxOutlined,
@@ -12,7 +12,8 @@ import {
   ExclamationCircleOutlined,
   LoadingOutlined,
   UploadOutlined,
-  PlusCircleOutlined
+  PlusCircleOutlined,
+  AuditOutlined
 } from '@ant-design/icons'
 
 import { ISimulation } from '@/database/simulation/index'
@@ -636,11 +637,31 @@ const Project = (): JSX.Element => {
         label: child.title
       }
     })
+
+    let label = s.name
+    if (s.scheme.user)
+      label = (
+        <>
+          <Tooltip title="User algorithm" placement="right">
+            <AuditOutlined
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 14,
+                fontSize: 14,
+                color: '#fad114'
+              }}
+            />
+          </Tooltip>
+          {s.name}
+        </>
+      )
+
     return {
       key: s.id,
       className: 'Project-Menu-SubMenu-Simulations-SubMenu',
       icon: <CodeSandboxOutlined />,
-      label: s.name,
+      label: label,
       children: [
         {
           key: s.id + '&about',
@@ -797,7 +818,8 @@ const Project = (): JSX.Element => {
 
           <Simulation.Selector
             user={{
-              authorizedplugins: user.authorizedplugins
+              authorizedplugins: user.authorizedplugins,
+              models: user.models
             }}
             visible={simulationSelectorVisible}
             onOk={async (scheme) => {

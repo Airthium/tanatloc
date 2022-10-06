@@ -4,6 +4,7 @@ import path from 'path'
 import ejs, { AsyncTemplateFunction } from 'ejs'
 import isElectron from 'is-electron'
 
+import User from '../user'
 import Tools from '../tools'
 import Plugins from '../plugins'
 
@@ -90,16 +91,39 @@ export const loadTemplates = async (): Promise<ITemplates> => {
  */
 const render = async (
   key: string,
+  user: string | undefined,
   parameters: object,
   save?: { location: string; name: string }
 ): Promise<string> => {
-  // Compile
-  const template = tanatloc?.templates?.[key]
-  if (!template) throw new Error('Unable to find the model!')
-  const script = await template({
-    helpers: { indent },
-    ...parameters
-  })
+  let script: string = ''
+  if (user) {
+    const userData = await User.get(user, ['models', 'templates'])
+    const index = userData.models.findIndex((m) => m.algorithm === key)
+    if (index === -1) throw new Error('Unable to find the model!')
+
+    const template = userData.templates[index]
+    script = ejs.render(
+      template,
+      {
+        helpers: { indent },
+        ...parameters
+      },
+      {
+        root: path.join(
+          isElectron() ? process.resourcesPath : './dist',
+          'templates'
+        )
+      }
+    )
+  } else {
+    // Compile
+    const template = tanatloc?.templates?.[key]
+    if (!template) throw new Error('Unable to find the model!')
+    script = await template({
+      helpers: { indent },
+      ...parameters
+    })
+  }
 
   // Save
   if (save) await Tools.writeFile(save.location, save.name, script)

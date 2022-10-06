@@ -89,7 +89,7 @@ describe('components/editor/load', () => {
   })
 
   test('personal load', async () => {
-    user.models = [{ name: 'personal model' } as never]
+    user.models = [{ name: 'personal model', user: 'id' } as never]
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Load user={user} swr={swr} />)
 

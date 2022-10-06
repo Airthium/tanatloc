@@ -26,6 +26,7 @@ describe('components/project/simulation/about', () => {
     id: 'id',
     name: 'name',
     scheme: {
+      user: 'id',
       category: 'category',
       name: 'name',
       algorithm: 'algorithm',

@@ -196,6 +196,7 @@ const computeMesh = async (
     // Render template
     await Template.render(
       configuration.dimension === 2 ? 'gmsh2D' : 'gmsh3D',
+      undefined,
       {
         ...parameters,
         geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))
@@ -330,6 +331,7 @@ const computeSimulation = async (
     // Build the simulation script
     await Template.render(
       scheme.algorithm,
+      scheme.user,
       {
         ...configuration,
         run: {

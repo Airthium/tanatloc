@@ -5,11 +5,17 @@ jest.mock('path', () => ({
 }))
 
 jest.mock('ejs', () => ({
-  compile: () => () => 'ejs'
+  compile: () => () => 'compile',
+  render: () => 'render'
 }))
 
 const mockElectron = jest.fn()
 jest.mock('is-electron', () => () => mockElectron())
+
+const mockUserGet = jest.fn()
+jest.mock('../../user', () => ({
+  get: async () => mockUserGet()
+}))
 
 const mockReadFile = jest.fn()
 const mockWriteFile = jest.fn()
@@ -44,6 +50,8 @@ describe('lib/template', () => {
   beforeEach(() => {
     mockElectron.mockReset()
 
+    mockUserGet.mockReset()
+
     mockReadFile.mockReset()
     mockWriteFile.mockReset()
   })
@@ -51,12 +59,12 @@ describe('lib/template', () => {
   test('loadTemplates', async () => {
     mockReadFile.mockImplementation(() => 'readFile')
     let templates = await loadTemplates()
-    expect(templates['key']()).toBe('ejs')
+    expect(templates['key']()).toBe('compile')
 
     // Electron
     mockElectron.mockImplementation(() => true)
     templates = await loadTemplates()
-    expect(templates['key']()).toBe('ejs')
+    expect(templates['key']()).toBe('compile')
   })
 
   test('render', async () => {
@@ -71,13 +79,14 @@ describe('lib/template', () => {
     let script: string
 
     // Without save
-    script = await Template.render('key', {})
+    script = await Template.render('key', undefined, {})
     expect(script).toBe('ejs')
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
 
     // With save
     script = await Template.render(
       'key',
+      undefined,
       {},
       { location: 'location', name: 'name' }
     )
@@ -86,7 +95,47 @@ describe('lib/template', () => {
 
     // No file
     try {
-      await Template.render('unknown key', {})
+      await Template.render('unknown key', undefined, {})
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('Unable to find the model!')
+    }
+
+    // User
+    mockUserGet.mockImplementation(() => ({
+      models: [{ algorithm: 'key' }],
+      templates: ['template']
+    }))
+    script = await Template.render(
+      'key',
+      'id',
+      {},
+      { location: 'location', name: 'name' }
+    )
+    expect(script).toBe('render')
+
+    // Electron
+    mockElectron.mockImplementation(() => true)
+    mockUserGet.mockImplementation(() => ({
+      models: [{ algorithm: 'key' }],
+      templates: ['template']
+    }))
+    script = await Template.render(
+      'key',
+      'id',
+      {},
+      { location: 'location', name: 'name' }
+    )
+    expect(script).toBe('render')
+
+    // User, unknow key
+    try {
+      await Template.render(
+        'unknown key',
+        'id',
+        {},
+        { location: 'location', name: 'name' }
+      )
       expect(true).toBe(false)
     } catch (err: any) {
       expect(err.message).toBe('Unable to find the model!')

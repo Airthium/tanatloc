@@ -72,6 +72,7 @@ export const onMyLoad = async (
   dispatch: Dispatch<IEditorAction>
 ): Promise<void> => {
   try {
+    model.user && delete model.user
     dispatch(setModel(JSON.stringify(model, null, '\t')))
     dispatch(setTemplate(template))
   } catch (err) {

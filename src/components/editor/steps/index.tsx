@@ -94,7 +94,7 @@ const StatusSteps = ({ setName }: IProps) => {
   }, [model, setName, dispatch])
 
   return (
-    <Steps className="Editor-Steps" direction="vertical" onChange={console.log}>
+    <Steps className="Editor-Steps" direction="vertical">
       <Steps.Step
         title="Check template format"
         description="EJS + FreeFEM"

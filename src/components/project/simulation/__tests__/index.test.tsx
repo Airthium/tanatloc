@@ -67,7 +67,10 @@ jest.mock('@/models', () => [
 ])
 
 describe('components/project/simulation.Selector', () => {
-  const user = { authorizedplugins: [] }
+  const user = {
+    authorizedplugins: [],
+    models: [{ algorithm: 'algorithm', name: 'Name User' }]
+  }
   const visible = true
   const onOk = jest.fn()
   const onCancel = jest.fn()
@@ -160,7 +163,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('onSelect', async () => {
+  test('onTanatocSelect', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -178,7 +181,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('category', async () => {
+  test('category (tanatloc)', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -226,6 +229,55 @@ describe('components/project/simulation.Selector', () => {
 
     fireEvent.click(create)
     expect(onOk).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('onUserSelect', async () => {
+    const { unmount } = render(
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
+    )
+
+    const tab = screen.getByRole('tab', { name: 'User algorithm' })
+    fireEvent.click(tab)
+
+    await waitFor(() => screen.getByText('Name User'))
+
+    const model = screen.getByText('Name User')
+    fireEvent.click(model)
+
+    unmount()
+  })
+
+  test('category (user)', async () => {
+    const { unmount } = render(
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
+    )
+
+    const tab = screen.getByRole('tab', { name: 'User algorithm' })
+    fireEvent.click(tab)
+
+    await waitFor(() => screen.getByText('Name User'))
+
+    const select = screen.getByRole('combobox')
+    await act(async () => {
+      fireEvent.mouseDown(select)
+    })
+
+    const option = screen.getAllByText('category2')
+    await act(async () => {
+      fireEvent.click(option[1])
+    })
 
     unmount()
   })

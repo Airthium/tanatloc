@@ -637,5 +637,7 @@ const createAdmin = async (): Promise<void> => {
         user.id
       ])
     }
+
+    console.info(' - OK')
   }
 }

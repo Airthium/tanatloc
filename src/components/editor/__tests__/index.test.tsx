@@ -88,4 +88,13 @@ describe('component/editor', () => {
 
     unmount()
   })
+
+  test('warning message', () => {
+    const { unmount } = render(<Editor />)
+
+    const close = screen.getAllByRole('img', { name: 'close' })
+    fireEvent.click(close[0])
+
+    unmount()
+  })
 })

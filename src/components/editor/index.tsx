@@ -2,8 +2,17 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Menu, Space, Button, Typography, Divider, Tooltip } from 'antd'
-import { ShareAltOutlined } from '@ant-design/icons'
+import {
+  Layout,
+  Menu,
+  Space,
+  Button,
+  Typography,
+  Divider,
+  Tooltip,
+  message
+} from 'antd'
+import { CloseOutlined, ShareAltOutlined } from '@ant-design/icons'
 
 import { GoBack } from '@/components/assets/button'
 import Loading from '@/components/loading'
@@ -35,6 +44,22 @@ const Editor = () => {
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/')
   }, [user, loadingUser, router])
+
+  // Beta version message
+  useEffect(() => {
+    message.warning({
+      content: (
+        <>
+          This is a beta version, you may encounter unexpected bugs
+          <CloseOutlined
+            onClick={() => message.destroy()}
+            style={{ position: 'absolute', top: 10 }}
+          />
+        </>
+      ),
+      duration: 0
+    })
+  }, [])
 
   /**
    * Handle dashboard

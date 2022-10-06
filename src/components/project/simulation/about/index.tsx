@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.About*/
 
-import { Card, Layout, Space, Spin, Typography } from 'antd'
+import { Alert, Card, Layout, Space, Spin, Typography } from 'antd'
 
 import MathJax from '@/components/assets/mathjax'
 
@@ -86,6 +86,9 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
             ]}
           >
             <Space direction="vertical" className="full-width">
+              {simulation.scheme.user && (
+                <Alert message="User algorithm" type="info" showIcon />
+              )}
               <Typography.Text>
                 <span className="text-light">Category:</span>{' '}
                 {simulation.scheme.category}

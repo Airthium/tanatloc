@@ -1,4 +1,4 @@
-/** @module Components.Simulation.Project.Run.Sensors.Edit */
+/** @module Components.Project.Simulation.Run.Sensors.Edit */
 
 import { useState } from 'react'
 

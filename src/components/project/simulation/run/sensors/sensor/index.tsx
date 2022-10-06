@@ -1,4 +1,4 @@
-/** @module Components.Simulation.Project.Run.Sensor */
+/** @module Components.Project.Simulation.Run.Sensor */
 
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Card, Drawer, Input, Space, Tooltip, Typography } from 'antd'

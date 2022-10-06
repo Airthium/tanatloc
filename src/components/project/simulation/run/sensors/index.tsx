@@ -1,4 +1,4 @@
-/** @module Components.Simulation.Project.Run.Sensors */
+/** @module Components.Project.Simulation.Run.Sensors */
 
 import { useCallback, useState } from 'react'
 import { Button, Card, Space } from 'antd'

@@ -1,3 +1,5 @@
+/** @module Components.Editor.Steps.Utils */
+
 import {
   checkModel,
   checkModelBoundaryConditions,

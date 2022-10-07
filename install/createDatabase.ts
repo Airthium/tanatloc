@@ -1,6 +1,6 @@
 /** @module Install.CreateDatabase */
 
-import { Pool, PoolClient } from 'pg'
+import pg from 'pg'
 import format from '@airthium/pg-format'
 import crypto from 'crypto'
 import { v4 as uuid } from 'uuid'
@@ -63,15 +63,15 @@ const localPlugin = {
 export const createDatabase = async (): Promise<void> => {
   console.info(' == Create dB == ')
   try {
-    let pool: Pool
-    let client: PoolClient
+    let pool: pg.Pool
+    let client: pg.PoolClient
 
     // Init
     Object.defineProperty(global, 'tanatloc', { value: {}, configurable: true })
     await initDatabase()
 
     // Pool
-    pool = new Pool({
+    pool = new pg.Pool({
       host: HOST,
       port: PORT,
       user: process.env.DB_ADMIN || ADMIN,
@@ -87,7 +87,7 @@ export const createDatabase = async (): Promise<void> => {
       [DATABASE]
     )
     if (checkDatabase.rowCount === 0) {
-      const createDatabaseQuery = format('CREATE DATABASE %s', DATABASE)
+      const createDatabaseQuery = format.default('CREATE DATABASE %s', DATABASE)
       await client.query(createDatabaseQuery)
     } else {
       console.info('   -- Database already exists')
@@ -100,7 +100,7 @@ export const createDatabase = async (): Promise<void> => {
       [USER]
     )
     if (checkUser.rowCount === 0) {
-      const createUserQuery = format(
+      const createUserQuery = format.default(
         "CREATE USER %s WITH ENCRYPTED PASSWORD '%s'",
         USER,
         PASSWORD
@@ -111,7 +111,7 @@ export const createDatabase = async (): Promise<void> => {
     }
 
     // Privileges
-    const privilegesQuery = format(
+    const privilegesQuery = format.default(
       'GRANT ALL PRIVILEGES ON DATABASE %s TO %s',
       DATABASE,
       USER
@@ -123,7 +123,7 @@ export const createDatabase = async (): Promise<void> => {
     pool.end()
 
     // New pool
-    pool = new Pool({
+    pool = new pg.Pool({
       host: HOST,
       port: PORT,
       database: DATABASE,

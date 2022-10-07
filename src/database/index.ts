@@ -1,7 +1,7 @@
 /** @module Database */
 
 import { execSync } from 'child_process'
-import { Pool } from 'pg'
+import pg from 'pg'
 
 import {
   IDataBaseEntry,
@@ -81,7 +81,7 @@ export const checkdB = async (params?: {
     while (!ready && iter < 100) {
       try {
         iter++
-        const checkPool = new Pool({
+        const checkPool = new pg.Pool({
           host: HOST,
           port: PORT,
           user: ADMIN,
@@ -106,7 +106,7 @@ export const checkdB = async (params?: {
 
   // Legacy postgres
   try {
-    const checkPool = new Pool({
+    const checkPool = new pg.Pool({
       host: HOST,
       port: PORT,
       user: ADMIN,
@@ -126,9 +126,9 @@ export const checkdB = async (params?: {
  * Start database
  * @returns Pool
  */
-export const startdB = (): Pool => {
+export const startdB = (): pg.Pool => {
   console.info('Start database...')
-  return new Pool({
+  return new pg.Pool({
     user: USER,
     host: HOST,
     database: DATABASE,

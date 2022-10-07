@@ -1,7 +1,7 @@
-const path = require('path')
-const depcheck = require('depcheck')
-const { getContent } = require('depcheck/dist/utils/file')
-const { exit } = require('process')
+import { basename } from 'path'
+import depcheck from 'depcheck'
+import { getContent } from 'depcheck/dist/utils/file'
+import { exit } from 'process'
 
 /**
  * Custom typedeoc parser
@@ -10,7 +10,7 @@ const { exit } = require('process')
 depcheck.special.customTypedoc = (fileName) => {
   const newDeps = []
 
-  if (path.basename(fileName) === 'package.json') {
+  if (basename(fileName) === 'package.json') {
     const packageJson = require(fileName)
 
     Object.values(packageJson.scripts).forEach((script) => {
@@ -31,7 +31,7 @@ depcheck.special.customTypedoc = (fileName) => {
 depcheck.special.customNext = async (fileName) => {
   const newDeps = []
 
-  if (path.basename(fileName) === 'next.config.js') {
+  if (basename(fileName) === 'next.config.js') {
     const content = await getContent(fileName)
 
     // Get strings
@@ -52,7 +52,7 @@ depcheck.special.customNext = async (fileName) => {
 depcheck.special.customJest = (fileName, deps) => {
   const newDeps = []
 
-  if (path.basename(fileName) === 'jest.config.js') {
+  if (basename(fileName) === 'jest.config.js') {
     newDeps.push('jest-environment-jsdom')
     if (deps.includes('typescript')) newDeps.push('@types/jest')
 

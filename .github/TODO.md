@@ -12,6 +12,7 @@
 ## Electron (Long term)
 
 - Apple sign
+- Windows sign
 
 ## Editor (Long term)
 

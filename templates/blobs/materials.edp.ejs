@@ -1,0 +1,22 @@
+// Materials
+appendLog("Define materials...");
+
+<% materials.children.forEach(material => { -%>
+<% let firstValue = 0 -%>
+// <%- material.label %> 
+func <%= material.name -%> = 
+<% materials.values.forEach((value, index) => { -%>
+<% let child = value.material.children.find(child => child.symbol === material.name) || material -%>
+<% if (index === 0) { -%>
+<% firstValue = child.value ?? material.default -%>
+	<%= child.value ?? material.default %>
+<% } else { -%>
+	(<%= child.value ?? material.default -%> - <%= firstValue -%>)
+<% value.selected.forEach(select => { -%>
+		* (region == <%= select.label -%>)
+<% }) -%>
+<% } -%>
+<% }) -%>
+	;
+<% }) -%>
+// End Materials

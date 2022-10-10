@@ -1,0 +1,152 @@
+SetFactory("OpenCASCADE");
+
+Geometry.OCCScaling = 1.e-3;
+V() = ShapeFromFile("<%= geometry %>");
+
+Mesh.Optimize = 1;
+
+// Make interface unique
+//For i In {0: #V[]-1}
+//	V() = BooleanFragments { Volume{V[i]}; Delete; } { Volume{V[]}; Delete; };
+//EndFor
+// End make interface unique
+
+// Compute minimal distance on the bounding box
+// this is used for automatic size of the mesh
+lmin = 0;
+lmax = 0;
+For i In {0:#V[]-1}
+	bb() = BoundingBox Volume{V[i]};
+
+	xmin = bb[0];
+	xmax = bb[3];
+	ymin = bb[1];
+	ymax = bb[4];
+	zmin = bb[2];
+	zmax = bb[5];
+
+	lx = xmax - xmin;
+	ly = ymax - ymin;
+	lz = zmax - zmin;
+
+	llmin = (lx < ly) ? lx : ly;
+	llmin = (llmin < lz) ? llmin : lz;
+	llmax = (lx > ly) ? lx : ly;
+	llmax = (llmax > lz) ? llmax : lz;
+
+	If (i == 0)
+		lmin = llmin;
+		lmax = llmax;
+	Else
+		lmin = (lmin < llmin) ? lmin : llmin;
+		lmax = (lmax > llmax) ? lmax : llmax;
+	EndIf
+EndFor
+lmin = lmin / 10.;
+Printf("Minimal distance on the bounding box = %f", lmin);
+Printf("Maximal distance on the bounding box = %f", lmax);
+
+max = (lmax / 2. < lmin * 10.) ? lmax / 2. : lmin * 10.;
+min = lmin / 10.;
+
+veryCoarse = max - 0. * (max - min);
+coarse = max - 0.25 * (max - min);
+normal = max - 0.5 * (max - min);
+fine = max - 0.75 * (max - min);
+veryFine = max - 1. * (max - min);
+
+// Global size
+<% if (type === 'manual') { -%>
+// Manual size
+globalSize = <%= value %>;
+<% } else { -%>
+// Automatic size
+	<% if (value === 'verycoarse') { -%>
+// Very coarse size
+globalSize = veryCoarse;
+	<% } else if (value === 'coarse') { -%>
+// Coarse size
+globalSize = coarse;
+	<% } else if (value === 'fine') { -%>
+// Fine size
+globalSize = fine;
+	<% } else if (value === 'veryfine') { -%>
+// Very fine size
+globalSize = veryFine;
+	<% } else { -%>
+// Normal size
+globalSize = normal;
+	<% } -%>
+<% } -%>
+globalMinSize = globalSize;
+globalMaxSize = globalSize;
+// End global size
+
+// Physical labels for each volumes & surfaces
+SLabel = 1;
+VLabel = 1;
+For i In {0:#V[]-1}
+	Physical Volume (VLabel) = { V[i] };
+	VLabel = VLabel + 1;
+
+	S() = Boundary { Volume{V[i]}; };
+
+	For j In {0:#S[]-1}
+		Physical Surface (SLabel) = { S[j] };
+		SLabel = SLabel + 1;
+	EndFor
+
+	P() = PointsOf { Surface{S[]}; };
+	Characteristic Length { P[] } = globalSize;
+EndFor
+// End physical labels
+
+// Refinements
+<% if (typeof refinements !== 'undefined') { -%>
+<% refinements.forEach(refinement => {
+	const selected = refinement.selected.map(selected => selected.label)
+	if (0){//refinement.selection.type === 'solids') {
+-%>
+P() = PointsOf { Volume{<%= selected.join('') %>}; };
+<% } else { -%>
+P() = PointsOf { Surface{<%= selected.join(',') %>}; };
+<% } -%>
+<% if (refinement.type === 'manual') { -%>
+// Manual refinement
+localSize = <%= refinement.value %>;
+<% } else if (refinement.type === 'auto') { -%>
+// Automatic refinement
+<% if (refinement.fineness === 'verycoarse') { -%>
+// Very coarse
+localSize = veryCoarse;
+<% } else if (refinement.fineness === 'coarse') { -%>
+// Coarse
+localSize = coarse;
+<% } else if (refinement.fineness === 'fine') { -%>
+// Fine
+localSize = fine;
+<% } else if (refinement.fineness === 'veryfine') { -%>
+// Very fine
+localSize = veryFine;
+<% } else { -%>
+// Normal
+localSize = normal;
+<% } -%>
+<% } else if (refinement.type === 'factor') {-%>
+// Factor refinement
+localSize = globalSize / <%= refinement.factor -%>;
+<% } -%>
+Characteristic Length { P[] } = localSize;
+
+If (globalSize > localSize)
+	globalMinSize = localSize;
+EndIf
+If (globalSize < localSize)
+	globalMaxSize = localSize;
+EndIf
+<% }) -%>
+<% } -%>
+// End refinements
+
+Mesh.CharacteristicLengthMin = globalMinSize;
+Mesh.CharacteristicLengthMax = globalMaxSize;

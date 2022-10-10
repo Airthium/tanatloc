@@ -1,4 +1,4 @@
-module.exports = {
+const cssTransform = {
   process() {
     return 'module.exports = {};'
   },
@@ -6,3 +6,5 @@ module.exports = {
     return 'cssTransform'
   }
 }
+
+export default cssTransform

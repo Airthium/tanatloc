@@ -1,15 +1,15 @@
 /** @module Pages.Editor */
 
-import Editor from '../components/editor'
+import EditorPage from '../components/editor'
 
 /**
  * Editor page
  */
-const _editor = (): JSX.Element => {
+const Editor = (): JSX.Element => {
   /**
    * Render
    */
-  return <Editor />
+  return <EditorPage />
 }
 
-export default _editor
+export default Editor

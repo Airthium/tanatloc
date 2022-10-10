@@ -1,4 +1,4 @@
-module.exports = {
+const jestConfig = {
   rootDir: '../..',
   setupFiles: [
     '<rootDir>/config/jest/setup.js',
@@ -66,3 +66,5 @@ module.exports = {
     '<rootDir>/tests/'
   ]
 }
+
+export default jestConfig

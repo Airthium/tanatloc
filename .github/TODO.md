@@ -4,7 +4,7 @@
 
 - FIGMA: https://www.figma.com/file/zA0A5rq8U5zqBoTdqJwYzh/Cleaning_Tanatloc?node-id=92%3A0
 
-## UX 
+## UX
 
 - Simulation run: A rough estimate of run time
 - Meshing : Display logs infos (% of completion)

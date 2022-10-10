@@ -1,5 +1,6 @@
 /** @module Components.Project */
 
+import dynamic from 'next/dynamic'
 import { NextRouter, useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
@@ -42,8 +43,9 @@ import GeometryAPI from '@/api/geometry'
 import Panel from './panel'
 import Geometry from './geometry'
 import View from './view'
-import Data from './data'
 import Simulation from './simulation'
+
+const Data = dynamic(() => import('./data'), { ssr: false })
 
 /**
  * Menu items

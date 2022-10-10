@@ -27,7 +27,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  edit: 'Unable to edit a project'
+  edit: 'Unable to edit project'
 }
 
 /**

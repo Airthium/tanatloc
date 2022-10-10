@@ -70,7 +70,7 @@ export const errors = {
   project: 'Unable to get project',
   simulations: 'Unable to get simulations',
   geometries: 'Unable to get geometries',
-  add: 'Unable to add a simulation'
+  add: 'Unable to add simulation'
 }
 
 /**

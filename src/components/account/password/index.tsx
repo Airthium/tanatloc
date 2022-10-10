@@ -24,10 +24,10 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  check: 'Unable to check the password',
-  update: 'Unable to update the password',
+  check: 'Unable to check password',
+  update: 'Unable to update password',
   passwordMismatch: 'Password and confirmation mismatch',
-  invalid: 'Current password not valid'
+  invalid: 'Current password is not valid'
 }
 
 /**

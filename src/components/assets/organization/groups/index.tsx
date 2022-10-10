@@ -32,7 +32,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  groups: 'Groups error'
+  groups: 'Error while loading groups'
 }
 
 /**

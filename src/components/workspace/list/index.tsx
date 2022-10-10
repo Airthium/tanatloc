@@ -55,7 +55,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  add: 'Unable to add the workspace'
+  add: 'Unable to add workspace'
 }
 
 /**

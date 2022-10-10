@@ -33,7 +33,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  udpate: 'Unable to update the simulation'
+  udpate: 'Unable to update simulation'
 }
 
 /**

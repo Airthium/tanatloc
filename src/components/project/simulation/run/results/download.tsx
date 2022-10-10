@@ -21,7 +21,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  download: 'Unable to download the file'
+  download: 'Unable to download file'
 }
 
 /**

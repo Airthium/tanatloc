@@ -31,7 +31,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  del: 'Unable to delete the project'
+  del: 'Unable to delete project'
 }
 
 /**

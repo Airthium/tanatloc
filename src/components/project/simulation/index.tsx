@@ -48,7 +48,7 @@ export interface ISelectorProps {
  */
 export const errors = {
   plugins: 'Unable to load plugins',
-  update: 'Unable to update the simulation'
+  update: 'Unable to update simulation'
 }
 
 /**

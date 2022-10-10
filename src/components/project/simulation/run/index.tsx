@@ -50,9 +50,9 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  run: 'Unable to run the simulation',
-  stop: 'Unable to stop the simulation',
-  update: 'Unable to update the simulation'
+  run: 'Unable to run simulation',
+  stop: 'Unable to stop simulation',
+  update: 'Unable to update simulation'
 }
 
 /**

@@ -32,7 +32,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  add: 'Unable to add a project'
+  add: 'Unable to add project'
 }
 
 /**

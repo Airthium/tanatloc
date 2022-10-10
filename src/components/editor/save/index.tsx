@@ -29,7 +29,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  json: 'Model definition not valid',
+  json: 'Model definition is not valid',
   check: 'Unable to check',
   save: 'Unable to save'
 }

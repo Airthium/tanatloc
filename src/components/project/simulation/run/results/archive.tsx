@@ -19,7 +19,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  archive: 'Unable to download the archive'
+  archive: 'Unable to download archive'
 }
 
 /**

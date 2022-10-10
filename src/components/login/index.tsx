@@ -19,9 +19,9 @@ import PasswordRecover from './password'
  * Errors
  */
 export const errors = {
-  user: 'User error',
-  internal: 'Server issue : try again shortly.',
-  credentials: 'Incorrect credentials.'
+  user: 'Error while loading user',
+  internal: 'Server issue : please try again shortly',
+  credentials: 'Incorrect credentials'
 }
 
 /**

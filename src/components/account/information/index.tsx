@@ -44,7 +44,7 @@ export interface IProps {
 export const errors = {
   update: 'Unable to update informations',
   upload: 'Unable to upload image',
-  badFormat: 'Supported format: jpg, png',
+  badFormat: 'Supported formats: jpg, png',
   badSize: 'Image must be smaller than 5MB'
 }
 

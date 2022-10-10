@@ -35,7 +35,7 @@ export interface IProps {
 export const errors = {
   material: 'You need to define a material',
   selected: 'You need to select a solid',
-  update: 'Unable to add the material'
+  update: 'Unable to add material'
 }
 
 /**

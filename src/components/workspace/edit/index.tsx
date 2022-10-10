@@ -28,7 +28,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  update: 'Unable to update the workspace'
+  update: 'Unable to update workspace'
 }
 
 /**

@@ -33,9 +33,9 @@ import { logout } from '@/api/logout'
  * Errors
  */
 export const errors = {
-  user: 'User error',
-  organizations: 'Organizations error',
-  workspaces: 'Workspaces error',
+  user: 'Error while loading user',
+  organizations: 'Error while loading organizations',
+  workspaces: 'Error while loading workspaces',
   logout: 'Unable to logout'
 }
 

@@ -87,7 +87,7 @@ export const createDatabase = async (): Promise<void> => {
       [DATABASE]
     )
     if (checkDatabase.rowCount === 0) {
-      const createDatabaseQuery = format.default('CREATE DATABASE %s', DATABASE)
+      const createDatabaseQuery = format('CREATE DATABASE %s', DATABASE)
       await client.query(createDatabaseQuery)
     } else {
       console.info('   -- Database already exists')
@@ -100,7 +100,7 @@ export const createDatabase = async (): Promise<void> => {
       [USER]
     )
     if (checkUser.rowCount === 0) {
-      const createUserQuery = format.default(
+      const createUserQuery = format(
         "CREATE USER %s WITH ENCRYPTED PASSWORD '%s'",
         USER,
         PASSWORD
@@ -111,7 +111,7 @@ export const createDatabase = async (): Promise<void> => {
     }
 
     // Privileges
-    const privilegesQuery = format.default(
+    const privilegesQuery = format(
       'GRANT ALL PRIVILEGES ON DATABASE %s TO %s',
       DATABASE,
       USER

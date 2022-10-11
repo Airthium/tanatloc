@@ -4,7 +4,7 @@
 
 - FIGMA: https://www.figma.com/file/zA0A5rq8U5zqBoTdqJwYzh/Cleaning_Tanatloc?node-id=92%3A0
 
-## UX 
+## UX
 
 - Simulation run: A rough estimate of run time
 - Meshing : Display logs infos (% of completion)
@@ -28,3 +28,12 @@
 ## Bugs
 
 - dxf import multiple parts
+
+## Editor
+
+- error on line
+- background on recently added lines
+- new model, warning before save and clean
+- name check name on save
+- save temporary version
+- icon browse models

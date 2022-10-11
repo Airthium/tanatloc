@@ -34,7 +34,7 @@ export const tabItems = {
  * Errors
  */
 export const errors = {
-  users: 'Users error'
+  users: 'Error while loading users'
 }
 
 /**

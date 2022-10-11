@@ -24,7 +24,7 @@ import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
  * Errors
  */
 export const errors = {
-  system: 'System error',
+  system: 'Error while loading system',
   update: 'Unable to update system'
 }
 

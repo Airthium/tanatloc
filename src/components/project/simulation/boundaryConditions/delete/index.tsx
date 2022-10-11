@@ -35,7 +35,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  update: 'Unable to delete the boundary condition'
+  update: 'Unable to delete boundary condition'
 }
 
 /**

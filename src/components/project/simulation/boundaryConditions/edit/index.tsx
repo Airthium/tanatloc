@@ -40,7 +40,7 @@ export const errors = {
   name: 'You need to define a name',
   type: 'You need to select a type',
   selected: 'You need to select a face',
-  update: 'Unable to edit the boundary condition'
+  update: 'Unable to edit boundary condition'
 }
 
 /**

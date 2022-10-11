@@ -47,8 +47,8 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  projects: 'Projects error',
-  update: 'Unable to update the workspace'
+  projects: 'Error while loading projects',
+  update: 'Unable to update workspace'
 }
 
 /**

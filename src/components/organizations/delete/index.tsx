@@ -26,7 +26,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  del: 'Unable to delete the organization'
+  del: 'Unable to delete organization'
 }
 
 /**

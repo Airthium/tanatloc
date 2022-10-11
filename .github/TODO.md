@@ -28,3 +28,12 @@
 ## Bugs
 
 - dxf import multiple parts
+
+## Editor
+
+- error on line
+- background on recently added lines
+- new model, warning before save and clean
+- name check name on save
+- save temporary version
+- icon browse models

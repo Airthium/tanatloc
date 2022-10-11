@@ -29,7 +29,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  onOk: 'Dialog validation error'
+  onOk: 'Error while submitting data'
 }
 
 /**

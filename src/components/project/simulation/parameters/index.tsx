@@ -31,7 +31,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  update: 'Unable to update the simulation'
+  update: 'Unable to update simulation'
 }
 
 /**

@@ -101,8 +101,8 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  load: 'Load part error',
-  snapshot: 'Snapshot error',
+  load: 'Error while loading part',
+  snapshot: 'Error while taking snapshot',
   saveScreenshot: 'Unable to save screenshot'
 }
 

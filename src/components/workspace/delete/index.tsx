@@ -22,7 +22,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  del: 'Unable to delete the workspace'
+  del: 'Unable to delete workspace'
 }
 
 /**

@@ -19,9 +19,9 @@ import SystemAPI from '@/api/system'
  * Errors
  */
 export const errors = {
-  user: 'User error',
-  system: 'System error',
-  internal: 'Server issue : try again shortly.',
+  user: 'Error while loading user',
+  system: 'Error while loading system',
+  internal: 'Server issue : please try again shortly',
   alreadyExists: 'This email is already registered',
   passwordMismatch: 'Passwords mismatch'
 }

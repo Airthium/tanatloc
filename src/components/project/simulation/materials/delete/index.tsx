@@ -32,7 +32,7 @@ export interface IProps {
  * Error
  */
 export const errors = {
-  update: 'Unable to delete the material'
+  update: 'Unable to delete material'
 }
 
 /**

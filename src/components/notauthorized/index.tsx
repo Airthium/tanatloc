@@ -9,7 +9,7 @@ import { AlertOutlined } from '@ant-design/icons'
  * Errors
  */
 export const errors = {
-  notAllowed: 'You are not authorized to be there.'
+  notAllowed: 'You are not allowed to be here.'
 }
 
 /**

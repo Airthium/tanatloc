@@ -32,7 +32,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  load: 'Unable to load model'
+  load: 'Unable to load current model'
 }
 
 /**

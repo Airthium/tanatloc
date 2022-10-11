@@ -24,7 +24,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  plugins: 'Plugins error'
+  plugins: 'Error while loading plugins'
 }
 
 /**

@@ -27,7 +27,7 @@ import LinkAPI from '@/api/link'
 export const errors = {
   wrongLink: 'Wrong link',
   incorrect: 'Incorrect data',
-  internal: 'Internal error, please try again later',
+  internal: 'Internal error, please try again shortly',
   passwordMismatch: 'Passwords mismatch'
 }
 

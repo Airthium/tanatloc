@@ -74,7 +74,7 @@ const get = async <T extends TUserGet>(
 
   if (data.includes('plugins')) await setPluginsData(userData)
 
-  if (data.includes('models')) setModelsData(userData)
+  if (data.includes('models') && !userData.models) userData.models = []
 
   if (data.includes('templates') && !userData.templates) userData.templates = []
 
@@ -93,19 +93,6 @@ const setPluginsData = async (
     userData.plugins = await decrypt(userData.plugins)
   } else {
     userData.plugins = []
-  }
-}
-
-/**
- * Set models data
- * @param userData User data
- */
-const setModelsData = (userData: Partial<IUser<TUserGet>>): void => {
-  if (userData.models) {
-    //@ts-ignore
-    userData.models = userData.models.map((model) => JSON.parse(model))
-  } else {
-    userData.models = []
   }
 }
 

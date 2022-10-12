@@ -83,7 +83,7 @@ export const checkdB = async (params?: {
         const checkPool = new pg.Pool({
           host: HOST,
           port: PORT,
-          user: ADMIN,
+          user: 'postgres',
           database: 'postgres',
           password: 'password'
         })

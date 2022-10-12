@@ -12,7 +12,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": ["is-docker", "url-join", "recharts"],
+  "ignoreDeps": [],
   "lockFileMaintenance": {
     "enabled": false
   }

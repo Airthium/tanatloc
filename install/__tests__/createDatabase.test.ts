@@ -4,6 +4,8 @@
 
 import { createDatabase } from '../createDatabase'
 
+jest.mock('@airthium/pg-format', () => (str: string) => str)
+
 const mockQuery = jest.fn()
 jest.mock('@/database', () => ({
   query: async (query: string) => mockQuery(query)

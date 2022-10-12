@@ -3,6 +3,17 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Data, { errors } from '..'
 
+jest.mock('recharts', () => ({
+  CartesianGrid: () => <div />,
+  Legend: () => <div />,
+  LineChart: () => <div />,
+  Line: () => <div />,
+  ResponsiveContainer: () => <div />,
+  Tooltip: () => <div />,
+  XAxis: () => <div />,
+  YAxis: () => <div />
+}))
+
 const mockDownloadButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   DownloadButton: (props: any) => mockDownloadButton(props)

@@ -3,6 +3,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Project, { errors } from '@/components/project'
 
+jest.mock('next/dynamic', () => (callback: () => Promise<void>) => {
+  callback().catch((_err) => {})
+
+  return () => <div />
+})
+
 const mockPush = jest.fn()
 const mockReplace = jest.fn()
 jest.mock('next/router', () => ({
@@ -44,8 +50,6 @@ jest.mock('../geometry', () => {
 })
 
 jest.mock('../view', () => () => <div />)
-
-jest.mock('../data', () => () => <div />)
 
 const mockSelector = jest.fn()
 jest.mock('../simulation', () => {

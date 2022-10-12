@@ -7,18 +7,23 @@ import { exit } from 'process'
  * Custom typedeoc parser
  * @returns Deps array
  */
-depcheck.special.customTypedoc = (fileName) => {
+const customTypedoc = async (fileName) => {
   const newDeps = []
 
-  if (basename(fileName) === 'package.json') {
-    const packageJson = require(fileName)
-
-    Object.values(packageJson.scripts).forEach((script) => {
-      if (script.includes('typedoc')) {
-        newDeps.push('typedoc')
-        newDeps.push('@airthium/typedoc-plugin-airthium')
-      }
-    })
+  try {
+    if (basename(fileName) === 'package.json') {
+      const packageJson = (await import(fileName, { assert: { type: 'json' } }))
+        .default
+      Object.values(packageJson.scripts).forEach((script) => {
+        if (script.includes('typedoc')) {
+          newDeps.push('typedoc')
+          newDeps.push('@airthium/typedoc-plugin-airthium')
+        }
+        if (script.includes('depcheck')) newDeps.push('depcheck')
+      })
+    }
+  } catch (err) {
+    console.error(err)
   }
 
   return newDeps
@@ -28,18 +33,22 @@ depcheck.special.customTypedoc = (fileName) => {
  * Custom next.config.js parser
  * @returns Deps array
  */
-depcheck.special.customNext = async (fileName) => {
+const customNext = async (fileName) => {
   const newDeps = []
 
-  if (basename(fileName) === 'next.config.js') {
-    const content = await getContent(fileName)
+  try {
+    if (basename(fileName) === 'next.config.mjs') {
+      const content = await getContent(fileName)
 
-    // Get strings
-    const matches = content.matchAll(/'([^\n^']+)'/g)
-    for (const match of matches) {
-      const name = match[0].replace(/'/g, '')
-      if (name.indexOf('.') === -1) newDeps.push(name)
+      // Get strings
+      const matches = content.matchAll(/'([^\n^']+)'/g)
+      for (const match of matches) {
+        const name = match[0].replace(/'/g, '')
+        if (name.indexOf('.') === -1) newDeps.push(name)
+      }
     }
+  } catch (err) {
+    console.error(err)
   }
 
   return newDeps
@@ -49,17 +58,21 @@ depcheck.special.customNext = async (fileName) => {
  * Custom jest.config.js parser
  * @returns Deps array
  */
-depcheck.special.customJest = (fileName, deps) => {
+const customJest = async (fileName, deps) => {
   const newDeps = []
 
-  if (basename(fileName) === 'jest.config.js') {
-    newDeps.push('jest-environment-jsdom')
-    if (deps.includes('typescript')) newDeps.push('@types/jest')
+  try {
+    if (basename(fileName) === 'jest.config.js') {
+      newDeps.push('jest-environment-jsdom')
+      if (deps.includes('typescript')) newDeps.push('@types/jest')
 
-    const config = require(fileName)
-    Object.values(config.transform).forEach((value) => {
-      if (!value.includes('<rootDir>')) newDeps.push(value[0])
-    })
+      const config = (await import(fileName)).default
+      Object.values(config.transform).forEach((value) => {
+        if (!value.includes('<rootDir>')) newDeps.push(value[0])
+      })
+    }
+  } catch (err) {
+    console.error(err)
   }
 
   return newDeps
@@ -72,16 +85,15 @@ const options = {
     'electron-serve', // Mandatory for electron-store
     'form-data', // For plugins
     'node-fetch', // For plugins
-    'set-interval-async', // For plugins
     'url-join' // For plugins
   ],
   specials: [
     depcheck.special.bin,
     depcheck.special.eslint,
     depcheck.special.jest,
-    depcheck.special.customTypedoc,
-    depcheck.special.customNext,
-    depcheck.special.customJest
+    customTypedoc,
+    customNext,
+    customJest
   ]
 }
 

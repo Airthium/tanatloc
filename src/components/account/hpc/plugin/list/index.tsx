@@ -1,6 +1,5 @@
 /** @module Components.Account.HPC.Plugin.List */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
 
@@ -120,28 +119,6 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
       {list}
     </Space>
   )
-}
-
-List.propTypes = {
-  plugin: PropTypes.exact({
-    key: PropTypes.string.isRequired
-  }).isRequired,
-  plugins: PropTypes.arrayOf(
-    PropTypes.exact({
-      key: PropTypes.string.isRequired,
-      uuid: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      configuration: PropTypes.object.isRequired,
-      inUseConfiguration: PropTypes.object,
-      data: PropTypes.object,
-      needInit: PropTypes.bool,
-      needReInit: PropTypes.bool
-    }).isRequired
-  ).isRequired,
-  swr: PropTypes.exact({
-    delOnePlugin: PropTypes.func.isRequired,
-    mutateOnePlugin: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default List

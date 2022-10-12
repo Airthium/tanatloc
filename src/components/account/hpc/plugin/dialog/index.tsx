@@ -1,6 +1,5 @@
 /** @module Components.Account.HPC.Plugin.Dialog */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
 
@@ -259,22 +258,6 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
       )}
     </>
   )
-}
-
-PluginDialog.propTypes = {
-  plugin: PropTypes.exact({
-    uuid: PropTypes.string,
-    key: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    needInit: PropTypes.bool,
-    configuration: PropTypes.object.isRequired,
-    inUseConfiguration: PropTypes.object
-  }).isRequired,
-  swr: PropTypes.exact({
-    addOnePlugin: PropTypes.func,
-    mutateOnePlugin: PropTypes.func
-  }).isRequired,
-  edit: PropTypes.bool
 }
 
 export default PluginDialog

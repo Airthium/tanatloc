@@ -62,7 +62,7 @@ export const checkdB = async (params?: {
     }
 
     // Restart docker container
-    execSync('docker restart ' + id.toString())
+    execSync('docker start ' + id.toString())
 
     // Get docker host
     const host = execSync(

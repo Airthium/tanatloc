@@ -171,7 +171,7 @@ describe('lib/user', () => {
           configuration: { key: { secret: true, value: { json: 'test' } } }
         }
       ],
-      models: [{}],
+      models: ['{}'],
       templates: []
     })
   })

@@ -1,6 +1,5 @@
 /** @module Components.Account.HPC.Plugin.Delete */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Typography } from 'antd'
 
@@ -86,16 +85,6 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
       Delete
     </DeleteButton>
   )
-}
-
-Delete.propTypes = {
-  plugin: PropTypes.exact({
-    uuid: PropTypes.string.isRequired,
-    configuration: PropTypes.object.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    delOnePlugin: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Delete

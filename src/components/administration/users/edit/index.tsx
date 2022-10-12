@@ -1,6 +1,5 @@
 /** @module Components.Administration.User.Delete */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Checkbox, Form, Input, Select } from 'antd'
 
@@ -171,26 +170,6 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
       </EditButton>
     </>
   )
-}
-
-Edit.propTypes = {
-  plugins: PropTypes.arrayOf(
-    PropTypes.exact({
-      key: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired,
-    superuser: PropTypes.bool.isRequired
-  }).isRequired,
-  swr: PropTypes.exact({
-    mutateOneUser: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Edit

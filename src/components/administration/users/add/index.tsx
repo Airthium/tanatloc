@@ -1,6 +1,5 @@
 /** @module Components.Administration.User.Add */
 
-import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Checkbox, Form, Input, Select } from 'antd'
 
@@ -173,18 +172,6 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
       <AddButton onAdd={() => setVisible(true)}>New user</AddButton>
     </>
   )
-}
-
-Add.propTypes = {
-  plugins: PropTypes.arrayOf(
-    PropTypes.exact({
-      key: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  swr: PropTypes.exact({
-    addOneUser: PropTypes.func.isRequired
-  }).isRequired
 }
 
 export default Add

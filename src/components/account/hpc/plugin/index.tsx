@@ -1,7 +1,6 @@
 /** @module Components.Account.HPC.Plugin */
 
 import { useEffect } from 'react'
-import PropTypes from 'prop-types'
 import { Space, Spin } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -75,16 +74,6 @@ const Plugin = ({ plugin }: IProps): JSX.Element => {
         />
       </Space>
     )
-}
-
-Plugin.propTypes = {
-  plugin: PropTypes.exact({
-    key: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    needInit: PropTypes.bool,
-    configuration: PropTypes.object.isRequired,
-    inUseConfiguration: PropTypes.object
-  }).isRequired
 }
 
 export default Plugin

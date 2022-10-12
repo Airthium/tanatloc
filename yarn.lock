@@ -5,10 +5,10 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@airthium/pg-format@npm:1.0.9":
-  version: 1.0.9
-  resolution: "@airthium/pg-format@npm:1.0.9"
-  checksum: 10353053779256846f6078b1f0743e22299a8bd5480bcdc0b85aee0ec2cc2b20aa5930041744d30a2f535aa2b020f6f68979f7f79bd5e05a9fef9ab8eadef87e
+"@airthium/pg-format@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@airthium/pg-format@npm:2.0.0"
+  checksum: 995f45a9fbe45125ca67c3097826cfee4e3b7415eda6aad8b6dd5fff40ec222445621f019d39125eaed12e667f635161a1f3bee24bf996869a2b5b209031500a
   languageName: node
   linkType: hard
 
@@ -9904,7 +9904,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
-    "@airthium/pg-format": 1.0.9
+    "@airthium/pg-format": 2.0.0
     "@airthium/typedoc-plugin-airthium": 1.0.9
     "@ant-design/icons": 4.7.0
     "@babel/core": 7.19.3

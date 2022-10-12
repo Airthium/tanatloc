@@ -45,7 +45,7 @@
     "electron-store": "8.1.0"
   },
   "devDependencies": {
-    "@airthium/pg-format": "1.0.9",
+    "@airthium/pg-format": "2.0.0",
     "@airthium/typedoc-plugin-airthium": "1.0.9",
     "@ant-design/icons": "4.7.0",
     "@babel/core": "7.19.3",

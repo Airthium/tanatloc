@@ -29,7 +29,7 @@ const docker = (
     process.platform === 'win32' ? 1000 : execSync('id -g').toString().trim()
 
   // Temp
-  const temp = process.platform === 'win32' ? '/tmp/' + id : id
+  const temp = process.platform === 'win32' ? id : '/tmp/' + id
 
   // Command
   const run = spawn(

@@ -36,7 +36,7 @@ const docker = (
     'docker',
     [
       'run',
-      '--platform linux/amd64',
+      '--platform=linux/amd64',
       '--cidfile=' + temp,
       '--volume=' + bindPath + ':/workingPath',
       dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',

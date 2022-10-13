@@ -75,7 +75,7 @@ export const createDatabase = async (): Promise<void> => {
       host: HOST,
       port: PORT,
       user: process.env.DB_ADMIN || ADMIN,
-      database: ADMIN_DATABASE,
+      database: process.env.DB_ADMIN_DATABASE || ADMIN_DATABASE,
       password: process.env.DB_ADMIN_PASSWORD || ADMIN_PASSWORD
     })
     client = await pool.connect()
@@ -120,7 +120,7 @@ export const createDatabase = async (): Promise<void> => {
 
     // Close
     client.release()
-    pool.end()
+    await pool.end()
 
     // New pool
     pool = new pg.Pool({
@@ -139,7 +139,7 @@ export const createDatabase = async (): Promise<void> => {
 
     // Close
     client.release()
-    pool.end()
+    await pool.end()
 
     await createTables()
   } catch (err) {

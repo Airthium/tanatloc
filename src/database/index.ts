@@ -70,8 +70,9 @@ export const checkdB = async (params?: {
     )
     console.info('- docker host: ' + host.toString().trim())
     await params?.addStatus('Database found on ' + host.toString().trim())
-    process.env.DB_ADMIN_PASSWORD = 'password'
     process.env.DB_ADMIN = 'postgres'
+    process.env.DB_ADMIN_PASSWORD = 'password'
+    process.env.DB_ADMIN_DATABASE = 'postgres'
 
     // Wait postgres start
     let ready: boolean = false
@@ -88,7 +89,7 @@ export const checkdB = async (params?: {
           password: 'password'
         })
         await checkPool.query('SELECT NOW()')
-        checkPool.end()
+        await checkPool.end()
         ready = true
         console.info('- Database ready')
         await params?.addStatus('Database ready')

@@ -56,8 +56,12 @@ describe('components/account/hpc/list', () => {
                 type: 'textarea',
                 value: 'code'
               },
+              item1: {
+                label: 'Item1',
+                type: 'input'
+              },
               //@ts-ignore
-              item: { value: 'item' }
+              item2: { value: 'item' }
             }
           }
         ]}

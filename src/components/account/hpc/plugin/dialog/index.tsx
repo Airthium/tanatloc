@@ -1,7 +1,8 @@
 /** @module Components.Account.HPC.Plugin.Dialog */
 
 import { useState, useEffect } from 'react'
-import { Form, Input, Select } from 'antd'
+import { Form, Input, Select, Typography } from 'antd'
+import parse from 'html-react-parser'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -240,14 +241,17 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         }}
         loading={loading}
       >
-        {Object.keys(plugin.configuration).map((key) => {
-          const item = plugin.configuration[key]
-          if (item.type === 'input') return inputItem(item, key)
-          else if (item.type === 'textarea') return textareaItem(item, key)
-          else if (item.type === 'password') return passwordItem(item, key)
-          else if (item.type === 'select') return selectItem(item, key)
-          else return <></>
-        })}
+        <>
+          <Typography.Text>{parse(plugin.description || '')}</Typography.Text>
+          {Object.keys(plugin.configuration).map((key) => {
+            const item = plugin.configuration[key]
+            if (item.type === 'input') return inputItem(item, key)
+            else if (item.type === 'textarea') return textareaItem(item, key)
+            else if (item.type === 'password') return passwordItem(item, key)
+            else if (item.type === 'select') return selectItem(item, key)
+            else return <></>
+          })}
+        </>
       </Dialog>
       {edit ? (
         <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>

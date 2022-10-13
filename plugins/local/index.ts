@@ -14,7 +14,17 @@ const Local: IPlugin = {
   key: 'local',
   client: {
     name: 'Local',
-    description: '<p>Local</p>',
+    description: `<div>
+  <p>
+    The default configuration, without Gmsh path and FreeFEM path, uses the tanatloc/worker Docker.
+  </p>
+  <p>
+    If you want to use a custom Gmsh, installed in your machine, you can set Gmsh path, i.e. <code>/usr/bin/gmsh</code>
+  </p>
+  <p>
+    If you want to use a custom FreeFEM, installed in your machine, you can set FreeFEM path, i.e. <code>/usr/bin/FreeFem++-mpi</code>
+  </p>
+</div>`,
     configuration: {
       name: {
         label: 'Name',

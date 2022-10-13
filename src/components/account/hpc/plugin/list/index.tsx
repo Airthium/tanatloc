@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
+import parse from 'html-react-parser'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -55,7 +56,9 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
               content = <Typography.Text>******</Typography.Text>
             } else {
               content = (
-                <Typography.Text>{configuration[key].value}</Typography.Text>
+                <Typography.Text>
+                  {configuration[key].value || 'unset'}
+                </Typography.Text>
               )
             }
 
@@ -98,11 +101,14 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
               />
             ]}
           >
-            {children.length ? (
-              children
-            ) : (
-              <Typography.Text>No configuration data</Typography.Text>
-            )}
+            <>
+              <Typography.Text>{parse(p.description || '')}</Typography.Text>
+              {children.length ? (
+                children
+              ) : (
+                <Typography.Text>No configuration data</Typography.Text>
+              )}
+            </>
           </Card>
         )
       })

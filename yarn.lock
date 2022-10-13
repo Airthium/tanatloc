@@ -5,17 +5,17 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@airthium/pg-format@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@airthium/pg-format@npm:2.0.0"
-  checksum: 995f45a9fbe45125ca67c3097826cfee4e3b7415eda6aad8b6dd5fff40ec222445621f019d39125eaed12e667f635161a1f3bee24bf996869a2b5b209031500a
+"@airthium/pg-format@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@airthium/pg-format@npm:2.0.1"
+  checksum: 08d00a16dbc80cdefc953d9613be5c229cd5a5dc9b9d1bff13cc945eceea0ddf54a9a71806d47ece4897437690a177218df9be5b0249132238cf3b0a7e26fffd
   languageName: node
   linkType: hard
 
-"@airthium/typedoc-plugin-airthium@npm:1.0.9":
-  version: 1.0.9
-  resolution: "@airthium/typedoc-plugin-airthium@npm:1.0.9"
-  checksum: 5c3f28e9283ad293107e664dd15d2c4ac2e37f5ca62951282f311b115bc0c23848090defb0f7a9a007296e4c840c3fbb84672f86308bc5cb9cdfb82b6323f84b
+"@airthium/typedoc-plugin-airthium@npm:1.0.10":
+  version: 1.0.10
+  resolution: "@airthium/typedoc-plugin-airthium@npm:1.0.10"
+  checksum: 6e436daaae136f865adfd9876a51e56922fc5a395a96b948fafe80333118283d75e28227c573b7fbad4b3ec375da9ade900daaf8448f030bf45c4bf0412fa578
   languageName: node
   linkType: hard
 
@@ -1324,126 +1324,126 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm-eabi@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-android-arm-eabi@npm:1.3.6"
+"@swc/core-android-arm-eabi@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-android-arm-eabi@npm:1.3.7"
   dependencies:
     "@swc/wasm": 1.2.122
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm64@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-android-arm64@npm:1.3.6"
+"@swc/core-android-arm64@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-android-arm64@npm:1.3.7"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-darwin-arm64@npm:1.3.6"
+"@swc/core-darwin-arm64@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-darwin-arm64@npm:1.3.7"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-darwin-x64@npm:1.3.6"
+"@swc/core-darwin-x64@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-darwin-x64@npm:1.3.7"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-freebsd-x64@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-freebsd-x64@npm:1.3.6"
+"@swc/core-freebsd-x64@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-freebsd-x64@npm:1.3.7"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.6"
+"@swc/core-linux-arm-gnueabihf@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.7"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.6"
+"@swc/core-linux-arm64-gnu@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.7"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-linux-arm64-musl@npm:1.3.6"
+"@swc/core-linux-arm64-musl@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-linux-arm64-musl@npm:1.3.7"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-linux-x64-gnu@npm:1.3.6"
+"@swc/core-linux-x64-gnu@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-linux-x64-gnu@npm:1.3.7"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-linux-x64-musl@npm:1.3.6"
+"@swc/core-linux-x64-musl@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-linux-x64-musl@npm:1.3.7"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.6"
+"@swc/core-win32-arm64-msvc@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.7"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.6"
+"@swc/core-win32-ia32-msvc@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.7"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core-win32-x64-msvc@npm:1.3.6"
+"@swc/core-win32-x64-msvc@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core-win32-x64-msvc@npm:1.3.7"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core@npm:1.3.6":
-  version: 1.3.6
-  resolution: "@swc/core@npm:1.3.6"
+"@swc/core@npm:1.3.7":
+  version: 1.3.7
+  resolution: "@swc/core@npm:1.3.7"
   dependencies:
-    "@swc/core-android-arm-eabi": 1.3.6
-    "@swc/core-android-arm64": 1.3.6
-    "@swc/core-darwin-arm64": 1.3.6
-    "@swc/core-darwin-x64": 1.3.6
-    "@swc/core-freebsd-x64": 1.3.6
-    "@swc/core-linux-arm-gnueabihf": 1.3.6
-    "@swc/core-linux-arm64-gnu": 1.3.6
-    "@swc/core-linux-arm64-musl": 1.3.6
-    "@swc/core-linux-x64-gnu": 1.3.6
-    "@swc/core-linux-x64-musl": 1.3.6
-    "@swc/core-win32-arm64-msvc": 1.3.6
-    "@swc/core-win32-ia32-msvc": 1.3.6
-    "@swc/core-win32-x64-msvc": 1.3.6
+    "@swc/core-android-arm-eabi": 1.3.7
+    "@swc/core-android-arm64": 1.3.7
+    "@swc/core-darwin-arm64": 1.3.7
+    "@swc/core-darwin-x64": 1.3.7
+    "@swc/core-freebsd-x64": 1.3.7
+    "@swc/core-linux-arm-gnueabihf": 1.3.7
+    "@swc/core-linux-arm64-gnu": 1.3.7
+    "@swc/core-linux-arm64-musl": 1.3.7
+    "@swc/core-linux-x64-gnu": 1.3.7
+    "@swc/core-linux-x64-musl": 1.3.7
+    "@swc/core-win32-arm64-msvc": 1.3.7
+    "@swc/core-win32-ia32-msvc": 1.3.7
+    "@swc/core-win32-x64-msvc": 1.3.7
   dependenciesMeta:
     "@swc/core-android-arm-eabi":
       optional: true
@@ -1473,7 +1473,7 @@ __metadata:
       optional: true
   bin:
     swcx: run_swcx.js
-  checksum: be35bdb0f723863c7bc88138e1e850b4711a4c67307186f8b06a5defb24710f16eb552eda698441b82022f30cbe076ea47f4308f66f1e6dd98ff44d2e6047929
+  checksum: 1f3604ef3555130366fdde34b3a1b5d4d4e58d67cfa77a71cd150125ea67b6fb66485ebe48e61980629a2abbb5f23f012fc3c9aace3086d75ad96d8a8bb1d71d
   languageName: node
   linkType: hard
 
@@ -3978,16 +3978,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:21.1.0":
-  version: 21.1.0
-  resolution: "electron@npm:21.1.0"
+"electron@npm:21.1.1":
+  version: 21.1.1
+  resolution: "electron@npm:21.1.1"
   dependencies:
     "@electron/get": ^1.14.1
     "@types/node": ^16.11.26
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: ca74353bd645cfbaa427a813d1d20e621b115ad657dd138482a55573f87f9fe4157522977e5485b4707003a794f61fa0b074a74d8092a5fa86c9d094a9bcf054
+  checksum: 5bd00fe7d89f1ade2fbea7399ef34ec8d43a3f44b656bfe3813b660451ee0c0694caa9e31c8b6031065375b1956fd8b700e2be49228440f1005a04e9a5f84758
   languageName: node
   linkType: hard
 
@@ -9904,15 +9904,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
-    "@airthium/pg-format": 2.0.0
-    "@airthium/typedoc-plugin-airthium": 1.0.9
+    "@airthium/pg-format": 2.0.1
+    "@airthium/typedoc-plugin-airthium": 1.0.10
     "@ant-design/icons": 4.7.0
     "@babel/core": 7.19.3
     "@hapi/iron": 7.0.0
     "@sentry/browser": 7.15.0
     "@sentry/node": 7.15.0
     "@swc/cli": 0.1.57
-    "@swc/core": 1.3.6
+    "@swc/core": 1.3.7
     "@testing-library/react": 13.4.0
     "@types/archiver": 5.3.1
     "@types/cookie": 0.5.1
@@ -9939,7 +9939,7 @@ __metadata:
     deep-object-diff: 1.1.7
     depcheck: 1.4.3
     ejs: 3.1.8
-    electron: 21.1.0
+    electron: 21.1.1
     electron-serve: 1.1.0
     electron-store: 8.1.0
     email-addresses: 5.0.0

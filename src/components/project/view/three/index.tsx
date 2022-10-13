@@ -481,6 +481,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       boundingBox: Box3
       boundingSphere: Sphere
     }
+    scene.current.boundingBox = new Box3()
+    scene.current.boundingSphere = new Sphere()
 
     // Camera
     camera.current = new PerspectiveCamera(50, width / height, 0.1, 1000)

@@ -28,12 +28,15 @@ const docker = (
   const group =
     process.platform === 'win32' ? 1000 : execSync('id -g').toString().trim()
 
+  // Temp
+  const temp = process.platform === 'win32' ? '/tmp/' + id : id
+
   // Command
   const run = spawn(
     'docker',
     [
       'run',
-      '--cidfile=' + id,
+      '--cidfile=' + temp,
       '--volume=' + bindPath + ':/workingPath',
       dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
       '-w=/workingPath',
@@ -46,8 +49,8 @@ const docker = (
 
   run.on('close', () => {
     try {
-      const containerId = fs.readFileSync(id)
-      fs.unlinkSync(id)
+      const containerId = fs.readFileSync(temp)
+      fs.unlinkSync(temp)
       execSync('docker rm ' + containerId.toString())
     } catch (err) {
       console.error(err)

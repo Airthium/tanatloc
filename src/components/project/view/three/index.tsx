@@ -474,7 +474,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
     let width = currentMount.clientWidth
     let height = currentMount.clientHeight
-    let frameId: number | undefined
+    let frameId: number
 
     // Scene
     scene.current = new Scene() as Scene & {
@@ -640,8 +640,9 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
      * Animate
      */
     const animate = (): void => {
+      stop()
       renderScene()
-      /*frameId = */ requestAnimationFrame(animate)
+      frameId = requestAnimationFrame(animate)
     }
 
     /**
@@ -655,8 +656,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
      * Stop animate
      */
     const stop = (): void => {
-      frameId && cancelAnimationFrame(frameId)
-      frameId = undefined
+      cancelAnimationFrame(frameId)
     }
 
     // Event listeners

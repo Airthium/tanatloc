@@ -70,9 +70,6 @@ export const checkdB = async (params?: {
     )
     console.info('- docker host: ' + host.toString().trim())
     await params?.addStatus('Database found on ' + host.toString().trim())
-    process.env.DB_ADMIN = 'postgres'
-    process.env.DB_ADMIN_PASSWORD = 'password'
-    process.env.DB_ADMIN_DATABASE = 'postgres'
 
     // Wait postgres start
     let ready: boolean = false
@@ -100,6 +97,10 @@ export const checkdB = async (params?: {
 
     error = 'Unable to start database'
     if (!ready) throw new Error()
+
+    process.env.DB_ADMIN = 'postgres'
+    process.env.DB_ADMIN_PASSWORD = 'password'
+    process.env.DB_ADMIN_DATABASE = 'postgres'
 
     return
   } catch (err) {}

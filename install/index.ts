@@ -29,7 +29,7 @@ export const initDockers = async (params?: {
     execSync('docker image inspect postgres')
   } catch (err) {
     await params?.addStatus('Pulling postgres')
-    execSync('docker pull postgres')
+    execSync('docker pull postgres:14')
   }
 }
 

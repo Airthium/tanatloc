@@ -64,6 +64,8 @@ export const checkdB = async (params?: {
     // Restart docker container
     execSync('docker start ' + id.toString())
 
+    await new Promise((resolve) => setTimeout(resolve, 1_000))
+
     // Get docker host
     const host = execSync(
       'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'

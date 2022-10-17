@@ -78,6 +78,13 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
                 <Typography.Title level={3} className="no-margin">
                   An error occurs
                 </Typography.Title>
+                <a
+                  href="https://github.com/Airthium/tanatloc/issues/new/choose"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open an issue
+                </a>
               </>
             ) : (
               <>

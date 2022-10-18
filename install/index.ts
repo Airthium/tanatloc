@@ -21,6 +21,7 @@ export const initDockers = async (params?: {
   // tanatloc/worker
   try {
     await params?.addStatus('Updating tanatloc/worker')
+    console.info('Updating tanatloc/worker')
     execSync('docker pull tanatloc/worker')
   } catch (err) {}
 
@@ -29,6 +30,7 @@ export const initDockers = async (params?: {
     execSync('docker image inspect postgres')
   } catch (err) {
     await params?.addStatus('Pulling postgres')
+    console.info('Pulling postgres')
     execSync('docker pull postgres:14')
   }
 }

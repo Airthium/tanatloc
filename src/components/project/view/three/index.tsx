@@ -47,6 +47,9 @@ import {
 } from 'three'
 import { v4 } from 'uuid'
 
+import { IFrontProject } from '@/api/index.d'
+import { IGeometryPart } from '@/lib/index.d'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -73,7 +76,6 @@ import {
 import { IPointHelper, PointHelper } from '@/lib/three/helpers/PointHelper'
 
 import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
-import { IGeometryPart } from '@/lib/index.d'
 
 import { ISelectAction, SelectContext } from '@/context/select'
 import {
@@ -85,7 +87,6 @@ import {
   setPoint
 } from '@/context/select/actions'
 
-import { IFrontProject } from '@/api/index.d'
 import AvatarAPI from '@/api/avatar'
 
 /**

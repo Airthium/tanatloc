@@ -11,6 +11,11 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Spin: () => <div />
+}))
+
 jest.mock('uuid', () => ({
   v4: () => 'uuid'
 }))

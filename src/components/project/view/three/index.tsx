@@ -967,14 +967,6 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
               onChange={toggleTransparent}
             />
           </Tooltip>
-          <Tooltip title="Display mesh" placement="right">
-            <Switch
-              checked={displayMesh}
-              checkedChildren={<TableOutlined />}
-              unCheckedChildren={<TableOutlined />}
-              onChange={toggleDisplayMesh}
-            />
-          </Tooltip>
 
           <Divider className="no-margin" />
 
@@ -1071,6 +1063,17 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
               </Tooltip>
             </>
           )}
+
+          <Divider className="no-margin" />
+
+          <Tooltip title="Display mesh" placement="right">
+            <Switch
+              checked={displayMesh}
+              checkedChildren={<TableOutlined />}
+              unCheckedChildren={<TableOutlined />}
+              onChange={toggleDisplayMesh}
+            />
+          </Tooltip>
         </div>
       </Layout.Header>
       <Layout.Content className="View-content no-scroll">

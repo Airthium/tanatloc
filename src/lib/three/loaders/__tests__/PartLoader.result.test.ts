@@ -63,14 +63,16 @@ const mockFinish = jest.fn(() => ({
               uuid: 'uuide1',
               label: 1
             },
-            add: jest.fn()
+            add: jest.fn(),
+            traverse: jest.fn()
           },
           {
             type: 'Object3D',
             userData: {
               uuid: 'uuide2',
               label: 2
-            }
+            },
+            traverse: jest.fn()
           },
           {
             type: 'Mesh',
@@ -89,7 +91,11 @@ const mockFinish = jest.fn(() => ({
               uuid: 'uuide3',
               label: 1
             },
-            add: jest.fn()
+            add: jest.fn(),
+            traverse: (callback: Function) => {
+              callback({ type: 'LineSegments' })
+              callback({ type: 'Mesh' })
+            }
           },
           {
             type: 'Line',
@@ -108,9 +114,11 @@ const mockFinish = jest.fn(() => ({
               uuid: 'uuide3',
               label: 1
             },
-            add: jest.fn()
+            add: jest.fn(),
+            traverse: jest.fn()
           }
-        ]
+        ],
+        traverse: jest.fn()
       }
     ],
     userData: {
@@ -186,6 +194,12 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('load', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    await partLoader.load(part, true, clippingPlane)
+    await partLoader.load(part, true, true, clippingPlane)
+  })
+
+  test('displayMesh', async () => {
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
+    mesh.setDisplayMesh(false)
   })
 })

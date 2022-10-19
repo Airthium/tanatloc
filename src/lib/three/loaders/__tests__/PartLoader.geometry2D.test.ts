@@ -51,7 +51,8 @@ const mockFinish = jest.fn(() => ({
             userData: {
               uuid: 'uuide1',
               label: 1
-            }
+            },
+            traverse: jest.fn()
           },
           {
             type: 'Mesh',
@@ -68,9 +69,11 @@ const mockFinish = jest.fn(() => ({
             userData: {
               uuid: 'uuide2',
               label: 2
-            }
+            },
+            traverse: jest.fn()
           }
-        ]
+        ],
+        traverse: jest.fn()
       }
     ],
     userData: {
@@ -153,14 +156,14 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('load', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    await partLoader.load(part, true, clippingPlane)
+    await partLoader.load(part, true, true, clippingPlane)
   })
 
   test('mouseMove - faces', async () => {
     let current
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     // Empty
@@ -192,7 +195,7 @@ describe('lib/three/loaders/PartLoader', () => {
     let current
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'edges')
 
     // Empty

@@ -41,7 +41,8 @@ const mockFinish = jest.fn(() => ({
             userData: {
               uuid: 'uuidf1',
               label: 1
-            }
+            },
+            traverse: jest.fn()
           },
           {
             type: 'Mesh',
@@ -58,7 +59,8 @@ const mockFinish = jest.fn(() => ({
             userData: {
               uuid: 'uuidf2',
               label: 2
-            }
+            },
+            traverse: jest.fn()
           }
         ],
         userData: {
@@ -149,14 +151,14 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('load', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    await partLoader.load(part, true, clippingPlane)
+    await partLoader.load(part, true, true, clippingPlane)
 
     // GLTF error
     mockGLTFError.mockImplementation((callback) =>
       callback(new Error('gltf error'))
     )
     try {
-      await partLoader.load(part, true, clippingPlane)
+      await partLoader.load(part, true, true, clippingPlane)
       expect(true).toBe(false)
     } catch (err: any) {
       expect(err.message).toBe('gltf error')
@@ -165,20 +167,20 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('dispose', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.dispose()
   })
 
   test('setTransparent', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    let mesh = await partLoader.load(part, true, clippingPlane)
+    let mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.setTransparent(true)
     mesh.setTransparent(false)
   })
 
   test('startSelection', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
@@ -190,7 +192,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('stopSelection', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.stopSelection()
 
     // Add selection
@@ -205,14 +207,14 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('getHighlighted', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, false, clippingPlane)
+    const mesh = await partLoader.load(part, false, true, clippingPlane)
     const highlighted = mesh.getHighlighted()
     expect(highlighted).toBe(null)
   })
 
   test('getSelected', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     const selected = mesh.getSelected()
     expect(selected).toEqual([])
   })
@@ -221,7 +223,7 @@ describe('lib/three/loaders/PartLoader', () => {
     let current
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
 
     // Empty
@@ -249,7 +251,7 @@ describe('lib/three/loaders/PartLoader', () => {
     let current
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     // Empty
@@ -268,7 +270,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('mouseMove - point', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'point')
 
     // Empty
@@ -286,7 +288,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('highlight', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
@@ -303,7 +305,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('unhighlight', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
@@ -328,7 +330,7 @@ describe('lib/three/loaders/PartLoader', () => {
     let current
     mouseDownEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseDown()
@@ -342,7 +344,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('select', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
@@ -363,7 +365,7 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('unselect', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part, true, clippingPlane)
+    const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
     mesh.startSelection(renderer, camera, outlinePass, 'solids')

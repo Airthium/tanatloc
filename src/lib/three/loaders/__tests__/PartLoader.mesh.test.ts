@@ -52,16 +52,19 @@ const mockFinish = jest.fn(() => ({
               uuid: 'uuide1',
               label: 1
             },
-            add: jest.fn()
+            add: jest.fn(),
+            traverse: jest.fn()
           },
           {
             type: 'Object3D',
             userData: {
               uuid: 'uuide2',
               label: 2
-            }
+            },
+            traverse: jest.fn()
           }
-        ]
+        ],
+        traverse: jest.fn()
       }
     ],
     userData: {
@@ -137,6 +140,6 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('load', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    await partLoader.load(part, true, clippingPlane)
+    await partLoader.load(part, true, true, clippingPlane)
   })
 })

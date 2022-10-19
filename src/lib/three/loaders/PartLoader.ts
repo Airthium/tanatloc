@@ -331,6 +331,7 @@ const PartLoader = (
    * @param displayMesh Display mesh
    */
   const setDisplayMesh = (part: IPart, displayMesh: boolean): void => {
+    if (part.userData.type !== 'result') return
     part.traverse((child) => {
       child.traverse((subChild) => {
         if (subChild.type === 'LineSegments') {

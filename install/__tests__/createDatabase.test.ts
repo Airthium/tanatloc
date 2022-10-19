@@ -60,7 +60,8 @@ describe('install/dB', () => {
   test('alreadyExists', async () => {
     mockClient.mockImplementation(() => ({
       query: async () => ({
-        rowCount: 1
+        rowCount: 1,
+        rows: [{ schema_name: 'TANATLOCSCHEMA' }]
       }),
       release: jest.fn()
     }))

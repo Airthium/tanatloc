@@ -139,7 +139,7 @@ export const createDatabase = async (): Promise<void> => {
       'SELECT schema_name FROM information_schema.schemata'
     )
     if (
-      checkSchema.rows.find((row) => row.schema_name.toUpperCase() === SCHEMA)
+      checkSchema?.rows?.find((row) => row.schema_name.toUpperCase() === SCHEMA)
     ) {
       console.info('   -- Schema already exists')
     } else {
@@ -258,7 +258,7 @@ const checkTable = async (table: string): Promise<boolean> => {
   if (exists) {
     console.warn(' - Table ' + table + ' already exists')
   } else {
-    console.warn(' - Create')
+    console.info(' - Create')
   }
 
   return exists

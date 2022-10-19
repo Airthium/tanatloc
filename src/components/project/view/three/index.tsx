@@ -31,7 +31,8 @@ import {
   RadiusUprightOutlined,
   ScissorOutlined,
   StopOutlined,
-  RetweetOutlined
+  RetweetOutlined,
+  TableOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
@@ -247,6 +248,7 @@ export const zoomToFit = (
  * Load part
  * @param part Part
  * @param transparent Transparent
+ * @param displayMesh Display mesh
  * @param scene Scene
  * @param camera Camera
  * @param controls Controls
@@ -255,10 +257,13 @@ export const zoomToFit = (
  */
 export const loadPart = async (
   part: IGeometryPart,
-  transparent: boolean,
   scene: Scene & { boundingSphere: Sphere },
   camera: PerspectiveCamera,
   controls: TrackballControls,
+  options: {
+    transparent: boolean
+    displayMesh: boolean
+  },
   helpers: {
     gridHelper: IGridHelper
     sectionViewHelper: ISectionViewHelper
@@ -299,7 +304,8 @@ export const loadPart = async (
   const loader = PartLoader(mouseMoveEvent, mouseDownEvent)
   const mesh = await loader.load(
     part,
-    transparent,
+    options.transparent,
+    options.displayMesh,
     helpers.sectionViewHelper.getClippingPlane()
   )
   dispatch(setPart(mesh))
@@ -446,6 +452,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   // State
   const [transparent, setTransparent] = useState<boolean>(false)
+  const [displayMesh, setDisplayMesh] = useState<boolean>(true)
   const [sectionView, setSectionView] = useState<boolean>(false)
   const [screenshot, setScreenshot] = useState<boolean>(false)
   const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
@@ -712,10 +719,13 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       // Load
       loadPart(
         part,
-        transparent,
         scene.current,
         camera.current!,
         controls.current!,
+        {
+          transparent,
+          displayMesh
+        },
         {
           gridHelper: gridHelper.current!,
           sectionViewHelper: sectionViewHelper.current!,
@@ -737,7 +747,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       // PointHelper
       pointHelper.current?.build()
     }
-  }, [part, transparent, dispatch])
+  }, [part, transparent, displayMesh, dispatch])
 
   // Dimension
   useEffect(() => {
@@ -849,6 +859,16 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     })
   }, [])
 
+  const toggleDisplayMesh = useCallback((checked: boolean) => {
+    setDisplayMesh(checked)
+    scene.current!.children.forEach((child) => {
+      if (child.type === 'Part') {
+        const partChild = child as IPart
+        partChild.setDisplayMesh(checked)
+      }
+    })
+  }, [])
+
   /**
    * Toggle section view
    */
@@ -941,11 +961,18 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           </Tooltip>
           <Tooltip title="Set transparency" placement="right">
             <Switch
-              className="transparent"
               checked={transparent}
               checkedChildren={<RadiusUprightOutlined />}
               unCheckedChildren={<RadiusUprightOutlined />}
               onChange={toggleTransparent}
+            />
+          </Tooltip>
+          <Tooltip title="Display mesh" placement="right">
+            <Switch
+              checked={displayMesh}
+              checkedChildren={<TableOutlined />}
+              unCheckedChildren={<TableOutlined />}
+              onChange={toggleDisplayMesh}
             />
           </Tooltip>
 

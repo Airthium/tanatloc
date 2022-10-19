@@ -31,6 +31,7 @@ export interface IPartLoader {
   load: (
     part: IGeometryPart,
     transparent: boolean,
+    displayMesh: boolean,
     clippingPlane: Plane
   ) => Promise<IPart>
 }
@@ -60,6 +61,7 @@ export interface IPart extends Object3D {
   children: (IPartObject | IPartMesh)[]
   dispose: () => void
   setTransparent: (transparent: boolean) => void
+  setDisplayMesh: (displayMesh: boolean) => void
   startSelection: (
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
@@ -209,6 +211,7 @@ const PartLoader = (
   const load = async (
     part: IGeometryPart,
     transparent: boolean,
+    displayMesh: boolean,
     clippingPlane: Plane
   ): Promise<IPart> => {
     const blob = new Blob([Buffer.from(part.buffer)])
@@ -252,10 +255,14 @@ const PartLoader = (
     // Transparency
     setTransparent(object, transparent)
 
+    // Display mesh
+    setDisplayMesh(object, displayMesh)
+
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
 
     object.setTransparent = (transp: boolean) => setTransparent(object, transp)
+    object.setDisplayMesh = (disp: boolean) => setDisplayMesh(object, disp)
 
     object.startSelection = (
       renderer: WebGLRenderer,
@@ -315,6 +322,22 @@ const PartLoader = (
         mesh.material.opacity = transparent ? 0.5 : 1
         mesh.material.depthWrite = !transparent
       }
+    })
+  }
+
+  /**
+   * Set display mesh
+   * @param part Part
+   * @param displayMesh Display mesh
+   */
+  const setDisplayMesh = (part: IPart, displayMesh: boolean): void => {
+    part.traverse((child) => {
+      child.traverse((subChild) => {
+        if (subChild.type === 'LineSegments') {
+          const mesh = subChild as IPartMesh
+          mesh.visible = displayMesh
+        }
+      })
     })
   }
 

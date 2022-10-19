@@ -44,7 +44,7 @@ export const checkdB = async (params?: {
 
     if (!id.length) {
       id = execSync(
-        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:14'
+        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres'
       )
 
       if (!id.length)

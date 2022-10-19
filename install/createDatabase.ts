@@ -17,7 +17,8 @@ import {
   DATABASE,
   PASSWORD,
   tables,
-  schemas
+  schemas,
+  SCHEMA
 } from '@/config/db'
 import { query } from '@/database'
 
@@ -80,19 +81,6 @@ export const createDatabase = async (): Promise<void> => {
     })
     client = await pool.connect()
 
-    // Database
-    console.info(' + Create database')
-    const checkDatabase = await client.query(
-      'SELECT FROM pg_database WHERE datname = $1',
-      [DATABASE]
-    )
-    if (checkDatabase.rowCount === 0) {
-      const createDatabaseQuery = format('CREATE DATABASE %s', DATABASE)
-      await client.query(createDatabaseQuery)
-    } else {
-      console.info('   -- Database already exists')
-    }
-
     // User
     console.info(' + Create user')
     const checkUser = await client.query(
@@ -108,6 +96,19 @@ export const createDatabase = async (): Promise<void> => {
       await client.query(createUserQuery)
     } else {
       console.info('   -- User already exists')
+    }
+
+    // Database
+    console.info(' + Create database')
+    const checkDatabase = await client.query(
+      'SELECT FROM pg_database WHERE datname = $1',
+      [DATABASE]
+    )
+    if (checkDatabase.rowCount === 0) {
+      const createDatabaseQuery = format('CREATE DATABASE %s', DATABASE)
+      await client.query(createDatabaseQuery)
+    } else {
+      console.info('   -- Database already exists')
     }
 
     // Privileges
@@ -132,9 +133,38 @@ export const createDatabase = async (): Promise<void> => {
     })
     client = await pool.connect()
 
+    // Schema
+    console.info(' + Create schema')
+    const checkSchema = await client.query(
+      'SELECT schema_name FROM information_schema.schemata'
+    )
+    if (
+      checkSchema.rows.find((row) => row.schema_name.toUpperCase() === SCHEMA)
+    ) {
+      console.info('   -- Schema already exists')
+    } else {
+      const schemaQuery = format(
+        'CREATE SCHEMA %s AUTHORIZATION %s',
+        SCHEMA,
+        USER
+      )
+      await client.query(schemaQuery)
+    }
+
+    const alterQuery = format(
+      'ALTER USER %s SET search_path = %s',
+      USER,
+      SCHEMA
+    )
+    await client.query(alterQuery)
+
     // Crypto
     console.info(' + Install pgcrypto extension')
-    await client.query('CREATE EXTENSION IF NOT EXISTS pgcrypto')
+    const cryptoQuery = format(
+      'CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA %s',
+      SCHEMA
+    )
+    await client.query(cryptoQuery)
     console.info('   -- Done')
 
     // Close

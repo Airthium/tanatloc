@@ -31,7 +31,7 @@ export const initDockers = async (params?: {
   } catch (err) {
     await params?.addStatus('Pulling postgres')
     console.info('Pulling postgres')
-    execSync('docker pull postgres:14')
+    execSync('docker pull postgres')
   }
 }
 

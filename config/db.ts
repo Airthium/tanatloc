@@ -32,6 +32,12 @@ export const ADMIN_PASSWORD: string =
 export const USER: string = process.env.DB_USER || 'tanatlocuser'
 
 /**
+ * Schema
+ * @description Schema name
+ */
+export const SCHEMA: string = 'TANATLOCSCHEMA'
+
+/**
  * Host
  * @description Set by `DB_HOST` environment variable or `localhost`
  */

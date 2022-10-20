@@ -18,14 +18,14 @@ jobs:
         id: package_version
         run: |
           VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]'`
-          echo "::set-output name=version::$VERSION"
+          echo "version=$(VERSION) >> GITHUB_OUTPUT"
 
       - name: Read CHANGELOG
         id: changelog
         run: |
           csplit CHANGELOG.md /---/
           RELEASE_NOTES=$(cat xx00)
-          echo "::set-output name=release_notes::$RELEASE_NOTES"
+          echo "release_notes=$(RELEASE_NOTES) >> $GITHUB_OUTPUT"
 
       - name: Create release
         continue-on-error: true
@@ -36,9 +36,9 @@ jobs:
           tag_name: v${{ steps.package_version.outputs.version }}
           release_name: v${{ steps.package_version.outputs.version }}
           body: |
+            | [Docker build](https://github.com/Airthium/tanatloc-docker/releases/tag/v${{ steps.package_version.outputs.version }}) | [Electron build](https://github.com/Airthium/tanatloc-electron/releases/tag/v${{ steps.package_version.outputs.version }}) |
+            | -- | -- |
             ${{ steps.changelog.outputs.release_notes }}
-            - [Docker build](https://github.com/Airthium/tanatloc-docker/releases/tag/v${{ steps.package_version.outputs.version }})
-            - [Electron build](https://github.com/Airthium/tanatloc-electron/releases/tag/v${{ steps.package_version.outputs.version }})
           draft: false
           prerelease: false
 

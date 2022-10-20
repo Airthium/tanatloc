@@ -1,11 +1,11 @@
-# v1.1.2
+## v1.1.2
 
 - Client
   - :rocket: Add mesh visibility switch for results
 
 ---
 
-# v1.1.1
+## v1.1.1
 
 - Global
   - :arrow_up: Update dependencies
@@ -14,7 +14,7 @@
 
 ---
 
-# v1.1.0
+## v1.1.0
 
 - Global
   - :arrow_up: Update dependencies
@@ -26,7 +26,7 @@
 
 ---
 
-# v1.0.3
+## v1.0.3
 
 - Global
   - :beetle: Fix english
@@ -35,7 +35,7 @@
 
 ---
 
-# v1.0.2
+## v1.0.2
 
 - Global
   - :arrow_up: Update dependencies
@@ -46,7 +46,7 @@
 
 ---
 
-# v1.0.1
+## v1.0.1
 
 - Global
   - :arrow_up: Update dependencies
@@ -60,6 +60,6 @@
 
 ---
 
-# v1.0.0
+## v1.0.0
 
 :rocket: First version

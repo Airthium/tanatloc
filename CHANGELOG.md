@@ -3,12 +3,16 @@
 - Client
   - :rocket: Add mesh visibility switch for results
 
+---
+
 # v1.1.1
 
 - Global
   - :arrow_up: Update dependencies
 - Server
   - :beetle: Fix Postgresql 15 public schema persmission change
+
+---
 
 # v1.1.0
 
@@ -20,12 +24,16 @@
 - Client
   - :rocket: Add plugins description
 
+---
+
 # v1.0.3
 
 - Global
   - :beetle: Fix english
 - Client
   - :rotating_light: Prepare editor
+
+---
 
 # v1.0.2
 
@@ -35,6 +43,8 @@
   - :beetle: Fix database check order
 - Client
   - :beetle: Fix CSS
+
+---
 
 # v1.0.1
 
@@ -47,6 +57,8 @@
   - :beetle: Colorbar dispose
 - Front:
   - :rocket: Installation process description
+
+---
 
 # v1.0.0
 

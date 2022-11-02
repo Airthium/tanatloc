@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@main
 
       - name: Version
-        id: package_version
+        id: package
         run: |
           VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[", ]//g'`
           echo "version=$VERSION" >> GITHUB_OUTPUT
@@ -35,10 +35,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.package_version.outputs.version }}
-          release_name: v${{ steps.package_version.outputs.version }}
+          tag_name: v${{ steps.package.outputs.version }}
+          release_name: v${{ steps.package.outputs.version }}
           body: |
-            | [Docker build](https://github.com/Airthium/tanatloc-docker/releases/tag/v${{ steps.package_version.outputs.version }}) | [Electron build](https://github.com/Airthium/tanatloc-electron/releases/tag/v${{ steps.package_version.outputs.version }}) |
+            | [Docker build](https://github.com/Airthium/tanatloc-docker/releases/tag/v${{ steps.package.outputs.version }}) | [Electron build](https://github.com/Airthium/tanatloc-electron/releases/tag/v${{ steps.package.outputs.version }}) |
             | -- | -- |
             ${{ steps.changelog.outputs.release_notes }}
           draft: false

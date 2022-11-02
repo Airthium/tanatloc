@@ -18,14 +18,17 @@ jobs:
         id: package_version
         run: |
           VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]'`
-          echo "version=$(VERSION) >> GITHUB_OUTPUT"
+          echo "version=$VERSION" >> GITHUB_OUTPUT
 
       - name: Read CHANGELOG
         id: changelog
         run: |
           csplit CHANGELOG.md /---/
-          RELEASE_NOTES=$(cat xx00)
-          echo "release_notes=$(RELEASE_NOTES) >> $GITHUB_OUTPUT"
+          RELEASE_NOTES="$(cat xx00)"
+          RELEASE_NOTES="${RELEASE_NOTES//'%'/'%25'}"
+          RELEASE_NOTES="${RELEASE_NOTES//$'\n'/'%0A'}"
+          RELEASE_NOTES="${RELEASE_NOTES//$'\r'/'%0D'}"
+          echo "release_notes=$RELEASE_NOTES" >> $GITHUB_OUTPUT
 
       - name: Create release
         continue-on-error: true

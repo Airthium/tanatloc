@@ -71,11 +71,19 @@ describe('database', () => {
       value: null,
       configurable: true
     })
+    Object.defineProperty(process.env, 'DB_PORT', {
+      value: null,
+      configurable: true
+    })
     let pool = startdB()
     expect(pool).toBe(mockPool)
 
     Object.defineProperty(process.env, 'DB_HOST', {
       value: 'host',
+      configurable: true
+    })
+    Object.defineProperty(process.env, 'DB_PORT', {
+      value: '5433',
       configurable: true
     })
     pool = startdB()

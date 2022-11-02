@@ -76,6 +76,7 @@ describe('install/dB', () => {
   })
 
   test('empty', async () => {
+    process.env.DB_PORT = '5433'
     await createDatabase()
   })
 

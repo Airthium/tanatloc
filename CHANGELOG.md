@@ -4,6 +4,7 @@
   - :arrow_up: Update dependencies
 - Server
   - :beetle: Fix database owner
+  - :rotating_light: Change docker database port
 
 ## v1.1.2
 

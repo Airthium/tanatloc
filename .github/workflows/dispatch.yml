@@ -44,20 +44,20 @@ jobs:
           draft: false
           prerelease: false
 
-  # electron:
-  #   name: Dispatch to tanatloc-electron
-  #   runs-on: ubuntu-latest
+  electron:
+    name: Dispatch to tanatloc-electron
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Dispatch for electron
-  #       run: |
-  #         curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-electron/actions/workflows/submodule-update.yml/dispatches -d '{"ref": "main"}'
+    steps:
+      - name: Dispatch for electron
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-electron/actions/workflows/submodule-update.yml/dispatches -d '{"ref": "main"}'
 
-  # docker:
-  #   name: Dispatch to tanatloc-docker
-  #   runs-on: ubuntu-latest
+  docker:
+    name: Dispatch to tanatloc-docker
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Dispatch for docker
-  #       run: |
-  #         curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-docker/actions/workflows/submodule-update.yml/dispatches -d '{"ref": "main"}'
+    steps:
+      - name: Dispatch for docker
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-docker/actions/workflows/submodule-update.yml/dispatches -d '{"ref": "main"}'

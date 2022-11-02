@@ -44,7 +44,7 @@ export const checkdB = async (params?: {
 
     if (!id.length) {
       id = execSync(
-        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres'
+        'docker run --name=tanatloc-postgres -e POSTGRES_PASSWORD=password -p 5433:5432 -d postgres'
       )
 
       if (!id.length)
@@ -82,7 +82,7 @@ export const checkdB = async (params?: {
         iter++
         const checkPool = new pg.Pool({
           host: HOST,
-          port: PORT,
+          port: 5433,
           user: 'postgres',
           database: 'postgres',
           password: 'password'
@@ -93,7 +93,6 @@ export const checkdB = async (params?: {
         console.info('- Database ready')
         await params?.addStatus('Database ready')
       } catch (err) {
-        console.log(err)
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
@@ -101,6 +100,7 @@ export const checkdB = async (params?: {
     error = 'Unable to start database'
     if (!ready) throw new Error()
 
+    process.env.DB_PORT = '5433'
     process.env.DB_ADMIN = 'postgres'
     process.env.DB_ADMIN_PASSWORD = 'password'
     process.env.DB_ADMIN_DATABASE = 'postgres'
@@ -137,7 +137,7 @@ export const startdB = (): pg.Pool => {
     host: HOST,
     database: DATABASE,
     password: PASSWORD,
-    port: PORT
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : PORT
   })
 }
 

@@ -74,7 +74,7 @@ export const createDatabase = async (): Promise<void> => {
     // Pool
     pool = new pg.Pool({
       host: HOST,
-      port: PORT,
+      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : PORT,
       user: process.env.DB_ADMIN || ADMIN,
       database: process.env.DB_ADMIN_DATABASE || ADMIN_DATABASE,
       password: process.env.DB_ADMIN_PASSWORD || ADMIN_PASSWORD
@@ -130,7 +130,7 @@ export const createDatabase = async (): Promise<void> => {
     // New pool
     pool = new pg.Pool({
       host: HOST,
-      port: PORT,
+      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : PORT,
       database: DATABASE,
       user: USER,
       password: PASSWORD

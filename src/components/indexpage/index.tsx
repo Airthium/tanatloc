@@ -267,6 +267,7 @@ const Index = (): JSX.Element => {
           >
             Github Issues
           </a>
+          .
         </Typography>
       </Drawer>
       <Drawer
@@ -297,7 +298,7 @@ const Index = (): JSX.Element => {
               Open Docker Desktop and check all is working fine.
             </Typography>
             <Typography>
-              You can have a look on specific{' '}
+              Have a look at the{' '}
               <Button
                 size="small"
                 onClick={() => {
@@ -317,7 +318,7 @@ const Index = (): JSX.Element => {
             <Typography>Open Docker Desktop &gt; Containers</Typography>
             <Typography>
               You should see a container named &quot;tanatloc-postgres&quot;, if
-              not try to restart Tanatloc app.
+              not try to restart the Tanatloc app.
             </Typography>
           </Collapse.Panel>
         </Collapse>
@@ -490,10 +491,18 @@ const Index = (): JSX.Element => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div id="electron" className="margin-bottom-50">
+            <Typography.Title level={2}>
+              Tanatloc is an FEA software based on FreeFEM, an extremely
+              powerful and versatile open-source PDE solver. It runs locally
+              using an electron build.
+            </Typography.Title>
             <img
               src="images/indexpage/capture2.png"
               alt="tanatloc"
-              className="img-shadow margin-bottom-50"
+              className="img-shadow text-center"
             />
           </div>
 
@@ -542,15 +551,8 @@ const Index = (): JSX.Element => {
             id="caseStudy"
           />
 
-          <div id="getStarted" className="padding-50">
-            <Typography.Title level={2}>
-              Tanatloc is an FEA software based on FreeFEM, an extremely
-              powerful and versatile open-source PDE solver. It runs locally
-              using an electron build.
-            </Typography.Title>
-            <Typography.Title level={4} className="text-light">
-              Follow these steps to get started:
-            </Typography.Title>
+          <div id="getStarted">
+            <Typography.Title level={2}>Get started</Typography.Title>
             <br />
             <Steps direction="vertical" className="Index-steps">
               <Steps.Step
@@ -565,13 +567,13 @@ const Index = (): JSX.Element => {
                         rel="noreferrer"
                       >
                         docs.docker.com/get-docker
-                      </a>
-                      . Then, reboot your computer.
+                      </a>{' '}
+                      and reboot your computer.
                     </Typography>
                     <Typography>
                       Start Docker Desktop and make sure{' '}
                       <Button size="small" onClick={() => setDockerOpen(true)}>
-                        all is working
+                        everything is working
                       </Button>
                       .
                     </Typography>
@@ -584,11 +586,11 @@ const Index = (): JSX.Element => {
                 description={
                   <>
                     <Typography>
-                      Make sure you have at least 10GB of free disk space
+                      Make sure you have at least 10GB of free disk space.
                     </Typography>
                     <Typography>
                       This space is used for the installation only, make sure
-                      you have enougth space to store the upcoming simulations
+                      you have enough space to store the upcoming simulations
                       results
                     </Typography>
                   </>

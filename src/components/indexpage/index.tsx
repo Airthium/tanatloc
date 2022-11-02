@@ -371,6 +371,7 @@ const Index = (): JSX.Element => {
               />
             }
             leftClassName="Index-padding-50"
+            className="margin-bottom-50"
           />
 
           <Side
@@ -493,7 +494,7 @@ const Index = (): JSX.Element => {
             </div>
           </div>
 
-          <div id="electron" className="margin-bottom-50">
+          <div id="electron">
             <Typography.Title level={2}>
               Tanatloc is an FEA software based on FreeFEM, an extremely
               powerful and versatile open-source PDE solver. It runs locally
@@ -551,7 +552,7 @@ const Index = (): JSX.Element => {
             id="caseStudy"
           />
 
-          <div id="getStarted">
+          <div id="getStarted" className="margin-bottom-50">
             <Typography.Title level={2}>Get started</Typography.Title>
             <br />
             <Steps direction="vertical" className="Index-steps">

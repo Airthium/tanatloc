@@ -105,7 +105,11 @@ export const createDatabase = async (): Promise<void> => {
       [DATABASE]
     )
     if (checkDatabase.rowCount === 0) {
-      const createDatabaseQuery = format('CREATE DATABASE %s', DATABASE)
+      const createDatabaseQuery = format(
+        'CREATE DATABASE %s OWNER %s',
+        DATABASE,
+        USER
+      )
       await client.query(createDatabaseQuery)
     } else {
       console.info('   -- Database already exists')

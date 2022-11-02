@@ -1,3 +1,10 @@
+## v1.1.3
+
+- Global
+  - :arrow_up: Update dependencies
+- Server
+  - :beetle: Fix database owner
+
 ## v1.1.2
 
 - Client

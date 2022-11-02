@@ -19,7 +19,7 @@ jobs:
         run: |
           VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[", ]//g'`
           echo $VERSION
-          echo "version=$VERSION" >> GITHUB_OUTPUT
+          echo "version=${VERSION}" >> GITHUB_OUTPUT
 
       - name: Read CHANGELOG
         id: changelog

@@ -93,6 +93,9 @@ export const checkdB = async (params?: {
         console.info('- Database ready')
         await params?.addStatus('Database ready')
       } catch (err) {
+        console.warn('  Database not started')
+        console.warn(err)
+        console.warn('  Retry')
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }

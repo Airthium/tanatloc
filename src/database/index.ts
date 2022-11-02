@@ -93,6 +93,7 @@ export const checkdB = async (params?: {
         console.info('- Database ready')
         await params?.addStatus('Database ready')
       } catch (err) {
+        console.log(err)
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }

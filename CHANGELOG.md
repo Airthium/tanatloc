@@ -1,3 +1,15 @@
+## v1.1.4
+
+- Electron:
+  - :beetle: Apple sign
+  - :beetle: Windows (self) sign
+- Global:
+  - :beetle: Release creator fix
+- Client
+  - :beetle: CSS improvement
+
+---
+
 ## v1.1.3
 
 - Global

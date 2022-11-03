@@ -163,17 +163,6 @@ const Index = (): JSX.Element => {
       )
     },
     {
-      key: 'developers',
-      label: (
-        <Button
-          type="text"
-          onClick={() => window.open('https://github.com/Airthium', '_blank')}
-        >
-          Developers
-        </Button>
-      )
-    },
-    {
       key: 'caseStudy',
       label: (
         <Button type="text" onClick={() => scrollToView('caseStudy')}>
@@ -186,6 +175,17 @@ const Index = (): JSX.Element => {
       label: (
         <Button type="text" onClick={() => scrollToView('aboutUs')}>
           About us
+        </Button>
+      )
+    },
+    {
+      key: 'developers',
+      label: (
+        <Button
+          type="text"
+          onClick={() => window.open('https://github.com/Airthium', '_blank')}
+        >
+          Developers
         </Button>
       )
     },
@@ -689,7 +689,7 @@ const Index = (): JSX.Element => {
                 }
                 className="background-primary"
                 leftClassName="Index-about-turbine"
-                rightClassName="Index-padding-50 Index-crowdfunding"
+                rightClassName="padding-50 Index-crowdfunding"
               />
             }
             className="Index-about"

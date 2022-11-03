@@ -370,7 +370,7 @@ const Index = (): JSX.Element => {
                 className="img-shadow"
               />
             }
-            leftClassName="Index-padding-50"
+            leftClassName="Index-padding-left-right-50"
             className="margin-bottom-50"
           />
 
@@ -427,7 +427,7 @@ const Index = (): JSX.Element => {
           />
 
           <div id="developers">
-            <div className="padding-50">
+            <div className="Index-padding-50">
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
@@ -689,7 +689,7 @@ const Index = (): JSX.Element => {
                 }
                 className="background-primary"
                 leftClassName="Index-about-turbine"
-                rightClassName="padding-50 Index-crowdfunding"
+                rightClassName="Index-padding-50 Index-crowdfunding"
               />
             }
             className="Index-about"

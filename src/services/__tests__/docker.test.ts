@@ -7,19 +7,18 @@ jest.mock('child_process', () => ({
   spawn: () => mockSpawn()
 }))
 
-const mockReadFileSync = jest.fn()
-const mockUnlink = jest.fn()
-jest.mock('fs', () => ({
-  readFileSync: () => mockReadFileSync(),
-  unlinkSync: () => mockUnlink()
-}))
-
 const mockUuid = jest.fn()
 jest.mock('uuid', () => ({
   v4: () => mockUuid()
 }))
 
 describe('services/docker', () => {
+  // Default to linux
+  Object.defineProperty(process, 'platform', {
+    value: 'linux',
+    configurable: true
+  })
+
   beforeEach(() => {
     mockExecSync.mockReset()
     mockSpawn.mockReset()
@@ -29,30 +28,27 @@ describe('services/docker', () => {
       }
     }))
 
-    mockReadFileSync.mockReset()
-    mockUnlink.mockReset()
-
     mockUuid.mockReset()
   })
 
   test('Docker engin', () => {
     mockExecSync.mockImplementation(() => '')
-    mockReadFileSync.mockImplementation(() => '')
     docker('bindPath', 'command')
   })
 
   test('Docker Desktop', () => {
     mockExecSync.mockImplementation(() => 'Docker Desktop')
-    mockReadFileSync.mockImplementation(() => '')
     docker('bindPath', 'command')
   })
 
   test('close error', () => {
-    mockExecSync.mockImplementation(() => '')
-    mockReadFileSync.mockImplementation(() => '')
-    mockUnlink.mockImplementation(() => {
-      throw new Error('unlink error')
-    })
+    mockExecSync
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => {
+        throw new Error('docker stop error')
+      })
     docker('bindPath', 'command')
   })
 
@@ -62,7 +58,6 @@ describe('services/docker', () => {
       configurable: true
     })
     mockExecSync.mockImplementation(() => '')
-    mockReadFileSync.mockImplementation(() => '')
     docker('bindPath', 'command')
   })
 })

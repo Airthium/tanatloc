@@ -13,7 +13,7 @@ const docker = (
   bindPath: string,
   command: string
 ): ChildProcessWithoutNullStreams => {
-  // UUID
+  // Container name
   const id = uuid()
   const containerName = 'tanatloc_' + id
 

@@ -16,6 +16,8 @@ describe('components/project/simulation/run/sensors', () => {
     scheme: {} as IFrontSimulationsItem['scheme']
   }
   const setVisible = jest.fn()
+  const setResult = jest.fn()
+  const setPostprocessing = jest.fn()
   const swr = {
     mutateOneSimulation: jest.fn()
   }
@@ -32,7 +34,13 @@ describe('components/project/simulation/run/sensors', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Sensors simulation={simulation} setVisible={setVisible} swr={swr} />
+      <Sensors
+        simulation={simulation}
+        setVisible={setVisible}
+        setResult={setResult}
+        setPostprocessing={setPostprocessing}
+        swr={swr}
+      />
     )
 
     unmount()
@@ -40,7 +48,13 @@ describe('components/project/simulation/run/sensors', () => {
 
   test('onAdd', () => {
     const { unmount } = render(
-      <Sensors simulation={simulation} setVisible={setVisible} swr={swr} />
+      <Sensors
+        simulation={simulation}
+        setVisible={setVisible}
+        setResult={setResult}
+        setPostprocessing={setPostprocessing}
+        swr={swr}
+      />
     )
 
     const add = screen.getByRole('button')
@@ -57,7 +71,13 @@ describe('components/project/simulation/run/sensors', () => {
       <div role="Edit" onClick={props.onEdit} />
     ))
     const { unmount } = render(
-      <Sensors simulation={simulation} setVisible={setVisible} swr={swr} />
+      <Sensors
+        simulation={simulation}
+        setVisible={setVisible}
+        setResult={setResult}
+        setPostprocessing={setPostprocessing}
+        swr={swr}
+      />
     )
 
     const edit = screen.getByRole('Edit')
@@ -74,7 +94,13 @@ describe('components/project/simulation/run/sensors', () => {
       <div role="Sensor" onClick={props.onClose} />
     ))
     const { unmount } = render(
-      <Sensors simulation={simulation} setVisible={setVisible} swr={swr} />
+      <Sensors
+        simulation={simulation}
+        setVisible={setVisible}
+        setResult={setResult}
+        setPostprocessing={setPostprocessing}
+        swr={swr}
+      />
     )
 
     const close = screen.getByRole('Sensor')

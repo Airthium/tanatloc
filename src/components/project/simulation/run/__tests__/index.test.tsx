@@ -80,6 +80,7 @@ describe('components/project/simulation/run', () => {
     name: 'name'
   } as IFrontResult
   const setResult = jest.fn()
+  const setPostprocessing = jest.fn()
   const setVisible = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
@@ -136,6 +137,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -151,6 +153,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -173,6 +176,7 @@ describe('components/project/simulation/run', () => {
         }
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -199,6 +203,7 @@ describe('components/project/simulation/run', () => {
         }
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -239,6 +244,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -281,6 +287,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -298,6 +305,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -339,6 +347,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />
@@ -378,6 +387,7 @@ describe('components/project/simulation/run', () => {
         simulation={simulation}
         result={result}
         setResult={setResult}
+        setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
       />

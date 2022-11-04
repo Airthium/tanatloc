@@ -24,9 +24,9 @@ const docker = (
 
   // User
   const user =
-    process.platform === 'win32' ? 1000 : execSync('id -u').toString().trim()
+    process.platform !== 'win32' && execSync('id -u').toString().trim()
   const group =
-    process.platform === 'win32' ? 1000 : execSync('id -g').toString().trim()
+    process.platform !== 'win32' && execSync('id -g').toString().trim()
 
   // Temp
   const temp = process.platform === 'win32' ? id : '/tmp/' + id

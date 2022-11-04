@@ -29,6 +29,8 @@ const JSONCode = dynamic(
   { ssr: false }
 )
 
+console.log(FreeFEMCode)
+
 /**
  * Code
  */

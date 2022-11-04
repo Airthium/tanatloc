@@ -6,6 +6,7 @@ import { ApiOutlined } from '@ant-design/icons'
 
 import {
   IFrontMutateSimulationsItem,
+  IFrontResult,
   IFrontSimulationsItem
 } from '@/api/index.d'
 import { IModelSensor } from '@/models/index.d'
@@ -19,6 +20,8 @@ import List from './list'
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   setVisible: (visible: boolean) => void
+  setResult: (result?: IFrontResult) => void
+  setPostprocessing: (result?: IFrontResult) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -29,7 +32,13 @@ export interface IProps {
  * @param props Props
  * @returns Sensors
  */
-const Sensors = ({ simulation, setVisible, swr }: IProps): JSX.Element => {
+const Sensors = ({
+  simulation,
+  setVisible,
+  setResult,
+  setPostprocessing,
+  swr
+}: IProps): JSX.Element => {
   // State
   const [sensorVisible, setSensorVisible] = useState<boolean>()
   const [sensor, setSensor] = useState<IModelSensor & { index: number }>()
@@ -38,10 +47,12 @@ const Sensors = ({ simulation, setVisible, swr }: IProps): JSX.Element => {
    * on add
    */
   const onAdd = useCallback(() => {
+    setResult(undefined)
+    setPostprocessing(undefined)
     setSensor(undefined)
     setVisible(false)
     setSensorVisible(true)
-  }, [setVisible])
+  }, [setVisible, setResult, setPostprocessing])
 
   /**
    * On edit
@@ -49,11 +60,13 @@ const Sensors = ({ simulation, setVisible, swr }: IProps): JSX.Element => {
    */
   const onEdit = useCallback(
     (toEdit: IModelSensor & { index: number }) => {
+      setResult(undefined)
+      setPostprocessing(undefined)
       setSensor(toEdit)
       setVisible(false)
       setSensorVisible(true)
     },
-    [setVisible]
+    [setVisible, setResult, setPostprocessing]
   )
 
   /**

@@ -488,6 +488,7 @@ const Project = (): JSX.Element => {
               }
             }
             setResult={setResult}
+            setPostprocessing={setPostprocessing}
             setVisible={(visible) => setPanelVisible(visible)}
             swr={{ mutateOneSimulation }}
           />

@@ -40,6 +40,7 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   result?: Pick<IFrontResult, 'name' | 'fileName'>
   setResult: (result?: IFrontResult) => void
+  setPostprocessing: (result?: IFrontResult) => void
   setVisible: (visible: boolean) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -131,6 +132,7 @@ const Run = ({
   simulation,
   result,
   setResult,
+  setPostprocessing,
   setVisible,
   swr
 }: IProps): JSX.Element => {
@@ -227,6 +229,8 @@ const Run = ({
             <Sensors
               simulation={simulation}
               setVisible={setVisible}
+              setResult={setResult}
+              setPostprocessing={setPostprocessing}
               swr={{
                 mutateOneSimulation: swr.mutateOneSimulation
               }}

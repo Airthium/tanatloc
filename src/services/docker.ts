@@ -1,7 +1,6 @@
 /** @module Services.Docker */
 
 import { ChildProcessWithoutNullStreams, execSync, spawn } from 'child_process'
-import fs from 'fs'
 import { v4 as uuid } from 'uuid'
 
 /**
@@ -16,6 +15,7 @@ const docker = (
 ): ChildProcessWithoutNullStreams => {
   // UUID
   const id = uuid()
+  const containerName = 'tanatloc_' + id
 
   // Check docker version
   let dockerVersion = 'engine'
@@ -24,12 +24,11 @@ const docker = (
 
   // User
   const user =
-    process.platform !== 'win32' && execSync('id -u').toString().trim()
-  const group =
-    process.platform !== 'win32' && execSync('id -g').toString().trim()
-
-  // Temp
-  const temp = process.platform === 'win32' ? id : '/tmp/' + id
+    process.platform === 'win32'
+      ? execSync('whoami')
+      : execSync('id -u').toString().trim() +
+        ':' +
+        execSync('id -g').toString().trim()
 
   // Command
   const run = spawn(
@@ -37,9 +36,9 @@ const docker = (
     [
       'run',
       '--platform=linux/amd64',
-      '--cidfile=' + temp,
+      '--name=' + containerName,
       '--volume=' + bindPath + ':/workingPath',
-      dockerVersion === 'engine' ? '--user=' + user + ':' + group : '',
+      dockerVersion === 'engine' ? '--user=' + user : '',
       '-w=/workingPath',
       'tanatloc/worker:latest',
       '/bin/bash',
@@ -50,9 +49,8 @@ const docker = (
 
   run.on('close', () => {
     try {
-      const containerId = fs.readFileSync(temp)
-      fs.unlinkSync(temp)
-      execSync('docker rm ' + containerId.toString())
+      execSync('docker stop ' + containerName)
+      execSync('docker rm ' + containerName)
     } catch (err) {
       console.error(err)
     }

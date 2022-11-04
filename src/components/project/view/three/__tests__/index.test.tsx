@@ -188,7 +188,7 @@ describe('components/project/view/three', () => {
     title: 'title'
   }
   const part = {
-    summary: {} as TGeometrySummary,
+    summary: { uuid: 'uuid' } as TGeometrySummary,
     buffer: Buffer.from('buffer')
   }
 
@@ -355,6 +355,9 @@ describe('components/project/view/three', () => {
         <ThreeView loading={true} project={project} />
       </SelectContext.Provider>
     )
+
+    const zoomToFit = screen.getByRole('button', { name: 'compress' })
+    fireEvent.click(zoomToFit)
 
     unmount()
   })
@@ -563,6 +566,43 @@ describe('components/project/view/three', () => {
           part={{
             ...part,
             summary: { uuid: 'uuid', type: 'geometry2D', dimension: 2 }
+          }}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('load & load', async () => {
+    const { rerender, unmount } = render(
+      <SelectContext.Provider
+        value={{
+          enabled: false,
+          selected: [],
+          point: { x: 0, y: 1, z: 2 },
+          dispatch: jest.fn
+        }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
+    )
+
+    rerender(
+      <SelectContext.Provider
+        value={{
+          enabled: false,
+          selected: [],
+          point: { x: 0, y: 1, z: 2 },
+          dispatch: jest.fn
+        }}
+      >
+        <ThreeView
+          loading={loading}
+          project={project}
+          part={{
+            summary: { uuid: 'uuid1' } as TGeometrySummary,
+            buffer: Buffer.from('buffer')
           }}
         />
       </SelectContext.Provider>

@@ -114,6 +114,11 @@ export const errors = {
 const zoomFactor = 0.01
 
 /**
+ * First zoom to fit
+ */
+let alreadyZoomToFit = false
+
+/**
  * Compute scene bounding box
  * @param scene Scene
  */
@@ -216,6 +221,11 @@ export const zoomToFit = (
   camera: PerspectiveCamera,
   controls: TrackballControls
 ): void => {
+  const onePart = scene.children.find((child) => child.type === 'Part')
+  if (!onePart) return
+
+  alreadyZoomToFit = true
+
   const sphere = scene.boundingSphere
 
   // Center
@@ -315,7 +325,7 @@ export const loadPart = async (
   computeSceneBoundingSphere(scene)
 
   // Zoom
-  zoomToFit(scene, camera, controls)
+  if (!alreadyZoomToFit) zoomToFit(scene, camera, controls)
 
   // Grid
   helpers.gridHelper.update()
@@ -676,6 +686,8 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     // Unmount
     return () => {
       stop()
+
+      alreadyZoomToFit = false
 
       window.removeEventListener('resize', handleResize)
 

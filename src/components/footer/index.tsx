@@ -104,7 +104,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
           Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
           - Design by{' '}
           <a
-            href="http://enora-dvvr.fr/"
+            href="https://www.commeth.com/"
             target="_blank"
             rel="noreferrer"
             className="text-dark"

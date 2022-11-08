@@ -42,8 +42,11 @@ export interface IModelCommon {
  */
 export interface IModelGeometry extends IModelCommon {
   meshable: boolean
+  multiple?: boolean
+  n?: number
   dimension?: number
   value?: string
+  values?: string[]
   file?: string
   name?: string
   path?: string

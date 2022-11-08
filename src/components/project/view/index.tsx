@@ -26,7 +26,7 @@ export type TResult = Pick<IFrontResult, 'glb' | 'originPath'>
 export interface IProps {
   project: Pick<IFrontProject, 'id' | 'title'>
   simulation?: Pick<IFrontSimulationsItem, 'id'>
-  geometry?: TGeometry
+  geometries: TGeometry[]
   result?: TResult
   postprocessing?: TResult
 }
@@ -75,7 +75,7 @@ const loadPart = async (
 const View = ({
   project,
   simulation,
-  geometry,
+  geometries,
   result,
   postprocessing
 }: IProps): JSX.Element => {

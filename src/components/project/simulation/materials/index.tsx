@@ -24,7 +24,7 @@ import Material from './material'
  * Props
  */
 export interface IProps {
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -38,7 +38,7 @@ export interface IProps {
  * @returns Materials
  */
 const Materials = ({
-  geometry,
+  geometries,
   simulation,
   swr,
   setVisible

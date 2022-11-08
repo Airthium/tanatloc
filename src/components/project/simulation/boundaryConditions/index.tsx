@@ -28,7 +28,7 @@ import BoundaryCondition from './boundaryCondition'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -42,7 +42,7 @@ export interface IProps {
  */
 const BoundaryConditions = ({
   simulation,
-  geometry,
+  geometries,
   swr,
   setVisible
 }: IProps): JSX.Element => {

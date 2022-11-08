@@ -33,6 +33,12 @@ import Utils from '@/lib/utils'
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+// TODO
+// margin between table & graph
+// try to scroll the table keeping the header
+// add +-10% to see the curves (example, if one line up, one line down)
+// dropdown exportCSV  to choose separator: , ; tab
+
 /**
  * Props
  */

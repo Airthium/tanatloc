@@ -28,6 +28,7 @@
 ## Bugs
 
 - dxf import multiple parts
+- zoom to selection when we start outside the part
 
 ## Editor
 

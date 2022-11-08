@@ -7,7 +7,7 @@ import { IModel } from './index.d'
  */
 const LinearElasticityTime: IModel = {
   category: 'Mechanics',
-  name: 'Linear elasticity (time depedent)',
+  name: 'Linear elasticity (time dependent)',
   algorithm: 'linearElasticityTime',
   code: 'FreeFEM',
   version: '1.0.0',

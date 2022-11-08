@@ -50,11 +50,13 @@ export const getCompleteLog = async (
       title: 'System log',
       width: 'unset',
       content: (
-        <pre>
-          <code>
-            {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
-          </code>
-        </pre>
+        <div style={{ overflow: 'auto', maxHeight: '80vh' }}>
+          <pre>
+            <code>
+              {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
+            </code>
+          </pre>
+        </div>
       )
     })
   } catch (err) {

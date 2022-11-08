@@ -990,20 +990,20 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
               onMouseOut={zoomStop}
             />
           </Tooltip>
-          <Tooltip title="Zoom to fit" placement="right">
-            <Button
-              icon={<CompressOutlined />}
-              onClick={() =>
-                zoomToFit(scene.current!, camera.current!, controls.current!)
-              }
-            />
-          </Tooltip>
           <Tooltip title="Zoom in" placement="right">
             <Button
               icon={<ZoomInOutlined />}
               onMouseDown={() => zoomIn(camera.current!, controls.current!)}
               onMouseUp={zoomStop}
               onMouseOut={zoomStop}
+            />
+          </Tooltip>
+          <Tooltip title="Zoom to fit" placement="right">
+            <Button
+              icon={<CompressOutlined />}
+              onClick={() =>
+                zoomToFit(scene.current!, camera.current!, controls.current!)
+              }
             />
           </Tooltip>
           <Tooltip title="Zoom to selection" placement="right">

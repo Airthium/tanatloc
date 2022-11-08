@@ -80,49 +80,87 @@ const View = ({
   postprocessing
 }: IProps): JSX.Element => {
   // State
-  const [part, setPart] = useState<IGeometryPart>()
-  const [previous, setPrevious] = useState<TGeometry | TResult>()
+  const [parts, setParts] = useState<IGeometryPart[]>([])
+  const [previous, setPrevious] = useState<(TGeometry | TResult | undefined)[]>(
+    []
+  )
   const [loading, setLoading] = useState<boolean>(false)
 
-  // Part
+  // Parts
   useEffect(() => {
-    if (simulation && postprocessing) {
-      if (postprocessing.glb !== (previous as TResult)?.glb) {
-        setPrevious(postprocessing)
+    new Promise(async (resolve) => {
+      const toDisplay = [
+        simulation ? postprocessing : undefined,
+        simulation ? result : undefined,
+        ...geometries
+      ]
 
-        setLoading(true)
-        loadPart(simulation, postprocessing, 'result')
-          .then((partLoaded) => setPart(partLoaded))
-          .catch((_err) => undefined)
-          .finally(() => setLoading(false))
-      }
-    } else if (simulation && result) {
-      if (result.glb !== (previous as TResult)?.glb) {
-        setPrevious(result)
+      const newParts = (
+        await Promise.all(
+          toDisplay.map(async (part, index) => {
+            if (!part) return
 
-        setLoading(true)
-        loadPart(simulation, result, 'result')
-          .then((partLoaded) => setPart(partLoaded))
-          .catch((_err) => undefined)
-          .finally(() => setLoading(false))
-      }
-    } else if (geometry) {
-      if (geometry.id !== (previous as TGeometry)?.id) {
-        setPrevious(geometry)
+            // TODO optimize here
+            // const prevIndex = previous.findIndex((p) => p === part)
+            // console.log('prevIndex', prevIndex)
+            // if (prevIndex !== -1) return parts[prevIndex]
+            // else {
+            const type = index > 1 ? 'geometry' : 'result'
+            return loadPart(simulation, part, type)
+            // }
+          })
+        )
+      ).filter((p) => p) as IGeometryPart[]
 
-        setLoading(true)
-        if (geometry.needCleanup) {
-          setPart(undefined)
-          setLoading(false)
-        } else {
-          loadPart(undefined, geometry, 'geometry')
-            .then((partLoaded) => setPart(partLoaded))
-            .catch((_err) => undefined)
-            .finally(() => setLoading(false))
-        }
-      }
-    }
-  }, [simulation, geometry, result, postprocessing, previous])
+      setPrevious(toDisplay)
+      setParts(newParts)
+
+      resolve(true)
+    })
+
+    // if (simulation && postprocessing) {
+    //   if (postprocessing.glb !== (previous as TResult)?.glb) {
+    //     setPrevious(postprocessing)
+
+    //     setLoading(true)
+    //     loadPart(simulation, postprocessing, 'result')
+    //       .then((partLoaded) => setPart(partLoaded))
+    //       .catch((_err) => undefined)
+    //       .finally(() => setLoading(false))
+    //   }
+    // } else if (simulation && result) {
+    //   if (result.glb !== (previous as TResult)?.glb) {
+    //     setPrevious(result)
+
+    //     setLoading(true)
+    //     loadPart(simulation, result, 'result')
+    //       .then((partLoaded) => setPart(partLoaded))
+    //       .catch((_err) => undefined)
+    //       .finally(() => setLoading(false))
+    //   }
+    // } else if (geometries) {
+    //   // if (geometry.id !== (previous as TGeometry)?.id) {
+    //   //   setPrevious(geometry)
+    //   //   setLoading(true)
+    //   //   if (geometry.needCleanup) {
+    //   //     setPart(undefined)
+    //   //     setLoading(false)
+    //   //   } else {
+    //   //     loadPart(undefined, geometry, 'geometry')
+    //   //       .then((partLoaded) => setPart(partLoaded))
+    //   //       .catch((_err) => undefined)
+    //   //       .finally(() => setLoading(false))
+    //   //   }
+    //   // }
+    // }
+  }, [
+    simulation,
+    `${geometries}`,
+    result,
+    postprocessing,
+    `${parts}`,
+    `${previous}`
+  ])
 
   /**
    * Render
@@ -134,7 +172,7 @@ const View = ({
         id: project.id,
         title: project.title
       }}
-      part={part}
+      parts={parts}
     />
   )
 }

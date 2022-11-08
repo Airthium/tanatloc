@@ -14,7 +14,9 @@ import {
   LoadingOutlined,
   UploadOutlined,
   PlusCircleOutlined,
-  AuditOutlined
+  AuditOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined
 } from '@ant-design/icons'
 
 import { ISimulation } from '@/database/simulation/index'
@@ -219,30 +221,33 @@ const Project = (): JSX.Element => {
 
   // Update geometry
   useEffect(() => {
-    if (!loadingGeometries && geometries.length) {
-      geometries.forEach((geometry, index) => {
-        const current = loadedGeometries.find((g) => g.id === geometry?.id)
-        if (current) {
-          if (JSON.stringify(current) !== JSON.stringify(geometry)) {
-            // Update
-            setGeometries((prev) => [
-              ...prev.slice(0, index),
-              current,
-              ...prev.slice(index + 1)
-            ])
+    if (loadingGeometries) return
+
+    if (geometries.length) {
+      let needUpdate = false
+      const newGeometries = geometries
+        .map((geometry) => {
+          const current = loadedGeometries.find((g) => g.id === geometry?.id)
+          if (current) {
+            if (JSON.stringify(current) !== JSON.stringify(geometry)) {
+              // Update
+              needUpdate = true
+              return current
+            }
+            return geometry
+          } else {
+            // Remove
+            needUpdate = true
+            return null
           }
-        } else {
-          // Remove
-          setGeometries((prev) => [
-            ...prev.slice(0, index),
-            ...prev.slice(index + 1)
-          ])
-        }
-      })
+        })
+        .filter((g) => g) as IFrontGeometriesItem[]
+
+      if (needUpdate) setGeometries(newGeometries)
     } else {
-      setGeometries([loadedGeometries[0]])
+      setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
     }
-  }, [loadedGeometries, loadingGeometries, geometries, setGeometries])
+  }, [loadingGeometries, loadedGeometries, `$(geometries)`, setGeometries])
 
   // Update simulation
   useEffect(() => {
@@ -637,7 +642,16 @@ const Project = (): JSX.Element => {
   const geometriesRender = loadedGeometries.map((g) => ({
     key: g.id,
     icon: <PieChartOutlined />,
-    label: g.name
+    label: (
+      <div>
+        {g.name}{' '}
+        {g.visible ? (
+          <EyeOutlined onClick={(e) => e.stopPropagation()} />
+        ) : (
+          <EyeInvisibleOutlined onClick={(e) => e.stopPropagation()} />
+        )}
+      </div>
+    )
   }))
 
   // Simulations render build

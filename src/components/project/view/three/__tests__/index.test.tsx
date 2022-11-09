@@ -188,7 +188,7 @@ describe('components/project/view/three', () => {
     title: 'title'
   }
   const part = {
-    summary: { uuid: 'uuid' } as TGeometrySummary,
+    summary: { uuid: 'uuid', type: 'result' } as TGeometrySummary,
     buffer: Buffer.from('buffer')
   }
 

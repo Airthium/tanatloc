@@ -257,8 +257,7 @@ export const zoomToFit = (
 /**
  * Load part
  * @param part Part
- * @param transparent Transparent
- * @param displayMesh Display mesh
+ * @param options Options
  * @param scene Scene
  * @param camera Camera
  * @param controls Controls
@@ -999,20 +998,20 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
               onMouseOut={zoomStop}
             />
           </Tooltip>
-          <Tooltip title="Zoom to fit" placement="right">
-            <Button
-              icon={<CompressOutlined />}
-              onClick={() =>
-                zoomToFit(scene.current!, camera.current!, controls.current!)
-              }
-            />
-          </Tooltip>
           <Tooltip title="Zoom in" placement="right">
             <Button
               icon={<ZoomInOutlined />}
               onMouseDown={() => zoomIn(camera.current!, controls.current!)}
               onMouseUp={zoomStop}
               onMouseOut={zoomStop}
+            />
+          </Tooltip>
+          <Tooltip title="Zoom to fit" placement="right">
+            <Button
+              icon={<CompressOutlined />}
+              onClick={() =>
+                zoomToFit(scene.current!, camera.current!, controls.current!)
+              }
             />
           </Tooltip>
           <Tooltip title="Zoom to selection" placement="right">
@@ -1085,16 +1084,20 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
             </>
           )}
 
-          <Divider className="no-margin" />
+          {part?.summary.type === 'result' && (
+            <>
+              <Divider className="no-margin" />
 
-          <Tooltip title="Display mesh" placement="right">
-            <Switch
-              checked={displayMesh}
-              checkedChildren={<TableOutlined />}
-              unCheckedChildren={<TableOutlined />}
-              onChange={toggleDisplayMesh}
-            />
-          </Tooltip>
+              <Tooltip title="Display mesh" placement="right">
+                <Switch
+                  checked={displayMesh}
+                  checkedChildren={<TableOutlined />}
+                  unCheckedChildren={<TableOutlined />}
+                  onChange={toggleDisplayMesh}
+                />
+              </Tooltip>
+            </>
+          )}
         </div>
       </Layout.Header>
       <Layout.Content className="View-content no-scroll">

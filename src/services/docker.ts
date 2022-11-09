@@ -25,7 +25,7 @@ const docker = (
   // User
   const user =
     process.platform === 'win32'
-      ? execSync('whoami')
+      ? '1000:1000'
       : execSync('id -u').toString().trim() +
         ':' +
         execSync('id -g').toString().trim()

@@ -293,15 +293,12 @@ const Selector = ({
               if (display(element)) {
                 let borderColor = 'transparent'
                 let backgroundColor = 'transparent'
-                if (
-                  selected.find((s) => s.uuid === element.uuid) &&
-                  highlighted?.uuid !== element.uuid
-                ) {
-                  borderColor = '#FAD114'
-                  backgroundColor = 'rgba(255, 251, 230, 0.3)'
+                if (selected.find((s) => s.uuid === element.uuid)) {
+                  borderColor = '#EE9817'
+                  backgroundColor = 'rgba(238, 152, 23, 0.3)'
                 } else if (highlighted?.uuid === element.uuid) {
                   borderColor = '#FAD114'
-                  backgroundColor = '#FFFBE6'
+                  backgroundColor = 'rgba(250, 209, 20, 0.3)'
                 }
 
                 return (

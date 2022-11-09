@@ -257,8 +257,7 @@ export const zoomToFit = (
 /**
  * Load part
  * @param part Part
- * @param transparent Transparent
- * @param displayMesh Display mesh
+ * @param options Options
  * @param scene Scene
  * @param camera Camera
  * @param controls Controls
@@ -1076,16 +1075,20 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             </>
           )}
 
-          <Divider className="no-margin" />
+          {part?.summary.type === 'result' && (
+            <>
+              <Divider className="no-margin" />
 
-          <Tooltip title="Display mesh" placement="right">
-            <Switch
-              checked={displayMesh}
-              checkedChildren={<TableOutlined />}
-              unCheckedChildren={<TableOutlined />}
-              onChange={toggleDisplayMesh}
-            />
-          </Tooltip>
+              <Tooltip title="Display mesh" placement="right">
+                <Switch
+                  checked={displayMesh}
+                  checkedChildren={<TableOutlined />}
+                  unCheckedChildren={<TableOutlined />}
+                  onChange={toggleDisplayMesh}
+                />
+              </Tooltip>
+            </>
+          )}
         </div>
       </Layout.Header>
       <Layout.Content className="View-content no-scroll">

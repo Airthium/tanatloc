@@ -24,11 +24,10 @@ const docker = (
 
   // User
   const user =
-    process.platform === 'win32'
-      ? execSync('whoami')
-      : execSync('id -u').toString().trim() +
-        ':' +
-        execSync('id -g').toString().trim()
+    process.platform !== 'win32' &&
+    execSync('id -u').toString().trim() +
+      ':' +
+      execSync('id -g').toString().trim()
 
   // Command
   const run = spawn(
@@ -38,7 +37,9 @@ const docker = (
       '--platform=linux/amd64',
       '--name=' + containerName,
       '--volume=' + bindPath + ':/workingPath',
-      dockerVersion === 'engine' ? '--user=' + user : '',
+      dockerVersion === 'engine' && process.platform !== 'win32'
+        ? '--user=' + user
+        : '',
       '-w=/workingPath',
       'tanatloc/worker:latest',
       '/bin/bash',

@@ -357,6 +357,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 dataSource={datas}
                 columns={columns}
                 pagination={false}
+                sticky={true}
               />
             </div>
 

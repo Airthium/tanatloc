@@ -336,7 +336,14 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
             </DownloadButton>
           }
         >
-          <div style={{ display: 'flex', height: '100%', padding: '10px', justifyContent:"space-around" }}>
+          <div
+            style={{
+              display: 'flex',
+              height: '100%',
+              padding: '10px',
+              justifyContent: 'space-around'
+            }}
+          >
             <div
               style={{
                 display: 'flex',
@@ -360,7 +367,16 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
-                <YAxis domain={[plot?.min || -1, plot?.max || 1]} />
+                <YAxis
+                  domain={[plot?.min || -1, plot?.max || 1]}
+                  tickFormatter={(value) =>
+                    new Intl.NumberFormat('en-US', {
+                      notation: 'scientific',
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    }).format(value)
+                  }
+                />
                 <ReTooltip />
                 <Legend />
                 {plot?.lines}

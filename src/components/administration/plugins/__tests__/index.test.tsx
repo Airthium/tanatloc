@@ -42,7 +42,7 @@ describe('components/administration/plugins', () => {
   test('render', async () => {
     const { unmount } = render(<Plugins />)
 
-    await waitFor(() => screen.getByText('No Data'))
+    await waitFor(() => screen.getByText('No data'))
 
     unmount()
   })
@@ -171,7 +171,7 @@ describe('components/administration/plugins', () => {
 
     const { unmount } = render(<Plugins />)
 
-    await waitFor(() => screen.getByText('No Data'))
+    await waitFor(() => screen.getByText('No data'))
 
     unmount()
   })

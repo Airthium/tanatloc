@@ -466,6 +466,8 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   const [screenshot, setScreenshot] = useState<boolean>(false)
   const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
 
+  // console.log(parts)
+
   // Data
   const router = useRouter()
 
@@ -910,60 +912,58 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           <Tooltip title="Take snasphot" placement="right">
             <Dropdown
               placement="bottom"
-              overlay={
-                <Menu
-                  items={[
-                    {
-                      key: 'project',
-                      label: (
-                        <Button
-                          type="text"
-                          loading={screenshot}
-                          onClick={async () => {
-                            setScreenshot(true)
-                            try {
-                              await takeScreenshot(
-                                project,
-                                scene.current!,
-                                camera.current!,
-                                renderer.current!
-                              )
-                            } finally {
-                              setScreenshot(false)
-                            }
-                          }}
-                        >
-                          Project snapshot
-                        </Button>
-                      )
-                    },
-                    {
-                      key: 'image',
-                      label: (
-                        <Button
-                          type="text"
-                          loading={savingScreenshot}
-                          onClick={() => {
-                            setSavingScreenshot(true)
-                            try {
-                              downloadScreenshot(
-                                project,
-                                scene.current!,
-                                camera.current!,
-                                renderer.current!
-                              )
-                            } finally {
-                              setSavingScreenshot(false)
-                            }
-                          }}
-                        >
-                          Export image
-                        </Button>
-                      )
-                    }
-                  ]}
-                />
-              }
+              menu={{
+                items: [
+                  {
+                    key: 'project',
+                    label: (
+                      <Button
+                        type="text"
+                        loading={screenshot}
+                        onClick={async () => {
+                          setScreenshot(true)
+                          try {
+                            await takeScreenshot(
+                              project,
+                              scene.current!,
+                              camera.current!,
+                              renderer.current!
+                            )
+                          } finally {
+                            setScreenshot(false)
+                          }
+                        }}
+                      >
+                        Project snapshot
+                      </Button>
+                    )
+                  },
+                  {
+                    key: 'image',
+                    label: (
+                      <Button
+                        type="text"
+                        loading={savingScreenshot}
+                        onClick={() => {
+                          setSavingScreenshot(true)
+                          try {
+                            downloadScreenshot(
+                              project,
+                              scene.current!,
+                              camera.current!,
+                              renderer.current!
+                            )
+                          } finally {
+                            setSavingScreenshot(false)
+                          }
+                        }}
+                      >
+                        Export image
+                      </Button>
+                    )
+                  }
+                ]
+              }}
             >
               <Button icon={<FundProjectionScreenOutlined />} />
             </Dropdown>
@@ -1084,7 +1084,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
             </>
           )}
 
-          {part?.summary.type === 'result' && (
+          {parts.filter((part) => part.summary.type === 'result').length ? (
             <>
               <Divider className="no-margin" />
 
@@ -1097,7 +1097,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                 />
               </Tooltip>
             </>
-          )}
+          ) : null}
         </div>
       </Layout.Header>
       <Layout.Content className="View-content no-scroll">

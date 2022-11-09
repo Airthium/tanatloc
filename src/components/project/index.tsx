@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { NextRouter, useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
@@ -188,6 +188,30 @@ const Project = (): JSX.Element => {
   ] = GeometryAPI.useGeometries(project?.geometries)
 
   /**
+   * Add geometry
+   * @param geometry Geoemtry
+   */
+  const addGeometry = useCallback((geometry: IFrontGeometriesItem): void => {
+    setGeometries((prev) => [...prev, geometry])
+  }, [])
+
+  /**
+   * Del geometry
+   * @param geometry Geometry
+   */
+  const delGeometry = useCallback(
+    (geometry: IFrontGeometriesItem): void => {
+      const index = geometries.findIndex((g) => g.id === geometry.id)
+      if (index === -1) return
+      setGeometries((prev) => [
+        ...prev.slice(0, index),
+        ...prev.slice(index + 1)
+      ])
+    },
+    [geometries]
+  )
+
+  /**
    * On panel close
    */
   const onPanelClose = useCallback((): void => {
@@ -229,7 +253,10 @@ const Project = (): JSX.Element => {
         .map((geometry) => {
           const current = loadedGeometries.find((g) => g.id === geometry?.id)
           if (current) {
-            if (JSON.stringify(current) !== JSON.stringify(geometry)) {
+            if (
+              JSON.stringify({ ...current, visible: undefined }) !==
+              JSON.stringify({ ...geometry, visible: undefined })
+            ) {
               // Update
               needUpdate = true
               return current
@@ -247,6 +274,7 @@ const Project = (): JSX.Element => {
     } else {
       setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingGeometries, loadedGeometries, `$(geometries)`, setGeometries])
 
   // Update simulation
@@ -297,7 +325,7 @@ const Project = (): JSX.Element => {
 
       const geometry = geometries.find((g) => g.id === id)
       if (!geometry) {
-        setGeometries((prev) => [...prev, toDisplay])
+        setGeometries((prev) => [...prev, { ...toDisplay, visible: true }])
       }
 
       setPanel(
@@ -542,7 +570,7 @@ const Project = (): JSX.Element => {
 
       setSimulation(current)
 
-      // TODO
+      // // Display geometries
       // const geometryId = current.scheme?.configuration?.geometry?.value
       // if (geometryId && geometry?.id !== geometryId) {
       //   const currentGeometry = loadedGeometries.find(
@@ -639,88 +667,110 @@ const Project = (): JSX.Element => {
   )
 
   // Geometries render build
-  const geometriesRender = loadedGeometries.map((g) => ({
-    key: g.id,
-    icon: <PieChartOutlined />,
-    label: (
-      <div>
-        {g.name}{' '}
-        {g.visible ? (
-          <EyeOutlined onClick={(e) => e.stopPropagation()} />
-        ) : (
-          <EyeInvisibleOutlined onClick={(e) => e.stopPropagation()} />
-        )}
-      </div>
-    )
-  }))
+  const geometriesRender = useMemo(
+    () =>
+      loadedGeometries.map((g) => {
+        const visible = geometries.find((geometry) => geometry.id === g.id)
+        return {
+          key: g.id,
+          icon: <PieChartOutlined />,
+          label: (
+            <div>
+              {g.name}
+              {visible ? (
+                <EyeOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    delGeometry(g)
+                  }}
+                />
+              ) : (
+                <EyeInvisibleOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    addGeometry(g)
+                  }}
+                />
+              )}
+            </div>
+          )
+        }
+      }),
+    [loadedGeometries, geometries, addGeometry, delGeometry]
+  )
 
   // Simulations render build
-  const simulationsRender = loadedSimulations.map((s) => {
-    const configuration = s.scheme.configuration || {}
-    const categories: ItemType[] = []
-    Object.keys(configuration).forEach((key) => {
-      if (key === 'dimension') return
-      const child = configuration[key]
-      let icon = <CheckCircleOutlined style={{ color: 'green' }} />
-      if (child.error) icon = <CloseCircleOutlined style={{ color: 'red' }} />
-      if (!child.done)
-        icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+  const simulationsRender = useMemo(
+    () =>
+      loadedSimulations.map((s) => {
+        const configuration = s.scheme.configuration || {}
+        const categories: ItemType[] = []
+        Object.keys(configuration).forEach((key) => {
+          if (key === 'dimension') return
+          const child = configuration[key]
+          let icon = <CheckCircleOutlined style={{ color: 'green' }} />
+          if (child.error)
+            icon = <CloseCircleOutlined style={{ color: 'red' }} />
+          if (!child.done)
+            icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
 
-      // Deleted simulation's geometry
-      if (
-        key === 'geometry' &&
-        !loadedGeometries.filter((g) => g.id === child.value).length &&
-        !loadingGeometries
-      ) {
-        icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
-        child.done = null
-      }
+          // Deleted simulation's geometry
+          if (
+            key === 'geometry' &&
+            !loadedGeometries.filter((g) => g.id === child.value).length &&
+            !loadingGeometries
+          ) {
+            icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+            child.done = null
+          }
 
-      categories[child.index] = {
-        key: s.id + '&' + key,
-        className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
-        disabled: !loadedGeometries.length,
-        icon: icon,
-        label: child.title
-      }
-    })
+          categories[child.index] = {
+            key: s.id + '&' + key,
+            className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
+            disabled: !loadedGeometries.length,
+            icon: icon,
+            label: child.title
+          }
+        })
 
-    let label = s.name
-    if (s.scheme.user)
-      label = (
-        <>
-          <Tooltip title="User algorithm" placement="right">
-            <AuditOutlined
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 14,
-                fontSize: 14,
-                color: '#fad114'
-              }}
-            />
-          </Tooltip>
-          {s.name}
-        </>
-      )
+        let label = s.name
+        if (s.scheme.user)
+          label = (
+            <>
+              <Tooltip title="User algorithm" placement="right">
+                <AuditOutlined
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 14,
+                    fontSize: 14,
+                    color: '#fad114'
+                  }}
+                />
+              </Tooltip>
+              {s.name}
+            </>
+          )
 
-    return {
-      key: s.id,
-      className: 'Project-Menu-SubMenu-Simulations-SubMenu',
-      icon: <CodeSandboxOutlined />,
-      label: label,
-      children: [
-        {
-          key: s.id + '&about',
-          className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
-          disabled: !loadedGeometries.length,
-          icon: <CheckCircleOutlined style={{ color: 'green' }} />,
-          label: 'About'
-        },
-        ...categories
-      ]
-    }
-  })
+        return {
+          key: s.id,
+          className: 'Project-Menu-SubMenu-Simulations-SubMenu',
+          icon: <CodeSandboxOutlined />,
+          label: label,
+          children: [
+            {
+              key: s.id + '&about',
+              className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
+              disabled: !loadedGeometries.length,
+              icon: <CheckCircleOutlined style={{ color: 'green' }} />,
+              label: 'About'
+            },
+            ...categories
+          ]
+        }
+      }),
+    [loadingGeometries, loadedGeometries, loadedSimulations]
+  )
 
   /**
    * Render

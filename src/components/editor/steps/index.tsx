@@ -94,38 +94,42 @@ const StatusSteps = ({ setName }: IProps) => {
   }, [model, setName, dispatch])
 
   return (
-    <Steps className="Editor-Steps" direction="vertical">
-      <Steps.Step
-        title="Check template format"
-        description={status.template?.err ?? 'EJS + FreeFEM'}
-        status={status.template?.status ?? 'wait'}
-      />
-      <Steps.Step
-        title="Check description format"
-        description={status.model?.err?.replace(/\./g, ' > ') ?? 'JSON'}
-        status={status.model?.status ?? 'wait'}
-      />
-      <Steps.Step
-        title="Test template + description"
-        description={
-          <>
-            <Button
-              disabled={
-                !(
-                  status.template?.status === 'finish' &&
-                  status.model?.status === 'finish'
-                )
-              }
-              onClick={console.log}
-            >
-              Run
-            </Button>{' '}
-            template on Tanatloc server
-          </>
+    <Steps
+      className="Editor-Steps"
+      direction="vertical"
+      items={[
+        {
+          title: 'Check template format',
+          description: status.template?.err ?? 'EJS + FreeFEM',
+          status: status.template?.status ?? 'wait'
+        },
+        {
+          title: 'Check description format',
+          description: status.model?.err?.replace(/\./g, ' > ') ?? 'JSON',
+          status: status.model?.status ?? 'wait'
+        },
+        {
+          title: 'Test template + description',
+          description: (
+            <>
+              <Button
+                disabled={
+                  !(
+                    status.template?.status === 'finish' &&
+                    status.model?.status === 'finish'
+                  )
+                }
+                onClick={console.log}
+              >
+                Run
+              </Button>{' '}
+              template on Tanatloc server
+            </>
+          ),
+          status: status.test?.status ?? 'wait'
         }
-        status={status.test?.status ?? 'wait'}
-      />
-    </Steps>
+      ]}
+    />
   )
 }
 

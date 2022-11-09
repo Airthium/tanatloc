@@ -287,16 +287,15 @@ const Run = ({
                   </Space>
                   <Log simulation={{ id: simulation.id }} steps={steps} />
                 </div>
-                <Steps direction="vertical">
-                  {steps.map((step, index) => (
-                    <Steps.Step
-                      key={step.label}
-                      title={step.label}
-                      description={'(' + (index + 1) + '/' + steps.length + ')'}
-                      status={step.status}
-                    />
-                  ))}
-                </Steps>
+                <Steps
+                  direction="vertical"
+                  items={steps.map((step, index) => ({
+                    key: step.label,
+                    title: step.label,
+                    description: '(' + (index + 1) + '/' + steps.length + ')',
+                    status: step.status
+                  }))}
+                />
               </Space>
             </Card>
 

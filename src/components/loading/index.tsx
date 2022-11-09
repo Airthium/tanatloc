@@ -1,7 +1,7 @@
 /** @module Components.Loading */
 
 import { useEffect, useRef, useState } from 'react'
-import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
+import { Card, Layout, Space, Spin, StepProps, Steps, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 
 /**
@@ -60,17 +60,19 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
 
     setStatusDisplay(
       <div className="Loading-status">
-        <Steps direction="vertical">
-          {status
-            .map((desc, index) => (
-              <Steps.Step
-                key={index}
-                status={index === status.length - 1 ? currentStatus : 'finish'}
-                title={desc}
-              />
-            ))
+        <Steps
+          direction="vertical"
+          items={status
+            .map((desc, index) => ({
+              key: index,
+              status:
+                index === status.length - 1
+                  ? currentStatus
+                  : ('finish' as StepProps['status']),
+              title: desc
+            }))
             .reverse()}
-        </Steps>
+        />
       </div>
     )
   }, [status, errors])

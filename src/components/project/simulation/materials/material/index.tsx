@@ -28,7 +28,7 @@ import Edit from '../edit'
  */
 export interface IProps {
   visible: boolean
-  geometry: Pick<IFrontGeometriesItem, 'summary'>
+  geometries: Pick<IFrontGeometriesItem, 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   material?: IModelMaterialsValue
   swr: {
@@ -44,7 +44,7 @@ export interface IProps {
  */
 const Material = ({
   visible,
-  geometry,
+  geometries,
   simulation,
   material,
   swr,
@@ -225,13 +225,15 @@ const Material = ({
             })}
           </Space>
         </Card>
-
-        <Selector
-          geometry={geometry}
-          alreadySelected={alreadySelected}
-          updateSelected={onSelected}
-        />
-
+        {/* // TODO */}
+        {geometries.map((geometry, index) => (
+          <Selector
+            key={index}
+            geometry={geometry}
+            alreadySelected={alreadySelected}
+            updateSelected={onSelected}
+          />
+        ))}
         {error && (
           <Typography.Text>
             <ExclamationCircleOutlined style={{ color: 'red' }} /> {error}

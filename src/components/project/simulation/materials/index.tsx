@@ -55,10 +55,12 @@ const Materials = ({
 
   // Part
   useEffect(() => {
-    if (geometry?.summary) {
-      dispatch(setType(geometry.summary.dimension === 2 ? 'faces' : 'solids'))
+    if (geometries[0]?.summary) {
+      dispatch(
+        setType(geometries[0].summary.dimension === 2 ? 'faces' : 'solids')
+      )
     }
-  }, [geometry, dispatch])
+  }, [geometries, dispatch])
 
   /**
    * On add
@@ -99,7 +101,7 @@ const Materials = ({
   /**
    * Render
    */
-  if (!geometry) return <Loading.Simple />
+  if (!geometries.length) return <Loading.Simple />
   return (
     <Layout>
       <Layout.Content>
@@ -117,9 +119,9 @@ const Materials = ({
           />
           <Material
             visible={materialVisible}
-            geometry={{
+            geometries={geometries.map((geometry) => ({
               summary: geometry.summary
-            }}
+            }))}
             simulation={{
               id: simulation.id,
               scheme: simulation.scheme

@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Geometry */
 
 import { Dispatch, SetStateAction } from 'react'
-import { Card, Typography } from 'antd'
+import { Card, Select, Typography } from 'antd'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -40,14 +40,14 @@ export const errors = {
  * On select
  * @param simulation Simulation
  * @param loadedGeometries Geometries
- * @param geometry Geometry
+ * @param geometryId Geometry id
  * @param setGeometries Set geometries
  * @param swr Swr
  */
 export const onSelect = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  loadedGeometries: Pick<IFrontGeometriesItem, 'id'>[],
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'summary'>,
+  loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
+  geometryId: string,
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>,
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -55,13 +55,16 @@ export const onSelect = async (
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
+    const newGeometry = loadedGeometries.find(
+      (g) => g.id === geometryId
+    ) as IFrontGeometriesItem
 
     // Update
-    newSimulation.scheme.configuration.geometry.value = geometry.id
+    newSimulation.scheme.configuration.geometry.value = geometryId
 
     const diff = {
       ...newSimulation.scheme.configuration,
-      dimension: geometry.summary.dimension ?? 3,
+      dimension: newGeometry.summary.dimension ?? 3,
       geometry: {
         ...newSimulation.scheme.configuration.geometry,
         done: true
@@ -87,8 +90,8 @@ export const onSelect = async (
     swr.mutateOneSimulation(newSimulation)
 
     // Display
-    const newGeometry = loadedGeometries.find((g) => g.id === geometry.id)
-    setGeometries((prev) => [...prev, newGeometry as IFrontGeometriesItem])
+
+    setGeometries((prev) => [...prev, newGeometry])
   } catch (err) {
     ErrorNotification(errors.update, err)
   }
@@ -98,30 +101,33 @@ export const onSelect = async (
  * On mutliple select
  * @param simulation Simulation
  * @param loadedGeometries Geometries
- * @param geometries Geometries
+ * @param geometriesIds Geometries ids
  * @param setGeometries Set geometries
  * @param swr Swr
  */
 export const onMultipleSelect = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  loadedGeometries: Pick<IFrontGeometriesItem, 'id'>[],
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
+  loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
+  geometriesIds: string[],
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>,
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
 ): Promise<void> => {
   try {
+    if (!geometriesIds.length) return
+
     const newSimulation = Utils.deepCopy(simulation)
+    const newGeometries = loadedGeometries.filter((geometry) =>
+      geometriesIds.includes(geometry.id)
+    )
 
     // Update
-    newSimulation.scheme.configuration.geometry.values = geometries.map(
-      (g) => g.id
-    )
+    newSimulation.scheme.configuration.geometry.values = geometriesIds
 
     const diff = {
       ...newSimulation.scheme.configuration,
-      dimension: geometries[0].summary.dimension ?? 3,
+      dimension: newGeometries[0].summary.dimension ?? 3,
       geometry: {
         ...newSimulation.scheme.configuration.geometry,
         done: true
@@ -147,13 +153,8 @@ export const onMultipleSelect = async (
     swr.mutateOneSimulation(newSimulation)
 
     // Display
-    const newGeometries = loadedGeometries.filter((g) =>
-      geometries.filter((gg) => gg.id === g.id)
-    )
-    setGeometries((prev) => [
-      ...prev,
-      ...(newGeometries as IFrontGeometriesItem[])
-    ])
+
+    setGeometries(newGeometries as IFrontGeometriesItem[])
   } catch (err) {
     ErrorNotification(errors.update, err)
   }
@@ -174,37 +175,50 @@ const Geometry = ({
   // Data
   const multiple = simulation.scheme.configuration.geometry.multiple
   const geometryId = simulation.scheme.configuration.geometry.value
-  const geometryIds = simulation.scheme.configuration.geometry.values
+  const geometriesIds = simulation.scheme.configuration.geometry.values
 
   // Auto select
   if (!multiple && !geometryId && geometries.length) {
-    onSelect(simulation, loadedGeometries, geometries[0], setGeometries, swr)
-  } else if (multiple && !geometryIds && geometries.length) {
+    onSelect(simulation, loadedGeometries, geometries[0].id, setGeometries, swr)
+  } else if (multiple && !geometriesIds && geometries.length) {
     onMultipleSelect(
       simulation,
       loadedGeometries,
-      geometries,
+      geometries.map((geometry) => geometry.id),
       setGeometries,
       swr
     )
   }
 
   // List
-  const list = <></>
-  // const list = loadedGeometries.map((g) => (
-  //   <div
-  //     className="Geometry-list"
-  //     key={g.id}
-  //     style={{
-  //       backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
-  //     }}
-  //     onClick={() =>
-  //       onSelect(simulation, loadedGeometries, g, setGeometry, swr)
-  //     }
-  //   >
-  //     <Typography.Text>{g.name}</Typography.Text>
-  //   </div>
-  // ))
+  const list = (
+    <Select
+      className="Geometry-list"
+      mode={multiple ? 'multiple' : undefined}
+      options={loadedGeometries.map((geometry) => ({
+        value: geometry.id,
+        label: geometry.name
+      }))}
+      value={multiple ? geometriesIds : geometryId}
+      onChange={(value) => {
+        multiple
+          ? onMultipleSelect(
+              simulation,
+              loadedGeometries,
+              value as string[],
+              setGeometries,
+              swr
+            )
+          : onSelect(
+              simulation,
+              loadedGeometries,
+              value as string,
+              setGeometries,
+              swr
+            )
+      }}
+    ></Select>
+  )
 
   /**
    * Render

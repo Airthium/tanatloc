@@ -7,3 +7,6 @@
 [submodule "plugins/sharetask"]
 	path = plugins/sharetask
 	url = git@github.com:Airthium/tanatloc-plugin-sharetask.git
+[submodule "plugins/airthium"]
+	path = plugins/airthium
+	url = git@github.com:Airthium/tanatloc-plugin-airthium.git

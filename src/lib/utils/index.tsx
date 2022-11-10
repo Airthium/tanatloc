@@ -23,6 +23,31 @@ const stringToColor = (str?: string): string => {
 }
 
 /**
+ * Contrasting color generator
+ * @param quantity Number
+ * @returns HEX array
+ */
+const colorGenerator = (quantity?: number): string | string[] => {
+  if (!quantity) return '#' + Math.floor(Math.random() * 16777215).toString(16)
+
+  const result = []
+  const segments = 255 / quantity
+  for (let i = 0; i < quantity; i++) {
+    const r = Math.floor((i * segments) % 255)
+      .toString(16)
+      .padStart(2, '0')
+    const g = Math.floor(((i + 1) * segments) % 255)
+      .toString(16)
+      .padStart(2, '0')
+    const b = Math.floor(((i + 2) * segments) % 255)
+      .toString(16)
+      .padStart(2, '0')
+    result.push('#' + r + g + b)
+  }
+  return result
+}
+
+/**
  * Component to Hex
  * @param c Color
  * @returns Hex
@@ -163,6 +188,7 @@ const getGitVersion = (): string => {
 const Utils = {
   deepCopy,
   stringToColor,
+  colorGenerator,
   rgbToHex,
   rgbToRgba,
   userToAvatar,

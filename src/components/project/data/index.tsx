@@ -336,12 +336,19 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
             </DownloadButton>
           }
         >
-          <div style={{ display: 'flex', height: '100%', padding: '10px' }}>
+          <div
+            style={{
+              display: 'flex',
+              height: '100%',
+              padding: '10px',
+              justifyContent: 'space-around'
+            }}
+          >
             <div
               style={{
                 display: 'flex',
                 height: '100%',
-                width: '50%',
+                width: '45%',
                 overflow: 'auto'
               }}
             >
@@ -350,17 +357,30 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 dataSource={datas}
                 columns={columns}
                 pagination={false}
+                sticky={true}
               />
             </div>
 
-            <ResponsiveContainer width="50%" height="100%">
+            <ResponsiveContainer width="45%" height="100%">
               <LineChart
                 data={plot?.data}
                 margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
-                <YAxis domain={[plot?.min || -1, plot?.max || 1]} />
+                <YAxis
+                  domain={[
+                    (plot && plot?.min * 0.9) || -1,
+                    (plot && plot?.max * 1.1) || 1
+                  ]}
+                  tickFormatter={(value) =>
+                    new Intl.NumberFormat('en-US', {
+                      notation: 'scientific',
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    }).format(value)
+                  }
+                />
                 <ReTooltip />
                 <Legend />
                 {plot?.lines}

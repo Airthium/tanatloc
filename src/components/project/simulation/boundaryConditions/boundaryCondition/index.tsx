@@ -10,6 +10,7 @@ import {
   Radio,
   RadioChangeEvent,
   Space,
+  Tabs,
   Typography
 } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
@@ -35,7 +36,7 @@ import {
 
 export interface IProps {
   visible: boolean
-  geometry: Pick<IFrontGeometriesItem, 'summary'>
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   boundaryCondition?: IModelBoundaryConditionValue
   swr: {
@@ -51,7 +52,7 @@ export interface IProps {
  */
 const BoundaryCondition = ({
   visible,
-  geometry,
+  geometries,
   simulation,
   boundaryCondition,
   swr,
@@ -306,16 +307,18 @@ const BoundaryCondition = ({
           {boundaryCondition ? (
             <Edit
               boundaryCondition={{
-                uuid: current?.uuid || boundaryCondition.uuid,
-                name: current?.name || boundaryCondition.name,
-                type: current?.type || boundaryCondition.type,
-                selected: current?.selected || boundaryCondition.selected,
-                values: current?.values || boundaryCondition.values
+                uuid: current?.uuid ?? boundaryCondition.uuid,
+                name: current?.name ?? boundaryCondition.name,
+                type: current?.type ?? boundaryCondition.type,
+                geometry: current?.geometry ?? boundaryCondition.geometry,
+                selected: current?.selected ?? boundaryCondition.selected,
+                values: current?.values ?? boundaryCondition.values
               }}
               oldBoundaryCondition={{
                 uuid: boundaryCondition.uuid,
                 name: boundaryCondition.name,
                 type: boundaryCondition.type,
+                geometry: boundaryCondition.geometry,
                 selected: boundaryCondition.selected,
                 values: boundaryCondition.values
               }}
@@ -332,6 +335,7 @@ const BoundaryCondition = ({
               boundaryCondition={{
                 name: current?.name!,
                 type: current?.type!,
+                geometry: current?.geometry!,
                 selected: current?.selected!,
                 values: current?.values
               }}
@@ -395,10 +399,18 @@ const BoundaryCondition = ({
 
         {inputs}
 
-        <Selector
-          geometry={geometry}
-          alreadySelected={alreadySelected}
-          updateSelected={onSelected}
+        <Tabs
+          items={geometries.map((geometry) => ({
+            key: geometry.id,
+            label: geometry.name,
+            children: (
+              <Selector
+                geometry={geometry}
+                alreadySelected={alreadySelected}
+                updateSelected={onSelected}
+              />
+            )
+          }))}
         />
 
         {error && (

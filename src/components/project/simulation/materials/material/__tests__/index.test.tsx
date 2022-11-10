@@ -43,9 +43,13 @@ jest.mock(
 )
 
 describe('components/project/simulation/materials/material', () => {
-  const geometry = {
-    summary: {}
-  } as Pick<IFrontGeometriesItem, 'summary'>
+  const geometries = [
+    {
+      id: 'id',
+      name: 'name',
+      summary: {}
+    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+  ]
   const simulation = {
     id: 'id',
     scheme: {
@@ -95,7 +99,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -109,7 +113,7 @@ describe('components/project/simulation/materials/material', () => {
     const { rerender, unmount } = render(
       <Material
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         material={
           {
@@ -126,7 +130,7 @@ describe('components/project/simulation/materials/material', () => {
     rerender(
       <Material
         visible={false}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -169,7 +173,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -211,7 +215,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         material={
           {
@@ -236,7 +240,7 @@ describe('components/project/simulation/materials/material', () => {
     const { unmount } = render(
       <Material
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={
           {
             id: 'id',

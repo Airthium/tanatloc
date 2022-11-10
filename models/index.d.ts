@@ -90,6 +90,9 @@ export interface IModelMaterialsValue {
       value: number | string
     }[]
   }
+  geometry: {
+    index: number
+  }
   selected: { uuid: string; label: number }[]
 }
 
@@ -196,6 +199,9 @@ export interface IModelBoundaryConditionValue {
     key: string
     label: string
     children?: IModelBoundaryCondition[]
+  }
+  geometry: {
+    index: number
   }
   selected: { uuid: string; label: number }[]
   values?: {

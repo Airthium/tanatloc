@@ -31,9 +31,11 @@ describe('components/project/view', () => {
   const simulation = {
     id: 'id'
   }
-  const geometry = {
-    id: 'id'
-  }
+  const geometries = [
+    {
+      id: 'id'
+    }
+  ]
   const result = {
     glb: 'test.glb',
     originPath: 'originPath',
@@ -55,14 +57,14 @@ describe('components/project/view', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<View project={project} />)
+    const { unmount } = render(<View project={project} geometries={[]} />)
 
     unmount()
   })
 
   test('with simulation', () => {
     const { unmount } = render(
-      <View simulation={simulation} project={project} />
+      <View simulation={simulation} project={project} geometries={[]} />
     )
 
     unmount()
@@ -73,7 +75,7 @@ describe('components/project/view', () => {
       <View
         simulation={simulation}
         project={project}
-        geometry={{ id: 'id0', needCleanup: true }}
+        geometries={[{ id: 'id0', needCleanup: true }]}
       />
     )
 
@@ -85,7 +87,7 @@ describe('components/project/view', () => {
       throw new Error('geometry get error')
     })
     const { unmount } = render(
-      <View simulation={simulation} project={project} geometry={geometry} />
+      <View simulation={simulation} project={project} geometries={geometries} />
     )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
@@ -102,7 +104,7 @@ describe('components/project/view', () => {
 
   test('with geometry', async () => {
     const { unmount } = render(
-      <View simulation={simulation} project={project} geometry={geometry} />
+      <View simulation={simulation} project={project} geometries={geometries} />
     )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
@@ -118,7 +120,7 @@ describe('components/project/view', () => {
       <View
         project={project}
         simulation={simulation}
-        geometry={geometry}
+        geometries={geometries}
         result={result}
       />
     )
@@ -140,7 +142,7 @@ describe('components/project/view', () => {
       <View
         project={project}
         simulation={simulation}
-        geometry={geometry}
+        geometries={geometries}
         result={result}
       />
     )
@@ -158,7 +160,7 @@ describe('components/project/view', () => {
       <View
         project={project}
         simulation={simulation}
-        geometry={geometry}
+        geometries={geometries}
         result={result}
         postprocessing={postprocessing}
       />
@@ -181,7 +183,7 @@ describe('components/project/view', () => {
       <View
         project={project}
         simulation={simulation}
-        geometry={geometry}
+        geometries={geometries}
         result={result}
         postprocessing={postprocessing}
       />

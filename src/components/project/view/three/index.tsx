@@ -9,16 +9,7 @@ import {
   useCallback,
   useContext
 } from 'react'
-import {
-  Button,
-  Divider,
-  Dropdown,
-  Layout,
-  Menu,
-  Spin,
-  Switch,
-  Tooltip
-} from 'antd'
+import { Button, Divider, Dropdown, Layout, Spin, Switch, Tooltip } from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
@@ -84,7 +75,7 @@ import {
   select,
   unhighlight,
   unselect,
-  setPart,
+  // setPart,
   setPoint
 } from '@/context/select/actions'
 
@@ -317,7 +308,7 @@ export const loadPart = async (
     options.displayMesh,
     helpers.sectionViewHelper.getClippingPlane()
   )
-  dispatch(setPart(mesh))
+  // dispatch(setPart(mesh))
 
   // Scene
   scene.add(mesh)
@@ -710,6 +701,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     }
   }, [router])
 
+  // Parts
   useEffect(() => {
     if (!scene.current) return
     const sceneChildren = scene.current.children
@@ -738,6 +730,13 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
       )
       .filter((child) => child.type === 'Part')
 
+    // Remove
+    toRemove.forEach((child) => {
+      const part = child as IPart
+      scene.current?.remove(part)
+      part.dispose()
+    })
+
     // Add
     toAdd.forEach((part) => {
       // Load
@@ -761,13 +760,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
         ErrorNotification(errors.load, err)
         computeSceneBoundingSphere(scene.current!)
       })
-    })
-
-    // Remove
-    toRemove.forEach((child) => {
-      const part = child as IPart
-      scene.current?.remove(part)
-      part.dispose()
     })
   }, [parts, transparent, displayMesh, dispatch])
 
@@ -808,7 +800,11 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     if (!scene.current) return
 
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
+      // TODO mismatch uuid
+      console.log(child.type)
+      console.log(child.uuid)
+      console.log(selectPart)
+      if (child.type === 'Part' && child.uuid === selectPart) {
         const partChild = child as IPart
         if (selectEnabled)
           partChild.startSelection(
@@ -829,7 +825,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     if (!scene.current) return
 
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
+      if (child.type === 'Part' && child.uuid === selectPart) {
         const partChild = child as IPart
         // Highlight
         partChild.highlight(selectHighlighted?.uuid)
@@ -1088,7 +1084,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
             <>
               <Divider className="no-margin" />
 
-              <Tooltip title="Display mesh" placement="right">
+              <Tooltip title="Display result mesh" placement="right">
                 <Switch
                   checked={displayMesh}
                   checkedChildren={<TableOutlined />}

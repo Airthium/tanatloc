@@ -49,6 +49,9 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
                   key: 'string',
                   label: 'key'
                 },
+                geometry: {
+                  index: 0
+                },
                 selected: []
               }
             ]
@@ -62,6 +65,9 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
                 type: {
                   key: 'string',
                   label: 'key'
+                },
+                geometry: {
+                  index: 0
                 },
                 selected: []
               }
@@ -78,6 +84,9 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       key: 'key',
       label: 'key'
     },
+    geometry: {
+      index: 0
+    },
     selected: [
       { uuid: 'uuid1', label: 1 },
       { uuid: 'uuid3', label: 3 }
@@ -89,6 +98,9 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     type: {
       key: 'key',
       label: 'key'
+    },
+    geometry: {
+      index: 0
     },
     selected: [
       { uuid: 'uuid1', label: 1 },

@@ -19,14 +19,16 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/geometry', () => {
-  const geometries = [
+  const loadedGeometries = [
     { id: 'id', name: 'geometry', summary: {} },
     { id: 'id2', name: 'other geometry', summary: {} }
   ] as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  const geometry = { id: 'id', summary: {} } as Pick<
-    IFrontGeometriesItem,
-    'id' | 'summary'
-  >
+  const geometries = [
+    { id: 'id', name: 'name', summary: {} } as Pick<
+      IFrontGeometriesItem,
+      'id' | 'name' | 'summary'
+    >
+  ]
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
@@ -46,7 +48,7 @@ describe('components/project/simulation/geometry', () => {
       }
     }
   }
-  const setGeometry = jest.fn()
+  const setGeometries = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
@@ -58,10 +60,10 @@ describe('components/project/simulation/geometry', () => {
   test('render', () => {
     const { unmount } = render(
       <Geometry
+        loadedGeometries={loadedGeometries}
         geometries={geometries}
-        geometry={geometry}
         simulation={simulation}
-        setGeometry={setGeometry}
+        setGeometries={setGeometries}
         swr={swr}
       />
     )
@@ -69,13 +71,13 @@ describe('components/project/simulation/geometry', () => {
     unmount()
   })
 
-  test('without geometries', () => {
+  test('without loadedGeometries', () => {
     const { unmount } = render(
       <Geometry
-        geometries={[]}
-        geometry={geometry}
+        loadedGeometries={[]}
+        geometries={geometries}
         simulation={simulation}
-        setGeometry={setGeometry}
+        setGeometries={setGeometries}
         swr={swr}
       />
     )
@@ -86,7 +88,7 @@ describe('components/project/simulation/geometry', () => {
   test('with geometry value', async () => {
     const { unmount } = render(
       <Geometry
-        geometries={[
+        loadedGeometries={[
           {
             id: 'id',
             name: 'geometry',
@@ -94,7 +96,7 @@ describe('components/project/simulation/geometry', () => {
             summary: {}
           }
         ]}
-        geometry={geometry}
+        geometries={geometries}
         simulation={{
           id: 'id',
           scheme: {
@@ -115,7 +117,7 @@ describe('components/project/simulation/geometry', () => {
             }
           }
         }}
-        setGeometry={setGeometry}
+        setGeometries={setGeometries}
         swr={swr}
       />
     )
@@ -141,8 +143,8 @@ describe('components/project/simulation/geometry', () => {
   test('meshable', () => {
     const { unmount } = render(
       <Geometry
+        loadedGeometries={loadedGeometries}
         geometries={geometries}
-        geometry={geometry}
         simulation={{
           id: 'id',
           scheme: {
@@ -162,7 +164,7 @@ describe('components/project/simulation/geometry', () => {
             }
           }
         }}
-        setGeometry={setGeometry}
+        setGeometries={setGeometries}
         swr={swr}
       />
     )

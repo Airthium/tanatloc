@@ -1,10 +1,11 @@
 /** @module Components.Project.Simulation.Materials */
 
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useState, useCallback, useContext } from 'react'
 import { Card, Layout } from 'antd'
 
 import { IModelMaterialsValue } from '@/models/index.d'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
 import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
@@ -24,7 +25,7 @@ import Material from './material'
  * Props
  */
 export interface IProps {
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -54,13 +55,17 @@ const Materials = ({
   const materials = simulation.scheme.configuration.materials!
 
   // Part
-  useEffect(() => {
-    if (geometries[0]?.summary) {
-      dispatch(
-        setType(geometries[0].summary.dimension === 2 ? 'faces' : 'solids')
-      )
-    }
-  }, [geometries, dispatch])
+  useCustomEffect(
+    () => {
+      if (geometries[0]?.summary) {
+        dispatch(
+          setType(geometries[0].summary.dimension === 2 ? 'faces' : 'solids')
+        )
+      }
+    },
+    [geometries],
+    [dispatch]
+  )
 
   /**
    * On add
@@ -120,6 +125,8 @@ const Materials = ({
           <Material
             visible={materialVisible}
             geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              name: geometry.name,
               summary: geometry.summary
             }))}
             simulation={{
@@ -130,6 +137,7 @@ const Materials = ({
               material && {
                 uuid: material.uuid,
                 material: material.material,
+                geometry: material.geometry,
                 selected: material.selected
               }
             }

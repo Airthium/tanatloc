@@ -1,17 +1,18 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import { useState, useEffect, useCallback } from 'react'
-import { Button, Card, Drawer, Space, Typography } from 'antd'
+import { useState, useEffect, useCallback, useContext } from 'react'
+import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IModelMaterialsChild, IModelMaterialsValue } from '@/models/index.d'
 import { IMaterialDatabase } from '@/config/materials'
 
+import { SelectContext, ISelect } from '@/context/select'
+import { setPart } from '@/context/select/actions'
+
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
-
-import { ISelect } from '@/context/select'
 
 import {
   IFrontSimulationsItem,
@@ -28,7 +29,7 @@ import Edit from '../edit'
  */
 export interface IProps {
   visible: boolean
-  geometries: Pick<IFrontGeometriesItem, 'summary'>[]
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   material?: IModelMaterialsValue
   swr: {
@@ -54,6 +55,9 @@ const Material = ({
   const [alreadySelected, setAlreadySelected] = useState<ISelection[]>()
   const [current, setCurrent] = useState<IModelMaterialsValue>()
   const [error, setError] = useState<string>()
+
+  // Context
+  const { dispatch } = useContext(SelectContext)
 
   // Data
   const materials = simulation.scheme.configuration.materials
@@ -171,6 +175,7 @@ const Material = ({
               material={{
                 uuid: current?.uuid ?? material.uuid,
                 material: current?.material ?? material.material,
+                geometry: current?.geometry ?? material.geometry,
                 selected: current?.selected ?? material.selected
               }}
               simulation={{
@@ -185,6 +190,7 @@ const Material = ({
             <Add
               material={{
                 material: current?.material!,
+                geometry: current?.geometry!,
                 selected: current?.selected!
               }}
               simulation={{
@@ -225,15 +231,22 @@ const Material = ({
             })}
           </Space>
         </Card>
-        {/* // TODO */}
-        {geometries.map((geometry, index) => (
-          <Selector
-            key={index}
-            geometry={geometry}
-            alreadySelected={alreadySelected}
-            updateSelected={onSelected}
-          />
-        ))}
+
+        <Tabs
+          items={geometries.map((geometry) => ({
+            key: geometry.id,
+            label: geometry.name,
+            children: (
+              <Selector
+                geometry={geometry}
+                alreadySelected={alreadySelected}
+                updateSelected={onSelected}
+              />
+            )
+          }))}
+          onChange={(key) => dispatch(setPart(key))}
+        />
+
         {error && (
           <Typography.Text>
             <ExclamationCircleOutlined style={{ color: 'red' }} /> {error}

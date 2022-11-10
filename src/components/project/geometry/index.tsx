@@ -251,5 +251,6 @@ const Geometry = ({
   )
 }
 
+Geometry.componentName = 'Geometry'
 Geometry.Add = Add
 export default Geometry

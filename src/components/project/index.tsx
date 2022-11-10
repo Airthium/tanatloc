@@ -19,9 +19,9 @@ import {
   EyeInvisibleOutlined
 } from '@ant-design/icons'
 
-import { ISimulation } from '@/database/simulation/index'
 import { IModel } from '@/models/index.d'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
 import { GoBack } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -234,7 +234,7 @@ const Project = (): JSX.Element => {
   }, [errorUser, errorProject, errorSimulations, errorGeometries])
 
   // Auto open geometry add
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!loadingProject && !loadingGeometries) {
       if (!loadedGeometries.length) setGeometryAddVisible(true)
       else setGeometryAddVisible(false)
@@ -244,58 +244,64 @@ const Project = (): JSX.Element => {
   }, [loadingProject, loadingGeometries, loadedGeometries])
 
   // Update geometry
-  useEffect(() => {
-    if (loadingGeometries) return
+  useCustomEffect(
+    () => {
+      if (loadingGeometries) return
 
-    if (geometries.length) {
-      let needUpdate = false
-      const newGeometries = geometries
-        .map((geometry) => {
-          const current = loadedGeometries.find((g) => g.id === geometry?.id)
-          if (current) {
-            if (
-              JSON.stringify({ ...current, visible: undefined }) !==
-              JSON.stringify({ ...geometry, visible: undefined })
-            ) {
-              // Update
+      if (geometries.length) {
+        let needUpdate = false
+        const newGeometries = geometries
+          .map((geometry) => {
+            const current = loadedGeometries.find((g) => g.id === geometry?.id)
+            if (current) {
+              if (
+                JSON.stringify({ ...current, visible: undefined }) !==
+                JSON.stringify({ ...geometry, visible: undefined })
+              ) {
+                // Update
+                needUpdate = true
+                return current
+              }
+              return geometry
+            } else {
+              // Remove
               needUpdate = true
-              return current
+              return null
             }
-            return geometry
-          } else {
-            // Remove
-            needUpdate = true
-            return null
-          }
-        })
-        .filter((g) => g) as IFrontGeometriesItem[]
+          })
+          .filter((g) => g) as IFrontGeometriesItem[]
 
-      if (needUpdate) setGeometries(newGeometries)
-    } else {
-      setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingGeometries, loadedGeometries, `$(geometries)`, setGeometries])
+        if (needUpdate) setGeometries(newGeometries)
+      } else {
+        setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [loadingGeometries, loadedGeometries, geometries],
+    [setGeometries]
+  )
 
   // Update simulation
-  useEffect(() => {
-    if (!loadingSimulations && simulation) {
-      const current = loadedSimulations.find((s) => s.id === simulation?.id)
-      if (current) {
-        if (JSON.stringify(current) !== JSON.stringify(simulation))
-          setSimulation(current)
-      } else {
-        onPanelClose()
-        setSimulation(undefined)
+  useCustomEffect(
+    () => {
+      if (!loadingSimulations && simulation) {
+        const current = loadedSimulations.find((s) => s.id === simulation?.id)
+        if (current) {
+          if (JSON.stringify(current) !== JSON.stringify(simulation)) {
+            setSimulation(current)
+
+            if (menuKey && menuKey.key === menuItems.simulations.key)
+              setSimulationPanel(menuKey.id, menuKey.item!)
+          }
+        } else {
+          onPanelClose()
+          setSimulation(undefined)
+        }
       }
-    }
-  }, [
-    loadedSimulations,
-    loadingSimulations,
-    simulation,
-    setSimulation,
-    onPanelClose
-  ])
+    },
+    [loadedSimulations, loadingSimulations, simulation, menuKey],
+    [setSimulation, onPanelClose]
+  )
 
   /**
    * On geometry cleanup
@@ -364,7 +370,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelAbout = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'About'} onClose={onPanelClose}>
           <Simulation.About
@@ -402,7 +408,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelGeometry = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Simulation.Geometry
@@ -429,7 +435,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelParameters = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'Parameters'} onClose={onPanelClose}>
           <Simulation.Parameters
@@ -450,7 +456,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelMaterials = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel
           visible={panelVisible}
@@ -460,6 +466,7 @@ const Project = (): JSX.Element => {
           <Simulation.Materials
             geometries={geometries.map((geometry) => ({
               id: geometry.id,
+              name: geometry.name,
               summary: geometry.summary
             }))}
             simulation={{
@@ -482,7 +489,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelInitialization = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'Initialization'} onClose={onPanelClose}>
           <Simulation.Initialization
@@ -501,7 +508,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelBoundaryConditions = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel
           visible={panelVisible}
@@ -511,6 +518,7 @@ const Project = (): JSX.Element => {
           <Simulation.BoundaryConditions
             geometries={geometries.map((geometry) => ({
               id: geometry.id,
+              name: geometry.name,
               summary: geometry.summary
             }))}
             simulation={{
@@ -533,7 +541,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelRun = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={panelVisible} title={'Run'} onClose={onPanelClose}>
           <Simulation.Run
@@ -565,19 +573,25 @@ const Project = (): JSX.Element => {
    */
   const setSimulationPanel = useCallback(
     (id: string, item: string) => {
-      const current = loadedSimulations.find((s) => s.id === id)
+      const current = loadedSimulations.find(
+        (s) => s.id === id
+      ) as IFrontSimulationsItem
       if (!current) return
 
       setSimulation(current)
 
-      // // Display geometries
-      // const geometryId = current.scheme?.configuration?.geometry?.value
-      // if (geometryId && geometry?.id !== geometryId) {
-      //   const currentGeometry = loadedGeometries.find(
-      //     (g) => g.id === geometryId
-      //   )
-      //   if (currentGeometry) setGeometry(currentGeometry)
-      // }
+      // Display geometries
+      const geometryId = current.scheme?.configuration?.geometry?.value
+      const geometriesIds = current.scheme?.configuration?.geometry?.values
+      if (geometryId) {
+        const newGeometry = loadedGeometries.find((g) => g.id === geometryId)
+        if (newGeometry) setGeometries([newGeometry])
+      } else if (geometriesIds) {
+        const newGeometries = loadedGeometries.filter((g) =>
+          geometriesIds.includes(g.id)
+        )
+        setGeometries(newGeometries)
+      }
 
       switch (item) {
         case 'about':
@@ -607,7 +621,6 @@ const Project = (): JSX.Element => {
     },
     [
       loadedGeometries,
-      geometries,
       loadedSimulations,
       setSimulationPanelAbout,
       setSimulationPanelGeometry,
@@ -619,23 +632,29 @@ const Project = (): JSX.Element => {
     ]
   )
 
-  // Panel
-  useEffect(() => {
-    if (!menuKey) return
+  // Update panel
+  useCustomEffect(
+    () => {
+      if (!menuKey) return
 
-    if (menuKey.key === menuItems.geometries.key) {
-      setGeometryPanel(menuKey.id)
-    } else {
-      //menuKey.key === menuItems.simulations.key)
-      setSimulationPanel(menuKey.id, menuKey.item!)
+      // menuKey === prevMenukey => return
 
-      // Force geometry
-      if (menuKey.item !== 'run') {
-        setResult(undefined)
-        setPostprocessing(undefined)
+      if (menuKey.key === menuItems.geometries.key) {
+        setGeometryPanel(menuKey.id)
+      } else {
+        //menuKey.key === menuItems.simulations.key)
+        setSimulationPanel(menuKey.id, menuKey.item!)
+
+        // Force geometry
+        if (menuKey.item !== 'run') {
+          setResult(undefined)
+          setPostprocessing(undefined)
+        }
       }
-    }
-  }, [menuKey, setGeometryPanel, setSimulationPanel, onPanelClose])
+    },
+    [menuKey],
+    [setGeometryPanel, setSimulationPanel, onPanelClose]
+  )
 
   // Close result
   useEffect(() => {
@@ -681,6 +700,11 @@ const Project = (): JSX.Element => {
                 <EyeOutlined
                   onClick={(e) => {
                     e.stopPropagation()
+                    if (
+                      panel?.props?.children?.type?.componentName ===
+                      Geometry.componentName
+                    )
+                      onPanelClose()
                     delGeometry(g)
                   }}
                 />
@@ -696,7 +720,14 @@ const Project = (): JSX.Element => {
           )
         }
       }),
-    [loadedGeometries, geometries, addGeometry, delGeometry]
+    [
+      loadedGeometries,
+      geometries,
+      panel,
+      addGeometry,
+      delGeometry,
+      onPanelClose
+    ]
   )
 
   // Simulations render build

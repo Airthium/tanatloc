@@ -61,6 +61,7 @@ export const onSelect = async (
 
     // Update
     newSimulation.scheme.configuration.geometry.value = geometryId
+    newSimulation.scheme.configuration.geometry.values = undefined
 
     const diff = {
       ...newSimulation.scheme.configuration,
@@ -91,7 +92,7 @@ export const onSelect = async (
 
     // Display
 
-    setGeometries((prev) => [...prev, newGeometry])
+    setGeometries([newGeometry])
   } catch (err) {
     ErrorNotification(errors.update, err)
   }
@@ -123,6 +124,7 @@ export const onMultipleSelect = async (
     )
 
     // Update
+    newSimulation.scheme.configuration.geometry.value = undefined
     newSimulation.scheme.configuration.geometry.values = geometriesIds
 
     const diff = {

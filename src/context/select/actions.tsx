@@ -39,7 +39,7 @@ export const setType = (
  * Set part
  * @param part Part
  */
-export const setPart = (part: IPart): ISelectAction => {
+export const setPart = (part: string): ISelectAction => {
   return { type: actionTypes.SETPART, value: part }
 }
 

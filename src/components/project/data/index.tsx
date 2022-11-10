@@ -369,7 +369,10 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
                 <YAxis
-                  domain={[plot && plot?.min * 0.9 || -1, plot && plot?.max * 1.1 || 1]}
+                  domain={[
+                    (plot && plot?.min * 0.9) || -1,
+                    (plot && plot?.max * 1.1) || 1
+                  ]}
                   tickFormatter={(value) =>
                     new Intl.NumberFormat('en-US', {
                       notation: 'scientific',

@@ -28,14 +28,20 @@ const stringToColor = (str?: string): string => {
  * @returns HEX array
  */
 const colorGenerator = (quantity?: number): string | string[] => {
-  if (!quantity || quantity === 0)
-    return '#' + Math.floor(Math.random() * 16777215).toString(16)
-  let result = []
-  let segments = 255 / quantity
+  if (!quantity) return '#' + Math.floor(Math.random() * 16777215).toString(16)
+
+  const result = []
+  const segments = 255 / quantity
   for (let i = 0; i < quantity; i++) {
-    let r = Math.floor((i * segments) % 255).toString(16).padStart(2, '0')
-    let g = Math.floor(((i + 1) * segments) % 255).toString(16).padStart(2, '0')
-    let b = Math.floor(((i + 2) * segments) % 255).toString(16).padStart(2, '0')
+    const r = Math.floor((i * segments) % 255)
+      .toString(16)
+      .padStart(2, '0')
+    const g = Math.floor(((i + 1) * segments) % 255)
+      .toString(16)
+      .padStart(2, '0')
+    const b = Math.floor(((i + 2) * segments) % 255)
+      .toString(16)
+      .padStart(2, '0')
     result.push('#' + r + g + b)
   }
   return result

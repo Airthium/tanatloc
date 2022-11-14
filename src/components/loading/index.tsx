@@ -1,8 +1,8 @@
 /** @module Components.Loading */
 
 import { useEffect, useRef, useState } from 'react'
-import { Card, Layout, Space, Spin, StepProps, Steps, Typography } from 'antd'
-import { WarningOutlined } from '@ant-design/icons'
+import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
+import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
 
 /**
  * Simple
@@ -56,8 +56,6 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
       return
     }
 
-    const currentStatus = errors?.length ? 'error' : 'process'
-
     setStatusDisplay(
       <div className="Loading-status">
         <Steps
@@ -65,10 +63,9 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
           items={status
             .map((desc, index) => ({
               key: index,
-              status:
-                index === status.length - 1
-                  ? currentStatus
-                  : ('finish' as StepProps['status']),
+              status: 'finish' as 'finish',
+              icon:
+                index === status.length - 1 ? <LoadingOutlined /> : undefined,
               title: desc
             }))
             .reverse()}

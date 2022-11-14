@@ -27,11 +27,11 @@ export const initDockers = async (params?: {
 
   // postgres
   try {
-    execSync('docker image inspect postgres')
+    execSync('docker image inspect postgres:15')
   } catch (err) {
-    await params?.addStatus('Pulling postgres')
-    console.info('Pulling postgres')
-    execSync('docker pull postgres')
+    await params?.addStatus('Pulling postgres 15')
+    console.info('Pulling postgres 15')
+    execSync('docker pull postgres:15')
   }
 }
 

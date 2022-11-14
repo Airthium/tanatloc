@@ -68,7 +68,8 @@ export const checkdB = async (params?: {
 
     // Get docker host
     const host = execSync(
-      'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}")'
+      'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" ' +
+        id.toString().trim()
     )
     console.info('- docker host: ' + host.toString().trim())
     await params?.addStatus('Database found on ' + host.toString().trim())

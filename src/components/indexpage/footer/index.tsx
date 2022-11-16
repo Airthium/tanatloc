@@ -11,7 +11,7 @@ import {
   Typography
 } from 'antd'
 
-import packageJson from '../../../package.json'
+import packageJson from '../../../../package.json'
 
 export interface IProps {
   scroll: (id: string) => void

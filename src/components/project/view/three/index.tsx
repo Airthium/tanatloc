@@ -802,9 +802,9 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     scene.current.children.forEach((child) => {
       // TODO mismatch uuid
       console.log(child.type)
-      console.log(child.uuid)
+      console.log(child.userData.uuid)
       console.log(selectPart)
-      if (child.type === 'Part' && child.uuid === selectPart) {
+      if (child.type === 'Part' && child.userData.uuid === selectPart) {
         const partChild = child as IPart
         if (selectEnabled)
           partChild.startSelection(

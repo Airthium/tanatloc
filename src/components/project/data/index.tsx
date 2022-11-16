@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Drawer,
+  Dropdown,
   Layout,
   Space,
   Table,
@@ -25,19 +26,12 @@ import {
 } from 'recharts'
 import { camelCase } from 'lodash'
 
-import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
-
-// TODO
-// margin between table & graph
-// try to scroll the table keeping the header
-// add +-10% to see the curves (example, if one line up, one line down)
-// dropdown exportCSV  to choose separator: , ; tab
 
 /**
  * Props
@@ -78,14 +72,15 @@ export const onCheck = (
  * @param datas Datas
  * @param names Names
  * @param camelNames Camel names
+ * @param separator Separator (Default to ;)
  */
 export const exportCSV = (
   simulation: Pick<IFrontSimulationsItem, 'name'>,
   datas: { key: number; x: number; [key: string]: number }[],
   names: string[],
-  camelNames: string[]
+  camelNames: string[],
+  separator: string = ';'
 ): void => {
-  const separator = ','
   let CSV = ''
 
   // Header
@@ -129,6 +124,8 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     data: { x: number }[]
     min: number
     max: number
+    domainMin: number
+    domainMax: number
     lines: JSX.Element[]
   }>()
   const [downloading, setDownloading] = useState<boolean>(false)
@@ -206,6 +203,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
         <Space>
           {name}
           <Checkbox
+            data-testid="table-checkbox"
             checked={columnSelection[index]}
             onChange={(event) =>
               setColumnSelection(onCheck(event, index, columnSelection))
@@ -221,7 +219,8 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     tableColumns.unshift({
       title: '',
       dataIndex: 'x',
-      key: 'x'
+      key: 'x',
+      fixed: 'left'
     })
 
     setColumns(tableColumns)
@@ -271,8 +270,11 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
 
     const min = Math.min(...keys.flatMap((key) => data.map((d) => d[key])))
     const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
+    const range = max - min
+    const domainMin = min - range * 0.1
+    const domainMax = max + range * 0.1
 
-    setPlot({ data, min, max, lines })
+    setPlot({ data, min, max, domainMin, domainMax, lines })
   }, [datas, names, camelNames, columnSelection])
 
   /**
@@ -317,11 +319,47 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
           height="50vh"
           bodyStyle={{ height: '100%', overflow: 'hidden' }}
           extra={
-            <DownloadButton
-              bordered
+            <Dropdown.Button
               loading={downloading}
               disabled={!datas}
-              onDownload={() => {
+              menu={{
+                items: [
+                  {
+                    label: 'Default separator: semicolon',
+                    key: 'semicolon',
+                    disabled: true
+                  },
+                  {
+                    label: 'Separator: tab',
+                    key: 'tab',
+                    onClick: () => {
+                      setDownloading(true)
+                      try {
+                        exportCSV(simulation, datas, names, camelNames, '\t')
+                      } catch (err) {
+                        ErrorNotification(errors.download, err)
+                      } finally {
+                        setDownloading(false)
+                      }
+                    }
+                  },
+                  {
+                    label: 'Separator: comma',
+                    key: ',',
+                    onClick: () => {
+                      setDownloading(true)
+                      try {
+                        exportCSV(simulation, datas, names, camelNames, ',')
+                      } catch (err) {
+                        ErrorNotification(errors.download, err)
+                      } finally {
+                        setDownloading(false)
+                      }
+                    }
+                  }
+                ]
+              }}
+              onClick={() => {
                 setDownloading(true)
                 try {
                   exportCSV(simulation, datas, names, camelNames)
@@ -333,7 +371,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
               }}
             >
               Export CSV
-            </DownloadButton>
+            </Dropdown.Button>
           }
         >
           <div
@@ -341,27 +379,28 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
               display: 'flex',
               height: '100%',
               padding: '10px',
-              justifyContent: 'space-around'
+              justifyContent: 'space-between'
             }}
           >
             <div
               style={{
                 display: 'flex',
                 height: '100%',
-                width: '45%',
+                width: '49%',
                 overflow: 'auto'
               }}
             >
               <Table
                 size="small"
+                sticky={true}
+                pagination={false}
                 dataSource={datas}
                 columns={columns}
-                pagination={false}
-                sticky={true}
+                scroll={{ x: 'calc(60vw)' }}
               />
             </div>
 
-            <ResponsiveContainer width="45%" height="100%">
+            <ResponsiveContainer width="49%" height="100%">
               <LineChart
                 data={plot?.data}
                 margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
@@ -369,17 +408,8 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
                 <YAxis
-                  domain={[
-                    (plot && plot?.min * 0.9) || -1,
-                    (plot && plot?.max * 1.1) || 1
-                  ]}
-                  tickFormatter={(value) =>
-                    new Intl.NumberFormat('en-US', {
-                      notation: 'scientific',
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    }).format(value)
-                  }
+                  domain={plot ? [plot.domainMin, plot.domainMax] : [-1, 1]}
+                  tickFormatter={(value) => Number(value).toExponential(3)}
                 />
                 <ReTooltip />
                 <Legend />

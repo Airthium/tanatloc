@@ -1,22 +1,21 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Data, { errors } from '..'
+import { act } from 'react-dom/test-utils'
 
 jest.mock('recharts', () => ({
   CartesianGrid: () => <div />,
   Legend: () => <div />,
-  LineChart: () => <div />,
+  LineChart: (props: any) => <div>{props.children}</div>,
   Line: () => <div />,
-  ResponsiveContainer: () => <div />,
+  ResponsiveContainer: (props: any) => <div>{props.children}</div>,
   Tooltip: () => <div />,
   XAxis: () => <div />,
-  YAxis: () => <div />
-}))
-
-const mockDownloadButton = jest.fn()
-jest.mock('@/components/assets/button', () => ({
-  DownloadButton: (props: any) => mockDownloadButton(props)
+  YAxis: (props: any) => {
+    props.tickFormatter(1)
+    return <div />
+  }
 }))
 
 const mockErrorNotification = jest.fn()
@@ -38,9 +37,6 @@ describe('components/project/data', () => {
   const simulation = { id: 'id', name: 'name' }
 
   beforeEach(() => {
-    mockDownloadButton.mockReset()
-    mockDownloadButton.mockImplementation(() => <div />)
-
     mockErrorNotification.mockReset()
 
     mockSimulation.mockReset()
@@ -87,7 +83,7 @@ describe('components/project/data', () => {
     unmount()
   })
 
-  test('with data', () => {
+  test('with data', async () => {
     const data = {
       tasks: [
         {
@@ -112,11 +108,14 @@ describe('components/project/data', () => {
     const { unmount } = render(<Data simulation={simulation} />)
 
     // Visible
+
     const button = screen.getByRole('button')
-    fireEvent.click(button)
+    act(() => {
+      fireEvent.click(button)
+    })
 
     // Checkbox
-    const checkboxes = screen.getAllByRole('checkbox')
+    const checkboxes = screen.getAllByTestId('table-checkbox')
     fireEvent.click(checkboxes[0])
     fireEvent.click(checkboxes[1])
     fireEvent.click(checkboxes[0])
@@ -128,10 +127,7 @@ describe('components/project/data', () => {
     unmount()
   })
 
-  test('exportCSV', () => {
-    mockDownloadButton.mockImplementation((props) => (
-      <div role="DownloadButton" onClick={props.onDownload} />
-    ))
+  test('exportCSV', async () => {
     const data = {
       tasks: [
         {
@@ -162,8 +158,19 @@ describe('components/project/data', () => {
     fireEvent.click(button)
 
     // Download
-    const exportCSV = screen.getByRole('DownloadButton')
+    const exportCSV = screen.getByRole('button', { name: 'Export CSV' })
     fireEvent.click(exportCSV)
+
+    const ellispsis = screen.getByRole('button', { name: 'ellipsis' })
+    fireEvent.mouseOver(ellispsis)
+
+    await waitFor(() => screen.getByText('Separator: tab'))
+
+    const tab = screen.getByText('Separator: tab')
+    fireEvent.click(tab)
+
+    const comma = screen.getByText('Separator: comma')
+    fireEvent.click(comma)
 
     // Error
     Object.defineProperty(window, 'URL', {
@@ -180,6 +187,9 @@ describe('components/project/data', () => {
       errors.download,
       new Error('createObjectURL error')
     )
+
+    fireEvent.click(tab)
+    fireEvent.click(comma)
 
     unmount()
   })

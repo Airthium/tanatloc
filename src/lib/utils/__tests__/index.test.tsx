@@ -37,6 +37,17 @@ describe('lib/utils', () => {
     expect(rgba).toBe('rgba(255, 255, 255, 0)')
   })
 
+  test('colorGenerator', () => {
+    let color: string | string[]
+
+    color = Utils.colorGenerator()
+    expect(color[0]).toBe('#')
+
+    color = Utils.colorGenerator(2)
+    expect(color[0][0]).toBe('#')
+    expect(color[1][0]).toBe('#')
+  })
+
   test('userToAvatar', () => {
     let res: any
 

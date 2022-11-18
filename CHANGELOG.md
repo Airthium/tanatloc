@@ -1,5 +1,19 @@
 ## v1.1.5
 
+- Global
+  - :arrow_up: Update dependencies
+- Server:
+  - :beetle: Fix Windows Docker user #226
+  - :beetle: Force postgres 15
+- Client:
+  - :beetle: Fix FreeFEM-EJS mode
+  - :beetle: Fix sensors #277
+  - :beetle: Fix geometry auto resize #276
+  - :beetle: Minor CSS
+  - :beetle: Data graph update
+
+---
+
 ## v1.1.4
 
 - Electron:

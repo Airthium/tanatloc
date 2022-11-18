@@ -9,7 +9,8 @@ import {
   SettingOutlined,
   QuestionCircleOutlined,
   LogoutOutlined,
-  TeamOutlined
+  TeamOutlined,
+  EditOutlined
 } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
@@ -59,6 +60,10 @@ export const menuItems = {
     label: 'Administration',
     key: 'administration'
   },
+  editor: {
+    label: 'Editor',
+    key: 'editor'
+  },
   help: {
     label: 'I Need Help',
     key: 'help'
@@ -81,6 +86,7 @@ export const onSelect = (
   clearUser: () => void
 ): void => {
   if (key === menuItems.logout.key) onLogout(router, clearUser)
+  else if (key === menuItems.editor.key) router.push('/editor')
   else {
     router.replace({
       pathname: '/dashboard',
@@ -205,6 +211,11 @@ const Dashboard = () => {
               className: user.superuser && !isElectron() ? '' : 'display-none',
               icon: <ControlOutlined />,
               label: menuItems.administration.label
+            },
+            {
+              key: menuItems.editor.key,
+              icon: <EditOutlined />,
+              label: menuItems.editor.label
             },
             {
               key: menuItems.help.key,

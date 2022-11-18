@@ -1,6 +1,6 @@
 {
   "name": "tanatloc",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Tanatloc",
   "homepage": "./",
   "repository": "git@github.com:Airthium/tanatloc.git",
@@ -11,7 +11,7 @@
   },
   "type": "module",
   "scripts": {
-    "depcheck": "node --experimental-specifier-resolution=node config/depcheck/depcheckrc.js",
+    "depcheck": "node config/depcheck/depcheckrc.js",
     "prettier": "prettier -l '**/*.{js,jsx,ts,tsx,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,css}'",
     "doc": "typedoc --options config/typedoc/config.json",

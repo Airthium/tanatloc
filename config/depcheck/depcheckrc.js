@@ -1,6 +1,6 @@
 import { basename } from 'path'
 import depcheck from 'depcheck'
-import { getContent } from 'depcheck/dist/utils/file'
+import { getContent } from 'depcheck/dist/utils/file.js'
 import { exit } from 'process'
 
 /**

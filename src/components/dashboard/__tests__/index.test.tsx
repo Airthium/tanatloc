@@ -247,9 +247,6 @@ describe('components/dashboard', () => {
   })
 
   test('onSelect (error + empty)', () => {
-    mockPush.mockImplementation(() => {
-      throw new Error()
-    })
     const { unmount } = render(<Dashboard />)
 
     const items = screen.getAllByRole('menuitem')

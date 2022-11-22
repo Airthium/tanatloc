@@ -73,7 +73,7 @@
     "@types/url-join": "4.0.1",
     "@types/uuid": "8.3.4",
     "ace-builds": "1.13.1",
-    "antd": "4.24.3",
+    "antd": "5.0.0",
     "archiver": "5.3.1",
     "babel-jest": "29.3.1",
     "cookie": "0.5.0",

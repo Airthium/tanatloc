@@ -2,10 +2,13 @@
 
 import Head from 'next/head'
 import { AppProps } from 'next/app'
+import { ConfigProvider } from 'antd'
 
 import MathJax from '@/components/assets/mathjax'
 
-require('@/styles/global.less')
+import theme from '@/styles/theme'
+
+import '@/styles/fonts.css'
 
 /**
  * Global App component
@@ -18,7 +21,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
    * Render
    */
   return (
-    <>
+    <ConfigProvider theme={theme}>
       <Head>
         <title>Tanatloc</title>
         <meta
@@ -28,7 +31,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
       </Head>
       <MathJax.Head />
       <Component {...pageProps} />
-    </>
+    </ConfigProvider>
   )
 }
 

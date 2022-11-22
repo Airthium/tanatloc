@@ -16,7 +16,7 @@ import {
   Steps,
   Typography
 } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { ItemType } from 'antd/es/menu/hooks/useItems'
 import { BarsOutlined, BugOutlined, SettingOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
@@ -27,6 +27,10 @@ import UserAPI from '@/api/user'
 
 import Side from '@/components/assets/side'
 import Footer from '@/components/footer'
+
+import style from './index.style'
+
+import { css } from '@emotion/react'
 
 /**
  * Scroll to view
@@ -198,7 +202,17 @@ const Index = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout id="index" className="Index">
+    <Layout
+      id="index"
+      css={css`
+    display: 'block',
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    overflowX: 'hidden',
+    padding: '0 100px'
+    `}
+    >
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"
@@ -323,7 +337,7 @@ const Index = (): JSX.Element => {
           </Collapse.Panel>
         </Collapse>
       </Drawer>
-      <Layout.Header id="header" className="Index-Header">
+      <Layout.Header id="header" css={style.indexHeader}>
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Menu mode="horizontal" className="Index-Menu" items={menuItems} />
         <div className="Index-Menu-mobile">

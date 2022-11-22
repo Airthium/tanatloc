@@ -30,8 +30,6 @@ import Footer from '@/components/footer'
 
 import style from './index.style'
 
-import { css } from '@emotion/react'
-
 /**
  * Scroll to view
  * @param id
@@ -202,17 +200,7 @@ const Index = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout
-      id="index"
-      css={css`
-    display: 'block',
-    width: '100%',
-    height: '100%',
-    overflow: 'auto',
-    overflowX: 'hidden',
-    padding: '0 100px'
-    `}
-    >
+    <Layout id="index" css={style.index}>
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"

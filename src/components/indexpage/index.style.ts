@@ -1,6 +1,6 @@
-import { css } from '@emotion/react'
+import { css, SerializedStyles } from '@emotion/react'
 
-const style = {
+const style: { [key: string]: SerializedStyles } = {
   index: css({
     display: 'block',
     width: '100%',
@@ -29,9 +29,17 @@ const style = {
       borderBottom: 'none',
 
       li: {
-        padding: '0 !important'
+        padding: '0 !important',
+
+        ':after': {
+          display: 'none'
+        }
       }
     }
+  }),
+  indexContent: css({
+    maxWidth: '1200px',
+    margin: 'auto'
   })
 }
 

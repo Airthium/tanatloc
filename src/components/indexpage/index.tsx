@@ -28,6 +28,7 @@ import UserAPI from '@/api/user'
 import Side from '@/components/assets/side'
 import Footer from '@/components/footer'
 
+import globalStyle from '@/styles'
 import style from './index.style'
 
 /**
@@ -341,8 +342,8 @@ const Index = (): JSX.Element => {
         {loginButton}
       </Layout.Header>
 
-      <Layout.Content className="Index-Content">
-        <Space direction="vertical" size={90} className="full-width">
+      <Layout.Content css={style.indexContent}>
+        <Space direction="vertical" size={90} css={globalStyle.fullWidth}>
           <Side
             left={
               <Space direction="vertical" size={20}>

@@ -8,6 +8,7 @@ import MathJax from '@/components/assets/mathjax'
 
 import theme from '@/styles/theme'
 
+import '@/styles/index.css'
 import '@/styles/fonts.css'
 
 /**

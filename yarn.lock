@@ -38,7 +38,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ant-design/cssinjs@npm:^0.0.0-alpha.44":
+"@ant-design/cssinjs@npm:^0.0.0-alpha.38, @ant-design/cssinjs@npm:^0.0.0-alpha.44":
   version: 0.0.0-alpha.60
   resolution: "@ant-design/cssinjs@npm:0.0.0-alpha.60"
   dependencies:
@@ -63,7 +63,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ant-design/icons@npm:4.8.0":
+"@ant-design/icons@npm:4.8.0, @ant-design/icons@npm:^4.0.0, @ant-design/icons@npm:^4.3.0":
   version: 4.8.0
   resolution: "@ant-design/icons@npm:4.8.0"
   dependencies:
@@ -92,6 +92,73 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
   checksum: 4264d38e6b3cc6d640e1e7f9821e5f428369c31754df03b4712706dba4e89c7bc3e6370ba8dc52b9eb278ccb986ddf215bfac0b0c01e5b7e8ed6f50179be1a69
+  languageName: node
+  linkType: hard
+
+"@ant-design/pro-layout@npm:^7.2.5":
+  version: 7.2.6
+  resolution: "@ant-design/pro-layout@npm:7.2.6"
+  dependencies:
+    "@ant-design/icons": ^4.0.0
+    "@ant-design/pro-provider": 2.0.17
+    "@ant-design/pro-utils": 2.3.5
+    "@babel/runtime": ^7.18.0
+    "@umijs/route-utils": ^2.1.0
+    "@umijs/ssr-darkreader": ^4.9.44
+    "@umijs/use-params": ^1.0.9
+    classnames: ^2.2.6
+    lodash.merge: ^4.6.2
+    omit.js: ^2.0.2
+    path-to-regexp: 2.4.0
+    rc-resize-observer: ^1.1.0
+    rc-util: ^5.0.6
+    swr: ^1.2.0
+    unstated-next: ^1.1.0
+    use-json-comparison: ^1.0.3
+    use-media-antd-query: ^1.1.0
+    warning: ^4.0.3
+  peerDependencies:
+    antd: ">=4.23.0"
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 9ea2c5c4e5ae67daadb78d12fd235107d51ae8d059e5f1f054b4b7daa94d7425bbf26f46702e63ee5308880ffb86bbb25e30cedc944bf3a71218684e1b97e27e
+  languageName: node
+  linkType: hard
+
+"@ant-design/pro-provider@npm:2.0.17":
+  version: 2.0.17
+  resolution: "@ant-design/pro-provider@npm:2.0.17"
+  dependencies:
+    "@ant-design/cssinjs": ^0.0.0-alpha.38
+    "@babel/runtime": ^7.18.0
+    "@ctrl/tinycolor": ^3.4.0
+    rc-util: ^5.0.1
+    swr: ^1.2.0
+  peerDependencies:
+    antd: ">=4.23.0"
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 123e33276068fda7d2eb6ac7fc452844a3ce7406f6fec0d19e821f1369337aa2a9a7de243e4162d42ed7115215411a044459df905d0af878f9c677318e9daf3c
+  languageName: node
+  linkType: hard
+
+"@ant-design/pro-utils@npm:2.3.5":
+  version: 2.3.5
+  resolution: "@ant-design/pro-utils@npm:2.3.5"
+  dependencies:
+    "@ant-design/icons": ^4.3.0
+    "@ant-design/pro-provider": 2.0.17
+    "@babel/runtime": ^7.18.0
+    classnames: ^2.2.6
+    dayjs: ^1.11.4
+    rc-util: ^5.0.6
+    react-sortable-hoc: ^2.0.0
+    swr: ^1.2.0
+  peerDependencies:
+    antd: ">=4.23.0"
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 625a4db5de07e07999ffba53929154e94aab8c362cbfd20518c40e6cd17aef793456eee1b3345d002cdec9fd81f09e9e1cedc34eb16f1d52f755abf911a484ee
   languageName: node
   linkType: hard
 
@@ -598,7 +665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.16.7":
+"@babel/runtime@npm:^7.16.7, @babel/runtime@npm:^7.2.0":
   version: 7.20.1
   resolution: "@babel/runtime@npm:7.20.1"
   dependencies:
@@ -1467,6 +1534,13 @@ __metadata:
     tiny-glob: ^0.2.9
     tslib: ^2.4.0
   checksum: 118a1971120253740121a1db0a6658c21195b7da962acf9c124b507a3df707cfc97b0b84a16edcbd4352853b182e8337da9fc6e8e3d06c60d75ae4fb42321c75
+  languageName: node
+  linkType: hard
+
+"@qixian.cs/path-to-regexp@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@qixian.cs/path-to-regexp@npm:6.1.0"
+  checksum: b1636e67c365254be36daf8d0b393c01581b57ef00a6f000b44edb3cc62c06bf6ef51d1b37e925c6325d777b5d258d9ca382f8989dd6ec9a0e24f0148c1fe256
   languageName: node
   linkType: hard
 
@@ -2401,6 +2475,34 @@ __metadata:
     "@typescript-eslint/types": 5.42.1
     eslint-visitor-keys: ^3.3.0
   checksum: d36c59da7bf3b3c150c12cbe4b0331edc15253f59599ec3d8b873b2a3d9fc7a4fea11490c1b20d972afcdc9c842deb5ada527ea9c538aa7e87555699d9a59f24
+  languageName: node
+  linkType: hard
+
+"@umijs/route-utils@npm:^2.1.0":
+  version: 2.2.1
+  resolution: "@umijs/route-utils@npm:2.2.1"
+  dependencies:
+    "@qixian.cs/path-to-regexp": ^6.1.0
+    fast-deep-equal: ^3.1.3
+    lodash.isequal: ^4.5.0
+    memoize-one: ^5.1.1
+  checksum: 41db28caa17e9edc9ec38809f274fe4ddcf6a0de5ee82c146c1b97608b7a0b4e16f9ac6b8c16a23b55e35391a5d9eb87b8caa135ef484ae5c06331d13e73eb80
+  languageName: node
+  linkType: hard
+
+"@umijs/ssr-darkreader@npm:^4.9.44":
+  version: 4.9.45
+  resolution: "@umijs/ssr-darkreader@npm:4.9.45"
+  checksum: be91200ddaf003e4e2bc566a7c224d152334db4486ebb86cd97714ed496cfd6a90b06deaeb978664c6e1bfbf6b261198844fb43c812e4a398fdf208fd86f8281
+  languageName: node
+  linkType: hard
+
+"@umijs/use-params@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "@umijs/use-params@npm:1.0.9"
+  peerDependencies:
+    react: "*"
+  checksum: 7f72436440dff0e1911ee916340bd26c6c9a510bad4af536d3ec9a5a175d37255d42dbd1cb0dc996daf4d0c3b76e44816ac423ac73e6b3c1655b6b839fed175c
   languageName: node
   linkType: hard
 
@@ -3880,7 +3982,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:^1.11.1":
+"dayjs@npm:^1.11.1, dayjs@npm:^1.11.4":
   version: 1.11.6
   resolution: "dayjs@npm:1.11.6"
   checksum: 18bdfd927009b68eab08dca578e421d4a581cefcbe9337f54c5d9e0d941ffb6b221c4b2c1cab15cdd9d419940e768ac4c984531461a90bbe1c158b75fe160580
@@ -5853,7 +5955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:2.2.4":
+"invariant@npm:2.2.4, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -7341,6 +7443,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"memoize-one@npm:^5.1.1":
+  version: 5.2.1
+  resolution: "memoize-one@npm:5.2.1"
+  checksum: a3cba7b824ebcf24cdfcd234aa7f86f3ad6394b8d9be4c96ff756dafb8b51c7f71320785fbc2304f1af48a0467cbbd2a409efc9333025700ed523f254cb52e3d
+  languageName: node
+  linkType: hard
+
 "merge-descriptors@npm:1.0.1":
   version: 1.0.1
   resolution: "merge-descriptors@npm:1.0.1"
@@ -7975,6 +8084,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"omit.js@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "omit.js@npm:2.0.2"
+  checksum: 5d802b9fd7640250aada82f3b9b7243b554b38911f29b3de0d1066c00f24dd4ee72d3b9c94c582e373fb6511bd21e107917d419a7b2a04287f26c31133b48a15
+  languageName: node
+  linkType: hard
+
 "on-finished@npm:2.4.1":
   version: 2.4.1
   resolution: "on-finished@npm:2.4.1"
@@ -8226,6 +8342,13 @@ __metadata:
   version: 0.1.7
   resolution: "path-to-regexp@npm:0.1.7"
   checksum: 69a14ea24db543e8b0f4353305c5eac6907917031340e5a8b37df688e52accd09e3cebfe1660b70d76b6bd89152f52183f28c74813dbf454ba1a01c82a38abce
+  languageName: node
+  linkType: hard
+
+"path-to-regexp@npm:2.4.0":
+  version: 2.4.0
+  resolution: "path-to-regexp@npm:2.4.0"
+  checksum: 581175bf2968e51452f2b8c71f10e75c995693668b4ecf7d0b48962fbe0c56830661ca5dd5fd6d8e2f0cc9a045ce07e89af504ab133e1d21887c2712df85b1f4
   languageName: node
   linkType: hard
 
@@ -8576,7 +8699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.7, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -9407,6 +9530,21 @@ __metadata:
     react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: 65678491cbd506573f2dba82778ebf8259714d68dd227e0ee7c0e204bcbc7839cf97401620b4223814066581f1dce0493f97162a03dc2a68058b5a7ad2b41085
+  languageName: node
+  linkType: hard
+
+"react-sortable-hoc@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "react-sortable-hoc@npm:2.0.0"
+  dependencies:
+    "@babel/runtime": ^7.2.0
+    invariant: ^2.2.4
+    prop-types: ^15.5.7
+  peerDependencies:
+    prop-types: ^15.5.7
+    react: ^16.3.0 || ^17.0.0
+    react-dom: ^16.3.0 || ^17.0.0
+  checksum: c4930856eb8e9be638220423d452ddaab834aa43ff76069eeb057c6a5f1d0538f9e43c17bedd34bfd2a66ff4aa1e289557821d792db73a42ebf061bd1c92a423
   languageName: node
   linkType: hard
 
@@ -10393,7 +10531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:1.3.0":
+"swr@npm:1.3.0, swr@npm:^1.2.0":
   version: 1.3.0
   resolution: "swr@npm:1.3.0"
   peerDependencies:
@@ -10426,6 +10564,7 @@ __metadata:
     "@airthium/pg-format": 2.0.2
     "@airthium/typedoc-plugin-airthium": 1.0.13
     "@ant-design/icons": 4.8.0
+    "@ant-design/pro-layout": ^7.2.5
     "@babel/core": 7.20.2
     "@emotion/core": ^11.0.0
     "@emotion/css": ^11.10.5
@@ -10900,6 +11039,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unstated-next@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "unstated-next@npm:1.1.0"
+  checksum: 8e1c75ea3fe524268a52d12298d3f2f097db2c6292d638a59011ad52eef467e8416e1f523d1deaceefccb3b877f2bd3bf43f5014967a9caa6ae537d0441f09d2
+  languageName: node
+  linkType: hard
+
 "update-browserslist-db@npm:^1.0.5":
   version: 1.0.7
   resolution: "update-browserslist-db@npm:1.0.7"
@@ -10960,6 +11106,24 @@ __metadata:
     querystringify: ^2.1.1
     requires-port: ^1.0.0
   checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
+  languageName: node
+  linkType: hard
+
+"use-json-comparison@npm:^1.0.3":
+  version: 1.0.6
+  resolution: "use-json-comparison@npm:1.0.6"
+  peerDependencies:
+    react: ">=16.9.0"
+  checksum: 1054bc5ec16ba728e6a176e0d0eea9edf57a55d19a3579a17329b7b71b6bf9e647d952ea9b87d765a11de536dd994dc7f9d3011a6cd86ec791b67322889d03e6
+  languageName: node
+  linkType: hard
+
+"use-media-antd-query@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "use-media-antd-query@npm:1.1.0"
+  peerDependencies:
+    react: ">=16.9.0"
+  checksum: ec9ef1c6ae9a044ee7ad2e39e6289902134201036d4406cbc07611846f0dc7ae8e82d4c82c244990e934d4c442cafab6f1e380787ec8d7eaa998a0205bcfadeb
   languageName: node
   linkType: hard
 
@@ -11051,6 +11215,15 @@ __metadata:
   dependencies:
     makeerror: 1.0.12
   checksum: ad7a257ea1e662e57ef2e018f97b3c02a7240ad5093c392186ce0bcf1f1a60bbadd520d073b9beb921ed99f64f065efb63dfc8eec689a80e569f93c1c5d5e16c
+  languageName: node
+  linkType: hard
+
+"warning@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "warning@npm:4.0.3"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: 4f2cb6a9575e4faf71ddad9ad1ae7a00d0a75d24521c193fa464f30e6b04027bd97aa5d9546b0e13d3a150ab402eda216d59c1d0f2d6ca60124d96cd40dfa35c
   languageName: node
   linkType: hard
 

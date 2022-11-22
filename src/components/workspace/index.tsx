@@ -1,7 +1,8 @@
 /** @module Components.Workspace */
 
 import React, { useState, useEffect } from 'react'
-import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
+import { Avatar, Input, Layout, Space, Tabs } from 'antd'
+const PageHeader = () => <div />
 import { SearchOutlined } from '@ant-design/icons'
 
 import { ErrorNotification } from '@/components/assets/notification'

@@ -1,6 +1,7 @@
 /** @module Components.Help */
 
-import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
+import { Divider, Layout, Space, Typography } from 'antd'
+const PageHeader = () => <div />
 
 import Workflow from './doc/workflow'
 import Workspace from './doc/workspace'

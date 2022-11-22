@@ -1,7 +1,8 @@
 /** @module Components.Account */
 
 import { NextRouter, useRouter } from 'next/router'
-import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
+import { Layout, Typography, Divider, Tabs, Space } from 'antd'
+
 import isElectron from 'is-electron'
 
 import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
@@ -10,6 +11,8 @@ import Information from './information'
 import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
+
+const PageHeader = () => <div />
 
 /**
  * Props

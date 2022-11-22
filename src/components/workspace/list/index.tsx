@@ -2,16 +2,8 @@
 
 import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
-import {
-  Divider,
-  Empty,
-  Form,
-  Input,
-  Layout,
-  PageHeader,
-  Tabs,
-  Typography
-} from 'antd'
+import { Divider, Empty, Form, Input, Layout, Tabs, Typography } from 'antd'
+const PageHeader = () => <div />
 
 import { LIMIT } from '@/config/string'
 

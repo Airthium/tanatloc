@@ -31,6 +31,9 @@ import {
 
 import Utils from '@/lib/utils'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 /**
  * Props
  */
@@ -157,7 +160,11 @@ const ProjectList = ({
 
         // Description
         const description = (
-          <Space direction="vertical" className="full-width text-left">
+          <Space
+            direction="vertical"
+            css={globalStyle.fullWidth}
+            className="text-left"
+          >
             <Typography.Text>
               <b>Created:</b>{' '}
               {new Date(project.createddate).toLocaleDateString()}
@@ -262,6 +269,7 @@ const ProjectList = ({
                     {project.archived && <Tag>Archived</Tag>}
                   </>
                 }
+                css={style.card}
                 className={
                   'Project-Card' + (project.archived ? ' archive' : '')
                 }

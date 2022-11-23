@@ -25,6 +25,9 @@ export const globalStyle: {
   fullWidth: css({
     width: '100% !important'
   }),
+  fullHeight: css({
+    height: '100% !important'
+  }),
   noScroll: css({
     maxHeight: '100% !important',
     overflow: 'hidden !important'

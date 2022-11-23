@@ -20,6 +20,8 @@ import {
 import SystemAPI from '@/api/system'
 import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Errors
  */
@@ -116,7 +118,7 @@ const Registration = (): JSX.Element => {
   if (loadingSystem) return <Loading.Simple />
   else
     return (
-      <Space direction="vertical" className="full-width" size={20}>
+      <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
         <Card title="Signup">
           <Checkbox
             checked={system?.allowsignup}

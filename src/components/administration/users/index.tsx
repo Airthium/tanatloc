@@ -28,6 +28,9 @@ import Edit from './edit'
 import Delete from './delete'
 import { ColumnGroupType } from 'antd/lib/table'
 
+import { globalStyle } from '@/styles'
+import { css } from '@emotion/react'
+
 /**
  * Custom Types
  */
@@ -94,7 +97,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   }
 
   const superuserRender = (superuser: boolean) =>
-    superuser && <CheckOutlined className="color-green" />
+    superuser && <CheckOutlined css={globalStyle.textGreen} />
 
   const actionsRender = (_: any, record: TUserItem) => (
     <Space>
@@ -222,7 +225,11 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width full-height" size={20}>
+    <Space
+      direction="vertical"
+      css={css([globalStyle.fullWidth, globalStyle.fullHeight])}
+      size={20}
+    >
       <Add
         plugins={
           plugins?.map((plugin) => ({

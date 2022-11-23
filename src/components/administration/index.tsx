@@ -3,15 +3,18 @@
 import { useEffect } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import { Divider, Layout, Tabs, Typography } from 'antd'
-const PageHeader = () => <div />
 
 import { ErrorNotification } from '@/components/assets/notification'
+import PageHeader from '@/components/assets/pageHeader'
 
 import Users from './users'
 import Registration from './registration'
 import Plugins from './plugins'
 
 import UserAPI from '@/api/user'
+
+import dashboardStyle from '@/components/dashboard/index.style'
+import { css } from '@emotion/react'
 
 /**
  * Tab items
@@ -71,20 +74,20 @@ const Administration = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="inDashboard Administration">
+    <Layout css={dashboardStyle.inDashboard}>
       <PageHeader
-        className="inDashboard-PageHeader"
-        backIcon={false}
         title={
-          <Typography.Title level={2} className="inDashboard-PageHeader-title">
+          <Typography.Title
+            level={2}
+            css={css({ marginBottom: '0 !important' })}
+          >
             Administration
           </Typography.Title>
         }
-        footer={<Divider />}
       />
       <Layout.Content>
         <Tabs
-          className="inDashboard-Tabs"
+          css={dashboardStyle.inDashboardTabs}
           type="card"
           items={[
             {

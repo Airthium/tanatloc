@@ -4,7 +4,7 @@ const style = {
   information: css({
     display: 'flex',
 
-    '& > div:first-child': {
+    '& > div:first-of-type': {
       display: 'flex',
       justifyContent: 'center',
       width: '300px',

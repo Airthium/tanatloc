@@ -31,8 +31,9 @@ import {
 
 import Utils from '@/lib/utils'
 
-import { globalStyle } from '@/styles'
+import { globalStyle, globalStyleFn } from '@/styles'
 import style from './index.style'
+import { css } from '@emotion/react'
 
 /**
  * Props
@@ -162,8 +163,7 @@ const ProjectList = ({
         const description = (
           <Space
             direction="vertical"
-            css={globalStyle.fullWidth}
-            className="text-left"
+            css={css([globalStyle.fullWidth, globalStyle.textAlignLeft])}
           >
             <Typography.Text>
               <b>Created:</b>{' '}
@@ -256,7 +256,12 @@ const ProjectList = ({
   else
     return (
       <div ref={containerRef} style={{ height: height }}>
-        <Space className="marginBottom-20" wrap={true} align="start" size={20}>
+        <Space
+          css={globalStyleFn.marginBottom(20)}
+          wrap={true}
+          align="start"
+          size={20}
+        >
           {list.map((project) => {
             return (
               <Card
@@ -269,20 +274,17 @@ const ProjectList = ({
                     {project.archived && <Tag>Archived</Tag>}
                   </>
                 }
-                css={style.card}
-                className={
-                  'Project-Card' + (project.archived ? ' archive' : '')
-                }
+                css={css([
+                  style.card,
+                  project.archived ? style.cardArchived : {}
+                ])}
                 cover={
-                  <Carousel
-                    className="Project-Carousel"
-                    dots={{ className: 'Project-Carousel-dots' }}
-                  >
+                  <Carousel css={style.carousel} dots={{ className: 'dots' }}>
                     <div
-                      className={
-                        'Project-Carousel-snapshot' +
-                        (project.archived ? ' archive' : '')
-                      }
+                      css={css([
+                        style.carouselSnapshot,
+                        project.archived ? style.carouselSnapshotArchived : {}
+                      ])}
                       onClick={() =>
                         !project.archived && openProject({ id: project.id })
                       }
@@ -290,10 +292,12 @@ const ProjectList = ({
                       {project.snapshotRender}
                     </div>
                     <div
-                      className={
-                        'Project-Carousel-description' +
-                        (project.archived ? ' archive' : '')
-                      }
+                      css={css([
+                        style.carouselDescription,
+                        project.archived
+                          ? style.carouselDescriptionArchived
+                          : {}
+                      ])}
                       onClick={() =>
                         !project.archived && openProject({ id: project.id })
                       }

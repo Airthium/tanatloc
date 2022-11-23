@@ -18,6 +18,7 @@ import {
 } from 'antd'
 import { ItemType } from 'antd/es/menu/hooks/useItems'
 import { BarsOutlined, BugOutlined, SettingOutlined } from '@ant-design/icons'
+import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
 import packageJson from '../../../package.json'
@@ -28,7 +29,7 @@ import UserAPI from '@/api/user'
 import Side from '@/components/assets/side'
 import Footer from '@/components/footer'
 
-import globalStyle from '@/styles'
+import { globalStyle, variables } from '@/styles'
 import style from './index.style'
 
 /**
@@ -373,8 +374,7 @@ const Index = (): JSX.Element => {
                 className="img-shadow"
               />
             }
-            leftCss={style.leftCss}
-            // className="margin-bottom-50"
+            leftCss={css({ ...style.leftCss, ...{ marginBottom: '50px' } })}
           />
 
           <Side
@@ -423,15 +423,14 @@ const Index = (): JSX.Element => {
                 </Checkbox>
               </>
             }
-            // className="background-primary "
-            rightCss={style.rightCss} 
-            //+"Index-padding-50"
-            // leftClassName="Index-padding-50"
+            css={css({ backgroundColor: variables.colorPrimary })}
+            rightCss={css({ ...style.rightCss, ...{ padding: '50px' } })}
+            leftCss={css({ padding: '50px' })}
             id="features"
           />
 
           <div id="developers">
-            <div className="Index-padding-50">
+            <div css={css({ padding: '50px' })}>
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
@@ -550,11 +549,19 @@ const Index = (): JSX.Element => {
                 className="Index-case-study Index-padding-50"
               />
             }
-            css={style.indexCaseStudy}
-            // className="margin-top-bottom-50"
-            leftCss={style.indexCaseStudyLeft}
+            css={css({
+              ...style.indexCaseStudy,
+              ...{
+                marginTop: '50px',
+                marginBottom: '50px'
+              }
+            })}
+            leftCss={css([
+              style.indexCaseStudyLeft,
+              globalStyle.fullWidth,
+              { padding: '50px !important' }
+            ])}
             // leftClassName="Index-casestudy-left Index-padding-50 full-width"
-            // rightClassName="Index-casestudy-right"
             id="caseStudy"
           />
 

@@ -65,7 +65,7 @@ const style: { [key: string]: SerializedStyles } = {
     h3: {
       marginTop: '-0.5em !important'
     },
-    '& > * > * > * > * > h2.ant-typography': {
+    '& > * > * > * > h2.ant-typography': {
       textAlign: 'left',
     }
   })

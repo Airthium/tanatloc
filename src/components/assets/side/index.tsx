@@ -34,10 +34,10 @@ const Side = ({
    * Render
    */
   return (
-    <div css={Css({ ...style.side, ...(css || {}) })} id={id}>
-      <div css={Css({ ...style.left, ...(leftCss || {}) })}>{left}</div>
-      <div css={Css({ ...style.right, ...(rightCss || {}) })}>{right}</div>
-      {top && <div css={Css({ ...style.top, ...(topCss || {}) })}>{top}</div>}
+    <div css={Css([style.side, css || {}])} id={id}>
+      <div css={Css([style.left, leftCss || {}])}>{left}</div>
+      <div css={Css([style.right, rightCss || {}])}>{right}</div>
+      {top && <div css={Css([style.top, topCss || {}])}>{top}</div>}
     </div>
   )
 }

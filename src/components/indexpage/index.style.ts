@@ -40,6 +40,34 @@ const style: { [key: string]: SerializedStyles } = {
   indexContent: css({
     maxWidth: '1200px',
     margin: 'auto'
+  }),
+
+  rightCss: css({
+    display: 'grid !important',
+    gridTemplateColumns: '1fr 1fr',
+    alignItems: 'unset !important',
+    justifyItems: 'stretch',
+    gridGap: '20px'
+  }),
+
+  leftCss: css({
+    padding: '50px !important'
+  }),
+
+  indexCaseStudy: css({
+    boxShadow:
+      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)',
+    justifyItems: 'space-around !important'
+  }),
+
+  indexCaseStudyLeft: css({
+    width: '70%',
+    h3: {
+      marginTop: '-0.5em !important'
+    },
+    '& > * > * > * > h2.ant-typography': {
+      textAlign: 'left',
+    }
   })
 }
 

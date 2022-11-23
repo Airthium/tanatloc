@@ -29,7 +29,7 @@ import UserAPI from '@/api/user'
 import Side from '@/components/assets/side'
 import Footer from '@/components/footer'
 
-import { globalStyle, variables } from '@/styles'
+import { globalStyle, globalStyleFn, variables } from '@/styles'
 import style from './index.style'
 
 /**
@@ -128,11 +128,7 @@ const Index = (): JSX.Element => {
   let getStartedButton = null
   if (!user)
     getStartedButton = (
-      <Button
-        css={css({ display: 'none' })}
-        type="primary"
-        onClick={getStarted}
-      >
+      <Button className="Index-get-started" type="primary" onClick={getStarted}>
         Get Started
       </Button>
     )
@@ -333,8 +329,8 @@ const Index = (): JSX.Element => {
       </Drawer>
       <Layout.Header id="header" css={style.indexHeader}>
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Menu mode="horizontal" className="Index-Menu" items={menuItems} />
-        <div className="Index-Menu-mobile">
+        <Menu mode="horizontal" css={style.indexMenu} items={menuItems} />
+        <div css={style.indexMenuMobile}>
           <Popover
             content={<Menu mode="inline" items={menuItems} />}
             placement="leftBottom"
@@ -378,7 +374,7 @@ const Index = (): JSX.Element => {
                 className="img-shadow"
               />
             }
-            leftCss={css({ ...style.leftCss, ...{ marginBottom: '50px' } })}
+            leftCss={css([style.leftCss, globalStyleFn.margin(50)])}
           />
 
           <Side
@@ -428,13 +424,13 @@ const Index = (): JSX.Element => {
               </>
             }
             css={css({ backgroundColor: variables.colorPrimary })}
-            rightCss={css({ ...style.rightCss, ...{ padding: '50px' } })}
-            leftCss={css({ padding: '50px' })}
+            rightCss={css([style.rightCss, globalStyleFn.padding(50)])}
+            leftCss={globalStyleFn.padding(50)}
             id="features"
           />
 
           <div id="developers">
-            <div css={css({ padding: '50px' })}>
+            <div css={globalStyleFn.padding(50)}>
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
@@ -553,17 +549,15 @@ const Index = (): JSX.Element => {
                 className="Index-case-study Index-padding-50"
               />
             }
-            css={css({
-              ...style.indexCaseStudy,
-              ...{
-                marginTop: '50px',
-                marginBottom: '50px'
-              }
-            })}
+            css={css([
+              style.indexCaseStudy,
+              globalStyleFn.marginTop(50),
+              globalStyleFn.marginBottom(50)
+            ])}
             leftCss={css([
               style.indexCaseStudyLeft,
               globalStyle.fullWidth,
-              { padding: '50px !important' }
+              globalStyleFn.padding(50)
             ])}
             // leftClassName="Index-casestudy-left Index-padding-50 full-width"
             id="caseStudy"

@@ -35,8 +35,51 @@ const style: { [key: string]: SerializedStyles } = {
           display: 'none'
         }
       }
+    },
+
+    '@media all and (max-width: 1100px)': {
+      '& .Index-get-started': {
+        display: 'none'
+      },
+      '& .Index-login-button': {
+        display: 'none'
+      }
     }
   }),
+
+  indexMenu: css({
+    width: '100%',
+
+    '@media all and (max-width: 1100px)': {
+      display: 'none'
+    },
+
+    '& .Index-get-started': {
+      display: 'none'
+    },
+    '& .Index-login-button': {
+      display: 'none'
+    }
+  }),
+
+  indexMenuMobile: css({
+    display: 'none',
+
+    '@media all and (max-width: 1100px)': {
+      display: 'flex !important',
+      justifyContent: 'center'
+
+      // '& .Index-get-started': {
+      //   display: 'flex',
+      //   width: '100%'
+      // },
+      // '& .Index-login-button': {
+      //   display: 'flex',
+      //   width: '100%'
+      // }
+    }
+  }),
+
   indexContent: css({
     maxWidth: '1200px',
     margin: 'auto'
@@ -66,15 +109,8 @@ const style: { [key: string]: SerializedStyles } = {
       marginTop: '-0.5em !important'
     },
     '& > * > * > * > h2.ant-typography': {
-      textAlign: 'left',
+      textAlign: 'left'
     }
-  }),
-
-  indexGetStarted: css({
-    "@media all and (max-width: 1100px)":{
-      display: "none",
-    },
-    
   })
 }
 

@@ -1,8 +1,7 @@
 /** @module Components.Assets.Dialog */
 
 import { useEffect } from 'react'
-import { Form, Modal, Typography } from 'antd'
-import { BaseButtonProps } from 'antd/lib/button/button'
+import { Form, Modal, ModalProps, Typography } from 'antd'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -16,9 +15,9 @@ export interface IProps {
   loading?: boolean
   title: string
   initialValues?: object
-  okButtonProps?: BaseButtonProps
+  okButtonProps?: ModalProps['okButtonProps']
   okButtonText?: string
-  cancelButtonProps?: BaseButtonProps
+  cancelButtonProps?: ModalProps['cancelButtonProps']
   cancelButtonText?: string
   children: string | React.ReactElement | React.ReactElement[]
   onCancel?: () => void
@@ -76,7 +75,6 @@ const Dialog = ({
    */
   return (
     <Modal
-      className="Dialog"
       title={
         <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
       }

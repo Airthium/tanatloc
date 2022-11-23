@@ -15,14 +15,14 @@ let closeNotification: string | undefined
  */
 export const closeAll = () => {
   if (serverNotification) {
-    notification.close(serverNotification)
+    notification.destroy(serverNotification)
     serverNotification = undefined
   }
 
-  opened.forEach((notif) => notification.close(notif))
+  opened.forEach((notif) => notification.destroy(notif))
   opened.length = 0
 
-  notification.close(closeNotification!)
+  notification.destroy(closeNotification!)
   closeNotification = undefined
 }
 

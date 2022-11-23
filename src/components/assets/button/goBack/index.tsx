@@ -2,6 +2,7 @@
 
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -25,7 +26,7 @@ const GoBack = ({ children, onClick }: IProps): JSX.Element => {
    */
   return (
     <Button
-      className="no-border"
+      css={globalStyle.noBorder}
       icon={<ArrowLeftOutlined className="color-primary" />}
       onClick={onClick}
     >

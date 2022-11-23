@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react'
 import { NextRouter, useRouter } from 'next/router'
-import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
+import { Divider, Layout, Tabs, Typography } from 'antd'
+const PageHeader = () => <div />
 
 import { ErrorNotification } from '@/components/assets/notification'
 

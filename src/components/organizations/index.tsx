@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
+import { Divider, Layout, Space, Typography } from 'antd'
+const PageHeader = () => <div />
 
 import {
   IFrontUser,

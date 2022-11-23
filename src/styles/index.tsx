@@ -55,6 +55,9 @@ export const globalStyle: {
   }),
   textGreen: css({
     color: 'green !important'
+  }),
+  textAlignLeft: css({
+    textAlign: 'left !important' as 'left'
   })
 }
 

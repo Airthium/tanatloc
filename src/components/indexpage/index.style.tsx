@@ -1,5 +1,5 @@
 import { css, SerializedStyles } from '@emotion/react'
-
+import { variables } from '@/styles'
 const style: { [key: string]: SerializedStyles } = {
   index: css({
     display: 'block',
@@ -110,6 +110,80 @@ const style: { [key: string]: SerializedStyles } = {
     },
     '& > * > * > * > h2.ant-typography': {
       textAlign: 'left'
+    }
+  }),
+
+  indexPlugins: css({
+    display: 'flex',
+    justifyContent: 'space-around',
+    columnWidth: '160px',
+    columnGap: 0,
+    '> div': {
+      breakInside: 'avoid-column',
+      pageBreakInside: 'avoid',
+      width: '160px',
+      maxWidth: '160px',
+      height: '160px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center'
+    },
+    '& .ant-avatar': {
+      backgroundColor: variables.colorPrimary,
+      padding: '5px',
+      lineHeight: '60px !important',
+      '> img': {
+        objectFit: 'contain !important' as 'contain',
+        margin: 'auto'
+      }
+    },
+    '@media all and (max-width: 1100px)': {
+      margin: 'auto',
+      marginTop: '20px',
+      flexDirection: 'column',
+      alignItems: 'center',
+      '> div': {
+        height: 'unset !important',
+        marginBottom: '20px !important'
+      }
+    }
+  }),
+
+  indexSteps: css({
+    margin: 'auto',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gridTemplateRows: '1fr 1fr',
+    rowGap: '25px',
+    columnGap: '25px',
+    '& .ant-steps-item': {
+      marginBottom: '20px'
+    },
+    '& .ant-steps-item-title': {
+      marginTop: '-8px'
+    },
+    '& .ant-steps-item-icon': {
+      marginTop: '10px',
+      width: '64px',
+      height: '64px',
+      lineHeight: '64px',
+      fontSize: '32px',
+      backgroundColor: 'white !important',
+    },
+    '& .ant-steps-icon': {
+      color: variables.colorPrimary + " !important"
+    },
+    '& .ant-steps-item-tail': {
+      display: 'none !important'
+    },
+    '& button.download': {
+      height: '40px',
+      margin: '5px',
+    },
+    '& img': {
+      height: '30px',
+      marginRight: '3px',
     }
   })
 }

@@ -435,7 +435,7 @@ const Index = (): JSX.Element => {
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
               </Typography.Title>
-              <div className="Index-plugins">
+              <div className="Index-plugins" css={style.indexPlugins}>
                 <div>
                   <Avatar
                     size={64}
@@ -611,6 +611,7 @@ const Index = (): JSX.Element => {
               />
               <Steps.Step
                 title="Download the latest app"
+                css={style.indexSteps}
                 description={
                   <>
                     <Typography>

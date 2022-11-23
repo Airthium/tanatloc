@@ -2,13 +2,13 @@
 
 import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
-import { Divider, Empty, Form, Input, Layout, Tabs, Typography } from 'antd'
-// const PageHeader = () => <div />
+import { Empty, Form, Input, Layout, Tabs, Typography } from 'antd'
 
 import { LIMIT } from '@/config/string'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
+import PageHeader from '@/components/assets/pageHeader'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -108,14 +108,14 @@ const WorkspacesList = ({
   return (
     <Layout css={css([dashboardStyle.inDashboard, globalStyle.noScroll])}>
       <PageHeader
-        className="inDashboard-PageHeader"
-        backIcon={false}
         title={
-          <Typography.Title level={2} className="inDashboard-PageHeader-title">
+          <Typography.Title
+            level={2}
+            css={css({ marginBottom: '0 !important' })}
+          >
             Workspaces
           </Typography.Title>
         }
-        footer={<Divider />}
       />
       <Layout.Content css={globalStyle.noScroll}>
         {workspaces.length ? (

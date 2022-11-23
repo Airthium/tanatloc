@@ -128,7 +128,11 @@ const Index = (): JSX.Element => {
   let getStartedButton = null
   if (!user)
     getStartedButton = (
-      <Button className="Index-getstarted" type="primary" onClick={getStarted}>
+      <Button
+        css={css({ display: 'none' })}
+        type="primary"
+        onClick={getStarted}
+      >
         Get Started
       </Button>
     )

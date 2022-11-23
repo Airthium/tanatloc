@@ -60,42 +60,46 @@ export const globalStyleFn: {
 } = {
   margin: (size: number) =>
     css({
-      margin: size + 'px'
+      margin: size + 'px !important'
     }),
   marginTop: (size: number) =>
     css({
-      marginTop: size + 'px'
+      marginTop: size + 'px !important'
     }),
   marginRight: (size: number) =>
     css({
-      marginRight: size + 'px'
+      marginRight: size + 'px !important'
     }),
   marginBottom: (size: number) =>
     css({
-      marginBottom: size + 'px'
+      marginBottom: size + 'px !important'
     }),
   marginLeft: (size: number) =>
     css({
-      marginLeft: size + 'px'
+      marginLeft: size + 'px !important'
     }),
   padding: (size: number) =>
     css({
-      padding: size + 'px'
+      padding: size + 'px !important'
     }),
   paddingTop: (size: number) =>
     css({
-      paddingTop: size + 'px'
+      paddingTop: size + 'px !important'
     }),
   paddingRight: (size: number) =>
     css({
-      paddingRight: size + 'px'
+      paddingRight: size + 'px !important'
     }),
   paddingBottom: (size: number) =>
     css({
-      paddingBottom: size + 'px'
+      paddingBottom: size + 'px !important'
     }),
   paddingLeft: (size: number) =>
     css({
-      paddingLeft: size + 'px'
+      paddingLeft: size + 'px !important'
+    }),
+  maxWidth: (size: number) =>
+    css({
+      maxWidth: size + 'px !important'
     })
 }

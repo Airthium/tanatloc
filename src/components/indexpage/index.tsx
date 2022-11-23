@@ -373,8 +373,8 @@ const Index = (): JSX.Element => {
                 className="img-shadow"
               />
             }
-            leftClassName="Index-padding-left-right-50"
-            className="margin-bottom-50"
+            leftCss={style.leftCss}
+            // className="margin-bottom-50"
           />
 
           <Side
@@ -423,9 +423,10 @@ const Index = (): JSX.Element => {
                 </Checkbox>
               </>
             }
-            className="background-primary "
-            rightClassName="Index-models Index-padding-50"
-            leftClassName="Index-padding-50"
+            // className="background-primary "
+            rightCss={style.rightCss} 
+            //+"Index-padding-50"
+            // leftClassName="Index-padding-50"
             id="features"
           />
 
@@ -549,9 +550,11 @@ const Index = (): JSX.Element => {
                 className="Index-case-study Index-padding-50"
               />
             }
-            className="Index-casestudy margin-top-bottom-50"
-            leftClassName="Index-casestudy-left Index-padding-50 full-width"
-            rightClassName="Index-casestudy-right"
+            css={style.indexCaseStudy}
+            // className="margin-top-bottom-50"
+            leftCss={style.indexCaseStudyLeft}
+            // leftClassName="Index-casestudy-left Index-padding-50 full-width"
+            // rightClassName="Index-casestudy-right"
             id="caseStudy"
           />
 
@@ -690,14 +693,14 @@ const Index = (): JSX.Element => {
                     </a>
                   </>
                 }
-                className="background-primary"
-                leftClassName="Index-about-turbine"
-                rightClassName="Index-padding-50 Index-crowdfunding"
+                // className="background-primary"
+                // leftClassName="Index-about-turbine"
+                // rightClassName="Index-padding-50 Index-crowdfunding"
               />
             }
-            className="Index-about"
-            leftClassName="Index-padding-50"
-            rightClassName="Index-padding-50"
+            // className="Index-about"
+            // leftClassName="Index-padding-50"
+            // rightClassName="Index-padding-50"
             id="aboutUs"
           />
         </Space>

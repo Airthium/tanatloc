@@ -68,6 +68,13 @@ const style: { [key: string]: SerializedStyles } = {
     '& > * > * > * > h2.ant-typography': {
       textAlign: 'left',
     }
+  }),
+
+  indexGetStarted: css({
+    "@media all and (max-width: 1100px)":{
+      display: "none",
+    },
+    
   })
 }
 

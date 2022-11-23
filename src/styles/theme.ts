@@ -8,7 +8,8 @@ const theme: ThemeConfig = {
     fontFamily: 'Saira',
     borderRadius: 0,
     colorText: variables.textColor,
-    colorBgLayout: '#fff'
+    colorBgLayout: '#fff',
+    colorLink: variables.colorLink
   }
 }
 

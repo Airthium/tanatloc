@@ -21,6 +21,26 @@ export const globalStyle: {
   scroll: css({
     maxHeight: '100% !important',
     overflow: 'auto !important'
+  }),
+  noBackground: css({
+    background: 'none !important',
+    backgroundColor: 'none !important'
+  }),
+  noBorder: css({
+    border: 'none !important',
+    boxShadow: 'none !important'
+  }),
+  textLight: css({
+    color: variables.textColorLight + ' !important'
+  }),
+  textDark: css({
+    color: variables.textColorDark + ' !important'
+  }),
+  textOrange: css({
+    color: 'orange !important'
+  }),
+  textGreen: css({
+    color: 'green !important'
   })
 }
 

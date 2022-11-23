@@ -2,6 +2,9 @@
 
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
+import { css } from '@emotion/react'
+
+import { globalStyle, globalStyleFn } from '@/styles'
 
 /**
  * Props
@@ -50,12 +53,12 @@ const AddButton = ({
   return (
     <Tooltip title={children || 'Add'}>
       <Button
-        className={
-          (fullWidth ? 'full-width' : '') +
-          (needMargin ? ' marginLeft-5' : '') +
-          (light ? ' text-light' : '') +
-          (dark ? ' text-dark' : '')
-        }
+        css={css({
+          ...(fullWidth ? globalStyle.fullWidth : {}),
+          ...(needMargin ? globalStyleFn.marginLeft(5) : {}),
+          ...(light ? globalStyle.textLight : {}),
+          ...(dark ? globalStyle.textDark : {})
+        })}
         disabled={disabled}
         loading={loading}
         type={primary ? 'primary' : 'default'}

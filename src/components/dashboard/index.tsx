@@ -184,7 +184,7 @@ const Dashboard = () => {
 
   return (
     <Layout css={style.dashboard}>
-      <Layout.Sider theme="light" width="256">
+      <Layout.Sider theme="light" width="256" css={style.sider}>
         <div css={globalStyle.logo}>
           <img src="/images/logo.svg" alt="Tanatloc" />
         </div>

@@ -53,12 +53,12 @@ const AddButton = ({
   return (
     <Tooltip title={children || 'Add'}>
       <Button
-        css={css({
-          ...(fullWidth ? globalStyle.fullWidth : {}),
-          ...(needMargin ? globalStyleFn.marginLeft(5) : {}),
-          ...(light ? globalStyle.textLight : {}),
-          ...(dark ? globalStyle.textDark : {})
-        })}
+        css={css([
+          fullWidth ? globalStyle.fullWidth : {},
+          needMargin ? globalStyleFn.marginLeft(5) : {},
+          light ? globalStyle.textLight : {},
+          dark ? globalStyle.textDark : {}
+        ])}
         disabled={disabled}
         loading={loading}
         type={primary ? 'primary' : 'default'}

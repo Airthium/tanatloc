@@ -41,10 +41,10 @@ const DownloadButton = ({
   return (
     <Tooltip title={children || 'Download'}>
       <Button
-        css={css({
-          ...globalStyle.noBackground,
-          ...(bordered ? {} : globalStyle.noBorder)
-        })}
+        css={css([
+          globalStyle.noBackground,
+          bordered ? {} : globalStyle.noBorder
+        ])}
         className={'no-background ' + (bordered ? '' : 'no-border')}
         disabled={disabled}
         loading={loading}

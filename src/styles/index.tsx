@@ -11,6 +11,17 @@ export const variables = {
 export const globalStyle: {
   [key: string]: SerializedStyles
 } = {
+  logo: css({
+    padding: '20px 8px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: variables.colorPrimary,
+    height: '64px'
+  }),
+  displayNone: css({
+    display: 'none !important'
+  }),
   fullWidth: css({
     width: '100% !important'
   }),

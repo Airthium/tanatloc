@@ -27,7 +27,7 @@ import { login } from '@/api/login'
 import UserAPI from '@/api/user'
 
 import Side from '@/components/assets/side'
-import Footer from '@/components/footer'
+import Footer from './footer'
 
 import { globalStyle, globalStyleFn, variables } from '@/styles'
 import style from './index.style'

@@ -76,15 +76,6 @@ const style: { [key: string]: SerializedStyles } = {
     [mediaQuery]: {
       display: 'flex !important',
       justifyContent: 'center'
-
-      // '& .Index-get-started': {
-      //   display: 'flex',
-      //   width: '100%'
-      // },
-      // '& .Index-login-button': {
-      //   display: 'flex',
-      //   width: '100%'
-      // }
     }
   }),
   content: css({

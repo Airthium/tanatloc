@@ -11,7 +11,10 @@ import {
   Typography
 } from 'antd'
 
-import packageJson from '../../../package.json'
+import packageJson from '../../../../package.json'
+
+import { globalStyle } from '@/styles'
+import style from './index.style'
 
 export interface IProps {
   scroll: (id: string) => void
@@ -59,17 +62,17 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout.Footer className="Footer">
-      <div className="Footer-head">
-        <Card title="Thanks" className="Footer-Card" bordered={false}>
+    <Layout.Footer css={style.footer}>
+      <div css={style.head}>
+        <Card title="Thanks" css={style.card} bordered={false}>
           We would like to thanks:
           <List bordered={false} dataSource={thanks} renderItem={renderItem} />
           Without you this software would not have been possible.
         </Card>
-        <Card title="Navigate" className="Footer-Card" bordered={false}>
+        <Card title="Navigate" css={style.card} bordered={false}>
           <List dataSource={navigate} renderItem={renderItem} />
         </Card>
-        <Card title="Contact" className="Footer-Card" bordered={false}>
+        <Card title="Contact" css={style.card} bordered={false}>
           <Space direction="vertical">
             <div>
               <a href="mailto:contact@airthium.com">
@@ -97,8 +100,8 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
           </Space>
         </Card>
       </div>
-      <Divider className="Footer-Divider" />
-      <div className="Footer-footer">
+      <Divider css={style.divider} />
+      <div css={style.foot}>
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Typography>
           Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
@@ -107,7 +110,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
             href="https://www.commeth.com/"
             target="_blank"
             rel="noreferrer"
-            className="text-dark"
+            css={globalStyle.textDark}
           >
             Enora Duvivier
           </a>

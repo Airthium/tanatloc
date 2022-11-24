@@ -1,5 +1,7 @@
 import { css, SerializedStyles } from '@emotion/react'
 
+const mediaQuery = `@media all and (max-width: 1100px)`
+
 const style: { [key: string]: SerializedStyles } = {
   side: css({
     position: 'relative',
@@ -10,6 +12,11 @@ const style: { [key: string]: SerializedStyles } = {
 
     img: {
       maxWidth: '100%'
+    },
+
+    [mediaQuery]: {
+      display: 'flex',
+      flexDirection: 'column'
     }
   }),
   right: css({

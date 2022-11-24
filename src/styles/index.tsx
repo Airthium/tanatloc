@@ -58,6 +58,9 @@ export const globalStyle: {
   }),
   textAlignLeft: css({
     textAlign: 'left !important' as 'left'
+  }),
+  textAlignCenter: css({
+    textAlign: 'center !important' as 'center'
   })
 }
 

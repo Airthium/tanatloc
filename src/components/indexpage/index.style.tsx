@@ -1,5 +1,8 @@
 import { css, SerializedStyles } from '@emotion/react'
 import { variables } from '@/styles'
+
+const mediaQuery = `@media all and (max-width: 1100px)`
+
 const style: { [key: string]: SerializedStyles } = {
   index: css({
     display: 'block',
@@ -7,10 +10,13 @@ const style: { [key: string]: SerializedStyles } = {
     height: '100%',
     overflow: 'auto',
     overflowX: 'hidden',
-    padding: '0 100px'
-  }),
+    padding: '0 100px',
 
-  indexHeader: css({
+    [mediaQuery]: {
+      padding: '0 20px !important'
+    }
+  }),
+  header: css({
     position: 'sticky',
     top: '0',
     zIndex: 10,
@@ -37,7 +43,11 @@ const style: { [key: string]: SerializedStyles } = {
       }
     },
 
-    '@media all and (max-width: 1100px)': {
+    [mediaQuery]: {
+      width: 'calc(100% + 40px)',
+      marginLeft: '-20px',
+      padding: '20px 10px',
+
       '& .Index-get-started': {
         display: 'none'
       },
@@ -46,11 +56,10 @@ const style: { [key: string]: SerializedStyles } = {
       }
     }
   }),
-
-  indexMenu: css({
+  menu: css({
     width: '100%',
 
-    '@media all and (max-width: 1100px)': {
+    [mediaQuery]: {
       display: 'none'
     },
 
@@ -61,11 +70,10 @@ const style: { [key: string]: SerializedStyles } = {
       display: 'none'
     }
   }),
-
-  indexMenuMobile: css({
+  menuMobile: css({
     display: 'none',
 
-    '@media all and (max-width: 1100px)': {
+    [mediaQuery]: {
       display: 'flex !important',
       justifyContent: 'center'
 
@@ -79,45 +87,57 @@ const style: { [key: string]: SerializedStyles } = {
       // }
     }
   }),
-
-  indexContent: css({
+  content: css({
     maxWidth: '1200px',
     margin: 'auto'
   }),
+  indexPadding: css({
+    padding: '50px',
+    [mediaQuery]: {
+      padding: '20px !important'
+    }
+  }),
+  indexImgShadow: css({
+    boxShadow:
+      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)',
+    marginTop: '20px !important'
+  }),
+  solveLeft: css({
+    paddingLeft: '50px !important',
+    paddingRight: '50px !important',
 
-  rightCss: css({
+    [mediaQuery]: {
+      paddingLeft: '20px !important',
+      paddingRight: '20px !important'
+    }
+  }),
+  models: css({
     display: 'grid !important',
     gridTemplateColumns: '1fr 1fr',
     alignItems: 'unset !important',
     justifyItems: 'stretch',
-    gridGap: '20px'
-  }),
+    gridGap: '20px',
 
-  leftCss: css({
-    padding: '50px !important'
-  }),
-
-  indexCaseStudy: css({
-    boxShadow:
-      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)',
-    justifyItems: 'space-around !important'
-  }),
-
-  indexCaseStudyLeft: css({
-    width: '70%',
-    h3: {
-      marginTop: '-0.5em !important'
+    '& .ant-checkbox-wrapper': {
+      marginInlineStart: '0 !important'
     },
-    '& > * > * > * > h2.ant-typography': {
-      textAlign: 'left'
+
+    '& .ant-checkbox-inner': {
+      borderColor: '#fff'
+    },
+
+    [mediaQuery]: {
+      display: 'flex !important',
+      flexDirection: 'column !important' as 'column',
+      padding: '20px !important'
     }
   }),
-
   indexPlugins: css({
     display: 'flex',
     justifyContent: 'space-around',
     columnWidth: '160px',
     columnGap: 0,
+
     '> div': {
       breakInside: 'avoid-column',
       pageBreakInside: 'avoid',
@@ -129,61 +149,127 @@ const style: { [key: string]: SerializedStyles } = {
       alignItems: 'center',
       textAlign: 'center'
     },
+
     '& .ant-avatar': {
       backgroundColor: variables.colorPrimary,
       padding: '5px',
       lineHeight: '60px !important',
+
       '> img': {
         objectFit: 'contain !important' as 'contain',
         margin: 'auto'
       }
     },
-    '@media all and (max-width: 1100px)': {
+
+    [mediaQuery]: {
       margin: 'auto',
       marginTop: '20px',
       flexDirection: 'column',
       alignItems: 'center',
+
       '> div': {
         height: 'unset !important',
         marginBottom: '20px !important'
       }
     }
   }),
+  electron: css({
+    display: 'flex',
+    flexDirection: 'column',
 
-  indexSteps: css({
+    img: {
+      maxWidth: '80%',
+      alignSelf: 'center'
+    }
+  }),
+  caseStudy: css({
+    boxShadow:
+      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)',
+    justifyItems: 'space-around !important'
+  }),
+  caseStudyLeft: css({
+    width: '70%',
+
+    h3: {
+      marginTop: '-0.5em !important'
+    }
+  }),
+  caseStudyRight: css({
+    [mediaQuery]: {
+      img: {
+        height: '250px'
+      }
+    }
+  }),
+  steps: css({
     margin: 'auto',
-    display: 'grid',
+    display: 'grid !important',
     gridTemplateColumns: '1fr 1fr',
     gridTemplateRows: '1fr 1fr',
     rowGap: '25px',
     columnGap: '25px',
+
     '& .ant-steps-item': {
       marginBottom: '20px'
     },
+
     '& .ant-steps-item-title': {
+      fontWeight: 'bold',
       marginTop: '-8px'
     },
+
     '& .ant-steps-item-icon': {
       marginTop: '10px',
       width: '64px',
       height: '64px',
       lineHeight: '64px',
       fontSize: '32px',
-      backgroundColor: 'white !important',
+      backgroundColor: 'white !important'
     },
+
     '& .ant-steps-icon': {
-      color: variables.colorPrimary + " !important"
+      color: variables.colorPrimary + ' !important'
     },
+
     '& .ant-steps-item-tail': {
       display: 'none !important'
     },
+
     '& button.download': {
       height: '40px',
       margin: '5px',
+      display: 'inline-flex',
+      alignItems: 'center'
     },
+
     '& img': {
       height: '30px',
-      marginRight: '3px',
+      marginRight: '3px'
+    },
+
+    [mediaQuery]: {
+      width: 'unset !important',
+      gridTemplateColumns: '1fr'
+    }
+  }),
+  about: css({
+    boxShadow:
+      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)',
+    marginBottom: '200px',
+    padding: '50px 0'
+  }),
+  turbine: css({
+    width: '100%',
+    height: '100%',
+    backgroundImage: 'url("/images/indexpage/turbine.jpg")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
+  }),
+  crowdfunding: css({
+    [mediaQuery]: {
+      a: {
+        margin: 'auto'
+      }
     }
   })
 }

@@ -327,10 +327,10 @@ const Index = (): JSX.Element => {
           </Collapse.Panel>
         </Collapse>
       </Drawer>
-      <Layout.Header id="header" css={style.indexHeader}>
+      <Layout.Header id="header" css={style.header}>
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Menu mode="horizontal" css={style.indexMenu} items={menuItems} />
-        <div css={style.indexMenuMobile}>
+        <Menu mode="horizontal" css={style.menu} items={menuItems} />
+        <div css={style.menuMobile}>
           <Popover
             content={<Menu mode="inline" items={menuItems} />}
             placement="leftBottom"
@@ -343,7 +343,7 @@ const Index = (): JSX.Element => {
         {loginButton}
       </Layout.Header>
 
-      <Layout.Content css={style.indexContent}>
+      <Layout.Content css={style.content}>
         <Space direction="vertical" size={90} css={globalStyle.fullWidth}>
           <Side
             left={
@@ -351,12 +351,12 @@ const Index = (): JSX.Element => {
                 <Typography.Title style={{ marginBottom: 0 }}>
                   Solve your toughest numerical simulation problems
                 </Typography.Title>
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   Tanatloc is a multi-physics FEA software for engineers and
                   researchers.
                 </Typography.Text>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   Use the provided models for the most common problems, make
                   your own, or partner with our experts to build one tailored to
                   your needs.
@@ -367,14 +367,8 @@ const Index = (): JSX.Element => {
                 </Button>
               </Space>
             }
-            right={
-              <img
-                src="images/indexpage/capture1.png"
-                alt="tanatloc"
-                className="img-shadow"
-              />
-            }
-            leftCss={css([style.leftCss, globalStyleFn.margin(50)])}
+            right={<img src="images/indexpage/capture1.png" alt="tanatloc" />}
+            leftCss={css([style.solveLeft, globalStyleFn.marginBottom(50)])}
           />
 
           <Side
@@ -423,19 +417,19 @@ const Index = (): JSX.Element => {
                 </Checkbox>
               </>
             }
-            css={css({ backgroundColor: variables.colorPrimary })}
-            rightCss={css([style.rightCss, globalStyleFn.padding(50)])}
-            leftCss={globalStyleFn.padding(50)}
+            sideCss={css({ backgroundColor: variables.colorPrimary })}
+            rightCss={css([style.models, style.indexPadding])}
+            leftCss={style.indexPadding}
             id="features"
           />
 
           <div id="developers">
-            <div css={globalStyleFn.padding(50)}>
+            <div css={style.indexPadding}>
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
               </Typography.Title>
-              <div className="Index-plugins" css={style.indexPlugins}>
+              <div css={style.indexPlugins}>
                 <div>
                   <Avatar
                     size={64}
@@ -443,7 +437,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-rescale.svg"
                   />
                   <Typography.Title level={4}>Rescale</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                   <a href="mailto:contact@airthium.com">
@@ -457,7 +451,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-ancl.jpg"
                   />
                   <Typography.Title level={4}>ANCL Sharetask</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                   <a href="mailto:contact@airthium.com">
@@ -471,7 +465,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-slurm.svg"
                   />
                   <Typography.Title level={4}>Slurm</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Upcoming
                   </Typography.Text>
                 </div>
@@ -482,14 +476,14 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-qarnot.svg"
                   />
                   <Typography.Title level={4}>Qarnot HPC</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Upcoming
                   </Typography.Text>
                 </div>
                 <div>
                   <Avatar size={64} shape="square" icon={<SettingOutlined />} />
                   <Typography.Title level={4}>Your own plugin</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                 </div>
@@ -497,7 +491,7 @@ const Index = (): JSX.Element => {
             </div>
           </div>
 
-          <div id="electron">
+          <div id="electron" css={style.electron}>
             <Typography.Title level={2}>
               Tanatloc is an FEA software based on FreeFEM, an extremely
               powerful and versatile open-source PDE solver. It runs locally
@@ -506,7 +500,7 @@ const Index = (): JSX.Element => {
             <img
               src="images/indexpage/capture2.png"
               alt="tanatloc"
-              className="img-shadow text-center"
+              css={css([style.imgShadow, globalStyle.textAlignCenter])}
             />
           </div>
 
@@ -517,25 +511,25 @@ const Index = (): JSX.Element => {
                   <Typography.Title level={2}>Case Study</Typography.Title>
                   <Typography.Title
                     level={3}
-                    className="text-light"
+                    css={globalStyle.textLight}
                     style={{ marginBottom: 0 }}
                   >
                     DENSO
                   </Typography.Title>
                 </div>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   DENSO is a leading Japanese automotive and Fortune 500
                   company.
                 </Typography.Text>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   Hiroshi Ogawa, at DENSO’s Heat Exchanger R&D Division,
                   implemented a custom FreeFEM model on TANATLOC with the help
                   of Professor Atsushi Suzuki from Osaka University.
                 </Typography.Text>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   DENSO’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
                   on-premise server via the ANCL Sharetask plug-in.
@@ -546,27 +540,27 @@ const Index = (): JSX.Element => {
               <img
                 src="images/indexpage/denso.jpg"
                 alt="tanatloc"
-                className="Index-case-study Index-padding-50"
+                css={style.indexPadding}
               />
             }
-            css={css([
-              style.indexCaseStudy,
+            sideCss={css([
+              style.caseStudy,
               globalStyleFn.marginTop(50),
               globalStyleFn.marginBottom(50)
             ])}
             leftCss={css([
-              style.indexCaseStudyLeft,
+              style.caseStudyLeft,
               globalStyle.fullWidth,
-              globalStyleFn.padding(50)
+              style.indexPadding
             ])}
-            // leftClassName="Index-casestudy-left Index-padding-50 full-width"
+            rightCss={style.caseStudyRight}
             id="caseStudy"
           />
 
-          <div id="getStarted" className="margin-bottom-50">
+          <div id="getStarted" css={globalStyleFn.marginBottom(50)}>
             <Typography.Title level={2}>Get started</Typography.Title>
             <br />
-            <Steps direction="vertical" className="Index-steps">
+            <Steps direction="vertical" css={style.steps}>
               <Steps.Step
                 title="Install Docker Desktop"
                 description={
@@ -665,7 +659,7 @@ const Index = (): JSX.Element => {
             }
             right={
               <Space direction="vertical" size={20}>
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   TANATLOC is maintained by Airthium, a US/France based deeptech
                   startup. We build a very robust and highly efficient electric
                   heat engine to decarbonise the planet.
@@ -694,19 +688,21 @@ const Index = (): JSX.Element => {
                       rel="noreferrer"
                     >
                       <Button size="large">
-                        <strong>Invest in our crowdfounding</strong>
+                        <strong>Invest in our crowdfunding</strong>
                       </Button>
                     </a>
                   </>
                 }
-                // className="background-primary"
-                // leftClassName="Index-about-turbine"
-                // rightClassName="Index-padding-50 Index-crowdfunding"
+                sideCss={css({
+                  backgroundColor: variables.colorPrimary
+                })}
+                leftCss={style.turbine}
+                rightCss={css([style.indexPadding, style.crowdfunding])}
               />
             }
-            // className="Index-about"
-            // leftClassName="Index-padding-50"
-            // rightClassName="Index-padding-50"
+            sideCss={style.about}
+            leftCss={style.indexPadding}
+            rightCss={style.indexPadding}
             id="aboutUs"
           />
         </Space>

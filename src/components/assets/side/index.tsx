@@ -1,6 +1,6 @@
 /** @module Components.Assets.Side */
 
-import { css as Css, SerializedStyles } from '@emotion/react'
+import { css, SerializedStyles } from '@emotion/react'
 
 import style from './index.style'
 
@@ -8,7 +8,7 @@ export interface IProps {
   left: JSX.Element
   right: JSX.Element
   top?: JSX.Element
-  css?: SerializedStyles
+  sideCss?: SerializedStyles
   leftCss?: SerializedStyles
   rightCss?: SerializedStyles
   topCss?: SerializedStyles
@@ -24,7 +24,7 @@ const Side = ({
   left,
   right,
   top,
-  css,
+  sideCss,
   leftCss,
   rightCss,
   topCss,
@@ -34,10 +34,10 @@ const Side = ({
    * Render
    */
   return (
-    <div css={Css([style.side, css || {}])} id={id}>
-      <div css={Css([style.left, leftCss || {}])}>{left}</div>
-      <div css={Css([style.right, rightCss || {}])}>{right}</div>
-      {top && <div css={Css([style.top, topCss || {}])}>{top}</div>}
+    <div css={css([style.side, sideCss || {}])} id={id}>
+      <div css={css([style.left, leftCss || {}])}>{left}</div>
+      <div css={css([style.right, rightCss || {}])}>{right}</div>
+      {top && <div css={css([style.top, topCss || {}])}>{top}</div>}
     </div>
   )
 }

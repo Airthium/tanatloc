@@ -89,6 +89,7 @@ import {
 } from '@/context/select/actions'
 
 import AvatarAPI from '@/api/avatar'
+import { globalStyle, globalStyleFn } from '@/styles'
 
 /**
  * Props
@@ -895,7 +896,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="View no-scroll">
+    <Layout css={globalStyle.noScroll} className="View no-scroll">
       <Layout.Header className="View-header">
         <div className="View-controls-main">
           <Tooltip title="Take snasphot" placement="right">
@@ -960,7 +961,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             </Dropdown>
           </Tooltip>
 
-          <Divider className="no-margin" />
+          <Divider css={globalStyleFn.margin(0)} />
 
           <Tooltip title="Display grid" placement="right">
             <Switch
@@ -979,7 +980,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider className="no-margin" />
+          <Divider css={globalStyleFn.margin(0)} />
 
           <Tooltip title="Zoom out" placement="right">
             <Button
@@ -1016,7 +1017,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider className="no-margin" />
+          <Divider css={globalStyleFn.margin(0)} />
 
           {!sectionView && (
             <Tooltip title="Section view" placement="right">
@@ -1077,7 +1078,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
           {part?.summary.type === 'result' && (
             <>
-              <Divider className="no-margin" />
+              <Divider css={globalStyleFn.margin(0)} />
 
               <Tooltip title="Display mesh" placement="right">
                 <Switch
@@ -1091,7 +1092,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           )}
         </div>
       </Layout.Header>
-      <Layout.Content className="View-content no-scroll">
+      <Layout.Content
+        css={globalStyle.noScroll}
+        className="View-content no-scroll"
+      >
         <div
           style={{ display: loading ? 'flex' : 'none' }}
           className="View-loading"

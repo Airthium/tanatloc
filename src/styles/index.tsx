@@ -22,6 +22,9 @@ export const globalStyle: {
   displayNone: css({
     display: 'none !important'
   }),
+  displayFlex: css({
+    display: 'flex !important'
+  }),
   fullWidth: css({
     width: '100% !important'
   }),
@@ -42,6 +45,10 @@ export const globalStyle: {
   }),
   noBorder: css({
     border: 'none !important',
+    boxShadow: 'none !important'
+  }),
+  noBorderBottom: css({
+    borderBottom: 'none !important',
     boxShadow: 'none !important'
   }),
   textLight: css({

@@ -24,6 +24,8 @@ import {
 import SimulationAPI from '@/api/simulation'
 import PluginsAPI from '@/api/plugins'
 
+import { globalStyle } from '@/styles'
+
 import About from './about'
 import Geometry from './geometry'
 import Materials from './materials'
@@ -161,7 +163,7 @@ const Selector = ({
       disabled: true,
       label: (
         <Select
-          className="full-width"
+          css={globalStyle.fullWidth}
           options={categories}
           allowClear
           showArrow={false}
@@ -182,7 +184,7 @@ const Selector = ({
       disabled: true,
       label: (
         <Select
-          className="full-width"
+          css={globalStyle.fullWidth}
           options={categories}
           allowClear
           showArrow={false}

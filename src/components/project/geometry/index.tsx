@@ -19,6 +19,8 @@ import {
 } from '@/api/index.d'
 import GeometryAPI from '@/api/geometry'
 
+import { globalStyle } from '@/styles'
+
 import Add from './add'
 import Edit from './edit'
 
@@ -215,31 +217,31 @@ const Geometry = ({
             />
           ]}
         >
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <Typography.Text>
-              <span className="text-light">File:</span> {geometry.name}{' '}
+              <span css={globalStyle.textLight}>File:</span> {geometry.name}{' '}
             </Typography.Text>
             <Typography.Text>
-              <span className="text-light">Unit:</span>{' '}
+              <span css={globalStyle.textLight}>Unit:</span>{' '}
               <MathJax.Inline text={'m'} />
             </Typography.Text>
 
             <>
               {geometry.summary.dimension === 3 && (
                 <Typography.Text>
-                  <span className="text-light">Number of solids:</span>{' '}
+                  <span css={globalStyle.textLight}>Number of solids:</span>{' '}
                   {geometry.summary.solids?.length ?? 0}
                 </Typography.Text>
               )}
 
               <Typography.Text>
-                <span className="text-light">Number of faces:</span>{' '}
+                <span css={globalStyle.textLight}>Number of faces:</span>{' '}
                 {geometry.summary.faces?.length ?? 0}
               </Typography.Text>
 
               {geometry.summary.dimension === 2 && (
                 <Typography.Text>
-                  <span className="text-light">Number of edges:</span>{' '}
+                  <span css={globalStyle.textLight}>Number of edges:</span>{' '}
                   {geometry.summary.edges?.length ?? 0}
                 </Typography.Text>
               )}

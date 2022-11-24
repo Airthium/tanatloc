@@ -18,6 +18,8 @@ import Save from './save'
 import Data from './data'
 import Sensors from './sensors'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Add on cursor
  * @param template Template
@@ -57,14 +59,14 @@ const Blobs = () => {
     <>
       <Collapse style={{ overflow: 'auto', maxHeight: 'calc(100% - 443px)' }}>
         <Collapse.Panel key="head" header="Head">
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <Header />
             <Dimension />
           </Space>
         </Collapse.Panel>
 
         <Collapse.Panel key="components" header="Components">
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <Mesh />
             <Materials />
             <FiniteElementSpace />
@@ -75,7 +77,7 @@ const Blobs = () => {
         </Collapse.Panel>
 
         <Collapse.Panel key="results" header="Results">
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <Save />
             <Data />
             <Sensors />

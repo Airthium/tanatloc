@@ -2,6 +2,7 @@
 
 import { Dispatch, useContext, useState } from 'react'
 import { Button, Form, Input } from 'antd'
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
 
@@ -10,8 +11,9 @@ import { setCursor, setModel } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 /**
  * On add
@@ -185,7 +187,7 @@ const FiniteElementSpace = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Finite element space
       </Button>
     </>

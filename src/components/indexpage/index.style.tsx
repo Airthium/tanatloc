@@ -48,7 +48,7 @@ const style: { [key: string]: SerializedStyles } = {
       marginLeft: '-20px',
       padding: '20px 10px',
 
-      '& .Index-get-started': {
+      '& .Index-getstarted': {
         display: 'none'
       },
       '& .Index-login-button': {
@@ -63,7 +63,7 @@ const style: { [key: string]: SerializedStyles } = {
       display: 'none'
     },
 
-    '& .Index-get-started': {
+    '& .Index-getstarted': {
       display: 'none'
     },
     '& .Index-login-button': {

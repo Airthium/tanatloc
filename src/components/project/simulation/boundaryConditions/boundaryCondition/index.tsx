@@ -18,6 +18,11 @@ import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
+} from '@/api/index.d'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -25,13 +30,10 @@ import { CancelButton } from '@/components/assets/button'
 
 import { ISelect } from '@/context/select'
 
+import { globalStyle, globalStyleFn } from '@/styles'
+
 import Add from '../add'
 import Edit from '../edit'
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem,
-  IFrontGeometriesItem
-} from '@/api/index.d'
 
 export interface IProps {
   visible: boolean
@@ -251,7 +253,7 @@ const BoundaryCondition = ({
             if (dimension === 2 && child.only3D) return
             return (
               <Formula
-                className="marginBottom-10"
+                css={globalStyleFn.marginBottom(10)}
                 key={index}
                 label={child.label}
                 defaultValue={String(current.values![index].value)}
@@ -347,7 +349,7 @@ const BoundaryCondition = ({
         </div>
       }
     >
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Card size="small">
           <Form layout="vertical">
             <Form.Item

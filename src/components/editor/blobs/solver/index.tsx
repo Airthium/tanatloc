@@ -8,8 +8,11 @@ import { setCursor, setModel } from '@/context/editor/actions'
 
 import { IModel } from '@/models/index.d'
 
-import { addOnCursor } from '..'
 import Dialog from '@/components/assets/dialog'
+
+import { globalStyle } from '@/styles'
+
+import { addOnCursor } from '..'
 
 /**
  * On add
@@ -129,7 +132,7 @@ const Solver = (): JSX.Element => {
           />
         </Form.Item>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Solver
       </Button>
     </>

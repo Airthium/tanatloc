@@ -1,6 +1,7 @@
 /** @module Components.Project.Simulation.About*/
 
 import { Alert, Card, Layout, Space, Spin, Typography } from 'antd'
+import { css } from '@emotion/react'
 
 import MathJax from '@/components/assets/mathjax'
 
@@ -11,6 +12,8 @@ import {
   IFrontNewSimulation,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
+
+import { globalStyle } from '@/styles'
 
 import Copy from '../copy'
 import Edit from './edit'
@@ -85,28 +88,28 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
               />
             ]}
           >
-            <Space direction="vertical" className="full-width">
+            <Space direction="vertical" css={globalStyle.fullWidth}>
               {simulation.scheme.user && (
                 <Alert message="User algorithm" type="info" showIcon />
               )}
               <Typography.Text>
-                <span className="text-light">Category:</span>{' '}
+                <span css={globalStyle.textLight}>Category:</span>{' '}
                 {simulation.scheme.category}
               </Typography.Text>
               <Typography.Text>
-                <span className="text-light">Algorithm:</span>{' '}
+                <span css={globalStyle.textLight}>Algorithm:</span>{' '}
                 {simulation.scheme.algorithm}
               </Typography.Text>
               <Typography.Text>
-                <span className="text-light">Code:</span>{' '}
+                <span css={globalStyle.textLight}>Code:</span>{' '}
                 {simulation.scheme.code}
               </Typography.Text>
               <Typography.Text>
-                <span className="text-light">Version:</span>{' '}
+                <span css={globalStyle.textLight}>Version:</span>{' '}
                 {simulation.scheme.version}
               </Typography.Text>
 
-              <div className="full-wdith scroll">
+              <div css={css([globalStyle.fullWidth, globalStyle.scroll])}>
                 <MathJax.Html html={simulation.scheme.description} />
               </div>
             </Space>

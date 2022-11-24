@@ -15,6 +15,7 @@ import {
   SearchOutlined,
   SwapOutlined
 } from '@ant-design/icons'
+import { css } from '@emotion/react'
 
 import { TGeometryColor } from '@/database/geometry/get'
 
@@ -29,6 +30,8 @@ import {
 import { IFrontGeometriesItem } from '@/api/index.d'
 
 import Utils from '@/lib/utils'
+
+import { globalStyle, globalStyleFn } from '@/styles'
 
 export interface ISelection {
   label: string
@@ -243,8 +246,8 @@ const Selector = ({
    * Render
    */
   return (
-    <Card size="small" className="no-border-bottom">
-      <Space direction="vertical" className="full-width">
+    <Card size="small" css={globalStyle.noBorderBottom}>
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Typography.Text strong>Filters</Typography.Text>
         <Space direction="horizontal" wrap={true}>
           {colors.length > 1 && (
@@ -283,11 +286,11 @@ const Selector = ({
           placeholder="Search"
           value={search}
           onChange={onSearch}
-          suffix={<SearchOutlined className="text-light" />}
+          suffix={<SearchOutlined css={globalStyle.textLight} />}
         />
       </Space>
 
-      <div className="full-width marginTop-20">
+      <div css={css([globalStyle.fullWidth, globalStyleFn.marginTop(20)])}>
         {type
           ? geometry.summary[type]?.map((element, index) => {
               if (display(element)) {
@@ -303,7 +306,7 @@ const Selector = ({
 
                 return (
                   <Card
-                    className="marginBottom-10"
+                    css={globalStyleFn.marginBottom(10)}
                     key={index}
                     bodyStyle={{
                       position: 'relative',

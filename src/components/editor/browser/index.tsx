@@ -16,6 +16,8 @@ import Templates from '@/templates'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { globalStyle } from '@/styles'
+
 import Delete from '../delete'
 
 /**
@@ -110,11 +112,11 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
               key: 'models',
               label: 'Tanatloc models',
               children: (
-                <Space direction="vertical" className="full-width">
+                <Space direction="vertical" css={globalStyle.fullWidth}>
                   {Models.map((m, index) => (
                     <div
                       key={index}
-                      className="display-flex"
+                      css={globalStyle.displayFlex}
                       style={{
                         justifyContent: 'space-between',
                         alignItems: 'center'
@@ -144,11 +146,11 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
               key: 'personalModels',
               label: 'My models',
               children: (
-                <Space direction="vertical" className="full-width">
+                <Space direction="vertical" css={globalStyle.fullWidth}>
                   {user.models.map((m, index) => (
                     <div
                       key={index}
-                      className="display-flex"
+                      css={globalStyle.displayFlex}
                       style={{
                         justifyContent: 'space-between',
                         alignItems: 'center'

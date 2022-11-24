@@ -66,10 +66,10 @@ const DeleteButton = ({
       </DeleteDialog>
       <Tooltip title={children || 'Delete'}>
         <Button
-          css={css({
-            ...globalStyle.noBackground,
-            ...(bordered ? {} : globalStyle.noBorder)
-          })}
+          css={css([
+            globalStyle.noBackground,
+            bordered ? {} : globalStyle.noBorder
+          ])}
           danger
           disabled={disabled}
           type={disabled ? 'link' : undefined}

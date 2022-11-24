@@ -16,6 +16,7 @@ import {
   PlusCircleOutlined,
   AuditOutlined
 } from '@ant-design/icons'
+import { css } from '@emotion/react'
 
 import { ISimulation } from '@/database/simulation/index'
 import { IModel } from '@/models/index.d'
@@ -39,6 +40,8 @@ import UserAPI from '@/api/user'
 import ProjectAPI from '@/api/project'
 import SimulationAPI from '@/api/simulation'
 import GeometryAPI from '@/api/geometry'
+
+import { globalStyle } from '@/styles'
 
 import Panel from './panel'
 import Geometry from './geometry'
@@ -687,7 +690,7 @@ const Project = (): JSX.Element => {
     <SelectProvider>
       <Layout hasSider={true}>
         <Layout.Sider theme="light" className="Project-Sider" width={256}>
-          <div className="logo">
+          <div css={globalStyle.logo}>
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
           <Menu
@@ -808,7 +811,9 @@ const Project = (): JSX.Element => {
             />
           </div>
         </Layout.Sider>
-        <Layout.Content className="no-scroll relative">
+        <Layout.Content
+          css={css([globalStyle.noScroll, { position: 'relative' }])}
+        >
           <Geometry.Add
             visible={geometryAddVisible}
             project={{

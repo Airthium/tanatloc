@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
 
+import { globalStyle, globalStyleFn } from '@/styles'
+import style from './index.style'
+
 /**
  * Simple
  * @returns Loading.Simple
@@ -57,7 +60,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
     }
 
     setStatusDisplay(
-      <div className="Loading-status">
+      <div css={style.status}>
         <Steps
           direction="vertical"
           items={status
@@ -82,7 +85,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
     }
 
     setErrorsDisplay(
-      <div className="Loading-errors">
+      <div css={style.errors}>
         {errors.map((err, index) => {
           let child = null
           if (
@@ -132,19 +135,19 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="tanatloc-gradient">
-      <div className="logo">
+    <Layout>
+      <div css={globalStyle.logo}>
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>
       <Card
-        className="Loading"
+        css={style.loading}
         bodyStyle={{ padding: 0 }}
         title={
           <Space>
             {errors?.length ? (
               <>
                 <WarningOutlined style={{ fontSize: '32px', color: 'red' }} />
-                <Typography.Title level={3} className="no-margin">
+                <Typography.Title level={3} css={globalStyleFn.margin(0)}>
                   An error occurs
                 </Typography.Title>
                 <a
@@ -166,7 +169,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
         }
       >
         {display ? (
-          <div ref={contentRef} className="Loading-content">
+          <div ref={contentRef} css={style.content}>
             {errorsDisplay}
             {statusDisplay}
           </div>

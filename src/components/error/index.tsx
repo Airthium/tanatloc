@@ -4,6 +4,8 @@ import { NextPageContext } from 'next'
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
+import style from './index.style'
+
 /**
  * Props
  */
@@ -90,7 +92,7 @@ function Error({ webStatusCode }: IProps): JSX.Element {
    */
   return (
     <Layout>
-      <Layout.Content className="NotFound">{render}</Layout.Content>
+      <Layout.Content css={style.error}>{render}</Layout.Content>
     </Layout>
   )
 }

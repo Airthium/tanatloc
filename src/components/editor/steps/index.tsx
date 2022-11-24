@@ -7,6 +7,7 @@ import { EditorContext } from '@/context/editor'
 import { setModelValid, setTemplateValid } from '@/context/editor/actions'
 
 import { checkModel } from './utils'
+import style from '../index.style'
 
 /**
  * Props
@@ -94,7 +95,7 @@ const StatusSteps = ({ setName }: IProps) => {
   }, [model, setName, dispatch])
 
   return (
-    <Steps className="Editor-Steps" direction="vertical">
+    <Steps css={style.steps} direction="vertical">
       <Steps.Step
         title="Check template format"
         description={status.template?.err ?? 'EJS + FreeFEM'}

@@ -45,7 +45,6 @@ const DownloadButton = ({
           globalStyle.noBackground,
           bordered ? {} : globalStyle.noBorder
         ])}
-        className={'no-background ' + (bordered ? '' : 'no-border')}
         disabled={disabled}
         loading={loading}
         icon={<DownloadOutlined />}

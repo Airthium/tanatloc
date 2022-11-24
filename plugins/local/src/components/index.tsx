@@ -3,6 +3,8 @@
 import { Button, Typography, Space } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -27,7 +29,7 @@ const Local = ({ onSelect }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space className="full-width">
+    <Space css={globalStyle.fullWidth}>
       <Typography.Text>Local computing</Typography.Text>
       <Button
         type="primary"

@@ -21,6 +21,8 @@ import { ErrorNotification, FormError } from '@/components/assets/notification'
 import { APIError } from '@/api/error'
 import LinkAPI from '@/api/link'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Errors
  */
@@ -109,7 +111,7 @@ const PasswordRecovery = (): JSX.Element => {
   return (
     <Layout>
       <Card bordered={false} className="Signup">
-        <Space direction="vertical" size="large" className="full-width">
+        <Space direction="vertical" size="large" css={globalStyle.fullWidth}>
           <div>
             <Typography.Title
               level={1}

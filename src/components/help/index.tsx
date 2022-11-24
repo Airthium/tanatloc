@@ -25,7 +25,7 @@ const Help = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout css={dashboardStyle.inDashboard} className="inDashboard Help">
+    <Layout css={dashboardStyle.inDashboard}>
       <PageHeader
         title={
           <Typography.Title

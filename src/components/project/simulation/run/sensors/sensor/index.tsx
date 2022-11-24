@@ -20,6 +20,8 @@ import { disable, enable, setPoint, setType } from '@/context/select/actions'
 import Formula from '@/components/assets/formula'
 import { CancelButton } from '@/components/assets/button'
 
+import { globalStyle } from '@/styles'
+
 import Edit from '../edit'
 import Add from '../add'
 
@@ -177,15 +179,15 @@ const Sensor = ({
         </div>
       }
     >
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Card size="small">
           <Typography.Text>Name</Typography.Text>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </Card>
         <Card size="small">
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <Space
-              className="full-width"
+              css={globalStyle.fullWidth}
               style={{ justifyContent: 'space-between' }}
             >
               <Typography.Text>Point selection</Typography.Text>
@@ -221,7 +223,7 @@ const Sensor = ({
             />
           </Space>
         </Card>
-        <Card size="small" className="no-border-bottom">
+        <Card size="small" css={globalStyle.noBorderBottom}>
           <Formula
             label="Formula"
             defaultValue={formula}

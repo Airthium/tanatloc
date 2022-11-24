@@ -11,6 +11,8 @@ import { ErrorNotification } from '@/components/assets/notification'
 import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 import GeometryAPI from '@/api/geometry'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -117,7 +119,7 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       onCancel={() => setVisible(false)}
       cancelButtonProps={{ loading: loading }}
     >
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Upload
           className="upload"
           action={'/api/noop'}

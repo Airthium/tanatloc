@@ -142,7 +142,6 @@ const Sensor = ({
    */
   return (
     <Drawer
-      className="sensor"
       title="Sensor"
       placement="left"
       closable={false}

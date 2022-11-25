@@ -240,12 +240,12 @@ const ProjectList = ({
     return (
       <Empty
         image="images/empty.svg"
-        className="Project-Empty"
+        css={style.empty}
         description={
           filter ? (
             <>
               No project found with the current search{' '}
-              <span className="Project-Empty-search-value">{filter}</span>...
+              <span css={style.emptySearch}>{filter}</span>...
             </>
           ) : (
             <>No project for now... Get started!</>

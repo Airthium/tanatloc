@@ -17,6 +17,8 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -101,7 +103,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                 />
               ]}
             >
-              <Typography.Text strong className="text-center">
+              <Typography.Text strong css={globalStyle.textAlignCenter}>
                 {material.material.label}
               </Typography.Text>
             </Card>

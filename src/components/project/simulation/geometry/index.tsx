@@ -13,6 +13,8 @@ import {
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import style from '../index.style'
+
 import Mesh from './mesh'
 
 /**
@@ -115,7 +117,7 @@ const Geometry = ({
   // List
   const list = geometries.map((g) => (
     <div
-      className="Geometry-list"
+      css={style.geometriesList}
       key={g.id}
       style={{
         backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'

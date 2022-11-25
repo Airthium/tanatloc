@@ -6,6 +6,8 @@ import { DatabaseOutlined } from '@ant-design/icons'
 
 import { IMaterialDatabase, materialDatabase } from '@/config/materials'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -84,7 +86,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       <Button
         icon={<DatabaseOutlined />}
         onClick={() => setVisible(true)}
-        className="full-width"
+        css={globalStyle.fullWidth}
       >
         Pick a material
       </Button>

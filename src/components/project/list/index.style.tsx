@@ -99,6 +99,18 @@ const style: { [key: string]: SerializedStyles } = {
   }),
   carouselDescriptionArchived: css({
     cursor: 'not-allowed'
+  }),
+  empty: css({
+    marginTop: 'min(10%, 20px)',
+
+    '& .ant-empty-description': {
+      fontSize: '1.25em',
+      color: variables.textColorLight
+    }
+  }),
+  emptySearch: css({
+    fontStyle: 'italic',
+    color: variables.textColorLight
   })
 }
 

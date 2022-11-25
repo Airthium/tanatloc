@@ -6,6 +6,8 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
 import { IFrontSimulation, IFrontResult } from '@/api/index.d'
 
+import { globalStyle } from '@/styles'
+
 import { getFilesNumbers, getMultiplicator } from './tools'
 import Download from './download'
 import Archive from './archive'
@@ -137,7 +139,7 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
           />
         }
       >
-        <Space direction="vertical" className="full-width">
+        <Space direction="vertical" css={globalStyle.fullWidth}>
           {singleFiles?.map((file) => (
             <Space key={file.name} style={{ alignItems: 'center' }}>
               <Button
@@ -179,7 +181,7 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
             <>
               {filteredFiles.name}
               <Select
-                className="full-width"
+                css={globalStyle.fullWidth}
                 options={filteredFiles.options}
                 value={currentNumber}
                 onChange={(value) => {

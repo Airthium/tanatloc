@@ -66,8 +66,7 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
     <>
       {run.sensors?.map((sensor, index) => (
         <Card
-          css={css([globalStyle.textAlignCenter])}
-          css={style.listItem}
+          css={css([globalStyle.textAlignCenter, style.listItem])}
           key={index}
           hoverable
           onMouseEnter={() => highlight(sensor)}

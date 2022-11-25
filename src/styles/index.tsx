@@ -74,48 +74,48 @@ export const globalStyle: {
 export const globalStyleFn: {
   [key: string]: (...args: any) => SerializedStyles
 } = {
-  margin: (size: number) =>
+  margin: (size: number | string) =>
     css({
-      margin: size + 'px !important'
+      margin: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  marginTop: (size: number) =>
+  marginTop: (size: number | string) =>
     css({
-      marginTop: size + 'px !important'
+      marginTop: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  marginRight: (size: number) =>
+  marginRight: (size: number | string) =>
     css({
-      marginRight: size + 'px !important'
+      marginRight: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  marginBottom: (size: number) =>
+  marginBottom: (size: number | string) =>
     css({
-      marginBottom: size + 'px !important'
+      marginBottom: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  marginLeft: (size: number) =>
+  marginLeft: (size: number | string) =>
     css({
-      marginLeft: size + 'px !important'
+      marginLeft: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  padding: (size: number) =>
+  padding: (size: number | string) =>
     css({
-      padding: size + 'px !important'
+      padding: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  paddingTop: (size: number) =>
+  paddingTop: (size: number | string) =>
     css({
-      paddingTop: size + 'px !important'
+      paddingTop: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  paddingRight: (size: number) =>
+  paddingRight: (size: number | string) =>
     css({
-      paddingRight: size + 'px !important'
+      paddingRight: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  paddingBottom: (size: number) =>
+  paddingBottom: (size: number | string) =>
     css({
-      paddingBottom: size + 'px !important'
+      paddingBottom: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  paddingLeft: (size: number) =>
+  paddingLeft: (size: number | string) =>
     css({
-      paddingLeft: size + 'px !important'
+      paddingLeft: size === 'auto' ? size : size + 'px' + ' !important'
     }),
-  maxWidth: (size: number) =>
+  maxWidth: (size: number | string) =>
     css({
-      maxWidth: size + 'px !important'
+      maxWidth: size === 'auto' ? size : size + 'px' + ' !important'
     })
 }

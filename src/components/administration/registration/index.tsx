@@ -127,8 +127,14 @@ const Registration = (): JSX.Element => {
             onFinish={async (values) => onPasswordFinish(values, mutateSystem)}
             css={css({ display: 'flex', justifyContent: 'space-between' })}
           >
-            <div css={globalStyle.displayFlex}>
-              <div css={css({ margin: 'auto' })}>
+            <div
+              css={css([
+                globalStyle.displayFlex,
+                globalStyle.fullWidth,
+                { justifyContent: 'space-between' }
+              ])}
+            >
+              <div>
                 <Form.Item
                   label="Minimum number of characters"
                   name="min"
@@ -154,7 +160,7 @@ const Registration = (): JSX.Element => {
                   <InputNumber min={0} max={64} />
                 </Form.Item>
               </div>
-              <div css={globalStyleFn.marginLeft(50)}>
+              <div>
                 <Form.Item
                   // {...tailLayout}
                   valuePropName="checked"
@@ -177,17 +183,17 @@ const Registration = (): JSX.Element => {
                   <Checkbox>Require symbol</Checkbox>
                 </Form.Item>
               </div>
-            </div>
-            <div css={{ marginTop: 'auto' }}>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  icon={<CheckOutlined />}
-                  htmlType="submit"
-                >
-                  Save changes
-                </Button>
-              </Form.Item>
+              <div css={globalStyleFn.marginTop('auto')}>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    icon={<CheckOutlined />}
+                    htmlType="submit"
+                  >
+                    Save changes
+                  </Button>
+                </Form.Item>
+              </div>
             </div>
           </Form>
         </Card>

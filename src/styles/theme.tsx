@@ -9,8 +9,7 @@ const theme: ThemeConfig = {
     borderRadius: 0,
     colorText: variables.textColor,
     colorBgLayout: '#fff',
-    colorLink: variables.colorLink,
-    colorTextLightSolid: variables.textColor
+    colorLink: variables.colorLink
   }
 }
 

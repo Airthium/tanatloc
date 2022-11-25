@@ -22,6 +22,7 @@ import { APIError } from '@/api/error'
 import LinkAPI from '@/api/link'
 
 import { globalStyle } from '@/styles'
+import style from './index.style'
 
 /**
  * Errors
@@ -103,14 +104,14 @@ const PasswordRecovery = (): JSX.Element => {
   if (checking)
     return (
       <Layout>
-        <Card bordered={false} className="Signup">
+        <Card bordered={false} css={style.password}>
           <Spin /> Loading...
         </Card>
       </Layout>
     )
   return (
     <Layout>
-      <Card bordered={false} className="Signup">
+      <Card bordered={false} css={style.password}>
         <Space direction="vertical" size="large" css={globalStyle.fullWidth}>
           <div>
             <Typography.Title
@@ -168,7 +169,7 @@ const PasswordRecovery = (): JSX.Element => {
               <Input.Password placeholder="Password" />
             </Form.Item>
             <FormError error={formError} />
-            <Form.Item className="Signup-submit">
+            <Form.Item css={style.submit}>
               <Button type="primary" loading={loading} htmlType="submit">
                 Finish
               </Button>

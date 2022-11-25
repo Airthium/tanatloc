@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { NextRouter, useRouter } from 'next/router'
-import { Divider, Layout, Tabs, Typography } from 'antd'
+import { Layout, Tabs, Typography } from 'antd'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import PageHeader from '@/components/assets/pageHeader'

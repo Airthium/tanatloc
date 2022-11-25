@@ -1,7 +1,7 @@
 import { css, SerializedStyles } from '@emotion/react'
 import { variables } from '@/styles'
 
-const mediaQuery = `@media all and (max-width: 1100px)`
+export const mediaQuery = `@media all and (max-width: 1100px)`
 
 const style: { [key: string]: SerializedStyles } = {
   index: css({
@@ -48,10 +48,7 @@ const style: { [key: string]: SerializedStyles } = {
       marginLeft: '-20px',
       padding: '20px 10px',
 
-      '& .Index-getstarted': {
-        display: 'none'
-      },
-      '& .Index-login-button': {
+      button: {
         display: 'none'
       }
     }
@@ -59,14 +56,14 @@ const style: { [key: string]: SerializedStyles } = {
   menu: css({
     width: '100%',
 
-    [mediaQuery]: {
+    '& .Menu-getStarted': {
+      display: 'none'
+    },
+    '& .Menu-login': {
       display: 'none'
     },
 
-    '& .Index-getstarted': {
-      display: 'none'
-    },
-    '& .Index-login-button': {
+    [mediaQuery]: {
       display: 'none'
     }
   }),

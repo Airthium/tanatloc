@@ -2,10 +2,12 @@ import { NextRouter, useRouter } from 'next/router'
 import { Button, Layout, Menu, Popover } from 'antd'
 import { BarsOutlined } from '@ant-design/icons'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { css } from '@emotion/react'
 
 import UserAPI from '@/api/user'
 
-import style from '../index.style'
+import { globalStyle } from '@/styles'
+import style, { mediaQuery } from '../index.style'
 
 /**
  * Scroll to view
@@ -44,7 +46,7 @@ const IndexMenu = () => {
   if (!user)
     getStartedButton = (
       <Button
-        className="Index-getstarted"
+        css={css({ [mediaQuery]: { width: '100%' } })}
         type="primary"
         onClick={() => getStarted(router)}
       >
@@ -57,18 +59,14 @@ const IndexMenu = () => {
   if (process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' && !loadingUser) {
     if (user)
       loginButton = (
-        <Button
-          type="primary"
-          className="Index-login-button"
-          onClick={() => router.push('/dashboard')}
-        >
+        <Button type="primary" onClick={() => router.push('/dashboard')}>
           Dashboard
         </Button>
       )
     else
       loginButton = (
         <Button
-          className="Index-login-button"
+          css={css([globalStyle.noBorder, { [mediaQuery]: { width: '100%' } }])}
           onClick={() => router.push('/login')}
         >
           Login
@@ -113,9 +111,17 @@ const IndexMenu = () => {
         </Button>
       )
     },
-    !user && { key: 'getStarted', label: getStartedButton },
+    !user && {
+      key: 'getStarted',
+      label: getStartedButton,
+      className: 'Menu-getStarted'
+    },
     process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' &&
-      !loadingUser && { key: 'login', label: loginButton }
+      !loadingUser && {
+        key: 'login',
+        label: loginButton,
+        className: 'Menu-login'
+      }
   ].filter((m) => m) as ItemType[]
 
   /**

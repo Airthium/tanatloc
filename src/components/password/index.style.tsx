@@ -1,7 +1,7 @@
 import { css, SerializedStyles } from '@emotion/react'
 
 const style: { [key: string]: SerializedStyles } = {
-  login: css({
+  password: css({
     margin: 'auto !important',
     width: '350px'
   }),

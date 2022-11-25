@@ -1,6 +1,6 @@
 /** @module Components.Editor.Code.JSONEditor */
 
-import React, { useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json5'
 import 'ace-builds/src-noconflict/theme-sqlserver'

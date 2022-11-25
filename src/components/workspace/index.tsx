@@ -26,6 +26,7 @@ import Edit from './edit'
 import Delete from './delete'
 
 import { globalStyle, globalStyleFn } from '@/styles'
+import style from './index.style'
 
 /**
  * Props
@@ -98,8 +99,10 @@ const Workspace = ({
           <Space
             direction="horizontal"
             size="large"
-            css={css([globalStyle.fullWidth])}
-            className=" lastchild-marginLeft-auto"
+            css={css([
+              globalStyle.fullWidth,
+              { '& > *:last-child': { marginLeft: 'auto !important' } }
+            ])}
           >
             <Input
               placeholder="Enter a project name (case sensitive)"
@@ -154,7 +157,7 @@ const Workspace = ({
         }
       >
         {workspace.users?.length || workspace.groups?.length ? (
-          <div className="inWorkspace-shared">
+          <div css={style.shared}>
             <div>
               <span css={globalStyleFn.marginRight(10)}>Admin:</span>
               <Avatar.Group maxCount={5}>
@@ -175,7 +178,7 @@ const Workspace = ({
         ) : undefined}
       </PageHeader>
       <Tabs
-        className="inWorkspace-Tabs"
+        css={style.tabs}
         items={[
           {
             key: 'modifiedDesc',

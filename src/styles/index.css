@@ -31,3 +31,8 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(85, 85, 85, 0.75);
 }
+
+/* Form */
+.ant-form .ant-form-item:last-child {
+  margin-bottom: 0;
+}

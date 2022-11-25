@@ -703,6 +703,7 @@ const Project = (): JSX.Element => {
                 style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
                 label: (
                   <GoBack
+                    buttonCss={globalStyle.fullWidth}
                     onClick={() => handleDashboard(router, page, workspaceId)}
                   >
                     Return to dashboard

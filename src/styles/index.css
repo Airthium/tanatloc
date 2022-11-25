@@ -36,8 +36,3 @@ body {
 .ant-form .ant-form-item:last-child {
   margin-bottom: 0;
 }
-
-/* Button */
-.ant-btn {
-  color: #1f1f1f !important;
-}

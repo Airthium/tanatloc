@@ -15,6 +15,8 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
+import style from '../../index.style'
+
 import Delete from '../delete'
 
 /**
@@ -81,7 +83,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
           return typedBoundaryCondition.values?.map((child, index: number) => {
             return (
               <Card
-                className="boundaryCondition-item"
+                css={style.listItem}
                 key={index}
                 hoverable
                 onMouseEnter={() => highlight(type, index)}

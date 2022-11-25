@@ -43,6 +43,15 @@ const style: { [key: string]: SerializedStyles } = {
     '& .ant-collapse-content': {
       backgroundColor: 'rgba(255, 77, 79, 0.5) !important'
     }
+  }),
+  listItem: css({
+    marginTop: '12px !important',
+    border: '1px solid #f0f0f0 !important',
+    cursor: 'default',
+
+    '& .ant-card-body': {
+      padding: '12px !important'
+    }
   })
 }
 

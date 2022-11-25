@@ -20,6 +20,7 @@ import {
 } from '@/api/index.d'
 
 import { globalStyle } from '@/styles'
+import style from '../../../panel/index.style'
 
 import DataBase from '../database'
 import Add from '../add'
@@ -142,7 +143,7 @@ const Material = ({
    */
   return (
     <Drawer
-      className="material"
+      css={style.subPanel}
       title="Material"
       placement="left"
       closable={false}

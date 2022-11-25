@@ -16,6 +16,7 @@ import { disable, enable, setPoint } from '@/context/select/actions'
 import { EditButton } from '@/components/assets/button'
 
 import { globalStyle } from '@/styles'
+import style from '../../../index.style'
 
 import Delete from '../delete'
 
@@ -66,7 +67,7 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
       {run.sensors?.map((sensor, index) => (
         <Card
           css={css([globalStyle.textAlignCenter])}
-          className="sensor-item "
+          css={style.listItem}
           key={index}
           hoverable
           onMouseEnter={() => highlight(sensor)}

@@ -50,6 +50,23 @@ const style: { [key: string]: SerializedStyles } = {
         backgroundColor: '#fafafa'
       }
     }
+  }),
+  subPanel: css({
+    '& .ant-card': {
+      border: 'none',
+      borderBottom: '1px solid #f0f0f0'
+    },
+
+    '& .ant-card-body': {
+      paddingRight: '0',
+      paddingLeft: '0'
+    },
+
+    '& .ant-radio-group': {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '10px'
+    }
   })
 }
 

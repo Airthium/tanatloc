@@ -31,6 +31,7 @@ import { CancelButton } from '@/components/assets/button'
 import { ISelect } from '@/context/select'
 
 import { globalStyle, globalStyleFn } from '@/styles'
+import style from '../../../panel/index.style'
 
 import Add from '../add'
 import Edit from '../edit'
@@ -279,7 +280,7 @@ const BoundaryCondition = ({
    */
   return (
     <Drawer
-      className="boundaryCondition"
+      css={style.subPanel}
       title="Boundary condition"
       placement="left"
       closable={false}
@@ -377,7 +378,6 @@ const BoundaryCondition = ({
               }
             >
               <Radio.Group
-                className="BoundaryCondition-types"
                 optionType="button"
                 buttonStyle="solid"
                 value={current?.type?.key}

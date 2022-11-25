@@ -22,7 +22,7 @@ export const closeAll = () => {
   opened.forEach((notif) => notification.destroy(notif))
   opened.length = 0
 
-  notification.destroy(closeNotification!)
+  notification.destroy(closeNotification)
   closeNotification = undefined
 }
 

@@ -38,6 +38,6 @@ body {
 }
 
 /* Button */
-.ant-btn {
+.ant-btn:not(.ant-btn-dangerous) {
   color: #1f1f1f !important;
 }

@@ -184,7 +184,6 @@ const Registration = (): JSX.Element => {
                   type="primary"
                   icon={<CheckOutlined />}
                   htmlType="submit"
-                  css={{ color: '#000' }}
                 >
                   Save changes
                 </Button>

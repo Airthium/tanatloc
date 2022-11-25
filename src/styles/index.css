@@ -31,3 +31,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(85, 85, 85, 0.75);
 }
+
+.ant-btn {
+  color: #1f1f1f !important;
+}

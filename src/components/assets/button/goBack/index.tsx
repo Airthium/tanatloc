@@ -2,7 +2,7 @@
 
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
+import { css, SerializedStyles } from '@emotion/react'
 
 import { globalStyle, variables } from '@/styles'
 
@@ -11,6 +11,7 @@ import { globalStyle, variables } from '@/styles'
  */
 export interface IProps {
   children?: string | React.ReactElement | React.ReactElement[]
+  buttonCss?: SerializedStyles
   onClick: () => void
 }
 
@@ -22,13 +23,13 @@ export interface IProps {
  * - onClick (Function) Button click
  * @returns GoBack
  */
-const GoBack = ({ children, onClick }: IProps): JSX.Element => {
+const GoBack = ({ children, buttonCss, onClick }: IProps): JSX.Element => {
   /**
    * Render
    */
   return (
     <Button
-      css={globalStyle.noBorder}
+      css={css([globalStyle.noBorder, buttonCss])}
       icon={<ArrowLeftOutlined css={css({ color: variables.colorPrimary })} />}
       onClick={onClick}
     >

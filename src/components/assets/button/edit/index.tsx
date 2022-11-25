@@ -59,7 +59,7 @@ const EditButton = ({
     <Tooltip title={children || 'Edit'}>
       <Button
         css={css([
-          globalStyle.noBackground,
+          type == 'primary' ? '' : globalStyle.noBackground,
           needMargin ? globalStyleFn.marginLeft(5) : {},
           light ? globalStyle.textLight : {},
           dark ? globalStyle.textDark : {},

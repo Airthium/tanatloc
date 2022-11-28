@@ -8,6 +8,8 @@ import { setCursor } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
 
 /**
@@ -96,7 +98,7 @@ const Macros = (): JSX.Element => {
           />
         </Form.Item>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Macros
       </Button>
     </>

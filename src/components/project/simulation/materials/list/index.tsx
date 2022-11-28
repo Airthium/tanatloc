@@ -2,6 +2,7 @@
 
 import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'
+import { css } from '@emotion/react'
 
 import { IModelMaterialsValue } from '@/models/index.d'
 
@@ -16,6 +17,9 @@ import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
+
+import { globalStyle } from '@/styles'
+import style from '../../index.style'
 
 /**
  * Props
@@ -72,7 +76,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
         ?.map((material: IModelMaterialsValue, index: number) => {
           return (
             <Card
-              className="material-item text-center"
+              css={css([globalStyle.textAlignCenter, style.listItem])}
               key={index}
               hoverable
               onMouseEnter={() => highlight(index)}
@@ -101,7 +105,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                 />
               ]}
             >
-              <Typography.Text strong className="text-center">
+              <Typography.Text strong css={globalStyle.textAlignCenter}>
                 {material.material.label}
               </Typography.Text>
             </Card>

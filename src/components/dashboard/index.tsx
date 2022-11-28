@@ -30,6 +30,9 @@ import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
 import { logout } from '@/api/logout'
 
+import style from './index.style'
+import { globalStyle } from '@/styles'
+
 /**
  * Errors
  */
@@ -180,15 +183,14 @@ const Dashboard = () => {
     return <Loading />
 
   return (
-    <Layout className="Dashboard">
-      <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
-        <div className="logo">
+    <Layout css={style.dashboard}>
+      <Layout.Sider theme="light" width="256" css={style.sider}>
+        <div css={globalStyle.logo}>
           <img src="/images/logo.svg" alt="Tanatloc" />
         </div>
 
         <Menu
-          className="Dashboard-Menu"
-          theme="light"
+          css={style.menu}
           items={[
             {
               key: menuItems.workspaces.key,
@@ -236,7 +238,7 @@ const Dashboard = () => {
               className: 'version',
               label: (
                 <Typography.Text
-                  className="text-light"
+                  css={globalStyle.textLight}
                   ellipsis={{ tooltip: true }}
                 >
                   version {packageJson.version}
@@ -253,7 +255,7 @@ const Dashboard = () => {
         />
       </Layout.Sider>
 
-      <Layout.Content className="no-scroll">
+      <Layout.Content css={globalStyle.noScroll}>
         {currentKey === menuItems.workspaces.key && (
           <WorkspacesList
             user={{ id: user.id }}

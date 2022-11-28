@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IClientPlugin } from '@/plugins/index.d'

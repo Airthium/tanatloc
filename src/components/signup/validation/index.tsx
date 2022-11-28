@@ -10,6 +10,9 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import LinkAPI from '@/api/link'
 
+import { globalStyle } from '@/styles'
+import style from '../index.style'
+
 /**
  * Errors
  */
@@ -51,8 +54,8 @@ const Validation = (): JSX.Element => {
    */
   return (
     <Layout>
-      <Card bordered={false} className="Signup">
-        <Space direction="vertical" className="full-width">
+      <Card bordered={false} css={style.signup}>
+        <Space direction="vertical" css={globalStyle.fullWidth}>
           <Typography.Text>
             <Spin /> Validating...
           </Typography.Text>

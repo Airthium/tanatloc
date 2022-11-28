@@ -12,6 +12,8 @@ import Utils from '@/lib/utils'
 import Add from './add'
 import Delete from './delete'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -190,9 +192,9 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
    */
   return (
     <div ref={refWrapper} style={{ height: 'calc(100vh - 228px)' }}>
-      <Space direction="vertical" className="full-width" size={20}>
+      <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
         <Card title="Administrators" size="small">
-          <Space direction="vertical" className="full-width" size={20}>
+          <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
             <Add
               title="New administrator"
               organization={{
@@ -229,7 +231,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
           </Space>
         </Card>
         <Card title="Users" size="small">
-          <Space direction="vertical" className="full-width" size={20}>
+          <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
             <Add
               title="New user"
               organization={{

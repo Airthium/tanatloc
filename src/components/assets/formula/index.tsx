@@ -2,17 +2,21 @@
 
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Space } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { css as Css, SerializedStyles } from '@emotion/react'
+
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
 import MathJax from '@/components/assets/mathjax'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
  */
 export interface IProps {
   label?: string
-  className?: string
+  css?: SerializedStyles
   defaultValue?: string | number
   defaultChecked?: boolean
   onValueChange: (value: string) => void
@@ -30,7 +34,7 @@ const saveDelay = 500
  * @param props Props
  * @description Props list:
  * - label (string) Label
- * - className (string) Class name
+ * - css (SerializedStyles) CSSinJS
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
@@ -39,7 +43,7 @@ const saveDelay = 500
  */
 const Formula = ({
   label,
-  className,
+  css,
   defaultValue,
   defaultChecked,
   onValueChange,
@@ -121,7 +125,13 @@ const Formula = ({
    * Render
    */
   return (
-    <Space className={'full-width space-full-width ' + className} align="start">
+    <Space
+      css={Css({
+        ...globalStyle.fullWidth,
+        ...(css || {})
+      })}
+      align="start"
+    >
       <Form layout="vertical">
         <Form.Item
           label={
@@ -142,12 +152,12 @@ const Formula = ({
             value={internalValue}
             onChange={onInputChange}
             addonAfter={
-              <Space className="full-width">
+              <Space css={globalStyle.fullWidth}>
                 <MathJax.Inline text={unit as string} />
                 {saving ? (
-                  <LoadingOutlined spin className="color-orange" />
+                  <LoadingOutlined spin css={globalStyle.textOrange} />
                 ) : (
-                  <CheckCircleOutlined className="color-green" />
+                  <CheckCircleOutlined css={globalStyle.textGreen} />
                 )}
               </Space>
             }

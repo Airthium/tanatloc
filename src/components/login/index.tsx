@@ -15,6 +15,9 @@ import UserAPI from '@/api/user'
 
 import PasswordRecover from './password'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 /**
  * Errors
  */
@@ -116,8 +119,8 @@ const Login = (): JSX.Element => {
   else
     return (
       <Layout>
-        <Card bordered={false} className="Login">
-          <Space direction="vertical" size="large" className="full-width">
+        <Card bordered={false} css={style.login}>
+          <Space direction="vertical" size="large" css={globalStyle.fullWidth}>
             <div>
               <Typography.Title
                 level={1}
@@ -165,7 +168,7 @@ const Login = (): JSX.Element => {
               </Form.Item>
               <PasswordRecover />
               <FormError error={formError} />
-              <Form.Item className="Login-submit">
+              <Form.Item css={style.submit}>
                 <Button type="primary" loading={loading} htmlType="submit">
                   Log in
                 </Button>

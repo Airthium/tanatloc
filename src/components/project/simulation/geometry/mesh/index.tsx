@@ -14,6 +14,8 @@ import {
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -192,11 +194,11 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
    */
   return (
     <Card size="small" title="Mesh refinement">
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Form layout="vertical">
           <Form.Item label="Type">
             <Select
-              className="full-width"
+              css={globalStyle.fullWidth}
               value={meshGlobalType}
               onChange={async (type) => {
                 try {
@@ -217,7 +219,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
           <Form layout="vertical">
             <Form.Item label="Size">
               <Select
-                className="full-width"
+                css={globalStyle.fullWidth}
                 value={meshGlobalValue}
                 onChange={onSize}
               >

@@ -8,6 +8,8 @@ import { setCursor } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
 
 /**
@@ -111,7 +113,7 @@ const FiniteElementFunction = (): JSX.Element => {
           </Form.Item>
         </Form.Item>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Finite element function
       </Button>
     </>

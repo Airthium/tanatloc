@@ -16,6 +16,8 @@ import {
   IFrontNewSimulation
 } from '@/api/index.d'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -89,7 +91,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   return (
     <Tooltip title="Copy simulation">
       <Button
-        className="no-border"
+        css={globalStyle.noBorder}
         loading={loading}
         icon={<CopyOutlined />}
         onClick={async () => {

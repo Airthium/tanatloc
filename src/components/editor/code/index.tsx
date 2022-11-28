@@ -2,6 +2,8 @@
 
 import dynamic from 'next/dynamic'
 
+import style from '../index.style'
+
 const FreeFEMCode = dynamic(
   () =>
     import('./freefem').catch((err) => {
@@ -37,7 +39,7 @@ const Code = (): JSX.Element => {
    * Render
    */
   return (
-    <div className="Editor-code">
+    <div css={style.code}>
       <FreeFEMCode />
       <JSONCode />
     </div>

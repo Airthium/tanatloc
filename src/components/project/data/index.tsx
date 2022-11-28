@@ -33,6 +33,8 @@ import Utils from '@/lib/utils'
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import style from './index.style'
+
 /**
  * Props
  */
@@ -197,8 +199,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
 
     const tableColumns: TableColumnsType<object> = names.map((name, index) => ({
       align: 'center',
-      className:
-        'Data-column' + (columnSelection[index] ? ' Data-column-selected' : ''),
+      className: 'column' + (columnSelection[index] ? ' selected' : ''),
       title: (
         <Space>
           {name}
@@ -283,28 +284,14 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   if (!simulation) return null
   if (!datas || !names || !camelNames) return null
   return (
-    <Layout
-      style={{
-        position: 'absolute',
-        zIndex: 100,
-        right: 50,
-        bottom: 25,
-        backgroundColor: 'rgba(255, 255, 255, 0)'
-      }}
-    >
+    <Layout css={style.data}>
       <Layout.Content>
         <Tooltip title="Data visualization">
           <Button
             type="primary"
             icon={<LineChartOutlined />}
             onClick={() => setVisible(true)}
-            style={{
-              width: 40,
-              height: 40,
-              border: '1px solid #5E14FA',
-              borderRadius: 20,
-              marginBottom: -20
-            }}
+            css={style.button}
           />
         </Tooltip>
 
@@ -374,22 +361,8 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
             </Dropdown.Button>
           }
         >
-          <div
-            style={{
-              display: 'flex',
-              height: '100%',
-              padding: '10px',
-              justifyContent: 'space-between'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                height: '100%',
-                width: '49%',
-                overflow: 'auto'
-              }}
-            >
+          <div css={style.container}>
+            <div css={style.tableContainer}>
               <Table
                 size="small"
                 sticky={true}

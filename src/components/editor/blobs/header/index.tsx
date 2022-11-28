@@ -1,12 +1,14 @@
 /** @module Components.Editor.Blobs.Header */
 
 import { Dispatch, useContext } from 'react'
+import { Button } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
-import { Button } from 'antd'
 
 /**
  * On add
@@ -44,7 +46,7 @@ const Header = (): JSX.Element => {
    */
   return (
     <Button
-      className="full-width"
+      css={globalStyle.fullWidth}
       onClick={() => onAdd(template, cursor, dispatch)}
     >
       Header

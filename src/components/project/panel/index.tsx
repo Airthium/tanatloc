@@ -3,6 +3,8 @@
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
+import style from './index.style'
+
 /**
  * Props
  */
@@ -24,7 +26,7 @@ const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
    */
   return (
     <Card
-      className="panel"
+      css={style.panel}
       bodyStyle={{
         maxHeight: 'calc(100vh - 65px)',
         overflow: 'auto',

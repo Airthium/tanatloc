@@ -27,7 +27,6 @@ export interface IProps {
   edit?: boolean
   style?: {}
   required?: boolean
-  className?: string
 }
 
 /**
@@ -168,8 +167,7 @@ const PasswordItem = ({
   inputAutoComplete,
   edit,
   style,
-  required,
-  className
+  required
 }: IProps): JSX.Element => {
   // Data
   const [system] = SystemAPI.useSystem()
@@ -182,7 +180,6 @@ const PasswordItem = ({
    */
   return (
     <Form.Item
-      className={className}
       labelCol={labelCol}
       wrapperCol={wrapperCol}
       name={name || 'password'}

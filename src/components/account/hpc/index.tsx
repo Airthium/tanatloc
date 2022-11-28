@@ -8,6 +8,9 @@ import { ErrorNotification } from '@/components/assets/notification'
 import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
+import { css } from '@emotion/react'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Errors
@@ -82,7 +85,11 @@ const HPC = (): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width scroll" size={20}>
+    <Space
+      direction="vertical"
+      css={css([globalStyle.fullWidth, globalStyle.scroll])}
+      size={20}
+    >
       {list}
     </Space>
   )

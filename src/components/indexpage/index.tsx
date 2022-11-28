@@ -10,38 +10,25 @@ import {
   Drawer,
   Layout,
   List,
-  Menu,
-  Popover,
   Space,
   Steps,
   Typography
 } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { BarsOutlined, BugOutlined, SettingOutlined } from '@ant-design/icons'
+import { BugOutlined, SettingOutlined } from '@ant-design/icons'
+import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
 import packageJson from '../../../package.json'
 
 import { login } from '@/api/login'
-import UserAPI from '@/api/user'
 
 import Side from '@/components/assets/side'
-import Footer from '@/components/footer'
+import Footer from './footer'
 
-/**
- * Scroll to view
- * @param id
- */
-const scrollToView = (id: string): void => {
-  const header = document.getElementById('header')
-  const target = document.getElementById(id)
+import { globalStyle, globalStyleFn, variables } from '@/styles'
+import style from './index.style'
 
-  const index = document.getElementById('index')
-  if (target && header) {
-    const y = target?.offsetTop - header?.offsetHeight - 10
-    index?.scrollTo?.({ top: y, behavior: 'smooth' })
-  }
-}
+import Menu, { scrollToView } from './menu'
 
 /**
  * Index
@@ -54,7 +41,6 @@ const Index = (): JSX.Element => {
 
   // Data
   const router = useRouter()
-  const [user, { loadingUser }] = UserAPI.useUser()
 
   // Electron
   useEffect(() => {
@@ -120,85 +106,11 @@ const Index = (): JSX.Element => {
     [router]
   )
 
-  // Get started button
-  let getStartedButton = null
-  if (!user)
-    getStartedButton = (
-      <Button className="Index-getstarted" type="primary" onClick={getStarted}>
-        Get Started
-      </Button>
-    )
-
-  // Login button
-  let loginButton = null
-  if (process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' && !loadingUser) {
-    if (user)
-      loginButton = (
-        <Button
-          type="primary"
-          className="Index-login-button"
-          onClick={() => router.push('/dashboard')}
-        >
-          Dashboard
-        </Button>
-      )
-    else
-      loginButton = (
-        <Button
-          className="Index-login-button"
-          onClick={() => router.push('/login')}
-        >
-          Login
-        </Button>
-      )
-  }
-
-  const menuItems = [
-    {
-      key: 'features',
-      label: (
-        <Button type="text" onClick={() => scrollToView('features')}>
-          Features
-        </Button>
-      )
-    },
-    {
-      key: 'caseStudy',
-      label: (
-        <Button type="text" onClick={() => scrollToView('caseStudy')}>
-          Case Studies
-        </Button>
-      )
-    },
-    {
-      key: 'aboutUs',
-      label: (
-        <Button type="text" onClick={() => scrollToView('aboutUs')}>
-          About us
-        </Button>
-      )
-    },
-    {
-      key: 'developers',
-      label: (
-        <Button
-          type="text"
-          onClick={() => window.open('https://github.com/Airthium', '_blank')}
-        >
-          Developers
-        </Button>
-      )
-    },
-    !user && { key: 'getStarted', label: getStartedButton },
-    process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage' &&
-      !loadingUser && { key: 'login', label: loginButton }
-  ].filter((m) => m) as ItemType[]
-
   /**
    * Render
    */
   return (
-    <Layout id="index" className="Index">
+    <Layout id="index" css={style.index}>
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"
@@ -323,36 +235,22 @@ const Index = (): JSX.Element => {
           </Collapse.Panel>
         </Collapse>
       </Drawer>
-      <Layout.Header id="header" className="Index-Header">
-        <img src="/images/logo.svg" alt="Tanatloc" />
-        <Menu mode="horizontal" className="Index-Menu" items={menuItems} />
-        <div className="Index-Menu-mobile">
-          <Popover
-            content={<Menu mode="inline" items={menuItems} />}
-            placement="leftBottom"
-          >
-            <BarsOutlined style={{ fontSize: 32 }} />
-          </Popover>
-        </div>
+      <Menu />
 
-        {getStartedButton}
-        {loginButton}
-      </Layout.Header>
-
-      <Layout.Content className="Index-Content">
-        <Space direction="vertical" size={90} className="full-width">
+      <Layout.Content css={style.content}>
+        <Space direction="vertical" size={90} css={globalStyle.fullWidth}>
           <Side
             left={
               <Space direction="vertical" size={20}>
                 <Typography.Title style={{ marginBottom: 0 }}>
                   Solve your toughest numerical simulation problems
                 </Typography.Title>
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   Tanatloc is a multi-physics FEA software for engineers and
                   researchers.
                 </Typography.Text>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   Use the provided models for the most common problems, make
                   your own, or partner with our experts to build one tailored to
                   your needs.
@@ -363,15 +261,8 @@ const Index = (): JSX.Element => {
                 </Button>
               </Space>
             }
-            right={
-              <img
-                src="images/indexpage/capture1.png"
-                alt="tanatloc"
-                className="img-shadow"
-              />
-            }
-            leftClassName="Index-padding-left-right-50"
-            className="margin-bottom-50"
+            right={<img src="images/indexpage/capture1.png" alt="tanatloc" />}
+            leftCss={css([style.solveLeft, globalStyleFn.marginBottom(50)])}
           />
 
           <Side
@@ -420,19 +311,19 @@ const Index = (): JSX.Element => {
                 </Checkbox>
               </>
             }
-            className="background-primary "
-            rightClassName="Index-models Index-padding-50"
-            leftClassName="Index-padding-50"
+            sideCss={css({ backgroundColor: variables.colorPrimary })}
+            rightCss={css([style.models, style.indexPadding])}
+            leftCss={style.indexPadding}
             id="features"
           />
 
           <div id="developers">
-            <div className="Index-padding-50">
+            <div css={style.indexPadding}>
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
               </Typography.Title>
-              <div className="Index-plugins">
+              <div css={style.indexPlugins}>
                 <div>
                   <Avatar
                     size={64}
@@ -440,7 +331,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-rescale.svg"
                   />
                   <Typography.Title level={4}>Rescale</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                   <a href="mailto:contact@airthium.com">
@@ -454,7 +345,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-ancl.jpg"
                   />
                   <Typography.Title level={4}>ANCL Sharetask</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                   <a href="mailto:contact@airthium.com">
@@ -468,7 +359,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-slurm.svg"
                   />
                   <Typography.Title level={4}>Slurm</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Upcoming
                   </Typography.Text>
                 </div>
@@ -479,14 +370,14 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-qarnot.svg"
                   />
                   <Typography.Title level={4}>Qarnot HPC</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Upcoming
                   </Typography.Text>
                 </div>
                 <div>
                   <Avatar size={64} shape="square" icon={<SettingOutlined />} />
                   <Typography.Title level={4}>Your own plugin</Typography.Title>
-                  <Typography.Text className="text-light">
+                  <Typography.Text css={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                 </div>
@@ -494,7 +385,7 @@ const Index = (): JSX.Element => {
             </div>
           </div>
 
-          <div id="electron">
+          <div id="electron" css={style.electron}>
             <Typography.Title level={2}>
               Tanatloc is an FEA software based on FreeFEM, an extremely
               powerful and versatile open-source PDE solver. It runs locally
@@ -503,7 +394,7 @@ const Index = (): JSX.Element => {
             <img
               src="images/indexpage/capture2.png"
               alt="tanatloc"
-              className="img-shadow text-center"
+              css={css([style.imgShadow, globalStyle.textAlignCenter])}
             />
           </div>
 
@@ -514,25 +405,25 @@ const Index = (): JSX.Element => {
                   <Typography.Title level={2}>Case Study</Typography.Title>
                   <Typography.Title
                     level={3}
-                    className="text-light"
+                    css={globalStyle.textLight}
                     style={{ marginBottom: 0 }}
                   >
                     DENSO
                   </Typography.Title>
                 </div>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   DENSO is a leading Japanese automotive and Fortune 500
                   company.
                 </Typography.Text>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   Hiroshi Ogawa, at DENSO’s Heat Exchanger R&D Division,
                   implemented a custom FreeFEM model on TANATLOC with the help
                   of Professor Atsushi Suzuki from Osaka University.
                 </Typography.Text>
 
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   DENSO’s Solder Filling model was added to TANATLOC, and the
                   calculations are deployed seamlessly on the cloud or on
                   on-premise server via the ANCL Sharetask plug-in.
@@ -543,19 +434,27 @@ const Index = (): JSX.Element => {
               <img
                 src="images/indexpage/denso.jpg"
                 alt="tanatloc"
-                className="Index-case-study Index-padding-50"
+                css={style.indexPadding}
               />
             }
-            className="Index-casestudy margin-top-bottom-50"
-            leftClassName="Index-casestudy-left Index-padding-50 full-width"
-            rightClassName="Index-casestudy-right"
+            sideCss={css([
+              style.caseStudy,
+              globalStyleFn.marginTop(50),
+              globalStyleFn.marginBottom(50)
+            ])}
+            leftCss={css([
+              style.caseStudyLeft,
+              globalStyle.fullWidth,
+              style.indexPadding
+            ])}
+            rightCss={style.caseStudyRight}
             id="caseStudy"
           />
 
-          <div id="getStarted" className="margin-bottom-50">
+          <div id="getStarted" css={globalStyleFn.marginBottom(50)}>
             <Typography.Title level={2}>Get started</Typography.Title>
             <br />
-            <Steps direction="vertical" className="Index-steps">
+            <Steps direction="vertical" css={style.steps}>
               <Steps.Step
                 title="Install Docker Desktop"
                 description={
@@ -600,6 +499,7 @@ const Index = (): JSX.Element => {
               />
               <Steps.Step
                 title="Download the latest app"
+                css={style.indexSteps}
                 description={
                   <>
                     <Typography>
@@ -653,7 +553,7 @@ const Index = (): JSX.Element => {
             }
             right={
               <Space direction="vertical" size={20}>
-                <Typography.Text className="Index-text">
+                <Typography.Text>
                   TANATLOC is maintained by Airthium, a US/France based deeptech
                   startup. We build a very robust and highly efficient electric
                   heat engine to decarbonise the planet.
@@ -682,19 +582,21 @@ const Index = (): JSX.Element => {
                       rel="noreferrer"
                     >
                       <Button size="large">
-                        <strong>Invest in our crowdfounding</strong>
+                        <strong>Invest in our crowdfunding</strong>
                       </Button>
                     </a>
                   </>
                 }
-                className="background-primary"
-                leftClassName="Index-about-turbine"
-                rightClassName="Index-padding-50 Index-crowdfunding"
+                sideCss={css({
+                  backgroundColor: variables.colorPrimary
+                })}
+                leftCss={style.turbine}
+                rightCss={css([style.indexPadding, style.crowdfunding])}
               />
             }
-            className="Index-about"
-            leftClassName="Index-padding-50"
-            rightClassName="Index-padding-50"
+            sideCss={style.about}
+            leftCss={style.indexPadding}
+            rightCss={style.indexPadding}
             id="aboutUs"
           />
         </Space>

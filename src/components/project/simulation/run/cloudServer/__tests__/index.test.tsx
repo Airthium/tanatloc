@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import CloudServer from '@/components/project/simulation/run/cloudServer'

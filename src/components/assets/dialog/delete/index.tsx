@@ -49,7 +49,6 @@ const DeleteDialog = ({
    */
   return (
     <Modal
-      className="Dialog"
       title={
         <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
       }

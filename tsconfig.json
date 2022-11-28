@@ -20,6 +20,7 @@
     "noUnusedParameters": true,
     "removeComments": false,
     "preserveConstEnums": true,
+    "jsxImportSource": "@emotion/react",
     "sourceMap": true,
     "paths": {
       "@/config": ["config"],

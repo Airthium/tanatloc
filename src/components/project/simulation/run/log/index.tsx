@@ -18,6 +18,8 @@ import { ErrorNotification } from '@/components/assets/notification'
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import style from '../../index.style'
+
 /**
  * Props
  */
@@ -126,7 +128,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                   {step.warning && (
                     <Collapse.Panel
                       key="warnings"
-                      className="warning-collapse"
+                      css={style.warning}
                       header={
                         <Typography.Text type="warning">
                           Warnings
@@ -143,7 +145,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                   {step.error && (
                     <Collapse.Panel
                       key="errors"
-                      className="error-collapse"
+                      css={style.error}
                       header={
                         <Typography.Text type="danger">Errors</Typography.Text>
                       }

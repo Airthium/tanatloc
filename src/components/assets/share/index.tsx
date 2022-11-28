@@ -11,6 +11,7 @@ import {
   Typography
 } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
+import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
 import { LinkButton } from '../button'
@@ -28,6 +29,8 @@ import {
 } from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 import WorkspaceAPI from '@/api/workspace'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -266,7 +269,7 @@ const Share = ({
             showCheckedStrategy={TreeSelect.SHOW_ALL}
             placeholder="Select groups"
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            className="full-width"
+            css={globalStyle.fullWidth}
             treeData={treeGroupsData}
             value={groupsSelected}
             onChange={(value) => setGroupsSelected(value)}
@@ -287,7 +290,7 @@ const Share = ({
             showCheckedStrategy={TreeSelect.SHOW_ALL}
             placeholder="Select users"
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            className="full-width"
+            css={globalStyle.fullWidth}
             treeData={treeUsersData}
             value={usersSelected}
             onChange={(value) => setUsersSelected(value)}
@@ -327,13 +330,13 @@ const Share = ({
     <>
       <Tooltip title="Share">
         <Button
-          className={
-            'no-background ' +
-            (style?.buttonLight ? 'text-light ' : '') +
-            (style?.buttonDark ? ' text-dark ' : '') +
-            (style?.buttonBordered ? ' ' : 'no-border ') +
-            (isElectron() ? 'display-none ' : ' ')
-          }
+          css={css([
+            globalStyle.noBackground,
+            style?.buttonLight ? globalStyle.textLight : {},
+            style?.buttonDark ? globalStyle.textDark : {},
+            style?.buttonBordered ? '' : globalStyle.noBorder,
+            isElectron() ? globalStyle.displayNone : ''
+          ])}
           key="share"
           disabled={disabled}
           type={disabled ? 'link' : undefined}

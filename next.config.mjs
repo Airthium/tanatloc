@@ -1,12 +1,8 @@
-import withAntdLess from 'next-plugin-antd-less'
-
 import Sentry from './config/sentry.js'
 
 const basePath = ''
 
-const nextConfig = withAntdLess({
-  lessVarsFilePath: './src/styles/global.less',
-  lessVarsFilePathAppendToEndOfContent: true,
+const nextConfig = {
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
       config.resolve.alias['@sentry/node'] = '@sentry/browser'
@@ -31,10 +27,10 @@ const nextConfig = withAntdLess({
   env: {
     SENTRY_DSN: Sentry.DSN
   },
-  basePath,
-  typescript: {
-    ignoreBuildErrors: true
-  }
-})
+  compiler: {
+    emotion: true
+  },
+  basePath
+}
 
 export default nextConfig

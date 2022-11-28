@@ -11,6 +11,8 @@ import { setCursor, setModel } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
 
 /**
@@ -269,7 +271,7 @@ const Save = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Save
       </Button>
     </>

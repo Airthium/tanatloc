@@ -4,6 +4,9 @@ import { useRouter } from 'next/router'
 import { Button, Card, Modal, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 import NoManipBrowser from './fixInfos/noManipBrowser'
 import FirefoxWindows from './fixInfos/firefoxWindows'
 import FirefoxMac from './fixInfos/firefoxMac'
@@ -29,13 +32,13 @@ const WebGLError = (): JSX.Element => {
    */
   return (
     <Layout>
-      <Layout.Header className="Index-header">
-        <div className="logo">
+      <Layout.Header css={style.header}>
+        <div css={globalStyle.logo}>
           <img src="/images/logo.svg" alt="Tanatloc" />
         </div>
       </Layout.Header>
       <Layout.Content style={{ padding: '0 20px' }}>
-        <Space direction="vertical" size={20} className="full-width">
+        <Space direction="vertical" size={20} css={globalStyle.fullWidth}>
           <Card title="WebGL Error">
             <Space direction="vertical">
               <Typography.Text>
@@ -49,7 +52,7 @@ const WebGLError = (): JSX.Element => {
             </Space>
           </Card>
           <Card title="How to enable WebGL">
-            <Space className="webgl-Space">
+            <Space css={style.content}>
               <Card title="Windows">
                 <ul>
                   <li>

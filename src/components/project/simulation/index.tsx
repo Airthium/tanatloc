@@ -24,6 +24,9 @@ import {
 import SimulationAPI from '@/api/simulation'
 import PluginsAPI from '@/api/plugins'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 import About from './about'
 import Geometry from './geometry'
 import Materials from './materials'
@@ -161,7 +164,7 @@ const Selector = ({
       disabled: true,
       label: (
         <Select
-          className="full-width"
+          css={globalStyle.fullWidth}
           options={categories}
           allowClear
           showArrow={false}
@@ -182,7 +185,7 @@ const Selector = ({
       disabled: true,
       label: (
         <Select
-          className="full-width"
+          css={globalStyle.fullWidth}
           options={categories}
           allowClear
           showArrow={false}
@@ -247,7 +250,7 @@ const Selector = ({
             ]}
           />
         </Layout.Sider>
-        <Layout.Content className="simulation-selector">
+        <Layout.Content css={style.selector}>
           <MathJax.Html html={current?.description} />
         </Layout.Content>
       </Layout>

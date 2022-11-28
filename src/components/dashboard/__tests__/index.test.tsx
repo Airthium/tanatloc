@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import Dashboard from '@/components/dashboard'
@@ -247,9 +246,6 @@ describe('components/dashboard', () => {
   })
 
   test('onSelect (error + empty)', () => {
-    mockPush.mockImplementation(() => {
-      throw new Error()
-    })
     const { unmount } = render(<Dashboard />)
 
     const items = screen.getAllByRole('menuitem')

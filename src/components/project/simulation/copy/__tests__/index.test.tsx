@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'

@@ -2,6 +2,7 @@
 
 import { useCallback, useContext, useState } from 'react'
 import { Card, Typography } from 'antd'
+import { css } from '@emotion/react'
 
 import { IModelSensor } from '@/models/index.d'
 import {
@@ -13,6 +14,9 @@ import { SelectContext } from '@/context/select'
 import { disable, enable, setPoint } from '@/context/select/actions'
 
 import { EditButton } from '@/components/assets/button'
+
+import { globalStyle } from '@/styles'
+import style from '../../../index.style'
 
 import Delete from '../delete'
 
@@ -62,7 +66,7 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
     <>
       {run.sensors?.map((sensor, index) => (
         <Card
-          className="sensor-item text-center"
+          css={css([globalStyle.textAlignCenter, style.listItem])}
           key={index}
           hoverable
           onMouseEnter={() => highlight(sensor)}
@@ -84,7 +88,7 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
             />
           ]}
         >
-          <Typography.Text strong className="text-center">
+          <Typography.Text strong css={globalStyle.textAlignCenter}>
             {sensor.name}
           </Typography.Text>
         </Card>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit, { errors } from '@/components/project/simulation/materials/edit'

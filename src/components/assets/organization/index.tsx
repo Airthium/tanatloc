@@ -15,6 +15,8 @@ import OrganizationAPI from '@/api/organization'
 import Users from './users'
 import Groups from './groups'
 
+import { globalStyle, globalStyleFn } from '@/styles'
+
 /**
  * Props
  */
@@ -82,9 +84,9 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
    */
   return (
     <>
-      <div className="display-flex">
+      <div css={globalStyle.displayFlex}>
         <Button
-          className="marginRight-20"
+          css={globalStyleFn.marginRight(20)}
           icon={<ArrowLeftOutlined />}
           onClick={() => onClose()}
         />

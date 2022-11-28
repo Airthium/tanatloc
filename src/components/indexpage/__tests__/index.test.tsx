@@ -9,18 +9,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
-const mockIsElectron = jest.fn()
-jest.mock('is-electron', () => () => mockIsElectron())
-
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => ({
   login: async () => mockLogin()
-}))
-
-const mockUser = jest.fn()
-const mockLoadingUser = jest.fn()
-jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser(), { loadingUser: mockLoadingUser() }]
 }))
 
 jest.mock('@/components/assets/side', () => (props: any) => (
@@ -29,37 +20,14 @@ jest.mock('@/components/assets/side', () => (props: any) => (
     {props.right}
   </div>
 ))
-jest.mock('@/components/footer', () => () => <div />)
-
-jest.mock('antd', () => {
-  const antd = jest.requireActual('antd')
-
-  const Modal = {
-    confirm: (params: any) => {
-      params.onOk()
-    }
-  }
-
-  return {
-    ...antd,
-    Modal
-  }
-})
+jest.mock('../footer', () => () => <div />)
 
 describe('components/indexpage', () => {
   beforeEach(() => {
     mockPush.mockReset()
-
-    mockIsElectron.mockReset()
-    mockIsElectron.mockImplementation(() => false)
-
-    mockUser.mockReset()
-    mockUser.mockImplementation(() => ({}))
-    mockLoadingUser.mockReset()
-    mockLoadingUser.mockImplementation(() => false)
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<Index />)
 
     unmount()
@@ -76,35 +44,25 @@ describe('components/indexpage', () => {
     unmount()
   })
 
-  test('no user', () => {
-    mockUser.mockImplementation(() => undefined)
-    const { unmount } = render(<Index />)
-
-    const buttons = screen.getAllByRole('button')
-    buttons.forEach((button) => fireEvent.click(button))
-
-    expect(mockPush).toHaveBeenCalledTimes(8)
-
-    unmount()
-  })
-
-  test('electron', async () => {
-    mockIsElectron.mockImplementation(() => true)
-    const { unmount } = render(<Index />)
-
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
-
-    unmount()
-  })
-
-  test('server mode', () => {
-    mockUser.mockImplementation(() => undefined)
+  test('frontpage', () => {
     process.env.NEXT_PUBLIC_SERVER_MODE = 'frontpage'
     const { unmount } = render(<Index />)
 
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
+
+    expect(mockPush).toHaveBeenCalledTimes(3)
+
+    unmount()
+  })
+
+  test('electron', async () => {
+    //@ts-ignore
+    window.process.type = 'renderer'
+    const { unmount } = render(<Index />)
+
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })

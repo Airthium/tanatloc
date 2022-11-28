@@ -7,7 +7,7 @@ jest.mock('@/lib/utils', () => ({
   getGitVersion: () => mockGitVersion()
 }))
 
-describe('components/footer', () => {
+describe('components/indexpage/footer', () => {
   const scroll = jest.fn()
 
   beforeEach(() => {

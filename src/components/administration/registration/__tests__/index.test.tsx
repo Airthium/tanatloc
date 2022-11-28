@@ -111,7 +111,7 @@ describe('components/administration/registration', () => {
     fireEvent.change(min, { target: { value: 8 } })
     fireEvent.change(max, { target: { value: 16 } })
 
-    const button = screen.getByRole('button', { name: 'check' })
+    const button = screen.getByRole('button', { name: 'check Save changes' })
 
     // Normal
     fireEvent.click(button)

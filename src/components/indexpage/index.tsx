@@ -454,94 +454,100 @@ const Index = (): JSX.Element => {
           <div id="getStarted" css={globalStyleFn.marginBottom(50)}>
             <Typography.Title level={2}>Get started</Typography.Title>
             <br />
-            <Steps direction="vertical" css={style.steps}>
-              <Steps.Step
-                title="Install Docker Desktop"
-                description={
-                  <>
-                    <Typography>
-                      Follow the Docker installation instruction at{' '}
-                      <a
-                        href="https://docs.docker.com/get-docker/"
-                        target="_blank"
-                        rel="noreferrer"
+            <Steps
+              direction="vertical"
+              css={style.steps}
+              items={[
+                {
+                  title: 'Install Docker Desktop',
+                  description: (
+                    <>
+                      <Typography>
+                        Follow the Docker installation instruction at{' '}
+                        <a
+                          href="https://docs.docker.com/get-docker/"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          docs.docker.com/get-docker
+                        </a>{' '}
+                        and reboot your computer.
+                      </Typography>
+                      <Typography>
+                        Start Docker Desktop and make sure{' '}
+                        <Button
+                          size="small"
+                          onClick={() => setDockerOpen(true)}
+                        >
+                          everything is working
+                        </Button>
+                        .
+                      </Typography>
+                    </>
+                  ),
+                  status: 'process'
+                },
+                {
+                  title: 'Disk space',
+                  description: (
+                    <>
+                      <Typography>
+                        Make sure you have at least 10GB of free disk space.
+                      </Typography>
+                      <Typography>
+                        This space is used for the installation only, make sure
+                        you have enough space to store the upcoming simulations
+                        results
+                      </Typography>
+                    </>
+                  ),
+                  status: 'process'
+                },
+                {
+                  title: 'Download the latest app',
+                  description: (
+                    <>
+                      <Typography>
+                        Download the latest app for Linux, MacOS or Windows.
+                      </Typography>
+                      <Button
+                        type="primary"
+                        className="download"
+                        onClick={() => onDownload('Windows')}
                       >
-                        docs.docker.com/get-docker
-                      </a>{' '}
-                      and reboot your computer.
-                    </Typography>
-                    <Typography>
-                      Start Docker Desktop and make sure{' '}
-                      <Button size="small" onClick={() => setDockerOpen(true)}>
-                        everything is working
+                        <img src="/images/indexpage/windows.svg" alt="" />
+                        Windows
                       </Button>
-                      .
-                    </Typography>
-                  </>
+                      <Button
+                        type="primary"
+                        className="download"
+                        onClick={() => onDownload('MacOS')}
+                      >
+                        <img src="/images/indexpage/MacOS.svg" alt="" />
+                        MacOS
+                      </Button>
+                      <Button
+                        type="primary"
+                        className="download"
+                        onClick={() => onDownload('Linux')}
+                      >
+                        <img src="/images/indexpage/Linux.svg" alt="" />
+                        Linux
+                      </Button>
+                      <br />
+                      <Button
+                        size="small"
+                        icon={<BugOutlined />}
+                        onClick={() => setTroubleshootingOpen(true)}
+                      >
+                        Troubleshooting
+                      </Button>
+                    </>
+                  ),
+                  status: 'process'
                 }
-                status="process"
-              />
-              <Steps.Step
-                title="Disk space"
-                description={
-                  <>
-                    <Typography>
-                      Make sure you have at least 10GB of free disk space.
-                    </Typography>
-                    <Typography>
-                      This space is used for the installation only, make sure
-                      you have enough space to store the upcoming simulations
-                      results
-                    </Typography>
-                  </>
-                }
-                status="process"
-              />
-              <Steps.Step
-                title="Download the latest app"
-                css={style.indexSteps}
-                description={
-                  <>
-                    <Typography>
-                      Download the latest app for Linux, MacOS or Windows.
-                    </Typography>
-                    <Button
-                      type="primary"
-                      className="download"
-                      onClick={() => onDownload('Windows')}
-                    >
-                      <img src="/images/indexpage/windows.svg" alt="" />
-                      Windows
-                    </Button>
-                    <Button
-                      type="primary"
-                      className="download"
-                      onClick={() => onDownload('MacOS')}
-                    >
-                      <img src="/images/indexpage/MacOS.svg" alt="" />
-                      MacOS
-                    </Button>
-                    <Button
-                      type="primary"
-                      className="download"
-                      onClick={() => onDownload('Linux')}
-                    >
-                      <img src="/images/indexpage/Linux.svg" alt="" />
-                      Linux
-                    </Button>
-                    <br />
-                    <Button
-                      size="small"
-                      icon={<BugOutlined />}
-                      onClick={() => setTroubleshootingOpen(true)}
-                    >
-                      Troubleshooting
-                    </Button>
-                  </>
-                }
-                status="process"
-              />
-            </Steps>
+              ]}
+            />
           </div>
 
           <Side

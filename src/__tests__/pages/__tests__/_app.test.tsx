@@ -6,7 +6,8 @@ jest.mock('@/components/assets/mathjax', () => ({
   Head: () => <></>
 }))
 
-jest.mock('@/styles/global.less', () => '')
+jest.mock('@/styles/index.css', () => '')
+jest.mock('@/styles/fonts.css', () => '')
 
 describe('pages/_app', () => {
   test('render', () => {

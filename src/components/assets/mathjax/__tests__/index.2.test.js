@@ -2,12 +2,15 @@ import { render, screen } from '@testing-library/react'
 
 import MathJax from '..'
 
-jest.mock('react', () => {
-  return {
-    ...jest.requireActual('react'),
-    useRef: () => jest.fn()
-  }
-})
+// jest.mock('react', () => {
+//   const originalModule = jest.requireActual < typeof import('react') > 'react'
+
+//   return {
+//     __esModule: true,
+//     ...originalModule,
+//     useRef: originalModule.useRef
+//   }
+// })
 
 jest.mock('@/lib/mathjax', () => ({
   mathjaxInit: jest.fn,

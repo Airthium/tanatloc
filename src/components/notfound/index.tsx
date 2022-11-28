@@ -4,8 +4,9 @@ import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
 import Side from '@/components/assets/side'
-import Menu, { scrollToView } from '@/components/indexpage/menu'
-import Footer from '@/components/indexpage/footer'
+import Menu from '@/components/indexpage/menu'
+
+import style from '@/components/indexpage/index.style'
 
 /**
  * 404
@@ -19,7 +20,7 @@ const NotFound = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="Index">
+    <Layout css={style.index}>
       <Menu />
       <Layout.Content>
         <Side

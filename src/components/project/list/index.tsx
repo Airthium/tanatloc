@@ -31,6 +31,10 @@ import {
 
 import Utils from '@/lib/utils'
 
+import { globalStyle, globalStyleFn } from '@/styles'
+import style from './index.style'
+import { css } from '@emotion/react'
+
 /**
  * Props
  */
@@ -157,7 +161,10 @@ const ProjectList = ({
 
         // Description
         const description = (
-          <Space direction="vertical" className="full-width text-left">
+          <Space
+            direction="vertical"
+            css={css([globalStyle.fullWidth, globalStyle.textAlignLeft])}
+          >
             <Typography.Text>
               <b>Created:</b>{' '}
               {new Date(project.createddate).toLocaleDateString()}
@@ -233,12 +240,12 @@ const ProjectList = ({
     return (
       <Empty
         image="images/empty.svg"
-        className="Project-Empty"
+        css={style.empty}
         description={
           filter ? (
             <>
               No project found with the current search{' '}
-              <span className="Project-Empty-search-value">{filter}</span>...
+              <span css={style.emptySearch}>{filter}</span>...
             </>
           ) : (
             <>No project for now... Get started!</>
@@ -249,7 +256,12 @@ const ProjectList = ({
   else
     return (
       <div ref={containerRef} style={{ height: height }}>
-        <Space className="marginBottom-20" wrap={true} align="start" size={20}>
+        <Space
+          css={globalStyleFn.marginBottom(20)}
+          wrap={true}
+          align="start"
+          size={20}
+        >
           {list.map((project) => {
             return (
               <Card
@@ -262,19 +274,17 @@ const ProjectList = ({
                     {project.archived && <Tag>Archived</Tag>}
                   </>
                 }
-                className={
-                  'Project-Card' + (project.archived ? ' archive' : '')
-                }
+                css={css([
+                  style.card,
+                  project.archived ? style.cardArchived : {}
+                ])}
                 cover={
-                  <Carousel
-                    className="Project-Carousel"
-                    dots={{ className: 'Project-Carousel-dots' }}
-                  >
+                  <Carousel css={style.carousel} dots={{ className: 'dots' }}>
                     <div
-                      className={
-                        'Project-Carousel-snapshot' +
-                        (project.archived ? ' archive' : '')
-                      }
+                      css={css([
+                        style.carouselSnapshot,
+                        project.archived ? style.carouselSnapshotArchived : {}
+                      ])}
                       onClick={() =>
                         !project.archived && openProject({ id: project.id })
                       }
@@ -282,10 +292,12 @@ const ProjectList = ({
                       {project.snapshotRender}
                     </div>
                     <div
-                      className={
-                        'Project-Carousel-description' +
-                        (project.archived ? ' archive' : '')
-                      }
+                      css={css([
+                        style.carouselDescription,
+                        project.archived
+                          ? style.carouselDescriptionArchived
+                          : {}
+                      ])}
                       onClick={() =>
                         !project.archived && openProject({ id: project.id })
                       }

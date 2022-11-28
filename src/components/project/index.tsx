@@ -18,6 +18,7 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined
 } from '@ant-design/icons'
+import { css } from '@emotion/react'
 
 import { IModel } from '@/models/index.d'
 
@@ -41,6 +42,9 @@ import UserAPI from '@/api/user'
 import ProjectAPI from '@/api/project'
 import SimulationAPI from '@/api/simulation'
 import GeometryAPI from '@/api/geometry'
+
+import { globalStyle } from '@/styles'
+import style from './index.style'
 
 import Panel from './panel'
 import Geometry from './geometry'
@@ -755,14 +759,13 @@ const Project = (): JSX.Element => {
             child.done = null
           }
 
-          categories[child.index] = {
-            key: s.id + '&' + key,
-            className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
-            disabled: !loadedGeometries.length,
-            icon: icon,
-            label: child.title
-          }
-        })
+      categories[child.index] = {
+        key: s.id + '&' + key,
+        disabled: !geometries.length,
+        icon: icon,
+        label: child.title
+      }
+    })
 
         let label = s.name
         if (s.scheme.user)
@@ -783,25 +786,22 @@ const Project = (): JSX.Element => {
             </>
           )
 
-        return {
-          key: s.id,
-          className: 'Project-Menu-SubMenu-Simulations-SubMenu',
-          icon: <CodeSandboxOutlined />,
-          label: label,
-          children: [
-            {
-              key: s.id + '&about',
-              className: 'Project-Menu-SubMenu-Simulations-SubMenu-MenuItem',
-              disabled: !loadedGeometries.length,
-              icon: <CheckCircleOutlined style={{ color: 'green' }} />,
-              label: 'About'
-            },
-            ...categories
-          ]
-        }
-      }),
-    [loadingGeometries, loadedGeometries, loadedSimulations]
-  )
+    return {
+      key: s.id,
+
+      icon: <CodeSandboxOutlined />,
+      label: label,
+      children: [
+        {
+          key: s.id + '&about',
+          disabled: !geometries.length,
+          icon: <CheckCircleOutlined style={{ color: 'green' }} />,
+          label: 'About'
+        },
+        ...categories
+      ]
+    }
+  })
 
   /**
    * Render
@@ -811,20 +811,21 @@ const Project = (): JSX.Element => {
   return (
     <SelectProvider>
       <Layout hasSider={true}>
-        <Layout.Sider theme="light" className="Project-Sider" width={256}>
-          <div className="logo">
+        <Layout.Sider theme="light" css={style.sider} width={256}>
+          <div css={globalStyle.logo}>
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
           <Menu
+            css={style.menu1}
             mode="inline"
             items={[
               {
                 key: 'menu-go-back',
                 disabled: true,
-                className: 'Project-Menu-GoBack',
                 style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
                 label: (
                   <GoBack
+                    buttonCss={globalStyle.fullWidth}
                     onClick={() => handleDashboard(router, page, workspaceId)}
                   >
                     Return to dashboard
@@ -832,13 +833,12 @@ const Project = (): JSX.Element => {
                 )
               },
               {
-                type: 'divider',
-                className: 'Project-Menu-Divider'
+                type: 'divider'
               },
               {
                 key: 'title',
                 disabled: true,
-                className: 'Project-Menu-Title',
+                className: 'Menu-title',
                 label: (
                   <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
                     {project.title}
@@ -847,10 +847,10 @@ const Project = (): JSX.Element => {
               }
             ]}
           />
-          <div className="Project-Menu-scroll">
+          <div css={style.menuScroll}>
             <Menu
-              className="Project-Menu"
               mode="inline"
+              css={style.menu2}
               defaultOpenKeys={[
                 menuItems.geometries.key,
                 menuItems.simulations.key
@@ -858,7 +858,7 @@ const Project = (): JSX.Element => {
               items={[
                 {
                   key: menuItems.geometries.key,
-                  className: 'Project-Menu-SubMenu-Geometries',
+                  className: 'SubMenu',
                   icon: loadingGeometries ? (
                     <LoadingOutlined />
                   ) : (
@@ -872,7 +872,6 @@ const Project = (): JSX.Element => {
                   children: [
                     {
                       key: 'new_geometry',
-                      className: 'Project-Menu-SubMenu-Geometries-New',
                       disabled: true,
                       label: (
                         <Button
@@ -885,9 +884,6 @@ const Project = (): JSX.Element => {
                     },
                     {
                       key: 'geometry-needed',
-                      className:
-                        'text-dark ' +
-                        (loadedGeometries.length ? 'display-none' : ''),
                       disabled: true,
                       icon: (
                         <ExclamationCircleOutlined style={{ color: 'red' }} />
@@ -899,7 +895,7 @@ const Project = (): JSX.Element => {
                 },
                 {
                   key: menuItems.simulations.key,
-                  className: 'Project-Menu-SubMenu-Simulations',
+                  className: 'SubMenu',
                   icon: loadingSimulations ? (
                     <LoadingOutlined />
                   ) : (
@@ -913,7 +909,6 @@ const Project = (): JSX.Element => {
                   children: [
                     {
                       key: 'new_simulation',
-                      className: 'Project-Menu-SubMenu-Simulations-New',
                       disabled: true,
                       label: (
                         <Button
@@ -933,7 +928,9 @@ const Project = (): JSX.Element => {
             />
           </div>
         </Layout.Sider>
-        <Layout.Content className="no-scroll relative">
+        <Layout.Content
+          css={css([globalStyle.noScroll, { position: 'relative' }])}
+        >
           <Geometry.Add
             visible={geometryAddVisible}
             project={{

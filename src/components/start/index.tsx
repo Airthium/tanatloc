@@ -3,6 +3,8 @@
 import { Typography } from 'antd'
 import { useRouter } from 'next/router'
 
+import { globalStyleFn } from '@/styles'
+
 import Loading from '../loading'
 
 /**
@@ -21,7 +23,7 @@ const Start = () => {
     <>
       <Loading
         text={
-          <Typography.Title level={3} className="no-margin">
+          <Typography.Title level={3} css={globalStyleFn.margin(0)}>
             Tanatloc is starting, please wait...
           </Typography.Title>
         }

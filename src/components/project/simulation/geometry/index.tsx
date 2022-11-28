@@ -14,6 +14,8 @@ import {
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import style from '../index.style'
+
 import Mesh from './mesh'
 
 /**
@@ -195,7 +197,7 @@ const Geometry = ({
   // List
   const list = (
     <Select
-      className="Geometry-list"
+      css={style.geometriesList}
       mode={multiple ? 'multiple' : undefined}
       options={loadedGeometries.map((geometry) => ({
         value: geometry.id,
@@ -219,7 +221,7 @@ const Geometry = ({
               swr
             )
       }}
-    ></Select>
+    />
   )
 
   /**

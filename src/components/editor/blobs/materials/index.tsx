@@ -13,6 +13,8 @@ import { availableSymbols } from '@/config/materials'
 
 import Dialog from '@/components/assets/dialog'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
 
 /**
@@ -178,7 +180,7 @@ const Materials = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Materials
       </Button>
     </>

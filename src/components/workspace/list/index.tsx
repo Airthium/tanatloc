@@ -2,21 +2,13 @@
 
 import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
-import {
-  Divider,
-  Empty,
-  Form,
-  Input,
-  Layout,
-  PageHeader,
-  Tabs,
-  Typography
-} from 'antd'
+import { Empty, Form, Input, Layout, Tabs, Typography } from 'antd'
 
 import { LIMIT } from '@/config/string'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
+import PageHeader from '@/components/assets/pageHeader'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -30,6 +22,10 @@ import WorkspaceAPI from '@/api/workspace'
 import Workspace from '..'
 import Add from '../add'
 import { menuItems } from '@/components/dashboard'
+
+import dashboardStyle from '@/components/dashboard/index.style'
+import { css } from '@emotion/react'
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -110,18 +106,18 @@ const WorkspacesList = ({
    * Render
    */
   return (
-    <Layout className="inDashboard Workspace no-scroll">
+    <Layout css={css([dashboardStyle.inDashboard, globalStyle.noScroll])}>
       <PageHeader
-        className="inDashboard-PageHeader"
-        backIcon={false}
         title={
-          <Typography.Title level={2} className="inDashboard-PageHeader-title">
+          <Typography.Title
+            level={2}
+            css={css({ marginBottom: '0 !important' })}
+          >
             Workspaces
           </Typography.Title>
         }
-        footer={<Divider />}
       />
-      <Layout.Content className="no-scroll">
+      <Layout.Content css={globalStyle.noScroll}>
         {workspaces.length ? (
           <>
             <Dialog
@@ -159,11 +155,11 @@ const WorkspacesList = ({
             </Dialog>
             <Tabs
               type="editable-card"
-              className="inDashboard-Tabs no-scroll"
+              css={css([globalStyle.noScroll, dashboardStyle.inDashboardTabs])}
               items={workspaces.map((workspace) => ({
                 key: workspace.id,
                 label: workspace.name,
-                className: 'no-scroll',
+                css: globalStyle.noScroll,
                 closable: false,
                 children: (
                   <Workspace

@@ -20,6 +20,9 @@ import {
 import SystemAPI from '@/api/system'
 import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
 
+import { globalStyle, globalStyleFn } from '@/styles'
+import { css } from '@emotion/react'
+
 /**
  * Errors
  */
@@ -82,15 +85,6 @@ const Registration = (): JSX.Element => {
   const [system, { mutateSystem, errorSystem, loadingSystem }] =
     SystemAPI.useSystem()
 
-  // Layout
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 }
-  }
-  const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 }
-  }
-
   // System error
   useEffect(() => {
     if (errorSystem) ErrorNotification(errors.system, errorSystem)
@@ -116,7 +110,7 @@ const Registration = (): JSX.Element => {
   if (loadingSystem) return <Loading.Simple />
   else
     return (
-      <Space direction="vertical" className="full-width" size={20}>
+      <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
         <Card title="Signup">
           <Checkbox
             checked={system?.allowsignup}
@@ -128,63 +122,79 @@ const Registration = (): JSX.Element => {
 
         <Card title="Password">
           <Form
-            {...layout}
             form={form}
             name="form"
             onFinish={async (values) => onPasswordFinish(values, mutateSystem)}
+            css={css({ display: 'flex', justifyContent: 'space-between' })}
           >
-            <Form.Item
-              label="Minimum number of characters"
-              name="min"
-              rules={[
-                {
-                  required: true,
-                  message: 'Minimum number of characters is required'
-                }
-              ]}
+            <div
+              css={css([
+                globalStyle.displayFlex,
+                globalStyle.fullWidth,
+                { justifyContent: 'space-between' }
+              ])}
             >
-              <InputNumber min={0} max={64} />
-            </Form.Item>
-            <Form.Item
-              label="Maximum number of characters"
-              name="max"
-              rules={[
-                {
-                  required: true,
-                  message: 'Maximum number of characters is required'
-                }
-              ]}
-            >
-              <InputNumber min={0} max={64} />
-            </Form.Item>
-            <Form.Item
-              {...tailLayout}
-              valuePropName="checked"
-              name="requireLetter"
-            >
-              <Checkbox>Require letter</Checkbox>
-            </Form.Item>
-            <Form.Item
-              {...tailLayout}
-              valuePropName="checked"
-              name="requireNumber"
-            >
-              <Checkbox>Require number</Checkbox>
-            </Form.Item>
-            <Form.Item
-              {...tailLayout}
-              valuePropName="checked"
-              name="requireSymbol"
-            >
-              <Checkbox>Require symbol</Checkbox>
-            </Form.Item>
-            <Form.Item {...tailLayout}>
-              <Button
-                type="primary"
-                icon={<CheckOutlined />}
-                htmlType="submit"
-              />
-            </Form.Item>
+              <div>
+                <Form.Item
+                  label="Minimum number of characters"
+                  name="min"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Minimum number of characters is required'
+                    }
+                  ]}
+                >
+                  <InputNumber min={0} max={64} />
+                </Form.Item>
+                <Form.Item
+                  label="Maximum number of characters"
+                  name="max"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Maximum number of characters is required'
+                    }
+                  ]}
+                >
+                  <InputNumber min={0} max={64} />
+                </Form.Item>
+              </div>
+              <div>
+                <Form.Item
+                  // {...tailLayout}
+                  valuePropName="checked"
+                  name="requireLetter"
+                >
+                  <Checkbox>Require letter</Checkbox>
+                </Form.Item>
+                <Form.Item
+                  // {...tailLayout}
+                  valuePropName="checked"
+                  name="requireNumber"
+                >
+                  <Checkbox>Require number</Checkbox>
+                </Form.Item>
+                <Form.Item
+                  // {...tailLayout}
+                  valuePropName="checked"
+                  name="requireSymbol"
+                >
+                  <Checkbox>Require symbol</Checkbox>
+                </Form.Item>
+              </div>
+              <div css={globalStyleFn.marginTop('auto')}>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    icon={<CheckOutlined />}
+                    htmlType="submit"
+                  >
+                    Save changes
+                  </Button>
+                </Form.Item>
+              </div>
+            </div>
           </Form>
         </Card>
       </Space>

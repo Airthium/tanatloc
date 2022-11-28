@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import Footer from '..'
@@ -8,7 +7,7 @@ jest.mock('@/lib/utils', () => ({
   getGitVersion: () => mockGitVersion()
 }))
 
-describe('components/footer', () => {
+describe('components/indexpage/footer', () => {
   const scroll = jest.fn()
 
   beforeEach(() => {

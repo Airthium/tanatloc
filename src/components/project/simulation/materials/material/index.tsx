@@ -20,6 +20,9 @@ import {
   IFrontGeometriesItem
 } from '@/api/index.d'
 
+import { globalStyle } from '@/styles'
+import style from '../../../panel/index.style'
+
 import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
@@ -144,7 +147,7 @@ const Material = ({
    */
   return (
     <Drawer
-      className="material"
+      css={style.subPanel}
       title="Material"
       placement="left"
       closable={false}
@@ -205,9 +208,9 @@ const Material = ({
         </div>
       }
     >
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Card size="small">
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <DataBase onSelect={onMaterialSelect} />
             <Typography.Text>
               Material: {current?.material?.label ?? 'default'}

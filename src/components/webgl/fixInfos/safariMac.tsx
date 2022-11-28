@@ -2,6 +2,8 @@
 
 import { Layout, Typography } from 'antd'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Safari Mac
  * @returns SafariMac
@@ -25,14 +27,14 @@ const SafariMac = (): JSX.Element => {
         </Typography.Title>
         <Typography>
           Open your browser, then go to Safari -{'>'} Preferences, click
-          <span className="text-light">Advanced</span> tab.
+          <span css={globalStyle.textLight}>Advanced</span> tab.
         </Typography>
         <Typography.Title level={5} mark>
           3- Show new menu
         </Typography.Title>
         <Typography>
           At the bottom of the window, check the{' '}
-          <span className="text-light">Show Develop</span> menu in menu bar
+          <span css={globalStyle.textLight}>Show Develop</span> menu in menu bar
           checkbox.
         </Typography>
         <Typography.Title level={5} mark>
@@ -40,8 +42,8 @@ const SafariMac = (): JSX.Element => {
         </Typography.Title>
         <Typography>
           Open Develop Tab, check enable WebGL (whether in{' '}
-          <span className="text-light">Experimental feature</span> or in the
-          main menu)
+          <span css={globalStyle.textLight}>Experimental feature</span> or in
+          the main menu)
         </Typography>
       </Layout.Content>
     </Layout>

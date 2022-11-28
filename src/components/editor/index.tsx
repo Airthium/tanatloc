@@ -28,6 +28,9 @@ import Browser from './browser'
 import Save from './save'
 import Code from './code'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 /**
  * Editor
  * @returns Editor
@@ -76,9 +79,9 @@ const Editor = () => {
   if (loadingUser || !user) return <Loading />
   return (
     <EditorProvider>
-      <Layout className="Editor">
+      <Layout css={style.editor}>
         <Layout.Sider theme="light" width="256">
-          <div className="logo">
+          <div css={globalStyle.logo}>
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
           <Menu
@@ -93,8 +96,7 @@ const Editor = () => {
                 )
               },
               {
-                type: 'divider',
-                className: 'Editor-Menu-Divider'
+                type: 'divider'
               }
             ]}
           />
@@ -104,15 +106,9 @@ const Editor = () => {
           <Blobs />
         </Layout.Sider>
 
-        <Layout.Content className="no-scroll">
-          <Layout.Header className="Editor-Header">
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start'
-              }}
-            >
+        <Layout.Content css={globalStyle.noScroll}>
+          <Layout.Header css={style.header}>
+            <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
                 <New />

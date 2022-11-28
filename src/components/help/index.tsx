@@ -1,6 +1,8 @@
 /** @module Components.Help */
 
-import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
+import { Layout, Space, Typography } from 'antd'
+
+import PageHeader from '@/components/assets/pageHeader'
 
 import Workflow from './doc/workflow'
 import Workspace from './doc/workspace'
@@ -9,6 +11,10 @@ import HPC from './doc/hpc'
 import Administration from './doc/administration'
 import Organizations from './doc/organizations'
 import About from './doc/about'
+
+import dashboardStyle from '@/components/dashboard/index.style'
+import { css } from '@emotion/react'
+import { globalStyle } from '@/styles'
 
 /**
  * Help
@@ -19,12 +25,13 @@ const Help = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="inDashboard Help">
+    <Layout css={dashboardStyle.inDashboard}>
       <PageHeader
-        className="inDashboard-PageHeader"
-        backIcon={false}
         title={
-          <Typography.Title level={2} className="inDashboard-PageHeader-title">
+          <Typography.Title
+            level={2}
+            css={css({ marginBottom: '0 !important' })}
+          >
             Help
           </Typography.Title>
         }
@@ -37,10 +44,9 @@ const Help = (): JSX.Element => {
             Open an issue
           </a>
         }
-        footer={<Divider />}
       />
-      <Layout.Content className="scroll">
-        <Space direction="vertical" className="full-width" size={20}>
+      <Layout.Content css={globalStyle.scroll}>
+        <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
           <Workflow />
           <Workspace />
           <Project />

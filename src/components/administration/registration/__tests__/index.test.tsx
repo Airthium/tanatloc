@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Registration, { errors } from '..'
@@ -112,7 +111,7 @@ describe('components/administration/registration', () => {
     fireEvent.change(min, { target: { value: 8 } })
     fireEvent.change(max, { target: { value: 16 } })
 
-    const button = screen.getByRole('button', { name: 'check' })
+    const button = screen.getByRole('button', { name: 'check Save changes' })
 
     // Normal
     fireEvent.click(button)

@@ -1,6 +1,6 @@
 /** @module Components.Help.Doc.Administration */
 
-import { Card, Collapse, Typography } from 'antd'
+import { Card, Typography } from 'antd'
 
 /**
  * Administration documentation
@@ -15,19 +15,18 @@ const Administration = (): JSX.Element => {
       <Typography.Text>
         Your need to be an administrator to have acces to this part
       </Typography.Text>
-      <Collapse>
-        <Collapse.Panel key="users" header="Users">
-          <Typography.Text>
-            You can manage users: create, delete or modify informations.
-          </Typography.Text>
-        </Collapse.Panel>
-        <Collapse.Panel key="registration" header="Registration">
-          <Typography.Text>
-            Allow you to enable / disable the signup and to manage the required
-            pattern for passwords.
-          </Typography.Text>
-        </Collapse.Panel>
-      </Collapse>
+
+      <Typography.Title level={5}>Users</Typography.Title>
+
+      <Typography.Text>
+        You can manage users: create, delete or modify informations.
+      </Typography.Text>
+
+      <Typography.Title level={5}>Registration</Typography.Title>
+      <Typography.Text>
+        Allow you to enable / disable the signup and to manage the required
+        pattern for passwords.
+      </Typography.Text>
     </Card>
   )
 }

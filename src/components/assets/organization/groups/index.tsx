@@ -15,6 +15,8 @@ import {
 } from '@/api/index.d'
 import GroupAPI from '@/api/group'
 
+import { globalStyle } from '@/styles'
+
 /**
  * Props
  */
@@ -172,7 +174,7 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width" size={20}>
+    <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
       <Group
         userOptions={userOptions}
         organization={{ id: organization.id, groups: organization.groups }}

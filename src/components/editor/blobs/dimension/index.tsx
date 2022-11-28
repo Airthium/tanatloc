@@ -6,6 +6,8 @@ import { Button } from 'antd'
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
 
 /**
@@ -46,7 +48,7 @@ const Dimension = (): JSX.Element => {
    */
   return (
     <Button
-      className="full-width"
+      css={globalStyle.fullWidth}
       onClick={() => onAdd(template, cursor, dispatch)}
     >
       Dimension

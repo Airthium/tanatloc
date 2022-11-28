@@ -19,6 +19,11 @@ import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
+} from '@/api/index.d'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -26,13 +31,11 @@ import { CancelButton } from '@/components/assets/button'
 
 import { ISelect } from '@/context/select'
 
+import { globalStyle, globalStyleFn } from '@/styles'
+import style from '../../../panel/index.style'
+
 import Add from '../add'
 import Edit from '../edit'
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem,
-  IFrontGeometriesItem
-} from '@/api/index.d'
 
 export interface IProps {
   visible: boolean
@@ -252,7 +255,7 @@ const BoundaryCondition = ({
             if (dimension === 2 && child.only3D) return
             return (
               <Formula
-                className="marginBottom-10"
+                css={globalStyleFn.marginBottom(10)}
                 key={index}
                 label={child.label}
                 defaultValue={String(current.values![index].value)}
@@ -278,7 +281,7 @@ const BoundaryCondition = ({
    */
   return (
     <Drawer
-      className="boundaryCondition"
+      css={style.subPanel}
       title="Boundary condition"
       placement="left"
       closable={false}
@@ -351,7 +354,7 @@ const BoundaryCondition = ({
         </div>
       }
     >
-      <Space direction="vertical" className="full-width">
+      <Space direction="vertical" css={globalStyle.fullWidth}>
         <Card size="small">
           <Form layout="vertical">
             <Form.Item
@@ -379,7 +382,6 @@ const BoundaryCondition = ({
               }
             >
               <Radio.Group
-                className="BoundaryCondition-types"
                 optionType="button"
                 buttonStyle="solid"
                 value={current?.type?.key}

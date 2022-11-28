@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
+import { css } from '@emotion/react'
 
 import { IModelInitializationDirectChild } from '@/models/index.d'
 
@@ -20,6 +21,8 @@ import {
   IFrontSimulationTask
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
+
+import { globalStyle, globalStyleFn } from '@/styles'
 
 /**
  * Custom Types
@@ -401,9 +404,12 @@ const Initialization = ({
         If you use coupling, the selected simulation mesh will be used, at least
         for the first iteration.
       </Typography.Text>
-      <Space direction="vertical" className="full-width marginTop-10">
+      <Space
+        direction="vertical"
+        css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+      >
         <Select
-          className="full-width"
+          css={globalStyle.fullWidth}
           options={options}
           placeholder="Select a simulation"
           value={initializationValue?.simulation}
@@ -425,7 +431,7 @@ const Initialization = ({
               {filter?.name}:
             </Typography.Text>
             <Select
-              className="full-width"
+              css={globalStyle.fullWidth}
               options={couplingResults}
               placeholder={'Select a ' + filter.name}
               value={initializationValue?.result}
@@ -453,7 +459,7 @@ const Initialization = ({
     label: string
     children: IModelInitializationDirectChild[]
   }) => (
-    <Space direction="vertical" className="full-width">
+    <Space direction="vertical" css={globalStyle.fullWidth}>
       {direct.children.map((child, index) => {
         if (dimension === 2 && child.only3D) return
         return (
@@ -512,7 +518,7 @@ const Initialization = ({
       <Layout.Content>
         <Card size="small">
           <Select
-            className="full-width marginBottom-10"
+            css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}

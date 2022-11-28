@@ -27,6 +27,8 @@ import Download from '@/components/project/simulation/run/results/download'
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 import PostprocessingAPI from '@/api/postprocessing'
 
+import { globalStyle } from '@/styles'
+
 export interface IProps {
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   result?: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>
@@ -259,7 +261,7 @@ const Postprocessing = ({
           </Form>
           {results && (
             <Card size="small" title="Post-processing" extra={filter}>
-              <Space direction="vertical" className="full-width">
+              <Space direction="vertical" css={globalStyle.fullWidth}>
                 {results.length
                   ? results.map((res) => (
                       <Space key={res.glb}>

@@ -1,4 +1,4 @@
-import React from 'react'
+import { css } from '@emotion/react'
 import { render, screen } from '@testing-library/react'
 
 import Side from '..'
@@ -27,16 +27,16 @@ describe('components/assets/side', () => {
     unmount()
   })
 
-  test('render with classNames & id', () => {
+  test('render with css & id', () => {
     const { unmount } = render(
       <Side
         left={left}
         right={right}
         top={top}
-        className="className"
-        leftClassName="leftClassName"
-        rightClassName="rightClassName"
-        topClassName="topClassName"
+        sideCss={css({ display: 'block' })}
+        leftCss={css({ display: 'block' })}
+        rightCss={css({ display: 'block' })}
+        topCss={css({ display: 'block' })}
         id="id"
       />
     )

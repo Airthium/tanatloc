@@ -1,15 +1,21 @@
 /** @module Components.Account */
 
 import { NextRouter, useRouter } from 'next/router'
-import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
+import { Layout, Typography, Tabs, Space } from 'antd'
+import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
 import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
+
+import PageHeader from '@/components/assets/pageHeader'
 
 import Information from './information'
 import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
+
+import dashboardStyle from '@/components/dashboard/index.style'
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -49,7 +55,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
     key: 'personal',
     label: 'Personal Information',
     children: (
-      <Space direction="vertical" className="full-width" size={20}>
+      <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
         <Information
           user={{
             email: user.email,
@@ -68,7 +74,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
       key: 'security',
       label: 'Security',
       children: (
-        <Space direction="vertical" className="full-width" size={20}>
+        <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
           <Password
             user={{
               email: user.email
@@ -87,20 +93,20 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="inDashboard Account no-scroll">
+    <Layout css={css([globalStyle.noScroll, dashboardStyle.inDashboard])}>
       <PageHeader
-        className="inDashboard-PageHeader"
-        backIcon={false}
         title={
-          <Typography.Title level={2} className="inDashboard-PageHeader-title">
+          <Typography.Title
+            level={2}
+            css={css({ marginBottom: '0 !important' })}
+          >
             Account Settings
           </Typography.Title>
         }
-        footer={<Divider />}
       />
-      <Layout.Content className="no-scroll">
+      <Layout.Content css={globalStyle.noScroll}>
         <Tabs
-          className="inDashboard-Tabs no-scroll"
+          css={css([globalStyle.noScroll, dashboardStyle.inDashboardTabs])}
           type="card"
           items={tabItems}
           defaultActiveKey={tab || 'personal'}

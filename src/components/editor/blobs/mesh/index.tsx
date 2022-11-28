@@ -10,6 +10,8 @@ import { setCursor, setModel } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
+import { globalStyle } from '@/styles'
+
 import { addOnCursor } from '..'
 
 /**
@@ -109,7 +111,7 @@ const Mesh = (): JSX.Element => {
           <Input />
         </Form.Item>
       </Dialog>
-      <Button className="full-width" onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
         Mesh
       </Button>
     </>

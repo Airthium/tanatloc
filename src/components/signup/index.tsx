@@ -15,6 +15,9 @@ import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 /**
  * Errors
  */
@@ -106,85 +109,85 @@ const Signup = (): JSX.Element => {
   else if (!system?.allowsignup)
     return (
       <Layout>
-        <Card className="Signup">The server does not allow signup for now</Card>
+        <Card css={style.signup}>The server does not allow signup for now</Card>
       </Layout>
     )
-  else
-    return (
-      <Layout>
-        <Card bordered={false} className="Signup">
-          <Space direction="vertical" size="large" className="full-width">
-            <div>
-              <Typography.Title
-                level={1}
-                style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
-              >
-                Sign Up
-              </Typography.Title>
-            </div>
-            <Form
-              requiredMark="optional"
-              onFinish={async (values) => {
-                setLoading(true)
-                try {
-                  await onSignup(router, values)
-                } catch (err: any) {
-                  setFormError(err)
-                } finally {
-                  setLoading(false)
-                }
-              }}
-              layout="vertical"
+
+  return (
+    <Layout>
+      <Card bordered={false} css={style.signup}>
+        <Space direction="vertical" size="large" css={globalStyle.fullWidth}>
+          <div>
+            <Typography.Title
+              level={1}
+              style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
             >
-              <Form.Item
-                name="email"
-                label="Enter your email address"
-                rules={[{ required: true, message: 'Email is required' }]}
-              >
-                <Input placeholder="Email address" autoComplete="email" />
-              </Form.Item>
-              <PasswordItem
-                name="password"
-                label="Choose your password"
-                inputPlaceholder="Password"
-                inputAutoComplete="current-password"
-                style={{ marginBottom: '14px' }}
-              />
-              <Form.Item
-                name="passwordConfirmation"
-                label="Confirm your password"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Password confirmation is required'
-                  },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue('password') === value) {
-                        return Promise.resolve()
-                      }
-                      return Promise.reject(errors.passwordMismatch)
+              Sign Up
+            </Typography.Title>
+          </div>
+          <Form
+            requiredMark="optional"
+            onFinish={async (values) => {
+              setLoading(true)
+              try {
+                await onSignup(router, values)
+              } catch (err: any) {
+                setFormError(err)
+              } finally {
+                setLoading(false)
+              }
+            }}
+            layout="vertical"
+          >
+            <Form.Item
+              name="email"
+              label="Enter your email address"
+              rules={[{ required: true, message: 'Email is required' }]}
+            >
+              <Input placeholder="Email address" autoComplete="email" />
+            </Form.Item>
+            <PasswordItem
+              name="password"
+              label="Choose your password"
+              inputPlaceholder="Password"
+              inputAutoComplete="current-password"
+              style={{ marginBottom: '14px' }}
+            />
+            <Form.Item
+              name="passwordConfirmation"
+              label="Confirm your password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Password confirmation is required'
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve()
                     }
-                  })
-                ]}
-                style={{ marginBottom: '14px' }}
-              >
-                <Input.Password
-                  placeholder="Password"
-                  autoComplete="current-password"
-                />
-              </Form.Item>
-              <FormError error={formError} />
-              <Form.Item className="Signup-submit">
-                <Button type="primary" loading={loading} htmlType="submit">
-                  Finish
-                </Button>
-              </Form.Item>
-            </Form>
-          </Space>
-        </Card>
-      </Layout>
-    )
+                    return Promise.reject(errors.passwordMismatch)
+                  }
+                })
+              ]}
+              style={{ marginBottom: '14px' }}
+            >
+              <Input.Password
+                placeholder="Password"
+                autoComplete="current-password"
+              />
+            </Form.Item>
+            <FormError error={formError} />
+            <Form.Item css={style.submit}>
+              <Button type="primary" loading={loading} htmlType="submit">
+                Finish
+              </Button>
+            </Form.Item>
+          </Form>
+        </Space>
+      </Card>
+    </Layout>
+  )
 }
 
 export default Signup

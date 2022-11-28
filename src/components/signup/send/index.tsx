@@ -2,6 +2,8 @@
 
 import { Card, Layout } from 'antd'
 
+import style from '../index.style'
+
 /**
  * Signup send
  * @return Send
@@ -12,7 +14,7 @@ const Send = (): JSX.Element => {
    */
   return (
     <Layout>
-      <Card bordered={true} className="Signup">
+      <Card bordered={true} css={style.signup}>
         A validation email has been send at your email address. Please follow
         the link.
       </Card>

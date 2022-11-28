@@ -28,6 +28,8 @@ import {
 } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
+import { globalStyle } from '@/styles'
+
 import Sensors from './sensors'
 import CloudServer from './cloudServer'
 import Log from './log'
@@ -225,7 +227,7 @@ const Run = ({
     return (
       <Layout>
         <Layout.Content>
-          <Space direction="vertical" className="full-width">
+          <Space direction="vertical" css={globalStyle.fullWidth}>
             <Sensors
               simulation={simulation}
               setVisible={setVisible}
@@ -246,9 +248,9 @@ const Run = ({
               }
             />
             <Card size="small" title="Run">
-              <Space direction="vertical" className="full-width" size={20}>
+              <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
                 <div
-                  className="full-width"
+                  css={globalStyle.fullWidth}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',

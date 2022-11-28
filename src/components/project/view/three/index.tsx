@@ -38,6 +38,7 @@ import {
   WebGLRenderer
 } from 'three'
 import { v4 } from 'uuid'
+import { css } from '@emotion/react'
 
 import { IFrontProject } from '@/api/index.d'
 import { IGeometryPart } from '@/lib/index.d'
@@ -80,6 +81,9 @@ import {
 } from '@/context/select/actions'
 
 import AvatarAPI from '@/api/avatar'
+
+import { globalStyle, globalStyleFn, variables } from '@/styles'
+import style from './index.style'
 
 /**
  * Props
@@ -902,184 +906,186 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="View no-scroll">
-      <Layout.Header className="View-header">
-        <div className="View-controls-main">
-          <Tooltip title="Take snasphot" placement="right">
-            <Dropdown
-              placement="bottom"
-              menu={{
-                items: [
-                  {
-                    key: 'project',
-                    label: (
-                      <Button
-                        type="text"
-                        loading={screenshot}
-                        onClick={async () => {
-                          setScreenshot(true)
-                          try {
-                            await takeScreenshot(
-                              project,
-                              scene.current!,
-                              camera.current!,
-                              renderer.current!
-                            )
-                          } finally {
-                            setScreenshot(false)
-                          }
-                        }}
-                      >
-                        Project snapshot
-                      </Button>
-                    )
-                  },
-                  {
-                    key: 'image',
-                    label: (
-                      <Button
-                        type="text"
-                        loading={savingScreenshot}
-                        onClick={() => {
-                          setSavingScreenshot(true)
-                          try {
-                            downloadScreenshot(
-                              project,
-                              scene.current!,
-                              camera.current!,
-                              renderer.current!
-                            )
-                          } finally {
-                            setSavingScreenshot(false)
-                          }
-                        }}
-                      >
-                        Export image
-                      </Button>
-                    )
-                  }
-                ]
-              }}
-            >
-              <Button icon={<FundProjectionScreenOutlined />} />
-            </Dropdown>
-          </Tooltip>
+    <Layout css={css([globalStyle.noScroll, style.view])}>
+      <Layout.Header css={style.head}>
+        <Tooltip title="Take snasphot" placement="left">
+          <Dropdown
+            placement="bottom"
+            menu={{
+              items: [
+                {
+                  key: 'project',
+                  label: (
+                    <Button
+                      type="text"
+                      css={globalStyle.fullWidth}
+                      loading={screenshot}
+                      onClick={async () => {
+                        setScreenshot(true)
+                        try {
+                          await takeScreenshot(
+                            project,
+                            scene.current!,
+                            camera.current!,
+                            renderer.current!
+                          )
+                        } finally {
+                          setScreenshot(false)
+                        }
+                      }}
+                    >
+                      Project snapshot
+                    </Button>
+                  )
+                },
+                {
+                  key: 'image',
+                  label: (
+                    <Button
+                      type="text"
+                      css={globalStyle.fullWidth}
+                      loading={savingScreenshot}
+                      onClick={() => {
+                        setSavingScreenshot(true)
+                        try {
+                          downloadScreenshot(
+                            project,
+                            scene.current!,
+                            camera.current!,
+                            renderer.current!
+                          )
+                        } finally {
+                          setSavingScreenshot(false)
+                        }
+                      }}
+                    >
+                      Export image
+                    </Button>
+                  )
+                }
+              ]
+            }}
+          >
+            <Button icon={<FundProjectionScreenOutlined />} />
+          </Dropdown>
+        </Tooltip>
 
-          <Divider className="no-margin" />
+        <Divider css={globalStyleFn.margin(0)} />
 
-          <Tooltip title="Display grid" placement="right">
-            <Switch
-              defaultChecked
-              checkedChildren={<BorderlessTableOutlined />}
-              unCheckedChildren={<BorderlessTableOutlined />}
-              onChange={(checked) => toggleGrid(gridHelper.current!, checked)}
-            />
-          </Tooltip>
-          <Tooltip title="Set transparency" placement="right">
-            <Switch
-              checked={transparent}
-              checkedChildren={<RadiusUprightOutlined />}
-              unCheckedChildren={<RadiusUprightOutlined />}
-              onChange={toggleTransparent}
-            />
-          </Tooltip>
+        <Tooltip title="Display grid" placement="left">
+          <Switch
+            defaultChecked
+            checkedChildren={<BorderlessTableOutlined />}
+            unCheckedChildren={<BorderlessTableOutlined />}
+            onChange={(checked) => toggleGrid(gridHelper.current!, checked)}
+          />
+        </Tooltip>
+        <Tooltip title="Set transparency" placement="left">
+          <Switch
+            checked={transparent}
+            checkedChildren={<RadiusUprightOutlined />}
+            unCheckedChildren={<RadiusUprightOutlined />}
+            onChange={toggleTransparent}
+          />
+        </Tooltip>
 
-          <Divider className="no-margin" />
+        <Divider css={globalStyleFn.margin(0)} />
 
-          <Tooltip title="Zoom out" placement="right">
-            <Button
-              icon={<ZoomOutOutlined />}
-              onMouseDown={() => zoomOut(camera.current!, controls.current!)}
-              onMouseUp={zoomStop}
-              onMouseOut={zoomStop}
-            />
-          </Tooltip>
-          <Tooltip title="Zoom in" placement="right">
-            <Button
-              icon={<ZoomInOutlined />}
-              onMouseDown={() => zoomIn(camera.current!, controls.current!)}
-              onMouseUp={zoomStop}
-              onMouseOut={zoomStop}
-            />
-          </Tooltip>
-          <Tooltip title="Zoom to fit" placement="right">
-            <Button
-              icon={<CompressOutlined />}
-              onClick={() =>
-                zoomToFit(scene.current!, camera.current!, controls.current!)
-              }
-            />
-          </Tooltip>
-          <Tooltip title="Zoom to selection" placement="right">
-            <Button
-              icon={<SelectOutlined />}
-              onClick={() =>
-                selectionHelper.current!.isEnabled()
-                  ? selectionHelper.current!.end()
-                  : selectionHelper.current!.start()
-              }
-            />
-          </Tooltip>
+        <Tooltip title="Zoom out" placement="left">
+          <Button
+            icon={<ZoomOutOutlined />}
+            onMouseDown={() => zoomOut(camera.current!, controls.current!)}
+            onMouseUp={zoomStop}
+            onMouseOut={zoomStop}
+          />
+        </Tooltip>
+        <Tooltip title="Zoom in" placement="left">
+          <Button
+            icon={<ZoomInOutlined />}
+            onMouseDown={() => zoomIn(camera.current!, controls.current!)}
+            onMouseUp={zoomStop}
+            onMouseOut={zoomStop}
+          />
+        </Tooltip>
+        <Tooltip title="Zoom to fit" placement="left">
+          <Button
+            icon={<CompressOutlined />}
+            onClick={() =>
+              zoomToFit(scene.current!, camera.current!, controls.current!)
+            }
+          />
+        </Tooltip>
+        <Tooltip title="Zoom to selection" placement="left">
+          <Button
+            icon={<SelectOutlined />}
+            onClick={() =>
+              selectionHelper.current!.isEnabled()
+                ? selectionHelper.current!.end()
+                : selectionHelper.current!.start()
+            }
+          />
+        </Tooltip>
 
-          <Divider className="no-margin" />
+        <Divider css={globalStyleFn.margin(0)} />
 
-          {!sectionView && (
-            <Tooltip title="Section view" placement="right">
-              <Button icon={<ScissorOutlined />} onClick={toggleSectionView} />
+        {!sectionView && (
+          <Tooltip title="Section view">
+            <Button icon={<ScissorOutlined />} onClick={toggleSectionView} />
+          </Tooltip>
+        )}
+
+        {sectionView && (
+          <>
+            <Tooltip title="Stop" placement="left">
+              <Button icon={<StopOutlined />} onClick={toggleSectionView} />
             </Tooltip>
-          )}
 
-          {sectionView && (
-            <>
-              <Tooltip title="Stop" placement="left">
-                <Button icon={<StopOutlined />} onClick={toggleSectionView} />
-              </Tooltip>
+            <Tooltip title="Hide plane" placement="left">
+              <Button
+                icon={<EyeInvisibleOutlined />}
+                onClick={() => sectionViewHelper.current!.toggleVisible()}
+              />
+            </Tooltip>
+            <Tooltip title="Snap to X" placement="left">
+              <Button
+                className="ant-btn-icon-only"
+                onClick={() =>
+                  sectionViewHelper.current!.toAxis(new Vector3(-1, 0, 0))
+                }
+              >
+                X
+              </Button>
+            </Tooltip>
+            <Tooltip title="Snap to Y" placement="left">
+              <Button
+                className="ant-btn-icon-only"
+                onClick={() =>
+                  sectionViewHelper.current!.toAxis(new Vector3(0, -1, 0))
+                }
+              >
+                Y
+              </Button>
+            </Tooltip>
+            <Tooltip title="Snap to Z" placement="left">
+              <Button
+                className="ant-btn-icon-only"
+                onClick={() =>
+                  sectionViewHelper.current!.toAxis(new Vector3(0, 0, -1))
+                }
+              >
+                Z
+              </Button>
+            </Tooltip>
+            <Tooltip title="Flip" placement="left">
+              <Button
+                onClick={() => sectionViewHelper.current!.flip()}
+                icon={<RetweetOutlined />}
+              />
+            </Tooltip>
+          </>
+        )}
 
-              <Tooltip title="Hide plane" placement="left">
-                <Button
-                  icon={<EyeInvisibleOutlined />}
-                  onClick={() => sectionViewHelper.current!.toggleVisible()}
-                />
-              </Tooltip>
-              <Tooltip title="Snap to X" placement="left">
-                <Button
-                  className="ant-btn-icon-only"
-                  onClick={() =>
-                    sectionViewHelper.current!.toAxis(new Vector3(-1, 0, 0))
-                  }
-                >
-                  X
-                </Button>
-              </Tooltip>
-              <Tooltip title="Snap to Y" placement="left">
-                <Button
-                  className="ant-btn-icon-only"
-                  onClick={() =>
-                    sectionViewHelper.current!.toAxis(new Vector3(0, -1, 0))
-                  }
-                >
-                  Y
-                </Button>
-              </Tooltip>
-              <Tooltip title="Snap to Z" placement="left">
-                <Button
-                  className="ant-btn-icon-only"
-                  onClick={() =>
-                    sectionViewHelper.current!.toAxis(new Vector3(0, 0, -1))
-                  }
-                >
-                  Z
-                </Button>
-              </Tooltip>
-              <Tooltip title="Flip" placement="left">
-                <Button
-                  onClick={() => sectionViewHelper.current!.flip()}
-                  icon={<RetweetOutlined />}
-                />
-              </Tooltip>
-            </>
-          )}
-
+        <div>
           {parts.filter((part) => part.summary.type === 'result').length ? (
             <>
               <Divider className="no-margin" />
@@ -1096,22 +1102,22 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           ) : null}
         </div>
       </Layout.Header>
-      <Layout.Content className="View-content no-scroll">
+      <Layout.Content css={css([globalStyle.noScroll, style.content])}>
         <div
           style={{ display: loading ? 'flex' : 'none' }}
-          className="View-loading"
+          css={globalStyle.loading}
         >
           <Spin
             indicator={
               <LoadingOutlined
-                className="View-loading-spin"
+                css={{ color: variables.colorPrimary }}
                 style={{ fontSize: 80 }}
                 spin
               />
             }
           />
         </div>
-        <div ref={mount} className="View-canvas" />
+        <div ref={mount} css={style.canvas} />
       </Layout.Content>
     </Layout>
   )

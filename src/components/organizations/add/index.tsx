@@ -1,7 +1,7 @@
 /** @module Components.Organizations.Add */
 
-import { useState } from 'react'
-import { Form, Input } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef } from 'antd'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -54,9 +54,17 @@ export const onAdd = async (
  * @returns Add
  */
 const Add = ({ swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -87,7 +95,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
           label="Name"
           rules={[{ required: true, message: 'Name is required' }]}
         >
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
       </Dialog>
 

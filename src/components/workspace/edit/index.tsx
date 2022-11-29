@@ -1,7 +1,7 @@
 /** @module Components.Workspace.Edit */
 
-import { useState } from 'react'
-import { Form, Input } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT } from '@/config/string'
 
@@ -67,9 +67,17 @@ export const onEdit = async (
  * @returns Edit
  */
 const Edit = ({ workspace, swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // Sate
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -108,7 +116,7 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
             }
           ]}
         >
-          <Input placeholder="Workspace's name" />
+          <Input ref={inputRef} placeholder="Workspace's name" />
         </Form.Item>
       </Dialog>
     </>

@@ -1,6 +1,6 @@
 /** @module Components.Assets.Dialog */
 
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Form, Modal, ModalProps, Typography } from 'antd'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -71,6 +71,34 @@ const Dialog = ({
   }, [visible, initialValues, form])
 
   /**
+   * On Modal ok
+   */
+  const onModalOk = useCallback(async () => {
+    if (!onOk) return
+
+    try {
+      const values = await form.validateFields()
+      await onOk(values)
+      form.resetFields()
+    } catch (err) {
+      ErrorNotification(errors.onOk, err, false)
+    }
+  }, [form, onOk])
+
+  /**
+   * On key up
+   * @param event Event
+   */
+  const onKeyUp = useCallback(
+    (event: { keyCode: number }): void => {
+      if (event.keyCode === 13) {
+        onModalOk()
+      }
+    },
+    [onModalOk]
+  )
+
+  /**
    * Render
    */
   return (
@@ -94,18 +122,7 @@ const Dialog = ({
         style: { display: onCancel ? 'inline-block' : 'none' }
       }}
       cancelText={cancelButtonText}
-      onOk={
-        onOk &&
-        (async () => {
-          try {
-            const values = await form.validateFields()
-            await onOk(values)
-            form.resetFields()
-          } catch (err) {
-            ErrorNotification(errors.onOk, err, false)
-          }
-        })
-      }
+      onOk={onModalOk}
       okText={okButtonText}
       okButtonProps={{
         ...okButtonProps,
@@ -113,7 +130,12 @@ const Dialog = ({
         style: { display: onOk ? 'inline-block' : 'none' }
       }}
     >
-      <Form form={form} layout="vertical" initialValues={initialValues}>
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={initialValues}
+        onKeyUp={onKeyUp}
+      >
         {children}
       </Form>
     </Modal>

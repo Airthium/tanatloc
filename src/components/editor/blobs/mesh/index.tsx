@@ -1,7 +1,7 @@
 /** @module Components.Editor.Blobs.Mesh */
 
-import { Dispatch, useContext, useState } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import { Button, Form, Input, InputRef } from 'antd'
 
 import { IModel } from '@/models/index.d'
 
@@ -81,12 +81,20 @@ mesh.name = '${values.name}'
  * @returns Mesh
  */
 const Mesh = (): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
   const { template, model, cursor, dispatch } = useContext(EditorContext)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -108,7 +116,7 @@ const Mesh = (): JSX.Element => {
         onCancel={() => setVisible(false)}
       >
         <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
       </Dialog>
       <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>

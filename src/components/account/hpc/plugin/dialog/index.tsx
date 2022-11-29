@@ -1,7 +1,7 @@
 /** @module Components.Account.HPC.Plugin.Dialog */
 
-import { useState, useEffect } from 'react'
-import { Form, Input, Select, Typography } from 'antd'
+import { useState, useEffect, useRef, RefObject } from 'react'
+import { Form, Input, InputRef, Select, Typography } from 'antd'
 import parse from 'html-react-parser'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -40,7 +40,8 @@ export const errors = {
  */
 export const inputItem = (
   item: IClientPlugin['configuration']['key'],
-  key: string
+  key: string,
+  inputRef?: RefObject<InputRef>
 ): React.ReactElement => {
   return (
     <Form.Item
@@ -51,7 +52,12 @@ export const inputItem = (
       tooltip={item.tooltip}
       rules={item.rules}
     >
-      <Input id={'input-' + key} autoComplete="off" {...(item.props || {})} />
+      <Input
+        ref={inputRef}
+        id={'input-' + key}
+        autoComplete="off"
+        {...(item.props || {})}
+      />
     </Form.Item>
   )
 }
@@ -201,6 +207,9 @@ export const onFinish = async (
  * @returns PluginDialog
  */
 const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -215,6 +224,11 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
     })
     setInitialValues(currentInitialValues)
   }, [plugin?.configuration])
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -243,9 +257,10 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
       >
         <>
           <Typography.Text>{parse(plugin.description || '')}</Typography.Text>
-          {Object.keys(plugin.configuration).map((key) => {
+          {Object.keys(plugin.configuration).map((key, index) => {
             const item = plugin.configuration[key]
-            if (item.type === 'input') return inputItem(item, key)
+            if (item.type === 'input')
+              return inputItem(item, key, index === 0 ? inputRef : undefined)
             else if (item.type === 'textarea') return textareaItem(item, key)
             else if (item.type === 'password') return passwordItem(item, key)
             else if (item.type === 'select') return selectItem(item, key)

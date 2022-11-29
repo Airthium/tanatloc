@@ -1,7 +1,7 @@
 /** @module Components.Editor.Blobs.Data */
 
-import { Dispatch, useContext, useState } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import { Button, Form, Input, InputRef } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
@@ -50,12 +50,20 @@ const onAdd = (
  * @returns Data
  */
 const Data = (): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
   const { template, cursor, dispatch } = useContext(EditorContext)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -81,7 +89,7 @@ const Data = (): JSX.Element => {
           name="x"
           rules={[{ required: true }]}
         >
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
         <Form.List name="datas">
           {(fields, { add, remove }, { errors }) => (

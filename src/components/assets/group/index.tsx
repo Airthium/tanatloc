@@ -1,7 +1,7 @@
 /** @module Components.Assets.Group */
 
-import { useState } from 'react'
-import { Form, Input, Select } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef, Select } from 'antd'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -163,9 +163,17 @@ const Group = ({
   group,
   swr
 }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -212,7 +220,7 @@ const Group = ({
           label="Name"
           rules={[{ required: true, message: 'Name is requried' }]}
         >
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
         <Form.Item
           name="users"

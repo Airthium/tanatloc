@@ -1,7 +1,7 @@
 /** @module Components.Project.Edit */
 
-import { useState } from 'react'
-import { Form, Input } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT } from '@/config/string'
 
@@ -11,6 +11,8 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import { IFrontMutateProjectsItem, IFrontProjectsItem } from '@/api/index.d'
 import ProjectAPI from '@/api/project'
+
+import { globalStyleFn } from '@/styles'
 
 /**
  * Props
@@ -69,9 +71,17 @@ export const onEdit = async (
  * @returns Edit
  */
 const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -113,13 +123,15 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
             }
           ]}
         >
-          <Input placeholder="Project's name" />
+          <Input ref={inputRef} placeholder="Project's name" />
         </Form.Item>
         <Form.Item label="Description" name="description">
           <Input.TextArea
+            css={globalStyleFn.marginBottom(20)}
             placeholder="Project's description"
             showCount
             maxLength={120}
+            onKeyUp={(event) => event.stopPropagation()}
           />
         </Form.Item>
       </Dialog>

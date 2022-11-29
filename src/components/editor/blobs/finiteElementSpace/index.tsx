@@ -1,7 +1,7 @@
 /** @module Components.Editor.Blobs.FiniteElementSpace */
 
-import { Dispatch, useContext, useState } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import { Button, Form, Input, InputRef } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
@@ -100,12 +100,20 @@ finiteElementSpace.name = '${values.name}'
  * @returns FiniteElementSpace
  */
 const FiniteElementSpace = (): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
   const { template, model, cursor, dispatch } = useContext(EditorContext)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -127,7 +135,7 @@ const FiniteElementSpace = (): JSX.Element => {
         onCancel={() => setVisible(false)}
       >
         <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
         <Form.List name="datas">
           {(fields, { add, remove }, { errors }) => (

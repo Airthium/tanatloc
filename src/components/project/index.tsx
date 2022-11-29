@@ -759,13 +759,13 @@ const Project = (): JSX.Element => {
             child.done = null
           }
 
-      categories[child.index] = {
-        key: s.id + '&' + key,
-        disabled: !geometries.length,
-        icon: icon,
-        label: child.title
-      }
-    })
+          categories[child.index] = {
+            key: s.id + '&' + key,
+            disabled: !geometries.length,
+            icon: icon,
+            label: child.title
+          }
+        })
 
         let label = s.name
         if (s.scheme.user)
@@ -786,22 +786,23 @@ const Project = (): JSX.Element => {
             </>
           )
 
-    return {
-      key: s.id,
-
-      icon: <CodeSandboxOutlined />,
-      label: label,
-      children: [
-        {
-          key: s.id + '&about',
-          disabled: !geometries.length,
-          icon: <CheckCircleOutlined style={{ color: 'green' }} />,
-          label: 'About'
-        },
-        ...categories
-      ]
-    }
-  })
+        return {
+          key: s.id,
+          icon: <CodeSandboxOutlined />,
+          label: label,
+          children: [
+            {
+              key: s.id + '&about',
+              disabled: !geometries.length,
+              icon: <CheckCircleOutlined style={{ color: 'green' }} />,
+              label: 'About'
+            },
+            ...categories
+          ]
+        }
+      }),
+    [geometries, loadingGeometries, loadedGeometries, loadedSimulations]
+  )
 
   /**
    * Render

@@ -54,7 +54,6 @@ const NotFound = (): JSX.Element => {
           }
         />
       </Layout.Content>
-      <Footer scroll={scrollToView} />
     </Layout>
   )
 }

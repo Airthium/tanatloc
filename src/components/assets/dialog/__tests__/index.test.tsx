@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Input } from 'antd'
 
 import Dialog, { DeleteDialog, errors } from '@/components/assets/dialog'
 
@@ -120,6 +121,48 @@ describe('components/assets/dialog', () => {
         Test
       </Dialog>
     )
+
+    unmount()
+  })
+
+  test('onKeyUp', async () => {
+    const { unmount } = render(
+      <Dialog
+        title="title"
+        visible={true}
+        initialValues={{}}
+        onCancel={mockOnCancel}
+        onOk={mockOnOk}
+        loading={false}
+      >
+        <Input />
+      </Dialog>
+    )
+
+    const input = screen.getByRole('textbox')
+
+    fireEvent.keyUp(input, { key: 'Enter', keyCode: 1 })
+    fireEvent.keyUp(input, { key: 'Enter', keyCode: 13 })
+
+    unmount()
+  })
+
+  test('onKeyUp, without onOk', async () => {
+    const { unmount } = render(
+      <Dialog
+        title="title"
+        visible={true}
+        initialValues={{}}
+        onCancel={mockOnCancel}
+        loading={false}
+      >
+        <Input />
+      </Dialog>
+    )
+
+    const input = screen.getByRole('textbox')
+
+    fireEvent.keyUp(input, { key: 'Enter', keyCode: 13 })
 
     unmount()
   })

@@ -196,32 +196,33 @@ const Geometry = ({
 
   // List
   const list = (
-    <Select
-      css={style.geometriesList}
-      mode={multiple ? 'multiple' : undefined}
-      options={loadedGeometries.map((geometry) => ({
-        value: geometry.id,
-        label: geometry.name
-      }))}
-      value={multiple ? geometriesIds : geometryId}
-      onChange={(value) => {
-        multiple
-          ? onMultipleSelect(
-              simulation,
-              loadedGeometries,
-              value as string[],
-              setGeometries,
-              swr
-            )
-          : onSelect(
-              simulation,
-              loadedGeometries,
-              value as string,
-              setGeometries,
-              swr
-            )
-      }}
-    />
+    <div css={style.geometriesList}>
+      <Select
+        mode={multiple ? 'multiple' : undefined}
+        options={loadedGeometries.map((geometry) => ({
+          value: geometry.id,
+          label: geometry.name
+        }))}
+        value={multiple ? geometriesIds : geometryId}
+        onChange={(value) => {
+          multiple
+            ? onMultipleSelect(
+                simulation,
+                loadedGeometries,
+                value as string[],
+                setGeometries,
+                swr
+              )
+            : onSelect(
+                simulation,
+                loadedGeometries,
+                value as string,
+                setGeometries,
+                swr
+              )
+        }}
+      />
+    </div>
   )
 
   /**

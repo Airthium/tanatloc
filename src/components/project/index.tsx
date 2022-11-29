@@ -641,8 +641,6 @@ const Project = (): JSX.Element => {
     () => {
       if (!menuKey) return
 
-      // menuKey === prevMenukey => return
-
       if (menuKey.key === menuItems.geometries.key) {
         setGeometryPanel(menuKey.id)
       } else {
@@ -656,7 +654,7 @@ const Project = (): JSX.Element => {
         }
       }
     },
-    [menuKey],
+    [menuKey, panelVisible],
     [setGeometryPanel, setSimulationPanel, onPanelClose]
   )
 
@@ -886,6 +884,7 @@ const Project = (): JSX.Element => {
                     {
                       key: 'geometry-needed',
                       disabled: true,
+                      className: geometries.length ? 'display-none' : '',
                       icon: (
                         <ExclamationCircleOutlined style={{ color: 'red' }} />
                       ),

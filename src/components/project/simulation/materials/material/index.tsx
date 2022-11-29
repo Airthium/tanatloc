@@ -65,6 +65,27 @@ const Material = ({
   // Data
   const materials = simulation.scheme.configuration.materials
 
+  // Init
+  useEffect(() => {
+    dispatch(setPart(geometries[0]?.summary.uuid))
+  }, [`${geometries}`, dispatch])
+
+  // TODO
+  // // Default
+  // useEffect(() => {
+  //   setCurrent({
+  //     material: {
+  //       label: 'Default',
+  //       children: materials?.children.map((child) => ({
+  //         label: child.label,
+  //         symbol: child.name,
+  //         value: child.default
+  //       }))
+  //     },
+  //     geometry: { index: 0 }
+  //   })
+  // }, [materials])
+
   // Visible
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -237,7 +258,7 @@ const Material = ({
 
         <Tabs
           items={geometries.map((geometry) => ({
-            key: geometry.id,
+            key: geometry.summary.uuid,
             label: geometry.name,
             children: (
               <Selector

@@ -52,6 +52,13 @@ const style: { [key: string]: SerializedStyles } = {
             paddingLeft: '0 !important'
           },
 
+          '.ant-menu-title-content': {
+            '> div': {
+              display: 'flex',
+              justifyContent: 'space-between'
+            }
+          },
+
           ul: {
             li: {
               paddingLeft: '24px !important',

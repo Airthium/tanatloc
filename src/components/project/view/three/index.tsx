@@ -461,8 +461,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   const [screenshot, setScreenshot] = useState<boolean>(false)
   const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
 
-  // console.log(parts)
-
   // Data
   const router = useRouter()
 
@@ -804,10 +802,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     if (!scene.current) return
 
     scene.current.children.forEach((child) => {
-      // TODO mismatch uuid
-      console.log(child.type)
-      console.log(child.userData.uuid)
-      console.log(selectPart)
       if (child.type === 'Part' && child.userData.uuid === selectPart) {
         const partChild = child as IPart
         if (selectEnabled)

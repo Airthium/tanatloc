@@ -35,7 +35,7 @@ describe('context/select', () => {
   test('setPart', () => {
     const part = 'uuid'
     const res = setPart(part)
-    expect(res).toEqual({ type: actionTypes.SETPART, value: {} })
+    expect(res).toEqual({ type: actionTypes.SETPART, value: 'uuid' })
   })
 
   test('highlight', () => {

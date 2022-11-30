@@ -92,64 +92,65 @@ const View = ({
     new Promise(async (resolve) => {
       setLoading(true)
 
-      const newParts = []
+      try {
+        const newParts = []
 
-      // Result
-      if (result) {
-        const prevPart = parts.find((part) => part.extra?.glb === result.glb)
-        if (prevPart) {
-          newParts.push(prevPart)
-        } else {
-          const partContent = await loadPart(simulation, result, 'result')
-          newParts.push(partContent)
+        // Result
+        if (result) {
+          const prevPart = parts.find((part) => part.extra?.glb === result.glb)
+          if (prevPart) {
+            newParts.push(prevPart)
+          } else {
+            const partContent = await loadPart(simulation, result, 'result')
+            newParts.push(partContent)
+          }
         }
-      }
 
-      // Postprocessing
-      if (postprocessing) {
-        const prevPart = parts.find(
-          (part) => part.extra?.glb === postprocessing.glb
-        )
-        if (prevPart) {
-          newParts.push(prevPart)
-        } else {
-          const partContent = await loadPart(
-            simulation,
-            postprocessing,
-            'result'
+        // Postprocessing
+        if (postprocessing) {
+          const prevPart = parts.find(
+            (part) => part.extra?.glb === postprocessing.glb
           )
-          newParts.push(partContent)
-        }
-      }
-
-      // Geometries
-      if (geometries.length) {
-        await Promise.all(
-          geometries.map(async (geometry) => {
-            const prevPart = parts.find(
-              (part) => part.extra?.id === geometry.id
+          if (prevPart) {
+            newParts.push(prevPart)
+          } else {
+            const partContent = await loadPart(
+              simulation,
+              postprocessing,
+              'result'
             )
-            if (prevPart) {
-              newParts.push(prevPart)
-            } else {
-              const partContent = await loadPart(
-                simulation,
-                geometry,
-                'geometry'
+            newParts.push(partContent)
+          }
+        }
+
+        // Geometries
+        if (geometries.length) {
+          await Promise.all(
+            geometries.map(async (geometry) => {
+              const prevPart = parts.find(
+                (part) => part.extra?.id === geometry.id
               )
-              newParts.push(partContent)
-            }
-          })
-        )
+              if (prevPart) {
+                newParts.push(prevPart)
+              } else {
+                const partContent = await loadPart(
+                  simulation,
+                  geometry,
+                  'geometry'
+                )
+                newParts.push(partContent)
+              }
+            })
+          )
+        }
+
+        setParts(newParts)
+      } catch (err) {
+      } finally {
+        setLoading(false)
+
+        resolve(true)
       }
-
-      setParts(newParts)
-
-      setLoading(false)
-
-      resolve(true)
-    }).catch(() => {
-      setLoading(false)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [simulation, `${geometries}`, result, postprocessing, `${parts}`])

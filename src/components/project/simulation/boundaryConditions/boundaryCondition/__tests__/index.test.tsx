@@ -168,6 +168,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometries={[]}
         simulation={{
           id: 'id',
           scheme: {

@@ -85,12 +85,21 @@ describe('components/project/simulation/geometry', () => {
   })
 
   test('with geometry value', async () => {
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
     const { unmount } = render(
       <Geometry
         loadedGeometries={[
           {
             id: 'id',
             name: 'geometry',
+            //@ts-ignore
+            summary: {}
+          },
+          {
+            id: 'id2',
+            name: 'geometry2',
             //@ts-ignore
             summary: {}
           }
@@ -122,11 +131,12 @@ describe('components/project/simulation/geometry', () => {
     )
 
     // Select error
-    const button = screen.getByText('geometry')
-    mockUpdate.mockImplementation(() => {
-      throw new Error('update error')
-    })
-    fireEvent.click(button)
+    const select = screen.getByRole('combobox')
+    fireEvent.mouseDown(select)
+
+    const option = screen.getByText('geometry2')
+    fireEvent.click(option)
+
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>

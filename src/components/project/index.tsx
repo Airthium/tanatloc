@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { NextRouter, useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
@@ -14,13 +14,15 @@ import {
   LoadingOutlined,
   UploadOutlined,
   PlusCircleOutlined,
-  AuditOutlined
+  AuditOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined
 } from '@ant-design/icons'
 import { css } from '@emotion/react'
 
-import { ISimulation } from '@/database/simulation/index'
 import { IModel } from '@/models/index.d'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
 import { GoBack } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -144,7 +146,7 @@ const Project = (): JSX.Element => {
 
   // State
   const [geometryAddVisible, setGeometryAddVisible] = useState<boolean>(false)
-  const [geometry, setGeometry] = useState<IFrontGeometriesItem>()
+  const [geometries, setGeometries] = useState<IFrontGeometriesItem[]>([])
 
   const [simulationSelectorVisible, setSimulationSelectorVisible] =
     useState<boolean>(false)
@@ -169,7 +171,7 @@ const Project = (): JSX.Element => {
     ProjectAPI.useProject(projectId)
 
   const [
-    simulations,
+    loadedSimulations,
     {
       addOneSimulation,
       delOneSimulation,
@@ -179,7 +181,7 @@ const Project = (): JSX.Element => {
     }
   ] = SimulationAPI.useSimulations(project?.simulations)
   const [
-    geometries,
+    loadedGeometries,
     {
       addOneGeometry,
       delOneGeometry,
@@ -188,6 +190,30 @@ const Project = (): JSX.Element => {
       loadingGeometries
     }
   ] = GeometryAPI.useGeometries(project?.geometries)
+
+  /**
+   * Add geometry
+   * @param geometry Geoemtry
+   */
+  const addGeometry = useCallback((geometry: IFrontGeometriesItem): void => {
+    setGeometries((prev) => [...prev, geometry])
+  }, [])
+
+  /**
+   * Del geometry
+   * @param geometry Geometry
+   */
+  const delGeometry = useCallback(
+    (geometry: IFrontGeometriesItem): void => {
+      const index = geometries.findIndex((g) => g.id === geometry.id)
+      if (index === -1) return
+      setGeometries((prev) => [
+        ...prev.slice(0, index),
+        ...prev.slice(index + 1)
+      ])
+    },
+    [geometries]
+  )
 
   /**
    * On panel close
@@ -212,50 +238,91 @@ const Project = (): JSX.Element => {
   }, [errorUser, errorProject, errorSimulations, errorGeometries])
 
   // Auto open geometry add
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!loadingProject && !loadingGeometries) {
-      if (!geometries.length) setGeometryAddVisible(true)
+      if (!loadedGeometries.length) setGeometryAddVisible(true)
       else setGeometryAddVisible(false)
     } else {
       setGeometryAddVisible(false)
     }
-  }, [loadingProject, loadingGeometries, geometries])
+  }, [loadingProject, loadingGeometries, loadedGeometries])
 
   // Update geometry
-  useEffect(() => {
-    if (!loadingGeometries && geometry) {
-      const current = geometries.find((g) => g.id === geometry?.id)
-      if (current) {
-        if (JSON.stringify(current) !== JSON.stringify(geometry))
-          setGeometry(current)
+  useCustomEffect(
+    () => {
+      if (loadingGeometries) return
+
+      if (geometries.length) {
+        let needUpdate = false
+        const newGeometries = geometries
+          .map((geometry) => {
+            const current = loadedGeometries.find((g) => g.id === geometry?.id)
+            if (current) {
+              if (
+                JSON.stringify({ ...current, visible: undefined }) !==
+                JSON.stringify({ ...geometry, visible: undefined })
+              ) {
+                // Update
+                needUpdate = true
+                return current
+              }
+              return geometry
+            } else {
+              // Remove
+              needUpdate = true
+              return null
+            }
+          })
+          .filter((g) => g) as IFrontGeometriesItem[]
+
+        if (needUpdate) setGeometries(newGeometries)
       } else {
-        setGeometry(undefined)
+        setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
       }
-    } else {
-      setGeometry(geometries[0])
-    }
-  }, [geometries, geometry, loadingGeometries, setGeometry])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [loadingGeometries, loadedGeometries, geometries],
+    [setGeometries]
+  )
 
   // Update simulation
-  useEffect(() => {
-    if (!loadingSimulations && simulation) {
-      const current = simulations.find((s) => s.id === simulation?.id)
-      if (current) {
-        if (JSON.stringify(current) !== JSON.stringify(simulation))
-          setSimulation(current)
-      } else {
-        onPanelClose()
-        setSimulation(undefined)
+  useCustomEffect(
+    () => {
+      if (!loadingSimulations && simulation) {
+        const current = loadedSimulations.find((s) => s.id === simulation?.id)
+        if (current) {
+          if (JSON.stringify(current) !== JSON.stringify(simulation)) {
+            setSimulation(current)
+
+            if (menuKey && menuKey.key === menuItems.simulations.key)
+              setSimulationPanel(menuKey.id, menuKey.item!)
+          }
+        } else {
+          onPanelClose()
+          setSimulation(undefined)
+        }
       }
-    }
-  }, [simulations, simulation, loadingSimulations, setSimulation, onPanelClose])
+    },
+    [loadedSimulations, loadingSimulations, simulation, menuKey],
+    [setSimulation, onPanelClose]
+  )
 
   /**
    * On geometry cleanup
+   * @param id Id
    */
-  const onGeometryCleanup = useCallback((): void => {
-    setGeometry({ id: '0', needCleanup: true } as IFrontGeometriesItem)
-  }, [])
+  const onGeometryCleanup = useCallback(
+    (id: string): void => {
+      const index = loadedGeometries.findIndex((geometry) => geometry.id === id)
+      if (index !== -1)
+        setGeometries((prev) => [
+          ...prev.slice(0, index),
+          { id: '0', needCleanup: true } as IFrontGeometriesItem,
+          ...prev.slice(index + 1)
+        ])
+    },
+    [loadedGeometries]
+  )
 
   /**
    * Set geometry panel
@@ -263,10 +330,14 @@ const Project = (): JSX.Element => {
    */
   const setGeometryPanel = useCallback(
     (id: string): void => {
-      const current = geometries.find((g) => g.id === id)
-      if (!current) return
+      const toDisplay = loadedGeometries.find((g) => g.id === id)
+      if (!toDisplay) return
 
-      setGeometry(current)
+      const geometry = geometries.find((g) => g.id === id)
+      if (!geometry) {
+        setGeometries((prev) => [...prev, { ...toDisplay, visible: true }])
+      }
+
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Geometry
@@ -275,9 +346,9 @@ const Project = (): JSX.Element => {
               geometries: project.geometries
             }}
             geometry={{
-              id: current.id,
-              name: current.name,
-              summary: current.summary
+              id: toDisplay.id,
+              name: toDisplay.name,
+              summary: toDisplay.summary
             }}
             swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
             close={onPanelClose}
@@ -288,6 +359,7 @@ const Project = (): JSX.Element => {
     },
     [
       project,
+      loadedGeometries,
       geometries,
       mutateProject,
       mutateOneGeometry,
@@ -302,7 +374,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelAbout = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'About'} onClose={onPanelClose}>
           <Simulation.About
@@ -340,28 +412,26 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelGeometry = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Simulation.Geometry
-            geometries={geometries}
-            geometry={
-              geometry && {
-                id: geometry.id,
-                summary: geometry.summary
-              }
-            }
+            loadedGeometries={loadedGeometries}
+            geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              summary: geometry.summary
+            }))}
             simulation={{
               id: current.id,
               scheme: current.scheme
             }}
-            setGeometry={setGeometry}
+            setGeometries={setGeometries}
             swr={{ mutateOneSimulation }}
           />
         </Panel>
       )
     },
-    [geometries, geometry, mutateOneSimulation, onPanelClose]
+    [loadedGeometries, geometries, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -369,7 +439,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelParameters = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'Parameters'} onClose={onPanelClose}>
           <Simulation.Parameters
@@ -390,7 +460,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelMaterials = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel
           visible={panelVisible}
@@ -398,12 +468,11 @@ const Project = (): JSX.Element => {
           onClose={onPanelClose}
         >
           <Simulation.Materials
-            geometry={
-              geometry && {
-                id: geometry.id,
-                summary: geometry.summary
-              }
-            }
+            geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              name: geometry.name,
+              summary: geometry.summary
+            }))}
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -416,7 +485,7 @@ const Project = (): JSX.Element => {
         </Panel>
       )
     },
-    [geometry, panelVisible, mutateOneSimulation, onPanelClose]
+    [geometries, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -424,18 +493,18 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelInitialization = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={true} title={'Initialization'} onClose={onPanelClose}>
           <Simulation.Initialization
-            simulations={simulations}
+            simulations={loadedSimulations}
             simulation={current}
             swr={{ mutateOneSimulation }}
           />
         </Panel>
       )
     },
-    [simulations, mutateOneSimulation, onPanelClose]
+    [loadedSimulations, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -443,7 +512,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelBoundaryConditions = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel
           visible={panelVisible}
@@ -451,12 +520,11 @@ const Project = (): JSX.Element => {
           onClose={onPanelClose}
         >
           <Simulation.BoundaryConditions
-            geometry={
-              geometry && {
-                id: geometry.id,
-                summary: geometry.summary
-              }
-            }
+            geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              name: geometry.name,
+              summary: geometry.summary
+            }))}
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -469,7 +537,7 @@ const Project = (): JSX.Element => {
         </Panel>
       )
     },
-    [geometry, panelVisible, mutateOneSimulation, onPanelClose]
+    [geometries, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -477,7 +545,7 @@ const Project = (): JSX.Element => {
    * @param current Current simulation
    */
   const setSimulationPanelRun = useCallback(
-    (current: ISimulation): void => {
+    (current: IFrontSimulationsItem): void => {
       setPanel(
         <Panel visible={panelVisible} title={'Run'} onClose={onPanelClose}>
           <Simulation.Run
@@ -509,15 +577,24 @@ const Project = (): JSX.Element => {
    */
   const setSimulationPanel = useCallback(
     (id: string, item: string) => {
-      const current = simulations.find((s) => s.id === id)
+      const current = loadedSimulations.find(
+        (s) => s.id === id
+      ) as IFrontSimulationsItem
       if (!current) return
 
       setSimulation(current)
 
+      // Display geometries
       const geometryId = current.scheme?.configuration?.geometry?.value
-      if (geometryId && geometry?.id !== geometryId) {
-        const currentGeometry = geometries.find((g) => g.id === geometryId)
-        if (currentGeometry) setGeometry(currentGeometry)
+      const geometriesIds = current.scheme?.configuration?.geometry?.values
+      if (geometryId) {
+        const newGeometry = loadedGeometries.find((g) => g.id === geometryId)
+        if (newGeometry) setGeometries([newGeometry])
+      } else if (geometriesIds) {
+        const newGeometries = loadedGeometries.filter((g) =>
+          geometriesIds.includes(g.id)
+        )
+        setGeometries(newGeometries)
       }
 
       switch (item) {
@@ -547,9 +624,8 @@ const Project = (): JSX.Element => {
       }
     },
     [
-      geometry,
-      geometries,
-      simulations,
+      loadedGeometries,
+      loadedSimulations,
       setSimulationPanelAbout,
       setSimulationPanelGeometry,
       setSimulationPanelParameters,
@@ -560,23 +636,27 @@ const Project = (): JSX.Element => {
     ]
   )
 
-  // Panel
-  useEffect(() => {
-    if (!menuKey) return
+  // Update panel
+  useCustomEffect(
+    () => {
+      if (!menuKey) return
 
-    if (menuKey.key === menuItems.geometries.key) {
-      setGeometryPanel(menuKey.id)
-    } else {
-      //menuKey.key === menuItems.simulations.key)
-      setSimulationPanel(menuKey.id, menuKey.item!)
+      if (menuKey.key === menuItems.geometries.key) {
+        setGeometryPanel(menuKey.id)
+      } else {
+        //menuKey.key === menuItems.simulations.key)
+        setSimulationPanel(menuKey.id, menuKey.item!)
 
-      // Force geometry
-      if (menuKey.item !== 'run') {
-        setResult(undefined)
-        setPostprocessing(undefined)
+        // Force geometry
+        if (menuKey.item !== 'run') {
+          setResult(undefined)
+          setPostprocessing(undefined)
+        }
       }
-    }
-  }, [menuKey, setGeometryPanel, setSimulationPanel, onPanelClose])
+    },
+    [menuKey, panelVisible],
+    [setGeometryPanel, setSimulationPanel, onPanelClose]
+  )
 
   // Close result
   useEffect(() => {
@@ -608,78 +688,119 @@ const Project = (): JSX.Element => {
   )
 
   // Geometries render build
-  const geometriesRender = geometries.map((g) => ({
-    key: g.id,
-    icon: <PieChartOutlined />,
-    label: g.name
-  }))
+  const geometriesRender = useMemo(
+    () =>
+      loadedGeometries.map((g) => {
+        const visible = geometries.find((geometry) => geometry.id === g.id)
+        return {
+          key: g.id,
+          icon: <PieChartOutlined />,
+          label: (
+            <div>
+              {g.name}
+              {visible ? (
+                <EyeOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (
+                      panel?.props?.children?.type?.componentName ===
+                      Geometry.componentName
+                    )
+                      onPanelClose()
+                    delGeometry(g)
+                  }}
+                />
+              ) : (
+                <EyeInvisibleOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    addGeometry(g)
+                  }}
+                />
+              )}
+            </div>
+          )
+        }
+      }),
+    [
+      loadedGeometries,
+      geometries,
+      panel,
+      addGeometry,
+      delGeometry,
+      onPanelClose
+    ]
+  )
 
   // Simulations render build
-  const simulationsRender = simulations.map((s) => {
-    const configuration = s.scheme.configuration || {}
-    const categories: ItemType[] = []
-    Object.keys(configuration).forEach((key) => {
-      if (key === 'dimension') return
-      const child = configuration[key]
-      let icon = <CheckCircleOutlined style={{ color: 'green' }} />
-      if (child.error) icon = <CloseCircleOutlined style={{ color: 'red' }} />
-      if (!child.done)
-        icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+  const simulationsRender = useMemo(
+    () =>
+      loadedSimulations.map((s) => {
+        const configuration = s.scheme.configuration || {}
+        const categories: ItemType[] = []
+        Object.keys(configuration).forEach((key) => {
+          if (key === 'dimension') return
+          const child = configuration[key]
+          let icon = <CheckCircleOutlined style={{ color: 'green' }} />
+          if (child.error)
+            icon = <CloseCircleOutlined style={{ color: 'red' }} />
+          if (!child.done)
+            icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
 
-      // Deleted simulation's geometry
-      if (
-        key === 'geometry' &&
-        !geometries.filter((g) => g.id === child.value).length &&
-        !loadingGeometries
-      ) {
-        icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
-        child.done = null
-      }
+          // Deleted simulation's geometry
+          if (
+            key === 'geometry' &&
+            !loadedGeometries.filter((g) => g.id === child.value).length &&
+            !loadingGeometries
+          ) {
+            icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+            child.done = null
+          }
 
-      categories[child.index] = {
-        key: s.id + '&' + key,
-        disabled: !geometries.length,
-        icon: icon,
-        label: child.title
-      }
-    })
+          categories[child.index] = {
+            key: s.id + '&' + key,
+            disabled: !geometries.length,
+            icon: icon,
+            label: child.title
+          }
+        })
 
-    let label = s.name
-    if (s.scheme.user)
-      label = (
-        <>
-          <Tooltip title="User algorithm" placement="right">
-            <AuditOutlined
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 14,
-                fontSize: 14,
-                color: '#fad114'
-              }}
-            />
-          </Tooltip>
-          {s.name}
-        </>
-      )
+        let label = s.name
+        if (s.scheme.user)
+          label = (
+            <>
+              <Tooltip title="User algorithm" placement="right">
+                <AuditOutlined
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 14,
+                    fontSize: 14,
+                    color: '#fad114'
+                  }}
+                />
+              </Tooltip>
+              {s.name}
+            </>
+          )
 
-    return {
-      key: s.id,
-
-      icon: <CodeSandboxOutlined />,
-      label: label,
-      children: [
-        {
-          key: s.id + '&about',
-
-          disabled: !geometries.length,
-          icon: <CheckCircleOutlined style={{ color: 'green' }} />,
-          label: 'About'
-        },
-        ...categories
-      ]
-    }
-  })
+        return {
+          key: s.id,
+          icon: <CodeSandboxOutlined />,
+          label: label,
+          children: [
+            {
+              key: s.id + '&about',
+              disabled: !geometries.length,
+              icon: <CheckCircleOutlined style={{ color: 'green' }} />,
+              label: 'About'
+            },
+            ...categories
+          ]
+        }
+      }),
+    [geometries, loadingGeometries, loadedGeometries, loadedSimulations]
+  )
 
   /**
    * Render
@@ -744,7 +865,7 @@ const Project = (): JSX.Element => {
                   ),
                   label: (
                     <Typography.Text strong>
-                      {menuItems.geometries.label} ({geometries.length})
+                      {menuItems.geometries.label} ({loadedGeometries.length})
                     </Typography.Text>
                   ),
                   children: [
@@ -763,6 +884,7 @@ const Project = (): JSX.Element => {
                     {
                       key: 'geometry-needed',
                       disabled: true,
+                      className: geometries.length ? 'display-none' : '',
                       icon: (
                         <ExclamationCircleOutlined style={{ color: 'red' }} />
                       ),
@@ -781,7 +903,7 @@ const Project = (): JSX.Element => {
                   ),
                   label: (
                     <Typography.Text strong>
-                      {menuItems.simulations.label} ({simulations.length})
+                      {menuItems.simulations.label} ({loadedSimulations.length})
                     </Typography.Text>
                   ),
                   children: [
@@ -790,7 +912,7 @@ const Project = (): JSX.Element => {
                       disabled: true,
                       label: (
                         <Button
-                          disabled={!geometries.length}
+                          disabled={!loadedGeometries.length}
                           icon={<PlusCircleOutlined />}
                           onClick={() => setSimulationSelectorVisible(true)}
                         >
@@ -866,12 +988,10 @@ const Project = (): JSX.Element => {
                 id: simulation.id
               }
             }
-            geometry={
-              geometry && {
-                id: geometry.id,
-                needCleanup: geometry.needCleanup
-              }
-            }
+            geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              needCleanup: geometry.needCleanup
+            }))}
             result={
               result && {
                 glb: result.glb,

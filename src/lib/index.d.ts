@@ -44,6 +44,10 @@ export interface IGeometryFile {
 export interface IGeometryPart {
   summary: TGeometrySummary
   buffer: Buffer
+  extra?: {
+    id?: string
+    glb?: string
+  }
 }
 
 /**

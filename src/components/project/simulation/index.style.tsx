@@ -25,13 +25,11 @@ const style: { [key: string]: SerializedStyles } = {
     }
   }),
   geometriesList: css({
-    padding: '20px',
-    borderTop: '1px solid #bfbfbf',
-    borderBottom: '1px solid #bfbfbf',
-    boxShadow: '0px -1px 0px #f0f0f0',
+    width: '100%',
+    padding: '12px',
 
-    '&:hover': {
-      cursor: 'pointer'
+    '> .ant-select': {
+      width: '100%'
     }
   }),
   waring: css({

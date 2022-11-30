@@ -76,7 +76,7 @@ import {
   select,
   unhighlight,
   unselect,
-  setPart,
+  // setPart,
   setPoint
 } from '@/context/select/actions'
 
@@ -91,7 +91,7 @@ import style from './index.style'
 export interface IProps {
   loading: boolean
   project: Pick<IFrontProject, 'id' | 'title'>
-  part?: IGeometryPart
+  parts: IGeometryPart[]
 }
 
 /**
@@ -312,7 +312,7 @@ export const loadPart = async (
     options.displayMesh,
     helpers.sectionViewHelper.getClippingPlane()
   )
-  dispatch(setPart(mesh))
+  // dispatch(setPart(mesh))
 
   // Scene
   scene.add(mesh)
@@ -439,7 +439,7 @@ export const downloadScreenshot = (
  * @param props Props
  * @returns ThreeView
  */
-const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
+const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   // Ref
   const mount = useRef<HTMLDivElement>(null)
   const scene = useRef<Scene & { boundingBox: Box3; boundingSphere: Sphere }>()
@@ -703,29 +703,48 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     }
   }, [router])
 
+  // Parts
   useEffect(() => {
     if (!scene.current) return
+    const sceneChildren = scene.current.children
 
-    // Check part update
-    const currentPart = scene.current.children.find(
-      (child) => child.type === 'Part' && child.uuid === part?.summary.uuid
+    // Check parts
+    if (!parts.length) {
+      // Bounding sphere
+      computeSceneBoundingSphere(scene.current)
+
+      // Grid
+      gridHelper.current!.update()
+
+      // PointHelper
+      pointHelper.current?.build()
+    }
+
+    // Check part to add
+    const toAdd = parts.filter(
+      (part) => !sceneChildren.find((child) => child.uuid === part.summary.uuid)
     )
-    if (currentPart) return
 
-    // Clean scene
-    scene.current.children.forEach((child) => {
-      if (child.type === 'Part') {
-        const partChild = child as IPart
-        scene.current!.remove(partChild)
-        partChild.dispose()
-      }
+    // Check parts to remove
+    const toRemove = sceneChildren
+      .filter(
+        (child) => !parts.find((part) => part.summary.uuid === child.uuid)
+      )
+      .filter((child) => child.type === 'Part')
+
+    // Remove
+    toRemove.forEach((child) => {
+      const part = child as IPart
+      scene.current?.remove(part)
+      part.dispose()
     })
 
-    if (part) {
+    // Add
+    toAdd.forEach((part) => {
       // Load
       loadPart(
         part,
-        scene.current,
+        scene.current!,
         camera.current!,
         controls.current!,
         {
@@ -743,24 +762,15 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         ErrorNotification(errors.load, err)
         computeSceneBoundingSphere(scene.current!)
       })
-    } else {
-      // Scene
-      computeSceneBoundingSphere(scene.current)
-
-      // Grid
-      gridHelper.current!.update()
-
-      // PointHelper
-      pointHelper.current?.build()
-    }
-  }, [part, transparent, displayMesh, dispatch])
+    })
+  }, [parts, transparent, displayMesh, dispatch])
 
   // Dimension
   useEffect(() => {
     if (!scene.current) return
 
     // Dimension
-    if (part?.summary.dimension === 2) {
+    if (parts[0]?.summary.dimension === 2) {
       computeSceneBoundingSphere(scene.current)
 
       // Set camera
@@ -785,14 +795,14 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       // Activate rotate
       controls.current!.noRotate = false
     }
-  }, [part])
+  }, [parts])
 
   // Enable / disable selection
   useEffect(() => {
     if (!scene.current) return
 
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
+      if (child.type === 'Part' && child.userData.uuid === selectPart) {
         const partChild = child as IPart
         if (selectEnabled)
           partChild.startSelection(
@@ -813,7 +823,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     if (!scene.current) return
 
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part' && child.uuid === selectPart?.uuid) {
+      if (child.type === 'Part' && child.uuid === selectPart) {
         const partChild = child as IPart
         // Highlight
         partChild.highlight(selectHighlighted?.uuid)
@@ -1069,20 +1079,22 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
           </>
         )}
 
-        {part?.summary.type === 'result' && (
-          <>
-            <Divider css={globalStyleFn.margin(0)} />
+        <div>
+          {parts.filter((part) => part.summary.type === 'result').length ? (
+            <>
+              <Divider className="no-margin" />
 
-            <Tooltip title="Display mesh" placement="left">
-              <Switch
-                checked={displayMesh}
-                checkedChildren={<TableOutlined />}
-                unCheckedChildren={<TableOutlined />}
-                onChange={toggleDisplayMesh}
-              />
-            </Tooltip>
-          </>
-        )}
+              <Tooltip title="Display result mesh" placement="right">
+                <Switch
+                  checked={displayMesh}
+                  checkedChildren={<TableOutlined />}
+                  unCheckedChildren={<TableOutlined />}
+                  onChange={toggleDisplayMesh}
+                />
+              </Tooltip>
+            </>
+          ) : null}
+        </div>
       </Layout.Header>
       <Layout.Content css={css([globalStyle.noScroll, style.content])}>
         <div

@@ -36,7 +36,7 @@ export interface IProps {
     delOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
   }
   close: () => void
-  onCleanup: () => void
+  onCleanup: (id: string) => void
 }
 
 /**
@@ -209,7 +209,7 @@ const Geometry = ({
                 setDeleting(true)
                 try {
                   await onDelete(geometry, project, close, swr)
-                  onCleanup()
+                  onCleanup(geometry.id)
                 } finally {
                   setDeleting(false)
                 }
@@ -253,5 +253,6 @@ const Geometry = ({
   )
 }
 
+Geometry.componentName = 'Geometry'
 Geometry.Add = Add
 export default Geometry

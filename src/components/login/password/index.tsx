@@ -1,7 +1,7 @@
 /** @module Components.Login.Password */
 
-import { useState } from 'react'
-import { Button, Form, Input, Typography } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
 import {
@@ -43,9 +43,17 @@ export const passwordRecover = async (value: {
  * @returns PasswordRecover
  */
 const PasswordRecover = (): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -76,7 +84,11 @@ const PasswordRecover = (): JSX.Element => {
           label="Your email address"
           rules={[{ required: true, message: 'Email is required' }]}
         >
-          <Input placeholder="Email address" autoComplete="email" />
+          <Input
+            ref={inputRef}
+            placeholder="Email address"
+            autoComplete="email"
+          />
         </Form.Item>
       </Dialog>
       <Typography.Text>

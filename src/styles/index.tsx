@@ -116,6 +116,6 @@ export const globalStyleFn: {
     }),
   maxWidth: (size: number | string) =>
     css({
-      maxWidth: size === 'auto' ? size : size + 'px' + ' !important'
+      maxWidth: typeof size === 'string' ? size : size + 'px' + ' !important'
     })
 }

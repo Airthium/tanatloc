@@ -33,10 +33,13 @@ jest.mock('@/context/select/actions', () => ({
 }))
 
 describe('components/project/simulation/materials', () => {
-  const geometry = {
-    id: 'id',
-    summary: {}
-  } as Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  const geometries = [
+    {
+      id: 'id',
+      name: 'name',
+      summary: {}
+    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+  ]
   const simulation = {
     id: 'id',
     scheme: {
@@ -82,7 +85,7 @@ describe('components/project/simulation/materials', () => {
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
         <Materials
-          geometry={geometry}
+          geometries={geometries}
           simulation={simulation}
           swr={swr}
           setVisible={setVisible}
@@ -101,14 +104,16 @@ describe('components/project/simulation/materials', () => {
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
         <Materials
-          geometry={{
-            ...geometry,
-            summary: {
-              uuid: 'uuid',
-              type: 'geometry2D',
-              dimension: 2
+          geometries={[
+            {
+              ...geometries[0],
+              summary: {
+                uuid: 'uuid',
+                type: 'geometry2D',
+                dimension: 2
+              }
             }
-          }}
+          ]}
           simulation={simulation}
           swr={swr}
           setVisible={setVisible}
@@ -126,7 +131,12 @@ describe('components/project/simulation/materials', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <Materials simulation={simulation} swr={swr} setVisible={setVisible} />
+        <Materials
+          geometries={[]}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
       </SelectContext.Provider>
     )
 
@@ -142,7 +152,7 @@ describe('components/project/simulation/materials', () => {
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
         <Materials
-          geometry={geometry}
+          geometries={geometries}
           simulation={simulation}
           swr={swr}
           setVisible={setVisible}
@@ -169,7 +179,7 @@ describe('components/project/simulation/materials', () => {
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
         <Materials
-          geometry={geometry}
+          geometries={geometries}
           simulation={simulation}
           swr={swr}
           setVisible={setVisible}
@@ -195,7 +205,7 @@ describe('components/project/simulation/materials', () => {
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
         <Materials
-          geometry={geometry}
+          geometries={geometries}
           simulation={simulation}
           swr={swr}
           setVisible={setVisible}

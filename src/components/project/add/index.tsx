@@ -1,8 +1,8 @@
 /** @module Components.Project.Add */
 
 import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { Form, Input } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT } from '@/config/string'
 
@@ -16,6 +16,8 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 import ProjectAPI from '@/api/project'
+
+import { globalStyleFn } from '@/styles'
 
 /**
  * Props
@@ -75,12 +77,20 @@ export const onAdd = async (
  * @returns Add
  */
 const Add = ({ workspace, swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const router = useRouter()
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -130,13 +140,15 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
             }
           ]}
         >
-          <Input placeholder="Project's name" />
+          <Input ref={inputRef} placeholder="Project's name" />
         </Form.Item>
         <Form.Item label="Description" name="description">
           <Input.TextArea
             showCount
+            css={globalStyleFn.marginBottom(20)}
             maxLength={120}
             placeholder="Project's description"
+            onKeyUp={(event) => event.stopPropagation()}
           />
         </Form.Item>
       </Dialog>

@@ -1,7 +1,7 @@
 /** @module Components.Administration.User.Delete */
 
-import { useState } from 'react'
-import { Checkbox, Form, Input, Select } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
@@ -100,9 +100,17 @@ export const onUpdate = async (
  * @returns Edit
  */
 const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -134,7 +142,7 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
         <Form.Item name="lastname" label="Last name">
           <Input />

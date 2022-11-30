@@ -1,7 +1,7 @@
 /** @module Components.Editor.Blobs.FiniteElementFunction */
 
-import { Dispatch, useContext, useState } from 'react'
-import { Button, Form, Input, Typography } from 'antd'
+import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
@@ -60,12 +60,20 @@ const unknownFunction = dimension === 2 ? '[${values.unknown1}, ${values.unknown
  * @returns FiniteElementFunction
  */
 const FiniteElementFunction = (): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
   const { template, cursor, dispatch } = useContext(EditorContext)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -90,7 +98,7 @@ const FiniteElementFunction = (): JSX.Element => {
           label={<Typography.Text strong>Test function</Typography.Text>}
         >
           <Form.Item label="First coordinate" name="test1">
-            <Input placeholder="Ux" />
+            <Input ref={inputRef} placeholder="Ux" />
           </Form.Item>
           <Form.Item label="Second coordinate" name="test2">
             <Input placeholder="Uy" />

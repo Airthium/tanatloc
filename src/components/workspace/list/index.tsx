@@ -1,8 +1,8 @@
 /** @module Components.Workspace.List */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useState } from 'react'
-import { Empty, Form, Input, Layout, Tabs, Typography } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Empty, Form, Input, InputRef, Layout, Tabs, Typography } from 'antd'
 
 import { LIMIT } from '@/config/string'
 
@@ -93,6 +93,9 @@ const WorkspacesList = ({
   organizations,
   swr
 }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -101,6 +104,11 @@ const WorkspacesList = ({
   const router = useRouter()
   const { page, workspaceId }: { page?: string; workspaceId?: string } =
     router.query
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -150,7 +158,7 @@ const WorkspacesList = ({
                   }
                 ]}
               >
-                <Input placeholder="Workspace's name" />
+                <Input ref={inputRef} placeholder="Workspace's name" />
               </Form.Item>
             </Dialog>
             <Tabs

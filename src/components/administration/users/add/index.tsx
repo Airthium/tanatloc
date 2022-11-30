@@ -1,7 +1,7 @@
 /** @module Components.Administration.User.Add */
 
-import { useState } from 'react'
-import { Checkbox, Form, Input, Select } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -101,12 +101,20 @@ export const onAdd = async (
  * @returns Add
  */
 const Add = ({ plugins, swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const [system] = SystemAPI.useSystem()
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -138,7 +146,7 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
         <Form.Item name="lastname" label="Last name">
           <Input />

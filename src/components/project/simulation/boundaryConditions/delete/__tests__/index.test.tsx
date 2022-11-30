@@ -56,6 +56,9 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
                   key: 'key',
                   label: 'key'
                 },
+                geometry: {
+                  index: 0
+                },
                 selected: [{ uuid: 'uuid', label: 1 }]
               },
               {
@@ -64,6 +67,9 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
                 type: {
                   key: 'key',
                   label: 'key'
+                },
+                geometry: {
+                  index: 0
                 },
                 selected: []
               }

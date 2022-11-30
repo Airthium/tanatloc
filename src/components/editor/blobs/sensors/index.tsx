@@ -1,7 +1,7 @@
 /** @module Components.Editor.Blobs.Sensors */
 
-import { Dispatch, useContext, useState } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import { Button, Form, Input, InputRef } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
@@ -45,12 +45,20 @@ export const onAdd = (
  * @returns Sensors
  */
 const Sensors = (): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
   const { template, cursor, dispatch } = useContext(EditorContext)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -76,7 +84,7 @@ const Sensors = (): JSX.Element => {
           name="x"
           rules={[{ required: true }]}
         >
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
       </Dialog>
       <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>

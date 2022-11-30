@@ -75,6 +75,9 @@ describe('lib/download/summary', () => {
                 }
               ]
             },
+            geometry: {
+              index: 0
+            },
             selected: [{ uuid: 'uuid', label: 1 }]
           }
         ]
@@ -130,6 +133,9 @@ describe('lib/download/summary', () => {
                   checked: false
                 }
               ],
+              geometry: {
+                index: 0
+              },
               selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
@@ -146,6 +152,9 @@ describe('lib/download/summary', () => {
               type: {
                 key: 'undefined',
                 label: 'undefined'
+              },
+              geometry: {
+                index: 0
               },
               selected: []
             }
@@ -230,6 +239,9 @@ describe('lib/download/summary', () => {
                   checked: false
                 }
               ],
+              geometry: {
+                index: 0
+              },
               selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
@@ -246,6 +258,9 @@ describe('lib/download/summary', () => {
               type: {
                 key: 'undefined',
                 label: 'undefined'
+              },
+              geometry: {
+                index: 0
               },
               selected: []
             }

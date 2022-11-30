@@ -110,7 +110,6 @@ export const onLogout = async (
   try {
     await logout()
     clearUser()
-
     router.push('/')
   } catch (err) {
     ErrorNotification(errors.logout, err)

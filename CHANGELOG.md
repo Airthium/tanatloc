@@ -1,3 +1,22 @@
+## v1.1.7
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :arrow_up: Ant Design v5
+  - :rocket: Multiple geometry support - Phase 1
+- Client:
+  - :rocket: Focus & submit on enter in dialog
+
+---
+
+## v1.1.6
+
+- Client:
+  - :arrow_up: Update dependencies
+  - :rocket: Open editor
+
+---
+
 ## v1.1.5
 
 - Global

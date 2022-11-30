@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.About.Edit */
 
-import { useState } from 'react'
-import { Form, Input } from 'antd'
+import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef } from 'antd'
 
 import { EditButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -66,9 +66,17 @@ export const onEdit = async (
  * @çeturns Edit
  */
 const Edit = ({ simulation, swr }: IProps): JSX.Element => {
+  // Ref
+  const inputRef = useRef<InputRef>(null)
+
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Autofocus
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  })
 
   /**
    * Render
@@ -101,7 +109,7 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
           label="Name:"
           rules={[{ required: true, message: 'Name is required' }]}
         >
-          <Input />
+          <Input ref={inputRef} />
         </Form.Item>
       </Dialog>
     </>

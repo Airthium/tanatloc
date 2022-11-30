@@ -58,6 +58,9 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       key: 'key',
       label: 'type'
     },
+    geometry: {
+      index: 1
+    },
     selected: [
       { uuid: 'uuid1', label: 1 },
       { uuid: 'uuid3', label: 1 }

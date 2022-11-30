@@ -17,7 +17,9 @@ import ResultAPI from '@/api/result'
 
 import ThreeView from './three'
 
-export type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'>
+export type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'> & {
+  visible?: boolean
+}
 export type TResult = Pick<IFrontResult, 'glb' | 'originPath'>
 
 /**
@@ -26,7 +28,7 @@ export type TResult = Pick<IFrontResult, 'glb' | 'originPath'>
 export interface IProps {
   project: Pick<IFrontProject, 'id' | 'title'>
   simulation?: Pick<IFrontSimulationsItem, 'id'>
-  geometry?: TGeometry
+  geometries: TGeometry[]
   result?: TResult
   postprocessing?: TResult
 }
@@ -53,13 +55,15 @@ const loadPart = async (
   try {
     if (type === 'geometry') {
       const geometry = file as Pick<IFrontGeometriesItem, 'id'>
-      return await GeometryAPI.getPart({ id: geometry.id })
+      const part = await GeometryAPI.getPart({ id: geometry.id })
+      return { ...part, extra: { id: geometry.id } }
     } else {
       const result = file as Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
-      return await ResultAPI.load(
+      const part = await ResultAPI.load(
         { id: simulation!.id },
         { originPath: result.originPath, glb: result.glb! }
       )
+      return { ...part, extra: { glb: result.glb } }
     }
   } catch (err) {
     ErrorNotification(errors.part, err)
@@ -75,54 +79,80 @@ const loadPart = async (
 const View = ({
   project,
   simulation,
-  geometry,
+  geometries,
   result,
   postprocessing
 }: IProps): JSX.Element => {
   // State
-  const [part, setPart] = useState<IGeometryPart>()
-  const [previous, setPrevious] = useState<TGeometry | TResult>()
+  const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
-  // Part
+  // Parts
   useEffect(() => {
-    if (simulation && postprocessing) {
-      if (postprocessing.glb !== (previous as TResult)?.glb) {
-        setPrevious(postprocessing)
+    new Promise(async (resolve) => {
+      setLoading(true)
 
-        setLoading(true)
-        loadPart(simulation, postprocessing, 'result')
-          .then((partLoaded) => setPart(partLoaded))
-          .catch((_err) => undefined)
-          .finally(() => setLoading(false))
-      }
-    } else if (simulation && result) {
-      if (result.glb !== (previous as TResult)?.glb) {
-        setPrevious(result)
+      const newParts = []
 
-        setLoading(true)
-        loadPart(simulation, result, 'result')
-          .then((partLoaded) => setPart(partLoaded))
-          .catch((_err) => undefined)
-          .finally(() => setLoading(false))
-      }
-    } else if (geometry) {
-      if (geometry.id !== (previous as TGeometry)?.id) {
-        setPrevious(geometry)
-
-        setLoading(true)
-        if (geometry.needCleanup) {
-          setPart(undefined)
-          setLoading(false)
+      // Result
+      if (result) {
+        const prevPart = parts.find((part) => part.extra?.glb === result.glb)
+        if (prevPart) {
+          newParts.push(prevPart)
         } else {
-          loadPart(undefined, geometry, 'geometry')
-            .then((partLoaded) => setPart(partLoaded))
-            .catch((_err) => undefined)
-            .finally(() => setLoading(false))
+          const partContent = await loadPart(simulation, result, 'result')
+          newParts.push(partContent)
         }
       }
-    }
-  }, [simulation, geometry, result, postprocessing, previous])
+
+      // Postprocessing
+      if (postprocessing) {
+        const prevPart = parts.find(
+          (part) => part.extra?.glb === postprocessing.glb
+        )
+        if (prevPart) {
+          newParts.push(prevPart)
+        } else {
+          const partContent = await loadPart(
+            simulation,
+            postprocessing,
+            'result'
+          )
+          newParts.push(partContent)
+        }
+      }
+
+      // Geometries
+      if (geometries.length) {
+        await Promise.all(
+          geometries.map(async (geometry) => {
+            const prevPart = parts.find(
+              (part) => part.extra?.id === geometry.id
+            )
+            if (prevPart) {
+              newParts.push(prevPart)
+            } else {
+              const partContent = await loadPart(
+                simulation,
+                geometry,
+                'geometry'
+              )
+              newParts.push(partContent)
+            }
+          })
+        )
+      }
+
+      setParts(newParts)
+
+      setLoading(false)
+
+      resolve(true)
+    }).catch(() => {
+      setLoading(false)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [simulation, `${geometries}`, result, postprocessing, `${parts}`])
 
   /**
    * Render
@@ -134,7 +164,7 @@ const View = ({
         id: project.id,
         title: project.title
       }}
-      part={part}
+      parts={parts}
     />
   )
 }

@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions */
 
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useState, useCallback, useContext } from 'react'
 import { Card, Layout } from 'antd'
 
 import {
@@ -8,6 +8,7 @@ import {
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
 import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
@@ -28,7 +29,7 @@ import BoundaryCondition from './boundaryCondition'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -42,7 +43,7 @@ export interface IProps {
  */
 const BoundaryConditions = ({
   simulation,
-  geometry,
+  geometries,
   swr,
   setVisible
 }: IProps): JSX.Element => {
@@ -59,11 +60,17 @@ const BoundaryConditions = ({
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
   // Part
-  useEffect(() => {
-    if (geometry?.summary) {
-      dispatch(setType(geometry.summary.dimension === 2 ? 'edges' : 'faces'))
-    }
-  }, [geometry, dispatch])
+  useCustomEffect(
+    () => {
+      if (geometries[0]?.summary) {
+        dispatch(
+          setType(geometries[0].summary.dimension === 2 ? 'edges' : 'faces')
+        )
+      }
+    },
+    [geometries],
+    [dispatch]
+  )
 
   /**
    * On add
@@ -108,7 +115,7 @@ const BoundaryConditions = ({
   /**
    * Render
    */
-  if (!geometry) return <Loading.Simple />
+  if (!geometries.length) return <Loading.Simple />
   return (
     <Layout>
       <Layout.Content>
@@ -126,7 +133,11 @@ const BoundaryConditions = ({
           />
           <BoundaryCondition
             visible={boundaryConditionVisible}
-            geometry={{ summary: geometry.summary }}
+            geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              name: geometry.name,
+              summary: geometry.summary
+            }))}
             simulation={{
               id: simulation.id,
               scheme: simulation.scheme
@@ -136,6 +147,7 @@ const BoundaryConditions = ({
                 uuid: boundaryCondition.uuid,
                 name: boundaryCondition.name,
                 type: boundaryCondition.type,
+                geometry: boundaryCondition.geometry,
                 selected: boundaryCondition.selected,
                 values: boundaryCondition.values
               }

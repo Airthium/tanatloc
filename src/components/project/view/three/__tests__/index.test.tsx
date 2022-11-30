@@ -186,10 +186,12 @@ describe('components/project/view/three', () => {
     id: 'id',
     title: 'title'
   }
-  const part = {
-    summary: { uuid: 'uuid', type: 'result' } as TGeometrySummary,
-    buffer: Buffer.from('buffer')
-  }
+  const parts = [
+    {
+      summary: { uuid: 'uuid', type: 'result' } as TGeometrySummary,
+      buffer: Buffer.from('buffer')
+    }
+  ]
 
   beforeEach(() => {
     mockErroNotification.mockReset()
@@ -312,7 +314,7 @@ describe('components/project/view/three', () => {
           dispatch: jest.fn
         }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -325,7 +327,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -337,7 +339,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={true} project={project} part={part} />
+        <ThreeView loading={true} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -351,7 +353,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={true} project={project} />
+        <ThreeView loading={true} project={project} parts={[]} />
       </SelectContext.Provider>
     )
 
@@ -374,7 +376,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={true} project={project} part={part} />
+        <ThreeView loading={true} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -387,7 +389,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -399,7 +401,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
     window.dispatchEvent(new Event('resize'))
@@ -414,7 +416,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -512,7 +514,7 @@ describe('components/project/view/three', () => {
           dispatch: jest.fn
         }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -524,7 +526,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -544,7 +546,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -562,10 +564,12 @@ describe('components/project/view/three', () => {
         <ThreeView
           loading={loading}
           project={project}
-          part={{
-            ...part,
-            summary: { uuid: 'uuid', type: 'geometry2D', dimension: 2 }
-          }}
+          parts={[
+            {
+              ...parts[0],
+              summary: { uuid: 'uuid', type: 'geometry2D', dimension: 2 }
+            }
+          ]}
         />
       </SelectContext.Provider>
     )
@@ -583,7 +587,7 @@ describe('components/project/view/three', () => {
           dispatch: jest.fn
         }}
       >
-        <ThreeView loading={loading} project={project} part={part} />
+        <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
@@ -599,10 +603,12 @@ describe('components/project/view/three', () => {
         <ThreeView
           loading={loading}
           project={project}
-          part={{
-            summary: { uuid: 'uuid1' } as TGeometrySummary,
-            buffer: Buffer.from('buffer')
-          }}
+          parts={[
+            {
+              summary: { uuid: 'uuid1' } as TGeometrySummary,
+              buffer: Buffer.from('buffer')
+            }
+          ]}
         />
       </SelectContext.Provider>
     )
@@ -620,7 +626,7 @@ describe('components/project/view/three', () => {
       <SelectContext.Provider
         value={{ enabled: false, selected: [], dispatch: jest.fn }}
       >
-        <ThreeView loading={true} project={project} part={part} />
+        <ThreeView loading={true} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 

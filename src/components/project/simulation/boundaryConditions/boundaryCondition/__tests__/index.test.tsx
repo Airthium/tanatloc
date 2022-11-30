@@ -34,9 +34,13 @@ jest.mock(
 )
 
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
-  const geometry = {
-    summary: {}
-  } as Pick<IFrontGeometriesItem, 'summary'>
+  const geometries = [
+    {
+      id: 'id',
+      name: 'name',
+      summary: {}
+    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+  ]
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
@@ -68,6 +72,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
                   key: 'key',
                   label: 'key'
                 },
+                geometry: { index: 0 },
                 selected: []
               }
             ]
@@ -113,7 +118,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -127,7 +132,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { rerender, unmount } = render(
       <BoundaryCondition
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         boundaryCondition={{
           uuid: 'uuid',
@@ -135,6 +140,9 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           type: {
             key: 'key',
             label: 'key'
+          },
+          geometry: {
+            index: 0
           },
           selected: [{ uuid: 'uuid', label: 1 }]
         }}
@@ -146,7 +154,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     rerender(
       <BoundaryCondition
         visible={false}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -209,7 +217,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -244,7 +252,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         swr={swr}
         onClose={onClose}
@@ -293,7 +301,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
-        geometry={geometry}
+        geometries={geometries}
         simulation={simulation}
         boundaryCondition={{
           uuid: 'uuid',
@@ -301,6 +309,9 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           type: {
             key: 'key',
             label: 'key'
+          },
+          geometry: {
+            index: 0
           },
           selected: [{ uuid: 'uuid', label: 1 }]
         }}

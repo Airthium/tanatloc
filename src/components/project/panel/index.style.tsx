@@ -14,6 +14,12 @@ const style: { [key: string]: SerializedStyles } = {
       maxWidth: '80%'
     },
 
+    '& > .ant-card-body': {
+      maxHeight: 'calc(100vh - 65px)',
+      overflow: 'auto',
+      padding: 0
+    },
+
     '& .ant-card-head': {
       height: '48px',
       fontSize: '20px',

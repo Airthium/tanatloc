@@ -42,8 +42,11 @@ export interface IModelCommon {
  */
 export interface IModelGeometry extends IModelCommon {
   meshable: boolean
+  multiple?: boolean
+  n?: number
   dimension?: number
   value?: string
+  values?: string[]
   file?: string
   name?: string
   path?: string
@@ -86,6 +89,9 @@ export interface IModelMaterialsValue {
       symbol: string
       value: number | string
     }[]
+  }
+  geometry: {
+    index: number
   }
   selected: { uuid: string; label: number }[]
 }
@@ -193,6 +199,9 @@ export interface IModelBoundaryConditionValue {
     key: string
     label: string
     children?: IModelBoundaryCondition[]
+  }
+  geometry: {
+    index: number
   }
   selected: { uuid: string; label: number }[]
   values?: {

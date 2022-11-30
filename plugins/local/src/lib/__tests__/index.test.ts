@@ -527,6 +527,9 @@ describe('plugins/local/src/lib', () => {
                     key: 'key',
                     label: 'label'
                   },
+                  geometry: {
+                    index: 0
+                  },
                   selected: [{ uuid: 'uuid', label: 1 }]
                 }
               ],
@@ -579,6 +582,9 @@ describe('plugins/local/src/lib', () => {
                   type: {
                     key: 'key',
                     label: 'label'
+                  },
+                  geometry: {
+                    index: 0
                   },
                   selected: [{ uuid: 'uuid', label: 1 }]
                 }
@@ -633,6 +639,9 @@ describe('plugins/local/src/lib', () => {
                     type: {
                       key: 'key',
                       label: 'label'
+                    },
+                    geometry: {
+                      index: 0
                     },
                     selected: [{ uuid: 'uuid', label: 1 }]
                   }

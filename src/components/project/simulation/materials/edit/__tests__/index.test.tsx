@@ -129,6 +129,9 @@ describe('components/project/simulation/materials/edit', () => {
               label: 'label',
               children: []
             },
+            geometry: {
+              index: 0
+            },
             selected: []
           } as IModelMaterialsValue
         }

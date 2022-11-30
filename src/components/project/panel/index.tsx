@@ -2,6 +2,7 @@
 
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
+import { css } from '@emotion/react'
 
 import style from './index.style'
 
@@ -26,12 +27,7 @@ const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
    */
   return (
     <Card
-      css={style.panel}
-      bodyStyle={{
-        maxHeight: 'calc(100vh - 65px)',
-        overflow: 'auto',
-        padding: 0
-      }}
+      css={css([style.panel, { display: visible ? 'block' : 'none' }])}
       title={title}
       extra={
         <Button
@@ -40,7 +36,6 @@ const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
           onClick={() => onClose()}
         />
       }
-      style={{ display: visible ? 'block' : 'none' }}
     >
       {children}
     </Card>

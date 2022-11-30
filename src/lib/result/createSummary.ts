@@ -104,6 +104,10 @@ const materialsSummary = (
       )
     })
 
+    stream.write('  - Geometry: ')
+    stream.write(value.geometry.index)
+    stream.write('\n')
+
     stream.write('  - Selected: [')
     stream.write(value.selected.map((select) => select.label).join(', '))
     stream.write(']\n')

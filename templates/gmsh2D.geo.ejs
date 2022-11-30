@@ -93,8 +93,19 @@ For i In {0:#S[]-1}
 		CLabel = CLabel + 1;
 	EndFor
 
-	P() = PointsOf { Curve{C[]}; };
+	P() = PointsOf { Surface{S[i]}; };
 	Characteristic Length { P[] } = globalSize;
+
+	// Compute normal orientation
+	A[] = Point{P[0]};
+	B[] = Point{P[1]};
+	C[] = Point{P[2]};
+	normalZ = (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0]);
+	If (normalZ < 0)
+		// Reverse surface
+		Printf("Reverse surface %g", i);
+		ReverseMesh Surface{S[i]};
+	EndIf
 EndFor
 // End physical labels
 

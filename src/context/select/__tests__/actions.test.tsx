@@ -1,5 +1,3 @@
-import { IPart } from '@/lib/three/loaders/PartLoader'
-
 import { actionTypes } from '..'
 import {
   enable,
@@ -35,7 +33,7 @@ describe('context/select', () => {
   })
 
   test('setPart', () => {
-    const part = {} as IPart
+    const part = 'uuid'
     const res = setPart(part)
     expect(res).toEqual({ type: actionTypes.SETPART, value: {} })
   })

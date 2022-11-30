@@ -57,6 +57,17 @@ const Index = (): JSX.Element => {
   }, [router])
 
   /**
+   * Get started
+   */
+  const getStarted = useCallback(() => {
+    if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
+      scrollToView('getStarted')
+    } else {
+      router.push('/signup')
+    }
+  }, [router])
+
+  /**
    * On download
    * @param key Key
    */
@@ -245,7 +256,7 @@ const Index = (): JSX.Element => {
                   your needs.
                 </Typography.Text>
 
-                <Button type="primary" onClick={() => getStarted(router)}>
+                <Button type="primary" onClick={getStarted}>
                   Get Started
                 </Button>
               </Space>

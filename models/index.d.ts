@@ -1,5 +1,6 @@
 /** @module Models.Interface */
 
+import { ISimulationTaskFile } from '@/database/simulation'
 import { IClientPlugin } from '@/plugins/index.d'
 
 type TValue = boolean | number | string
@@ -47,14 +48,22 @@ export interface IModelGeometry extends IModelCommon {
   dimension?: number
   value?: string
   values?: string[]
-  file?: string
-  name?: string
-  path?: string
+  data?: {
+    file?: string
+    name?: string
+    path?: string
+  }
+  datas?: {
+    file?: string
+    name?: string
+    path?: string
+  }[]
   meshParameters?: {
     type: string
     value: string
   }
-  mesh?: {}
+  mesh?: ISimulationTaskFile
+  meshes?: ISimulationTaskFile[]
 }
 
 export interface IModelMeshRefinement {
@@ -90,9 +99,7 @@ export interface IModelMaterialsValue {
       value: number | string
     }[]
   }
-  geometry: {
-    index: number
-  }
+  geometry: string
   selected: { uuid: string; label: number }[]
 }
 
@@ -200,9 +207,7 @@ export interface IModelBoundaryConditionValue {
     label: string
     children?: IModelBoundaryCondition[]
   }
-  geometry: {
-    index: number
-  }
+  geometry: string
   selected: { uuid: string; label: number }[]
   values?: {
     checked?: boolean

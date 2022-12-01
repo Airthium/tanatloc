@@ -1,5 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { IFrontGeometriesItem } from '@/api/index.d'
+
 import List from '@/components/project/simulation/materials/list'
 
 import { ISimulation } from '@/database/simulation/index'
@@ -22,6 +24,14 @@ jest.mock('@/context/select/actions', () => ({
 }))
 
 describe('components/project/simulation/materials/list', () => {
+  const geometries = [
+    {
+      id: 'id',
+      summary: {
+        uuid: 'uuid'
+      }
+    } as Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  ]
   const simulation = {
     id: 'id',
     scheme: {
@@ -61,7 +71,12 @@ describe('components/project/simulation/materials/list', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+        <List
+          geometries={geometries}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
       </SelectContext.Provider>
     )
 
@@ -73,7 +88,12 @@ describe('components/project/simulation/materials/list', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+        <List
+          geometries={geometries}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
       </SelectContext.Provider>
     )
 
@@ -98,7 +118,12 @@ describe('components/project/simulation/materials/list', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+        <List
+          geometries={geometries}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
       </SelectContext.Provider>
     )
 

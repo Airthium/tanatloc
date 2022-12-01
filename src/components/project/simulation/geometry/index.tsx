@@ -142,6 +142,8 @@ export const onMultipleSelect = async (
       }
     }
 
+    //TODO done is not set to true!
+
     // API
     await SimulationAPI.update({ id: simulation.id }, [
       {
@@ -178,6 +180,7 @@ const Geometry = ({
 }: IProps): JSX.Element => {
   // Data
   const multiple = simulation.scheme.configuration.geometry.multiple
+  const n = simulation.scheme.configuration.geometry.n
   const geometryId = simulation.scheme.configuration.geometry.value
   const geometriesIds = simulation.scheme.configuration.geometry.values
 
@@ -238,6 +241,12 @@ const Geometry = ({
       </Card>
       <Card size="small">
         <Typography.Text strong>Select a simulation domain</Typography.Text>
+        {n ? (
+          <>
+            <br />
+            <Typography.Text>{n} geometries needed</Typography.Text>
+          </>
+        ) : null}
       </Card>
       {list}
       {simulation.scheme.configuration.geometry.meshable && (

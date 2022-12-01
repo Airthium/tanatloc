@@ -225,26 +225,54 @@ const run = async (
 
   // Copy geometry
   const geometryId = configuration.geometry?.value
+  const geometriesIds = configuration.geometry?.values
   if (geometryId) {
     const geometry = await Geometry.get(geometryId, [
       'name',
       'uploadfilename',
       'brep'
     ])
-    configuration.geometry.file =
+    configuration.geometry.data = {}
+    configuration.geometry.data.file =
       configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
-    configuration.geometry.name = geometry.name
-    configuration.geometry.path = GEOMETRY_RELATIVE
+    configuration.geometry.data.name = geometry.name
+    configuration.geometry.data.path = GEOMETRY_RELATIVE
     await Tools.copyFile(
       {
         path: GEOMETRY,
-        file: configuration.geometry.file
+        file: configuration.geometry.data.file
       },
       {
         path: path.join(SIMULATION, simulation.id, 'geometry'),
-        file: configuration.geometry.file
+        file: configuration.geometry.data.file
       }
     )
+  } else if (geometriesIds) {
+    configuration.geometry.datas = []
+    for (const gId of geometriesIds) {
+      const geometry = await Geometry.get(gId, [
+        'name',
+        'uploadfilename',
+        'brep'
+      ])
+      const file =
+        configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
+      configuration.geometry.datas.push({
+        file,
+        name: geometry.name,
+        path: GEOMETRY_RELATIVE
+      })
+      await Tools.copyFile(
+        {
+          path: GEOMETRY,
+          file: file
+        },
+        {
+          path: path.join(SIMULATION, simulation.id, 'geometry'),
+          file: file
+        }
+      )
+    }
   }
 
   // Check coupling

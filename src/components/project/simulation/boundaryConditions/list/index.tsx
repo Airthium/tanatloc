@@ -8,11 +8,12 @@ import { IModelTypedBoundaryCondition } from '@/models/index.d'
 import { EditButton } from '@/components/assets/button'
 
 import { SelectContext } from '@/context/select'
-import { enable, disable, select } from '@/context/select/actions'
+import { enable, disable, select, setPart } from '@/context/select/actions'
 
 import {
   IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
 } from '@/api/index.d'
 
 import style from '../../index.style'
@@ -23,6 +24,7 @@ import Delete from '../delete'
  * Props
  */
 export interface IProps {
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -35,13 +37,15 @@ export interface IProps {
  * @param props Props
  * @returns List
  */
-const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
+const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
   const [enabled, setEnabled] = useState<boolean>(true)
 
+  // Context
+  const { dispatch } = useContext(SelectContext)
+
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
-  const { dispatch } = useContext(SelectContext)
 
   /**
    * Highlight current
@@ -51,15 +55,24 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   const highlight = useCallback(
     (key: string, index: number): void => {
       dispatch(enable())
+
       const typedBoundaryCondition = boundaryConditions[
         key
       ] as IModelTypedBoundaryCondition
+
+      // Geometry
+      const geometryId = typedBoundaryCondition.values![index].geometry
+      const geometry = geometries.find((geometry) => geometry.id === geometryId)
+      dispatch(setPart(geometry!.summary.uuid))
+
+      // Selected
       const currentSelected = typedBoundaryCondition.values![index].selected
       currentSelected?.forEach((s) => {
         dispatch(select(s))
       })
     },
-    [boundaryConditions, dispatch]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [`${geometries}`, boundaryConditions, dispatch]
   )
 
   /**

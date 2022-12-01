@@ -11,11 +11,12 @@ import { EditButton } from '@/components/assets/button'
 import Delete from '../delete'
 
 import { SelectContext } from '@/context/select'
-import { enable, disable, select } from '@/context/select/actions'
+import { enable, disable, select, setPart } from '@/context/select/actions'
 
 import {
   IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
 } from '@/api/index.d'
 
 import { globalStyle } from '@/styles'
@@ -25,6 +26,7 @@ import style from '../../index.style'
  * Props
  */
 export interface IProps {
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -37,13 +39,15 @@ export interface IProps {
  * @param props Props
  * @returns List
  */
-const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
+const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
   const [enabled, setEnabled] = useState<boolean>(true)
 
+  // Context
+  const { dispatch } = useContext(SelectContext)
+
   // Data
   const materials = simulation.scheme.configuration.materials!
-  const { dispatch } = useContext(SelectContext)
 
   /**
    * Highlight current
@@ -52,12 +56,20 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   const highlight = useCallback(
     (index: number): void => {
       dispatch(enable())
+
+      // Geometry
+      const geometryId = materials.values![index].geometry
+      const geometry = geometries.find((geometry) => geometry.id === geometryId)
+      dispatch(setPart(geometry!.summary.uuid))
+
+      // Selected
       const currentSelected = materials.values![index].selected
       currentSelected?.forEach((s) => {
         dispatch(select(s))
       })
     },
-    [materials, dispatch]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [`${geometries}`, materials, dispatch]
   )
 
   /**

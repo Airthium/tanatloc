@@ -75,6 +75,7 @@ const BoundaryCondition = ({
   const [types, setTypes] = useState<BCExtended>([])
   const [totalNumber, setTotalNumber] = useState<number>()
   const [current, setCurrent] = useState<IModelBoundaryConditionValue>()
+  const [activeKey, setActiveKey] = useState<string>()
   const [error, setError] = useState<string>()
 
   // Context
@@ -87,7 +88,18 @@ const BoundaryCondition = ({
   // Init
   useEffect(() => {
     dispatch(setPart(geometries[0]?.summary.uuid))
-  }, [`${geometries}`, dispatch])
+    setActiveKey(boundaryCondition?.geometry)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${geometries}`, boundaryCondition, dispatch])
+
+  // Default
+  useEffect(() => {
+    if (!current)
+      setCurrent({
+        geometry: geometries[0]?.id
+      } as IModelBoundaryConditionValue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${geometries}`, current])
 
   // Visible
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -293,6 +305,29 @@ const BoundaryCondition = ({
   }, [current, dimension, onCheckedChange, onValueChange])
 
   /**
+   * On geometry change
+   * @param key Key
+   */
+  const onGeometryChange = useCallback(
+    (key: string) => {
+      // Active key
+      setActiveKey(key)
+
+      // Set part
+      const geometry = geometries.find((geometry) => geometry.id === key)
+      dispatch(setPart(geometry!.summary.uuid))
+
+      // Set geometry
+      setCurrent((prevCurrent) => ({
+        ...(prevCurrent as IModelBoundaryConditionValue),
+        geometry: key
+      }))
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [`${geometries}`, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -429,7 +464,8 @@ const BoundaryCondition = ({
               />
             )
           }))}
-          onChange={(key) => dispatch(setPart(key))}
+          activeKey={activeKey}
+          onChange={onGeometryChange}
         />
 
         {error && (

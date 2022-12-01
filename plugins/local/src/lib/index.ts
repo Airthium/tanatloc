@@ -94,15 +94,15 @@ const clean = async (simulationPath: string): Promise<void> => {
 
 /**
  * Get refinements
- * @param configuration Configuration
+ * @param boundaryConditions Boundary conditions
  * @returns Refinements
  */
 const getRefinements = (
-  configuration: IModel['configuration']
+  boundaryConditions: IModel['configuration']['boundaryConditions']
 ): IModelMeshRefinement[] => {
   const refinements: IModelMeshRefinement[] = []
-  configuration.boundaryConditions &&
-    Object.keys(configuration.boundaryConditions).forEach((boundaryKey) => {
+  boundaryConditions &&
+    Object.keys(boundaryConditions).forEach((boundaryKey) => {
       if (
         boundaryKey === 'index' ||
         boundaryKey === 'title' ||
@@ -110,7 +110,7 @@ const getRefinements = (
       )
         return
 
-      const boundaryCondition = configuration.boundaryConditions[
+      const boundaryCondition = boundaryConditions[
         boundaryKey
       ] as IModelTypedBoundaryCondition
 
@@ -127,6 +127,66 @@ const getRefinements = (
 }
 
 /**
+ * Compute meshes
+ * @param id Simulation id
+ * @param simulationPath Simulation path
+ * @param configuration Configuration
+ * @param tasks Tasks
+ */
+const computeMeshes = async (
+  id: string,
+  simulationPath: string,
+  configuration: IModel['configuration'],
+  tasks: ISimulationTask[]
+): Promise<void> => {
+  const geometry = configuration.geometry
+  if (!geometry.meshable) return
+
+  const dimension = configuration.dimension
+  const meshParameters = configuration.geometry.meshParameters
+  const initialization = configuration.initialization
+  const boundaryConditions = configuration.boundaryConditions
+  const cloudServer = configuration.run.cloudServer
+
+  if (geometry.multiple) {
+    for (const data of geometry.datas!) {
+      const mesh = await computeMesh(
+        id,
+        simulationPath,
+        {
+          dimension,
+          geometry: { data, meshParameters },
+          initialization,
+          boundaryConditions,
+          run: {
+            cloudServer
+          }
+        },
+        tasks
+      )
+      geometry.meshes = [...(geometry.meshes || []), mesh]
+    }
+  } else {
+    const data = geometry.data
+    const mesh = await computeMesh(
+      id,
+      simulationPath,
+      {
+        dimension,
+        geometry: { data, meshParameters },
+        initialization,
+        boundaryConditions,
+        run: {
+          cloudServer
+        }
+      },
+      tasks
+    )
+    geometry.mesh = mesh
+  }
+}
+
+/**
  * Compute mesh
  * @param id Simulation id
  * @param simulationPath Simulation path
@@ -136,18 +196,26 @@ const getRefinements = (
 const computeMesh = async (
   id: string,
   simulationPath: string,
-  configuration: IModel['configuration'],
+  configuration: {
+    dimension: IModel['configuration']['dimension']
+    geometry: {
+      data: IModel['configuration']['geometry']['data']
+      meshParameters: IModel['configuration']['geometry']['meshParameters']
+    }
+    initialization: IModel['configuration']['initialization']
+    boundaryConditions: IModel['configuration']['boundaryConditions']
+    run: {
+      cloudServer: IModel['configuration']['run']['cloudServer']
+    }
+  },
   tasks: ISimulationTask[]
-): Promise<void> => {
+): Promise<ISimulationTaskFile> => {
   // Time
   const start = Date.now()
 
-  const geometry = configuration.geometry
-  if (!geometry.meshable) return
-
   // Task
   const meshingTask: ISimulationTask = {
-    index: 0,
+    index: tasks.length,
     label: 'Mesh',
     status: 'wait',
     pid: undefined,
@@ -160,38 +228,41 @@ const computeMesh = async (
   updateTasks(id, tasks)
 
   try {
-    if (!geometry.name || !geometry.path || !geometry.file)
+    if (
+      !configuration.geometry.data?.name ||
+      !configuration.geometry.data.path ||
+      !configuration.geometry.data.file
+    )
       throw new Error('Missing data in geometry')
 
     if (configuration.initialization?.value?.type === 'coupling') {
       // Build not needed
-      geometry.mesh = {}
       meshingTask.log += 'Coupling: skip mesh build'
       meshingTask.status = 'finish'
       updateTasks(id, tasks)
-      return
+      return {} as ISimulationTaskFile
     }
 
     // Check refinements
-    const refinements = getRefinements(configuration)
+    const refinements = getRefinements(configuration.boundaryConditions)
 
     // Mesh parameters
-    if (!geometry.meshParameters)
-      geometry.meshParameters = {
+    if (!configuration.geometry.meshParameters)
+      configuration.geometry.meshParameters = {
         type: 'auto',
         value: 'normal'
       }
 
     const parameters = {
-      ...geometry.meshParameters,
+      ...configuration.geometry.meshParameters,
       refinements: refinements
     }
 
     // Build mesh
-    const geoFile = geometry.file + '.geo'
-    const mshFile = geometry.file + '.msh'
-    const meshPath = geometry.file + '_mesh'
-    const partPath = geometry.file
+    const geoFile = configuration.geometry.data.file + '.geo'
+    const mshFile = configuration.geometry.data.file + '.msh'
+    const meshPath = configuration.geometry.data.file + '_mesh'
+    const partPath = configuration.geometry.data.file
 
     // Render template
     await Template.render(
@@ -199,7 +270,13 @@ const computeMesh = async (
       undefined,
       {
         ...parameters,
-        geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))
+        geometry: Tools.toPosix(
+          path.join(
+            '..',
+            configuration.geometry.data.path,
+            configuration.geometry.data.file
+          )
+        )
       },
       {
         location: path.join(simulationPath, meshPath),
@@ -262,13 +339,12 @@ const computeMesh = async (
       glb: three[0].glb
     }
 
-    // Save mesh
-    geometry.mesh = mesh
-
     // Task
     meshingTask.status = 'finish'
     meshingTask.file = mesh
     updateTasks(id, tasks)
+
+    return mesh
   } catch (err: any) {
     // Task
     meshingTask.status = 'error'
@@ -311,7 +387,7 @@ const computeSimulation = async (
   configuration.dimension ?? (configuration.dimension = 3)
 
   // Meshes
-  await computeMesh(id, simulationPath, configuration, tasks)
+  await computeMeshes(id, simulationPath, configuration, tasks)
 
   const simulationTask: ISimulationTask = {
     index: tasks.length,

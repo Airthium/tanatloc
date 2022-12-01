@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
 
-import { useState, useEffect, ChangeEvent, useCallback, useMemo } from 'react'
+import {
+  useState,
+  useEffect,
+  ChangeEvent,
+  useCallback,
+  useMemo,
+  useContext
+} from 'react'
 import {
   Button,
   Card,
@@ -29,7 +36,8 @@ import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
-import { ISelect } from '@/context/select'
+import { ISelect, SelectContext } from '@/context/select'
+import { setPart } from '@/context/select/actions'
 
 import { globalStyle, globalStyleFn } from '@/styles'
 import style from '../../../panel/index.style'
@@ -69,9 +77,17 @@ const BoundaryCondition = ({
   const [current, setCurrent] = useState<IModelBoundaryConditionValue>()
   const [error, setError] = useState<string>()
 
+  // Context
+  const { dispatch } = useContext(SelectContext)
+
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
   const dimension = simulation.scheme.configuration.dimension
+
+  // Init
+  useEffect(() => {
+    dispatch(setPart(geometries[0]?.summary.uuid))
+  }, [`${geometries}`, dispatch])
 
   // Visible
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -413,6 +429,7 @@ const BoundaryCondition = ({
               />
             )
           }))}
+          onChange={(key) => dispatch(setPart(key))}
         />
 
         {error && (

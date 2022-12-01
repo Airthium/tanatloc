@@ -70,27 +70,22 @@ const Material = ({
     dispatch(setPart(geometries[0]?.summary.uuid))
   }, [`${geometries}`, dispatch])
 
-  // TODO
-  // // Default
-  // useEffect(() => {
-  //   setCurrent({
-  //     material: {
-  //       label: 'Default',
-  //       children: materials?.children.map((child) => ({
-  //         label: child.label,
-  //         symbol: child.name,
-  //         value: child.default
-  //       }))
-  //     },
-  //     geometry: { index: 0 }
-  //   })
-  // }, [materials])
-
-  // Visible
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Default
   useEffect(() => {
-    if (!visible && current) setCurrent(undefined)
-  })
+    if (!current)
+      setCurrent({
+        material: {
+          label: 'Default',
+          children:
+            materials?.children.map((child) => ({
+              label: child.label,
+              symbol: child.name,
+              value: child.default
+            })) || []
+        },
+        geometry: { index: 0 }
+      } as IModelMaterialsValue)
+  }, [materials, current])
 
   // Edit
   useEffect(() => {
@@ -208,7 +203,10 @@ const Material = ({
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
-              onClose={onClose}
+              onClose={() => {
+                setCurrent(undefined)
+                onClose()
+              }}
             />
           ) : (
             <Add
@@ -223,7 +221,10 @@ const Material = ({
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
-              onClose={onClose}
+              onClose={() => {
+                setCurrent(undefined)
+                onClose()
+              }}
             />
           )}
         </div>

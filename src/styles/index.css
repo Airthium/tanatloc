@@ -41,3 +41,8 @@ body {
 .ant-btn:not(.ant-btn-dangerous) {
   color: #1f1f1f !important;
 }
+
+/* Typography */
+.ant-typography {
+  margin-bottom: 0 !important;
+}

@@ -312,7 +312,6 @@ export const loadPart = async (
     options.displayMesh,
     helpers.sectionViewHelper.getClippingPlane()
   )
-  // dispatch(setPart(mesh))
 
   // Scene
   scene.add(mesh)

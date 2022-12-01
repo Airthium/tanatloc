@@ -1,4 +1,4 @@
-## v1.1.7
+## v1.2.0
 
 - Global:
   - :arrow_up: Update dependencies
@@ -6,6 +6,7 @@
   - :rocket: Multiple geometry support - Phase 1
 - Client:
   - :rocket: Focus & submit on enter in dialog
+  - :rocket: JSON5 support in editor
 
 ---
 

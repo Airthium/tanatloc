@@ -23,7 +23,7 @@ const style: { [key: string]: SerializedStyles } = {
     },
 
     '& .Menu-title': {
-      marginTop: '15px !important',
+      marginTop: '10px !important',
       lineHeight: '1.5em !important',
       cursor: 'unset',
       whiteSpace: 'normal',
@@ -31,7 +31,7 @@ const style: { [key: string]: SerializedStyles } = {
     }
   }),
   menuScroll: css({
-    maxHeight: 'calc(100vh - 180px)',
+    maxHeight: 'calc(100vh - 200px)',
     overflow: 'auto',
     overflowX: 'hidden'
   }),

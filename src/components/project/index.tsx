@@ -654,7 +654,7 @@ const Project = (): JSX.Element => {
         }
       }
     },
-    [menuKey, panelVisible],
+    [menuKey, panelVisible, result],
     [setGeometryPanel, setSimulationPanel, onPanelClose]
   )
 
@@ -839,7 +839,7 @@ const Project = (): JSX.Element => {
                 disabled: true,
                 className: 'Menu-title',
                 label: (
-                  <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
+                  <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
                     {project.title}
                   </Typography.Paragraph>
                 )

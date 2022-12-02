@@ -62,8 +62,8 @@ export interface IModelGeometry extends IModelCommon {
     type: string
     value: string
   }
-  mesh?: ISimulationTaskFile
-  meshes?: ISimulationTaskFile[]
+  mesh?: Partial<ISimulationTaskFile>
+  meshes?: Partial<ISimulationTaskFile>[]
 }
 
 export interface IModelMeshRefinement {

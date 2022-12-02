@@ -2,9 +2,14 @@
 
 import { useContext, useEffect, useState } from 'react'
 import { Button, Steps } from 'antd'
+import JSON5 from 'json5'
 
 import { EditorContext } from '@/context/editor'
-import { setModelValid, setTemplateValid } from '@/context/editor/actions'
+import {
+  setModel,
+  setModelValid,
+  setTemplateValid
+} from '@/context/editor/actions'
 
 import { checkModel } from './utils'
 import style from '../index.style'
@@ -70,7 +75,13 @@ const StatusSteps = ({ setName }: IProps) => {
     }
 
     try {
-      const modelJSON = JSON.parse(model)
+      let modelJSON
+      try {
+        modelJSON = JSON.parse(model)
+      } catch (err) {
+        modelJSON = JSON5.parse(model)
+        dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
+      }
 
       if (modelJSON.name) setName(modelJSON.name)
 

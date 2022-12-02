@@ -105,7 +105,7 @@ const materialsSummary = (
     })
 
     stream.write('  - Geometry: ')
-    stream.write(value.geometry.index)
+    stream.write(value.geometry)
     stream.write('\n')
 
     stream.write('  - Selected: [')
@@ -177,6 +177,10 @@ const boundaryConditionsSummary = (
 
           stream.write('\n')
         })
+
+        stream.write('  - Geometry: ')
+        stream.write(value.geometry)
+        stream.write('\n')
 
         stream.write('  - Selected: [')
         stream.write(value.selected.map((select) => select.label).join(', '))

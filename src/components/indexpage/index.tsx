@@ -11,12 +11,14 @@ import {
   Layout,
   List,
   Space,
+  Spin,
   Steps,
   Typography
 } from 'antd'
 import { BugOutlined, SettingOutlined } from '@ant-design/icons'
 import { css } from '@emotion/react'
 import isElectron from 'is-electron'
+import { Url } from 'url'
 
 import packageJson from '../../../package.json'
 
@@ -30,6 +32,13 @@ import style from './index.style'
 
 import Menu, { scrollToView } from './menu'
 
+export interface IRelease {
+  version: string
+  appImage: Url
+  dmg: Url
+  exe: Url
+}
+
 /**
  * Index
  * @returns Index
@@ -38,6 +47,7 @@ const Index = (): JSX.Element => {
   // State
   const [dockerOpen, setDockerOpen] = useState<boolean>(false)
   const [troubleshootingOpen, setTroubleshootingOpen] = useState<boolean>(false)
+  const [release, setRelease] = useState<IRelease>()
 
   // Data
   const router = useRouter()
@@ -56,6 +66,62 @@ const Index = (): JSX.Element => {
     }
   }, [router])
 
+  // Release
+  useEffect(() => {
+    new Promise(async (resolve, reject) => {
+      try {
+        const releaseResponse = await fetch(
+          'https://api.github.com/repos/Airthium/tanatloc-electron/releases'
+        )
+        const releases = await releaseResponse.json()
+        const latestRelease = releases.find(
+          (r: any) => !r.name.includes('-beta') && !r.name.includes('-alpha')
+        )
+
+        const assetsResponse = await fetch(latestRelease.assets_url)
+        const assets = await assetsResponse.json()
+
+        const appImage = assets.find((a: any) =>
+          a.name.includes('.AppImage')
+        )?.browser_download_url
+
+        const dmg = assets.find((a: any) =>
+          a.name.includes('.dmg')
+        )?.browser_download_url
+
+        const exe = assets.find((a: any) =>
+          a.name.includes('.exe')
+        )?.browser_download_url
+
+        resolve({
+          version: latestRelease.name,
+          appImage,
+          dmg,
+          exe
+        })
+      } catch (err) {
+        reject(err)
+      }
+    })
+      .then((newRelease) => {
+        setRelease(newRelease as IRelease)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }, [])
+
+  /**
+   * Get started
+   */
+  const getStarted = useCallback(() => {
+    if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
+      scrollToView('getStarted')
+    } else {
+      router.push('/signup')
+    }
+  }, [router])
+
   /**
    * On download
    * @param key Key
@@ -64,35 +130,17 @@ const Index = (): JSX.Element => {
     (key: string) => {
       switch (key) {
         case 'Windows':
-          router.push(
-            'https://github.com/Airthium/tanatloc-electron/releases/download/v' +
-              packageJson.version +
-              '/Tanatloc.Setup.' +
-              packageJson.version +
-              '.exe'
-          )
+          router.push(release!.exe)
           break
         case 'MacOS':
-          router.push(
-            'https://github.com/Airthium/tanatloc-electron/releases/download/v' +
-              packageJson.version +
-              '/Tanatloc-' +
-              packageJson.version +
-              '.dmg'
-          )
+          router.push(release!.dmg)
           break
         case 'Linux':
-          router.push(
-            'https://github.com/Airthium/tanatloc-electron/releases/download/v' +
-              packageJson.version +
-              '/Tanatloc-' +
-              packageJson.version +
-              '.AppImage'
-          )
+          router.push(release!.appImage)
           break
       }
     },
-    [router]
+    [router, release]
   )
 
   /**
@@ -245,7 +293,7 @@ const Index = (): JSX.Element => {
                   your needs.
                 </Typography.Text>
 
-                <Button type="primary" onClick={() => getStarted(router)}>
+                <Button type="primary" onClick={getStarted}>
                   Get Started
                 </Button>
               </Space>
@@ -499,31 +547,43 @@ const Index = (): JSX.Element => {
                       <Typography>
                         Download the latest app for Linux, MacOS or Windows.
                       </Typography>
-                      <Button
-                        type="primary"
-                        className="download"
-                        onClick={() => onDownload('Windows')}
-                      >
-                        <img src="/images/indexpage/windows.svg" alt="" />
-                        Windows
-                      </Button>
-                      <Button
-                        type="primary"
-                        className="download"
-                        onClick={() => onDownload('MacOS')}
-                      >
-                        <img src="/images/indexpage/MacOS.svg" alt="" />
-                        MacOS
-                      </Button>
-                      <Button
-                        type="primary"
-                        className="download"
-                        onClick={() => onDownload('Linux')}
-                      >
-                        <img src="/images/indexpage/Linux.svg" alt="" />
-                        Linux
-                      </Button>
-                      <br />
+                      {release ? (
+                        <>
+                          <Button
+                            type="primary"
+                            className="download"
+                            onClick={() => onDownload('Windows')}
+                          >
+                            <img src="/images/indexpage/windows.svg" alt="" />
+                            Windows
+                          </Button>
+                          <Button
+                            type="primary"
+                            className="download"
+                            onClick={() => onDownload('MacOS')}
+                          >
+                            <img src="/images/indexpage/MacOS.svg" alt="" />
+                            MacOS
+                          </Button>
+                          <Button
+                            type="primary"
+                            className="download"
+                            onClick={() => onDownload('Linux')}
+                          >
+                            <img src="/images/indexpage/Linux.svg" alt="" />
+                            Linux
+                          </Button>
+                          <br />
+                        </>
+                      ) : (
+                        <>
+                          <Spin />
+                          <br />
+                        </>
+                      )}
+                      <span css={globalStyleFn.marginRight(10)}>
+                        Version: {release ? release.version : <Spin />}
+                      </span>
                       <Button
                         size="small"
                         icon={<BugOutlined />}

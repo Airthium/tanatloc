@@ -72,7 +72,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
                   key: 'key',
                   label: 'key'
                 },
-                geometry: { index: 0 },
+                geometry: 'id',
                 selected: []
               }
             ]
@@ -141,9 +141,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
             key: 'key',
             label: 'key'
           },
-          geometry: {
-            index: 0
-          },
+          geometry: 'id',
           selected: [{ uuid: 'uuid', label: 1 }]
         }}
         swr={swr}
@@ -168,6 +166,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
+        geometries={[]}
         simulation={{
           id: 'id',
           scheme: {
@@ -310,9 +309,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
             key: 'key',
             label: 'key'
           },
-          geometry: {
-            index: 0
-          },
+          geometry: 'id',
           selected: [{ uuid: 'uuid', label: 1 }]
         }}
         swr={swr}

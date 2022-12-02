@@ -292,7 +292,7 @@ const Run = ({
                 <Steps
                   direction="vertical"
                   items={steps.map((step, index) => ({
-                    key: step.label,
+                    key: index,
                     title: step.label,
                     description: '(' + (index + 1) + '/' + steps.length + ')',
                     status: step.status

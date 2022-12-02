@@ -1,7 +1,5 @@
 /** @module Context.Select.Actions */
 
-import { IPart } from '@/lib/three/loaders/PartLoader'
-
 import { actionTypes, ISelect, ISelectAction, ISelectPoint } from '.'
 
 /**

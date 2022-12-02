@@ -56,7 +56,7 @@ describe('lib/download/summary', () => {
         index: 1,
         title: 'Geometry',
         meshable: true,
-        file: 'file'
+        data: { file: 'file' }
       },
       materials: {
         index: 2,
@@ -75,9 +75,7 @@ describe('lib/download/summary', () => {
                 }
               ]
             },
-            geometry: {
-              index: 0
-            },
+            geometry: 'id',
             selected: [{ uuid: 'uuid', label: 1 }]
           }
         ]
@@ -133,9 +131,7 @@ describe('lib/download/summary', () => {
                   checked: false
                 }
               ],
-              geometry: {
-                index: 0
-              },
+              geometry: 'id',
               selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
@@ -153,9 +149,7 @@ describe('lib/download/summary', () => {
                 key: 'undefined',
                 label: 'undefined'
               },
-              geometry: {
-                index: 0
-              },
+              geometry: 'id',
               selected: []
             }
           ]
@@ -185,7 +179,7 @@ describe('lib/download/summary', () => {
         index: 1,
         title: 'Geometry',
         meshable: true,
-        file: 'file'
+        data: { file: 'file' }
       },
       materials: undefined,
       parameters: {
@@ -239,9 +233,7 @@ describe('lib/download/summary', () => {
                   checked: false
                 }
               ],
-              geometry: {
-                index: 0
-              },
+              geometry: 'id',
               selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
@@ -259,9 +251,7 @@ describe('lib/download/summary', () => {
                 key: 'undefined',
                 label: 'undefined'
               },
-              geometry: {
-                index: 0
-              },
+              geometry: 'id',
               selected: []
             }
           ]

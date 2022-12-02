@@ -214,7 +214,6 @@ const Project = (): JSX.Element => {
     },
     [geometries]
   )
-
   /**
    * On panel close
    */
@@ -654,7 +653,7 @@ const Project = (): JSX.Element => {
         }
       }
     },
-    [menuKey, panelVisible],
+    [menuKey, panelVisible, result],
     [setGeometryPanel, setSimulationPanel, onPanelClose]
   )
 
@@ -748,13 +747,26 @@ const Project = (): JSX.Element => {
             icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
 
           // Deleted simulation's geometry
-          if (
-            key === 'geometry' &&
-            !loadedGeometries.filter((g) => g.id === child.value).length &&
-            !loadingGeometries
-          ) {
-            icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
-            child.done = null
+          if (key === 'geometry' && !loadingGeometries) {
+            const value = child.value
+            const values = child.values
+            const multiple = child.multiple
+            const n = child.n
+            if (
+              (value &&
+                !loadedGeometries.filter((g) => g.id === value).length) ||
+              (multiple &&
+                values &&
+                (n
+                  ? loadedGeometries.filter((g) => values.includes(g.id))
+                      .length !== child.n
+                  : !loadedGeometries.filter((g) => values.includes(g.id))
+                      .length)) ||
+              (!value && !values)
+            ) {
+              icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+              child.done = null
+            }
           }
 
           categories[child.index] = {
@@ -839,7 +851,7 @@ const Project = (): JSX.Element => {
                 disabled: true,
                 className: 'Menu-title',
                 label: (
-                  <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
+                  <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
                     {project.title}
                   </Typography.Paragraph>
                 )

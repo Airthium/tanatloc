@@ -129,9 +129,7 @@ describe('components/project/simulation/materials/edit', () => {
               label: 'label',
               children: []
             },
-            geometry: {
-              index: 0
-            },
+            geometry: 'uuid',
             selected: []
           } as IModelMaterialsValue
         }

@@ -273,6 +273,7 @@ describe('components/project/view/three', () => {
           max: { x: 1, y: 1, z: 1 }
         },
         material: {},
+        userData: {},
         dispose: jest.fn(),
         setTransparent: jest.fn(),
         setDisplayMesh: jest.fn(),
@@ -291,6 +292,7 @@ describe('components/project/view/three', () => {
           max: { x: 1, y: 1, z: 1 }
         },
         material: {},
+        userData: {},
         dispose: jest.fn(),
         setTransparent: jest.fn(),
         setDisplayMesh: jest.fn(),
@@ -369,6 +371,8 @@ describe('components/project/view/three', () => {
       {
         type: 'Part',
         uuid: 'uuid',
+        userData: {},
+        stopSelection: jest.fn(),
         dispose: jest.fn()
       }
     ]

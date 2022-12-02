@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { IFrontSimulationsItem } from '@/api/index.d'
+import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
 
 import List from '@/components/project/simulation/boundaryConditions/list'
 import { SelectContext } from '@/context/select'
@@ -22,6 +22,12 @@ jest.mock('@/components/assets/button', () => ({
 jest.mock('../../delete', () => () => <div />)
 
 describe('components/project/simulation/boundaryConditions/list', () => {
+  const geometries = [
+    {
+      id: 'id',
+      summary: { uuid: 'uuid' }
+    } as Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  ]
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
@@ -46,9 +52,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
                   key: 'key',
                   label: 'key'
                 },
-                geometry: {
-                  index: 0
-                },
+                geometry: 'id',
                 selected: [{ uuid: 'uuid', label: 1 }]
               }
             ]
@@ -76,7 +80,12 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+        <List
+          geometries={geometries}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
       </SelectContext.Provider>
     )
 
@@ -88,7 +97,12 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+        <List
+          geometries={geometries}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
       </SelectContext.Provider>
     )
 
@@ -114,7 +128,12 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
       >
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+        <List
+          geometries={geometries}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
       </SelectContext.Provider>
     )
 

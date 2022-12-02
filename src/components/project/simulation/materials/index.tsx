@@ -115,6 +115,10 @@ const Materials = ({
             Add material
           </AddButton>
           <List
+            geometries={geometries.map((geometry) => ({
+              id: geometry.id,
+              summary: geometry.summary
+            }))}
             simulation={{
               id: simulation.id,
               scheme: simulation.scheme

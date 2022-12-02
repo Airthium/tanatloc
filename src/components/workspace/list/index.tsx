@@ -189,7 +189,14 @@ const WorkspacesList = ({
                   />
                 )
               }))}
-              defaultActiveKey={workspaceId || '1'}
+              defaultActiveKey={'1'}
+              activeKey={workspaceId}
+              onChange={(activeKey) =>
+                router.push({
+                  pathname: '/dashboard',
+                  query: { page: 'workspaces', workspaceId: activeKey }
+                })
+              }
               onEdit={() => setVisible(true)}
             />
           </>

@@ -57,6 +57,7 @@ const Material = ({
   // State
   const [alreadySelected, setAlreadySelected] = useState<ISelection[]>()
   const [current, setCurrent] = useState<IModelMaterialsValue>()
+  const [activeKey, setActiveKey] = useState<string>()
   const [error, setError] = useState<string>()
 
   // Context
@@ -68,29 +69,27 @@ const Material = ({
   // Init
   useEffect(() => {
     dispatch(setPart(geometries[0]?.summary.uuid))
-  }, [`${geometries}`, dispatch])
+    setActiveKey(material?.geometry)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${geometries}`, material, dispatch])
 
-  // TODO
-  // // Default
-  // useEffect(() => {
-  //   setCurrent({
-  //     material: {
-  //       label: 'Default',
-  //       children: materials?.children.map((child) => ({
-  //         label: child.label,
-  //         symbol: child.name,
-  //         value: child.default
-  //       }))
-  //     },
-  //     geometry: { index: 0 }
-  //   })
-  // }, [materials])
-
-  // Visible
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Default
   useEffect(() => {
-    if (!visible && current) setCurrent(undefined)
-  })
+    if (!current)
+      setCurrent({
+        material: {
+          label: 'Default',
+          children:
+            materials?.children.map((child) => ({
+              label: child.label,
+              symbol: child.name,
+              value: child.default
+            })) || []
+        },
+        geometry: geometries[0]?.id
+      } as IModelMaterialsValue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${geometries}`, materials, current])
 
   // Edit
   useEffect(() => {
@@ -126,17 +125,6 @@ const Material = ({
   )
 
   /**
-   * On select
-   * @param selected Selected
-   */
-  const onSelected = useCallback((selected: ISelect[]) => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelMaterialsValue),
-      selected: selected
-    }))
-  }, [])
-
-  /**
    * On material change
    * @param child Children
    * @param index Index
@@ -161,6 +149,40 @@ const Material = ({
       }))
     },
     []
+  )
+
+  /**
+   * On select
+   * @param selected Selected
+   */
+  const onSelected = useCallback((selected: ISelect[]) => {
+    setCurrent((prevCurrent) => ({
+      ...(prevCurrent as IModelMaterialsValue),
+      selected: selected
+    }))
+  }, [])
+
+  /**
+   * On geometry change
+   * @param key Key
+   */
+  const onGeometryChange = useCallback(
+    (key: string) => {
+      // Active key
+      setActiveKey(key)
+
+      // Set part
+      const geometry = geometries.find((geometry) => geometry.id === key)
+      dispatch(setPart(geometry!.summary.uuid))
+
+      // Set geometry
+      setCurrent((prevCurrent) => ({
+        ...(prevCurrent as IModelMaterialsValue),
+        geometry: key
+      }))
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [`${geometries}`, dispatch]
   )
 
   /**
@@ -208,7 +230,10 @@ const Material = ({
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
-              onClose={onClose}
+              onClose={() => {
+                setCurrent(undefined)
+                onClose()
+              }}
             />
           ) : (
             <Add
@@ -223,7 +248,10 @@ const Material = ({
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
-              onClose={onClose}
+              onClose={() => {
+                setCurrent(undefined)
+                onClose()
+              }}
             />
           )}
         </div>
@@ -258,7 +286,7 @@ const Material = ({
 
         <Tabs
           items={geometries.map((geometry) => ({
-            key: geometry.summary.uuid,
+            key: geometry.id,
             label: geometry.name,
             children: (
               <Selector
@@ -268,7 +296,8 @@ const Material = ({
               />
             )
           }))}
-          onChange={(key) => dispatch(setPart(key))}
+          activeKey={activeKey}
+          onChange={onGeometryChange}
         />
 
         {error && (

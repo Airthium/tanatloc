@@ -2,6 +2,7 @@
 if (mpirank == 0) {
 	ofstream data("<%= path %>/" + <%- fileName %> + ".dat");
 	data << "{" << endl;
+	data << "  \"title\": \"" << "<%= title -%>" << "\"," << endl;
 	data << "  \"names\": [" << endl;
 <% dataNames.forEach((dataName, index) => { -%>
 <% if (index < dataNames.length - 1) { -%>

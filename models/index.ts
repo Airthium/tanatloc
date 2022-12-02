@@ -3,6 +3,7 @@
 import Poisson from './poisson'
 import LinearElasticity from './linearElasticity'
 import LinearElasticityTime from './linearElasticityTime'
+import LinearElasticityModal from './linearElasticity_modal'
 import Stokes from './stokes'
 import NavierStokesTime from './navierStokesTime'
 import ThermicDiffusion from './thermicDiffusion'
@@ -14,6 +15,7 @@ const models = [
   Poisson,
   LinearElasticity,
   LinearElasticityTime,
+  LinearElasticityModal,
   Stokes,
   NavierStokesTime,
   ThermicDiffusion

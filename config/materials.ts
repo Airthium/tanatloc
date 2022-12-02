@@ -73,7 +73,7 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 2.1e9
+            value: 2.1e11
           },
           {
             label: "Poisson's ratio",
@@ -104,7 +104,7 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 2.1e9
+            value: 2.1e11
           },
           {
             label: "Poisson's ratio",

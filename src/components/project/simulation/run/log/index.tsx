@@ -88,8 +88,8 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
         width="50%"
       >
         <Tabs
-          items={steps?.map((step) => ({
-            key: step.label,
+          items={steps?.map((step, index) => ({
+            key: '' + index,
             label: step.label,
             children: (
               <>

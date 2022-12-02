@@ -208,6 +208,7 @@ export interface IModelBoundaryConditionValue {
     children?: IModelBoundaryCondition[]
   }
   geometry: string
+  geometryIndex?: number
   selected: { uuid: string; label: number }[]
   values?: {
     checked?: boolean

@@ -21,7 +21,7 @@ import { addOnCursor } from '..'
  * @param dispatch Dispatch
  */
 const onAdd = (
-  values: { x: string; datas: { name: string; y: string }[] },
+  values: { title: string; x: string; datas: { name: string; y: string }[] },
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -33,6 +33,7 @@ const onAdd = (
   addOnCursor(
     template,
     `<%- include('/blobs/data.edp.ejs', {
+    title: '${values.title}',
     path: run.dataPath,
     fileName: '"iter_"+timeIter',
     dataNames: [${values.datas.map((data) => `'${data.name}'`).join(', ')}],
@@ -84,12 +85,15 @@ const Data = (): JSX.Element => {
         }}
         onCancel={() => setVisible(false)}
       >
+        <Form.Item label="Title" name="title" rules={[{ required: true }]}>
+          <Input ref={inputRef} />
+        </Form.Item>
         <Form.Item
           label="X axis variable"
           name="x"
           rules={[{ required: true }]}
         >
-          <Input ref={inputRef} />
+          <Input />
         </Form.Item>
         <Form.List name="datas">
           {(fields, { add, remove }, { errors }) => (

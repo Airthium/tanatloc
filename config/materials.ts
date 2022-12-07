@@ -376,5 +376,15 @@ export const materialDatabase: IMaterialDatabase = {
         ]
       }
     ]
+  },
+  contact: {
+    label: 'Contact',
+    children: [
+      {
+        key: 'fundation',
+        label: 'Fundation',
+        children: []
+      }
+    ]
   }
 }

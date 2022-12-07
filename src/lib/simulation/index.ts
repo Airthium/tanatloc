@@ -274,6 +274,12 @@ const run = async (
       )
     }
 
+    // Check materials
+    configuration.materials?.values?.forEach((material) => {
+      const index = geometriesIds.findIndex((id) => id === material.geometry)
+      material.geometryIndex = index
+    })
+
     // Check boundary conditions
     Object.keys(configuration.boundaryConditions).forEach((key) => {
       if (key === 'index' || key === 'title' || key === 'done') return

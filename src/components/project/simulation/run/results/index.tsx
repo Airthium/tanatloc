@@ -140,8 +140,8 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
         }
       >
         <Space direction="vertical" css={globalStyle.fullWidth}>
-          {singleFiles?.map((file) => (
-            <Space key={file.name} style={{ alignItems: 'center' }}>
+          {singleFiles?.map((file, index) => (
+            <Space key={index} style={{ alignItems: 'center' }}>
               <Button
                 icon={
                   result?.fileName === file?.fileName &&

@@ -1,6 +1,14 @@
 // Materials
 appendLog("Define materials...");
 
+<% materials.values = materials.values.filter(value => {
+	if (value.material.key === 'fundation') {
+		meshes[value.geometryIndex].tag = 'fundation'
+		return false
+	}
+	return true
+}) -%>
+
 <% materials.children.forEach(material => { -%>
 <% let firstValue = 0 -%>
 // <%- material.label %> 

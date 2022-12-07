@@ -315,7 +315,7 @@ const BoundaryCondition = ({
 
       // Set part
       const geometry = geometries.find((geometry) => geometry.id === key)
-      dispatch(setPart(geometry!.summary.uuid))
+      dispatch(setPart(geometry?.summary.uuid))
 
       // Set geometry
       setCurrent((prevCurrent) => ({

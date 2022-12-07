@@ -100,6 +100,7 @@ export interface IModelMaterialsValue {
     }[]
   }
   geometry: string
+  geometryIndex?: number
   selected: { uuid: string; label: number }[]
 }
 

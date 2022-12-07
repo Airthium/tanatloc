@@ -5,12 +5,6 @@ V() = ShapeFromFile("<%= geometry %>");
 
 Mesh.Optimize = 1;
 
-// Make interface unique
-//For i In {0: #V[]-1}
-//	V() = BooleanFragments { Volume{V[i]}; Delete; } { Volume{V[]}; Delete; };
-//EndFor
-// End make interface unique
-
 // Compute minimal distance on the bounding box
 // this is used for automatic size of the mesh
 lmin = 0;

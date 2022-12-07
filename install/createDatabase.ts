@@ -657,9 +657,15 @@ const createAdmin = async (): Promise<void> => {
     const authorizedplugins = user.authorizedplugins
     if (!authorizedplugins?.length) {
       console.info(' - Update authorized plugins')
+      const authorizedPlugins = ['local']
+      //@ts-ignore
+      if (global.electron.fullBuild) {
+        authorizedPlugins.push(...['airthium', 'denso', 'rescale', 'sharetask'])
+      }
+
       await query(
         'UPDATE ' + tables.USERS + ' SET authorizedplugins = $1 WHERE id=$2',
-        [['local'], user.id]
+        [authorizedPlugins, user.id]
       )
     }
 

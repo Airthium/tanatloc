@@ -4,6 +4,7 @@ import pg from 'pg'
 import format from '@airthium/pg-format'
 import crypto from 'crypto'
 import { v4 as uuid } from 'uuid'
+import isElectron from 'is-electron'
 
 import { IDataBaseResponse } from '@/database/index.d'
 
@@ -627,7 +628,7 @@ const createLinkTable = async (): Promise<void> => {
 const createAdmin = async (): Promise<void> => {
   const authorizedPlugins = ['local']
   //@ts-ignore
-  if (global.electron.fullBuild) {
+  if (!isElectron() || global.electron?.fullBuild) {
     authorizedPlugins.push(...['airthium', 'denso', 'rescale', 'sharetask'])
   }
 

@@ -105,7 +105,8 @@ const BoundaryCondition = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!visible && current) setCurrent(undefined)
-  })
+  }, [])
+  // TODO [] quick a dirty bug fix
 
   // Edit or name
   useEffect(() => {
@@ -145,7 +146,7 @@ const BoundaryCondition = ({
       .flat()
       .filter((s) => s)
     setAlreadySelected(currentAlreadySelected as ISelection[])
-  }, [boundaryConditions, boundaryCondition])
+  }, [`${boundaryConditions}`, boundaryCondition])
 
   // Types
   useEffect(() => {
@@ -164,7 +165,7 @@ const BoundaryCondition = ({
       })
       .filter((t) => t) as BCExtended
     setTypes(currentTypes)
-  }, [boundaryConditions])
+  }, [`${boundaryConditions}`])
 
   // Total number
   useEffect(() => {
@@ -219,7 +220,7 @@ const BoundaryCondition = ({
         values: values
       }))
     },
-    [boundaryConditions, types]
+    [`${boundaryConditions}`, types]
   )
 
   /**

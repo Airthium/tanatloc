@@ -89,14 +89,14 @@ const View = ({
 
   // Parts
   useEffect(() => {
-    new Promise(async (resolve) => {
+    ;(async () => {
       setLoading(true)
 
       try {
         const newParts = []
 
         // Result
-        if (result) {
+        if (!postprocessing && result) {
           const prevPart = parts.find((part) => part.extra?.glb === result.glb)
           if (prevPart) {
             newParts.push(prevPart)
@@ -148,10 +148,8 @@ const View = ({
       } catch (err) {
       } finally {
         setLoading(false)
-
-        resolve(true)
       }
-    })
+    })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [simulation, `${geometries}`, result, postprocessing, `${parts}`])
 

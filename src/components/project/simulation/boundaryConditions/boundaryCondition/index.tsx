@@ -94,19 +94,18 @@ const BoundaryCondition = ({
 
   // Default
   useEffect(() => {
-    if (!current)
+    if (visible && !current)
       setCurrent({
         geometry: geometries[0]?.id
       } as IModelBoundaryConditionValue)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [`${geometries}`, current])
+  }, [visible, `${geometries}`, current])
 
   // Visible
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!visible && current) setCurrent(undefined)
-  }, [])
-  // TODO [] quick a dirty bug fix
+  })
 
   // Edit or name
   useEffect(() => {

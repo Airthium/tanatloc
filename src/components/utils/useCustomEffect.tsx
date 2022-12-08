@@ -15,8 +15,10 @@ const useCustomEffect = (
   updaters?: any[],
   dependencies?: any[]
 ): void => {
+  // Ref
   const updatersRef = useRef<any[]>()
 
+  // Effect
   useEffect(() => {
     if (
       !updatersRef.current ||

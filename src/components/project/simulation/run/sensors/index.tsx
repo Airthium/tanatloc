@@ -45,6 +45,8 @@ const Sensors = ({
   const [sensorVisible, setSensorVisible] = useState<boolean>()
   const [sensor, setSensor] = useState<IModelSensor & { index: number }>()
 
+  console.log('sensors render')
+
   /**
    * on add
    */

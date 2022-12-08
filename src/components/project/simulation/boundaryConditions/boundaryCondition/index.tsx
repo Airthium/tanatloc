@@ -25,11 +25,11 @@ import {
   IFrontGeometriesItem
 } from '@/api/index.d'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { ISelect, SelectContext } from '@/context/select'
 import { setPart } from '@/context/select/actions'

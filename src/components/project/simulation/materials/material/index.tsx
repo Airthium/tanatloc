@@ -10,11 +10,11 @@ import { IMaterialDatabase } from '@/config/materials'
 import { SelectContext, ISelect } from '@/context/select'
 import { setPart } from '@/context/select/actions'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import {
   IFrontSimulationsItem,

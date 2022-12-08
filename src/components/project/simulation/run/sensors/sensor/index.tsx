@@ -17,6 +17,8 @@ import {
 import { SelectContext } from '@/context/select'
 import { disable, enable, setPoint, setType } from '@/context/select/actions'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
 import Formula from '@/components/assets/formula'
 import { CancelButton } from '@/components/assets/button'
 
@@ -24,7 +26,6 @@ import { globalStyle } from '@/styles'
 
 import Edit from '../edit'
 import Add from '../add'
-import useCustomEffect from '@/components/utils/useCustomEffect'
 
 /**
  * Props
@@ -60,13 +61,16 @@ const Sensor = ({
   // Data
   const { point, dispatch } = useContext(SelectContext)
 
+  // TODO setPart
+
   // Set point type
   useCustomEffect(() => {
     dispatch(setType('point'))
-  }, [], [dispatch])
+  }, [dispatch])
 
   // Default name
   useCustomEffect(() => {
+    console.log('default')
     if (!sensor) {
       const run = simulation.scheme.configuration.run
       setName('Sensor ' + (run.sensors ? run.sensors.length + 1 : 1))
@@ -74,15 +78,20 @@ const Sensor = ({
   }, [simulation, sensor])
 
   // Edit
-  useCustomEffect(() => {
-    if (sensor) {
-      setName(sensor.name)
-      dispatch(
-        setPoint({ x: sensor.point.x, y: sensor.point.y, z: sensor.point.z })
-      )
-      setFormula(sensor.formula)
-    }
-  }, [sensor], [dispatch])
+  useCustomEffect(
+    () => {
+      console.log('edit')
+      if (sensor) {
+        setName(sensor.name)
+        dispatch(
+          setPoint({ x: sensor.point.x, y: sensor.point.y, z: sensor.point.z })
+        )
+        setFormula(sensor.formula)
+      }
+    },
+    [sensor],
+    [dispatch]
+  )
 
   /**
    * Stop selection
@@ -118,6 +127,8 @@ const Sensor = ({
     },
     [dispatch]
   )
+
+  console.log('sensor render')
 
   /**
    * On formula

@@ -15,9 +15,9 @@ import {
 } from '@/models/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
-
 import useCustomEffect from '@/components/utils/useCustomEffect'
+
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -211,6 +211,8 @@ const Run = ({
 
     setSteps(newSteps)
   }, [currentSimulation?.tasks])
+
+  console.log('run render')
 
   /**
    * Render

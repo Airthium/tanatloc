@@ -70,7 +70,6 @@ const Sensor = ({
 
   // Default name
   useCustomEffect(() => {
-    console.log('default')
     if (!sensor) {
       const run = simulation.scheme.configuration.run
       setName('Sensor ' + (run.sensors ? run.sensors.length + 1 : 1))
@@ -80,7 +79,6 @@ const Sensor = ({
   // Edit
   useCustomEffect(
     () => {
-      console.log('edit')
       if (sensor) {
         setName(sensor.name)
         dispatch(
@@ -127,8 +125,6 @@ const Sensor = ({
     },
     [dispatch]
   )
-
-  console.log('sensor render')
 
   /**
    * On formula

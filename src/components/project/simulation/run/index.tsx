@@ -212,8 +212,6 @@ const Run = ({
     setSteps(newSteps)
   }, [currentSimulation?.tasks])
 
-  console.log('run render')
-
   /**
    * Render
    */

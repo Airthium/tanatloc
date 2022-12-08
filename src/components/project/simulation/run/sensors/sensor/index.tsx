@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensor */
 
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Card, Drawer, Input, Space, Tooltip, Typography } from 'antd'
 import {
   CloseOutlined,
@@ -24,6 +24,7 @@ import { globalStyle } from '@/styles'
 
 import Edit from '../edit'
 import Add from '../add'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 /**
  * Props
@@ -60,12 +61,12 @@ const Sensor = ({
   const { point, dispatch } = useContext(SelectContext)
 
   // Set point type
-  useEffect(() => {
+  useCustomEffect(() => {
     dispatch(setType('point'))
-  }, [dispatch])
+  }, [], [dispatch])
 
   // Default name
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!sensor) {
       const run = simulation.scheme.configuration.run
       setName('Sensor ' + (run.sensors ? run.sensors.length + 1 : 1))
@@ -73,7 +74,7 @@ const Sensor = ({
   }, [simulation, sensor])
 
   // Edit
-  useEffect(() => {
+  useCustomEffect(() => {
     if (sensor) {
       setName(sensor.name)
       dispatch(
@@ -81,7 +82,7 @@ const Sensor = ({
       )
       setFormula(sensor.formula)
     }
-  }, [sensor, dispatch])
+  }, [sensor], [dispatch])
 
   /**
    * Stop selection

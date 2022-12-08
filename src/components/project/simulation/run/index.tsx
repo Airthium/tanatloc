@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
@@ -16,6 +16,8 @@ import {
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Utils from '@/lib/utils'
 
@@ -154,7 +156,7 @@ const Run = ({
   const currentConfiguration = currentSimulation?.scheme?.configuration
 
   // Check tasks
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!configuration) {
       setDisabled(true)
       return
@@ -178,7 +180,7 @@ const Run = ({
   }, [configuration])
 
   // Running
-  useEffect(() => {
+  useCustomEffect(() => {
     if (currentSimulation?.tasks?.find((t) => t?.status === 'error')) {
       setRunning(false)
     } else if (
@@ -189,7 +191,7 @@ const Run = ({
   }, [currentSimulation?.tasks])
 
   // Steps
-  useEffect(() => {
+  useCustomEffect(() => {
     const newSteps: IFrontSimulationTask[] = []
     currentSimulation?.tasks?.forEach((task) => {
       if (!task) return

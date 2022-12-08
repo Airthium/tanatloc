@@ -1,13 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
 
-import {
-  useState,
-  useEffect,
-  ChangeEvent,
-  useCallback,
-  useMemo,
-  useContext
-} from 'react'
+import { useState, ChangeEvent, useCallback, useMemo, useContext } from 'react'
 import {
   Button,
   Card,
@@ -35,6 +28,8 @@ import {
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { ISelect, SelectContext } from '@/context/select'
 import { setPart } from '@/context/select/actions'
@@ -86,29 +81,51 @@ const BoundaryCondition = ({
   const dimension = simulation.scheme.configuration.dimension
 
   // Init
-  useEffect(() => {
-    dispatch(setPart(geometries[0]?.summary.uuid))
-    setActiveKey(boundaryCondition?.geometry)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [`${geometries}`, boundaryCondition, dispatch])
-
-  // Default
-  useEffect(() => {
-    if (visible && !current)
-      setCurrent({
-        geometry: geometries[0]?.id
-      } as IModelBoundaryConditionValue)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, `${geometries}`, current])
+  useCustomEffect(
+    () => {
+      dispatch(setPart(geometries[0]?.summary.uuid))
+      setActiveKey(boundaryCondition?.geometry)
+    },
+    [geometries, boundaryCondition],
+    [dispatch]
+  )
 
   // Visible
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!visible && current) setCurrent(undefined)
-  })
+  }, [visible, current])
+
+  // Types
+  useCustomEffect(() => {
+    const currentTypes = Object.keys(boundaryConditions)
+      .map((type) => {
+        if (type === 'index' || type === 'title' || type === 'done') return
+        const typedBoundaryCondition = boundaryConditions[
+          type
+        ] as IModelTypedBoundaryCondition
+        return {
+          key: type,
+          label: typedBoundaryCondition.label,
+          children: typedBoundaryCondition.children,
+          values: typedBoundaryCondition.values
+        }
+      })
+      .filter((t) => t) as BCExtended
+    setTypes(currentTypes)
+  }, [boundaryConditions])
+
+  // Total number
+  useCustomEffect(() => {
+    const numberOfBoundaryConditions = types
+      ?.map((t) => t.values?.length)
+      .filter((n) => n)
+      .reduce((a: any, b: any) => a + b, 0)
+
+    setTotalNumber(numberOfBoundaryConditions)
+  }, [types])
 
   // Edit or name
-  useEffect(() => {
+  useCustomEffect(() => {
     if (visible && !current && boundaryCondition) setCurrent(boundaryCondition)
     else if (
       visible &&
@@ -118,13 +135,14 @@ const BoundaryCondition = ({
     ) {
       setCurrent((prevCurrent) => ({
         ...(prevCurrent as IModelBoundaryConditionValue),
-        name: 'Boundary condition ' + (totalNumber + 1)
+        name: 'Boundary condition ' + (totalNumber + 1),
+        geometry: geometries[0]?.id
       }))
     }
-  }, [current, totalNumber, visible, boundaryCondition])
+  }, [visible, boundaryCondition, current, totalNumber])
 
   // Already selected
-  useEffect(() => {
+  useCustomEffect(() => {
     const currentAlreadySelected = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
@@ -145,36 +163,7 @@ const BoundaryCondition = ({
       .flat()
       .filter((s) => s)
     setAlreadySelected(currentAlreadySelected as ISelection[])
-  }, [`${boundaryConditions}`, boundaryCondition])
-
-  // Types
-  useEffect(() => {
-    const currentTypes = Object.keys(boundaryConditions)
-      .map((type) => {
-        if (type === 'index' || type === 'title' || type === 'done') return
-        const typedBoundaryCondition = boundaryConditions[
-          type
-        ] as IModelTypedBoundaryCondition
-        return {
-          key: type,
-          label: typedBoundaryCondition.label,
-          children: typedBoundaryCondition.children,
-          values: typedBoundaryCondition.values
-        }
-      })
-      .filter((t) => t) as BCExtended
-    setTypes(currentTypes)
-  }, [`${boundaryConditions}`])
-
-  // Total number
-  useEffect(() => {
-    const numberOfBoundaryConditions = types
-      ?.map((t) => t.values?.length)
-      .filter((n) => n)
-      .reduce((a: any, b: any) => a + b, 0)
-
-    setTotalNumber(numberOfBoundaryConditions)
-  }, [types])
+  }, [boundaryConditions, boundaryCondition])
 
   /**
    * On name

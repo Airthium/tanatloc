@@ -278,7 +278,6 @@ const Project = (): JSX.Element => {
       } else {
         setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [loadingGeometries, loadedGeometries, geometries],
     [setGeometries]

@@ -72,13 +72,14 @@ varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
 		)
 	) + intN(Mesh)(-sigma*Rho*<%= unknownFunction -%>'*<%= testFunction -%>)
 <% for (const d of displacement) { -%>
+<% if (d.values[0].checked || d.values[1].checked || d.values[2].checked) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
 		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>
 		)
 <% } -%>
-
+<% } -%>
 <% for (const f of fixed) { -%>
 		+ on(<%= f.selected.map(s => s.label).filter(s => s).join(', ') -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
 <% } -%>
@@ -86,8 +87,8 @@ varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
 
 // Mass matrix
 appendLog("Mass matrix...");
-// Mass matrix , no boundary conditions because we use a penalisation term already used in KRIG matrix
-varf massmatrix(<%= unknownFunction -%>, <%= testFunction -%>)= intN(Mesh)(Rho*<%= unknownFunction -%>'*<%= testFunction -%>);
+// Mass matrix, no boundary conditions because we use a penalisation term already used in KRIG matrix
+varf massmatrix(<%= unknownFunction -%>, <%= testFunction -%>) = intN(Mesh)(Rho*<%= unknownFunction -%>'*<%= testFunction -%>);
 
 <%# Solver -%>
 <% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
@@ -99,23 +100,23 @@ varf massmatrix(<%= unknownFunction -%>, <%= testFunction -%>)= intN(Mesh)(Rho*<
 // Solve
 appendLog("Solve the problem...");
 matrix OP = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver, factorize=1);
-matrix MASS =massmatrix(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver, factorize=1);
-int nev=<%= parameters.modalparameters.children[1].value ?? parameters.modalparameters.children[1].default -%>;  // Eigenvectors number
+matrix MASS = massmatrix(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver, factorize=1);
+int nev = <%= parameters.modalparameters.children[1].value ?? parameters.modalparameters.children[1].default -%>;  // Eigenvectors number
 real[int] ev(nev); //to store the nev eigenvalue 
 real[int] freq(nev); //to store the nev frequency
-int ndof=Ux[].n;
+int ndof = Ux[].n;
 real[int,int] EIGVEC(ndof,nev);
 int k = EigenValue(OP, MASS, sym=true, sigma=sigma, value=ev, rawvector=EIGVEC, tol=1e-10);
 
 // Store the frequency
-for (int fr=0;fr<nev;fr++){
-	freq[fr]=(1./(2*pi))*sqrt(abs(ev[fr]));
+for (int fr = 0; fr < nev; fr++) {
+	freq[fr] = (1./(2*pi))*sqrt(abs(ev[fr]));
 }
 
 // Eigenvectors
-for( int fr=0; fr<nev;fr++){
-	real frreal=fr;
-	Ux[]=EIGVEC(0:ndof,fr); // Eigenvectors
+for( int fr = 0; fr < nev; fr++) {
+	real frreal = fr;
+	Ux[] = EIGVEC(0:ndof, fr); // Eigenvectors
 
 	fespace Sh(Mesh,P1); 
 	Sh UUx = Ux;
@@ -152,7 +153,6 @@ for( int fr=0; fr<nev;fr++){
 		order: [1]
 	}
 }) -%>
-
 }
 
 	appendLog("End");

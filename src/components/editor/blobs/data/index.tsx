@@ -1,6 +1,13 @@
 /** @module Components.Editor.Blobs.Data */
 
-import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Button, Form, Input, InputRef } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -67,6 +74,29 @@ const Data = (): JSX.Element => {
   })
 
   /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
+
+  /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(async (values: any): Promise<void> => {
+    setLoading(true)
+
+    onAdd(values, template, cursor, dispatch)
+
+    setLoading(false)
+    setVisible(false)
+  }, [])
+
+  /**
    * Render
    */
   return (
@@ -75,15 +105,8 @@ const Data = (): JSX.Element => {
         title="Data"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.Item label="Title" name="title" rules={[{ required: true }]}>
           <Input ref={inputRef} />
@@ -109,7 +132,9 @@ const Data = (): JSX.Element => {
                           color: 'red',
                           marginRight: '10px'
                         }}
-                        onClick={() => remove(field.name)}
+                        onClick={function () {
+                          remove(field.name)
+                        }}
                       />
                       Data {index + 1}
                     </div>
@@ -134,7 +159,9 @@ const Data = (): JSX.Element => {
               <Form.Item>
                 <Button
                   type="dashed"
-                  onClick={() => add()}
+                  onClick={function () {
+                    add()
+                  }}
                   style={{ width: '60%' }}
                   icon={<PlusOutlined />}
                 >
@@ -146,7 +173,7 @@ const Data = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Data
       </Button>
     </>

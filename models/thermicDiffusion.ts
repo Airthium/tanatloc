@@ -59,21 +59,21 @@ const ThermicDiffusion: IModel = {
           label: 'Density',
           name: 'Rho',
           htmlEntity: 'formula',
-          default: 7960,
+          default: '7960',
           unit: '\\(kg.m^{-3}\\)'
         },
         {
           label: 'Thermal conductivity',
           name: 'Lambda',
           htmlEntity: 'formula',
-          default: 15,
+          default: '15',
           unit: '\\(W.m^{-1}.K^{-1}\\)'
         },
         {
           label: 'Heat capacity',
           name: 'Cp',
           htmlEntity: 'formula',
-          default: 502,
+          default: '502',
           unit: '\\(J.K^{-1}.kg^{-1}\\)'
         }
       ]
@@ -87,13 +87,13 @@ const ThermicDiffusion: IModel = {
           {
             label: 'Total time',
             htmlEntity: 'formula',
-            default: 1,
+            default: '1',
             unit: '\\(s\\)'
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
-            default: 0.1,
+            default: '0.1',
             unit: '\\(s\\)'
           }
         ]
@@ -145,7 +145,7 @@ const ThermicDiffusion: IModel = {
           {
             label: 'T',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: 'K'
           }
         ],

@@ -85,7 +85,7 @@ export interface IModelMaterialsChild {
   label: string
   name: string
   htmlEntity: string
-  default: number
+  default: number | string
   unit: string
 }
 

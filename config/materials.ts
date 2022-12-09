@@ -68,27 +68,27 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 7850
+            value: '7850'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 2.1e11
+            value: '2.1e11'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.3
+            value: '0.3'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 15
+            value: '15'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 502
+            value: '502'
           }
         ]
       },
@@ -99,27 +99,27 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 7850
+            value: '7850'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 2.1e11
+            value: '2.1e11'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.27
+            value: '0.27'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 15
+            value: '15'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 502
+            value: '502'
           }
         ]
       },
@@ -130,32 +130,32 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 8000
+            value: '8000'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 193e9
+            value: '193e9'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.29
+            value: '0.29'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 16.2
+            value: '16.2'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 500
+            value: '500'
           },
           {
             label: 'Yield strength',
             symbol: 'SigmaY',
-            value: 215e6
+            value: '215e6'
           }
         ]
       },
@@ -166,32 +166,32 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 7990
+            value: '7990'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 193e9
+            value: '193e9'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.25
+            value: '0.25'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 16.2
+            value: '16.2'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 500
+            value: '500'
           },
           {
             label: 'Yield strength',
             symbol: 'SigmaY',
-            value: 290e6
+            value: '290e6'
           }
         ]
       },
@@ -202,32 +202,32 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 2700
+            value: '2700'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 69e9
+            value: '69e9'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.33
+            value: '0.33'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 170
+            value: '170'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 960
+            value: '960'
           },
           {
             label: 'Yield strength',
             symbol: 'SigmaY',
-            value: 60e6
+            value: '60e6'
           }
         ]
       },
@@ -238,32 +238,32 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 2810
+            value: '2810'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 71.7e9
+            value: '71.7e9'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.33
+            value: '0.33'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 173
+            value: '173'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 960
+            value: '960'
           },
           {
             label: 'Yield strength',
             symbol: 'SigmaY',
-            value: 110e6
+            value: '110e6'
           }
         ]
       },
@@ -274,32 +274,32 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 2790
+            value: '2790'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 72.5e9
+            value: '72.5e9'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.33
+            value: '0.33'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 134
+            value: '134'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 873
+            value: '873'
           },
           {
             label: 'Yield strength',
             symbol: 'SigmaY',
-            value: 275e6
+            value: '275e6'
           }
         ]
       }
@@ -315,32 +315,32 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 1180
+            value: '1180'
           },
           {
             label: "Young's modulus",
             symbol: 'E',
-            value: 2.9e9
+            value: '2.9e9'
           },
           {
             label: "Poisson's ratio",
             symbol: 'Nu',
-            value: 0.36
+            value: '0.36'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 0.193
+            value: '0.193'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 1480
+            value: '1480'
           },
           {
             label: 'Yield strength',
             symbol: 'SigmaY',
-            value: 69e6
+            value: '69e6'
           }
         ]
       }
@@ -356,22 +356,22 @@ export const materialDatabase: IMaterialDatabase = {
           {
             label: 'Density',
             symbol: 'Rho',
-            value: 1e3
+            value: '1e3'
           },
           {
             label: 'Dynamic viscosity',
             symbol: 'Mu',
-            value: 1e-3
+            value: '1e-3'
           },
           {
             label: 'Thermal conductivity',
             symbol: 'Lambda',
-            value: 0.6
+            value: '0.6'
           },
           {
             label: 'Heat capacity',
             symbol: 'Cp',
-            value: 4185
+            value: '4185'
           }
         ]
       }

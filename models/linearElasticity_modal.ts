@@ -55,21 +55,21 @@ const LinearElasticityModal = {
           label: 'Density',
           name: 'Rho',
           htmlEntity: 'formula',
-          default: 8050,
+          default: '8050',
           unit: '\\(kg.m^{-3}\\)'
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
-          default: 1e4,
+          default: '1e4',
           unit: '\\(Pa\\)'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
-          default: 0.3,
+          default: '0.3',
           unit: '\\(1\\)'
         }
       ]
@@ -83,12 +83,12 @@ const LinearElasticityModal = {
           {
             label: 'sigma',
             htmlEntity: 'formula',
-            default: 0
+            default: '0'
           },
           {
             label: 'Eigenvectors number ',
             htmlEntity: 'formula',
-            default: 4
+            default: '4'
           }
         ]
       },
@@ -147,19 +147,19 @@ const LinearElasticityModal = {
           {
             label: 'Ux',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m\\)'
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m\\)'
           },
           {
             label: 'Uz',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m\\)'
           }
         ],

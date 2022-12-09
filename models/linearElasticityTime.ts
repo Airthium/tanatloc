@@ -58,21 +58,21 @@ const LinearElasticityTime: IModel = {
           label: 'Density',
           name: 'Rho',
           htmlEntity: 'formula',
-          default: 8050,
+          default: '8050',
           unit: '\\(kg.m^{-3}\\)'
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
-          default: 1e9,
+          default: '1e9',
           unit: '\\(Pa\\)'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
-          default: 0.4,
+          default: '0.4',
           unit: '\\(1\\)'
         }
       ]
@@ -86,20 +86,20 @@ const LinearElasticityTime: IModel = {
           {
             label: 'External force (x)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-3}\\)'
           },
           {
             only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-3}\\)'
           }
         ]
@@ -111,7 +111,7 @@ const LinearElasticityTime: IModel = {
           {
             label: 'Standard gravity',
             htmlEntity: 'formula',
-            default: 9.81,
+            default: '9.81',
             unit: '\\(m.s^{-2}\\)'
           }
         ]
@@ -122,13 +122,13 @@ const LinearElasticityTime: IModel = {
           {
             label: 'Total time',
             htmlEntity: 'formula',
-            default: 1,
+            default: '1',
             unit: '\\(s\\)'
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
-            default: 0.1,
+            default: '0.1',
             unit: '\\(s\\)'
           }
         ]
@@ -199,20 +199,20 @@ const LinearElasticityTime: IModel = {
           {
             label: 'Ux',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m\\)'
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m\\)'
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m\\)'
           }
         ],
@@ -224,7 +224,7 @@ const LinearElasticityTime: IModel = {
           {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-2}\\)'
           }
         ],

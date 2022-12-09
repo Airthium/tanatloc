@@ -16,6 +16,8 @@ export const arrayCompare = (array1?: any[], array2?: any[]): boolean => {
 
   return array1.every((value1, index) => {
     const value2 = array2[index]
+    if (value1 === null && value2 === null) return true
+    if (value1 === undefined && value2 === undefined) return true
     if (Array.isArray(value1)) return arrayCompare(value1, value2)
     else if (typeof value1 === 'object') return objectCompare(value1, value2)
     else return value1 === value2

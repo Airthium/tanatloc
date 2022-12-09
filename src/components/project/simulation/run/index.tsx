@@ -179,8 +179,9 @@ const Run = ({
     setDisabled(!done)
   }, [configuration])
 
-  // Running
+  // Running & steps
   useCustomEffect(() => {
+    // Running
     if (currentSimulation?.tasks?.find((t) => t?.status === 'error')) {
       setRunning(false)
     } else if (
@@ -188,10 +189,8 @@ const Run = ({
     ) {
       setRunning(true)
     } else setRunning(false)
-  }, [currentSimulation?.tasks])
 
-  // Steps
-  useCustomEffect(() => {
+    // Steps
     const newSteps: IFrontSimulationTask[] = []
     currentSimulation?.tasks?.forEach((task) => {
       if (!task) return

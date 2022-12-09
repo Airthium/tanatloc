@@ -10,10 +10,20 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
+jest.mock('@/lib/utils', () => ({
+  deepCopy: (obj: any) => JSON.parse(JSON.stringify(obj))
+}))
+
 const mockCloudServer = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/cloudServer',
   () => (props: any) => mockCloudServer(props)
+)
+
+const mockSensors = jest.fn()
+jest.mock(
+  '@/components/project/simulation/run/sensors',
+  () => (props: any) => mockSensors(props)
 )
 
 const mockLog = jest.fn()
@@ -26,12 +36,6 @@ const mockResults = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/results',
   () => (props: any) => mockResults(props)
-)
-
-const mockSensors = jest.fn()
-jest.mock(
-  '@/components/project/simulation/run/sensors',
-  () => (props: any) => mockSensors(props)
 )
 
 const mockRun = jest.fn()

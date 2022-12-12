@@ -95,12 +95,16 @@ const NotFound = (): JSX.Element => {
 
         // Mesh
         const mesh = new Mesh(geometry, material)
+        mesh.userData = {
+          type: 'Cone'
+        }
 
         // Scene
         scene.add(mesh)
 
         // Camera
         const sphere = geometry.boundingSphere!
+        console.log(sphere)
         camera.position.set(
           sphere.center.x + sphere.radius,
           sphere.center.y + 2 * sphere.radius,
@@ -123,18 +127,23 @@ const NotFound = (): JSX.Element => {
           height: 10,
           curveSegments: 12
         })
+
         const material = new MeshBasicMaterial({
           color: 0xffffff
         })
 
+        const mesh = new Mesh(text, material)
+        mesh.userData = {
+          type: 'Text'
+        }
+
         text.computeBoundingBox()
         const dimensions = new Vector3()
         dimensions.subVectors(text.boundingBox!.max, text.boundingBox!.min)
-        const mesh = new Mesh(text, material)
         mesh.position.set(
-          -dimensions.x / 2,
-          -dimensions.y / 2,
-          -dimensions.z / 2
+          250, //400 - dimensions.x / 2,
+          400, // - dimensions.y / 2,
+          0 //400 - dimensions.z / 2
         )
         // mesh.position.set(scene.children[0].position.x, scene.children[0].position.y, scene.children[0].position.z)
         scene.add(mesh)
@@ -146,7 +155,7 @@ const NotFound = (): JSX.Element => {
       },
 
       // onError callback
-      function (err) {
+      function (_) {
         console.log('An error happened')
       }
     )
@@ -156,13 +165,21 @@ const NotFound = (): JSX.Element => {
      */
     const animate = async () => {
       const timeElapsed = clock.getDelta()
-      if (scene.children[1]) scene.children[1].rotation.y += 0.2 * timeElapsed
-      if (scene.children[0]) {
-        scene.children[0].rotation.y -= timeElapsed
-        scene.children[0].position.x = Math.cos(timeElapsed) * 400
-        scene.children[0].position.z = Math.sin(timeElapsed) * 400
-        console.log(scene.children[0].position)
+
+      const cone = scene.children.filter(
+        (child) => child.userData?.type === 'Cone'
+      )[0]
+      const text = scene.children.filter(
+        (child) => child.userData?.type === 'Text'
+      )[0]
+      if (text) {
+        const angle = text.rotation.y + 0.2 * timeElapsed
+        text.position.x = 250 * Math.cos(angle)
+        text.position.z = -250 * Math.sin(angle)
+        text.rotation.y = angle
       }
+      if (cone) cone.rotation.y -= timeElapsed
+
       renderer.render(scene, camera)
 
       await new Promise((resolve) => setTimeout(resolve, 1000 / 30))

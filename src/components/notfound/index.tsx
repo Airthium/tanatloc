@@ -10,9 +10,12 @@ import {
   MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
+  Vector3,
   WebGLRenderer
 } from 'three'
 
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
@@ -56,6 +59,7 @@ const NotFound = (): JSX.Element => {
 
     // Load geometry
     const loader = new GLTFLoader()
+    const fontLoader = new FontLoader()
 
     // Load
     loader.load(
@@ -107,17 +111,58 @@ const NotFound = (): JSX.Element => {
       (err) => console.error(err)
     )
 
-    const clock = new Clock()
+    fontLoader.load(
+      // resource URL
+      'fonts/saira/Saira_Black_Regular.json',
 
+      // onLoad callback
+      function (font) {
+        const text = new TextGeometry('404', {
+          font: font,
+          size: 300,
+          height: 10,
+          curveSegments: 12
+        })
+        const material = new MeshBasicMaterial({
+          color: 0xffffff
+        })
+
+        text.computeBoundingBox()
+        const dimensions = new Vector3()
+        dimensions.subVectors(text.boundingBox!.max, text.boundingBox!.min)
+        const mesh = new Mesh(text, material)
+        mesh.position.set(
+          -dimensions.x / 2,
+          -dimensions.y / 2,
+          -dimensions.z / 2
+        )
+        // mesh.position.set(scene.children[0].position.x, scene.children[0].position.y, scene.children[0].position.z)
+        scene.add(mesh)
+      },
+
+      // onProgress callback
+      function (xhr) {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+      },
+
+      // onError callback
+      function (err) {
+        console.log('An error happened')
+      }
+    )
+    const clock = new Clock()
     /**
      * Animate
      */
     const animate = async () => {
       const timeElapsed = clock.getDelta()
-      scene.children.forEach((child) => {
-        child.rotation.y += 0.2 * timeElapsed
-      })
-
+      if (scene.children[1]) scene.children[1].rotation.y += 0.2 * timeElapsed
+      if (scene.children[0]) {
+        scene.children[0].rotation.y -= timeElapsed
+        scene.children[0].position.x = Math.cos(timeElapsed) * 400
+        scene.children[0].position.z = Math.sin(timeElapsed) * 400
+        console.log(scene.children[0].position)
+      }
       renderer.render(scene, camera)
 
       await new Promise((resolve) => setTimeout(resolve, 1000 / 30))
@@ -174,7 +219,11 @@ const NotFound = (): JSX.Element => {
           <Typography.Title level={3} style={{ textAlign: 'center' }}>
             The requested URL was not found on the server
           </Typography.Title>
-          <Button type="primary" css={style.descriptionButton}>
+          <Button
+            type="primary"
+            css={style.descriptionButton}
+            onClick={() => router.push('/')}
+          >
             Return to Home
           </Button>
         </div>

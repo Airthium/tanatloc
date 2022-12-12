@@ -9,6 +9,8 @@ import {
   Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
+  PointLight,
+  PointLightHelper,
   Scene,
   Vector3,
   WebGLRenderer
@@ -140,12 +142,13 @@ const NotFound = (): JSX.Element => {
         text.computeBoundingBox()
         const dimensions = new Vector3()
         dimensions.subVectors(text.boundingBox!.max, text.boundingBox!.min)
+
         mesh.position.set(
-          250, //400 - dimensions.x / 2,
-          400, // - dimensions.y / 2,
-          0 //400 - dimensions.z / 2
+          -dimensions.x / 2,
+          400 - dimensions.y / 2,
+          -dimensions.z / 2
         )
-        // mesh.position.set(scene.children[0].position.x, scene.children[0].position.y, scene.children[0].position.z)
+
         scene.add(mesh)
       },
 
@@ -174,8 +177,9 @@ const NotFound = (): JSX.Element => {
       )[0]
       if (text) {
         const angle = text.rotation.y + 0.2 * timeElapsed
-        text.position.x = 250 * Math.cos(angle)
-        text.position.z = -250 * Math.sin(angle)
+        text.userData.rotation = angle
+        text.position.x = 200 * Math.cos(Math.PI / 2 + angle)
+        text.position.z = -200 * Math.sin(Math.PI / 2 + angle)
         text.rotation.y = angle
       }
       if (cone) cone.rotation.y -= timeElapsed
@@ -212,7 +216,7 @@ const NotFound = (): JSX.Element => {
       // Scene
       scene.children.forEach((child) => {
         const mesh = child as Mesh
-        mesh.geometry.dispose()
+        mesh.geometry?.dispose()
       })
       scene.clear()
 

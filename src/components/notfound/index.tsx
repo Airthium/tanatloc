@@ -1,24 +1,22 @@
 /** @module Components.Notfound */
 
 import { useRouter } from 'next/router'
-import { Layout, Typography } from 'antd'
+import { Button, Layout, Typography } from 'antd'
 import {
-  AmbientLight,
-  CylinderGeometry,
+  Clock,
+  ConeGeometry,
   Mesh,
-  MeshBasicMaterial,
+  MeshStandardMaterial,
   PerspectiveCamera,
   PointLight,
   Scene,
-  TetrahedronGeometry,
-  Vector3,
   WebGLRenderer
 } from 'three'
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Side from '@/components/assets/side'
 import Menu from '@/components/indexpage/menu'
 
-import style from '@/components/indexpage/index.style'
+import style from '@/components/notfound/index.style'
 import { useEffect, useRef, useState } from 'react'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 import { css } from '@emotion/react'
@@ -30,11 +28,9 @@ import { css } from '@emotion/react'
 const NotFound = (): JSX.Element => {
   // Router
   const router = useRouter()
-  const [loaded, setLoaded] = useState(false)
   const mount = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (loaded) return
     if (!WebGL.isWebGLAvailable()) {
       router.push('/webgl')
       return
@@ -43,42 +39,63 @@ const NotFound = (): JSX.Element => {
     const div = mount.current
     /* istanbul ignore next */
     if (!div) return
-    const loader = new GLTFLoader()
-    loader.load(
-      'models/cone.glb',
-      (gltf: GLTF) => {
-        let width = div.clientWidth
-        let height = div.clientHeight
+    // create a cone
+    const geometry = new ConeGeometry(5, 10, 32)
+    const material = new MeshStandardMaterial({
+      color: 0xffa500,
+      metalness: 0.5
+    })
+    const cone = new Mesh(geometry, material)
+    cone.position.set(0, -10, 0)
+    cone.scale.set(0.6, 0.6, 0.6)
 
-        const renderer = new WebGLRenderer({ antialias: true })
-        renderer.setClearColor(0xffffff, 0)
-        renderer.setSize(width, height)
-        div.appendChild(renderer.domElement)
+    // create a light
+    const light = new PointLight(0xffffff, 3, 100)
+    light.position.set(2.5, 5, 5)
 
-        // Scene
-        const scene = new Scene()
+    // add cone and light to the scene
+    const scene = new Scene()
+    scene.add(cone)
+    scene.add(light)
 
-        // Camera
-        const camera = new PerspectiveCamera()
-        camera.position.set(0, -2000, 0)
-        camera.lookAt(scene.position)
-
-        // MESH
-        gltf.scene.rotateX((90 * Math.PI) / 180)
-        scene.add(gltf.scene)
-        console.log(scene)
-
-        const ambientLight = new AmbientLight(0x404040)
-        scene.add(ambientLight)
-        // const light = new PointLight( 0xff0000, 1, 100 );
-        // light.position.set( 50, 50, 50 );
-        // scene.add( light );
-        renderer.render(scene, camera)
-        setLoaded(true)
-      },
-      () => undefined,
-      (err) => console.log(err)
+    // create a camera
+    const camera = new PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
     )
+
+    // set the camera position so that it points at the cone
+    camera.position.set(0, -10, 13)
+    camera.lookAt(cone.position)
+
+    // create a renderer
+    const renderer = new WebGLRenderer()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setClearColor('#fad114')
+
+    // add the renderer to the page
+    div.appendChild(renderer.domElement)
+
+    const clock = new Clock()
+
+    function animate() {
+      // update the rotation of the cones based on the time elapsed since the last frame
+      const timeElapsed = clock.getDelta()
+      cone.rotation.y += 0.2 * timeElapsed
+      // render the scene
+      renderer.render(scene, camera)
+
+      // request the next animation frame
+      requestAnimationFrame(animate)
+    }
+
+    // start animating
+    animate()
+
+    // render the scene
+    renderer.render(scene, camera)
   }, [router])
 
   /**
@@ -87,47 +104,61 @@ const NotFound = (): JSX.Element => {
   return (
     <Layout css={style.index}>
       <Menu />
-      <div
-        ref={mount}
-        css={css({
-          left: 0,
-          top: 0,
-          width: '1000px',
-          height: '800px',
-          zIndex: 0
-        })}
-      />
-      <Layout.Content>
-        <Side
-          left={
-            <>
-              <Typography.Title level={1}></Typography.Title>
-              <Typography.Title level={1}>404</Typography.Title>
-              <Typography.Title level={1}>Page not found</Typography.Title>
-              <Typography.Title level={1}></Typography.Title>
-            </>
-          }
-          right={<></>}
-        />
-        <Side
-          left={
-            <>
-              <Typography.Title level={2}>
-                The page you are trying to reach does not exist
-              </Typography.Title>
-            </>
-          }
-          right={
-            <Typography.Title
-              level={2}
-              underline={true}
-              onClick={() => router.push('/')}
-              style={{ cursor: 'pointer' }}
-            >
-              Come back home
-            </Typography.Title>
-          }
-        />
+      <Layout.Content css={style.content}>
+        <Typography
+          css={css({
+            position: 'absolute',
+            zIndex: '2',
+            color: '#fff',
+            fontSize: '20rem',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            left: '50%',
+            transform: 'translate(-50%, 0%)'
+          })}
+        >
+          404
+        </Typography>
+        <div
+          ref={mount}
+          css={css({
+            left: 0,
+            top: 0,
+            maxHeight: '600px',
+            zIndex: 0,
+            '> *': {
+              maxHeight: '750px',
+              maxWidth: '100%'
+            }
+          })}
+        ></div>
+        <div
+          css={css({
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+          })}
+        >
+          <Typography.Title level={1} style={{ textAlign: 'center' }}>
+            Page not found
+          </Typography.Title>
+          <Typography.Title level={1} style={{ textAlign: 'center' }}>
+            The requested URL was not found on the server
+          </Typography.Title>
+          <Button
+            type="primary"
+            css={css({
+              margin: 'auto',
+              fontSize: '30px',
+              height: '60px',
+              marginTop: '30px',
+              fontWeight: 'bold'
+            })}
+            onClick={() => router.push('/dashboard')}
+          >
+            Return to dashboard
+          </Button>
+        </div>
       </Layout.Content>
     </Layout>
   )

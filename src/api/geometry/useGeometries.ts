@@ -31,7 +31,7 @@ export const useGeometries = (
 
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
-    fetcher
+    ([url, payload]) => fetcher(url, payload)
   )
   const loading = !data
   const geometries = data?.geometries || defaultData

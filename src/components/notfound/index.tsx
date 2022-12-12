@@ -4,11 +4,16 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Layout, Typography } from 'antd'
 import {
+  BufferAttribute,
   Clock,
+  Color,
   ConeGeometry,
+  DirectionalLight,
+  Float32BufferAttribute,
   Material,
   Mesh,
   MeshBasicMaterial,
+  MeshPhongMaterial,
   MeshStandardMaterial,
   Object3D,
   PerspectiveCamera,
@@ -50,9 +55,6 @@ const NotFound = (): JSX.Element => {
     const width = div.clientWidth
     const height = div.clientHeight
 
-    console.log(width)
-    console.log(height)
-
     // Renderer
     const renderer = new WebGLRenderer({ antialias: true })
     renderer.setClearColor('#fad114')
@@ -68,96 +70,82 @@ const NotFound = (): JSX.Element => {
 
     // Load geometry
     const loader = new GLTFLoader()
-    const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('/three/libs/draco/')
-    loader.setDRACOLoader(dracoLoader)
-    const ktx2Loader = new KTX2Loader()
-    ktx2Loader.setTranscoderPath('node_modules/three//examples/js/libs/basis/')
-    loader.setKTX2Loader(ktx2Loader)
 
+    // Load
     loader.load(
       '/models/cone.glb',
       (glb) => {
         const cone = glb.scene.children[0] as Mesh
 
+        // Geometry
+        const geometry = cone.geometry
+
+        // Color
+        const position = geometry.getAttribute('position')
+        geometry.setAttribute(
+          'color',
+          new BufferAttribute(new Float32Array(position.count * 3), 3)
+        )
+        const color = geometry.attributes.color
+        for (let i = 0; i < position.count; ++i) {
+          const y = position.getY(i)
+          if ((y > 400 && y < 500) || (y > 600 && y < 700)) {
+            color.setXYZ(i, 1, 1, 1)
+          } else {
+            color.setXYZ(i, 248 / 255, 116 / 255, 46 / 255)
+          }
+        }
+
         // Material
-        ;(cone.material as MeshBasicMaterial).wireframe = true
+        const material = new MeshBasicMaterial({
+          color: 0xffffff,
+          vertexColors: true,
+          wireframe: true
+        })
+
+        // Mesh
+        const mesh = new Mesh(geometry, material)
 
         // Scene
-        scene.add(cone)
+        scene.add(mesh)
 
         // Camera
-        const sphere = cone.geometry.boundingSphere!
+        const sphere = geometry.boundingSphere!
         camera.position.set(
           sphere.center.x + sphere.radius,
           sphere.center.y + 2 * sphere.radius,
           sphere.center.z + sphere.radius
         )
-        camera.lookAt(cone.position)
+        camera.lookAt(mesh.position)
       },
       (err) => console.error(err)
     )
 
-    // // create a cone
-    // const geometry = new ConeGeometry(5, 10, 32)
-    // const material = new MeshStandardMaterial({
-    //   color: 0xffa500,
-    //   metalness: 0.5
-    // })
-    // const cone = new Mesh(geometry, material)
-    // cone.position.set(0, -10, 0)
-    // cone.scale.set(0.6, 0.6, 0.6)
-
-    // // create a light
-    // const light = new PointLight(0xffffff, 3, 100)
-    // light.position.set(2.5, 5, 5)
-
-    // add cone and light to the scene
-
-    // scene.add(cone)
-    // scene.add(light)
-
-    // // create a camera
-    // const camera = new PerspectiveCamera(
-    //   75,
-    //   window.innerWidth / window.innerHeight,
-    //   0.1,
-    //   1000
-    // )
-
-    // set the camera position so that it points at the cone
-    // camera.position.set(0, -10, 13)
-    // camera.lookAt(cone.position)
-
-    // create a renderer
-    // const renderer = new WebGLRenderer()
-    // renderer.setSize(window.innerWidth, window.innerHeight)
-    // renderer.setClearColor('#fad114')
-
-    // // add the renderer to the page
-    // div.appendChild(renderer.domElement)
-
     const clock = new Clock()
 
-    function animate() {
-      // update the rotation of the cones based on the time elapsed since the last frame
+    /**
+     * Animate
+     */
+    const animate = async () => {
       const timeElapsed = clock.getDelta()
       scene.children.forEach((child) => {
-        child.rotation.y += 0.2 * timeElapsed
+        if (child.type === 'Mesh') child.rotation.y += 0.2 * timeElapsed
       })
-      // cone.rotation.y += 0.2 * timeElapsed
-      // render the scene
+
       renderer.render(scene, camera)
 
-      // request the next animation frame
+      await new Promise((resolve) => setTimeout(resolve, 1000 / 30))
       requestAnimationFrame(animate)
     }
 
-    // start animating
+    // Start
     animate()
 
-    // render the scene
-    renderer.render(scene, camera)
+    // Free
+    return () => {
+      // TODO
+      // free memory
+    }
   }, [router])
 
   /**

@@ -1,34 +1,20 @@
 /** @module Components.Notfound */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Layout, Typography } from 'antd'
 import {
   BufferAttribute,
   Clock,
-  Color,
-  ConeGeometry,
-  DirectionalLight,
-  Float32BufferAttribute,
-  Material,
   Mesh,
   MeshBasicMaterial,
-  MeshPhongMaterial,
-  MeshStandardMaterial,
-  Object3D,
   PerspectiveCamera,
-  PointLight,
   Scene,
   WebGLRenderer
 } from 'three'
-import { css } from '@emotion/react'
 
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
-import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
-
-import Side from '@/components/assets/side'
 
 import style from '@/components/notfound/index.style'
 
@@ -52,12 +38,12 @@ const NotFound = (): JSX.Element => {
     if (!div) return
 
     // Size
-    const width = div.clientWidth
-    const height = div.clientHeight
+    let width = div.clientWidth
+    let height = div.clientHeight
 
     // Renderer
-    const renderer = new WebGLRenderer({ antialias: true })
-    renderer.setClearColor('#fad114')
+    const renderer = new WebGLRenderer({ antialias: true, alpha: true })
+    renderer.setClearColor(0x000000, 0)
     renderer.setSize(width, height)
     div.appendChild(renderer.domElement)
 
@@ -129,7 +115,7 @@ const NotFound = (): JSX.Element => {
     const animate = async () => {
       const timeElapsed = clock.getDelta()
       scene.children.forEach((child) => {
-        if (child.type === 'Mesh') child.rotation.y += 0.2 * timeElapsed
+        child.rotation.y += 0.2 * timeElapsed
       })
 
       renderer.render(scene, camera)
@@ -141,10 +127,35 @@ const NotFound = (): JSX.Element => {
     // Start
     animate()
 
+    /**
+     * On resize
+     */
+    const onResize = () => {
+      width = div.clientWidth
+      height = div.clientHeight
+
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
+
+      renderer.setSize(width, height)
+    }
+
+    // Event
+    window.addEventListener('resize', onResize)
+
+    onResize()
+
     // Free
     return () => {
-      // TODO
-      // free memory
+      // Scene
+      scene.children.forEach((child) => {
+        const mesh = child as Mesh
+        mesh.geometry.dispose()
+      })
+      scene.clear()
+
+      // Event
+      window.removeEventListener('resize', onResize)
     }
   }, [router])
 
@@ -152,61 +163,21 @@ const NotFound = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout>
-      <Layout.Content>
-        {/* <Typography
-          css={css({
-            position: 'absolute',
-            zIndex: '2',
-            color: '#fff',
-            fontSize: '20rem',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            left: '50%',
-            transform: 'translate(-50%, 0%)'
-          })}
-        >
-          404
-        </Typography> */}
-        <div
-          ref={mount}
-          css={css({
-            width: '100%',
-            height: '100%',
-            zIndex: 0
-            // '> *': {
-            //   maxHeight: '750px',
-            //   maxWidth: '100%'
-            // }
-          })}
-        />
-        {/* <div
-          css={css({
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          })}
-        >
+    <Layout css={style.index}>
+      <Layout.Content css={style.content}>
+        <Typography css={style.title}>404</Typography>
+        <div ref={mount} css={style.three} />
+        <div css={style.description}>
           <Typography.Title level={1} style={{ textAlign: 'center' }}>
             Page not found
           </Typography.Title>
-          <Typography.Title level={1} style={{ textAlign: 'center' }}>
+          <Typography.Title level={3} style={{ textAlign: 'center' }}>
             The requested URL was not found on the server
           </Typography.Title>
-          <Button
-            type="primary"
-            css={css({
-              margin: 'auto',
-              fontSize: '30px',
-              height: '60px',
-              marginTop: '30px',
-              fontWeight: 'bold'
-            })}
-            onClick={() => router.push('/dashboard')}
-          >
-            Return to dashboard
+          <Button type="primary" css={style.descriptionButton}>
+            Return to Home
           </Button>
-        </div> */}
+        </div>
       </Layout.Content>
     </Layout>
   )

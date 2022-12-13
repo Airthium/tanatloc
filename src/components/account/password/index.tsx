@@ -1,6 +1,6 @@
 /** @module Components.Account.Password */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
@@ -37,7 +37,7 @@ export const errors = {
  * @param user User
  * @param values Values
  */
-export const onFinish = async (
+export const _onFinish = async (
   user: Pick<IFrontUser, 'email'>,
   values: {
     password: string
@@ -90,6 +90,28 @@ const Password = ({ user }: IProps): JSX.Element => {
   }
 
   /**
+   * On finish
+   * @param values Values
+   */
+  const onFinish = useCallback(
+    async (values: {
+      password: string
+      newPassword: string
+    }): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onFinish(user, values)
+        setFormError(null)
+      } catch (err: any) {
+        setFormError(err)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [user]
+  )
+
+  /**
    * Render
    */
   return (
@@ -98,17 +120,7 @@ const Password = ({ user }: IProps): JSX.Element => {
         {...layout}
         css={globalStyleFn.maxWidth(500)}
         layout="vertical"
-        onFinish={async (values) => {
-          setLoading(true)
-          try {
-            await onFinish(user, values)
-            setFormError(null)
-          } catch (err: any) {
-            setFormError(err)
-          } finally {
-            setLoading(false)
-          }
-        }}
+        onFinish={onFinish}
         name="passwordForm"
       >
         <Form.Item

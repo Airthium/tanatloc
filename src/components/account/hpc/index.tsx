@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { Card, Space, Spin } from 'antd'
+import { css } from '@emotion/react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
-import { css } from '@emotion/react'
 
 import { globalStyle } from '@/styles'
 
@@ -23,7 +23,7 @@ export const errors = {
  * Plugins list
  * @returns List
  */
-export const pluginsList = async (): Promise<JSX.Element[]> => {
+export const _pluginsList = async (): Promise<JSX.Element[]> => {
   try {
     const plugins = await PluginsAPI.list()
 
@@ -78,7 +78,7 @@ const HPC = (): JSX.Element => {
 
   // Plugins list
   useEffect(() => {
-    pluginsList().then(setList)
+    _pluginsList().then(setList)
   }, [])
 
   /**

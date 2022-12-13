@@ -1,6 +1,13 @@
 /** @module Components.Account.HPC.Plugin.Dialog */
 
-import { useState, useEffect, useRef, RefObject } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  RefObject,
+  useCallback,
+  useMemo
+} from 'react'
 import { Form, Input, InputRef, Select, Typography } from 'antd'
 import parse from 'html-react-parser'
 
@@ -38,14 +45,14 @@ export const errors = {
  * @param item Item
  * @param key Key
  */
-export const inputItem = (
+export const _inputItem = (
   item: IClientPlugin['configuration']['key'],
   key: string,
   inputRef?: RefObject<InputRef>
 ): React.ReactElement => {
   return (
     <Form.Item
-      key={item.label}
+      key={key}
       name={key}
       label={item.label}
       htmlFor={'input-' + key}
@@ -67,13 +74,13 @@ export const inputItem = (
  * @param item Item
  * @param key Key
  */
-export const textareaItem = (
+export const _textareaItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
 ): React.ReactElement => {
   return (
     <Form.Item
-      key={item.label}
+      key={key}
       name={key}
       label={item.label}
       htmlFor={'input-' + key}
@@ -94,13 +101,13 @@ export const textareaItem = (
  * @param item Item
  * @param key Key
  */
-export const passwordItem = (
+export const _passwordItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
 ): React.ReactElement => {
   return (
     <Form.Item
-      key={item.label}
+      key={key}
       name={key}
       label={item.label}
       htmlFor={'input-' + key}
@@ -122,13 +129,13 @@ export const passwordItem = (
  * @param item Item
  * @param key Key
  */
-export const selectItem = (
+export const _selectItem = (
   item: IClientPlugin['configuration']['key'],
   key: string
 ): React.ReactElement => {
   return (
     <Form.Item
-      key={item.label}
+      key={key}
       name={key}
       label={item.label}
       htmlFor={'select-' + key}
@@ -136,13 +143,11 @@ export const selectItem = (
       rules={item.rules}
     >
       <Select id={'select-' + key}>
-        {item.options.map((option: string[]) => {
-          return (
-            <Select.Option key={option} value={option} {...(item.props || {})}>
-              {option}
-            </Select.Option>
-          )
-        })}
+        {item.options.map((option: string[]) => (
+          <Select.Option key={option} value={option} {...(item.props || {})}>
+            {option}
+          </Select.Option>
+        ))}
       </Select>
     </Form.Item>
   )
@@ -155,7 +160,7 @@ export const selectItem = (
  * @param values Values
  * @param swr SWR
  */
-export const onFinish = async (
+export const _onFinish = async (
   plugin: IClientPlugin,
   edit: boolean,
   values: {},
@@ -231,6 +236,55 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback((): void => {
+    setVisible(true)
+  }, [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback((): void => {
+    setVisible(false)
+  }, [])
+
+  /**
+   * On finish
+   * @param values Values
+   */
+  const onFinish = useCallback(
+    async (values: {}): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onFinish(plugin, !!edit, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [plugin, swr, edit]
+  )
+
+  const dialogContent = useMemo(
+    () =>
+      Object.keys(plugin.configuration).map((key, index) => {
+        const item = plugin.configuration[key]
+        if (item.type === 'input')
+          return _inputItem(item, key, index === 0 ? inputRef : undefined)
+        else if (item.type === 'textarea') return _textareaItem(item, key)
+        else if (item.type === 'password') return _passwordItem(item, key)
+        else if (item.type === 'select') return _selectItem(item, key)
+        else return <div key={key}></div>
+      }),
+    [plugin.configuration]
+  )
+
+  /**
    * Render
    */
   return (
@@ -239,39 +293,19 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         title={plugin.name}
         visible={visible}
         initialValues={initialValues}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onFinish(plugin, !!edit, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onFinish}
         loading={loading}
       >
         <>
           <Typography.Text>{parse(plugin.description || '')}</Typography.Text>
-          {Object.keys(plugin.configuration).map((key, index) => {
-            const item = plugin.configuration[key]
-            if (item.type === 'input')
-              return inputItem(item, key, index === 0 ? inputRef : undefined)
-            else if (item.type === 'textarea') return textareaItem(item, key)
-            else if (item.type === 'password') return passwordItem(item, key)
-            else if (item.type === 'select') return selectItem(item, key)
-            else return <></>
-          })}
+          {dialogContent}
         </>
       </Dialog>
       {edit ? (
-        <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>
+        <EditButton onEdit={setVisibleTrue}>Edit</EditButton>
       ) : (
-        <AddButton onAdd={() => setVisible(true)}>
+        <AddButton onAdd={setVisibleTrue}>
           Add a new «{plugin.name}» configuration
         </AddButton>
       )}

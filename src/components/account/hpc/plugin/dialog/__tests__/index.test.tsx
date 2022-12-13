@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form } from 'antd'
 
 import PluginDialog, { errors } from '..'
 
@@ -81,6 +82,36 @@ describe('components/account/hpc/plugin/dialog', () => {
     unmount()
   })
 
+  test('ref', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(<PluginDialog plugin={plugin} swr={swr} />)
+
+    unmount()
+  })
+
+  test('without first input', () => {
+    const { unmount } = render(
+      <PluginDialog
+        plugin={{
+          ...plugin,
+          configuration: {
+            password: {
+              label: 'Password',
+              type: 'password'
+            },
+            input: {
+              label: 'Input',
+              type: 'input'
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
   test('setVisible and cancel', () => {
     mockAddButton.mockImplementation(({ onAdd }) => (
       <div role="AddButton" onClick={onAdd} />
@@ -124,7 +155,7 @@ describe('components/account/hpc/plugin/dialog', () => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1)))
     await waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         ...plugin,
@@ -158,7 +189,7 @@ describe('components/account/hpc/plugin/dialog', () => {
       // mock function
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2)))
     await waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
@@ -192,7 +223,7 @@ describe('components/account/hpc/plugin/dialog', () => {
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await act(() => waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1)))
     await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith({
         ...plugin,

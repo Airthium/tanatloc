@@ -27,11 +27,12 @@ export const useProjects = (
     loadingProjects: boolean
   }
 ] => {
+  console.log('call')
   const defaultData: IFrontProjects = []
 
   const { data, error, mutate } = useSWR(
     ['/api/projects', JSON.stringify({ ids })],
-    fetcher
+    ([url, payload]) => fetcher(url, payload)
   )
   const loading = !data
   const projects = data?.projects || defaultData

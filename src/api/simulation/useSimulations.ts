@@ -34,7 +34,7 @@ export const useSimulations = (
 
   const { data, error, mutate } = useSWR(
     ['/api/simulations', JSON.stringify({ ids })],
-    fetcher
+    ([url, payload]) => fetcher(url, payload)
   )
   const loading = !data
   const simulations = data?.simulations || defaultData

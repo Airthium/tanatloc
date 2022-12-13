@@ -1,7 +1,7 @@
 /** @module Components.Workspace.List */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Empty, Form, Input, InputRef, Layout, Tabs, Typography } from 'antd'
 
 import { LIMIT } from '@/config/string'
@@ -111,6 +111,55 @@ const WorkspacesList = ({
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => {
+    setVisible(true)
+  }, [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => {
+    setVisible(false)
+  }, [])
+
+  /**
+   * On change
+   * @param activeKey Active key
+   */
+  const onChange = useCallback(
+    (activeKey: string) => {
+      router.push({
+        pathname: '/dashboard',
+        query: { page: 'workspaces', workspaceId: activeKey }
+      })
+    },
+    [router]
+  )
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const inElementOnOk = useCallback(
+    async (values: Pick<IFrontWorkspacesItem, 'name'>) => {
+      setLoading(true)
+      try {
+        await onOk(router, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [router, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -132,20 +181,8 @@ const WorkspacesList = ({
               visible={visible}
               loading={loading}
               title="Create a new workspace"
-              onCancel={() => setVisible(false)}
-              onOk={async (values) => {
-                setLoading(true)
-                try {
-                  await onOk(router, values, swr)
-
-                  // Close
-                  setLoading(false)
-                  setVisible(false)
-                } catch (err) {
-                  setLoading(false)
-                  throw err
-                }
-              }}
+              onCancel={setVisibleFalse}
+              onOk={inElementOnOk}
             >
               <Form.Item
                 label="Name"
@@ -191,13 +228,8 @@ const WorkspacesList = ({
               }))}
               defaultActiveKey={'1'}
               activeKey={workspaceId}
-              onChange={(activeKey) =>
-                router.push({
-                  pathname: '/dashboard',
-                  query: { page: 'workspaces', workspaceId: activeKey }
-                })
-              }
-              onEdit={() => setVisible(true)}
+              onChange={onChange}
+              onEdit={setVisibleTrue}
             />
           </>
         ) : (

@@ -18,8 +18,6 @@
 
 - Windows sign
 
-## Editor (Long term)
-
 ## Misc (Debug)
 
 - deploy without mail server, go to login after signup, not in /send
@@ -37,3 +35,5 @@
 - name check name on save
 - save temporary version
 - icon browse models
+
+- bug save in double

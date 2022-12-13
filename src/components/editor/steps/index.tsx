@@ -126,6 +126,7 @@ const StatusSteps = ({ setName }: IProps) => {
             <>
               <Button
                 disabled={
+                  true ||
                   !(
                     status.template?.status === 'finish' &&
                     status.model?.status === 'finish'

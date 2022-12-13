@@ -60,7 +60,7 @@ const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
       // Geometry
       const geometryId = materials.values![index].geometry
       const geometry = geometries.find((geometry) => geometry.id === geometryId)
-      dispatch(setPart(geometry!.summary.uuid))
+      dispatch(setPart(geometry?.summary.uuid))
 
       // Selected
       const currentSelected = materials.values![index].selected

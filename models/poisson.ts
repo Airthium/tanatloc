@@ -50,7 +50,7 @@ const Poisson: IModel = {
           {
             label: 'External force',
             htmlEntity: 'formula',
-            default: 0
+            default: '0'
           }
         ]
       },
@@ -101,7 +101,7 @@ const Poisson: IModel = {
           {
             label: 'u',
             htmlEntity: 'formula',
-            default: 0
+            default: '0'
           }
         ]
       },
@@ -111,7 +111,7 @@ const Poisson: IModel = {
           {
             label: 'du/dn',
             htmlEntity: 'formula',
-            default: 0
+            default: '0'
           }
         ]
       }

@@ -1,7 +1,8 @@
 load "gmsh"
-string MeshFile = "<%= mesh.renderPath + '/' + mesh.fileName -%>";
+
+string MeshFile<%= mesh.name -%> = "<%= mesh.renderPath + '/' + mesh.fileName -%>";
 <% if (dimension === 2) { -%>
-meshN <%= mesh.name -%> = gmshload(MeshFile);
+meshN <%= mesh.name -%> = gmshload(MeshFile<%= mesh.name -%>);
 <% } else { -%>
-meshN <%= mesh.name -%> = gmshload3(MeshFile);
+meshN <%= mesh.name -%> = gmshload3(MeshFile<%= mesh.name -%>);
 <% } -%>

@@ -1,6 +1,14 @@
 // Materials
 appendLog("Define materials...");
 
+<% materials.values = materials.values.filter(value => {
+	if (value.material.key === 'fundation') {
+		meshes[value.geometryIndex].tag = 'fundation'
+		return false
+	}
+	return true
+}) -%>
+
 <% materials.children.forEach(material => { -%>
 <% let firstValue = 0 -%>
 // <%- material.label %> 
@@ -11,7 +19,7 @@ func <%= material.name -%> =
 <% firstValue = child.value ?? material.default -%>
 	<%= child.value ?? material.default %>
 <% } else { -%>
-	(<%= child.value ?? material.default -%> - <%= firstValue -%>)
+	+ (<%= child.value ?? material.default -%> - <%= firstValue -%>)
 <% value.selected.forEach(select => { -%>
 		* (region == <%= select.label -%>)
 <% }) -%>

@@ -3,7 +3,7 @@
 import path from 'path'
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IModel } from '@/models/index.d'
+import { IModel, IModelTypedBoundaryCondition } from '@/models/index.d'
 import { ISimulationGet } from '../index.d'
 
 import { GEOMETRY, GEOMETRY_RELATIVE, SIMULATION } from '@/config/storage'
@@ -273,6 +273,27 @@ const run = async (
         }
       )
     }
+
+    // Check materials
+    configuration.materials?.values?.forEach((material) => {
+      const index = geometriesIds.findIndex((id) => id === material.geometry)
+      material.geometryIndex = index
+    })
+
+    // Check boundary conditions
+    Object.keys(configuration.boundaryConditions).forEach((key) => {
+      if (key === 'index' || key === 'title' || key === 'done') return
+
+      const typedBoundaryCondition = configuration.boundaryConditions[
+        key
+      ] as IModelTypedBoundaryCondition
+
+      const values = typedBoundaryCondition.values
+      values?.forEach((value) => {
+        const index = geometriesIds.findIndex((id) => id === value.geometry)
+        value.geometryIndex = index
+      })
+    })
   }
 
   // Check coupling

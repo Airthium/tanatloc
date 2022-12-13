@@ -11,6 +11,7 @@ interface ITanatloc {
 
 declare global {
   let tanatloc: ITanatloc
+  let electron
 
   interface Window {
     MathJax?: {
@@ -20,3 +21,6 @@ declare global {
 }
 
 global.tanatloc = global.tanatloc || {}
+global.electron = global.electron || {
+  fullBuild: false
+}

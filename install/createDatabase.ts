@@ -4,6 +4,7 @@ import pg from 'pg'
 import format from '@airthium/pg-format'
 import crypto from 'crypto'
 import { v4 as uuid } from 'uuid'
+import isElectron from 'is-electron'
 
 import { IDataBaseResponse } from '@/database/index.d'
 
@@ -625,6 +626,12 @@ const createLinkTable = async (): Promise<void> => {
  * Create administrator
  */
 const createAdmin = async (): Promise<void> => {
+  const authorizedPlugins = ['local']
+  //@ts-ignore
+  if (!isElectron() || global.electron?.fullBuild) {
+    authorizedPlugins.push(...['airthium', 'denso', 'rescale', 'sharetask'])
+  }
+
   const { rows } = await query('SELECT * FROM ' + tables.USERS, [])
   if (rows.length === 0) {
     console.info(' *** Create Administrator *** ')
@@ -642,7 +649,7 @@ const createAdmin = async (): Promise<void> => {
         true,
         Date.now() / 1000,
         true,
-        ['local'],
+        authorizedPlugins,
         [localPlugin]
       ]
     )
@@ -654,14 +661,11 @@ const createAdmin = async (): Promise<void> => {
 
     const user = rows.find((row) => row.email === 'admin')
 
-    const authorizedplugins = user.authorizedplugins
-    if (!authorizedplugins?.length) {
-      console.info(' - Update authorized plugins')
-      await query(
-        'UPDATE ' + tables.USERS + ' SET authorizedplugins = $1 WHERE id=$2',
-        [['local'], user.id]
-      )
-    }
+    console.info(' - Update authorized plugins')
+    await query(
+      'UPDATE ' + tables.USERS + ' SET authorizedplugins = $1 WHERE id=$2',
+      [authorizedPlugins, user.id]
+    )
 
     const plugins = user.plugins
     if (!plugins?.length) {

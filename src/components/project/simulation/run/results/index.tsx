@@ -1,8 +1,10 @@
 /** @module Components.Project.Simulation.Run.Results */
 
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { IFrontSimulation, IFrontResult } from '@/api/index.d'
 
@@ -43,7 +45,7 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   const configuration = simulation?.scheme?.configuration
 
   // Get files
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!simulation?.tasks) {
       setSingleFiles([])
       setFilteredFiles(undefined)
@@ -113,7 +115,7 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   }, [simulation, configuration])
 
   // Initial number
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!currentNumber && filteredFiles) {
       setCurrentNumber(filteredFiles?.options[0].value)
     }
@@ -140,8 +142,8 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
         }
       >
         <Space direction="vertical" css={globalStyle.fullWidth}>
-          {singleFiles?.map((file) => (
-            <Space key={file.name} style={{ alignItems: 'center' }}>
+          {singleFiles?.map((file, index) => (
+            <Space key={index} style={{ alignItems: 'center' }}>
               <Button
                 icon={
                   result?.fileName === file?.fileName &&

@@ -650,10 +650,11 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     /**
      * Animate
      */
-    const animate = (): void => {
+    const animate = async (): Promise<void> => {
       stop()
       renderScene()
       frameId = requestAnimationFrame(animate)
+      await new Promise((resolve) => setTimeout(resolve, 1000 / 30))
     }
 
     /**

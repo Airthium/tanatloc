@@ -205,6 +205,7 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 		real netFlow = intN1(Mesh)(<%= U -%>' * <%= N -%>);
 		real div = intN(Mesh)(Div(U)) / intN(Mesh)(1);
 <%- helpers.indent(include('/blobs/data.edp.ejs', {
+	title: 'Time',
 	path: run.dataPath,
 	fileName: '"iter_"+timeIter',
 	dataNames: ['Net flow', 'Divergence', ],

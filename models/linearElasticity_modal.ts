@@ -1,49 +1,32 @@
-/** @module Models.LinearElasticity */
-
-import { IModel } from './index.d'
-
 /**
- * Linear elasticity
+ * Linear elasticity Modal analysis
  */
-const LinearElasticity: IModel = {
+const LinearElasticityModal = {
   category: 'Mechanics',
-  name: 'Linear elasticity',
-  algorithm: 'linearElasticity',
+  name: 'Linear elasticity - Modal analysis',
+  algorithm: 'linearElasticityModal',
   code: 'FreeFEM',
+  sequential: true,
   version: '1.0.0',
-  description: `
-  <h3>
-    Linear elasticity
+  description: `<h3>
+  Modal analysis
   </h3>
   <p>
-  Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
-
-  The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
-
-    \\(u\\) is the displacement.<br/>
-
-  The linear elasticity equation reads as follow:
-
-  $$
-  \\begin{align}
-    -\\text{div}(\\sigma) &= f &\\text{on }\\Omega\\\\
-    u &= u_D&\\text{on }\\Gamma_D\\\\
-    \\sigma\\cdot n &= u_N&\\text{on }\\Gamma_N
-  \\end{align}
-  $$
-
-  With \\(\\sigma_{ij}(u) = \\lambda\\delta_{ij}\\nabla\\cdot u + 2\\mu\\epsilon_{ij}(u)\\).<br/>
-
-  \\(\\lambda\\) and \\(\\mu\\) are the Lamé coefficients.
+  The modal analysis consists in finding the eigenfrequencies and eigenvectors of a structure.<br/>
+  Let \\(K\\) be the rigidity matrix of the structure and \\(M\\) its mass matrix.<br/>
+  The eigenvalue problem reads as follows
+  $$ (K -\\lambda M) x =0 $$
+  where \\(\\lambda\\) is the eigenvalue related to the natural frequency \\(f\\) by the following <br/>
+  $$\\lambda=(2\\pi f)^{2} $$
+  and \\(x\\) the eigenvector for the mode of the frequency \\(f\\).<br/>
+  Moreover the eigenvalue problem can be transformed as follows
+  $$ (A -\\sigma M)^{-1}Mx  = \\nu x$$
+  where
+  $$ \\nu  = \\frac{1}{\\lambda-\\sigma} $$
+  and \\(\\sigma\\) the shift of the method which helps to find eigenvalues near \\(\\sigma\\). By default \\(\\sigma\\) \\(=\\) \\(0\\). <br/>
   </p>
-  <figure>
-    <img src="/images/LinearElasticity.png" alt="Linear Elasticity" />
-    <figcaption>Linear elasticity equation example on a beam.</figcaption>
-  </figure>
   <p>
-    See <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>.
-  </p>
-  `,
+  You can see <a target=\"_blank\" href=\"https://freefem.org\">FreeFEM</a>.\n </p> `,
   variables: [
     {
       name: 'Displacement (x)',
@@ -79,14 +62,14 @@ const LinearElasticity: IModel = {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
-          default: '1e9',
+          default: '1e4',
           unit: '\\(Pa\\)'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
-          default: '0.4',
+          default: '0.3',
           unit: '\\(1\\)'
         }
       ]
@@ -94,39 +77,18 @@ const LinearElasticity: IModel = {
     parameters: {
       index: 3,
       title: 'Parameters',
-      rightHandSide: {
-        label: 'Right hand side',
+      modalparameters: {
+        label: 'Modal parameters',
         children: [
           {
-            label: 'External force (x)',
+            label: 'sigma',
             htmlEntity: 'formula',
-            default: '0',
-            unit: '\\(N.m^{-3}\\)'
+            default: '0'
           },
           {
-            label: 'External force (y)',
+            label: 'Eigenvectors number ',
             htmlEntity: 'formula',
-            default: '0',
-            unit: '\\(N.m^{-3}\\)'
-          },
-          {
-            only3D: true,
-            label: 'External force (z)',
-            htmlEntity: 'formula',
-            default: '0',
-            unit: '\\(N.m^{-3}\\)'
-          }
-        ]
-      },
-      gravity: {
-        advanced: true,
-        label: 'Gravity',
-        children: [
-          {
-            label: 'Standard gravity',
-            htmlEntity: 'formula',
-            default: '9.81',
-            unit: '\\(m.s^{-2}\\)'
+            default: '4'
           }
         ]
       },
@@ -170,22 +132,6 @@ const LinearElasticity: IModel = {
             default: 'MUMPS'
           }
         ]
-      },
-      meshAdaptation: {
-        advanced: true,
-        label: 'Mesh adaptation',
-        children: [
-          {
-            label: 'Enabled',
-            htmlEntity: 'checkbox',
-            default: false
-          },
-          {
-            label: 'Number of mesh adaptation loops',
-            htmlEntity: 'formula',
-            default: 1
-          }
-        ]
       }
     },
     boundaryConditions: {
@@ -211,23 +157,10 @@ const LinearElasticity: IModel = {
             unit: '\\(m\\)'
           },
           {
-            only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
             unit: '\\(m\\)'
-          }
-        ],
-        refineFactor: 2
-      },
-      presure: {
-        label: 'Surface force',
-        children: [
-          {
-            label: 'd(U)/d(N)',
-            htmlEntity: 'formula',
-            default: '0',
-            unit: '\\(N.m^{-2}\\)'
           }
         ],
         refineFactor: 2
@@ -239,29 +172,14 @@ const LinearElasticity: IModel = {
       results: [
         {
           name: 'Displacement'
-        },
-        {
-          name: 'vonMises'
-        },
-        {
-          name: 'gamma11'
-        },
-        {
-          name: 'gamma12'
-        },
-        {
-          name: 'gamma13'
-        },
-        {
-          name: 'gamma22'
-        },
-        {
-          name: 'gamma23'
-        },
-        {
-          name: 'gamma33'
         }
       ],
+      resultsFilter: {
+        name: 'Mode number',
+        prefixPattern: 'Result_',
+        suffixPattern: '.vtu',
+        pattern: 'Result_\\d+.vtu'
+      },
       postprocessing: [
         {
           key: 'warpByVector',
@@ -272,16 +190,7 @@ const LinearElasticity: IModel = {
           parameters: [
             {
               key: 'ContourBy',
-              options: [
-                'Displacement',
-                'vonMises',
-                'gamma11',
-                'gamma12',
-                'gamma13',
-                'gamma22',
-                'gamma23',
-                'gamma33'
-              ]
+              options: ['Displacement']
             }
           ]
         }
@@ -290,4 +199,4 @@ const LinearElasticity: IModel = {
   }
 }
 
-export default LinearElasticity
+export default LinearElasticityModal

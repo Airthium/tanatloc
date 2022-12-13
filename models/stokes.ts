@@ -56,7 +56,7 @@ const Stokes: IModel = {
           label: 'Dynamic viscosity',
           name: 'Mu',
           htmlEntity: 'formula',
-          default: 1e-3,
+          default: '1e-3',
           unit: '\\(Pa.s^{-1}\\)'
         }
       ]
@@ -70,20 +70,20 @@ const Stokes: IModel = {
           {
             label: 'External force (x)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-3}\\)'
           },
           {
             only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-3}\\)'
           }
         ]
@@ -145,20 +145,20 @@ const Stokes: IModel = {
           {
             label: 'Ux',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m.s^{-1}\\)'
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m.s^{-1}\\)'
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(m.s^{-1}\\)'
           }
         ],
@@ -170,7 +170,7 @@ const Stokes: IModel = {
           {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
-            default: 0,
+            default: '0',
             unit: '\\(N.m^{-2}\\)'
           }
         ],

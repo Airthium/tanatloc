@@ -832,6 +832,7 @@ const Local = {
   // Must be exported for each plugin
   key,
   getRefinements,
+  computeMeshes,
   computeMesh,
   computeSimulation,
   monitoring,

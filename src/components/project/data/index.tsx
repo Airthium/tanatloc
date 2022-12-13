@@ -118,6 +118,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   const [visible, setVisible] = useState<boolean>(false)
   const [datas, setDatas] =
     useState<{ key: number; x: number; [key: string]: number }[]>()
+  const [title, setTitle] = useState<string>()
   const [names, setNames] = useState<string[]>()
   const [camelNames, setCamelNames] = useState<string[]>()
   const [columns, setColumns] = useState<TableColumnsType<object>>()
@@ -161,6 +162,8 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     // Sort
     tasksDatas.sort((a, b) => a.x - b.x)
 
+    const newTitle = tasksDatas[0].title
+
     const newNames = tasksDatas
       .map((data) => data.names)
       .flatMap((n) => n)
@@ -185,6 +188,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       })
     })
 
+    setTitle(newTitle)
     setDatas(newDatas)
     setNames(newNames)
     setCamelNames(newCamelNames)
@@ -218,14 +222,14 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       key: camelNames[index]
     }))
     tableColumns.unshift({
-      title: '',
+      title: title,
       dataIndex: 'x',
       key: 'x',
       fixed: 'left'
     })
 
     setColumns(tableColumns)
-  }, [datas, names, camelNames, columnSelection])
+  }, [title, datas, names, camelNames, columnSelection])
 
   // Plot
   useEffect(() => {

@@ -313,7 +313,7 @@ describe('plugins/local/src/lib', () => {
     })
 
     // Not meshable
-    await Local.computeMesh(
+    await Local.computeMeshes(
       'id',
       'path',
       {
@@ -329,7 +329,7 @@ describe('plugins/local/src/lib', () => {
 
     // Missing data
     try {
-      await Local.computeMesh(
+      await Local.computeMeshes(
         'id',
         'path',
         {
@@ -348,7 +348,7 @@ describe('plugins/local/src/lib', () => {
     }
 
     // Normal
-    await Local.computeMesh(
+    await Local.computeMeshes(
       'id',
       'path',
       {
@@ -356,9 +356,11 @@ describe('plugins/local/src/lib', () => {
           index: 1,
           title: 'Geometry',
           meshable: true,
-          name: 'name',
-          path: 'path',
-          file: 'file'
+          data: {
+            name: 'name',
+            path: 'path',
+            file: 'file'
+          }
         },
         run: {}
       } as IModel['configuration'],
@@ -366,7 +368,7 @@ describe('plugins/local/src/lib', () => {
     )
 
     // 2D
-    await Local.computeMesh(
+    await Local.computeMeshes(
       'id',
       'path',
       {
@@ -375,9 +377,7 @@ describe('plugins/local/src/lib', () => {
           index: 1,
           title: 'Geometry',
           meshable: true,
-          name: 'name',
-          path: 'path',
-          file: 'file'
+          data: { name: 'name', path: 'path', file: 'file' }
         },
         run: {}
       } as IModel['configuration'],
@@ -389,7 +389,7 @@ describe('plugins/local/src/lib', () => {
       throw new Error()
     })
     try {
-      await Local.computeMesh(
+      await Local.computeMeshes(
         'id',
         'path',
         {
@@ -397,9 +397,7 @@ describe('plugins/local/src/lib', () => {
             index: 1,
             title: 'Geometry',
             meshable: true,
-            name: 'name',
-            path: 'path',
-            file: 'file'
+            data: { name: 'name', path: 'path', file: 'file' }
           },
           run: {}
         } as IModel['configuration'],
@@ -413,7 +411,7 @@ describe('plugins/local/src/lib', () => {
     // Error
     mockGmsh.mockReset()
     try {
-      await Local.computeMesh(
+      await Local.computeMeshes(
         'id',
         'path',
         {
@@ -421,9 +419,7 @@ describe('plugins/local/src/lib', () => {
             index: 1,
             title: 'Geometry',
             meshable: true,
-            name: 'name',
-            path: 'path',
-            file: 'file'
+            data: { name: 'name', path: 'path', file: 'file' }
           },
           run: {}
         } as IModel['configuration'],
@@ -503,9 +499,7 @@ describe('plugins/local/src/lib', () => {
             index: 1,
             title: 'Geometry',
             meshable: true,
-            name: 'name',
-            path: 'path',
-            file: 'file',
+            data: { name: 'name', path: 'path', file: 'file' },
             meshParameters: {
               type: 'auto',
               value: 'normal'
@@ -527,9 +521,7 @@ describe('plugins/local/src/lib', () => {
                     key: 'key',
                     label: 'label'
                   },
-                  geometry: {
-                    index: 0
-                  },
+                  geometry: 'id',
                   selected: [{ uuid: 'uuid', label: 1 }]
                 }
               ],
@@ -556,9 +548,7 @@ describe('plugins/local/src/lib', () => {
             index: 1,
             title: 'Geometry',
             meshable: true,
-            name: 'name',
-            path: 'path',
-            file: 'file'
+            data: { name: 'name', path: 'path', file: 'file' }
           },
           initialization: {
             index: 1,
@@ -583,9 +573,7 @@ describe('plugins/local/src/lib', () => {
                     key: 'key',
                     label: 'label'
                   },
-                  geometry: {
-                    index: 0
-                  },
+                  geometry: 'id',
                   selected: [{ uuid: 'uuid', label: 1 }]
                 }
               ],
@@ -640,9 +628,7 @@ describe('plugins/local/src/lib', () => {
                       key: 'key',
                       label: 'label'
                     },
-                    geometry: {
-                      index: 0
-                    },
+                    geometry: 'id',
                     selected: [{ uuid: 'uuid', label: 1 }]
                   }
                 ],

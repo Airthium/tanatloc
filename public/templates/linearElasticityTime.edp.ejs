@@ -190,6 +190,7 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 		real maxU = max(max(abs(maxUx), abs(maxUy)), abs(maxUz));
 
 <%- helpers.indent(include('/blobs/data.edp.ejs', {
+	title: '',
 	path: run.dataPath,
 	fileName: '"iter_"+timeIter',
 	dataNames: ['Max displacement (magnitude)', 'Max displacement (x)', 'Max displacement (y)', 'Max displacement (z)'],

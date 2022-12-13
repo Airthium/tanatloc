@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useState, useCallback, useContext } from 'react'
 import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
@@ -9,6 +9,8 @@ import { IMaterialDatabase } from '@/config/materials'
 
 import { SelectContext, ISelect } from '@/context/select'
 import { setPart } from '@/context/select/actions'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -67,15 +69,25 @@ const Material = ({
   const materials = simulation.scheme.configuration.materials
 
   // Init
-  useEffect(() => {
-    dispatch(setPart(geometries[0]?.summary.uuid))
-    setActiveKey(material?.geometry)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [`${geometries}`, material, dispatch])
+  useCustomEffect(
+    () => {
+      dispatch(setPart(geometries[0]?.summary.uuid))
+      setActiveKey(material?.geometry)
+    },
+    [geometries, material],
+    [dispatch]
+  )
+
+  // Visible
+  useCustomEffect(() => {
+    if (!visible && current) setCurrent(undefined)
+  }, [visible, current])
 
   // Default
-  useEffect(() => {
-    if (!current)
+  useCustomEffect(() => {
+    if (visible && !current && material) {
+      setCurrent(material)
+    } else if (visible && !current && !material)
       setCurrent({
         material: {
           label: 'Default',
@@ -88,16 +100,10 @@ const Material = ({
         },
         geometry: geometries[0]?.id
       } as IModelMaterialsValue)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [`${geometries}`, materials, current])
-
-  // Edit
-  useEffect(() => {
-    if (visible && !current && material) setCurrent(material)
-  }, [current, visible, material])
+  }, [visible, geometries, materials, current])
 
   // Already selected
-  useEffect(() => {
+  useCustomEffect(() => {
     const currentAlreadySelected = materials?.values
       ?.map((m) => {
         if (m.uuid === material?.uuid) return
@@ -181,8 +187,7 @@ const Material = ({
         geometry: key
       }))
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [`${geometries}`, dispatch]
+    [geometries, dispatch]
   )
 
   /**

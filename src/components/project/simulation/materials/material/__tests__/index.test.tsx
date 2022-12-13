@@ -23,6 +23,10 @@ jest.mock('@/components/assets/button', () => ({
   CancelButton: (props: any) => mockCancelButton(props)
 }))
 
+jest.mock('@/context/select/actions', () => ({
+  setPart: jest.fn
+}))
+
 const mockDatabase = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/database',

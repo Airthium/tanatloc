@@ -1,8 +1,7 @@
 /** @module Components.Account.Information */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
-import { Rule } from 'antd/lib/form'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
@@ -24,18 +23,22 @@ import { globalStyleFn } from '@/styles'
 import style from './index.style'
 
 /**
- * Custom Types
+ * Local interfaces
  */
-export type TUser = Pick<
-  IFrontUser,
-  'email' | 'firstname' | 'lastname' | 'avatar'
->
+export interface ILocalUser
+  extends Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'> {}
+
+export interface ILocalValues {
+  email: string
+  firstname: string
+  lastname: string
+}
 
 /**
  * Props
  */
 export interface IProps {
-  user: TUser
+  user: ILocalUser
   swr: {
     mutateUser: (user: IFrontMutateUser) => void
   }
@@ -55,7 +58,10 @@ export const errors = {
  * Before upload
  * @param file File
  */
-export const beforeUpload = (file: { type: string; size: number }): boolean => {
+export const _beforeUpload = (file: {
+  type: string
+  size: number
+}): boolean => {
   const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
   if (!goodFormat) ErrorNotification(errors.badFormat)
 
@@ -69,7 +75,7 @@ export const beforeUpload = (file: { type: string; size: number }): boolean => {
  * Read base64 image
  * @param file File
  */
-export const getBase64 = async (file: Blob): Promise<any> => {
+export const _getBase64 = async (file: Blob): Promise<any> => {
   const reader = new FileReader()
   return new Promise((resolve) => {
     reader.addEventListener('load', () => {
@@ -85,8 +91,8 @@ export const getBase64 = async (file: Blob): Promise<any> => {
  * @param info Info
  * @param swr SWR
  */
-export const onChange = async (
-  user: TUser,
+export const _onChange = async (
+  user: ILocalUser,
   info: UploadChangeParam<any>,
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => void
@@ -97,7 +103,7 @@ export const onChange = async (
   } else if (info.file.status === 'done') {
     try {
       // Read image
-      const img = await getBase64(info.file.originFileObj)
+      const img = await _getBase64(info.file.originFileObj)
 
       // Add avatar
       await AvatarAPI.add({
@@ -127,13 +133,9 @@ export const onChange = async (
  * @param values Values
  * @param swr SWR
  */
-export const onFinish = async (
-  user: TUser,
-  values: {
-    email: string
-    firstname: string
-    lastname: string
-  },
+export const _onFinish = async (
+  user: ILocalUser,
+  values: ILocalValues,
   swr: {
     mutateUser: (user: IFrontMutateUser) => void
   }
@@ -203,6 +205,33 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
   }
 
   /**
+   * On Change
+   * @param info Info
+   */
+  const onChange = useCallback(
+    async (info: UploadChangeParam<any>): Promise<void> => {
+      const upload = await _onChange(user, info, swr)
+      setUploading(upload)
+    },
+    [user, swr]
+  )
+
+  const onFinish = useCallback(
+    async (values: ILocalValues): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onFinish(user, values, swr)
+        setFormError(null)
+      } catch (err: any) {
+        setFormError(err)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [user, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -218,11 +247,8 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             action={'/api/noop'}
             accept={'.jpg,.png'}
             showUploadList={false}
-            beforeUpload={beforeUpload}
-            onChange={async (info) => {
-              const upload = await onChange(user, info, swr)
-              setUploading(upload)
-            }}
+            beforeUpload={_beforeUpload}
+            onChange={onChange}
           >
             <Button loading={uploading} icon={<UploadOutlined />}>
               Upload new
@@ -238,32 +264,12 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               firstname: user.firstname || '',
               lastname: user.lastname || ''
             }}
-            onFinish={async (values) => {
-              setLoading(true)
-              try {
-                await onFinish(user, values, swr)
-                setFormError(null)
-              } catch (err: any) {
-                setFormError(err)
-              } finally {
-                setLoading(false)
-              }
-            }}
+            onFinish={onFinish}
           >
             <Form.Item
               label="Email"
               name="email"
-              rules={
-                [
-                  isElectron()
-                    ? {
-                        type: 'email',
-                        message: 'This is not a valid email'
-                      }
-                    : undefined,
-                  { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
-                ].filter((r) => r) as Rule[]
-              }
+              rules={[{ max: LIMIT, message: 'Max ' + LIMIT + ' characters' }]}
             >
               <Input disabled={isElectron()} />
             </Form.Item>

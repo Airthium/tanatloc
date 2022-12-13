@@ -7,10 +7,10 @@ import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import PluginAPI from '@/api/plugin'
+
 import PluginDialog from './dialog'
 import List from './list'
-
-import PluginAPI from '@/api/plugin'
 
 import { globalStyle } from '@/styles'
 
@@ -55,28 +55,27 @@ const Plugin = ({ plugin }: IProps): JSX.Element => {
    * Render
    */
   if (loadingPlugins) return <Spin />
-  else
-    return (
-      <Space direction="vertical" css={globalStyle.fullWidth}>
-        <PluginDialog
-          plugin={{
-            uuid: plugin.uuid,
-            key: plugin.key,
-            name: plugin.name,
-            description: plugin.description,
-            needInit: plugin.needInit,
-            configuration: plugin.configuration,
-            inUseConfiguration: plugin.inUseConfiguration
-          }}
-          swr={{ addOnePlugin }}
-        />
-        <List
-          plugin={{ key: plugin.key }}
-          plugins={plugins}
-          swr={{ delOnePlugin, mutateOnePlugin }}
-        />
-      </Space>
-    )
+  return (
+    <Space direction="vertical" css={globalStyle.fullWidth}>
+      <PluginDialog
+        plugin={{
+          uuid: plugin.uuid,
+          key: plugin.key,
+          name: plugin.name,
+          description: plugin.description,
+          needInit: plugin.needInit,
+          configuration: plugin.configuration,
+          inUseConfiguration: plugin.inUseConfiguration
+        }}
+        swr={{ addOnePlugin }}
+      />
+      <List
+        plugin={{ key: plugin.key }}
+        plugins={plugins}
+        swr={{ delOnePlugin, mutateOnePlugin }}
+      />
+    </Space>
+  )
 }
 
 export default Plugin

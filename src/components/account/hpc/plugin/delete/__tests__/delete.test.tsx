@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -77,7 +77,9 @@ describe('components/account/hpc/delete', () => {
       // Mock
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() =>
       expect(mockDel).toHaveBeenLastCalledWith({ uuid: 'uuid' })
     )

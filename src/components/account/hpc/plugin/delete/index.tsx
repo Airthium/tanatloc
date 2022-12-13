@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -32,7 +32,7 @@ export const errors = {
  * @param plugin Plugin
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   plugin: IClientPlugin,
   swr: { delOnePlugin: (plugin: IClientPlugin) => void }
 ): Promise<void> => {
@@ -58,6 +58,18 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(plugin, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [plugin, swr])
+
+  /**
    * Render
    */
   return (
@@ -73,14 +85,7 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
           ?
         </>
       }
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(plugin, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     >
       Delete
     </DeleteButton>

@@ -8,10 +8,6 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
-jest.mock('../dialog', () => () => <div role="PluginDialog" />)
-
-jest.mock('../list', () => () => <div role="List" />)
-
 const mockPlugins = jest.fn()
 const mockAddOnePlugin = jest.fn()
 const mockDelOnePlugin = jest.fn()
@@ -30,6 +26,10 @@ jest.mock('@/api/plugin', () => ({
     }
   ]
 }))
+
+jest.mock('../dialog', () => () => <div role="PluginDialog" />)
+
+jest.mock('../list', () => () => <div role="List" />)
 
 describe('component/account/hpc/plugin', () => {
   const plugin = { key: 'key', name: 'Plugin', configuration: {} }

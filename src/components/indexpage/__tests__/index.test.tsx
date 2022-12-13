@@ -20,7 +20,18 @@ jest.mock('@/components/assets/side', () => (props: any) => (
     {props.right}
   </div>
 ))
+
+jest.mock('../menu', () => ({
+  __esModule: true,
+  scrollToView: jest.fn,
+  default: () => <div />
+}))
 jest.mock('../footer', () => () => <div />)
+
+//@ts-ignore
+global.fetch = async () => ({
+  json: async () => [{ name: 'ok', assets_url: 'url' }]
+})
 
 describe('components/indexpage', () => {
   beforeEach(() => {
@@ -39,7 +50,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(6)
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
     unmount()
   })
@@ -51,7 +62,7 @@ describe('components/indexpage', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(mockPush).toHaveBeenCalledTimes(3)
+    expect(mockPush).toHaveBeenCalledTimes(0)
 
     unmount()
   })

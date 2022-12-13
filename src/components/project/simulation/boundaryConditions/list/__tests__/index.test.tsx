@@ -11,7 +11,8 @@ const mockSelect = jest.fn()
 jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
-  select: () => mockSelect()
+  select: () => mockSelect(),
+  setPart: jest.fn
 }))
 
 const mockEditButton = jest.fn()

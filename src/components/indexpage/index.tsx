@@ -25,12 +25,12 @@ import packageJson from '../../../package.json'
 import { login } from '@/api/login'
 
 import Side from '@/components/assets/side'
-import Footer from './footer'
 
 import { globalStyle, globalStyleFn, variables } from '@/styles'
 import style from './index.style'
 
 import Menu, { scrollToView } from './menu'
+import Footer from './footer'
 
 export interface IRelease {
   version: string

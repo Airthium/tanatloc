@@ -4,10 +4,16 @@ import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Layout, Typography } from 'antd'
 import {
+  AmbientLight,
   BufferAttribute,
   Clock,
+  DirectionalLight,
+  DirectionalLightHelper,
+  Group,
   Mesh,
   MeshBasicMaterial,
+  MeshPhongMaterial,
+  MeshStandardMaterial,
   PerspectiveCamera,
   PointLight,
   PointLightHelper,
@@ -42,6 +48,9 @@ const NotFound = (): JSX.Element => {
     /* istanbul ignore next */
     if (!div) return
 
+    // Clock
+    const clock = new Clock()
+
     // Size
     let width = div.clientWidth
     let height = div.clientHeight
@@ -58,10 +67,26 @@ const NotFound = (): JSX.Element => {
     // Camera
     const camera = new PerspectiveCamera()
     camera.aspect = width / height
+    camera.far = 5000
+
+    // Ambient light
+    const ambiant = new AmbientLight(0xffffff, 0.5)
+    scene.add(ambiant)
+
+    // Light
+    const light1 = new PointLight(0xffffff, 0.5, 0)
+    light1.position.set(0, 400, 1500)
+    scene.add(light1)
+    const light2 = new PointLight(0xffffff, 0.5, 0)
+    light2.position.set(1500, 400, 0)
+    scene.add(light2)
+
+    // Group
+    const group = new Group()
+    scene.add(group)
 
     // Load geometry
     const loader = new GLTFLoader()
-    const fontLoader = new FontLoader()
 
     // Load
     loader.load(
@@ -101,93 +126,87 @@ const NotFound = (): JSX.Element => {
           type: 'Cone'
         }
 
-        // Scene
-        scene.add(mesh)
+        // Group
+        group.add(mesh)
 
         // Camera
         const sphere = geometry.boundingSphere!
-        console.log(sphere)
         camera.position.set(
-          sphere.center.x + sphere.radius,
-          sphere.center.y + 2 * sphere.radius,
-          sphere.center.z + sphere.radius
+          sphere.center.x + 2 * sphere.radius,
+          sphere.center.y + 1.5 * sphere.radius,
+          sphere.center.z + 2 * sphere.radius
         )
         camera.lookAt(mesh.position)
       },
       (err) => console.error(err)
     )
 
-    fontLoader.load(
-      // resource URL
-      'fonts/saira/Saira_Black_Regular.json',
+    // Load font
+    const fontLoader = new FontLoader()
 
-      // onLoad callback
-      function (font) {
+    // Load
+    fontLoader.load(
+      'fonts/saira/Saira_Black_Regular.json',
+      (font) => {
+        // Geometry
         const text = new TextGeometry('404', {
           font: font,
           size: 300,
           height: 10,
-          curveSegments: 12
+          curveSegments: 12,
+          bevelEnabled: true,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
         })
 
-        const material = new MeshBasicMaterial({
-          color: 0xffffff
+        // Material
+        const material = new MeshStandardMaterial({
+          color: 0xffffff,
+          metalness: 0.75,
+          roughness: 0.5
         })
 
+        // Mesh
         const mesh = new Mesh(text, material)
         mesh.userData = {
           type: 'Text'
         }
 
+        // Position
         text.computeBoundingBox()
         const dimensions = new Vector3()
         dimensions.subVectors(text.boundingBox!.max, text.boundingBox!.min)
-
         mesh.position.set(
-          -dimensions.x / 2,
+          -100 - dimensions.x / 2,
           400 - dimensions.y / 2,
-          -dimensions.z / 2
+          -100 - dimensions.z / 2
         )
+        mesh.rotation.y = Math.PI / 4
 
-        scene.add(mesh)
+        // Group
+        group.add(mesh)
       },
-
-      // onProgress callback
-      function (xhr) {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-      },
-
-      // onError callback
-      function (_) {
-        console.log('An error happened')
+      () => {},
+      (err) => {
+        console.error('An error happened')
+        console.error(err)
       }
     )
-    const clock = new Clock()
+
     /**
      * Animate
      */
-    const animate = async () => {
+    const animate = () => {
       const timeElapsed = clock.getDelta()
 
-      const cone = scene.children.filter(
-        (child) => child.userData?.type === 'Cone'
-      )[0]
-      const text = scene.children.filter(
-        (child) => child.userData?.type === 'Text'
-      )[0]
-      if (text) {
-        const angle = text.rotation.y + 0.2 * timeElapsed
-        text.userData.rotation = angle
-        text.position.x = 200 * Math.cos(Math.PI / 2 + angle)
-        text.position.z = -200 * Math.sin(Math.PI / 2 + angle)
-        text.rotation.y = angle
-      }
-      if (cone) cone.rotation.y -= timeElapsed
+      const group = scene.children.filter((child) => child.type === 'Group')[0]
+      group && group.rotateY(0.2 * timeElapsed)
 
       renderer.render(scene, camera)
 
-      await new Promise((resolve) => setTimeout(resolve, 1000 / 30))
-      requestAnimationFrame(animate)
+      setTimeout(() => requestAnimationFrame(animate), 1000 / 30)
     }
 
     // Start
@@ -215,8 +234,11 @@ const NotFound = (): JSX.Element => {
     return () => {
       // Scene
       scene.children.forEach((child) => {
-        const mesh = child as Mesh
-        mesh.geometry?.dispose()
+        if (child.type === 'Group')
+          child.children.forEach((subChild) => {
+            const mesh = subChild as Mesh
+            mesh.geometry?.dispose()
+          })
       })
       scene.clear()
 
@@ -231,7 +253,7 @@ const NotFound = (): JSX.Element => {
   return (
     <Layout css={style.index}>
       <Layout.Content css={style.content}>
-        <Typography css={style.title}>404</Typography>
+        {/* <Typography css={style.title}>404</Typography> */}
         <div ref={mount} css={style.three} />
         <div css={style.description}>
           <Typography.Title level={1} style={{ textAlign: 'center' }}>

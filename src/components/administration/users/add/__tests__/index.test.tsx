@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form } from 'antd'
 
 import Add, { errors } from '..'
 import { IClientPlugin } from '@/plugins/index.d'
@@ -63,6 +64,13 @@ describe('components/administration/users/add', () => {
     unmount()
   })
 
+  test('ref', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(<Add plugins={plugins} swr={swr} />)
+
+    unmount()
+  })
+
   test('with defaultplugins', () => {
     mockSystem.mockImplementation(() => ({ defaultplugins: [] }))
     const { unmount } = render(<Add plugins={plugins} swr={swr} />)
@@ -108,7 +116,7 @@ describe('components/administration/users/add', () => {
 
     // Already exists
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1)))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -129,7 +137,7 @@ describe('components/administration/users/add', () => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
+    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3)))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

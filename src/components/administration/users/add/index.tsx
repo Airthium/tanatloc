@@ -1,8 +1,9 @@
 /** @module Components.Administration.User.Add */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
+import { IFrontMutateUser } from '@/api/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { AddButton } from '@/components/assets/button'
@@ -10,7 +11,6 @@ import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontMutateUser } from '@/api/index.d'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
 
@@ -25,9 +25,9 @@ export interface IProps {
 }
 
 /**
- * Add values
+ * Local interfaces
  */
-export interface IAddValues {
+export interface ILocalValues {
   email: string
   password: string
   firstname: string
@@ -48,8 +48,8 @@ export const errors = {
  * @param values Values
  * @param swr Swr
  */
-export const onAdd = async (
-  values: IAddValues,
+export const _onAdd = async (
+  values: ILocalValues,
   swr: { addOneUser: (user: IFrontMutateUser) => void }
 ): Promise<void> => {
   try {
@@ -117,6 +117,30 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(true), [])
+
+  const onOk = async (values: ILocalValues) => {
+    setLoading(true)
+    try {
+      await _onAdd(values, swr)
+
+      // Close
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      setLoading(false)
+      throw err
+    }
+  }
+
+  /**
    * Render
    */
   return (
@@ -129,20 +153,8 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
             authorizedplugins: system.defaultplugins
           }
         }
-        onCancel={() => setVisible(false)}
-        onOk={async (values: IAddValues) => {
-          setLoading(true)
-          try {
-            await onAdd(values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">
@@ -177,7 +189,7 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <AddButton onAdd={() => setVisible(true)}>New user</AddButton>
+      <AddButton onAdd={setVisibleTrue}>New user</AddButton>
     </>
   )
 }

@@ -17,10 +17,6 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
-jest.mock('../users', () => () => <div />)
-jest.mock('../registration', () => () => <div />)
-jest.mock('../plugins', () => () => <div />)
-
 const mockUsers = jest.fn()
 const mockAddOneUser = jest.fn()
 const mockMutateOneUser = jest.fn()
@@ -37,6 +33,10 @@ jest.mock('@/api/user', () => ({
     }
   ]
 }))
+
+jest.mock('../users', () => () => <div />)
+jest.mock('../registration', () => () => <div />)
+jest.mock('../plugins', () => () => <div />)
 
 describe('components/administration', () => {
   beforeEach(() => {

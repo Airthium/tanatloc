@@ -1,6 +1,6 @@
 /** @module Components.Administration.Users */
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Badge,
   Table,
@@ -11,22 +11,24 @@ import {
   Card
 } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
-
-import { IClientPlugin } from '@/plugins/index.d'
-
-import { ErrorNotification } from '@/components/assets/notification'
+import { ColumnGroupType } from 'antd/lib/table'
 
 import {
   IFrontUsersItem,
   IFrontNewUser,
   IFrontMutateUsersItem
 } from '@/api/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
 import PluginsAPI from '@/api/plugins'
 
 import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
-import { ColumnGroupType } from 'antd/lib/table'
 
 import { globalStyle } from '@/styles'
 import { css } from '@emotion/react'
@@ -64,122 +66,135 @@ export const errors = {
  * @returns Users
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {
+  // Ref
+  const refTable = useRef<HTMLDivElement>(null)
+
   // State
   const [plugins, setPlugins] = useState<IClientPlugin[]>()
   const [scroll, setScroll] = useState<{ y: number }>()
 
-  // Ref
-  const refTable = useRef<HTMLDivElement>(null)
-
   // Data
-  const authorizedpluginsRender = (authorizedplugins: string[]) => {
-    authorizedplugins.sort()
-    const list = authorizedplugins.map((authorizedplugin) => {
-      const plugin = plugins?.find((p) => p.key === authorizedplugin)
-      if (!plugin) return
-      else
-        return (
-          <Badge.Ribbon
-            key={authorizedplugin}
-            text={plugin.category}
-            style={{ marginTop: '-15px' }}
-          >
-            <Card size="small">{plugin.name}</Card>
-          </Badge.Ribbon>
-        )
-    })
-    const content = <Space direction="vertical">{list}</Space>
-    return (
-      <Popover content={content}>
-        <Button>{list.length} plugins</Button>
-      </Popover>
-    )
-  }
-
-  const superuserRender = (superuser: boolean) =>
-    superuser && <CheckOutlined css={globalStyle.textGreen} />
-
-  const actionsRender = (_: any, record: TUserItem) => (
-    <Space>
-      <Edit
-        plugins={
-          plugins?.map((plugin) => ({
-            key: plugin.key,
-            name: plugin.name
-          })) || []
-        }
-        user={{
-          id: record.id,
-          firstname: record.firstname,
-          lastname: record.lastname,
-          email: record.email,
-          authorizedplugins: record.authorizedplugins,
-          superuser: record.superuser
-        }}
-        swr={{ mutateOneUser: swr.mutateOneUser }}
-      />
-      <Delete
-        user={{ id: record.id, email: record.email }}
-        swr={{ delOneUser: swr.delOneUser }}
-      />
-    </Space>
+  const authorizedpluginsRender = useCallback(
+    (authorizedplugins: string[]) => {
+      authorizedplugins.sort()
+      const list = authorizedplugins.map((authorizedplugin) => {
+        const plugin = plugins?.find((p) => p.key === authorizedplugin)
+        if (!plugin) return
+        else
+          return (
+            <Badge.Ribbon
+              key={authorizedplugin}
+              text={plugin.category}
+              style={{ marginTop: '-15px' }}
+            >
+              <Card size="small">{plugin.name}</Card>
+            </Badge.Ribbon>
+          )
+      })
+      const content = <Space direction="vertical">{list}</Space>
+      return (
+        <Popover content={content}>
+          <Button>{list.length} plugins</Button>
+        </Popover>
+      )
+    },
+    [plugins]
   )
 
-  const columns: TableColumnsType<TUserItem> = [
-    {
-      title: 'First name',
-      dataIndex: 'firstname',
-      key: 'firstname',
-      sorter: (a: { firstname?: string }, b: { firstname?: string }) => {
-        const fa = a.firstname || ''
-        const fb = b.firstname || ''
-        return fa.localeCompare(fb)
-      }
-    },
-    {
-      title: 'Last name',
-      dataIndex: 'lastname',
-      key: 'lastname',
-      sorter: (a: { lastname?: string }, b: { lastname?: string }) => {
-        const la = a.lastname || ''
-        const lb = b.lastname || ''
-        return la.localeCompare(lb)
-      }
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      sorter: (a: { email: string }, b: { email: string }) => {
-        const ea = a.email
-        const eb = b.email
-        return ea.localeCompare(eb)
-      }
-    },
-    {
-      title: 'Password',
-      key: 'password',
-      render: () => '******'
-    },
-    {
-      title: 'Plugins',
-      dataIndex: 'authorizedplugins',
-      key: 'authorizedplugins',
+  const superuserRender = useCallback(
+    (superuser: boolean) =>
+      superuser && <CheckOutlined css={globalStyle.textGreen} />,
+    []
+  )
 
-      render: authorizedpluginsRender
-    },
-    {
-      title: 'Administrator',
-      dataIndex: 'superuser',
-      key: 'superuser',
-      render: superuserRender
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: actionsRender
-    }
-  ]
+  const actionsRender = useCallback(
+    (_: any, record: TUserItem) => (
+      <Space>
+        <Edit
+          plugins={
+            plugins?.map((plugin) => ({
+              key: plugin.key,
+              name: plugin.name
+            })) || []
+          }
+          user={{
+            id: record.id,
+            firstname: record.firstname,
+            lastname: record.lastname,
+            email: record.email,
+            authorizedplugins: record.authorizedplugins,
+            superuser: record.superuser
+          }}
+          swr={{ mutateOneUser: swr.mutateOneUser }}
+        />
+        <Delete
+          user={{ id: record.id, email: record.email }}
+          swr={{ delOneUser: swr.delOneUser }}
+        />
+      </Space>
+    ),
+    [plugins, swr]
+  )
+
+  const columns: TableColumnsType<TUserItem> = useMemo(
+    () => [
+      {
+        title: 'First name',
+        dataIndex: 'firstname',
+        key: 'firstname',
+        sorter: (a: { firstname?: string }, b: { firstname?: string }) => {
+          const fa = a.firstname || ''
+          const fb = b.firstname || ''
+          return fa.localeCompare(fb)
+        }
+      },
+      {
+        title: 'Last name',
+        dataIndex: 'lastname',
+        key: 'lastname',
+        sorter: (a: { lastname?: string }, b: { lastname?: string }) => {
+          const la = a.lastname || ''
+          const lb = b.lastname || ''
+          return la.localeCompare(lb)
+        }
+      },
+      {
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
+        sorter: (a: { email: string }, b: { email: string }) => {
+          const ea = a.email
+          const eb = b.email
+          return ea.localeCompare(eb)
+        }
+      },
+      {
+        title: 'Password',
+        key: 'password',
+        render: () => '******'
+      },
+      {
+        title: 'Plugins',
+        dataIndex: 'authorizedplugins',
+        key: 'authorizedplugins',
+
+        render: authorizedpluginsRender
+      },
+      {
+        title: 'Administrator',
+        dataIndex: 'superuser',
+        key: 'superuser',
+        align: 'center',
+        render: superuserRender
+      },
+      {
+        title: 'Actions',
+        key: 'actions',
+        render: actionsRender
+      }
+    ],
+    [authorizedpluginsRender, superuserRender, actionsRender]
+  )
 
   /**
    * On resize
@@ -197,6 +212,27 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     }
   }, [])
 
+  // Handle window resize
+  useCustomEffect(
+    () => {
+      window.addEventListener('resize', onResize)
+      return () => {
+        window.removeEventListener('resize', onResize)
+      }
+    },
+    undefined,
+    [onResize]
+  )
+
+  // Set Table Scroll Limit
+  useCustomEffect(
+    () => {
+      onResize()
+    },
+    [users],
+    [onResize]
+  )
+
   // Plugins list
   useEffect(() => {
     PluginsAPI.completeList()
@@ -207,19 +243,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         ErrorNotification(errors.plugins, err)
       })
   }, [])
-
-  // Handle window resize
-  useEffect(() => {
-    window.addEventListener('resize', onResize)
-    return () => {
-      window.removeEventListener('resize', onResize)
-    }
-  }, [onResize])
-
-  // Set Table Scroll Limit
-  useEffect(() => {
-    onResize()
-  }, [users, onResize])
 
   /**
    * Render

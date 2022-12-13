@@ -1,20 +1,20 @@
 /** @module Components.Administration */
 
-import { useEffect } from 'react'
-import { NextRouter, useRouter } from 'next/router'
+import { useCallback, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { Layout, Tabs, Typography } from 'antd'
+import { css } from '@emotion/react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import PageHeader from '@/components/assets/pageHeader'
+
+import UserAPI from '@/api/user'
 
 import Users from './users'
 import Registration from './registration'
 import Plugins from './plugins'
 
-import UserAPI from '@/api/user'
-
 import dashboardStyle from '@/components/dashboard/index.style'
-import { css } from '@emotion/react'
 
 /**
  * Tab items
@@ -42,18 +42,6 @@ export const errors = {
 }
 
 /**
- * On change
- * @param router Router
- * @param key Key
- */
-export const onChange = (router: NextRouter, key: string) => {
-  router.replace({
-    pathname: '/dashboard',
-    query: { page: 'administration', tab: key }
-  })
-}
-
-/**
  * Administration
  * @returns Administration
  */
@@ -69,6 +57,16 @@ const Administration = (): JSX.Element => {
   useEffect(() => {
     if (errorUsers) ErrorNotification(errors.users, errorUsers)
   }, [errorUsers])
+
+  const onChange = useCallback(
+    (key: string) => {
+      router.replace({
+        pathname: '/dashboard',
+        query: { page: 'administration', tab: key }
+      })
+    },
+    [router]
+  )
 
   /**
    * Render
@@ -112,7 +110,7 @@ const Administration = (): JSX.Element => {
             }
           ]}
           defaultActiveKey={tab || 'default'}
-          onChange={(key) => onChange(router, key)}
+          onChange={onChange}
         />
       </Layout.Content>
     </Layout>

@@ -25,7 +25,7 @@ const useCustomEffect = (
       !updatersRef.current.length ||
       !arrayCompare(updatersRef.current, updaters)
     ) {
-      updatersRef.current = [...(updaters || [])]
+      updatersRef.current = [...(updaters ?? [true])]
       return callback()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

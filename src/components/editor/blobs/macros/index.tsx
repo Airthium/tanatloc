@@ -1,6 +1,6 @@
 /** @module Components.Editor.Blobs.Macros */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Checkbox, Form } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
@@ -8,9 +8,9 @@ import { setCursor } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
-import { globalStyle } from '@/styles'
-
 import { addOnCursor } from '..'
+
+import { globalStyle } from '@/styles'
 
 /**
  * On add
@@ -19,7 +19,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
+export const _onAdd = (
   values: { macros: string[] },
   template: string,
   cursor: IEditorCursor | undefined,
@@ -73,6 +73,32 @@ const Macros = (): JSX.Element => {
   ]
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { macros: string[] }): Promise<void> => {
+      setLoading(true)
+
+      _onAdd(values, template, cursor, dispatch)
+
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -81,15 +107,8 @@ const Macros = (): JSX.Element => {
         title="Macros"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.Item label="Type" name="macros">
           <Checkbox.Group
@@ -98,7 +117,7 @@ const Macros = (): JSX.Element => {
           />
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Macros
       </Button>
     </>

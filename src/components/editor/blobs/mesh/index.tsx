@@ -1,6 +1,13 @@
 /** @module Components.Editor.Blobs.Mesh */
 
-import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Button, Form, Input, InputRef } from 'antd'
 
 import { IModel } from '@/models/index.d'
@@ -10,9 +17,9 @@ import { setCursor, setModel } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
-import { globalStyle } from '@/styles'
-
 import { addOnCursor } from '..'
+
+import { globalStyle } from '@/styles'
 
 /**
  * On add
@@ -22,7 +29,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
+export const _onAdd = (
   values: { name: string },
   template: string,
   model: string,
@@ -97,6 +104,32 @@ const Mesh = (): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { name: string }): Promise<void> => {
+      setLoading(true)
+
+      _onAdd(values, template, model, cursor, dispatch)
+
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, model, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -105,21 +138,14 @@ const Mesh = (): JSX.Element => {
         title="Mesh"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, model, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.Item name="name" label="Name" rules={[{ required: true }]}>
           <Input ref={inputRef} />
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Mesh
       </Button>
     </>

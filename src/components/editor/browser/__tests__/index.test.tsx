@@ -59,7 +59,7 @@ describe('components/editor/load', () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Load user={user} swr={swr} />)
 
-    const button = screen.getAllByRole('button', { name: 'folder-open' })[0]
+    const button = screen.getAllByRole('button', { name: 'file-text' })[0]
 
     // Fetch ok
     //@ts-ignore
@@ -97,7 +97,7 @@ describe('components/editor/load', () => {
     const tab = screen.getByRole('tab', { name: 'My models' })
     fireEvent.click(tab)
 
-    const button = screen.getAllByRole('button', { name: 'folder-open' })[0]
+    const button = screen.getAllByRole('button', { name: 'file-text' })[0]
     fireEvent.click(button)
 
     unmount()
@@ -126,7 +126,7 @@ describe('components/editor/load', () => {
     const tab = screen.getByRole('tab', { name: 'My models' })
     fireEvent.click(tab)
 
-    const button = screen.getAllByRole('button', { name: 'folder-open' })[0]
+    const button = screen.getAllByRole('button', { name: 'file-text' })[0]
     fireEvent.click(button)
 
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))

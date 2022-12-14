@@ -1,6 +1,6 @@
 /** @module Components.Editor.Blobs.Save */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -15,12 +15,23 @@ import { globalStyle } from '@/styles'
 
 import { addOnCursor } from '..'
 
+// Local interfaces
+export interface ILocalValues {
+  scalarResults?: { name: string; variable: string }[]
+  vectorialResults?: {
+    name: string
+    variable1: string
+    variable2: string
+    variable3: string
+  }[]
+}
+
 /**
  * Get in template
  * @param values Values
  * @returns Results, Order
  */
-const getInTemplate = (values: {
+export const _getInTemplate = (values: {
   scalarResults?: { name: string; variable: string }[]
   vectorialResults?: {
     name: string
@@ -56,16 +67,8 @@ const getInTemplate = (values: {
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
-  values: {
-    scalarResults?: { name: string; variable: string }[]
-    vectorialResults?: {
-      name: string
-      variable1: string
-      variable2: string
-      variable3: string
-    }[]
-  },
+export const _onAdd = (
+  values: ILocalValues,
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
@@ -75,7 +78,7 @@ export const onAdd = (
   if (!values.scalarResults?.length && !values.vectorialResults?.length) return
 
   // Template
-  const inTemplate = getInTemplate(values)
+  const inTemplate = _getInTemplate(values)
   addOnCursor(
     template,
     `<%# Save -%>
@@ -138,6 +141,32 @@ const Save = (): JSX.Element => {
   const { template, model, cursor, dispatch } = useContext(EditorContext)
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: ILocalValues): Promise<void> => {
+      setLoading(true)
+
+      _onAdd(values, template, model, cursor, dispatch)
+
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, model, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -146,15 +175,8 @@ const Save = (): JSX.Element => {
         title="Save"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, model, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.List name="scalarResults">
           {(fields, { add, remove }, { errors }) => (
@@ -271,7 +293,7 @@ const Save = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Save
       </Button>
     </>

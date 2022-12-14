@@ -1,5 +1,5 @@
 import { EditorContext } from '@/context/editor'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Save, { errors } from '..'
 
@@ -161,7 +161,9 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
@@ -264,7 +266,9 @@ describe('components/editor/save', () => {
     fireEvent.click(ok)
     const cancel = screen.getByRole('button', { name: 'Cancel' })
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await act(() =>
+      waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {

@@ -14,12 +14,13 @@ import {
 } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
+import EditorProvider from '@/context/editor'
+
 import { GoBack } from '@/components/assets/button'
+
 import Loading from '@/components/loading'
 
 import UserAPI from '@/api/user'
-
-import EditorProvider from '@/context/editor'
 
 import StatusSteps from './steps'
 import Blobs from './blobs'

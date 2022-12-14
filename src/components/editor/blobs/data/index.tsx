@@ -16,9 +16,9 @@ import { setCursor } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
-import { globalStyle } from '@/styles'
-
 import { addOnCursor } from '..'
+
+import { globalStyle } from '@/styles'
 
 /**
  * On add
@@ -27,7 +27,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const onAdd = (
+export const _onAdd = (
   values: { title: string; x: string; datas: { name: string; y: string }[] },
   template: string,
   cursor: IEditorCursor | undefined,
@@ -87,14 +87,17 @@ const Data = (): JSX.Element => {
    * On ok
    * @param values Values
    */
-  const onOk = useCallback(async (values: any): Promise<void> => {
-    setLoading(true)
+  const onOk = useCallback(
+    async (values: any): Promise<void> => {
+      setLoading(true)
 
-    onAdd(values, template, cursor, dispatch)
+      _onAdd(values, template, cursor, dispatch)
 
-    setLoading(false)
-    setVisible(false)
-  }, [])
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, cursor, dispatch]
+  )
 
   /**
    * Render
@@ -132,9 +135,7 @@ const Data = (): JSX.Element => {
                           color: 'red',
                           marginRight: '10px'
                         }}
-                        onClick={function () {
-                          remove(field.name)
-                        }}
+                        onClick={() => remove(field.name)}
                       />
                       Data {index + 1}
                     </div>
@@ -159,9 +160,7 @@ const Data = (): JSX.Element => {
               <Form.Item>
                 <Button
                   type="dashed"
-                  onClick={function () {
-                    add()
-                  }}
+                  onClick={() => add()}
                   style={{ width: '60%' }}
                   icon={<PlusOutlined />}
                 >

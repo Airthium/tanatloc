@@ -1,14 +1,14 @@
 /** @module Components.Editor.Blobs.Header */
 
-import { Dispatch, useContext } from 'react'
+import { Dispatch, useCallback, useContext } from 'react'
 import { Button } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
 
-import { globalStyle } from '@/styles'
-
 import { addOnCursor } from '..'
+
+import { globalStyle } from '@/styles'
 
 /**
  * On add
@@ -16,7 +16,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
+export const _onAdd = (
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -42,13 +42,18 @@ const Header = (): JSX.Element => {
   const { template, cursor, dispatch } = useContext(EditorContext)
 
   /**
+   * On click
+   */
+  const onClick = useCallback(
+    () => _onAdd(template, cursor, dispatch),
+    [template, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
-    <Button
-      css={globalStyle.fullWidth}
-      onClick={() => onAdd(template, cursor, dispatch)}
-    >
+    <Button css={globalStyle.fullWidth} onClick={onClick}>
       Header
     </Button>
   )

@@ -1,6 +1,6 @@
 /** @module Components.Editor.Steps */
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Button, Steps } from 'antd'
 import JSON5 from 'json5'
 
@@ -11,7 +11,10 @@ import {
   setTemplateValid
 } from '@/context/editor/actions'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
 import { checkModel } from './utils'
+
 import style from '../index.style'
 
 /**
@@ -34,77 +37,89 @@ const StatusSteps = ({ setName }: IProps) => {
     }
   }>({})
 
+  // Context
   const { template, model, dispatch } = useContext(EditorContext)
 
   // Check template
-  useEffect(() => {
-    if (!template) {
-      setStatus((prev) => ({
-        ...prev,
-        template: {
-          status: 'wait',
-          err: ''
-        },
-        test: {
-          status: 'wait'
-        }
-      }))
-      dispatch(setTemplateValid(false))
-      return
-    }
-
-    // Check template
-    setStatus((prev) => ({
-      ...prev,
-      template: { status: 'finish' },
-      test: { status: prev.model?.status === 'finish' ? 'process' : 'wait' }
-    }))
-    dispatch(setTemplateValid(true))
-  }, [template, dispatch])
-
-  // Check model
-  useEffect(() => {
-    if (!model) {
-      setStatus((prev) => ({
-        ...prev,
-        model: { status: 'wait' },
-        test: { status: 'wait' }
-      }))
-      dispatch(setModelValid(false))
-      return
-    }
-
-    try {
-      let modelJSON
-      try {
-        modelJSON = JSON.parse(model)
-      } catch (err) {
-        modelJSON = JSON5.parse(model)
-        dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
+  useCustomEffect(
+    () => {
+      if (!template) {
+        setStatus((prev) => ({
+          ...prev,
+          template: {
+            status: 'wait',
+            err: ''
+          },
+          test: {
+            status: 'wait'
+          }
+        }))
+        dispatch(setTemplateValid(false))
+        return
       }
 
-      if (modelJSON.name) setName(modelJSON.name)
-
-      checkModel(modelJSON)
-
+      // Check template
       setStatus((prev) => ({
         ...prev,
-        model: { status: 'finish' },
-        test: {
-          status: prev.template?.status === 'finish' ? 'process' : 'wait'
+        template: { status: 'finish' },
+        test: { status: prev.model?.status === 'finish' ? 'process' : 'wait' }
+      }))
+      dispatch(setTemplateValid(true))
+    },
+    [template],
+    [dispatch]
+  )
+
+  // Check model
+  useCustomEffect(
+    () => {
+      if (!model) {
+        setStatus((prev) => ({
+          ...prev,
+          model: { status: 'wait' },
+          test: { status: 'wait' }
+        }))
+        dispatch(setModelValid(false))
+        return
+      }
+
+      try {
+        let modelJSON
+        try {
+          modelJSON = JSON.parse(model)
+        } catch (err) {
+          modelJSON = JSON5.parse(model)
+          dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
         }
-      }))
-      dispatch(setModelValid(true))
-    } catch (err: any) {
-      setStatus((prev) => ({
-        ...prev,
-        model: { status: 'error', err: err.message },
-        test: { status: 'wait' }
-      }))
-      dispatch(setModelValid(false))
-    }
-  }, [model, setName, dispatch])
 
+        if (modelJSON.name) setName(modelJSON.name)
+
+        checkModel(modelJSON)
+
+        setStatus((prev) => ({
+          ...prev,
+          model: { status: 'finish' },
+          test: {
+            status: prev.template?.status === 'finish' ? 'process' : 'wait'
+          }
+        }))
+        dispatch(setModelValid(true))
+      } catch (err: any) {
+        setStatus((prev) => ({
+          ...prev,
+          model: { status: 'error', err: err.message },
+          test: { status: 'wait' }
+        }))
+        dispatch(setModelValid(false))
+      }
+    },
+    [model],
+    [setName, dispatch]
+  )
+
+  /**
+   * Render
+   */
   return (
     <Steps
       css={style.steps}

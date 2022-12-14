@@ -7,6 +7,9 @@ jest.mock('@/lib/utils', () => ({
   getGitVersion: () => mockGitVersion()
 }))
 
+//@ts-ignore
+window.open = jest.fn
+
 describe('components/indexpage/footer', () => {
   const scroll = jest.fn()
 
@@ -34,7 +37,7 @@ describe('components/indexpage/footer', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(scroll).toHaveBeenCalledTimes(buttons.length - 2)
+    expect(scroll).toHaveBeenCalledTimes(buttons.length - 3)
 
     unmount()
   })

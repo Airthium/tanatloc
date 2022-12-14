@@ -1,5 +1,6 @@
 /** @module Components.Footer */
 
+import { useCallback, useMemo } from 'react'
 import {
   Button,
   Card,
@@ -16,6 +17,9 @@ import packageJson from '../../../../package.json'
 import { globalStyle } from '@/styles'
 import style from './index.style'
 
+/**
+ * Props
+ */
 export interface IProps {
   scroll: (id: string) => void
 }
@@ -25,30 +29,6 @@ export interface IProps {
  * @returns Footer
  */
 const Footer = ({ scroll }: IProps): JSX.Element => {
-  // Data
-  const thanks = [
-    '- Professor Fréderic Hecht, Dr. Pierre Jolivet, and the FreeFEM’s contributors',
-    '- Professor Christophe Geuzaine, Professor Jean-François Remacle and the Gmsh contributors',
-    '- The Open Cascade development team'
-  ]
-  const navigate = [
-    <Button key="features" type="text" onClick={() => scroll('features')}>
-      Features
-    </Button>,
-    <Button key="developers" type="text" onClick={() => scroll('developers')}>
-      Developers
-    </Button>,
-    <Button key="case_studies" type="text" onClick={() => scroll('caseStudy')}>
-      Case Studies
-    </Button>,
-    <Button key="get_started" type="text" onClick={() => scroll('getStarted')}>
-      Get started
-    </Button>,
-    <Button key="about_us" type="text" onClick={() => scroll('aboutUs')}>
-      About us
-    </Button>
-  ]
-
   /**
    * Render item
    * @param item Item
@@ -57,6 +37,71 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
   const renderItem: ListProps<string | JSX.Element>['renderItem'] = (
     item: string | JSX.Element
   ): JSX.Element => <List.Item>{item}</List.Item>
+
+  /**
+   * Scroll to features
+   */
+  const scrollToFeatures = useCallback(() => scroll('features'), [scroll])
+
+  /**
+   * Scroll to developers
+   */
+  const scrollToDevelopers = useCallback(
+    () => window.open('https://github.com/Airthium', '_blank'),
+    []
+  )
+
+  /**
+   * Scroll to case study
+   */
+  const scrollToCaseStudy = useCallback(() => scroll('caseStudy'), [scroll])
+
+  /**
+   * Scroll to get started
+   */
+  const scrollToGetStarted = useCallback(() => scroll('getStarted'), [scroll])
+
+  /**
+   * Scroll to about us
+   */
+  const scrollToAboutUs = useCallback(() => scroll('aboutUs'), [scroll])
+
+  // Data
+  const thanks = useMemo(
+    () => [
+      '- Professor Fréderic Hecht, Dr. Pierre Jolivet, and the FreeFEM’s contributors',
+      '- Professor Christophe Geuzaine, Professor Jean-François Remacle and the Gmsh contributors',
+      '- The Open Cascade development team'
+    ],
+    []
+  )
+
+  const navigate = useMemo(
+    () => [
+      <Button key="features" type="text" onClick={scrollToFeatures}>
+        Features
+      </Button>,
+      <Button key="developers" type="text" onClick={scrollToDevelopers}>
+        Developers
+      </Button>,
+      <Button key="case_studies" type="text" onClick={scrollToCaseStudy}>
+        Case Studies
+      </Button>,
+      <Button key="get_started" type="text" onClick={scrollToGetStarted}>
+        Get started
+      </Button>,
+      <Button key="about_us" type="text" onClick={scrollToAboutUs}>
+        About us
+      </Button>
+    ],
+    [
+      scrollToFeatures,
+      scrollToDevelopers,
+      scrollToCaseStudy,
+      scrollToGetStarted,
+      scrollToAboutUs
+    ]
+  )
 
   /**
    * Render

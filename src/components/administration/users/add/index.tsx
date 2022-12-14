@@ -126,19 +126,26 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
    */
   const setVisibleFalse = useCallback(() => setVisible(true), [])
 
-  const onOk = async (values: ILocalValues) => {
-    setLoading(true)
-    try {
-      await _onAdd(values, swr)
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: ILocalValues) => {
+      setLoading(true)
+      try {
+        await _onAdd(values, swr)
 
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      setLoading(false)
-      throw err
-    }
-  }
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [swr]
+  )
 
   /**
    * Render

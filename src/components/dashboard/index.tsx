@@ -1,7 +1,7 @@
 /** @module Components.Dashboard */
 
-import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useState } from 'react'
 import { Layout, Menu, Typography } from 'antd'
 import {
   AppstoreOutlined,
@@ -15,6 +15,8 @@ import {
 import isElectron from 'is-electron'
 
 import packageJson from '../../../package.json'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -78,45 +80,6 @@ export const menuItems = {
 }
 
 /**
- * Menu selection
- * @param router Route
- * @param key Key
- * @param clearUser Clear user
- */
-export const onSelect = (
-  router: NextRouter,
-  key: string,
-  clearUser: () => void
-): void => {
-  if (key === menuItems.logout.key) onLogout(router, clearUser)
-  else if (key === menuItems.editor.key) router.push('/editor')
-  else {
-    router.replace({
-      pathname: '/dashboard',
-      query: { page: key }
-    })
-  }
-}
-
-/**
- * Logout
- * @param router Route
- * @param clearUser Clear user
- */
-export const onLogout = async (
-  router: NextRouter,
-  clearUser: () => void
-): Promise<void> => {
-  try {
-    await logout()
-    clearUser()
-    router.push('/')
-  } catch (err) {
-    ErrorNotification(errors.logout, err)
-  }
-}
-
-/**
  * Dashboard
  */
 const Dashboard = () => {
@@ -150,25 +113,73 @@ const Dashboard = () => {
   // Router
   const router = useRouter()
 
+  /**
+   * On logout
+   */
+  const onLogout = useCallback(async () => {
+    try {
+      await logout()
+      clearUser()
+      router.push('/')
+    } catch (err) {
+      ErrorNotification(errors.logout, err)
+    }
+  }, [router, clearUser])
+
+  /**
+   * On select
+   * @param key Key
+   */
+  const onSelect = useCallback(
+    (key: string): void => {
+      setCurrentKey(key)
+
+      if (key === menuItems.logout.key) onLogout()
+      else if (key === menuItems.editor.key) router.push('/editor')
+      else {
+        router.replace({
+          pathname: '/dashboard',
+          query: { page: key }
+        })
+      }
+    },
+    [router, onLogout]
+  )
+
+  /**
+   * On menu click
+   * @param param Keypath
+   */
+  const onMenuClick = useCallback(
+    ({ keyPath }: { keyPath: string[] }): void => {
+      const key = keyPath.pop()
+      onSelect(key!)
+    },
+    [onSelect]
+  )
+
   // Not logged -> go to login page
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!loadingUser && !user) router.replace('/')
   }, [user, loadingUser, router])
 
   // Page effect, only on mount
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const page = params.get('page')
+  useCustomEffect(
+    () => {
+      const params = new URLSearchParams(window.location.search)
+      const page = params.get('page')
 
-    if (page) setCurrentKey(page)
-    else {
-      setCurrentKey(menuItems.workspaces.key)
-      onSelect(router, menuItems.workspaces.key, clearUser)
-    }
-  }, [router, clearUser])
+      if (page) setCurrentKey(page)
+      else {
+        onSelect(menuItems.workspaces.key)
+      }
+    },
+    [router],
+    [onSelect]
+  )
 
   // Error
-  useEffect(() => {
+  useCustomEffect(() => {
     if (errorUser) ErrorNotification(errors.user, errorUser)
     if (errorOrganizations)
       ErrorNotification(errors.organizations, errorOrganizations)
@@ -245,11 +256,7 @@ const Dashboard = () => {
               )
             }
           ]}
-          onClick={({ keyPath }) => {
-            const key = keyPath.pop()
-            setCurrentKey(key)
-            onSelect(router, key as string, clearUser)
-          }}
+          onClick={onMenuClick}
           mode="inline"
         />
       </Layout.Sider>

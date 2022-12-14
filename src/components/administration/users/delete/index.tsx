@@ -1,12 +1,13 @@
 /** @module Components.Administration.User.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
+
+import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 import UserAPI from '@/api/user'
 
 /**
@@ -31,7 +32,7 @@ export const errors = {
  * @param user User
  * @param swr Swr
  */
-export const onDelete = async (
+export const _onDelete = async (
   user: Pick<IFrontUsersItem, 'id' | 'email'>,
   swr: { delOneUser: (user: IFrontMutateUsersItem) => void }
 ): Promise<void> => {
@@ -57,6 +58,18 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(user, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [user, swr])
+
+  /**
    * Render
    */
   return (
@@ -70,14 +83,7 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
         </>
       }
       title="Delete user"
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(user, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

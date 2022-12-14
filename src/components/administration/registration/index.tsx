@@ -1,8 +1,11 @@
 /** @module Components.Administration.Registration */
 
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
+
+import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
+
 import {
   MIN_SIZE,
   MAX_SIZE,
@@ -18,7 +21,6 @@ import {
 } from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'
-import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
 
 import { globalStyle, globalStyleFn } from '@/styles'
 import { css } from '@emotion/react'
@@ -36,7 +38,7 @@ export const errors = {
  * @param system System
  * @param mutateSystem Mutate system
  */
-export const onAllowSignup = async (
+export const _onAllowSignup = async (
   system: IFrontSystem,
   mutateSystem: (system: IFrontMutateSystem) => void
 ): Promise<void> => {
@@ -58,7 +60,7 @@ export const onAllowSignup = async (
  * @param values Values
  * @param mutateSystem Mutate system
  */
-export const onPasswordFinish = async (
+export const _onPasswordFinish = async (
   values: IFrontSystem['password'],
   mutateSystem: (system: IFrontMutateSystem) => void
 ): Promise<void> => {
@@ -105,100 +107,103 @@ const Registration = (): JSX.Element => {
   }, [loadingSystem, form, system?.password])
 
   /**
+   * On Change
+   */
+  const onChange = useCallback(
+    () => _onAllowSignup(system, mutateSystem),
+    [system, mutateSystem]
+  )
+
+  /**
+   * On Finish
+   * @param values Values
+   * @returns
+   */
+  const onFinish = useCallback(
+    async (values: IFrontSystem['password']) =>
+      _onPasswordFinish(values, mutateSystem),
+    [mutateSystem]
+  )
+
+  /**
    * Render
    */
   if (loadingSystem) return <Loading.Simple />
-  else
-    return (
-      <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
-        <Card title="Signup">
-          <Checkbox
-            checked={system?.allowsignup}
-            onChange={() => onAllowSignup(system, mutateSystem)}
-          >
-            Allow signup
-          </Checkbox>
-        </Card>
+  return (
+    <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+      <Card title="Signup">
+        <Checkbox checked={system?.allowsignup} onChange={onChange}>
+          Allow signup
+        </Checkbox>
+      </Card>
 
-        <Card title="Password">
-          <Form
-            form={form}
-            name="form"
-            onFinish={async (values) => onPasswordFinish(values, mutateSystem)}
-            css={css({ display: 'flex', justifyContent: 'space-between' })}
+      <Card title="Password">
+        <Form
+          form={form}
+          name="form"
+          onFinish={onFinish}
+          css={css({ display: 'flex', justifyContent: 'space-between' })}
+        >
+          <div
+            css={css([
+              globalStyle.displayFlex,
+              globalStyle.fullWidth,
+              { justifyContent: 'space-between' }
+            ])}
           >
-            <div
-              css={css([
-                globalStyle.displayFlex,
-                globalStyle.fullWidth,
-                { justifyContent: 'space-between' }
-              ])}
-            >
-              <div>
-                <Form.Item
-                  label="Minimum number of characters"
-                  name="min"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Minimum number of characters is required'
-                    }
-                  ]}
-                >
-                  <InputNumber min={0} max={64} />
-                </Form.Item>
-                <Form.Item
-                  label="Maximum number of characters"
-                  name="max"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Maximum number of characters is required'
-                    }
-                  ]}
-                >
-                  <InputNumber min={0} max={64} />
-                </Form.Item>
-              </div>
-              <div>
-                <Form.Item
-                  // {...tailLayout}
-                  valuePropName="checked"
-                  name="requireLetter"
-                >
-                  <Checkbox>Require letter</Checkbox>
-                </Form.Item>
-                <Form.Item
-                  // {...tailLayout}
-                  valuePropName="checked"
-                  name="requireNumber"
-                >
-                  <Checkbox>Require number</Checkbox>
-                </Form.Item>
-                <Form.Item
-                  // {...tailLayout}
-                  valuePropName="checked"
-                  name="requireSymbol"
-                >
-                  <Checkbox>Require symbol</Checkbox>
-                </Form.Item>
-              </div>
-              <div css={globalStyleFn.marginTop('auto')}>
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    icon={<CheckOutlined />}
-                    htmlType="submit"
-                  >
-                    Save changes
-                  </Button>
-                </Form.Item>
-              </div>
+            <div>
+              <Form.Item
+                label="Minimum number of characters"
+                name="min"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Minimum number of characters is required'
+                  }
+                ]}
+              >
+                <InputNumber min={0} max={64} />
+              </Form.Item>
+              <Form.Item
+                label="Maximum number of characters"
+                name="max"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Maximum number of characters is required'
+                  }
+                ]}
+              >
+                <InputNumber min={0} max={64} />
+              </Form.Item>
             </div>
-          </Form>
-        </Card>
-      </Space>
-    )
+            <div>
+              <Form.Item valuePropName="checked" name="requireLetter">
+                <Checkbox>Require letter</Checkbox>
+              </Form.Item>
+              <Form.Item valuePropName="checked" name="requireNumber">
+                <Checkbox>Require number</Checkbox>
+              </Form.Item>
+              <Form.Item valuePropName="checked" name="requireSymbol">
+                <Checkbox>Require symbol</Checkbox>
+              </Form.Item>
+            </div>
+            <div css={globalStyleFn.marginTop('auto')}>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  icon={<CheckOutlined />}
+                  htmlType="submit"
+                >
+                  Save changes
+                </Button>
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+      </Card>
+    </Space>
+  )
 }
 
 export default Registration

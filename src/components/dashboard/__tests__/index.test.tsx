@@ -213,7 +213,7 @@ describe('components/dashboard', () => {
     })
     const { unmount } = render(<Dashboard />)
 
-    expect(mockReplace).toHaveBeenCalledTimes(2)
+    expect(mockReplace).toHaveBeenCalledTimes(1)
 
     unmount()
   })

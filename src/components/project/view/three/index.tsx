@@ -485,7 +485,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
 
     let width = currentMount.clientWidth
     let height = currentMount.clientHeight
-    let frameId: number
 
     // Scene
     scene.current = new Scene() as Scene & {
@@ -650,25 +649,16 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     /**
      * Animate
      */
-    const animate = async (): Promise<void> => {
-      stop()
+    const animate = (): void => {
       renderScene()
-      frameId = requestAnimationFrame(animate)
-      await new Promise((resolve) => setTimeout(resolve, 1000 / 30))
+      setTimeout(() => requestAnimationFrame(animate), 1000 / 30)
     }
 
     /**
      * Start animate
      */
     const start = (): void => {
-      frameId = requestAnimationFrame(animate)
-    }
-
-    /**
-     * Stop animate
-     */
-    const stop = (): void => {
-      cancelAnimationFrame(frameId)
+      requestAnimationFrame(animate)
     }
 
     // Event listeners
@@ -679,8 +669,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
 
     // Unmount
     return () => {
-      stop()
-
       alreadyZoomToFit = false
 
       window.removeEventListener('resize', handleResize)

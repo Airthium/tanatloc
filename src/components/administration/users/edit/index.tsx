@@ -1,9 +1,10 @@
 /** @module Components.Administration.User.Delete */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
+import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { EditButton } from '@/components/assets/button'
@@ -11,7 +12,6 @@ import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
 import UserAPI from '@/api/user'
 
 /**
@@ -34,9 +34,9 @@ export interface IProps {
 }
 
 /**
- * Edit values
+ * Local values
  */
-export interface IEditValues {
+export interface ILocalValues {
   firstname: string
   lastname: string
   email: string
@@ -58,16 +58,16 @@ export const errors = {
  * @param values Values
  * @param swr Swr
  */
-export const onUpdate = async (
+export const _onUpdate = async (
   user: TUserItem,
-  values: IEditValues,
+  values: ILocalValues,
   swr: { mutateOneUser: (user: IFrontMutateUsersItem) => void }
 ): Promise<void> => {
   try {
     // Update
     const toUpdate = Object.keys(values)
       .map((key) => {
-        const value = values[key as keyof IEditValues]
+        const value = values[key as keyof ILocalValues]
         if (
           value !== undefined &&
           value !== '******' &&
@@ -113,6 +113,37 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On update
+   * @param values Values
+   */
+  const onUpdate = useCallback(
+    async (values: ILocalValues) => {
+      setLoading(true)
+      try {
+        await _onUpdate(user, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [user, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -125,20 +156,8 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
           password: '******',
           authorizedplugins: user.authorizedplugins
         }}
-        onCancel={() => setVisible(false)}
-        onOk={async (values: IEditValues) => {
-          setLoading(true)
-          try {
-            await onUpdate(user, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onUpdate}
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">
@@ -173,7 +192,7 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <EditButton bordered onEdit={() => setVisible(true)}>
+      <EditButton bordered onEdit={setVisibleTrue}>
         Edit
       </EditButton>
     </>

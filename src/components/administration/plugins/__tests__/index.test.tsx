@@ -152,7 +152,7 @@ describe('components/administration/plugins', () => {
         {
           key: 'defaultplugins',
           type: 'array',
-          method: 'remove',
+          method: 'append',
           value: 'plugin'
         }
       ])

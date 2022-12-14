@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -59,6 +60,13 @@ describe('components/administration/users/edit', () => {
     unmount()
   })
 
+  test('ref', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(<Edit plugins={plugins} user={user} swr={swr} />)
+
+    unmount()
+  })
+
   test('setVisible', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
@@ -107,7 +115,9 @@ describe('components/administration/users/edit', () => {
       key: '******'
     }
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
 
     // Empty
@@ -124,7 +134,9 @@ describe('components/administration/users/edit', () => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -54,7 +54,9 @@ describe('components/administration/users/delete', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockDelById).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockDelById).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() => expect(swr.delOneUser).toHaveBeenCalledTimes(1))
 
     // Error
@@ -62,7 +64,9 @@ describe('components/administration/users/delete', () => {
       throw new Error('del error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDelById).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockDelById).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

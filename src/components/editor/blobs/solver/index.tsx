@@ -1,6 +1,6 @@
 /** @module Components.Editor.Blobs.Solver */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Checkbox, Form } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
@@ -22,7 +22,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-const onAdd = (
+export const _onAdd = (
   values: { solvers: string[] },
   template: string,
   model: string,
@@ -107,6 +107,32 @@ const Solver = (): JSX.Element => {
   ]
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { solvers: string[] }): Promise<void> => {
+      setLoading(true)
+
+      _onAdd(values, template, model, cursor, dispatch)
+
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, model, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -115,15 +141,8 @@ const Solver = (): JSX.Element => {
         title="Solver"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, model, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.Item name="solvers" label="Availables">
           <Checkbox.Group
@@ -132,7 +151,7 @@ const Solver = (): JSX.Element => {
           />
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Solver
       </Button>
     </>

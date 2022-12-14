@@ -1,6 +1,13 @@
 /** @module Components.Editor.Blobs.FiniteElementFunction */
 
-import { Dispatch, useContext, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
@@ -12,6 +19,16 @@ import { globalStyle } from '@/styles'
 
 import { addOnCursor } from '..'
 
+// Local interfaces
+export interface ILocalValues {
+  test1: string
+  test2: string
+  test3: string
+  unknown1: string
+  unknown2: string
+  unknown3: string
+}
+
 /**
  * On add
  * @param values Values
@@ -19,15 +36,8 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
-  values: {
-    test1: string
-    test2: string
-    test3: string
-    unknown1: string
-    unknown2: string
-    unknown3: string
-  },
+export const _onAdd = (
+  values: ILocalValues,
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -76,6 +86,32 @@ const FiniteElementFunction = (): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: ILocalValues): Promise<void> => {
+      setLoading(true)
+
+      _onAdd(values, template, cursor, dispatch)
+
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -84,15 +120,8 @@ const FiniteElementFunction = (): JSX.Element => {
         title="Finite element function"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.Item
           label={<Typography.Text strong>Test function</Typography.Text>}
@@ -121,7 +150,7 @@ const FiniteElementFunction = (): JSX.Element => {
           </Form.Item>
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Finite element function
       </Button>
     </>

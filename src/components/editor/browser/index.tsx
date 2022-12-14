@@ -1,8 +1,15 @@
 /** @module Components.Editor.Browser */
 
-import { Dispatch, useContext, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from 'react'
 import { Button, Space, Tabs, Tooltip } from 'antd'
-import { FolderOpenOutlined } from '@ant-design/icons'
+import { FileSearchOutlined, FileTextOutlined } from '@ant-design/icons'
 
 import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 import { IModel } from '@/models/index.d'
@@ -16,9 +23,9 @@ import Templates from '@/templates'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { globalStyle } from '@/styles'
-
 import Delete from '../delete'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -28,6 +35,24 @@ export interface IProps {
   swr: {
     mutateUser: (user: Partial<IFrontMutateUser>) => void
   }
+}
+
+export interface ITanatlocModelProps {
+  model: IModel
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setVisible: Dispatch<SetStateAction<boolean>>
+  dispatch: Dispatch<IEditorAction>
+}
+
+export interface IUserModelProps {
+  user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
+  index: number
+  swr: {
+    mutateUser: (user: Partial<IFrontMutateUser>) => void
+  }
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setVisible: Dispatch<SetStateAction<boolean>>
+  dispatch: Dispatch<IEditorAction>
 }
 
 /**
@@ -42,17 +67,16 @@ export const errors = {
  * @param key Key
  * @param dispatch Dispatch
  */
-export const onTanatlocLoad = async (
-  key: number,
+export const _onTanatlocLoad = async (
+  model: IModel,
   dispatch: Dispatch<IEditorAction>
 ): Promise<void> => {
   try {
     // Model
-    const currentModel = Models[key]
-    dispatch(setModel(JSON.stringify(currentModel, null, '\t')))
+    dispatch(setModel(JSON.stringify(model, null, '\t')))
 
     // Template
-    const modelKey = currentModel.algorithm
+    const modelKey = model.algorithm
     const templateFile = Templates[modelKey as keyof typeof Templates]
     const res = await fetch('/templates/' + templateFile)
     const text = await res.text()
@@ -68,7 +92,7 @@ export const onTanatlocLoad = async (
  * @param template Template
  * @param dispatch Dispatch
  */
-export const onMyLoad = async (
+export const _onMyLoad = async (
   model: IModel,
   template: string,
   dispatch: Dispatch<IEditorAction>
@@ -80,6 +104,96 @@ export const onMyLoad = async (
   } catch (err) {
     ErrorNotification(errors.load, err)
   }
+}
+
+/**
+ * Tanatloc model
+ * @param props Props
+ * @returns TanatlocModel
+ */
+const TanatlocModel = ({
+  model,
+  setLoading,
+  setVisible,
+  dispatch
+}: ITanatlocModelProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _onTanatlocLoad(model, dispatch)
+    } finally {
+      setLoading(false)
+      setVisible(false)
+    }
+  }, [model, setLoading, setVisible, dispatch])
+
+  /**
+   * Render
+   */
+  return (
+    <div
+      css={globalStyle.displayFlex}
+      style={{
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}
+    >
+      {model.name}
+      <Tooltip title="Open">
+        <Button onClick={onClick} icon={<FileTextOutlined />} />
+      </Tooltip>
+    </div>
+  )
+}
+
+const UserModel = ({
+  user,
+  index,
+  swr,
+  setLoading,
+  setVisible,
+  dispatch
+}: IUserModelProps): JSX.Element => {
+  // Data
+  const model = useMemo(() => user.models[index], [user, index])
+  const template = useMemo(() => user.templates[index], [user, index])
+
+  /**
+   * On click
+   */
+  const onClick = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _onMyLoad(model, template, dispatch)
+    } finally {
+      setLoading(false)
+      setVisible(false)
+    }
+  }, [model, template, setLoading, setVisible, dispatch])
+
+  /**
+   * Render
+   */
+  return (
+    <div
+      css={globalStyle.displayFlex}
+      style={{
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}
+    >
+      {model.name}
+      <div>
+        <Tooltip title="Open">
+          <Button onClick={onClick} icon={<FileTextOutlined />} />
+        </Tooltip>
+        <Delete user={user} index={index} swr={swr} />
+      </div>
+    </div>
+  )
 }
 
 /**
@@ -96,6 +210,48 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
   const { dispatch } = useContext(EditorContext)
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  // Tanatloc models
+  const tanatlocModels = useMemo(
+    () =>
+      Models.map((m, index) => (
+        <TanatlocModel
+          key={index}
+          model={m}
+          setLoading={setLoading}
+          setVisible={setVisible}
+          dispatch={dispatch}
+        />
+      )),
+    [dispatch]
+  )
+
+  // User models
+  const userModels = useMemo(
+    () =>
+      user.models.map((_model, index) => (
+        <UserModel
+          key={index}
+          user={user}
+          index={index}
+          swr={swr}
+          setLoading={setLoading}
+          setVisible={setVisible}
+          dispatch={dispatch}
+        />
+      )),
+    [user, swr, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -104,7 +260,7 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
         title="Models browser"
         visible={visible}
         loading={loading}
-        onCancel={() => setVisible(false)}
+        onCancel={setVisibleFalse}
       >
         <Tabs
           items={[
@@ -113,32 +269,7 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
               label: 'Tanatloc models',
               children: (
                 <Space direction="vertical" css={globalStyle.fullWidth}>
-                  {Models.map((m, index) => (
-                    <div
-                      key={index}
-                      css={globalStyle.displayFlex}
-                      style={{
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
-                    >
-                      {m.name}
-                      <Tooltip title="Open">
-                        <Button
-                          onClick={async () => {
-                            setLoading(true)
-                            try {
-                              await onTanatlocLoad(index, dispatch)
-                            } finally {
-                              setLoading(false)
-                              setVisible(false)
-                            }
-                          }}
-                          icon={<FolderOpenOutlined />}
-                        />
-                      </Tooltip>
-                    </div>
-                  ))}
+                  {tanatlocModels}
                 </Space>
               )
             },
@@ -147,39 +278,7 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
               label: 'My models',
               children: (
                 <Space direction="vertical" css={globalStyle.fullWidth}>
-                  {user.models.map((m, index) => (
-                    <div
-                      key={index}
-                      css={globalStyle.displayFlex}
-                      style={{
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
-                    >
-                      {m.name}
-                      <div>
-                        <Tooltip title="Open">
-                          <Button
-                            onClick={async () => {
-                              setLoading(true)
-                              try {
-                                await onMyLoad(
-                                  m,
-                                  user.templates[index],
-                                  dispatch
-                                )
-                              } finally {
-                                setLoading(false)
-                                setVisible(false)
-                              }
-                            }}
-                            icon={<FolderOpenOutlined />}
-                          />
-                        </Tooltip>
-                        <Delete user={user} index={index} swr={swr} />
-                      </div>
-                    </div>
-                  ))}
+                  {userModels}
                 </Space>
               )
             }
@@ -187,10 +286,7 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
         />
       </Dialog>
       <Tooltip title="Browse existing model">
-        <Button
-          icon={<FolderOpenOutlined />}
-          onClick={() => setVisible(true)}
-        />
+        <Button icon={<FileSearchOutlined />} onClick={setVisibleTrue} />
       </Tooltip>
     </>
   )

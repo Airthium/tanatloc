@@ -1,5 +1,7 @@
 /** @module Components.Editor.Delete */
 
+import { useCallback } from 'react'
+
 import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -33,13 +35,13 @@ export const errors = {
  * @param index Index
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   user: Pick<IFrontUser, 'id' | 'models' | 'templates'>,
   index: number,
   swr: {
     mutateUser: (user: Partial<IFrontMutateUser>) => void
   }
-) => {
+): Promise<void> => {
   try {
     const model = user.models[index]
     const template = user.templates[index]
@@ -84,9 +86,17 @@ export const onDelete = async (
  */
 const Delete = ({ user, index, swr }: IProps): JSX.Element => {
   /**
+   * On delete
+   */
+  const onDelete = useCallback(
+    async (): Promise<void> => _onDelete(user, index, swr),
+    [user, index, swr]
+  )
+
+  /**
    * Render
    */
-  return <DeleteButton onDelete={async () => onDelete(user, index, swr)} />
+  return <DeleteButton onDelete={onDelete} />
 }
 
 export default Delete

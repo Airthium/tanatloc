@@ -142,10 +142,10 @@ describe('components/editor/steps', () => {
 
     expect(mockSetTemplateValid).toHaveBeenCalledTimes(2)
     expect(mockSetTemplateValid).toHaveBeenLastCalledWith(true)
-    expect(mockSetModelValid).toHaveBeenCalledTimes(2)
+    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
     expect(mockSetModelValid).toHaveBeenLastCalledWith(true)
 
-    expect(setName).toHaveBeenCalledTimes(2)
+    expect(setName).toHaveBeenCalledTimes(1)
     expect(setName).toHaveBeenLastCalledWith('name')
 
     unmount()

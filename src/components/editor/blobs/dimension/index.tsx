@@ -1,6 +1,6 @@
 /** @module Components.Editor.Blobs.Dimension */
 
-import { Dispatch, useContext } from 'react'
+import { Dispatch, useCallback, useContext } from 'react'
 import { Button } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
@@ -16,7 +16,7 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
+export const _onAdd = (
   template: string,
   cursor: IEditorCursor | undefined,
   dispatch: Dispatch<IEditorAction>
@@ -44,13 +44,18 @@ const Dimension = (): JSX.Element => {
   const { template, cursor, dispatch } = useContext(EditorContext)
 
   /**
+   * On click
+   */
+  const onClick = useCallback(
+    () => _onAdd(template, cursor, dispatch),
+    [template, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
-    <Button
-      css={globalStyle.fullWidth}
-      onClick={() => onAdd(template, cursor, dispatch)}
-    >
+    <Button css={globalStyle.fullWidth} onClick={onClick}>
       Dimension
     </Button>
   )

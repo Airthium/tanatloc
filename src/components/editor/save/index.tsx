@@ -1,6 +1,6 @@
 /** @module Components.Editor.Save */
 
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Modal, Tooltip } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
@@ -40,7 +40,7 @@ export const errors = {
  * @param model Model
  * @param template Template
  */
-const onSave = async (
+export const _onSave = async (
   user: Pick<IFrontUser, 'id' | 'models'>,
   swr: {
     mutateUser: (user: IFrontMutateUser) => void
@@ -70,11 +70,11 @@ const onSave = async (
           const index = user.models.findIndex(
             (m) => m.algorithm === modelJSON.algorithm
           )
-          await save(user, swr, modelJSON, template, index)
+          await _save(user, swr, modelJSON, template, index)
         }
       })
     } else {
-      await save(user, swr, modelJSON, template)
+      await _save(user, swr, modelJSON, template)
     }
   } catch (err) {
     ErrorNotification(errors.check, err)
@@ -86,7 +86,7 @@ const onSave = async (
  * @param model Model
  * @param template Template
  */
-const save = async (
+export const _save = async (
   user: Pick<IFrontUser, 'id' | 'models'>,
   swr: {
     mutateUser: (user: IFrontMutateUser) => void
@@ -179,6 +179,15 @@ const Save = ({ user, swr }: IProps): JSX.Element => {
   }, [templateValid, modelValid])
 
   /**
+   * On click
+   */
+  const onClick = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    await _onSave(user, swr, model, template)
+    setLoading(false)
+  }, [user, model, template, swr])
+
+  /**
    * Render
    */
   return (
@@ -187,11 +196,7 @@ const Save = ({ user, swr }: IProps): JSX.Element => {
         disabled={disabled}
         loading={loading}
         icon={<SaveOutlined />}
-        onClick={async () => {
-          setLoading(true)
-          await onSave(user, swr, model, template)
-          setLoading(false)
-        }}
+        onClick={onClick}
       />
     </Tooltip>
   )

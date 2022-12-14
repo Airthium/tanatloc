@@ -1,6 +1,6 @@
 /** @module Components.Editor.New */
 
-import { Dispatch, useContext } from 'react'
+import { Dispatch, useCallback, useContext } from 'react'
 import { FileAddOutlined } from '@ant-design/icons'
 import { Button, Tooltip } from 'antd'
 
@@ -11,7 +11,7 @@ import { setModel, setTemplate } from '@/context/editor/actions'
  * On new
  * @param dispatch Dispatch
  */
-export const onNew = (dispatch: Dispatch<IEditorAction>) => {
+export const _onNew = (dispatch: Dispatch<IEditorAction>): void => {
   dispatch(
     setTemplate(
       `try{
@@ -61,11 +61,16 @@ const New = () => {
   const { dispatch } = useContext(EditorContext)
 
   /**
+   * On click
+   */
+  const onClick = useCallback((): void => _onNew(dispatch), [dispatch])
+
+  /**
    * Render
    */
   return (
     <Tooltip title="New model">
-      <Button icon={<FileAddOutlined />} onClick={() => onNew(dispatch)} />
+      <Button icon={<FileAddOutlined />} onClick={onClick} />
     </Tooltip>
   )
 }

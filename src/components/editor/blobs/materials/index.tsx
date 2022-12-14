@@ -1,21 +1,26 @@
 /** @module Components.Editor.Blobs.Materials */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
 
+import { availableSymbols } from '@/config/materials'
+
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor, setModel } from '@/context/editor/actions'
 
-import { availableSymbols } from '@/config/materials'
-
 import Dialog from '@/components/assets/dialog'
+
+import { addOnCursor } from '..'
 
 import { globalStyle } from '@/styles'
 
-import { addOnCursor } from '..'
+// Local interfaces
+export interface ILocalValues {
+  materials: { symbol: number; default: string }[]
+}
 
 /**
  * On add
@@ -25,8 +30,8 @@ import { addOnCursor } from '..'
  * @param cursor Cursor
  * @param dispatch Dispatch
  */
-export const onAdd = (
-  values: { materials: { symbol: number; default: string }[] },
+export const _onAdd = (
+  values: ILocalValues,
   template: string,
   model: string,
   cursor: IEditorCursor | undefined,
@@ -106,6 +111,32 @@ const Materials = (): JSX.Element => {
   const { template, model, cursor, dispatch } = useContext(EditorContext)
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: ILocalValues): Promise<void> => {
+      setLoading(true)
+
+      _onAdd(values, template, model, cursor, dispatch)
+
+      setLoading(false)
+      setVisible(false)
+    },
+    [template, model, cursor, dispatch]
+  )
+
+  /**
    * Render
    */
   return (
@@ -114,15 +145,8 @@ const Materials = (): JSX.Element => {
         title="Materials"
         visible={visible}
         loading={loading}
-        onOk={async (values) => {
-          setLoading(true)
-
-          onAdd(values, template, model, cursor, dispatch)
-
-          setLoading(false)
-          setVisible(false)
-        }}
-        onCancel={() => setVisible(false)}
+        onOk={onOk}
+        onCancel={setVisibleFalse}
       >
         <Form.List name="materials">
           {(fields, { add, remove }, { errors }) => (
@@ -180,7 +204,7 @@ const Materials = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={() => setVisible(true)}>
+      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Materials
       </Button>
     </>

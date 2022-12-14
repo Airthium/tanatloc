@@ -40,7 +40,6 @@ const Background = (): JSX.Element => {
     const div = mount.current
     /* istanbul ignore next */
     if (!div) return
-    let frameId: number
 
     let width = div.clientWidth
     let height = div.clientHeight
@@ -69,11 +68,13 @@ const Background = (): JSX.Element => {
     const rotationX: number[] = []
     const rotationY: number[] = []
     const rotationZ: number[] = []
+
     // Visible height & width
     const offset = camera.position.z
     const hFOV = (camera.fov * Math.PI) / 180
     const h = 2 * Math.tan(hFOV / 2) * offset
     const w = h * camera.aspect
+
     // Build tetra
     for (let i = 0; i < numberOfTetrahedra; ++i) {
       const rand = Math.random()
@@ -143,14 +144,9 @@ const Background = (): JSX.Element => {
      */
     const animate = (): void => {
       renderScene()
-      frameId = requestAnimationFrame(animate)
-    }
-
-    /**
-     * Stop
-     */
-    const stop = (): void => {
-      cancelAnimationFrame(frameId)
+      setTimeout(() => {
+        requestAnimationFrame(animate)
+      }, 1000 / 30)
     }
 
     // Start
@@ -161,9 +157,6 @@ const Background = (): JSX.Element => {
 
     // Unmount
     return () => {
-      // Stop
-      stop()
-
       // Remove event listener
       window.removeEventListener('resize', resize)
 

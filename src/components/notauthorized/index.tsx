@@ -25,6 +25,9 @@ const NotAuthorized = (): JSX.Element => {
     router.prefetch('/')
   }, [router])
 
+  /**
+   * Home
+   */
   const home = useCallback(() => router.push('/'), [router])
 
   /**

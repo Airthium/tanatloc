@@ -1,6 +1,6 @@
 /** @module Components.Notfound */
 
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Layout, Typography } from 'antd'
 import {
@@ -244,12 +244,16 @@ const NotFound = (): JSX.Element => {
   }, [router])
 
   /**
+   * Home
+   */
+  const home = useCallback(() => router.push('/'), [router])
+
+  /**
    * Render
    */
   return (
     <Layout css={style.index}>
       <Layout.Content css={style.content}>
-        {/* <Typography css={style.title}>404</Typography> */}
         <div ref={mount} css={style.three} />
         <div css={style.description}>
           <Typography.Title level={1} style={{ textAlign: 'center' }}>
@@ -258,11 +262,7 @@ const NotFound = (): JSX.Element => {
           <Typography.Title level={3} style={{ textAlign: 'center' }}>
             The requested URL was not found on the server
           </Typography.Title>
-          <Button
-            type="primary"
-            css={style.descriptionButton}
-            onClick={() => router.push('/')}
-          >
+          <Button type="primary" css={style.descriptionButton} onClick={home}>
             Return to Home
           </Button>
         </div>

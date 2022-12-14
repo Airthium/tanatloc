@@ -27,7 +27,6 @@ export const useProjects = (
     loadingProjects: boolean
   }
 ] => {
-  console.log('call')
   const defaultData: IFrontProjects = []
 
   const { data, error, mutate } = useSWR(

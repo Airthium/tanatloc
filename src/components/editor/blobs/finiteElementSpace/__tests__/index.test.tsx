@@ -90,7 +90,9 @@ describe('components/editor/blobs/finiteElementSpace', () => {
       </Form>
     )
 
-    const add = screen.getByRole('button', { name: 'plus Add data' })
+    const add = screen.getByRole('button', {
+      name: 'plus Add finite element space'
+    })
     fireEvent.click(add)
 
     const remove = screen.getByRole('img', { name: 'minus-circle' })

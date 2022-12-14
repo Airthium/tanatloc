@@ -9,12 +9,12 @@ import {
   useState
 } from 'react'
 import { Button, Form, Input, InputRef } from 'antd'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
+import { FormListContainer, FormListItem } from '@/components/assets/form'
 
 import { addOnCursor } from '..'
 
@@ -123,23 +123,14 @@ const Data = (): JSX.Element => {
         </Form.Item>
         <Form.List name="datas">
           {(fields, { add, remove }, { errors }) => (
-            <>
+            <FormListContainer label="data" add={add} errors={errors}>
               {fields.map((field, index) => (
-                <Form.Item
-                  key={field.key}
-                  label={
-                    <div>
-                      <MinusCircleOutlined
-                        style={{
-                          fontSize: '16px',
-                          color: 'red',
-                          marginRight: '10px'
-                        }}
-                        onClick={() => remove(field.name)}
-                      />
-                      Data {index + 1}
-                    </div>
-                  }
+                <FormListItem
+                  key={index}
+                  label="Data"
+                  field={field}
+                  index={index}
+                  remove={remove}
                 >
                   <Form.Item
                     name={[field.name, 'name']}
@@ -155,20 +146,9 @@ const Data = (): JSX.Element => {
                   >
                     <Input />
                   </Form.Item>
-                </Form.Item>
+                </FormListItem>
               ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  style={{ width: '60%' }}
-                  icon={<PlusOutlined />}
-                >
-                  Add data
-                </Button>
-                <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
+            </FormListContainer>
           )}
         </Form.List>
       </Dialog>

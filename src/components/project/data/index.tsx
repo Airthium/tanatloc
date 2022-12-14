@@ -240,13 +240,14 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
 
     // Set lines
     const keys: string[] = []
+    const colors = Utils.colorGenerator(columnSelection.length)
     const lines = columnSelection
       .map((selection, index) => {
         if (!selection) return
 
         const key = camelNames[index]
         const name = names[index]
-
+        const color = colors[index]
         keys.push(key)
 
         return (
@@ -255,7 +256,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
             name={name}
             type="monotone"
             dataKey={key}
-            stroke={Utils.stringToColor(key)}
+            stroke={color}
             strokeWidth={2}
           />
         )

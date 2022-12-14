@@ -126,7 +126,7 @@ const Data = (): JSX.Element => {
             <FormListContainer label="data" add={add} errors={errors}>
               {fields.map((field, index) => (
                 <FormListItem
-                  key={index}
+                  key={field.key}
                   label="Data"
                   field={field}
                   index={index}

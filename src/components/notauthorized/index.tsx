@@ -1,7 +1,7 @@
 /** @module Components.Notauthorized */
 
-import { useEffect } from 'react'
-import { NextRouter, useRouter } from 'next/router'
+import { useCallback, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { Button, Card, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
 
@@ -10,14 +10,6 @@ import { AlertOutlined } from '@ant-design/icons'
  */
 export const errors = {
   notAllowed: 'You are not allowed to be here.'
-}
-
-/**
- * Go home
- * @param router Router
- */
-export const home = (router: NextRouter): void => {
-  router.push('/')
 }
 
 /**
@@ -33,6 +25,8 @@ const NotAuthorized = (): JSX.Element => {
     router.prefetch('/')
   }, [router])
 
+  const home = useCallback(() => router.push('/'), [router])
+
   /**
    * Render
    */
@@ -46,7 +40,7 @@ const NotAuthorized = (): JSX.Element => {
             </Typography.Text>
             <Typography.Text>
               Go back{' '}
-              <Button type="link" onClick={() => home(router)}>
+              <Button type="link" onClick={home}>
                 home
               </Button>
             </Typography.Text>

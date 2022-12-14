@@ -153,7 +153,7 @@ const Materials = (): JSX.Element => {
             <FormListContainer label="material" add={add} errors={errors}>
               {fields.map((field, index) => (
                 <FormListItem
-                  key={index}
+                  key={field.key}
                   label="Material"
                   field={field}
                   index={index}

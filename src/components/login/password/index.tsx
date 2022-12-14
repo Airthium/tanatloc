@@ -1,6 +1,6 @@
 /** @module Components.Login.Password */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
@@ -22,7 +22,7 @@ export const errors = {
  * Password recover
  * @param value Value
  */
-export const passwordRecover = async (value: {
+export const _passwordRecover = async (value: {
   email: string
 }): Promise<void> => {
   try {
@@ -55,6 +55,20 @@ const PasswordRecover = (): JSX.Element => {
     if (inputRef.current) inputRef.current.focus()
   })
 
+  const onOk = useCallback(async (values: { email: string }): Promise<void> => {
+    setLoading(true)
+    try {
+      await _passwordRecover(values)
+
+      // Close
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      setLoading(false)
+      throw err
+    }
+  }, [])
+
   /**
    * Render
    */
@@ -64,19 +78,7 @@ const PasswordRecover = (): JSX.Element => {
         title="Forgot your password ?"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await passwordRecover(values)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onOk={onOk}
         loading={loading}
       >
         <Form.Item

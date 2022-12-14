@@ -160,7 +160,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
               </>
             ) : (
               <>
-                <Spin size="large" />
+                <Spin size="large" indicator={<LoadingOutlined />} />
 
                 {text ?? 'Loading, please wait...'}
               </>

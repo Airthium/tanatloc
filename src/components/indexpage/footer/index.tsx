@@ -34,9 +34,10 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
    * @param item Item
    * @returns Render
    */
-  const renderItem: ListProps<string | JSX.Element>['renderItem'] = (
-    item: string | JSX.Element
-  ): JSX.Element => <List.Item>{item}</List.Item>
+  const renderItem: ListProps<string | JSX.Element>['renderItem'] = useCallback(
+    (item: string | JSX.Element): JSX.Element => <List.Item>{item}</List.Item>,
+    []
+  )
 
   /**
    * Scroll to features

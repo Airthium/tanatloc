@@ -175,7 +175,7 @@ const FiniteElementSpace = (): JSX.Element => {
             >
               {fields.map((field, index) => (
                 <FormListItem
-                  key={index}
+                  key={field.key}
                   label="Option"
                   field={field}
                   index={index}

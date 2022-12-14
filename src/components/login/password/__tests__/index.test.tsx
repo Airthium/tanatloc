@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Password, { errors } from '..'
 
@@ -73,7 +73,9 @@ describe('components/login/password', () => {
     fireEvent.click(dialog)
 
     // Normal
-    await waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
+    await act(() =>
+      waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
     )

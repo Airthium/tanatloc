@@ -183,7 +183,7 @@ const Save = (): JSX.Element => {
             <FormListContainer label="scalar result" add={add} errors={errors}>
               {fields.map((field, index) => (
                 <FormListItem
-                  key={index}
+                  key={field.key}
                   label="Scalar result"
                   field={field}
                   index={index}
@@ -217,7 +217,7 @@ const Save = (): JSX.Element => {
             >
               {fields.map((field, index) => (
                 <FormListItem
-                  key={index}
+                  key={field.key}
                   label="Vectorial result"
                   field={field}
                   index={index}

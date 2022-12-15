@@ -1,11 +1,7 @@
 /** @module Components.Assets.Group */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef, Select } from 'antd'
-
-import { AddButton, EditButton } from '@/components/assets/button'
-import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import {
   IFrontOrganizationsItem,
@@ -14,6 +10,11 @@ import {
   IFrontNewGroup,
   IFrontMutateGroupsItem
 } from '@/api/index.d'
+
+import { AddButton, EditButton } from '@/components/assets/button'
+import Dialog from '@/components/assets/dialog'
+import { ErrorNotification } from '@/components/assets/notification'
+
 import GroupAPI from '@/api/group'
 
 import Delete from './delete'
@@ -46,7 +47,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onAdd = async (
+export const _onAdd = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'groups'>,
   values: {
     name: string
@@ -91,7 +92,7 @@ export const onAdd = async (
  * @param values Values
  * @param swr SWR
  */
-export const onUpdate = async (
+export const _onUpdate = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'groups'>,
   group: Pick<IFrontGroupsItem, 'id' | 'name' | 'users'>,
   values: {
@@ -176,6 +177,47 @@ const Group = ({
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { name: string; users: string[] }): Promise<void> => {
+      setLoading(true)
+      try {
+        if (group) {
+          await _onUpdate(organization, group, values, {
+            mutateOneOrganization: swr.mutateOneOrganization,
+            mutateOneGroup: swr.mutateOneGroup!
+          })
+        } else {
+          await _onAdd(organization, values, {
+            mutateOneOrganization: swr.mutateOneOrganization,
+            addOneGroup: swr.addOneGroup!
+          })
+        }
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [organization, group, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -189,30 +231,8 @@ const Group = ({
             users: group.users?.map((u) => u.id)
           }
         }
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            if (group) {
-              await onUpdate(organization, group, values, {
-                mutateOneOrganization: swr.mutateOneOrganization,
-                mutateOneGroup: swr.mutateOneGroup!
-              })
-            } else {
-              await onAdd(organization, values, {
-                mutateOneOrganization: swr.mutateOneOrganization,
-                addOneGroup: swr.addOneGroup!
-              })
-            }
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
       >
         <Form.Item
@@ -236,11 +256,11 @@ const Group = ({
       </Dialog>
 
       {group ? (
-        <EditButton bordered onEdit={() => setVisible(true)}>
+        <EditButton bordered onEdit={setVisibleTrue}>
           Edit
         </EditButton>
       ) : (
-        <AddButton onAdd={() => setVisible(true)}>New group</AddButton>
+        <AddButton onAdd={setVisibleTrue}>New group</AddButton>
       )}
     </>
   )

@@ -155,7 +155,9 @@ describe('components/account/hpc/plugin/dialog', () => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1)))
+    await act(async () =>
+      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         ...plugin,
@@ -189,7 +191,9 @@ describe('components/account/hpc/plugin/dialog', () => {
       // mock function
     })
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2)))
+    await act(async () =>
+      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
@@ -223,7 +227,9 @@ describe('components/account/hpc/plugin/dialog', () => {
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
 
-    await act(() => waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1)))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith({
         ...plugin,

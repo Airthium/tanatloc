@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Share, { errors } from '..'
 import { IFrontProjectsItem, IFrontWorkspacesItem } from '@/api/index.d'
@@ -42,7 +42,7 @@ describe('components/assets/share', () => {
     id: 'id',
     title: 'title',
     groups: [{ id: 'id' } as IFrontProjectsItem['groups'][0]],
-    users: [{ id: 'id' } as IFrontProjectsItem['users'][0]]
+    users: [{ id: 'id1' } as IFrontProjectsItem['users'][0]]
   }
   const workspace = {
     id: 'id',
@@ -236,7 +236,9 @@ describe('components/assets/share', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(projectSwr.mutateOneProject).toHaveBeenCalledTimes(1)
     )
@@ -246,7 +248,9 @@ describe('components/assets/share', () => {
       throw new Error('project error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -281,7 +285,9 @@ describe('components/assets/share', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(workspaceSwr.mutateOneWorkspace).toHaveBeenCalledTimes(1)
     )
@@ -291,7 +297,9 @@ describe('components/assets/share', () => {
       throw new Error('workspace error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

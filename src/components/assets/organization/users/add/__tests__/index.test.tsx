@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontOrganizationsItem } from '@/api/index.d'
 
@@ -95,7 +95,9 @@ describe('componenets/assets/organization/users/add', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
     )
@@ -105,7 +107,9 @@ describe('componenets/assets/organization/users/add', () => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

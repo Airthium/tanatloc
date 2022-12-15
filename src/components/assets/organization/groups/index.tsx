@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization.Groups */
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { Avatar, Space, Table } from 'antd'
 
 import Group, { Delete } from '@/components/assets/group'
@@ -88,56 +88,68 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
   }, [errorGroups])
 
   // Columns
-  const usersRender = (u: IFrontGroupsItem['users']) => (
-    <Avatar.Group maxCount={5}>
-      {u.map((user) => Utils.userToAvatar(user))}
-    </Avatar.Group>
+  const usersRender = useCallback(
+    (u: IFrontGroupsItem['users']) => (
+      <Avatar.Group maxCount={5}>
+        {u.map((user) => Utils.userToAvatar(user))}
+      </Avatar.Group>
+    ),
+    []
   )
-  const actionsRender = (_: any, group: IFrontGroupsItem) => (
-    <Space>
-      <Group
-        userOptions={userOptions}
-        organization={{
-          id: organization.id,
-          groups: organization.groups
-        }}
-        group={{
-          id: group.id,
-          name: group.name,
-          users: group.users
-        }}
-        swr={{
-          mutateOneOrganization: swr.mutateOneOrganization,
-          mutateOneGroup
-        }}
-      />
-      <Delete
-        group={{
-          id: group.id,
-          name: group.name
-        }}
-        swr={{ delOneGroup }}
-      />
-    </Space>
+
+  const actionsRender = useCallback(
+    (_: any, group: IFrontGroupsItem) => (
+      <Space>
+        <Group
+          userOptions={userOptions}
+          organization={{
+            id: organization.id,
+            groups: organization.groups
+          }}
+          group={{
+            id: group.id,
+            name: group.name,
+            users: group.users
+          }}
+          swr={{
+            mutateOneOrganization: swr.mutateOneOrganization,
+            mutateOneGroup
+          }}
+        />
+        <Delete
+          group={{
+            id: group.id,
+            name: group.name
+          }}
+          swr={{ delOneGroup }}
+        />
+      </Space>
+    ),
+    [organization, swr, userOptions, mutateOneGroup, delOneGroup]
   )
-  const columns = [
-    {
-      title: 'Group name',
-      dataIndex: 'name',
-      key: 'name'
-    },
-    {
-      title: 'Users',
-      dataIndex: 'users',
-      key: 'users',
-      render: usersRender
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: actionsRender
-    }
-  ]
+
+  // Columns
+  const columns = useMemo(
+    () => [
+      {
+        title: 'Group name',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: 'Users',
+        dataIndex: 'users',
+        key: 'users',
+        render: usersRender
+      },
+      {
+        title: 'Actions',
+        key: 'actions',
+        render: actionsRender
+      }
+    ],
+    [usersRender, actionsRender]
+  )
 
   /**
    * On resize

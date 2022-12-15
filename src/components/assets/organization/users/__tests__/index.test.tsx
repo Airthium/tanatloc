@@ -13,8 +13,8 @@ jest.mock('@/lib/utils', () => ({
 
 describe('components/assets/organization/users', () => {
   const organization = {
-    id: 'id',
-    owners: [{ id: 'id', email: 'email' }],
+    id: 'ido',
+    owners: [{ id: 'idu', email: 'email' }],
     pendingowners: [],
     users: [],
     pendingusers: []
@@ -39,7 +39,7 @@ describe('components/assets/organization/users', () => {
       <Users
         organization={{
           ...organization,
-          users: [{ id: 'id', email: 'email' }]
+          users: [{ id: 'idu', email: 'email' }]
         }}
         swr={swr}
       />
@@ -53,9 +53,9 @@ describe('components/assets/organization/users', () => {
       <Users
         organization={{
           ...organization,
-          pendingowners: [{ id: 'id', email: 'email' }],
-          users: [{ id: 'id', email: 'email' }],
-          pendingusers: [{ id: 'id', email: 'email' }]
+          pendingowners: [{ id: 'idpo', email: 'email' }],
+          users: [{ id: 'ido', email: 'email' }],
+          pendingusers: [{ id: 'idpu', email: 'email' }]
         }}
         swr={swr}
       />

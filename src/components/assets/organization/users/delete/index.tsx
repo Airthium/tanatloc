@@ -16,24 +16,24 @@ import {
 import OrganizationAPI from '@/api/organization'
 
 /**
- * Custom Types
+ * Local interfacs
  */
-export type TOrganizationItem = Pick<
-  IFrontOrganizationsItem,
-  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
->
-export type TUserItem = Pick<
-  IFrontUsersItem,
-  'id' | 'email' | 'firstname' | 'lastname'
->
+export interface IOrganizationItem
+  extends Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  > {}
+
+export interface IUserItem
+  extends Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'> {}
 
 /**
  * Props
  */
 export interface IProps {
   disabled?: boolean
-  user: TUserItem
-  organization: TOrganizationItem
+  user: IUserItem
+  organization: IOrganizationItem
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -49,14 +49,14 @@ export const errors = {
 
 /**
  * On delete
- * @param organization Organization
  * @param user User
+ * @param organization Organization
  * @param dBkey Database key
  * @param swr SWR
  */
-export const onDelete = async (
-  organization: TOrganizationItem,
-  user: TUserItem,
+export const _onDelete = async (
+  user: IUserItem,
+  organization: IOrganizationItem,
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers',
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -111,10 +111,22 @@ const Delete = ({
    * Set name
    * @param u User
    */
-  const setName = useCallback((u: TUserItem) => {
+  const setName = useCallback((u: IUserItem) => {
     if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
     else return u.email
   }, [])
+
+  /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(user, organization, dBkey, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [user, organization, dBkey, swr])
 
   /**
    * Render
@@ -131,14 +143,7 @@ const Delete = ({
         </>
       }
       loading={loading}
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(organization, user, dBkey, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

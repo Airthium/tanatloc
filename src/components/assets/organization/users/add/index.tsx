@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization.User.Add */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { AddButton } from '@/components/assets/button'
@@ -17,19 +17,20 @@ import {
 import OrganizationAPI from '@/api/organization'
 
 /**
- * Custom Types
+ * Local interfaces
  */
-export type TOrganizationItem = Pick<
-  IFrontOrganizationsItem,
-  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
->
+export interface IOrganizationItem
+  extends Pick<
+    IFrontOrganizationsItem,
+    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+  > {}
 
 /**
  * Props
  */
 export interface IProps {
   title: string
-  organization: TOrganizationItem
+  organization: IOrganizationItem
   dBkey: 'owners' | 'users'
   swr: {
     mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -49,9 +50,9 @@ export const errors = {
  * @param user User
  * @param organization Organization
  */
-export const checkAlreadyAdded = (
+export const _checkAlreadyAdded = (
   user: { email: string },
-  organization: TOrganizationItem
+  organization: IOrganizationItem
 ): IFrontUsersItem => {
   const inOwners = organization.owners?.find((o) => o.email === user.email)
   const inPendingowners = organization.pendingowners?.find(
@@ -75,8 +76,8 @@ export const checkAlreadyAdded = (
  * @param values Values
  * @param swr SWR
  */
-export const onFinish = async (
-  organization: TOrganizationItem,
+export const _onFinish = async (
+  organization: IOrganizationItem,
   dBkey: 'owners' | 'users',
   values: { email: string },
   swr: {
@@ -84,7 +85,7 @@ export const onFinish = async (
   }
 ): Promise<void> => {
   // Check
-  const exists = checkAlreadyAdded(values, organization)
+  const exists = _checkAlreadyAdded(values, organization)
   if (exists) {
     ErrorNotification(errors.existing)
     throw new Error(errors.existing)
@@ -141,6 +142,37 @@ const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { email: string }): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onFinish(organization, dBkey, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [organization, dBkey, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -149,20 +181,8 @@ const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
         visible={visible}
         loading={loading}
         title={title}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onFinish(organization, dBkey, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
       >
         <Form.Item
           name="email"
@@ -173,7 +193,7 @@ const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <AddButton onAdd={() => setVisible(true)}>{title}</AddButton>
+      <AddButton onAdd={setVisibleTrue}>{title}</AddButton>
     </>
   )
 }

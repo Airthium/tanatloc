@@ -109,7 +109,7 @@ describe('components/project/data', () => {
     // Visible
 
     const button = screen.getByRole('button')
-    act(() => {
+    act(async () => {
       fireEvent.click(button)
     })
 

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -66,7 +66,7 @@ describe('components/account/delete', () => {
       throw new Error('del error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await act(() => waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1)))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

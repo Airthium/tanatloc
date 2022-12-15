@@ -116,7 +116,9 @@ describe('components/administration/users/add', () => {
 
     // Already exists
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1)))
+    await act(async () =>
+      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -137,7 +139,9 @@ describe('components/administration/users/add', () => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3)))
+    await act(async () =>
+      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

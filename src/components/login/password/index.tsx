@@ -55,6 +55,20 @@ const PasswordRecover = (): JSX.Element => {
     if (inputRef.current) inputRef.current.focus()
   })
 
+  /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
   const onOk = useCallback(async (values: { email: string }): Promise<void> => {
     setLoading(true)
     try {
@@ -77,7 +91,7 @@ const PasswordRecover = (): JSX.Element => {
       <Dialog
         title="Forgot your password ?"
         visible={visible}
-        onCancel={() => setVisible(false)}
+        onCancel={setVisibleFalse}
         onOk={onOk}
         loading={loading}
       >
@@ -94,7 +108,7 @@ const PasswordRecover = (): JSX.Element => {
         </Form.Item>
       </Dialog>
       <Typography.Text>
-        <Button type="link" onClick={() => setVisible(true)}>
+        <Button type="link" onClick={setVisibleTrue}>
           Forgot your password ?
         </Button>
       </Typography.Text>

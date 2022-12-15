@@ -266,7 +266,7 @@ describe('components/editor/save', () => {
     fireEvent.click(ok)
     const cancel = screen.getByRole('button', { name: 'Cancel' })
 
-    await act(() =>
+    await act(async () =>
       waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
     )
     await waitFor(() =>

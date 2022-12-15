@@ -73,7 +73,7 @@ describe('components/login/password', () => {
     fireEvent.click(dialog)
 
     // Normal
-    await act(() =>
+    await act(async () =>
       waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
     )
     await waitFor(() =>

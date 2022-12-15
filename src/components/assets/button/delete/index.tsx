@@ -1,6 +1,6 @@
 /** @module Components.Assets.Button.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { css } from '@emotion/react'
@@ -48,6 +48,24 @@ const DeleteButton = ({
   const [visible, setVisible] = useState<boolean>(false)
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   */
+  const onOk = useCallback(async () => {
+    await onDelete()
+    setVisible(false)
+  }, [onDelete])
+
+  /**
    * Render
    */
   return (
@@ -56,11 +74,8 @@ const DeleteButton = ({
         visible={visible}
         loading={loading}
         title={title || 'Delete'}
-        onCancel={() => setVisible(false)}
-        onOk={async () => {
-          await onDelete()
-          setVisible(false)
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
       >
         {text || 'Are you sure?'}
       </DeleteDialog>
@@ -75,7 +90,7 @@ const DeleteButton = ({
           type={disabled ? 'link' : undefined}
           loading={loading}
           icon={<DeleteOutlined />}
-          onClick={() => setVisible(true)}
+          onClick={setVisibleTrue}
         >
           {children}
         </Button>

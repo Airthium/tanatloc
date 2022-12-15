@@ -2,7 +2,7 @@ import { notification } from 'antd'
 
 import { ICallError } from '@/api/index.d'
 
-import ErrorNotification, { closeAll } from '..'
+import ErrorNotification, { _closeAll } from '..'
 
 describe('components/assets/notification/error', () => {
   test('simple', () => {
@@ -56,7 +56,7 @@ describe('components/assets/notification/error', () => {
       info: { message: 'API error 2' }
     } as ICallError)
 
-    closeAll()
+    _closeAll()
 
     ErrorNotification('error', {
       message: 'Fail',
@@ -70,6 +70,6 @@ describe('components/assets/notification/error', () => {
       info: { message: 'error 2' }
     } as ICallError)
 
-    closeAll()
+    _closeAll()
   })
 })

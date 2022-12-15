@@ -48,7 +48,7 @@ const errors = {
  * @param passwordMinSize Password min size
  * @param value Value
  */
-export const checkMin = (passwordMinSize: number, value: string): boolean => {
+export const _checkMin = (passwordMinSize: number, value: string): boolean => {
   if (value.length < passwordMinSize) return false
   return true
 }
@@ -58,7 +58,7 @@ export const checkMin = (passwordMinSize: number, value: string): boolean => {
  * @param passwordMaxSize Password max size
  * @param value Value
  */
-export const checkMax = (passwordMaxSize: number, value: string): boolean => {
+export const _checkMax = (passwordMaxSize: number, value: string): boolean => {
   if (value.length > passwordMaxSize) return false
   return true
 }
@@ -68,7 +68,7 @@ export const checkMax = (passwordMaxSize: number, value: string): boolean => {
  * @param value Value
  * @param regex Regex
  */
-export const checkRegex = (value: string, regex: RegExp): boolean => {
+export const _checkRegex = (value: string, regex: RegExp): boolean => {
   if (value.search(regex) === -1) return false
   return true
 }
@@ -78,9 +78,12 @@ export const checkRegex = (value: string, regex: RegExp): boolean => {
  * @param system System
  * @param value Value
  */
-export const requireLetter = (system: IFrontSystem, value: string): boolean => {
+export const _requireLetter = (
+  system: IFrontSystem,
+  value: string
+): boolean => {
   if (system?.password?.requireLetter ?? REQUIRE_LETTER)
-    return checkRegex(value, /[a-zA-Z]/)
+    return _checkRegex(value, /[a-zA-Z]/)
   return true
 }
 
@@ -89,9 +92,12 @@ export const requireLetter = (system: IFrontSystem, value: string): boolean => {
  * @param system System
  * @param value Value
  */
-export const requireNumber = (system: IFrontSystem, value: string): boolean => {
+export const _requireNumber = (
+  system: IFrontSystem,
+  value: string
+): boolean => {
   if (system?.password?.requireNumber ?? REQUIRE_NUMBER)
-    return checkRegex(value, /\d/)
+    return _checkRegex(value, /\d/)
   return true
 }
 
@@ -100,9 +106,12 @@ export const requireNumber = (system: IFrontSystem, value: string): boolean => {
  * @param system System
  * @param value Value
  */
-export const requireSymbol = (system: IFrontSystem, value: string): boolean => {
+export const _requireSymbol = (
+  system: IFrontSystem,
+  value: string
+): boolean => {
   if (system?.password?.requireSymbol ?? REQUIRE_SYMBOL)
-    return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
+    return _checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
   return true
 }
 
@@ -111,16 +120,16 @@ export const requireSymbol = (system: IFrontSystem, value: string): boolean => {
  * @param value Value
  * @param err Errors
  */
-export const checkSize = (
+export const _checkSize = (
   passwordMinSize: number,
   passwordMaxSize: number,
   value: string,
   err: string[]
 ): void => {
-  if (!checkMin(passwordMinSize, value))
+  if (!_checkMin(passwordMinSize, value))
     err.push(errors.passwordTooSmall(passwordMinSize))
 
-  if (!checkMax(passwordMaxSize, value))
+  if (!_checkMax(passwordMaxSize, value))
     err.push(errors.passwordTooLong(passwordMaxSize))
 }
 
@@ -130,16 +139,16 @@ export const checkSize = (
  * @param value Value
  * @param err Errors
  */
-export const checkFormat = (
+export const _checkFormat = (
   system: IFrontSystem,
   value: string,
   err: string[]
 ): void => {
-  if (!requireLetter(system, value)) err.push(errors.passwordRequireLetter)
+  if (!_requireLetter(system, value)) err.push(errors.passwordRequireLetter)
 
-  if (!requireNumber(system, value)) err.push(errors.passwordRequireNumber)
+  if (!_requireNumber(system, value)) err.push(errors.passwordRequireNumber)
 
-  if (!requireSymbol(system, value)) err.push(errors.passwordRequireSymbol)
+  if (!_requireSymbol(system, value)) err.push(errors.passwordRequireSymbol)
 }
 
 /**
@@ -192,8 +201,8 @@ const PasswordItem = ({
 
             if (!value) return Promise.reject(errors.password)
 
-            checkSize(passwordMinSize, passwordMaxSize, value, err)
-            checkFormat(system, value, err)
+            _checkSize(passwordMinSize, passwordMaxSize, value, err)
+            _checkFormat(system, value, err)
 
             if (err.length) return Promise.reject(err)
             else return Promise.resolve()

@@ -1,5 +1,6 @@
 /** @module Components.Assets.Organization */
 
+import { useCallback } from 'react'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -42,7 +43,7 @@ export const errors = {
  * @param name Name
  * @param swr SWR
  */
-export const onName = async (
+export const _onName = async (
   organization: IFrontOrganizationsItem,
   name: string,
   swr: {
@@ -80,6 +81,18 @@ export const onName = async (
  */
 const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
   /**
+   * On change
+   * @param name Name
+   */
+  const onChange = useCallback(
+    async (name: string) =>
+      _onName(organization, name, {
+        mutateOneOrganization: swr.mutateOneOrganization
+      }),
+    [organization, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -88,15 +101,12 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
         <Button
           css={globalStyleFn.marginRight(20)}
           icon={<ArrowLeftOutlined />}
-          onClick={() => onClose()}
+          onClick={onClose}
         />
         <Typography.Title
           level={3}
           editable={{
-            onChange: async (name) =>
-              onName(organization, name, {
-                mutateOneOrganization: swr.mutateOneOrganization
-              })
+            onChange
           }}
         >
           {organization.name}

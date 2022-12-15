@@ -63,7 +63,7 @@ const AddButton = ({
         loading={loading}
         type={primary ? 'primary' : 'default'}
         icon={<PlusCircleOutlined />}
-        onClick={() => onAdd()}
+        onClick={onAdd}
       >
         {children}
       </Button>

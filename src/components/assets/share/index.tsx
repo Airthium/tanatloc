@@ -1,7 +1,7 @@
 /** @module Components.Assets.Share */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect, CSSProperties } from 'react'
+import { useState, useEffect, CSSProperties, useMemo, useCallback } from 'react'
 import {
   Button,
   Form,
@@ -14,12 +14,6 @@ import { ShareAltOutlined } from '@ant-design/icons'
 import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
-import { LinkButton } from '../button'
-import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
-
-import Utils from '@/lib/utils'
-
 import {
   IFrontMutateProjectsItem,
   IFrontMutateWorkspacesItem,
@@ -27,6 +21,13 @@ import {
   IFrontProjectsItem,
   IFrontWorkspacesItem
 } from '@/api/index.d'
+
+import { LinkButton } from '@/components/assets/button'
+import Dialog from '@/components/assets/dialog'
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
 import ProjectAPI from '@/api/project'
 import WorkspaceAPI from '@/api/workspace'
 
@@ -69,7 +70,7 @@ export const errors = {
  * @param usersSelected User selected
  * @param swr SWR
  */
-export const onShare = async (
+export const _onShare = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'users' | 'groups'> | undefined,
   project: Pick<IFrontProjectsItem, 'id' | 'users' | 'groups'> | undefined,
   groupsSelected: string[],
@@ -134,7 +135,7 @@ export const onShare = async (
  * @param user User
  * @returns Title
  */
-export const userTitle = (user: {
+export const _userTitle = (user: {
   email: string
   lastname?: string
   firstname?: string
@@ -217,7 +218,7 @@ const Share = ({
       organization.owners.forEach((owner) => {
         users.push({
           key: owner.id,
-          title: userTitle(owner),
+          title: _userTitle(owner),
           value: owner.id,
           type: 'user'
         })
@@ -225,7 +226,7 @@ const Share = ({
       organization.users.forEach((user) => {
         users.push({
           key: user.id,
-          title: userTitle(user),
+          title: _userTitle(user),
           value: user.id,
           type: 'user'
         })
@@ -234,7 +235,7 @@ const Share = ({
         group.users.forEach((user) => {
           users.push({
             key: user.id,
-            title: userTitle(user),
+            title: _userTitle(user),
             value: user.id,
             type: 'user'
           })
@@ -250,78 +251,114 @@ const Share = ({
     setTreeUsersData(uniqueUsersData as TreeDataNode[])
   }, [organizations])
 
-  let selector = null
-  if (treeGroupsData.length)
-    selector = (
-      <>
-        <Form.Item
-          label={
-            <>
-              Share this {workspace ? 'workspace' : 'project'} with
-              organizations groups
-            </>
-          }
-        >
-          <TreeSelect
-            multiple
-            treeCheckable
-            treeDefaultExpandAll
-            showCheckedStrategy={TreeSelect.SHOW_ALL}
-            placeholder="Select groups"
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            css={globalStyle.fullWidth}
-            treeData={treeGroupsData}
-            value={groupsSelected}
-            onChange={(value) => setGroupsSelected(value)}
-          />
-        </Form.Item>
-        <Form.Item
-          label={
-            <>
-              Share this {workspace ? 'workspace' : 'project'} with
-              organizations users
-            </>
-          }
-        >
-          <TreeSelect
-            multiple
-            treeCheckable
-            treeDefaultExpandAll
-            showCheckedStrategy={TreeSelect.SHOW_ALL}
-            placeholder="Select users"
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            css={globalStyle.fullWidth}
-            treeData={treeUsersData}
-            value={usersSelected}
-            onChange={(value) => setUsersSelected(value)}
-          />
-        </Form.Item>
-      </>
-    )
-  else
-    selector = (
-      <>
-        <br />
-        <Typography.Text strong>
-          There is no organization for now
-        </Typography.Text>
-        <br />
-        <Typography.Text>
-          You can create organizations and groups in the{' '}
-          <LinkButton
-            onClick={() =>
-              router.push({
-                pathname: '/dashboard',
-                query: { page: 'organizations' }
-              })
+  /**
+   * Dashboard
+   */
+  const dashboard = useCallback(() => {
+    router.push({
+      pathname: '/dashboard',
+      query: { page: 'organizations' }
+    })
+  }, [router])
+
+  // Selector
+  const selector = useMemo(() => {
+    if (treeGroupsData.length)
+      return (
+        <>
+          <Form.Item
+            label={
+              <>
+                Share this {workspace ? 'workspace' : 'project'} with
+                organizations groups
+              </>
             }
           >
-            Organization menu
-          </LinkButton>
-          .
-        </Typography.Text>
-      </>
-    )
+            <TreeSelect
+              multiple
+              treeCheckable
+              treeDefaultExpandAll
+              showCheckedStrategy={TreeSelect.SHOW_ALL}
+              placeholder="Select groups"
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              css={globalStyle.fullWidth}
+              treeData={treeGroupsData}
+              value={groupsSelected}
+              onChange={setGroupsSelected}
+            />
+          </Form.Item>
+          <Form.Item
+            label={
+              <>
+                Share this {workspace ? 'workspace' : 'project'} with
+                organizations users
+              </>
+            }
+          >
+            <TreeSelect
+              multiple
+              treeCheckable
+              treeDefaultExpandAll
+              showCheckedStrategy={TreeSelect.SHOW_ALL}
+              placeholder="Select users"
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              css={globalStyle.fullWidth}
+              treeData={treeUsersData}
+              value={usersSelected}
+              onChange={setUsersSelected}
+            />
+          </Form.Item>
+        </>
+      )
+    else
+      return (
+        <>
+          <br />
+          <Typography.Text strong>
+            There is no organization for now
+          </Typography.Text>
+          <br />
+          <Typography.Text>
+            You can create organizations and groups in the{' '}
+            <LinkButton onClick={dashboard}>Organization menu</LinkButton>.
+          </Typography.Text>
+        </>
+      )
+  }, [
+    workspace,
+    treeGroupsData,
+    treeUsersData,
+    groupsSelected,
+    usersSelected,
+    dashboard
+  ])
+
+  /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   */
+  const onOk = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onShare(workspace, project, groupsSelected, usersSelected, swr)
+
+      // Close
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      setLoading(false)
+      throw err
+    }
+  }, [workspace, project, groupsSelected, usersSelected, swr])
 
   /**
    * Render
@@ -341,32 +378,14 @@ const Share = ({
           disabled={disabled}
           type={disabled ? 'link' : undefined}
           icon={<ShareAltOutlined />}
-          onClick={() => setVisible(true)}
+          onClick={setVisibleTrue}
         />
       </Tooltip>
       <Dialog
         title={'Share ' + (workspace ? 'workspace' : 'project')}
         visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={async () => {
-          setLoading(true)
-          try {
-            await onShare(
-              workspace,
-              project,
-              groupsSelected,
-              usersSelected,
-              swr
-            )
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
       >
         <Typography.Title level={5}>

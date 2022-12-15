@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -95,7 +95,9 @@ describe('componenets/assets/organization/users/delete', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() =>
       expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
     )
@@ -105,7 +107,9 @@ describe('componenets/assets/organization/users/delete', () => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

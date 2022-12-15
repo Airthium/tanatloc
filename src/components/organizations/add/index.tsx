@@ -1,13 +1,14 @@
 /** @module Components.Organizations.Add */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
+
+import { IFrontNewOrganization } from '@/api/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontNewOrganization } from '@/api/index.d'
 import OrganizationAPI from '@/api/organization'
 
 /**
@@ -31,7 +32,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onAdd = async (
+export const _onAdd = async (
   values: { name: string },
   swr: { addOneOrganization: (origanization: IFrontNewOrganization) => void }
 ): Promise<void> => {
@@ -67,6 +68,37 @@ const Add = ({ swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { name: string }): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onAdd(values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -74,20 +106,8 @@ const Add = ({ swr }: IProps): JSX.Element => {
       <Dialog
         title="New organization"
         visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onAdd(values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
       >
         <Form.Item
@@ -99,7 +119,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <AddButton onAdd={() => setVisible(true)}>New organization</AddButton>
+      <AddButton onAdd={setVisibleTrue}>New organization</AddButton>
     </>
   )
 }

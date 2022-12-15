@@ -1,6 +1,6 @@
 /** @module Components.Organizations.List */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
   CheckCircleOutlined,
@@ -10,10 +10,6 @@ import {
 } from '@ant-design/icons'
 import { ColumnGroupType } from 'antd/lib/table'
 
-import { ErrorNotification } from '@/components/assets/notification'
-
-import Utils from '@/lib/utils'
-
 import {
   IFrontUser,
   IFrontUsers,
@@ -22,6 +18,11 @@ import {
   IFrontOrganizationsItem,
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
 import OrganizationAPI from '@/api/organization'
 
 import Delete from '../delete'
@@ -46,13 +47,45 @@ export const errors = {
   decline: 'Unable to decline invitation'
 }
 
+export interface IManageProps {
+  organization: IFrontOrganizationsItem
+  swr: {
+    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
+  setOrganization: (organization: IFrontOrganizationsItem) => void
+}
+
+export interface IQuitProps {
+  user: Pick<IFrontUser, 'id'>
+  organization: IFrontOrganizationsItem
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
+}
+
+export interface IAcceptProps {
+  user: Pick<IFrontUser, 'id'>
+  organization: IFrontOrganizationsItem
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
+}
+
+export interface IDeclineProps {
+  user: Pick<IFrontUser, 'id'>
+  organization: IFrontOrganizationsItem
+  swr: {
+    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+  }
+}
+
 /**
  * On quit
  * @param organization Organization
  * @param user User
  * @parm swr SWR
  */
-const onQuit = async (
+export const _onQuit = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'users'>,
   user: Pick<IFrontUser, 'id'>,
   swr: {
@@ -80,7 +113,7 @@ const onQuit = async (
  * @param user User
  * @param swr SWR
  */
-const onAccept = async (
+export const _onAccept = async (
   organization: Pick<
     IFrontOrganizationsItem,
     'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
@@ -124,7 +157,7 @@ const onAccept = async (
  * @param organization Organization
  * @param user User
  */
-const onDecline = async (
+export const _onDecline = async (
   organization: Pick<
     IFrontOrganizationsItem,
     'id' | 'pendingowners' | 'pendingusers'
@@ -159,6 +192,145 @@ const onDecline = async (
 }
 
 /**
+ * ManageButton
+ * @param props props
+ * @returns ManageButton
+ */
+const ManageButton = ({
+  organization,
+  swr,
+  setOrganization
+}: IManageProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(
+    () => setOrganization(organization),
+    [organization, setOrganization]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <>
+      <Button icon={<ControlOutlined />} onClick={onClick}>
+        Manage
+      </Button>
+      <Delete
+        organization={{
+          id: organization.id,
+          name: organization.name
+        }}
+        swr={{ delOneOrganization: swr.delOneOrganization }}
+      />
+    </>
+  )
+}
+
+/**
+ * QuitButton
+ * @param props Props
+ * @returns QuitButton
+ */
+const QuitButton = ({ user, organization, swr }: IQuitProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(
+    () =>
+      _onQuit(
+        { id: organization.id, users: organization.users },
+        { id: user.id },
+        { mutateOneOrganization: swr.mutateOneOrganization }
+      ),
+    [user, organization, swr]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Button danger icon={<LeftSquareOutlined />} onClick={onClick}>
+      Quit
+    </Button>
+  )
+}
+
+/**
+ * AcceptButton
+ * @param props Props
+ * @returns AcceptButton
+ */
+const AcceptButton = ({
+  user,
+  organization,
+  swr
+}: IAcceptProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(
+    async () =>
+      _onAccept(
+        {
+          id: organization.id,
+          owners: organization.owners,
+          pendingowners: organization.pendingowners,
+          users: organization.users,
+          pendingusers: organization.pendingusers
+        },
+        { id: user.id },
+        { mutateOneOrganization: swr.mutateOneOrganization }
+      ),
+    [user, organization, swr]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Button type="primary" icon={<CheckCircleOutlined />} onClick={onClick}>
+      Accept invitation
+    </Button>
+  )
+}
+
+/**
+ * DeclineButton
+ * @param props Props
+ * @returns DeclineButton
+ */
+const DeclineButton = ({
+  user,
+  organization,
+  swr
+}: IDeclineProps): JSX.Element => {
+  const onClick = useCallback(
+    () =>
+      _onDecline(
+        {
+          id: organization.id,
+          pendingowners: organization.pendingowners,
+          pendingusers: organization.pendingusers
+        },
+        { id: user.id },
+        { mutateOneOrganization: swr.mutateOneOrganization }
+      ),
+    [user, organization, swr]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Button danger icon={<CloseCircleOutlined />} onClick={onClick}>
+      Decline
+    </Button>
+  )
+}
+
+/**
  * List
  * @param props Props
  * @returns List
@@ -175,142 +347,138 @@ const List = ({
   // Ref
   const refTableOrga = useRef<HTMLDivElement>(null)
 
-  // Data
-  const ownersRender = (owners: IFrontUsers) => (
-    <Avatar.Group maxCount={5}>
-      {owners?.map((o) => Utils.userToAvatar(o))}
-    </Avatar.Group>
+  /**
+   * Owners render
+   * @param owners Owners
+   * @returns Render
+   */
+  const ownersRender = useCallback(
+    (owners: IFrontUsers) => (
+      <Avatar.Group maxCount={5}>
+        {owners?.map((o) => Utils.userToAvatar(o))}
+      </Avatar.Group>
+    ),
+    []
   )
-  const usersRender = (users: IFrontUsers) => (
-    <Avatar.Group maxCount={5}>
-      {users?.map((u) => Utils.userToAvatar(u))}
-    </Avatar.Group>
+
+  /**
+   * Users render
+   * @param users Users
+   * @returns Render
+   */
+  const usersRender = useCallback(
+    (users: IFrontUsers) => (
+      <Avatar.Group maxCount={5}>
+        {users?.map((u) => Utils.userToAvatar(u))}
+      </Avatar.Group>
+    ),
+    []
   )
-  const groupsRender = (groups: IFrontGroups) => (
-    <Avatar.Group maxCount={5}>
-      {groups?.map((g) => Utils.groupToAvatar(g))}
-    </Avatar.Group>
+
+  /**
+   * Groups render
+   * @param groupd Groups
+   * @returns Render
+   */
+  const groupsRender = useCallback(
+    (groups: IFrontGroups) => (
+      <Avatar.Group maxCount={5}>
+        {groups?.map((g) => Utils.groupToAvatar(g))}
+      </Avatar.Group>
+    ),
+    []
   )
-  const actionsRender = (org: IFrontOrganizationsItem) => {
-    if (org.owners.find((o) => o.id === user.id))
-      return (
-        <Space wrap>
-          <Button
-            icon={<ControlOutlined />}
-            onClick={() => setOrganization(org)}
-          >
-            Manage
-          </Button>
-          <Delete
-            organization={{
-              id: org.id,
-              name: org.name
-            }}
-            swr={{ delOneOrganization: swr.delOneOrganization }}
-          />
-        </Space>
+
+  /**
+   * Actions render
+   * @param org Organization
+   * @returns Render
+   */
+  const actionsRender = useCallback(
+    (org: IFrontOrganizationsItem) => {
+      if (org.owners.find((o) => o.id === user.id))
+        return (
+          <Space wrap>
+            <ManageButton
+              organization={org}
+              swr={{ delOneOrganization: swr.delOneOrganization }}
+              setOrganization={setOrganization}
+            />
+          </Space>
+        )
+      else if (org.users.find((u) => u.id === user.id))
+        return (
+          <Space wrap>
+            <QuitButton
+              user={user}
+              organization={org}
+              swr={{ mutateOneOrganization: swr.mutateOneOrganization }}
+            />
+          </Space>
+        )
+      else if (
+        org.pendingowners.find((o) => o.id === user.id) ||
+        org.pendingusers.find((u) => u.id === user.id)
       )
-    else if (org.users.find((u) => u.id === user.id))
-      return (
-        <Space wrap>
-          <Button
-            danger
-            icon={<LeftSquareOutlined />}
-            onClick={() =>
-              onQuit(
-                { id: org.id, users: org.users },
-                { id: user.id },
-                { mutateOneOrganization: swr.mutateOneOrganization }
-              )
-            }
-          >
-            Quit
-          </Button>
-        </Space>
-      )
-    else if (
-      org.pendingowners.find((o) => o.id === user.id) ||
-      org.pendingusers.find((u) => u.id === user.id)
-    )
-      return (
-        <Space wrap>
-          <Button
-            type="primary"
-            icon={<CheckCircleOutlined />}
-            onClick={async () =>
-              onAccept(
-                {
-                  id: org.id,
-                  owners: org.owners,
-                  pendingowners: org.pendingowners,
-                  users: org.users,
-                  pendingusers: org.pendingusers
-                },
-                { id: user.id },
-                { mutateOneOrganization: swr.mutateOneOrganization }
-              )
-            }
-          >
-            Accept invitation
-          </Button>
-          <Button
-            danger
-            icon={<CloseCircleOutlined />}
-            onClick={() =>
-              onDecline(
-                {
-                  id: org.id,
-                  pendingowners: org.pendingowners,
-                  pendingusers: org.pendingusers
-                },
-                { id: user.id },
-                { mutateOneOrganization: swr.mutateOneOrganization }
-              )
-            }
-          >
-            Decline
-          </Button>
-        </Space>
-      )
-  }
+        return (
+          <Space wrap>
+            <AcceptButton
+              user={user}
+              organization={org}
+              swr={{ mutateOneOrganization: swr.mutateOneOrganization }}
+            />
+            <DeclineButton
+              user={user}
+              organization={org}
+              swr={{ mutateOneOrganization: swr.mutateOneOrganization }}
+            />
+          </Space>
+        )
+    },
+    [user, swr, setOrganization]
+  )
+
   const columns: TableColumnsType<{
     name: string
-  }> = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      sorter: (a: { name: string }, b: { name: string }) => {
-        const na = a.name || ''
-        const nb = b.name || ''
-        return na.localeCompare(nb)
-      }
-    },
-    {
-      title: 'Administrators',
-      dataIndex: 'owners',
-      key: 'owners',
-      render: ownersRender
-    },
-    {
-      title: 'Users',
-      dataIndex: 'users',
-      key: 'users',
-      render: usersRender
-    },
-    {
-      title: 'Groups',
-      dataIndex: 'groups',
-      key: 'groups',
+  }> = useMemo(
+    () => [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        sorter: (a: { name: string }, b: { name: string }) => {
+          const na = a.name || ''
+          const nb = b.name || ''
+          return na.localeCompare(nb)
+        }
+      },
+      {
+        title: 'Administrators',
+        dataIndex: 'owners',
+        key: 'owners',
+        render: ownersRender
+      },
+      {
+        title: 'Users',
+        dataIndex: 'users',
+        key: 'users',
+        render: usersRender
+      },
+      {
+        title: 'Groups',
+        dataIndex: 'groups',
+        key: 'groups',
 
-      render: groupsRender
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: actionsRender
-    }
-  ]
+        render: groupsRender
+      },
+      {
+        title: 'Actions',
+        key: 'actions',
+        render: actionsRender
+      }
+    ],
+    [ownersRender, usersRender, groupsRender, actionsRender]
+  )
 
   /**
    * On resize

@@ -1,9 +1,16 @@
 /** @module Components.Workspace */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent, useCallback } from 'react'
 import { Avatar, Input, Layout, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { css } from '@emotion/react'
+
+import {
+  IFrontMutateWorkspacesItem,
+  IFrontOrganizationsItem,
+  IFrontUser,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 
 import PageHeader from '@/components/assets/pageHeader'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -14,12 +21,6 @@ import ProjectList from '@/components/project/list'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontMutateWorkspacesItem,
-  IFrontOrganizationsItem,
-  IFrontUser,
-  IFrontWorkspacesItem
-} from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 import Edit from './edit'
@@ -90,6 +91,16 @@ const Workspace = ({
   }, [errorProjects])
 
   /**
+   * On change
+   * @param event Event
+   */
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>): void =>
+      setFilter(event.target.value),
+    []
+  )
+
+  /**
    * Render
    */
   return (
@@ -107,7 +118,7 @@ const Workspace = ({
             <Input
               placeholder="Enter a project name (case sensitive)"
               value={filter}
-              onChange={(event) => setFilter(event.target.value)}
+              onChange={onChange}
               style={{ width: 500 }}
               suffix={<SearchOutlined css={globalStyle.textLight} />}
             />
@@ -194,7 +205,7 @@ const Workspace = ({
           }
         ]}
         defaultActiveKey="modifiedDesc"
-        onChange={(key) => setSorter(key)}
+        onChange={setSorter}
       />
 
       <Layout.Content css={globalStyle.scroll}>

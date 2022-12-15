@@ -1,6 +1,6 @@
 /** @module Components.Password */
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
   Button,
@@ -24,6 +24,13 @@ import LinkAPI from '@/api/link'
 import { globalStyle } from '@/styles'
 import style from './index.style'
 
+// Local interfaces
+export interface ILocalValues {
+  email: string
+  password: string
+  passwordConfirmation: string
+}
+
 /**
  * Errors
  */
@@ -41,15 +48,11 @@ export const errors = {
  * @param id Link id
  * @param values Values
  */
-export const onFinish = async (
+export const _onFinish = async (
   router: NextRouter,
   linkEmail: string,
   id: string,
-  values: {
-    email: string
-    password: string
-    passwordConfirmation: string
-  }
+  values: ILocalValues
 ): Promise<void> => {
   if (values.email !== linkEmail)
     throw new APIError({ title: errors.incorrect })
@@ -99,6 +102,23 @@ const PasswordRecovery = (): JSX.Element => {
   }, [id])
 
   /**
+   * On finish
+   * @param values Values
+   */
+  const onFinish = useCallback(
+    async (values: ILocalValues): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onFinish(router, linkEmail!, id!, values)
+      } catch (err) {
+        setFormError(err)
+        setLoading(false)
+      }
+    },
+    [router, linkEmail, id]
+  )
+
+  /**
    * Render
    */
   if (checking)
@@ -121,19 +141,7 @@ const PasswordRecovery = (): JSX.Element => {
               Password recovery
             </Typography.Title>
           </div>
-          <Form
-            requiredMark="optional"
-            onFinish={async (values) => {
-              setLoading(true)
-              try {
-                await onFinish(router, linkEmail!, id!, values)
-              } catch (err) {
-                setFormError(err)
-                setLoading(false)
-              }
-            }}
-            layout="vertical"
-          >
+          <Form requiredMark="optional" onFinish={onFinish} layout="vertical">
             <Form.Item
               name="email"
               label="Enter your email address"

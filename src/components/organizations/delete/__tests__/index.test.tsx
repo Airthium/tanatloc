@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -56,7 +56,9 @@ describe('components/organizations/delete', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() => expect(swr.delOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
@@ -64,7 +66,9 @@ describe('components/organizations/delete', () => {
       throw new Error('del error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit, { errors } from '..'
 
@@ -80,7 +80,9 @@ describe('components/workspace/edit', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
 
     // Error
@@ -88,7 +90,9 @@ describe('components/workspace/edit', () => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

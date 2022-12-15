@@ -1,8 +1,8 @@
 /** @module Components.Project */
 
 import dynamic from 'next/dynamic'
-import { NextRouter, useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
@@ -20,18 +20,6 @@ import {
 } from '@ant-design/icons'
 import { css } from '@emotion/react'
 
-import { IModel } from '@/models/index.d'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
-import { GoBack } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
-
-import Loading from '@/components/loading'
-import NotAuthorized from '@/components/notauthorized'
-
-import SelectProvider from '@/context/select'
-
 import {
   IFrontGeometriesItem,
   IFrontProject,
@@ -39,20 +27,55 @@ import {
   IFrontSimulationsItem,
   IFrontResult
 } from '@/api/index.d'
+import {
+  IModel,
+  IModelBoundaryConditions,
+  IModelGeometry,
+  IModelInitialization,
+  IModelMaterials,
+  IModelParameters
+} from '@/models/index.d'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
+import Loading from '@/components/loading'
+import NotAuthorized from '@/components/notauthorized'
+
+import { GoBack } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+
+import SelectProvider from '@/context/select'
+
 import UserAPI from '@/api/user'
 import ProjectAPI from '@/api/project'
 import SimulationAPI from '@/api/simulation'
 import GeometryAPI from '@/api/geometry'
-
-import { globalStyle } from '@/styles'
-import style from './index.style'
 
 import Panel from './panel'
 import Geometry from './geometry'
 import View from './view'
 import Simulation from './simulation'
 
+import { globalStyle } from '@/styles'
+import style from './index.style'
+
 const Data = dynamic(() => import('./data'), { ssr: false })
+
+/**
+ * Props
+ */
+export interface IGeometryProps {
+  visible: boolean
+  geometry: IFrontGeometriesItem
+  panel: JSX.Element | undefined
+  add: (geometry: IFrontGeometriesItem) => void
+  del: (geometry: IFrontGeometriesItem) => void
+  close: () => void
+}
+
+export interface ISimulationProps {
+  simulation: IFrontSimulationsItem
+}
 
 /**
  * Menu items
@@ -83,29 +106,12 @@ export const errors = {
 }
 
 /**
- * Handle dashboard
- * @param router Router
- * @param page Page
- * @param workspaceId Workspace id
- */
-export const handleDashboard = (
-  router: NextRouter,
-  page?: string,
-  workspaceId?: string
-): void => {
-  router.push({
-    pathname: '/dashboard',
-    query: { page, workspaceId }
-  })
-}
-
-/**
  * On selector
  * @param project Project
  * @param scheme Simulation scheme
  * @param swr SWR
  */
-export const onSelector = async (
+export const _onSelector = async (
   project: IFrontProject,
   scheme: IModel,
   swr: {
@@ -130,6 +136,91 @@ export const onSelector = async (
     ErrorNotification(errors.add, err)
     throw err
   }
+}
+
+/**
+ * GeometryLabel
+ * @param props Props
+ * @returns GeometryLabel
+ */
+const GeometryLabel = ({
+  visible,
+  geometry,
+  panel,
+  add,
+  del,
+  close
+}: IGeometryProps): JSX.Element => {
+  /**
+   * On delete
+   * @param e Event
+   */
+  const onDelete = useCallback(
+    (e: MouseEvent<HTMLSpanElement>): void => {
+      e.stopPropagation()
+      if (
+        panel?.props?.children?.type?.componentName === Geometry.componentName
+      )
+        close()
+      del(geometry)
+    },
+    [geometry, panel, del, close]
+  )
+
+  /**
+   * On add
+   * @param e Event
+   */
+  const onAdd = useCallback(
+    (e: MouseEvent<HTMLSpanElement>): void => {
+      e.stopPropagation()
+      add(geometry)
+    },
+    [geometry, add]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <div>
+      {geometry.name}
+      {visible ? (
+        <EyeOutlined onClick={onDelete} />
+      ) : (
+        <EyeInvisibleOutlined onClick={onAdd} />
+      )}
+    </div>
+  )
+}
+
+/**
+ * SimulationLabel
+ * @param props Props
+ * @returns SimulationLabel
+ */
+const SimulationLabel = ({ simulation }: ISimulationProps): JSX.Element => {
+  /**
+   * Render
+   */
+  if (simulation.scheme.user)
+    return (
+      <>
+        <Tooltip title="User algorithm" placement="right">
+          <AuditOutlined
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 14,
+              fontSize: 14,
+              color: '#fad114'
+            }}
+          />
+        </Tooltip>
+        {simulation.name}
+      </>
+    )
+  return <>{simulation.name}</>
 }
 
 /**
@@ -193,6 +284,30 @@ const Project = (): JSX.Element => {
   ] = GeometryAPI.useGeometries(project?.geometries)
 
   /**
+   * Set geometry add visible true
+   */
+  const setGeometryAddVisibleTrue = useCallback(
+    () => setGeometryAddVisible(true),
+    []
+  )
+
+  /**
+   * Set simulation selector visible true
+   */
+  const setSimulationSelectorVisibleTrue = useCallback(
+    () => setSimulationSelectorVisible(true),
+    []
+  )
+
+  /**
+   * Set simulation selector visible false
+   */
+  const setSimulationSelectorVisibleFalse = useCallback(
+    () => setSimulationSelectorVisible(false),
+    []
+  )
+
+  /**
    * Add geometry
    * @param geometry Geoemtry
    */
@@ -215,6 +330,7 @@ const Project = (): JSX.Element => {
     },
     [geometries]
   )
+
   /**
    * On panel close
    */
@@ -479,7 +595,7 @@ const Project = (): JSX.Element => {
             swr={{
               mutateOneSimulation
             }}
-            setVisible={(visible) => setPanelVisible(visible)}
+            setVisible={setPanelVisible}
           />
         </Panel>
       )
@@ -531,7 +647,7 @@ const Project = (): JSX.Element => {
             swr={{
               mutateOneSimulation
             }}
-            setVisible={(visible) => setPanelVisible(visible)}
+            setVisible={setPanelVisible}
           />
         </Panel>
       )
@@ -560,7 +676,7 @@ const Project = (): JSX.Element => {
             }
             setResult={setResult}
             setPostprocessing={setPostprocessing}
-            setVisible={(visible) => setPanelVisible(visible)}
+            setVisible={setPanelVisible}
             swr={{ mutateOneSimulation }}
           />
         </Panel>
@@ -663,6 +779,18 @@ const Project = (): JSX.Element => {
   }, [result, postprocessing])
 
   /**
+   * Dashboard
+   */
+  const dashboard = useCallback(
+    () =>
+      router.push({
+        pathname: '/dashboard',
+        query: { page, workspaceId }
+      }),
+    [router, page, workspaceId]
+  )
+
+  /**
    * On menu click
    * @param data Data
    */
@@ -686,6 +814,25 @@ const Project = (): JSX.Element => {
     []
   )
 
+  /**
+   * On selector ok
+   * @param scheme Scheme
+   */
+  const onSelectorOk = useCallback(
+    async (scheme: IModel): Promise<void> => {
+      try {
+        await _onSelector(project, scheme, {
+          addOneSimulation,
+          mutateProject
+        })
+
+        // Close selector
+        setSimulationSelectorVisible(false)
+      } catch (err) {}
+    },
+    [project, addOneSimulation, mutateProject]
+  )
+
   // Geometries render build
   const geometriesRender = useMemo(
     () =>
@@ -695,29 +842,14 @@ const Project = (): JSX.Element => {
           key: g.id,
           icon: <PieChartOutlined />,
           label: (
-            <div>
-              {g.name}
-              {visible ? (
-                <EyeOutlined
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    if (
-                      panel?.props?.children?.type?.componentName ===
-                      Geometry.componentName
-                    )
-                      onPanelClose()
-                    delGeometry(g)
-                  }}
-                />
-              ) : (
-                <EyeInvisibleOutlined
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    addGeometry(g)
-                  }}
-                />
-              )}
-            </div>
+            <GeometryLabel
+              visible={!!visible}
+              geometry={g}
+              panel={panel}
+              add={addGeometry}
+              del={delGeometry}
+              close={onPanelClose}
+            />
           )
         }
       }),
@@ -731,6 +863,38 @@ const Project = (): JSX.Element => {
     ]
   )
 
+  /**
+   * Check geometry
+   * @param geometry Geometry
+   * @returns Check
+   */
+  const checkGeometry = useCallback(
+    (geometry: IModelGeometry): boolean => {
+      if (loadingGeometries) return true
+
+      const value = geometry.value
+      const values = geometry.values
+      const multiple = geometry.multiple
+      const n = geometry.n
+      if (
+        (value && !loadedGeometries.filter((g) => g.id === value).length) ||
+        (multiple &&
+          values &&
+          (n
+            ? loadedGeometries.filter((g) => values.includes(g.id)).length !==
+              geometry.n
+            : !loadedGeometries.filter((g) => values.includes(g.id)).length)) ||
+        (!value && !values)
+      ) {
+        geometry.done = false
+        return false
+      }
+
+      return true
+    },
+    [loadedGeometries, loadingGeometries]
+  )
+
   // Simulations render build
   const simulationsRender = useMemo(
     () =>
@@ -739,35 +903,23 @@ const Project = (): JSX.Element => {
         const categories: ItemType[] = []
         Object.keys(configuration).forEach((key) => {
           if (key === 'dimension') return
-          const child = configuration[key]
+          const child = configuration[key as keyof IModel['configuration']] as
+            | IModelGeometry
+            | IModelParameters
+            | IModelMaterials
+            | IModelInitialization
+            | IModelBoundaryConditions
+
           let icon = <CheckCircleOutlined style={{ color: 'green' }} />
           if (child.error)
             icon = <CloseCircleOutlined style={{ color: 'red' }} />
-          if (!child.done)
+          else if (!child.done)
             icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
 
           // Deleted simulation's geometry
-          if (key === 'geometry' && !loadingGeometries) {
-            const value = child.value
-            const values = child.values
-            const multiple = child.multiple
-            const n = child.n
-            if (
-              (value &&
-                !loadedGeometries.filter((g) => g.id === value).length) ||
-              (multiple &&
-                values &&
-                (n
-                  ? loadedGeometries.filter((g) => values.includes(g.id))
-                      .length !== child.n
-                  : !loadedGeometries.filter((g) => values.includes(g.id))
-                      .length)) ||
-              (!value && !values)
-            ) {
+          if (key === 'geometry')
+            if (!checkGeometry(child as IModelGeometry))
               icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
-              child.done = null
-            }
-          }
 
           categories[child.index] = {
             key: s.id + '&' + key,
@@ -777,29 +929,10 @@ const Project = (): JSX.Element => {
           }
         })
 
-        let label = s.name
-        if (s.scheme.user)
-          label = (
-            <>
-              <Tooltip title="User algorithm" placement="right">
-                <AuditOutlined
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 14,
-                    fontSize: 14,
-                    color: '#fad114'
-                  }}
-                />
-              </Tooltip>
-              {s.name}
-            </>
-          )
-
         return {
           key: s.id,
           icon: <CodeSandboxOutlined />,
-          label: label,
+          label: <SimulationLabel simulation={s} />,
           children: [
             {
               key: s.id + '&about',
@@ -811,7 +944,7 @@ const Project = (): JSX.Element => {
           ]
         }
       }),
-    [geometries, loadingGeometries, loadedGeometries, loadedSimulations]
+    [geometries, loadedSimulations, checkGeometry]
   )
 
   /**
@@ -835,10 +968,7 @@ const Project = (): JSX.Element => {
                 disabled: true,
                 style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
                 label: (
-                  <GoBack
-                    buttonCss={globalStyle.fullWidth}
-                    onClick={() => handleDashboard(router, page, workspaceId)}
-                  >
+                  <GoBack buttonCss={globalStyle.fullWidth} onClick={dashboard}>
                     Return to dashboard
                   </GoBack>
                 )
@@ -887,7 +1017,7 @@ const Project = (): JSX.Element => {
                       label: (
                         <Button
                           icon={<UploadOutlined />}
-                          onClick={() => setGeometryAddVisible(true)}
+                          onClick={setGeometryAddVisibleTrue}
                         >
                           New Geometry
                         </Button>
@@ -926,7 +1056,7 @@ const Project = (): JSX.Element => {
                         <Button
                           disabled={!loadedGeometries.length}
                           icon={<PlusCircleOutlined />}
-                          onClick={() => setSimulationSelectorVisible(true)}
+                          onClick={setSimulationSelectorVisibleTrue}
                         >
                           New Simulation
                         </Button>
@@ -950,7 +1080,7 @@ const Project = (): JSX.Element => {
               geometries: project.geometries
             }}
             swr={{ mutateProject, addOneGeometry }}
-            setVisible={(visible) => setGeometryAddVisible(visible)}
+            setVisible={setGeometryAddVisible}
           />
 
           <Simulation.Selector
@@ -959,18 +1089,8 @@ const Project = (): JSX.Element => {
               models: user.models
             }}
             visible={simulationSelectorVisible}
-            onOk={async (scheme) => {
-              try {
-                await onSelector(project, scheme, {
-                  addOneSimulation,
-                  mutateProject
-                })
-
-                // Close selector
-                setSimulationSelectorVisible(false)
-              } catch (err) {}
-            }}
-            onCancel={() => setSimulationSelectorVisible(false)}
+            onOk={onSelectorOk}
+            onCancel={setSimulationSelectorVisibleFalse}
           />
 
           <Simulation.Updater

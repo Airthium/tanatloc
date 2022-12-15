@@ -1,7 +1,7 @@
 /** @module Components.Signup */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
 import { INewUser } from '@/database/user/index'
@@ -34,7 +34,7 @@ export const errors = {
  * @param router Router
  * @param values
  */
-export const onSignup = async (
+export const _onSignup = async (
   router: NextRouter,
   values: {
     email: string
@@ -54,7 +54,7 @@ export const onSignup = async (
       title: errors.alreadyExists,
       render: (
         <>
-          We know you! <a onClick={() => onLogin(router)}>Log in ?</a>
+          We know you! <a onClick={() => _onLogin(router)}>Log in ?</a>
         </>
       ),
       type: 'warning'
@@ -67,7 +67,7 @@ export const onSignup = async (
  * Go to login
  * @param router Router
  */
-export const onLogin = (router: NextRouter): void => {
+export const _onLogin = (router: NextRouter): void => {
   router.push('/login')
 }
 
@@ -103,6 +103,24 @@ const Signup = (): JSX.Element => {
   }, [router])
 
   /**
+   * On finish
+   * @param values Values
+   */
+  const onFinish = useCallback(
+    async (values: { email: string; password: string }): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onSignup(router, values)
+      } catch (err: any) {
+        setFormError(err)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [router]
+  )
+
+  /**
    * Render
    */
   if (loadingUser || loadingSystem || user) return <Loading />
@@ -125,20 +143,7 @@ const Signup = (): JSX.Element => {
               Sign Up
             </Typography.Title>
           </div>
-          <Form
-            requiredMark="optional"
-            onFinish={async (values) => {
-              setLoading(true)
-              try {
-                await onSignup(router, values)
-              } catch (err: any) {
-                setFormError(err)
-              } finally {
-                setLoading(false)
-              }
-            }}
-            layout="vertical"
-          >
+          <Form requiredMark="optional" onFinish={onFinish} layout="vertical">
             <Form.Item
               name="email"
               label="Enter your email address"

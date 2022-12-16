@@ -137,9 +137,9 @@ describe('components/signup', () => {
       throw new Error('add error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenCalledWith({
         title: errors.internal,
         err: new Error('add error')
@@ -149,16 +149,16 @@ describe('components/signup', () => {
     // Already exists
     mockAdd.mockImplementation(() => ({ alreadyExists: true }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         email: 'email@email.email',
         password: 'password',
         passwordConfirmation: 'password'
       })
     )
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.alreadyExists,
         render: expect.anything(),
@@ -170,18 +170,18 @@ describe('components/signup', () => {
     await waitFor(() => screen.getByText('Log in ?'))
     const logIn = screen.getByText('Log in ?')
     fireEvent.click(logIn)
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Normal
     mockAdd.mockImplementation(() => ({ alreadyExists: false }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
 
     unmount()
   })
 
-  test('mismatch passwords rule', async () => {
+  test('mismatch passwords rule', () => {
     mockPassword()
     const { unmount } = render(<Signup />)
 
@@ -194,7 +194,7 @@ describe('components/signup', () => {
     fireEvent.change(password, { target: { value: 'password' } })
     fireEvent.change(confirm, { target: { value: 'other_password' } })
 
-    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
 
     unmount()
   })

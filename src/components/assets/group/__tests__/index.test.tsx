@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import Group, { Delete, errors } from '..'
@@ -93,7 +93,7 @@ describe('components/assets/group', () => {
     unmount()
   })
 
-  test('onAdd', async () => {
+  test('onAdd', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -112,21 +112,17 @@ describe('components/assets/group', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    )
-    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')
@@ -136,7 +132,7 @@ describe('components/assets/group', () => {
     unmount()
   })
 
-  test('onUpdate', async () => {
+  test('onUpdate', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -174,16 +170,16 @@ describe('components/assets/group', () => {
     // Normal
     fireEvent.click(dialog)
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -193,7 +189,7 @@ describe('components/assets/group', () => {
     unmount()
   })
 
-  test('onUpdate wit different users', async () => {
+  test('onUpdate wit different users', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -216,13 +212,13 @@ describe('components/assets/group', () => {
     const dialog = screen.getByRole('Dialog')
 
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  it('onUpdate with modifications', async () => {
+  it('onUpdate with modifications', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -246,8 +242,8 @@ describe('components/assets/group', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     unmount()
   })

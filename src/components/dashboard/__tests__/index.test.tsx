@@ -254,7 +254,7 @@ describe('components/dashboard', () => {
     unmount()
   })
 
-  test('logout error', async () => {
+  test('logout error', () => {
     const { unmount } = render(<Dashboard />)
 
     mockPush.mockImplementation(() => {
@@ -264,10 +264,12 @@ describe('components/dashboard', () => {
     const logout = screen.getByRole('img', { name: 'logout' })
     fireEvent.click(logout)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    expect(mockErrorNotification).toHaveBeenLastCalledWith(
-      'Unable to logout',
-      new Error('push error')
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        'Unable to logout',
+        new Error('push error')
+      )
     )
 
     unmount()

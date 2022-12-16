@@ -69,7 +69,7 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onOk - error', async () => {
+  test('onOk - error', () => {
     const { unmount } = render(
       <DeleteDialog
         title="title"
@@ -87,8 +87,8 @@ describe('components/assets/dialog', () => {
     const button = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.onOk,
         new Error('onOk error')

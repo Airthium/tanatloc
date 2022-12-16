@@ -125,7 +125,7 @@ describe('components/project/simulation/run/results', () => {
     unmount()
   })
 
-  test('with filter', async () => {
+  test('with filter', () => {
     mockGetFilesNumbers.mockImplementation(() => [
       {
         fileName: 'file_0.vtu',
@@ -180,7 +180,7 @@ describe('components/project/simulation/run/results', () => {
 
     const options = screen.getAllByText('1')
     fireEvent.click(options[1])
-    await waitFor(() =>
+    waitFor(() =>
       expect(setResult).toHaveBeenCalledWith({
         fileName: 'file_0.vtu',
         name: 'file',
@@ -195,7 +195,7 @@ describe('components/project/simulation/run/results', () => {
     unmount()
   })
 
-  test('with filter - result', async () => {
+  test('with filter - result', () => {
     mockGetFilesNumbers.mockImplementation(() => [
       {
         fileName: 'file_0.vtu',
@@ -250,7 +250,7 @@ describe('components/project/simulation/run/results', () => {
 
     const options = screen.getAllByText('1')
     fireEvent.click(options[1])
-    await waitFor(() =>
+    waitFor(() =>
       expect(setResult).toHaveBeenCalledWith({
         fileName: 'file_0.vtu',
         name: 'file',

@@ -176,7 +176,7 @@ describe('components/project/simulation/postprocessing', () => {
     unmount()
   })
 
-  test('filter & run', async () => {
+  test('filter & run', () => {
     const { unmount } = render(
       <Postprocessing
         simulation={simulation}
@@ -207,9 +207,9 @@ describe('components/project/simulation/postprocessing', () => {
     })
     const run = screen.getByRole('button', { name: 'rocket Run' })
     fireEvent.click(run)
-    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.run,
         new Error('run error')
@@ -219,8 +219,8 @@ describe('components/project/simulation/postprocessing', () => {
     // Empty
     mockRun.mockImplementation(() => [])
     fireEvent.click(run)
-    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
-    await waitFor(() => screen.getByText('No results'))
+    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+    waitFor(() => screen.getByText('No results'))
 
     // Run
     mockRun.mockImplementation(() => [
@@ -240,10 +240,10 @@ describe('components/project/simulation/postprocessing', () => {
       }
     ])
     fireEvent.click(run)
-    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(3))
+    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(3))
 
-    await waitFor(() => screen.getByRole('button', { name: 'eye' }))
-    await waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))
+    waitFor(() => screen.getByRole('button', { name: 'eye' }))
+    waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))
 
     // on result
     const open = screen.getByRole('button', { name: 'eye-invisible' })

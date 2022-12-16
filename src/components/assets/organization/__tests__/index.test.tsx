@@ -58,7 +58,7 @@ describe('components/assets/organization', () => {
     unmount()
   })
 
-  test('onName', async () => {
+  test('onName', () => {
     const { unmount } = render(
       <Organization organization={organization} swr={swr} onClose={onClose} />
     )
@@ -77,10 +77,8 @@ describe('components/assets/organization', () => {
         keyCode: 13
       })
 
-      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-      await waitFor(() =>
-        expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-      )
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+      waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
     }
 
     // Error
@@ -100,11 +98,9 @@ describe('components/assets/organization', () => {
         keyCode: 13
       })
 
-      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-      await waitFor(() =>
-        expect(mockErrorNotification).toHaveBeenCalledTimes(1)
-      )
-      await waitFor(() =>
+      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+      waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+      waitFor(() =>
         expect(mockErrorNotification).toHaveBeenLastCalledWith(
           errors.name,
           new Error('update error')

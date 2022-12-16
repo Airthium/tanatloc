@@ -59,7 +59,7 @@ describe('components/project/simulation/run/sensors/delete', () => {
     unmount()
   })
 
-  test('onDelete', async () => {
+  test('onDelete', () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="Delete"
@@ -78,19 +78,17 @@ describe('components/project/simulation/run/sensors/delete', () => {
 
     // Normal
     fireEvent.click(del)
-    await waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
     // Error
     mockSimulationUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(del)
-    await waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenCalledWith(
         errors.udpate,
         new Error('update error')

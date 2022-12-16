@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -39,7 +39,7 @@ describe('components/account/hpc/delete', () => {
     unmount()
   })
 
-  test('onDelete', async () => {
+  test('onDelete', () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -60,12 +60,10 @@ describe('components/account/hpc/delete', () => {
       throw new Error('del error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockDel).toHaveBeenLastCalledWith({ uuid: 'uuid' })
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockDel).toHaveBeenLastCalledWith({ uuid: 'uuid' }))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')
@@ -77,13 +75,9 @@ describe('components/account/hpc/delete', () => {
       // Mock
     })
     fireEvent.click(button)
-    await act(async () =>
-      waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    )
-    await waitFor(() =>
-      expect(mockDel).toHaveBeenLastCalledWith({ uuid: 'uuid' })
-    )
-    await waitFor(() => expect(swr.delOnePlugin).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockDel).toHaveBeenLastCalledWith({ uuid: 'uuid' }))
+    waitFor(() => expect(swr.delOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
   })

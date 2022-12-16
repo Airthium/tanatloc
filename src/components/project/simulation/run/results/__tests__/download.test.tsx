@@ -33,7 +33,7 @@ describe('components/project/simulation/run/results/archive', () => {
     unmount()
   })
 
-  test('onArchive', async () => {
+  test('onArchive', () => {
     const { unmount } = render(<Download simulation={simulation} file={file} />)
 
     const button = screen.getByRole('button')
@@ -43,16 +43,16 @@ describe('components/project/simulation/run/results/archive', () => {
       throw new Error('download error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.download,
         new Error('download error')
       )
     )
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Normal
     window.URL.createObjectURL = jest.fn()
@@ -60,7 +60,7 @@ describe('components/project/simulation/run/results/archive', () => {
       blob: async () => 'archive'
     }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(2))
 
     unmount()
   })

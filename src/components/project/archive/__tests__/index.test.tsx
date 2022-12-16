@@ -148,7 +148,7 @@ describe('components/project/archive', () => {
     unmount()
   })
 
-  test('unarchiveFromServer', async () => {
+  test('unarchiveFromServer', () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(
       <Archive

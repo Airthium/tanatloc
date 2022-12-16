@@ -55,7 +55,7 @@ describe('components/account/password', () => {
     unmount()
   })
 
-  test('password mismatch', async () => {
+  test('password mismatch', () => {
     const { unmount } = render(<Password user={user} />)
 
     const mockWarn = jest.fn()
@@ -73,12 +73,12 @@ describe('components/account/password', () => {
       target: { value: 'otherpassword' }
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('onFinish', async () => {
+  test('onFinish', () => {
     const { unmount } = render(<Password user={user} />)
 
     // Fill
@@ -97,15 +97,15 @@ describe('components/account/password', () => {
       throw new Error('check error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.check,
         err: new Error('check error')
@@ -117,15 +117,15 @@ describe('components/account/password', () => {
       valid: false
     }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({ title: errors.invalid })
     )
 
@@ -134,15 +134,15 @@ describe('components/account/password', () => {
       valid: true
     }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
-    await waitFor(() =>
+    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
+    waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         {
           type: 'crypt',
@@ -151,24 +151,22 @@ describe('components/account/password', () => {
         }
       ])
     )
-    await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
 
     // Update error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(4))
-    await waitFor(() =>
+    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(4))
+    waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         {
           type: 'crypt',
@@ -177,8 +175,8 @@ describe('components/account/password', () => {
         }
       ])
     )
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(3))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(3))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.update,
         err: new Error('update error')

@@ -1,5 +1,5 @@
 import { EditorContext } from '@/context/editor'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Save, { errors } from '..'
 
@@ -43,7 +43,7 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('enabled, wrong JSON', async () => {
+  test('enabled, wrong JSON', () => {
     const { unmount } = render(
       <EditorContext.Provider
         value={{
@@ -61,8 +61,8 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.json,
         new SyntaxError('Unexpected end of JSON input')
@@ -72,7 +72,7 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('no model', async () => {
+  test('no model', () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     //@ts-ignore
     user.models = undefined
@@ -93,8 +93,8 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.check,
         new TypeError("Cannot read properties of undefined (reading 'find')")
@@ -104,7 +104,7 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('add new', async () => {
+  test('add new', () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     const { unmount } = render(
       <EditorContext.Provider
@@ -123,8 +123,8 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -139,7 +139,7 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('add new error', async () => {
+  test('add new error', () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     mockUserUpdate.mockImplementation(() => {
       throw new Error('update error')
@@ -161,10 +161,8 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     fireEvent.click(button)
 
-    await act(async () =>
-      waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    )
-    await waitFor(() =>
+    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -175,8 +173,8 @@ describe('components/editor/save', () => {
         { key: 'templates', method: 'append', type: 'array', value: 'template' }
       ])
     )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.save,
         new Error('update error')
@@ -212,8 +210,8 @@ describe('components/editor/save', () => {
     fireEvent.click(ok)
     const cancel = screen.getByRole('button', { name: 'Cancel' })
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -266,10 +264,8 @@ describe('components/editor/save', () => {
     fireEvent.click(ok)
     const cancel = screen.getByRole('button', { name: 'Cancel' })
 
-    await act(async () =>
-      waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    )
-    await waitFor(() =>
+    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -287,8 +283,8 @@ describe('components/editor/save', () => {
         }
       ])
     )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.save,
         new Error('update error')

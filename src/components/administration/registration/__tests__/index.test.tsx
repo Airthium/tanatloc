@@ -67,27 +67,25 @@ describe('components/administration/registration', () => {
     unmount()
   })
 
-  test('onAllowSignup', async () => {
+  test('onAllowSignup', () => {
     const { unmount } = render(<Registration />)
 
     const checkboxes = screen.getAllByRole('checkbox')
 
     // Normal
     fireEvent.click(checkboxes[0])
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(checkboxes[0])
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -97,7 +95,7 @@ describe('components/administration/registration', () => {
     unmount()
   })
 
-  test('onPasswordFinish', async () => {
+  test('onPasswordFinish', () => {
     const { unmount } = render(<Registration />)
 
     // Fill form
@@ -115,20 +113,18 @@ describe('components/administration/registration', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

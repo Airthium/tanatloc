@@ -413,7 +413,7 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('switches & buttons', async () => {
+  test('switches & buttons', () => {
     //@ts-ignore
     global.MockWebGLRenderer.toDataURL = () => ''
     const { unmount } = render(
@@ -425,7 +425,7 @@ describe('components/project/view/three', () => {
     )
 
     // Wait scene loading
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Switches
     const switches = screen.getAllByRole('switch')
@@ -440,21 +440,21 @@ describe('components/project/view/three', () => {
       name: 'fund-projection-screen'
     })
     fireEvent.mouseEnter(snapshot)
-    await waitFor(() => screen.getByText('Project snapshot'))
+    waitFor(() => screen.getByText('Project snapshot'))
     const projectSnapshot = screen.getByText('Project snapshot')
     fireEvent.click(projectSnapshot)
-    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
 
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    // await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Avatar error
     mockAvatarAdd.mockImplementation(() => {
       throw new Error('avatar add error')
     })
     fireEvent.click(projectSnapshot)
-    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.snapshot,
         new Error('avatar add error')
@@ -465,7 +465,7 @@ describe('components/project/view/three', () => {
     const exportImage = screen.getByText('Export image')
     fireEvent.click(exportImage)
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Screenshot error
     //@ts-ignore
@@ -473,8 +473,8 @@ describe('components/project/view/three', () => {
       throw new Error('Date error')
     })
     fireEvent.click(exportImage)
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.saveScreenshot,
         new Error('Date error')
@@ -509,7 +509,7 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('selection enabled', async () => {
+  test('selection enabled', () => {
     const { unmount } = render(
       <SelectContext.Provider
         value={{
@@ -581,7 +581,7 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('load & load', async () => {
+  test('load & load', () => {
     const { rerender, unmount } = render(
       <SelectContext.Provider
         value={{
@@ -620,7 +620,7 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('load error', async () => {
+  test('load error', () => {
     //@ts-ignore
     global.MockScene.children = []
     mockPartLoader.mockImplementation(() => {
@@ -634,8 +634,8 @@ describe('components/project/view/three', () => {
       </SelectContext.Provider>
     )
 
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.load,
         new Error('load error')

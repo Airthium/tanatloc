@@ -43,22 +43,22 @@ describe('components/administration/users', () => {
     ])
   })
 
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    await waitFor(() => screen.getByRole('table'))
+    waitFor(() => screen.getByRole('table'))
 
     unmount()
   })
 
-  test('plugins error', async () => {
+  test('plugins error', () => {
     mockList.mockImplementation(() => {
       throw new Error('plugins error')
     })
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.plugins,
         new Error('plugins error')
@@ -68,21 +68,21 @@ describe('components/administration/users', () => {
     unmount()
   })
 
-  test('empty plugins', async () => {
+  test('empty plugins', () => {
     mockList.mockImplementation(() => {
       // Empty mock
     })
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    await waitFor(() => screen.getByRole('table'))
+    waitFor(() => screen.getByRole('table'))
 
     unmount()
   })
 
-  test('sorters', async () => {
+  test('sorters', () => {
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    await waitFor(() => screen.getByRole('table'))
+    waitFor(() => screen.getByRole('table'))
 
     const sorter1 = screen.getByText('First name')
     fireEvent.click(sorter1)
@@ -96,14 +96,14 @@ describe('components/administration/users', () => {
     unmount()
   })
 
-  test('onResize', async () => {
+  test('onResize', () => {
     Object.defineProperty(Element.prototype, 'clientHeight', {
       value: '1000'
     })
 
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    await waitFor(() => screen.getByText('email1'))
+    waitFor(() => screen.getByText('email1'))
 
     unmount()
   })

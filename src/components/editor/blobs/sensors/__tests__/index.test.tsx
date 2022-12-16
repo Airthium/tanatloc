@@ -42,7 +42,7 @@ describe('components/editor/blobs/mesh', () => {
     unmount()
   })
 
-  test('onAdd', async () => {
+  test('onAdd', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onOk} />
     ))

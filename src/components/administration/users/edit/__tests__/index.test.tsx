@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -85,7 +85,7 @@ describe('components/administration/users/edit', () => {
     unmount()
   })
 
-  test('onUpdate', async () => {
+  test('onUpdate', () => {
     let returned = {}
     mockDialog.mockImplementation((props) => (
       <div
@@ -115,16 +115,14 @@ describe('components/administration/users/edit', () => {
       key: '******'
     }
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
-    )
-    await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
 
     // Empty
     returned = {}
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
 
     // Error
     returned = {
@@ -134,11 +132,9 @@ describe('components/administration/users/edit', () => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

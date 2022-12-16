@@ -62,14 +62,14 @@ describe('components/password', () => {
     unmount()
   })
 
-  test('render with id', async () => {
+  test('render with id', () => {
     mockRouter.mockImplementation(() => ({
       query: { id: 'id' }
     }))
     const { unmount } = render(<Password />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.wrongLink,
         undefined
@@ -79,7 +79,7 @@ describe('components/password', () => {
     unmount()
   })
 
-  test('correct type', async () => {
+  test('correct type', () => {
     mockRouter.mockImplementation(() => ({
       query: { id: 'id' }
     }))
@@ -89,12 +89,12 @@ describe('components/password', () => {
     mockPasswordItem.mockImplementation(() => <div role="PasswordItem" />)
     const { unmount } = render(<Password />)
 
-    await waitFor(() => screen.getByRole('PasswordItem'))
+    waitFor(() => screen.getByRole('PasswordItem'))
 
     unmount()
   })
 
-  test('api get error', async () => {
+  test('api get error', () => {
     mockRouter.mockImplementation(() => ({
       query: { id: 'id' }
     }))
@@ -103,8 +103,8 @@ describe('components/password', () => {
     })
     const { unmount } = render(<Password />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.internal,
         new Error('get error')
@@ -148,8 +148,8 @@ describe('components/password', () => {
     fireEvent.click(button)
 
     // Incorrect
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({ title: errors.incorrect })
     )
 
@@ -159,8 +159,8 @@ describe('components/password', () => {
       throw new Error('process error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.internal,
         err: new Error('process error')
@@ -172,7 +172,7 @@ describe('components/password', () => {
       // Empty
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockLinkProcess).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockLinkProcess).toHaveBeenCalledTimes(1))
 
     unmount()
   })

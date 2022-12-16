@@ -55,7 +55,7 @@ describe('components/editor/load', () => {
     unmount()
   })
 
-  test('Tanatloc load', async () => {
+  test('Tanatloc load', () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Load user={user} swr={swr} />)
 
@@ -77,8 +77,8 @@ describe('components/editor/load', () => {
     })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.load,
         new Error('fetch error')
@@ -88,7 +88,7 @@ describe('components/editor/load', () => {
     unmount()
   })
 
-  test('personal load', async () => {
+  test('personal load', () => {
     user.models = [{ name: 'personal model', user: 'id' } as never]
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Load user={user} swr={swr} />)
@@ -103,7 +103,7 @@ describe('components/editor/load', () => {
     unmount()
   })
 
-  test('personal load, dispatch error', async () => {
+  test('personal load, dispatch error', () => {
     user.models = [{ name: 'personal model' } as never]
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(
@@ -129,8 +129,8 @@ describe('components/editor/load', () => {
     const button = screen.getAllByRole('button', { name: 'file-text' })[0]
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.load,
         new Error('dispatch error')

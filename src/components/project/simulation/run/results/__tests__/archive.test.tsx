@@ -32,7 +32,7 @@ describe('components/project/simulation/run/results/archive', () => {
     unmount()
   })
 
-  test('onArchive', async () => {
+  test('onArchive', () => {
     const { unmount } = render(
       <Archive simulation={simulation as ISimulation} />
     )
@@ -44,16 +44,16 @@ describe('components/project/simulation/run/results/archive', () => {
       throw new Error('archive error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.archive,
         new Error('archive error')
       )
     )
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Normal
     window.URL.createObjectURL = jest.fn()
@@ -61,7 +61,7 @@ describe('components/project/simulation/run/results/archive', () => {
       blob: async () => 'archive'
     }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(2))
 
     unmount()
   })

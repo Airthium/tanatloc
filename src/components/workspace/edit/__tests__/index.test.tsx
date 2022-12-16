@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit, { errors } from '..'
 
@@ -62,7 +62,7 @@ describe('components/workspace/edit', () => {
     unmount()
   })
 
-  test('edit', async () => {
+  test('edit', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -80,21 +80,17 @@ describe('components/workspace/edit', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    )
-    await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

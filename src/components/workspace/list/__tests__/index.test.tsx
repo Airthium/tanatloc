@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import List, { errors } from '..'
 
@@ -85,7 +85,7 @@ describe('components/workspace/list', () => {
     unmount()
   })
 
-  test('onAdd', async () => {
+  test('onAdd', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -113,22 +113,18 @@ describe('components/workspace/list', () => {
     // Normal
     mockWorkspaceAdd.mockImplementation(() => ({}))
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
-    )
-    await waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Error
     mockWorkspaceAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await act(async () =>
-      waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')
@@ -138,7 +134,7 @@ describe('components/workspace/list', () => {
     unmount()
   })
 
-  test('onCancel', async () => {
+  test('onCancel', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))

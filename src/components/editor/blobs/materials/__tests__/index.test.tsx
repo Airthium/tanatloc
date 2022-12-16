@@ -44,7 +44,7 @@ describe('components/editor/blobs/materials', () => {
     unmount()
   })
 
-  test('onAdd', async () => {
+  test('onAdd', () => {
     // Empty
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={() => props.onOk({})} />
@@ -105,7 +105,7 @@ describe('components/editor/blobs/materials', () => {
     unmount()
   })
 
-  test('form', async () => {
+  test('form', () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
 
     const { unmount } = render(
@@ -117,7 +117,7 @@ describe('components/editor/blobs/materials', () => {
     const add = screen.getByRole('button', { name: 'plus Add material' })
     fireEvent.click(add)
 
-    await waitFor(() => screen.getByRole('img', { name: 'minus-circle' }))
+    waitFor(() => screen.getByRole('img', { name: 'minus-circle' }))
 
     const remove = screen.getByRole('img', { name: 'minus-circle' })
     fireEvent.click(remove)

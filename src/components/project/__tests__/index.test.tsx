@@ -344,7 +344,7 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('Update geometry', async () => {
+  test('Update geometry', () => {
     const { rerender, unmount } = render(<Project />)
 
     // Rename

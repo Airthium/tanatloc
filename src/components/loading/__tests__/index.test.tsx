@@ -7,19 +7,19 @@ jest.mock('@/components/background', () => 'background')
 Element.prototype.scrollTo = () => {}
 
 describe('components/loading', () => {
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(<Loading />)
 
     unmount()
   })
 
-  test('status', async () => {
+  test('status', () => {
     const { unmount } = render(<Loading status={['test1', 'test2']} />)
 
     unmount()
   })
 
-  test('status, err', async () => {
+  test('status, err', () => {
     const { unmount } = render(
       <Loading
         status={['test1', 'test2']}
@@ -30,7 +30,7 @@ describe('components/loading', () => {
     unmount()
   })
 
-  test('err', async () => {
+  test('err', () => {
     const { unmount } = render(
       <Loading errors={['error', 'docker: command not found', 'ENETUNREACH']} />
     )

@@ -89,7 +89,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     onOk.mockReset()
   })
 
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
@@ -97,7 +97,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
-  test('without cloud server', async () => {
+  test('without cloud server', () => {
     const { unmount } = render(<CloudServer onOk={onOk} />)
 
     unmount()
@@ -113,7 +113,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
-  test('plugins error', async () => {
+  test('plugins error', () => {
     mockList.mockImplementation(() => {
       throw new Error()
     })
@@ -121,7 +121,7 @@ describe('components/project/simulation/run/cloudServer', () => {
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -158,7 +158,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
-  test('onMerge', async () => {
+  test('onMerge', () => {
     mockDynamic.mockImplementation(() => (props: any) => (
       <div role="Renderer" onClick={props.onSelect} />
     ))
@@ -171,7 +171,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     const button = screen.getByRole('button')
     fireEvent.click(button)
 
-    await waitFor(() => screen.getByText('Plugin name'))
+    waitFor(() => screen.getByText('Plugin name'))
 
     const renderer = screen.getByRole('Renderer')
     fireEvent.click(renderer)

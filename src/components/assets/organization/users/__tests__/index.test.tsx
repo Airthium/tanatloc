@@ -64,7 +64,7 @@ describe('components/assets/organization/users', () => {
     unmount()
   })
 
-  test('onResize', async () => {
+  test('onResize', () => {
     jest
       .spyOn(Element.prototype, 'clientHeight', 'get')
       .mockImplementationOnce(() => 1000)

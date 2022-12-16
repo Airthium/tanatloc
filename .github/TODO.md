@@ -37,3 +37,5 @@
 - icon browse models
 
 - bug save in double
+
+TODO components/project/simulation

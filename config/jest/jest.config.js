@@ -18,12 +18,7 @@ const jestConfig = {
     '<rootDir>/**/*.test.ts',
     '<rootDir>/**/*.test.tsx'
   ],
-  testPathIgnorePatterns: [
-    '<rootDir>/dist/',
-    '<rootDir>/dist-install/',
-    'src/components/project/simulation/',
-    'src/components/project/view/'
-  ],
+  testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/dist-install/'],
   modulePathIgnorePatterns: ['<rootDir>/.yarn', '<rootDir>/tests'],
   transform: {
     '^.+\\.(t|j)sx?$': ['babel-jest', { presets: ['next/babel'] }],

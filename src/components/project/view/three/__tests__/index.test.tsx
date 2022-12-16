@@ -413,7 +413,7 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('switches & buttons', () => {
+  test('switches & buttons', async () => {
     //@ts-ignore
     global.MockWebGLRenderer.toDataURL = () => ''
     const { unmount } = render(
@@ -423,9 +423,6 @@ describe('components/project/view/three', () => {
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
-
-    // Wait scene loading
-    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Switches
     const switches = screen.getAllByRole('switch')
@@ -440,12 +437,10 @@ describe('components/project/view/three', () => {
       name: 'fund-projection-screen'
     })
     fireEvent.mouseEnter(snapshot)
-    waitFor(() => screen.getByText('Project snapshot'))
+    await waitFor(() => screen.getByText('Project snapshot'))
     const projectSnapshot = screen.getByText('Project snapshot')
     fireEvent.click(projectSnapshot)
     waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
-
-    // await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Avatar error
     mockAvatarAdd.mockImplementation(() => {
@@ -464,8 +459,6 @@ describe('components/project/view/three', () => {
     // Screnshot
     const exportImage = screen.getByText('Export image')
     fireEvent.click(exportImage)
-
-    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Screenshot error
     //@ts-ignore

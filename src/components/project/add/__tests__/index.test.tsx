@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add, { errors } from '..'
 
@@ -89,7 +89,9 @@ describe('components/project/add', () => {
     // Normal
     mockAdd.mockImplementation(() => ({}))
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await act(async () =>
+      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    )
     await waitFor(() => expect(swr.addOneProject).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
@@ -99,7 +101,9 @@ describe('components/project/add', () => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await act(async () =>
+      waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    )
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

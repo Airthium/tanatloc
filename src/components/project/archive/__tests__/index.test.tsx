@@ -103,7 +103,7 @@ describe('components/project/archive', () => {
     unmount()
   })
 
-  test('onArchive', async () => {
+  test('onArchive', () => {
     Object.defineProperty(window.URL, 'createObjectURL', { value: () => 'url' })
     mockProjectArchive.mockImplementation(() => ({
       blob: async () => 'blob'
@@ -127,18 +127,18 @@ describe('components/project/archive', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockProjectArchive).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockProjectArchive).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
 
     // Error
     mockProjectArchive.mockImplementation(() => {
       throw new Error('archive error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockProjectArchive).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockProjectArchive).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.archive,
         new Error('archive error')
@@ -164,24 +164,22 @@ describe('components/project/archive', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() =>
+    waitFor(() =>
       expect(mockProjectUnarchiveFromServer).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
-
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
 
     // Error
     mockProjectUnarchiveFromServer.mockImplementation(() => {
       throw new Error('unarchiveFromServer error')
     })
     fireEvent.click(button)
-    await waitFor(() =>
+    waitFor(() =>
       expect(mockProjectUnarchiveFromServer).toHaveBeenCalledTimes(2)
     )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.unarchiveServer,
         new Error('unarchiveFromServer error')
@@ -191,7 +189,7 @@ describe('components/project/archive', () => {
     unmount()
   })
 
-  test('deleteArchive', async () => {
+  test('deleteArchive', () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     mockDeleteButton.mockImplementation((props) => (
       <div role="DeleteButton" onClick={props.onDelete} />
@@ -208,20 +206,17 @@ describe('components/project/archive', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() =>
-      expect(mockProjectDeleteArchiveFile).toHaveBeenCalledTimes(1)
-    )
+
+    waitFor(() => expect(mockProjectDeleteArchiveFile).toHaveBeenCalledTimes(1))
 
     // Error
     mockProjectDeleteArchiveFile.mockImplementation(() => {
       throw new Error('deleteArchiveFile error')
     })
     fireEvent.click(button)
-    await waitFor(() =>
-      expect(mockProjectDeleteArchiveFile).toHaveBeenCalledTimes(2)
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockProjectDeleteArchiveFile).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.deleteArchive,
         new Error('deleteArchiveFile error')
@@ -231,7 +226,7 @@ describe('components/project/archive', () => {
     unmount()
   })
 
-  test('uanrchiveFromFile', async () => {
+  test('uanrchiveFromFile', () => {
     let info: any
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     mockUpload.mockImplementation((props) => (
@@ -264,22 +259,18 @@ describe('components/project/archive', () => {
       file: { status: 'done', name: 'name', uid: 'uid', originFileObj: {} }
     }
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    await waitFor(() =>
-      expect(mockProjectUnarchiveFromFile).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockProjectUnarchiveFromFile).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
 
     // Error
     mockProjectUnarchiveFromFile.mockImplementation(() => {
       throw new Error('unarchiveFromFile error')
     })
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    await waitFor(() =>
-      expect(mockProjectUnarchiveFromFile).toHaveBeenCalledTimes(2)
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockProjectUnarchiveFromFile).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.upload,
         new Error('unarchiveFromFile error')

@@ -1,5 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontGeometries, IFrontSimulations } from '@/api/index.d'
+
 import Project, { errors } from '@/components/project'
 
 jest.mock('next/dynamic', () => (callback: () => Promise<void>) => {
@@ -59,12 +61,15 @@ jest.mock('../simulation', () => {
     About: () => <div />,
     Geometry: () => <div />,
     Materials: (props: any) => (
-      <div role="Simulation.Materials" onClick={props.setVisible} />
+      <div role="Simulation.Materials" onClick={() => props.setVisible()} />
     ),
     Parameters: () => <div />,
     Initialization: () => <div />,
     BoundaryConditions: (props: any) => (
-      <div role="Simulation.BoundaryCondition" onClick={props.setVisible} />
+      <div
+        role="Simulation.BoundaryCondition"
+        onClick={() => props.setVisible()}
+      />
     ),
     Run: (props: any) => (
       <div
@@ -152,6 +157,72 @@ jest.mock('@/api/geometry', () => ({
 }))
 
 describe('components/project', () => {
+  const project = {
+    title: 'title',
+    simulations: ['ids1', 'ids2']
+  }
+
+  const simulation1 = {
+    id: 'ids1',
+    name: 'Simulation 1',
+    scheme: {
+      user: 'id',
+      configuration: {
+        dimension: 2,
+        geometry: {
+          index: 0,
+          title: 'Simulation 1 Geometry'
+        },
+        parameters: {
+          index: 1,
+          title: 'Simulation 1 Parameters',
+          done: true
+        },
+        materials: {
+          index: 2,
+          title: 'Simulation 1 Materials'
+        },
+        boundaryConditions: {
+          index: 3,
+          title: 'Simulation 1 BC'
+        },
+        initialization: {
+          index: 4,
+          title: 'Simulation 1 Initialization'
+        },
+        run: {
+          index: 5,
+          title: 'Simulation 1 Run',
+          error: true
+        },
+        unknown: {
+          index: 6,
+          title: 'Simulation 1 Unknown'
+        }
+      }
+    }
+  }
+  const simulation2 = {
+    id: 'ids2',
+    name: 'Simulation 2',
+    scheme: {}
+  }
+  const simulation3 = {
+    id: 'ids3',
+    name: 'Simulation 3',
+    scheme: {
+      configuration: {
+        geometry: {
+          index: 0,
+          title: 'Simulation 3 Geometry',
+          value: 'idg'
+        }
+      }
+    }
+  }
+
+  const geometry = { id: 'idg', name: 'Geometry', summary: {} }
+
   beforeEach(() => {
     mockPush.mockReset()
     mockReplace.mockReset()
@@ -174,88 +245,29 @@ describe('components/project', () => {
     mockUser.mockImplementation(() => ({ id: 'id' }))
     mockErrorUser.mockReset()
     mockUserLoading.mockReset()
+    mockUserLoading.mockImplementation(() => false)
 
     mockProject.mockReset()
-    const project = {
-      title: 'title',
-      simulations: ['ids1', 'ids2']
-    }
+
     mockProject.mockImplementation(() => project)
     mockErrorProject.mockReset()
     mockUpdate.mockReset()
 
     mockSimulations.mockReset()
-    const simulation1 = {
-      id: 'ids1',
-      name: 'Simulation 1',
-      scheme: {
-        user: 'id',
-        configuration: {
-          dimension: 2,
-          geometry: {
-            index: 0,
-            title: 'Simulation 1 Geometry'
-          },
-          parameters: {
-            index: 1,
-            title: 'Simulation 1 Parameters',
-            done: true
-          },
-          materials: {
-            index: 2,
-            title: 'Simulation 1 Materials'
-          },
-          boundaryConditions: {
-            index: 3,
-            title: 'Simulation 1 BC'
-          },
-          initialization: {
-            index: 4,
-            title: 'Simulation 1 Initialization'
-          },
-          run: {
-            index: 5,
-            title: 'Simulation 1 Run',
-            error: true
-          },
-          unknown: {
-            index: 6,
-            title: 'Simulation 1 Unknown'
-          }
-        }
-      }
-    }
-    const simulation2 = {
-      id: 'ids2',
-      name: 'Simulation 2',
-      scheme: {}
-    }
-    const simulation3 = {
-      id: 'ids3',
-      name: 'Simulation 3',
-      scheme: {
-        configuration: {
-          geometry: {
-            index: 0,
-            title: 'Simulation 3 Geometry',
-            value: 'idg'
-          }
-        }
-      }
-    }
     const simulations = [simulation1, simulation2, simulation3]
     mockSimulations.mockImplementation(() => simulations)
     mockErrorSimulations.mockReset()
     mockSimulationAdd.mockReset()
     mockSimulationUpdate.mockReset()
     mockLoadingSimulations.mockReset()
+    mockLoadingSimulations.mockImplementation(() => false)
 
     mockGeometries.mockReset()
-    const geometry = { id: 'idg', name: 'Geometry', summary: {} }
     const geometries = [geometry]
     mockGeometries.mockImplementation(() => geometries)
     mockErrorGeometries.mockReset()
     mockLoadingGeometries.mockReset()
+    mockLoadingGeometries.mockImplementation(() => false)
   })
 
   test('render', () => {
@@ -332,291 +344,197 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('Update geometry', () => {
-    mockPanel.mockImplementation((props) => (
-      <div role="Panel" onClick={props.onClose} />
-    ))
-
-    const geometry = { id: 'idg', name: 'Geometry' }
-    const geometries = [geometry]
-    mockGeometries.mockImplementation(() => geometries)
-
-    const { unmount } = render(<Project />)
-
-    // Select geometry
-    screen.getByRole('menuitem', {
-      name: 'pie-chart GEOMETRIES (1)'
-    })
-
-    screen.getByRole('menuitem', {
-      name: 'code-sandbox SIMULATIONS (3)'
-    })
-
-    const simulation1 = screen.getByRole('menuitem', {
-      name: 'code-sandbox audit Simulation 1'
-    })
-    fireEvent.click(simulation1)
-
-    const simulationItem = screen.getByRole('menuitem', {
-      name: 'check-circle About'
-    })
-
-    const geometryItem = screen.getByRole('menuitem', {
-      name: 'pie-chart Geometry'
-    })
-    fireEvent.click(geometryItem)
+  test('Update geometry', async () => {
+    const { rerender, unmount } = render(<Project />)
 
     // Rename
-    const newGeometry = { id: 'idg', name: 'Geometry rename' }
-    const newGeometries = [newGeometry]
-    mockGeometries.mockImplementation(() => newGeometries)
+    const newGeometry1 = { id: geometry.id, name: 'Geometry rename' }
+    const newGeometries1 = [newGeometry1]
+    mockGeometries.mockImplementation(() => newGeometries1)
 
-    fireEvent.click(geometryItem)
+    rerender(<Project />)
 
-    // Close panel -> not visible
-    const panel = screen.getByRole('Panel')
-    fireEvent.click(panel)
+    screen.getByRole('menuitem', { name: 'pie-chart Geometry rename eye' })
 
-    // Rename
-    const newNewGeometry = { id: 'idg', name: 'Geometry' }
-    const newNewGeometries = [newNewGeometry]
-    mockGeometries.mockImplementation(() => newNewGeometries)
-    fireEvent.click(simulationItem)
+    // Remove
+    const newGeometries2: IFrontGeometries = []
+    mockGeometries.mockImplementation(() => newGeometries2)
 
-    // Delete geometry
-    mockGeometries.mockImplementation(() => [])
-    fireEvent.click(geometryItem)
+    rerender(<Project />)
 
     unmount()
   })
 
-  test('Simulation with geometry value', () => {
-    mockPanel.mockImplementation((props) => (
-      <div role="Panel" onClick={props.onClose} />
-    ))
-
-    const geometry1 = { id: 'idg1', name: 'Geometry 1' }
-    const geometry2 = { id: 'idg2', name: 'Geometry 2' }
-    const geometries = [geometry1, geometry2]
-    mockGeometries.mockImplementation(() => geometries)
-
-    const simulation1 = {
-      id: 'ids1',
-      name: 'Simulation 1',
-      scheme: {
-        configuration: {
-          dimension: 2,
-          geometry: {
-            index: 0,
-            title: 'Simulation 1 Geometry',
-            value: 'idg2'
-          },
-          parameters: {
-            index: 1,
-            title: 'Simulation 1 Parameters',
-            done: true
-          },
-          materials: {
-            index: 2,
-            title: 'Simulation 1 Materials'
-          },
-          boundaryConditions: {
-            index: 3,
-            title: 'Simulation 1 BC'
-          },
-          initialization: {
-            index: 4,
-            title: 'Simulation 1 Initialization'
-          },
-          run: {
-            index: 5,
-            title: 'Simulation 1 Run',
-            error: true
-          },
-          unknown: {
-            index: 6,
-            title: 'Simulation 1 Unknown'
+  test('Simulation with geometry value & values', () => {
+    {
+      const simulationWithGeoId = {
+        ...simulation1,
+        scheme: {
+          ...simulation1.scheme,
+          configuration: {
+            ...simulation1.scheme.configuration,
+            geometry: {
+              ...simulation1.scheme.configuration.geometry,
+              value: geometry.id
+            }
           }
         }
       }
+      const simulations = [simulationWithGeoId]
+      mockSimulations.mockImplementation(() => simulations)
     }
-    const simulations = [simulation1]
-    mockSimulations.mockImplementation(() => simulations)
 
-    const { unmount } = render(<Project />)
+    const { rerender, unmount } = render(<Project />)
 
-    screen.getByRole('menuitem', {
-      name: 'pie-chart GEOMETRIES (2)'
-    })
-
-    const geometryItem1 = screen.getByRole('menuitem', {
-      name: 'pie-chart Geometry 1'
-    })
-    fireEvent.click(geometryItem1)
-
-    screen.getByRole('menuitem', {
-      name: 'code-sandbox SIMULATIONS (1)'
-    })
-
-    const simulationItem1 = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 1'
-    })
-    fireEvent.click(simulationItem1)
-
-    const simulationItem = screen.getByRole('menuitem', {
-      name: 'check-circle About'
-    })
-    fireEvent.click(simulationItem)
-
-    unmount()
-  })
-
-  test('Simulation with wrong geometry value', () => {
-    mockPanel.mockImplementation((props) => (
-      <div role="Panel" onClick={props.onClose} />
-    ))
-
-    const geometry1 = { id: 'idg1', name: 'Geometry 1' }
-    const geometries = [geometry1]
-    mockGeometries.mockImplementation(() => geometries)
-
-    const simulation1 = {
-      id: 'ids1',
-      name: 'Simulation 1',
-      scheme: {
-        configuration: {
-          dimension: 2,
-          geometry: {
-            index: 0,
-            title: 'Simulation 1 Geometry',
-            value: 'idg2'
-          },
-          parameters: {
-            index: 1,
-            title: 'Simulation 1 Parameters',
-            done: true
-          },
-          materials: {
-            index: 2,
-            title: 'Simulation 1 Materials'
-          },
-          boundaryConditions: {
-            index: 3,
-            title: 'Simulation 1 BC'
-          },
-          initialization: {
-            index: 4,
-            title: 'Simulation 1 Initialization'
-          },
-          run: {
-            index: 5,
-            title: 'Simulation 1 Run',
-            error: true
-          },
-          unknown: {
-            index: 6,
-            title: 'Simulation 1 Unknown'
+    {
+      const simulationWithWrongGeoId = {
+        ...simulation1,
+        scheme: {
+          ...simulation1.scheme,
+          configuration: {
+            ...simulation1.scheme.configuration,
+            geometry: {
+              ...simulation1.scheme.configuration.geometry,
+              value: 'unknown'
+            }
           }
         }
       }
+      const simulations = [simulationWithWrongGeoId]
+      mockSimulations.mockImplementation(() => simulations)
     }
-    const simulations = [simulation1]
-    mockSimulations.mockImplementation(() => simulations)
 
-    const { unmount } = render(<Project />)
+    rerender(<Project />)
 
-    screen.getByRole('menuitem', {
-      name: 'pie-chart GEOMETRIES (1)'
-    })
+    {
+      const simulationWithGeoIds = {
+        ...simulation1,
+        scheme: {
+          ...simulation1.scheme,
+          configuration: {
+            ...simulation1.scheme.configuration,
+            geometry: {
+              ...simulation1.scheme.configuration.geometry,
+              multiple: true,
+              n: 1,
+              values: [geometry.id]
+            }
+          }
+        }
+      }
+      const simulations = [simulationWithGeoIds]
+      mockSimulations.mockImplementation(() => simulations)
+    }
 
-    const geometryItem1 = screen.getByRole('menuitem', {
-      name: 'pie-chart Geometry 1'
-    })
-    fireEvent.click(geometryItem1)
+    rerender(<Project />)
 
-    screen.getByRole('menuitem', {
-      name: 'code-sandbox SIMULATIONS (1)'
-    })
+    {
+      const simulationWithGeoIdsWithoutN = {
+        ...simulation1,
+        scheme: {
+          ...simulation1.scheme,
+          configuration: {
+            ...simulation1.scheme.configuration,
+            geometry: {
+              ...simulation1.scheme.configuration.geometry,
+              multiple: true,
+              values: [geometry.id]
+            }
+          }
+        }
+      }
+      const simulations = [simulationWithGeoIdsWithoutN]
+      mockSimulations.mockImplementation(() => simulations)
+    }
 
-    const simulationItem1 = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 1'
-    })
-    fireEvent.click(simulationItem1)
+    rerender(<Project />)
 
-    const simulationItem = screen.getByRole('menuitem', {
-      name: 'check-circle About'
-    })
-    fireEvent.click(simulationItem)
+    {
+      const simulationWithWrongGeoIds = {
+        ...simulation1,
+        scheme: {
+          ...simulation1.scheme,
+          configuration: {
+            ...simulation1.scheme.configuration,
+            geometry: {
+              ...simulation1.scheme.configuration.geometry,
+              multiple: true,
+              n: 1,
+              values: ['unknown']
+            }
+          }
+        }
+      }
+      const simulations = [simulationWithWrongGeoIds]
+      mockSimulations.mockImplementation(() => simulations)
+    }
+
+    rerender(<Project />)
 
     unmount()
   })
 
   test('Update simulation', () => {
-    const simulation = {
-      id: 'ids1',
-      name: 'Simulation 1',
-      scheme: {
-        configuration: {}
-      }
-    }
-    const simulations = [simulation]
-    mockSimulations.mockImplementation(() => simulations)
-
-    const { unmount } = render(<Project />)
-
-    // Select simulation
-    screen.getByRole('menuitem', {
-      name: 'code-sandbox SIMULATIONS (1)'
-    })
+    const { rerender, unmount } = render(<Project />)
 
     const simulation1Item = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 1'
+      name: 'code-sandbox audit Simulation 1'
     })
     fireEvent.click(simulation1Item)
 
-    const simulationItem = screen.getByRole('menuitem', {
+    const simulation1ItemAbout = screen.getByRole('menuitem', {
       name: 'check-circle About'
     })
-    fireEvent.click(simulationItem)
+    fireEvent.click(simulation1ItemAbout)
 
     // Rename
-    const newSimulation = {
-      id: 'ids1',
-      name: 'Simulation 1 rename',
-      scheme: {
-        configuration: {}
-      }
+    const newSimulation1 = {
+      ...simulation1,
+      name: 'Simulation 1 rename'
     }
-    const newSimulations = [newSimulation]
-    mockSimulations.mockImplementation(() => newSimulations)
-    fireEvent.click(simulationItem)
+    const newSimulations1 = [newSimulation1]
+    mockSimulations.mockImplementation(() => newSimulations1)
 
-    // Delete
-    mockSimulations.mockImplementation(() => [])
-    fireEvent.click(simulationItem)
+    rerender(<Project />)
+
+    screen.getByRole('menuitem', {
+      name: 'code-sandbox audit Simulation 1 rename'
+    })
+
+    // Rename
+    const geometryItem = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry eye'
+    })
+    fireEvent.click(geometryItem)
+
+    const newSimulation2 = {
+      ...simulation1,
+      name: 'Simulation 1'
+    }
+    const newSimulations2 = [newSimulation2]
+    mockSimulations.mockImplementation(() => newSimulations2)
+
+    rerender(<Project />)
+
+    // Remove
+    const newSimulations3: IFrontSimulations = []
+    mockSimulations.mockImplementation(() => newSimulations3)
+
+    rerender(<Project />)
 
     unmount()
   })
 
-  test('menu', async () => {
+  test('menu', () => {
     mockSelector.mockImplementation((props) => (
       <div role="Selector" onClick={props.onCancel} />
     ))
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Project />)
 
-    // Open submenus
-    screen.getByRole('menuitem', {
-      name: 'pie-chart GEOMETRIES (1)'
-    })
-
-    screen.getByRole('menuitem', {
-      name: 'code-sandbox SIMULATIONS (3)'
-    })
-
     // Click geometry
     const geometry = screen.getByRole('menuitem', {
-      name: 'pie-chart Geometry'
+      name: 'pie-chart Geometry eye'
     })
     fireEvent.click(geometry)
 
@@ -684,7 +602,7 @@ describe('components/project', () => {
     fireEvent.click(boundaryCondition)
 
     simulationItem = screen.getByRole('menuitem', {
-      name: 'exclamation-circle Simulation 1 Run'
+      name: 'close-circle Simulation 1 Run'
     })
     fireEvent.click(simulationItem)
 
@@ -716,20 +634,15 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('Geometry cleanup', async () => {
+  test('Geometry cleanup', () => {
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     mockGeometry.mockImplementation((props) => (
       <div role="Geometry" onClick={props.onCleanup} />
     ))
     const { unmount } = render(<Project />)
 
-    // Open submenus
-    screen.getByRole('menuitem', {
-      name: 'pie-chart GEOMETRIES (1)'
-    })
-
     const geometry = screen.getByRole('menuitem', {
-      name: 'pie-chart Geometry'
+      name: 'pie-chart Geometry eye'
     })
     fireEvent.click(geometry)
 
@@ -739,7 +652,23 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('Selector', async () => {
+  test('eye', () => {
+    const geometry2 = { id: 'idg2', name: 'Geometry 2', summary: {} }
+    const newGeometries = [geometry, geometry2]
+    mockGeometries.mockImplementation(() => newGeometries)
+
+    const { unmount } = render(<Project />)
+
+    const add = screen.getByRole('img', { name: 'eye-invisible' })
+    fireEvent.click(add)
+
+    const del = screen.getAllByRole('img', { name: 'eye' })
+    fireEvent.click(del[0])
+
+    unmount()
+  })
+
+  test('Selector', () => {
     mockProject.mockImplementation(() => ({}))
     mockSelector.mockImplementation((props) => (
       <div role="Selector" onClick={() => props.onOk({})} />
@@ -751,16 +680,16 @@ describe('components/project', () => {
     // Normal
     mockSimulationAdd.mockImplementation(() => ({ id: 'id' }))
     fireEvent.click(selector)
-    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
 
     // Error
     mockSimulationAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(selector)
-    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')
@@ -770,34 +699,9 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('panel', () => {
-    mockPanel.mockImplementation((props) => (
-      <div role="Panel" onClick={props.onClose} />
-    ))
-    const { unmount } = render(<Project />)
-
-    screen.getByRole('menuitem', {
-      name: 'pie-chart GEOMETRIES (1)'
-    })
-
-    const geometryItem = screen.getByRole('menuitem', {
-      name: 'pie-chart Geometry'
-    })
-    fireEvent.click(geometryItem)
-
-    const panel = screen.getByRole('Panel')
-    fireEvent.click(panel)
-
-    unmount()
-  })
-
   test('result', () => {
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Project />)
-
-    screen.getByRole('menuitem', {
-      name: 'code-sandbox SIMULATIONS (3)'
-    })
 
     const simulation1 = screen.getByRole('menuitem', {
       name: 'code-sandbox audit Simulation 1'
@@ -805,7 +709,7 @@ describe('components/project', () => {
     fireEvent.click(simulation1)
 
     const simulationItem = screen.getByRole('menuitem', {
-      name: 'exclamation-circle Simulation 1 Run'
+      name: 'close-circle Simulation 1 Run'
     })
     fireEvent.click(simulationItem)
 

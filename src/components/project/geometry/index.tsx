@@ -1,9 +1,16 @@
 /** @module Components.Project.Geometry */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
+import {
+  IFrontGeometriesItem,
+  IFrontMutateGeometriesItem,
+  IFrontProject
+} from '@/api/index.d'
+
 import Loading from '@/components/loading'
+
 import {
   DeleteButton,
   DownloadButton,
@@ -12,17 +19,12 @@ import {
 import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
-import {
-  IFrontGeometriesItem,
-  IFrontMutateGeometriesItem,
-  IFrontProject
-} from '@/api/index.d'
 import GeometryAPI from '@/api/geometry'
-
-import { globalStyle } from '@/styles'
 
 import Add from './add'
 import Edit from './edit'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -52,7 +54,7 @@ export const errors = {
  * On download
  * @param geometry Geometry
  */
-export const onDownload = async (
+export const _onDownload = async (
   geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>
 ): Promise<void> => {
   try {
@@ -78,7 +80,7 @@ export const onDownload = async (
  * @param values Values
  * @param swr SWR
  */
-export const onEdit = async (
+export const _onEdit = async (
   geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>,
   values: { name: string },
   swr: {
@@ -110,7 +112,7 @@ export const onEdit = async (
  * @param close Close
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   geometry: Pick<IFrontGeometriesItem, 'id'>,
   project: Pick<IFrontProject, 'id' | 'geometries'>,
   close: () => void,
@@ -159,6 +161,46 @@ const Geometry = ({
   const [deleting, setDeleting] = useState<boolean>(false)
 
   /**
+   * Set edit visible true
+   */
+  const setEditVisibleTrue = useCallback(() => setEditVisible(true), [])
+
+  /**
+   * On download
+   */
+  const onDownload = useCallback(async () => {
+    setDownloading(true)
+    try {
+      await _onDownload(geometry!)
+    } catch (err) {
+    } finally {
+      setDownloading(false)
+    }
+  }, [geometry])
+
+  /**
+   * On edit
+   * @param value Value
+   */
+  const onEdit = useCallback(
+    async (value: { name: string }) => _onEdit(geometry!, value, swr),
+    [geometry, swr]
+  )
+
+  /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setDeleting(true)
+    try {
+      await _onDelete(geometry!, project, close, swr)
+      onCleanup(geometry!.id)
+    } finally {
+      setDeleting(false)
+    }
+  }, [project, geometry, swr, close, onCleanup])
+
+  /**
    * Render
    */
   if (!geometry) return <Loading.Simple />
@@ -172,15 +214,7 @@ const Geometry = ({
             <DownloadButton
               key="download"
               loading={downloading}
-              onDownload={async () => {
-                setDownloading(true)
-                try {
-                  await onDownload(geometry)
-                } catch (err) {
-                } finally {
-                  setDownloading(false)
-                }
-              }}
+              onDownload={onDownload}
             />,
             <div key="edit">
               <Edit
@@ -190,11 +224,9 @@ const Geometry = ({
                   name: geometry?.name
                 }}
                 setVisible={setEditVisible}
-                onEdit={async (value: { name: string }) =>
-                  onEdit(geometry, value, swr)
-                }
+                onEdit={onEdit}
               />
-              <EditButton onEdit={() => setEditVisible(true)} />
+              <EditButton onEdit={setEditVisibleTrue} />
             </div>,
             <DeleteButton
               key="delete"
@@ -205,15 +237,7 @@ const Geometry = ({
                   <Typography.Text strong>{geometry.name}</Typography.Text>?
                 </>
               }
-              onDelete={async () => {
-                setDeleting(true)
-                try {
-                  await onDelete(geometry, project, close, swr)
-                  onCleanup(geometry.id)
-                } finally {
-                  setDeleting(false)
-                }
-              }}
+              onDelete={onDelete}
             />
           ]}
         >

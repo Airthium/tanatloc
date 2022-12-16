@@ -1,15 +1,16 @@
 /** @module Components.Project.Geometry.Add */
 
-import { useState } from 'react'
-import { Space, Typography, Upload } from 'antd'
+import { useCallback, useState } from 'react'
+import { Space, Typography, Upload, UploadFile } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 import { css } from '@emotion/react'
 
+import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
+
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 import GeometryAPI from '@/api/geometry'
 
 import { globalStyle } from '@/styles'
@@ -38,7 +39,7 @@ export const errors = {
  * Upload check
  * @param file File
  */
-export const beforeUpload = (file: { name: string }): boolean => {
+export const _beforeUpload = (file: { name: string }): boolean => {
   return (
     file.name.toLowerCase().includes('.stp') ||
     file.name.toLowerCase().includes('.step') ||
@@ -50,7 +51,7 @@ export const beforeUpload = (file: { name: string }): boolean => {
  * Get file
  * @param file File
  */
-export const getFile = async (file: Blob): Promise<any> => {
+export const _getFile = async (file: Blob): Promise<any> => {
   const reader = new FileReader()
   return new Promise((resolve) => {
     reader.addEventListener('load', () => {
@@ -66,7 +67,7 @@ export const getFile = async (file: Blob): Promise<any> => {
  * @param info Info
  * @param swr SWR
  */
-export const onUpload = async (
+export const _onUpload = async (
   project: Pick<IFrontProject, 'id' | 'geometries'>,
   info: UploadChangeParam<any>,
   swr: {
@@ -76,7 +77,7 @@ export const onUpload = async (
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') return true
   if (info.file.status === 'done') {
-    const buffer = await getFile(info.file.originFileObj)
+    const buffer = await _getFile(info.file.originFileObj)
 
     try {
       // API
@@ -113,11 +114,36 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [setVisible])
+
+  /**
+   * On change
+   * @param info Info
+   */
+  const onChange = useCallback(
+    async (info: UploadChangeParam<UploadFile<any>>): Promise<void> => {
+      try {
+        const load = await _onUpload(project, info, swr)
+        setLoading(load)
+        setVisible(load)
+      } catch (err) {
+        setLoading(false)
+      }
+    },
+    [project, swr, setVisible]
+  )
+
+  /**
+   * Render
+   */
   return (
     <Dialog
       title="Upload geometry"
       visible={visible}
-      onCancel={() => setVisible(false)}
+      onCancel={setVisibleFalse}
       cancelButtonProps={{ loading: loading }}
     >
       <Space direction="vertical" css={globalStyle.fullWidth}>
@@ -132,16 +158,8 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
           accept=".stp,.step,.dxf"
           showUploadList={false}
           listType="picture-card"
-          beforeUpload={beforeUpload}
-          onChange={async (info) => {
-            try {
-              const load = await onUpload(project, info, swr)
-              setLoading(load)
-              setVisible(load)
-            } catch (err) {
-              setLoading(false)
-            }
-          }}
+          beforeUpload={_beforeUpload}
+          onChange={onChange}
         >
           <div>
             {loading ? (

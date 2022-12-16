@@ -1,6 +1,6 @@
 /** @module Components.Project.Data */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Button,
   Checkbox,
@@ -26,11 +26,12 @@ import {
 } from 'recharts'
 import { camelCase } from 'lodash'
 
+import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
-import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 import style from './index.style'
@@ -55,7 +56,7 @@ export const errors = {
  * @param index Index
  * @param columnSelection Column selection
  */
-export const onCheck = (
+export const _onCheck = (
   event: CheckboxChangeEvent,
   index: number,
   columnSelection: boolean[]
@@ -76,7 +77,7 @@ export const onCheck = (
  * @param camelNames Camel names
  * @param separator Separator (Default to ;)
  */
-export const exportCSV = (
+export const _exportCSV = (
   simulation: Pick<IFrontSimulationsItem, 'name'>,
   datas: { key: number; x: number; [key: string]: number }[],
   names: string[],
@@ -211,7 +212,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
             data-testid="table-checkbox"
             checked={columnSelection[index]}
             onChange={(event) =>
-              setColumnSelection(onCheck(event, index, columnSelection))
+              setColumnSelection(_onCheck(event, index, columnSelection))
             }
           >
             <LineChartOutlined style={{ fontSize: 20 }} />
@@ -284,6 +285,67 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   }, [datas, names, camelNames, columnSelection])
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * Export CSV (tab)
+   */
+  const exportCSVTab = useCallback(() => {
+    setDownloading(true)
+    try {
+      _exportCSV(simulation!, datas!, names!, camelNames!, '\t')
+    } catch (err) {
+      ErrorNotification(errors.download, err)
+    } finally {
+      setDownloading(false)
+    }
+  }, [simulation, datas, names, camelNames])
+
+  /**
+   * Export CSV comma
+   */
+  const exportCSVComma = useCallback(() => {
+    setDownloading(true)
+    try {
+      _exportCSV(simulation!, datas!, names!, camelNames!, ',')
+    } catch (err) {
+      ErrorNotification(errors.download, err)
+    } finally {
+      setDownloading(false)
+    }
+  }, [simulation, datas, names, camelNames])
+
+  /**
+   * Export CSV default
+   */
+  const exportCSVDefault = useCallback(() => {
+    setDownloading(true)
+    try {
+      _exportCSV(simulation!, datas!, names!, camelNames!)
+    } catch (err) {
+      ErrorNotification(errors.download, err)
+    } finally {
+      setDownloading(false)
+    }
+  }, [simulation, datas, names, camelNames])
+
+  /**
+   * Format
+   * @param value Value
+   */
+  const format = useCallback(
+    (value: any): string => Number(value).toExponential(3),
+    []
+  )
+
+  /**
    * Render
    */
   if (!simulation) return null
@@ -295,7 +357,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
           <Button
             type="primary"
             icon={<LineChartOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={setVisibleTrue}
             css={style.button}
           />
         </Tooltip>
@@ -304,7 +366,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
           title="Data visualization"
           placement="bottom"
           closable={true}
-          onClose={() => setVisible(false)}
+          onClose={setVisibleFalse}
           open={visible}
           mask={false}
           maskClosable={false}
@@ -324,43 +386,16 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                   {
                     label: 'Separator: tab',
                     key: 'tab',
-                    onClick: () => {
-                      setDownloading(true)
-                      try {
-                        exportCSV(simulation, datas, names, camelNames, '\t')
-                      } catch (err) {
-                        ErrorNotification(errors.download, err)
-                      } finally {
-                        setDownloading(false)
-                      }
-                    }
+                    onClick: exportCSVTab
                   },
                   {
                     label: 'Separator: comma',
                     key: ',',
-                    onClick: () => {
-                      setDownloading(true)
-                      try {
-                        exportCSV(simulation, datas, names, camelNames, ',')
-                      } catch (err) {
-                        ErrorNotification(errors.download, err)
-                      } finally {
-                        setDownloading(false)
-                      }
-                    }
+                    onClick: exportCSVComma
                   }
                 ]
               }}
-              onClick={() => {
-                setDownloading(true)
-                try {
-                  exportCSV(simulation, datas, names, camelNames)
-                } catch (err) {
-                  ErrorNotification(errors.download, err)
-                } finally {
-                  setDownloading(false)
-                }
-              }}
+              onClick={exportCSVDefault}
             >
               Export CSV
             </Dropdown.Button>
@@ -387,7 +422,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 <XAxis dataKey={'x'} />
                 <YAxis
                   domain={plot ? [plot.domainMin, plot.domainMax] : [-1, 1]}
-                  tickFormatter={(value) => Number(value).toExponential(3)}
+                  tickFormatter={format}
                 />
                 <ReTooltip />
                 <Legend />

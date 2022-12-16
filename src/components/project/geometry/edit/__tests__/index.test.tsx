@@ -29,7 +29,7 @@ describe('components/project/geometry/edit', () => {
     unmount()
   })
 
-  test('onEdit', async () => {
+  test('onEdit', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -56,11 +56,11 @@ describe('components/project/geometry/edit', () => {
       throw new Error('edit error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(onEdit).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onEdit).toHaveBeenCalledTimes(1))
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(onEdit).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(onEdit).toHaveBeenCalledTimes(2))
 
     unmount()
   })

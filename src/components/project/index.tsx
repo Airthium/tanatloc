@@ -339,89 +339,6 @@ const Project = (): JSX.Element => {
     setMenuKey(undefined)
   }, [])
 
-  // Not logged -> go to login page
-  useEffect(() => {
-    if (!loadingUser && !user) router.replace('/login')
-  }, [user, loadingUser, router])
-
-  // Errors
-  useEffect(() => {
-    if (errorUser) ErrorNotification(errors.user, errorUser)
-    if (errorProject) ErrorNotification(errors.project, errorProject)
-    if (errorSimulations)
-      ErrorNotification(errors.simulations, errorSimulations)
-    if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
-  }, [errorUser, errorProject, errorSimulations, errorGeometries])
-
-  // Auto open geometry add
-  useCustomEffect(() => {
-    if (!loadingProject && !loadingGeometries) {
-      if (!loadedGeometries.length) setGeometryAddVisible(true)
-      else setGeometryAddVisible(false)
-    } else {
-      setGeometryAddVisible(false)
-    }
-  }, [loadingProject, loadingGeometries, loadedGeometries])
-
-  // Update geometry
-  useCustomEffect(
-    () => {
-      if (loadingGeometries) return
-
-      if (geometries.length) {
-        let needUpdate = false
-        const newGeometries = geometries
-          .map((geometry) => {
-            const current = loadedGeometries.find((g) => g.id === geometry?.id)
-            if (current) {
-              if (
-                JSON.stringify({ ...current, visible: undefined }) !==
-                JSON.stringify({ ...geometry, visible: undefined })
-              ) {
-                // Update
-                needUpdate = true
-                return current
-              }
-              return geometry
-            } else {
-              // Remove
-              needUpdate = true
-              return null
-            }
-          })
-          .filter((g) => g) as IFrontGeometriesItem[]
-
-        if (needUpdate) setGeometries(newGeometries)
-      } else {
-        setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
-      }
-    },
-    [loadingGeometries, loadedGeometries, geometries],
-    [setGeometries]
-  )
-
-  // Update simulation
-  useCustomEffect(
-    () => {
-      if (!loadingSimulations && simulation) {
-        const current = loadedSimulations.find((s) => s.id === simulation?.id)
-        if (current) {
-          if (JSON.stringify(current) !== JSON.stringify(simulation)) {
-            setSimulation(current)
-
-            if (menuKey && menuKey.key === menuItems.simulations.key)
-              setSimulationPanel(menuKey.id, menuKey.item!)
-          }
-        } else {
-          onPanelClose()
-          setSimulation(undefined)
-        }
-      }
-    },
-    [loadedSimulations, loadingSimulations, simulation, menuKey],
-    [setSimulation, onPanelClose]
-  )
-
   /**
    * On geometry cleanup
    * @param id Id
@@ -751,33 +668,6 @@ const Project = (): JSX.Element => {
     ]
   )
 
-  // Update panel
-  useCustomEffect(
-    () => {
-      if (!menuKey) return
-
-      if (menuKey.key === menuItems.geometries.key) {
-        setGeometryPanel(menuKey.id)
-      } else {
-        //menuKey.key === menuItems.simulations.key)
-        setSimulationPanel(menuKey.id, menuKey.item!)
-
-        // Force geometry
-        if (menuKey.item !== 'run') {
-          setResult(undefined)
-          setPostprocessing(undefined)
-        }
-      }
-    },
-    [menuKey, panelVisible, result],
-    [setGeometryPanel, setSimulationPanel, onPanelClose]
-  )
-
-  // Close result
-  useEffect(() => {
-    if (!result && postprocessing) setPostprocessing(undefined)
-  }, [result, postprocessing])
-
   /**
    * Dashboard
    */
@@ -833,36 +723,6 @@ const Project = (): JSX.Element => {
     [project, addOneSimulation, mutateProject]
   )
 
-  // Geometries render build
-  const geometriesRender = useMemo(
-    () =>
-      loadedGeometries.map((g) => {
-        const visible = geometries.find((geometry) => geometry.id === g.id)
-        return {
-          key: g.id,
-          icon: <PieChartOutlined />,
-          label: (
-            <GeometryLabel
-              visible={!!visible}
-              geometry={g}
-              panel={panel}
-              add={addGeometry}
-              del={delGeometry}
-              close={onPanelClose}
-            />
-          )
-        }
-      }),
-    [
-      loadedGeometries,
-      geometries,
-      panel,
-      addGeometry,
-      delGeometry,
-      onPanelClose
-    ]
-  )
-
   /**
    * Check geometry
    * @param geometry Geometry
@@ -893,6 +753,146 @@ const Project = (): JSX.Element => {
       return true
     },
     [loadedGeometries, loadingGeometries]
+  )
+
+  // Not logged -> go to login page
+  useEffect(() => {
+    if (!loadingUser && !user) router.replace('/login')
+  }, [user, loadingUser, router])
+
+  // Errors
+  useEffect(() => {
+    if (errorUser) ErrorNotification(errors.user, errorUser)
+    if (errorProject) ErrorNotification(errors.project, errorProject)
+    if (errorSimulations)
+      ErrorNotification(errors.simulations, errorSimulations)
+    if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
+  }, [errorUser, errorProject, errorSimulations, errorGeometries])
+
+  // Auto open geometry add
+  useCustomEffect(() => {
+    if (!loadingProject && !loadingGeometries) {
+      if (!loadedGeometries.length) setGeometryAddVisible(true)
+      else setGeometryAddVisible(false)
+    } else {
+      setGeometryAddVisible(false)
+    }
+  }, [loadingProject, loadingGeometries, loadedGeometries])
+
+  // Update geometry
+  useCustomEffect(
+    () => {
+      if (loadingGeometries) return
+
+      if (geometries.length) {
+        let needUpdate = false
+        const newGeometries = geometries
+          .map((geometry) => {
+            const current = loadedGeometries.find((g) => g.id === geometry?.id)
+            if (current) {
+              if (
+                JSON.stringify({ ...current, visible: undefined }) !==
+                JSON.stringify({ ...geometry, visible: undefined })
+              ) {
+                // Update
+                needUpdate = true
+                return current
+              }
+              return geometry
+            } else {
+              // Remove
+              needUpdate = true
+              return null
+            }
+          })
+          .filter((g) => g) as IFrontGeometriesItem[]
+
+        if (needUpdate) setGeometries(newGeometries)
+      } else {
+        setGeometries(loadedGeometries[0] ? [loadedGeometries[0]] : [])
+      }
+    },
+    [loadingGeometries, loadedGeometries, geometries],
+    [setGeometries]
+  )
+
+  // Update simulation
+  useCustomEffect(
+    () => {
+      if (!loadingSimulations && simulation) {
+        const current = loadedSimulations.find((s) => s.id === simulation?.id)
+        if (current) {
+          if (JSON.stringify(current) !== JSON.stringify(simulation)) {
+            setSimulation(current)
+
+            if (menuKey && menuKey.key === menuItems.simulations.key)
+              setSimulationPanel(menuKey.id, menuKey.item!)
+          }
+        } else {
+          onPanelClose()
+          setSimulation(undefined)
+        }
+      }
+    },
+    [loadedSimulations, loadingSimulations, simulation, menuKey],
+    [setSimulation, onPanelClose]
+  )
+
+  // Update panel
+  useCustomEffect(
+    () => {
+      if (!menuKey) return
+
+      if (menuKey.key === menuItems.geometries.key) {
+        setGeometryPanel(menuKey.id)
+      } else {
+        //menuKey.key === menuItems.simulations.key)
+        setSimulationPanel(menuKey.id, menuKey.item!)
+
+        // Force geometry
+        if (menuKey.item !== 'run') {
+          setResult(undefined)
+          setPostprocessing(undefined)
+        }
+      }
+    },
+    [menuKey, panelVisible, result],
+    [setGeometryPanel, setSimulationPanel, onPanelClose]
+  )
+
+  // Close result
+  useEffect(() => {
+    if (!result && postprocessing) setPostprocessing(undefined)
+  }, [result, postprocessing])
+
+  // Geometries render build
+  const geometriesRender = useMemo(
+    () =>
+      loadedGeometries.map((g) => {
+        const visible = geometries.find((geometry) => geometry.id === g.id)
+        return {
+          key: g.id,
+          icon: <PieChartOutlined />,
+          label: (
+            <GeometryLabel
+              visible={!!visible}
+              geometry={g}
+              panel={panel}
+              add={addGeometry}
+              del={delGeometry}
+              close={onPanelClose}
+            />
+          )
+        }
+      }),
+    [
+      loadedGeometries,
+      geometries,
+      panel,
+      addGeometry,
+      delGeometry,
+      onPanelClose
+    ]
   )
 
   // Simulations render build

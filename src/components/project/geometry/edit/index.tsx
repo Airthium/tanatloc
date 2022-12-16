@@ -1,11 +1,11 @@
 /** @module Components.Project.Geometry.Edit */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
-import Dialog from '@/components/assets/dialog'
-
 import { IFrontGeometriesItem } from '@/api/index.d'
+
+import Dialog from '@/components/assets/dialog'
 
 /**
  * Props
@@ -39,6 +39,32 @@ const Edit = ({
   })
 
   /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [setVisible])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: { name: string }): Promise<void> => {
+      setLoading(true)
+      try {
+        await onEdit(values)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [setVisible, onEdit]
+  )
+
+  /**
    * Render
    */
   return (
@@ -46,20 +72,8 @@ const Edit = ({
       title="Edit the geometry's name"
       visible={visible}
       initialValues={{ name: geometry.name }}
-      onCancel={() => setVisible(false)}
-      onOk={async (values) => {
-        setLoading(true)
-        try {
-          await onEdit(values)
-
-          // Close
-          setLoading(false)
-          setVisible(false)
-        } catch (err) {
-          setLoading(false)
-          throw err
-        }
-      }}
+      onCancel={setVisibleFalse}
+      onOk={onOk}
       loading={loading}
     >
       <Form.Item

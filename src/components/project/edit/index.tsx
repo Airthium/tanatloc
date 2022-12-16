@@ -1,6 +1,6 @@
 /** @module Components.Project.Edit */
 
-import { useEffect, useRef, useState } from 'react'
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT } from '@/config/string'
@@ -38,7 +38,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onEdit = async (
+export const _onEdit = async (
   project: Pick<IFrontProjectsItem, 'id'>,
   values: Pick<IFrontProjectsItem, 'title' | 'description'>,
   swr: { mutateOneProject: (project: IFrontMutateProjectsItem) => void }
@@ -84,28 +84,55 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (
+      values: Pick<IFrontProjectsItem, 'title' | 'description'>
+    ): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onEdit(project, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [project, swr]
+  )
+
+  const onKeyUp = useCallback(
+    (event: KeyboardEvent<HTMLTextAreaElement>): void =>
+      event.stopPropagation(),
+    []
+  )
+
+  /**
    * Render
    */
   return (
     <>
-      <EditButton disabled={disabled} dark onEdit={() => setVisible(true)} />
+      <EditButton disabled={disabled} dark onEdit={setVisibleTrue} />
       <Dialog
         title={'Edit "' + project.title + '" project'}
         visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onEdit(project, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
         initialValues={{
           title: project.title,
@@ -131,7 +158,7 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
             placeholder="Project's description"
             showCount
             maxLength={120}
-            onKeyUp={(event) => event.stopPropagation()}
+            onKeyUp={onKeyUp}
           />
         </Form.Item>
       </Dialog>

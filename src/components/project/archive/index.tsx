@@ -1,7 +1,7 @@
 /** @module Components.Project.Archive */
 
-import { useState } from 'react'
-import { Button, Form, Tooltip, Typography, Upload } from 'antd'
+import { useCallback, useState } from 'react'
+import { Button, Form, Tooltip, Typography, Upload, UploadFile } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 import { UploadChangeParam } from 'antd/lib/upload'
 
@@ -47,7 +47,7 @@ export const errors = {
  * @param project Project
  * @pram swr SWR
  */
-export const onArchive = async (
+export const _onArchive = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   swr: {
@@ -87,7 +87,7 @@ export const onArchive = async (
  * @param project Project
  * @param swr SWR
  */
-export const onUnarchiveServer = async (
+export const _onUnarchiveServer = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   swr: IProps['swr']
@@ -112,7 +112,7 @@ export const onUnarchiveServer = async (
  * Delete archive
  * @param project Project
  */
-export const onArchiveDelete = async (
+export const _onArchiveDelete = async (
   project: Pick<IFrontProjectsItem, 'id'>
 ) => {
   try {
@@ -126,7 +126,7 @@ export const onArchiveDelete = async (
  * Read file
  * @param file File
  */
-export const getFile = async (file: Blob): Promise<any> => {
+export const _getFile = async (file: Blob): Promise<any> => {
   const reader = new FileReader()
   return new Promise((resolve) => {
     reader.addEventListener('load', () => {
@@ -143,7 +143,7 @@ export const getFile = async (file: Blob): Promise<any> => {
  * @param info Info
  * @param swr SWR
  */
-export const onUpload = async (
+export const _onUpload = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   info: UploadChangeParam<any>,
@@ -156,7 +156,7 @@ export const onUpload = async (
   if (info.file.status === 'done') {
     try {
       // Archive
-      const archive = await getFile(info.file.originFileObj)
+      const archive = await _getFile(info.file.originFileObj)
 
       // Unarchive
       await ProjectAPI.unarchiveFromFile(
@@ -197,6 +197,68 @@ const Archive = ({
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On archive
+   */
+  const onArchive = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _onArchive(workspace, project, swr)
+      // Close
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      setLoading(false)
+      throw err
+    }
+  }, [workspace, project, swr])
+
+  /**
+   * On unarchive (from server)
+   */
+  const onUnarchiveServer = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _onUnarchiveServer(workspace, project, swr)
+
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      setLoading(false)
+    }
+  }, [workspace, project, swr])
+
+  /**
+   * On upload
+   * @param info Info
+   */
+  const onUpload = useCallback(
+    async (info: UploadChangeParam<UploadFile<any>>): Promise<void> => {
+      const load = await _onUpload(workspace, project, info, swr)
+      setLoading(load)
+      setVisible(load)
+    },
+    [workspace, project, swr]
+  )
+
+  /**
+   * On archive delete
+   */
+  const onArchiveDelete = useCallback(
+    async () => _onArchiveDelete(project),
+    [project]
+  )
+
+  /**
    * Render
    */
   return (
@@ -205,23 +267,8 @@ const Archive = ({
         visible={visible}
         loading={loading}
         title="Archive"
-        onCancel={() => setVisible(false)}
-        onOk={
-          project.archived
-            ? undefined
-            : async () => {
-                setLoading(true)
-                try {
-                  await onArchive(workspace, project, swr)
-                  // Close
-                  setLoading(false)
-                  setVisible(false)
-                } catch (err) {
-                  setLoading(false)
-                  throw err
-                }
-              }
-        }
+        onCancel={setVisibleFalse}
+        onOk={project.archived ? undefined : onArchive}
         okButtonText="Archive"
       >
         {project.archived ? (
@@ -230,20 +277,7 @@ const Archive = ({
               label="Restore archive from the server"
               tooltip="This will restore the project from the server archive file."
             >
-              <Button
-                loading={loading}
-                onClick={async () => {
-                  setLoading(true)
-                  try {
-                    await onUnarchiveServer(workspace, project, swr)
-
-                    setLoading(false)
-                    setVisible(false)
-                  } catch (err) {
-                    setLoading(false)
-                  }
-                }}
-              >
+              <Button loading={loading} onClick={onUnarchiveServer}>
                 Restore archive from the server
               </Button>
             </Form.Item>
@@ -255,11 +289,7 @@ const Archive = ({
                 action={'/api/noop'}
                 accept={'.tanatlocarchive'}
                 showUploadList={false}
-                onChange={async (info) => {
-                  const load = await onUpload(workspace, project, info, swr)
-                  setLoading(load)
-                  setVisible(load)
-                }}
+                onChange={onUpload}
               >
                 <Button>Restore archive from archive file</Button>
               </Upload>
@@ -273,7 +303,7 @@ const Archive = ({
                 bordered
                 title="Delete server archive"
                 text="Are you sure your want to delete the archive from the server?"
-                onDelete={async () => onArchiveDelete(project)}
+                onDelete={onArchiveDelete}
               >
                 Delete server archive
               </DeleteButton>
@@ -291,7 +321,7 @@ const Archive = ({
           disabled={disabled}
           type="link"
           icon={project.archived ? <ImportOutlined /> : <HddOutlined />}
-          onClick={() => setVisible(true)}
+          onClick={setVisibleTrue}
         />
       </Tooltip>
     </>

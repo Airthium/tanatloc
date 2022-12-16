@@ -106,7 +106,7 @@ describe('components/project/geometry', () => {
     unmount()
   })
 
-  test('download', async () => {
+  test('download', () => {
     window.URL.createObjectURL = jest.fn()
     mockDownloadButton.mockImplementation((props) => (
       <div role="DownloadButton" onClick={props.onDownload} />
@@ -129,16 +129,16 @@ describe('components/project/geometry', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(1))
 
     // Error
     mockDownload.mockImplementation(() => {
       throw new Error('download error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.download,
         new Error('download error')
@@ -148,7 +148,7 @@ describe('components/project/geometry', () => {
     unmount()
   })
 
-  test('onEdit', async () => {
+  test('onEdit', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -180,17 +180,17 @@ describe('components/project/geometry', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateOneGeometry).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneGeometry).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -200,7 +200,7 @@ describe('components/project/geometry', () => {
     unmount()
   })
 
-  test('onDelete', async () => {
+  test('onDelete', () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -225,18 +225,18 @@ describe('components/project/geometry', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.delOneGeometry).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.delOneGeometry).toHaveBeenCalledTimes(1))
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error('del error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')

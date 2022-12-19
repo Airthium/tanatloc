@@ -141,6 +141,9 @@ const LinearElasticityModal = {
         label: 'Fixed',
         refineFactor: 2
       },
+      free: {
+        label: 'Free'
+      },
       displacement: {
         label: 'Displacement',
         children: [

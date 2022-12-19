@@ -54,7 +54,7 @@ export const errors = {
  * @returns Part
  */
 export const _loadPart = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
   file: Pick<IFrontGeometriesItem, 'id'> | TResult,
   type: 'geometry' | 'result'
 ): Promise<IGeometryPart> => {
@@ -66,7 +66,7 @@ export const _loadPart = async (
     } else {
       const result = file as Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
       const part = await ResultAPI.load(
-        { id: simulation.id },
+        { id: simulation!.id },
         { originPath: result.originPath, glb: result.glb! }
       )
       return { ...part, extra: { glb: result.glb } }
@@ -135,7 +135,7 @@ export const _loadPostprocessing = async (
  * @returns Geometries
  */
 export const _loadGeometries = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
   parts: IGeometryPart[],
   geometries: TGeometry[]
 ): Promise<IGeometryPart[]> => {
@@ -171,29 +171,31 @@ const View = ({
   // Parts
   useCustomEffect(() => {
     ;(async () => {
-      if (!simulation) return
-
       setLoading(true)
 
       try {
         const newParts = []
 
         // Result
-        const newResult = await _loadResult(
-          simulation,
-          parts,
-          result,
-          postprocessing
-        )
-        newResult && newParts.push(newResult)
+        if (simulation) {
+          const newResult = await _loadResult(
+            simulation,
+            parts,
+            result,
+            postprocessing
+          )
+          newResult && newParts.push(newResult)
+        }
 
         // Postprocessing
-        const newPostprocessing = await _loadPostprocessing(
-          simulation,
-          parts,
-          postprocessing
-        )
-        newPostprocessing && newParts.push(newPostprocessing)
+        if (simulation) {
+          const newPostprocessing = await _loadPostprocessing(
+            simulation,
+            parts,
+            postprocessing
+          )
+          newPostprocessing && newParts.push(newPostprocessing)
+        }
 
         // Geometries
         const newGeometries = await _loadGeometries(

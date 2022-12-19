@@ -1,9 +1,13 @@
 /** @module Components.Project.Simulation.Parameters */
 
-import { useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
+import {
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem
+} from '@/api/index.d'
 import { IModelParameter } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
@@ -11,10 +15,6 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontMutateSimulationsItem,
-  IFrontSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -22,6 +22,31 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
+}
+
+export interface IParameterProps {
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  dimension: number | undefined
+  key: string
+  parameter: {
+    label: string
+    advanced?: boolean
+    children: IModelParameter[]
+  }
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
+}
+
+export interface IParameterChildProps {
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  dimension: number | undefined
+  child: any
+  key: string
+  index: number
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -41,7 +66,7 @@ export const errors = {
  * @param onValueChange On value change
  * @returns Formula
  */
-export const build2DFormula = (
+export const _build2DFormula = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
@@ -62,7 +87,7 @@ export const build2DFormula = (
  * @param onValueChange On value change
  * @returns Select
  */
-export const build2DSelect = (
+export const _build2DSelect = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
@@ -92,7 +117,7 @@ export const build2DSelect = (
  * @param onValueChange On value change
  * @returns Checkbox
  */
-export const build2DCheckbox = (
+export const _build2DCheckbox = (
   key: string,
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
@@ -114,7 +139,7 @@ export const build2DCheckbox = (
  * @param onValueChange On value change
  * @returns Formula
  */
-export const buildFormula = (
+export const _buildFormula = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
@@ -135,7 +160,7 @@ export const buildFormula = (
  * @param onValueChange On value change
  * @returns Select
  */
-export const buildSelect = (
+export const _buildSelect = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
@@ -158,7 +183,7 @@ export const buildSelect = (
  * @param onValueChange On value change
  * @returns Checkbox
  */
-const buildCheckbox = (
+export const _buildCheckbox = (
   key: string,
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
@@ -178,7 +203,7 @@ const buildCheckbox = (
  * @param simulation Simulation
  * @param swr SWR
  */
-export const onDone = async (
+export const _onDone = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -233,7 +258,7 @@ export const onDone = async (
  * @param value Value
  * @param swr SWR
  */
-export const onChange = async (
+export const _onChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   key: string,
   index: number,
@@ -290,107 +315,173 @@ export const onChange = async (
 }
 
 /**
+ * ParameterChild
+ * @param props Props
+ * @returns ParameterChild
+ */
+const ParameterChild = ({
+  simulation,
+  dimension,
+  child,
+  key,
+  index,
+  swr
+}: IParameterChildProps): JSX.Element | null => {
+  /**
+   * On change
+   * @param value Value
+   */
+  const onChange = useCallback(
+    (value: string) => _onChange(simulation, key, index, value, swr),
+    [simulation, key, index, swr]
+  )
+
+  /**
+   * On change (event)
+   * @param e Event
+   */
+  const onChangeEvent = useCallback(
+    (e: CheckboxChangeEvent) =>
+      _onChange(simulation, key, index, e.target.checked, swr),
+    [simulation, key, index, swr]
+  )
+
+  /**
+   * Render
+   */
+  if (dimension === 2) {
+    if (child.only3D) return null
+    else if (child.htmlEntity === 'formula') {
+      return _build2DFormula(key + '&' + index, child, onChange)
+    } else if (child.htmlEntity === 'select') {
+      return _build2DSelect(key + '&' + index, child, onChange)
+    } else if (child.htmlEntity === 'checkbox') {
+      return _build2DCheckbox(key + '&' + index, child, onChangeEvent)
+    }
+    return null
+  } else {
+    if (child.htmlEntity === 'formula') {
+      return _buildFormula(key + '&' + index, child, onChange)
+    } else if (child.htmlEntity === 'select') {
+      return _buildSelect(key + '&' + index, child, onChange)
+    } else if (child.htmlEntity === 'checkbox') {
+      return _buildCheckbox(key + '&' + index, child, onChangeEvent)
+    }
+    return null
+  }
+}
+
+/**
+ * Parameter
+ * @param props Props
+ * @returns Parameter
+ */
+const Parameter = ({
+  simulation,
+  dimension,
+  key,
+  parameter,
+  swr
+}: IParameterProps): JSX.Element => {
+  // Components
+  const components = useMemo(
+    () =>
+      parameter.children.map((child, index) => (
+        <ParameterChild
+          simulation={simulation}
+          dimension={dimension}
+          child={child}
+          key={key}
+          index={index}
+          swr={swr}
+        />
+      )),
+    []
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Card size="small" key={key} title={parameter?.label}>
+      <Space direction="vertical">{components}</Space>
+    </Card>
+  )
+}
+
+/**
  * Parameters
  * @param props Props
  * @returns Parameters
  */
 const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // Data
-  const subScheme = simulation?.scheme.configuration.parameters
-  const dimension = simulation?.scheme.configuration.dimension
+  const subScheme = useMemo(
+    () => simulation?.scheme.configuration.parameters,
+    [simulation]
+  )
+  const dimension = useMemo(
+    () => simulation?.scheme.configuration.dimension,
+    [simulation]
+  )
 
   // Initial
   useEffect(() => {
     if (!subScheme?.done) {
-      onDone(simulation, swr)
+      _onDone(simulation, swr)
     }
   }, [simulation, subScheme, swr])
 
   // Build parameters
-  const parameters: JSX.Element[] = []
-  const advanced: JSX.Element[] = []
-  if (dimension === 2) {
-    Object.keys(subScheme).forEach((key) => {
-      if (key === 'index' || key === 'title' || key == 'done') return
-
-      const parameter = subScheme[key] as {
-        label: string
-        advanced?: boolean
-        children: IModelParameter[]
-      }
-
-      const components = parameter?.children.map((child, index) => {
-        if (child.only3D) return
-        if (child.htmlEntity === 'formula') {
-          return build2DFormula(key + '&' + index, child, (value: string) =>
-            onChange(simulation, key, index, value, swr)
-          )
-        } else if (child.htmlEntity === 'select') {
-          return build2DSelect(key + '&' + index, child, (value: string) =>
-            onChange(simulation, key, index, value, swr)
-          )
-        } else if (child.htmlEntity === 'checkbox') {
-          return build2DCheckbox(key + '&' + index, child, (e) =>
-            onChange(simulation, key, index, e.target.checked, swr)
-          )
+  const parameters = useMemo(
+    () =>
+      Object.keys(subScheme).map((key) => {
+        if (key === 'index' || key === 'title' || key == 'done') return null
+        const parameter = subScheme[key] as {
+          label: string
+          advanced?: boolean
+          children: IModelParameter[]
         }
-      })
 
-      if (parameter?.advanced) {
-        advanced.push(
-          <Card size="small" key={key} title={parameter?.label}>
-            <Space direction="vertical">{components}</Space>
-          </Card>
+        if (parameter.advanced) return null
+
+        return (
+          <Parameter
+            simulation={simulation}
+            dimension={dimension}
+            key={key}
+            parameter={parameter}
+            swr={swr}
+          />
         )
-      } else {
-        parameters.push(
-          <Card size="small" key={key} title={parameter?.label}>
-            <Space direction="vertical">{components}</Space>
-          </Card>
-        )
-      }
-    })
-  } else {
-    Object.keys(subScheme).forEach((key) => {
-      if (key === 'index' || key === 'title' || key == 'done') return
+      }),
+    [subScheme]
+  )
 
-      const parameter = subScheme[key] as {
-        label: string
-        advanced?: boolean
-        children: IModelParameter[]
-      }
-
-      const components = parameter?.children.map((child, index) => {
-        if (child.htmlEntity === 'formula') {
-          return buildFormula(key + '&' + index, child, (value: string) =>
-            onChange(simulation, key, index, value, swr)
-          )
-        } else if (child.htmlEntity === 'select') {
-          return buildSelect(key + '&' + index, child, (value: string) =>
-            onChange(simulation, key, index, value, swr)
-          )
-        } else if (child.htmlEntity === 'checkbox') {
-          return buildCheckbox(key + '&' + index, child, (e) =>
-            onChange(simulation, key, index, e.target.checked, swr)
-          )
+  const advanced = useMemo(
+    () =>
+      Object.keys(subScheme).map((key) => {
+        if (key === 'index' || key === 'title' || key == 'done') return null
+        const parameter = subScheme[key] as {
+          label: string
+          advanced?: boolean
+          children: IModelParameter[]
         }
-      })
 
-      if (parameter?.advanced) {
-        advanced.push(
-          <Card size="small" key={key} title={parameter?.label}>
-            <Space direction="vertical">{components}</Space>
-          </Card>
+        if (!parameter.advanced) return null
+
+        return (
+          <Parameter
+            simulation={simulation}
+            dimension={dimension}
+            key={key}
+            parameter={parameter}
+            swr={swr}
+          />
         )
-      } else {
-        parameters.push(
-          <Card size="small" key={key} title={parameter?.label}>
-            <Space direction="vertical">{components}</Space>
-          </Card>
-        )
-      }
-    })
-  }
+      }),
+    [subScheme]
+  )
 
   /**
    * Render

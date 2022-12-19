@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -76,7 +76,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     unmount()
   })
 
-  test('fill', () => {
+  test('fill', async () => {
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={props.onValueChange} />
     ))
@@ -104,7 +104,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2))
 
-    waitFor(() => screen.getByRole('Formula'))
+    await waitFor(() => screen.getByRole('Formula'))
 
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
@@ -118,7 +118,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     unmount()
   })
 
-  test('fill - error', () => {
+  test('fill - error', async () => {
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={() => props.onValueChange(1.1)} />
     ))
@@ -147,7 +147,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2))
 
-    waitFor(() => screen.getByRole('Formula'))
+    await waitFor(() => screen.getByRole('Formula'))
 
     // Formula
     const formula = screen.getByRole('Formula')

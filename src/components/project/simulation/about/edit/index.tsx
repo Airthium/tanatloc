@@ -1,16 +1,17 @@
 /** @module Components.Project.Simulation.About.Edit */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
-
-import { EditButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
-import Dialog from '@/components/assets/dialog'
 
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
+
+import { EditButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+import Dialog from '@/components/assets/dialog'
+
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -36,7 +37,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onEdit = async (
+export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   values: { name: string },
   swr: {
@@ -79,6 +80,27 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * On edit
+   * @param values Values
+   */
+  const onEdit = useCallback(
+    async (values: { name: string }): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onEdit(simulation, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [simulation, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -89,19 +111,7 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
         visible={visible}
         initialValues={{ name: simulation.name }}
         onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onEdit(simulation, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onOk={onEdit}
         loading={loading}
       >
         <Form.Item

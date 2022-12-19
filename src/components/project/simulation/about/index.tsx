@@ -13,11 +13,11 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import { globalStyle } from '@/styles'
-
 import Copy from '../copy'
 import Edit from './edit'
 import Delete from '../delete'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props

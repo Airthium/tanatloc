@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Layout, Menu, Modal, Select, Tabs } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
@@ -8,6 +8,13 @@ import { merge } from 'lodash'
 
 import { IClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
+import {
+  IFrontMutateSimulationsItem,
+  IFrontSimulationsItem,
+  IFrontUser
+} from '@/api/index.d'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
@@ -15,17 +22,8 @@ import MathJax from '@/components/assets/mathjax'
 import Models from '@/models'
 
 import Utils from '@/lib/utils'
-
-import {
-  IFrontMutateSimulationsItem,
-  IFrontSimulationsItem,
-  IFrontUser
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 import PluginsAPI from '@/api/plugins'
-
-import { globalStyle } from '@/styles'
-import style from './index.style'
 
 import About from './about'
 import Geometry from './geometry'
@@ -35,6 +33,9 @@ import Initialization from './initialization'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 import Postprocessing from './postprocessing'
+
+import { globalStyle } from '@/styles'
+import style from './index.style'
 
 /**
  * Selector props
@@ -59,13 +60,13 @@ export const errors = {
  * @param user User
  * @param setModels Set models
  */
-export const pluginsList = (
+export const _pluginsList = (
   user: Pick<IFrontUser, 'authorizedplugins'>,
   setModels: (models: IModel[]) => void
 ) => {
   PluginsAPI.list()
     .then((plugins) => {
-      const allModels = loadModels(user, Models, plugins)
+      const allModels = _loadModels(user, Models, plugins)
 
       setModels(allModels)
     })
@@ -80,7 +81,7 @@ export const pluginsList = (
  * @param models Models
  * @param plugins Plugins
  */
-export const loadModels = (
+export const _loadModels = (
   user: Pick<IFrontUser, 'authorizedplugins'>,
   models: IModel[],
   plugins: IClientPlugin[]
@@ -118,12 +119,12 @@ const Selector = ({
   const [category, setCategory] = useState<string>()
 
   // Models
-  useEffect(() => {
-    user && pluginsList(user, setModels)
+  useCustomEffect(() => {
+    user && _pluginsList(user, setModels)
   }, [user])
 
   // Categories
-  useEffect(() => {
+  useCustomEffect(() => {
     // Categories
     const newCategories = models
       .map((m) => m.category)
@@ -157,49 +158,71 @@ const Selector = ({
     [user]
   )
 
-  // Menu items
-  const tanatlocMenuItems: ItemType[] = [
-    {
-      key: 'category',
-      disabled: true,
-      label: (
-        <Select
-          css={globalStyle.fullWidth}
-          options={categories}
-          allowClear
-          showArrow={false}
-          placeholder="Category filter"
-          onChange={(value) => setCategory(value)}
-        />
-      )
-    }
-  ]
-  models.forEach((model) => {
-    if (!category || model.category === category)
-      tanatlocMenuItems.push({ key: model.algorithm, label: model.name })
-  })
+  /**
+   * On modal ok
+   */
+  const onModalOk = useCallback(async () => {
+    setLoading(true)
+    if (current)
+      try {
+        await onOk(current)
+      } catch (err) {}
+    setLoading(false)
+  }, [current, onOk])
 
-  const userMenuItems: ItemType[] = [
-    {
-      key: 'category',
-      disabled: true,
-      label: (
-        <Select
-          css={globalStyle.fullWidth}
-          options={categories}
-          allowClear
-          showArrow={false}
-          placeholder="Category filter"
-          onChange={(value) => setCategory(value)}
-        />
-      )
-    }
-  ]
-  user &&
-    user.models.forEach((model) => {
+  // Menu items (Tanatloc)
+  const tanatlocMenuItems: ItemType[] = useMemo(() => {
+    const items = [
+      {
+        key: 'category',
+        disabled: true,
+        label: (
+          <Select
+            css={globalStyle.fullWidth}
+            options={categories}
+            allowClear
+            showArrow={false}
+            placeholder="Category filter"
+            onChange={setCategory}
+          />
+        )
+      }
+    ]
+
+    models.forEach((model) => {
+      if (!category || model.category === category)
+        tanatlocMenuItems.push({ key: model.algorithm, label: model.name })
+    })
+
+    return items
+  }, [user, categories])
+
+  // Menu items (user)
+  const userMenuItems: ItemType[] = useMemo(() => {
+    const items = [
+      {
+        key: 'category',
+        disabled: true,
+        label: (
+          <Select
+            css={globalStyle.fullWidth}
+            options={categories}
+            allowClear
+            showArrow={false}
+            placeholder="Category filter"
+            onChange={setCategory}
+          />
+        )
+      }
+    ]
+
+    user?.models.forEach((model) => {
       if (!category || model.category === category)
         userMenuItems.push({ key: model.algorithm, label: model.name })
     })
+
+    return items
+  }, [user, categories])
 
   /**
    * Render
@@ -210,15 +233,8 @@ const Selector = ({
       title="Create simulation"
       okText="Create"
       okButtonProps={{ loading: loading }}
-      onOk={async () => {
-        setLoading(true)
-        if (current)
-          try {
-            await onOk(current)
-          } catch (err) {}
-        setLoading(false)
-      }}
-      onCancel={() => onCancel()}
+      onOk={onModalOk}
+      onCancel={onCancel}
       width="80%"
     >
       <Layout>
@@ -275,7 +291,7 @@ export interface IUpdaterProps {
  * @param models Models
  * @param swr SWR
  */
-export const onUpdate = async (
+export const _onUpdate = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   models: IModel[],
   swr: {
@@ -323,12 +339,12 @@ const Updater = ({
   const [models, setModels] = useState<IModel[]>([])
 
   // Models
-  useEffect(() => {
-    user && pluginsList(user, setModels)
+  useCustomEffect(() => {
+    user && _pluginsList(user, setModels)
   }, [user])
 
   // Check model update
-  useEffect(() => {
+  useCustomEffect(() => {
     const currentModel = models.find(
       (m) => m.algorithm === simulation?.scheme?.algorithm
     )
@@ -343,7 +359,7 @@ const Updater = ({
           closable: false,
           okButtonProps: { hidden: true }
         })
-        onUpdate(simulation, models, swr).finally(() => Modal.destroyAll())
+        _onUpdate(simulation, models, swr).finally(() => Modal.destroyAll())
       }
     }
   }, [simulation, models, swr])

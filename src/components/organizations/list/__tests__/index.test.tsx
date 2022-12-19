@@ -73,7 +73,7 @@ describe('components/organizations/list', () => {
     setOrganization.mockReset()
   })
 
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -83,8 +83,8 @@ describe('components/organizations/list', () => {
       />
     )
 
-    await waitFor(() => expect(mockUserToAvatar).toHaveBeenCalled())
-    await waitFor(() => expect(mockGroupToAvatar).toHaveBeenCalled())
+    waitFor(() => expect(mockUserToAvatar).toHaveBeenCalled())
+    waitFor(() => expect(mockGroupToAvatar).toHaveBeenCalled())
 
     unmount()
   })
@@ -154,7 +154,7 @@ describe('components/organizations/list', () => {
     unmount()
   })
 
-  test('quit', async () => {
+  test('quit', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -178,19 +178,17 @@ describe('components/organizations/list', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockOrganizationQuit).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockOrganizationQuit).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
     mockOrganizationQuit.mockImplementation(() => {
       throw new Error('quit error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockOrganizationQuit).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockOrganizationQuit).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.quit,
         new Error('quit error')
@@ -200,7 +198,7 @@ describe('components/organizations/list', () => {
     unmount()
   })
 
-  test('accept (owner)', async () => {
+  test('accept (owner)', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -228,19 +226,17 @@ describe('components/organizations/list', () => {
 
     // Normal
     fireEvent.click(buttons[0])
-    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
     mockOrganizationAccept.mockImplementation(() => {
       throw new Error('accept error')
     })
     fireEvent.click(buttons[0])
-    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.accept,
         new Error('accept error')
@@ -250,7 +246,7 @@ describe('components/organizations/list', () => {
     unmount()
   })
 
-  test('decline (owner)', async () => {
+  test('decline (owner)', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -278,23 +274,17 @@ describe('components/organizations/list', () => {
 
     // Normal
     fireEvent.click(buttons[1])
-    await waitFor(() =>
-      expect(mockOrganizationDecline).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() =>
-      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockOrganizationDecline).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
     mockOrganizationDecline.mockImplementation(() => {
       throw new Error('decline error')
     })
     fireEvent.click(buttons[1])
-    await waitFor(() =>
-      expect(mockOrganizationDecline).toHaveBeenCalledTimes(2)
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockOrganizationDecline).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.decline,
         new Error('decline error')
@@ -304,7 +294,7 @@ describe('components/organizations/list', () => {
     unmount()
   })
 
-  test('accept (user)', async () => {
+  test('accept (user)', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -332,19 +322,17 @@ describe('components/organizations/list', () => {
 
     // Normal
     fireEvent.click(buttons[0])
-    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
     mockOrganizationAccept.mockImplementation(() => {
       throw new Error('accept error')
     })
     fireEvent.click(buttons[0])
-    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.accept,
         new Error('accept error')
@@ -354,7 +342,7 @@ describe('components/organizations/list', () => {
     unmount()
   })
 
-  test('decline (user)', async () => {
+  test('decline (user)', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -382,23 +370,17 @@ describe('components/organizations/list', () => {
 
     // Normal
     fireEvent.click(buttons[1])
-    await waitFor(() =>
-      expect(mockOrganizationDecline).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() =>
-      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockOrganizationDecline).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
     mockOrganizationDecline.mockImplementation(() => {
       throw new Error('decline error')
     })
     fireEvent.click(buttons[1])
-    await waitFor(() =>
-      expect(mockOrganizationDecline).toHaveBeenCalledTimes(2)
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockOrganizationDecline).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.decline,
         new Error('decline error')
@@ -408,7 +390,7 @@ describe('components/organizations/list', () => {
     unmount()
   })
 
-  test('accept (user, no users)', async () => {
+  test('accept (user, no users)', () => {
     const { unmount } = render(
       <List
         user={user}
@@ -436,15 +418,13 @@ describe('components/organizations/list', () => {
 
     // Normal
     fireEvent.click(buttons[0])
-    await waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockOrganizationAccept).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('onResize', async () => {
+  test('onResize', () => {
     Object.defineProperty(Element.prototype, 'clientHeight', {
       value: '1000'
     })

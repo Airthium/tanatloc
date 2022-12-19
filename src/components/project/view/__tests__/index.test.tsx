@@ -81,7 +81,7 @@ describe('components/project/view', () => {
     unmount()
   })
 
-  test('with geometry error', async () => {
+  test('with geometry error', () => {
     mockGeometryGet.mockImplementation(() => {
       throw new Error('geometry get error')
     })
@@ -89,9 +89,9 @@ describe('components/project/view', () => {
       <View simulation={simulation} project={project} geometries={geometries} />
     )
 
-    await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.part,
         new Error('geometry get error')
@@ -101,17 +101,17 @@ describe('components/project/view', () => {
     unmount()
   })
 
-  test('with geometry', async () => {
+  test('with geometry', () => {
     const { unmount } = render(
       <View simulation={simulation} project={project} geometries={geometries} />
     )
 
-    await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('with result error', async () => {
+  test('with result error', () => {
     mockResultLoad.mockImplementation(() => {
       throw new Error('result load error')
     })
@@ -124,9 +124,9 @@ describe('components/project/view', () => {
       />
     )
 
-    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.part,
         new Error('result load error')
@@ -136,7 +136,7 @@ describe('components/project/view', () => {
     unmount()
   })
 
-  test('with result', async () => {
+  test('with result', () => {
     const { unmount } = render(
       <View
         project={project}
@@ -146,12 +146,12 @@ describe('components/project/view', () => {
       />
     )
 
-    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('with postprocessing error', async () => {
+  test('with postprocessing error', () => {
     mockResultLoad.mockImplementation(() => {
       throw new Error('postprocessing load error')
     })
@@ -165,9 +165,9 @@ describe('components/project/view', () => {
       />
     )
 
-    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.part,
         new Error('postprocessing load error')
@@ -177,7 +177,7 @@ describe('components/project/view', () => {
     unmount()
   })
 
-  test('with postprocessing', async () => {
+  test('with postprocessing', () => {
     const { unmount } = render(
       <View
         project={project}
@@ -188,7 +188,7 @@ describe('components/project/view', () => {
       />
     )
 
-    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
 
     unmount()
   })

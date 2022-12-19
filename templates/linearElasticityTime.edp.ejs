@@ -118,7 +118,7 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 <% } -%>
 		)
 <% for (const p of presure) { -%>
-		- intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+		+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
 			(<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
 <% } -%>

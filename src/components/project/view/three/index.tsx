@@ -43,6 +43,8 @@ import { css } from '@emotion/react'
 import { IFrontProject } from '@/api/index.d'
 import { IGeometryPart } from '@/lib/index.d'
 
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -76,7 +78,6 @@ import {
   select,
   unhighlight,
   unselect,
-  // setPart,
   setPoint
 } from '@/context/select/actions'
 
@@ -117,7 +118,7 @@ let alreadyZoomToFit = false
  * Compute scene bounding box
  * @param scene Scene
  */
-export const computeSceneBoundingSphere = (
+export const _computeSceneBoundingSphere = (
   scene: Scene & { boundingBox?: Box3; boundingSphere?: Sphere }
 ): void => {
   const box = new Box3()
@@ -152,7 +153,7 @@ export const computeSceneBoundingSphere = (
  * @param controls Controls
  * @param direction Direction
  */
-export const zoom = (
+export const _zoom = (
   camera: PerspectiveCamera,
   controls: TrackballControls,
   direction: 1 | -1
@@ -169,49 +170,11 @@ export const zoom = (
 }
 
 let zoomInProgress: number | undefined = undefined
-/**
- * Zoom in
- * @param camera Camera
- * @param controls Controls
- */
-export const zoomIn = (
-  camera: PerspectiveCamera,
-  controls: TrackballControls
-): void => {
-  zoom(camera, controls, 1)
-  const zoomInAnimationFrame = () => zoomIn(camera, controls)
-  zoomInProgress = requestAnimationFrame(zoomInAnimationFrame)
-}
-
-/**
- * Zoom out
- * @param camera Camera
- * @param controls Controls
- */
-export const zoomOut = (
-  camera: PerspectiveCamera,
-  controls: TrackballControls
-): void => {
-  zoom(camera, controls, -1)
-  const zoomOutAnimationFrame = () => zoomOut(camera, controls)
-  zoomInProgress = requestAnimationFrame(zoomOutAnimationFrame)
-}
-
-/**
- * Zoom stop
- */
-export const zoomStop = (): void => {
-  zoomInProgress && cancelAnimationFrame(zoomInProgress)
-  zoomInProgress = undefined
-}
 
 /**
  * Zoom to fit
- * @param scene Scene
- * @param camera Camera
- * @param controls Controls
  */
-export const zoomToFit = (
+export const _zoomToFit = (
   scene: Scene & { boundingSphere: Sphere },
   camera: PerspectiveCamera,
   controls: TrackballControls
@@ -259,7 +222,7 @@ export const zoomToFit = (
  * @param helpers Helpers
  * @param dispatch Dispatch
  */
-export const loadPart = async (
+export const _loadPart = async (
   part: IGeometryPart,
   scene: Scene & { boundingSphere: Sphere },
   camera: PerspectiveCamera,
@@ -315,10 +278,10 @@ export const loadPart = async (
 
   // Scene
   scene.add(mesh)
-  computeSceneBoundingSphere(scene)
+  _computeSceneBoundingSphere(scene)
 
   // Zoom
-  if (!alreadyZoomToFit) zoomToFit(scene, camera, controls)
+  if (!alreadyZoomToFit) _zoomToFit(scene, camera, controls)
 
   // Grid
   helpers.gridHelper.update()
@@ -338,22 +301,13 @@ export const loadPart = async (
 }
 
 /**
- * Toggle grid
- * @param gridHelper Grid helper
- * @param checked Checked
- */
-export const toggleGrid = (gridHelper: IGridHelper, checked: boolean) => {
-  gridHelper.setVisible(checked)
-}
-
-/**
  * Take screenshot
  * @param project Project
  * @param scene Scene
  * @param camera Camera
  * @param renderer Renderer
  */
-export const takeScreenshot = async (
+export const _takeScreenshot = async (
   project: IProps['project'],
   scene: Scene,
   camera: PerspectiveCamera,
@@ -409,7 +363,7 @@ export const takeScreenshot = async (
  * @param camera Camera
  * @param renderer Renderer
  */
-export const downloadScreenshot = (
+export const _downloadScreenshot = (
   project: IProps['project'],
   scene: Scene,
   camera: PerspectiveCamera,
@@ -692,14 +646,14 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   }, [router])
 
   // Parts
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!scene.current) return
     const sceneChildren = scene.current.children
 
     // Check parts
     if (!parts.length) {
       // Bounding sphere
-      computeSceneBoundingSphere(scene.current)
+      _computeSceneBoundingSphere(scene.current)
 
       // Grid
       gridHelper.current!.update()
@@ -730,7 +684,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     // Add
     toAdd.forEach((part) => {
       // Load
-      loadPart(
+      _loadPart(
         part,
         scene.current!,
         camera.current!,
@@ -748,18 +702,18 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
         dispatch
       ).catch((err) => {
         ErrorNotification(errors.load, err)
-        computeSceneBoundingSphere(scene.current!)
+        _computeSceneBoundingSphere(scene.current!)
       })
     })
   }, [parts, transparent, displayMesh, dispatch])
 
   // Dimension
-  useEffect(() => {
+  useCustomEffect(() => {
     if (!scene.current) return
 
     // Dimension
     if (parts[0]?.summary.dimension === 2) {
-      computeSceneBoundingSphere(scene.current)
+      _computeSceneBoundingSphere(scene.current)
 
       // Set camera
       const normal = new Vector3(0, 0, 1)
@@ -885,6 +839,103 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   }, [sectionView])
 
   /**
+   * Take screenshot
+   */
+  const takeScreenshot = useCallback(async () => {
+    setScreenshot(true)
+    try {
+      await _takeScreenshot(
+        project,
+        scene.current!,
+        camera.current!,
+        renderer.current!
+      )
+    } finally {
+      setScreenshot(false)
+    }
+  }, [project])
+
+  /**
+   * Download screenshot
+   */
+  const downloadScreenshot = useCallback(() => {
+    setSavingScreenshot(true)
+    try {
+      _downloadScreenshot(
+        project,
+        scene.current!,
+        camera.current!,
+        renderer.current!
+      )
+    } finally {
+      setSavingScreenshot(false)
+    }
+  }, [project])
+
+  /**
+   * Toggle grid
+   * @param gridHelper Grid helper
+   * @param checked Checked
+   */
+  const toggleGrid = useCallback((checked: boolean) => {
+    gridHelper.current?.setVisible(checked)
+  }, [])
+
+  /**
+   * Zoom in
+   */
+  const zoomIn = useCallback((): void => {
+    _zoom(camera.current!, controls.current!, 1)
+    const zoomInAnimationFrame = () => zoomIn()
+    zoomInProgress = requestAnimationFrame(zoomInAnimationFrame)
+  }, [])
+
+  /**
+   * Zoom out
+   */
+  const zoomOut = useCallback((): void => {
+    _zoom(camera.current!, controls.current!, -1)
+    const zoomOutAnimationFrame = () => zoomOut()
+    zoomInProgress = requestAnimationFrame(zoomOutAnimationFrame)
+  }, [])
+
+  /**
+   * Zoom stop
+   */
+  const zoomStop = useCallback((): void => {
+    zoomInProgress && cancelAnimationFrame(zoomInProgress)
+    zoomInProgress = undefined
+  }, [])
+
+  /**
+   * Zoom to fit
+   */
+  const zoomToFit = useCallback((): void => {
+    _zoomToFit(scene.current!, camera.current!, controls.current!)
+  }, [])
+
+  /**
+   * Snap to X
+   */
+  const snapToX = useCallback((): void => {
+    sectionViewHelper.current!.toAxis(new Vector3(-1, 0, 0))
+  }, [])
+
+  /**
+   * Snap to Y
+   */
+  const snapToY = useCallback((): void => {
+    sectionViewHelper.current!.toAxis(new Vector3(0, -1, 0))
+  }, [])
+
+  /**
+   * Snap to Z
+   */
+  const snapToZ = useCallback((): void => {
+    sectionViewHelper.current!.toAxis(new Vector3(0, 0, -1))
+  }, [])
+
+  /**
    * Render
    */
   return (
@@ -902,19 +953,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                       type="text"
                       css={globalStyle.fullWidth}
                       loading={screenshot}
-                      onClick={async () => {
-                        setScreenshot(true)
-                        try {
-                          await takeScreenshot(
-                            project,
-                            scene.current!,
-                            camera.current!,
-                            renderer.current!
-                          )
-                        } finally {
-                          setScreenshot(false)
-                        }
-                      }}
+                      onClick={takeScreenshot}
                     >
                       Project snapshot
                     </Button>
@@ -927,19 +966,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                       type="text"
                       css={globalStyle.fullWidth}
                       loading={savingScreenshot}
-                      onClick={() => {
-                        setSavingScreenshot(true)
-                        try {
-                          downloadScreenshot(
-                            project,
-                            scene.current!,
-                            camera.current!,
-                            renderer.current!
-                          )
-                        } finally {
-                          setSavingScreenshot(false)
-                        }
-                      }}
+                      onClick={downloadScreenshot}
                     >
                       Export image
                     </Button>
@@ -959,7 +986,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
             defaultChecked
             checkedChildren={<BorderlessTableOutlined />}
             unCheckedChildren={<BorderlessTableOutlined />}
-            onChange={(checked) => toggleGrid(gridHelper.current!, checked)}
+            onChange={toggleGrid}
           />
         </Tooltip>
         <Tooltip title="Set transparency" placement="left">
@@ -976,7 +1003,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
         <Tooltip title="Zoom out" placement="left">
           <Button
             icon={<ZoomOutOutlined />}
-            onMouseDown={() => zoomOut(camera.current!, controls.current!)}
+            onMouseDown={zoomOut}
             onMouseUp={zoomStop}
             onMouseOut={zoomStop}
           />
@@ -984,26 +1011,21 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
         <Tooltip title="Zoom in" placement="left">
           <Button
             icon={<ZoomInOutlined />}
-            onMouseDown={() => zoomIn(camera.current!, controls.current!)}
+            onMouseDown={zoomIn}
             onMouseUp={zoomStop}
             onMouseOut={zoomStop}
           />
         </Tooltip>
         <Tooltip title="Zoom to fit" placement="left">
-          <Button
-            icon={<CompressOutlined />}
-            onClick={() =>
-              zoomToFit(scene.current!, camera.current!, controls.current!)
-            }
-          />
+          <Button icon={<CompressOutlined />} onClick={zoomToFit} />
         </Tooltip>
         <Tooltip title="Zoom to selection" placement="left">
           <Button
             icon={<SelectOutlined />}
-            onClick={() =>
-              selectionHelper.current!.isEnabled()
-                ? selectionHelper.current!.end()
-                : selectionHelper.current!.start()
+            onClick={
+              selectionHelper.current?.isEnabled()
+                ? selectionHelper.current?.end
+                : selectionHelper.current?.start
             }
           />
         </Tooltip>
@@ -1025,42 +1047,27 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
             <Tooltip title="Hide plane" placement="left">
               <Button
                 icon={<EyeInvisibleOutlined />}
-                onClick={() => sectionViewHelper.current!.toggleVisible()}
+                onClick={sectionViewHelper.current!.toggleVisible}
               />
             </Tooltip>
             <Tooltip title="Snap to X" placement="left">
-              <Button
-                className="ant-btn-icon-only"
-                onClick={() =>
-                  sectionViewHelper.current!.toAxis(new Vector3(-1, 0, 0))
-                }
-              >
+              <Button className="ant-btn-icon-only" onClick={snapToX}>
                 X
               </Button>
             </Tooltip>
             <Tooltip title="Snap to Y" placement="left">
-              <Button
-                className="ant-btn-icon-only"
-                onClick={() =>
-                  sectionViewHelper.current!.toAxis(new Vector3(0, -1, 0))
-                }
-              >
+              <Button className="ant-btn-icon-only" onClick={snapToY}>
                 Y
               </Button>
             </Tooltip>
             <Tooltip title="Snap to Z" placement="left">
-              <Button
-                className="ant-btn-icon-only"
-                onClick={() =>
-                  sectionViewHelper.current!.toAxis(new Vector3(0, 0, -1))
-                }
-              >
+              <Button className="ant-btn-icon-only" onClick={snapToZ}>
                 Z
               </Button>
             </Tooltip>
             <Tooltip title="Flip" placement="left">
               <Button
-                onClick={() => sectionViewHelper.current!.flip()}
+                onClick={sectionViewHelper.current!.flip}
                 icon={<RetweetOutlined />}
               />
             </Tooltip>

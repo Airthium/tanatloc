@@ -48,7 +48,7 @@ const DownloadButton = ({
         disabled={disabled}
         loading={loading}
         icon={<DownloadOutlined />}
-        onClick={() => onDownload()}
+        onClick={onDownload}
       >
         {children}
       </Button>

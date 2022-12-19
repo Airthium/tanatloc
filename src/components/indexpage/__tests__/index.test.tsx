@@ -38,7 +38,7 @@ describe('components/indexpage', () => {
     mockPush.mockReset()
   })
 
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(<Index />)
 
     unmount()
@@ -67,13 +67,13 @@ describe('components/indexpage', () => {
     unmount()
   })
 
-  test('electron', async () => {
+  test('electron', () => {
     //@ts-ignore
     window.process.type = 'renderer'
     const { unmount } = render(<Index />)
 
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })

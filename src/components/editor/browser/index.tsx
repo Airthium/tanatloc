@@ -222,9 +222,9 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
   // Tanatloc models
   const tanatlocModels = useMemo(
     () =>
-      Models.map((m, index) => (
+      Models.map((m) => (
         <TanatlocModel
-          key={index}
+          key={m.algorithm}
           model={m}
           setLoading={setLoading}
           setVisible={setVisible}
@@ -237,9 +237,9 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
   // User models
   const userModels = useMemo(
     () =>
-      user.models.map((_model, index) => (
+      user.models.map((model, index) => (
         <UserModel
-          key={index}
+          key={model.algorithm}
           user={user}
           index={index}
           swr={swr}

@@ -50,7 +50,7 @@ describe('components/login/password', () => {
     unmount()
   })
 
-  test('passwordRecover', async () => {
+  test('passwordRecover', () => {
     const values = { email: 'test@email.com' }
     mockDialog.mockImplementation((props) => (
       <div
@@ -73,18 +73,16 @@ describe('components/login/password', () => {
     fireEvent.click(dialog)
 
     // Normal
-    await waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
 
     // Error
     mockEmailRecover.mockImplementation(() => {
       throw new Error('recover error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenCalledWith(
         errors.recover,
         new Error('recover error')

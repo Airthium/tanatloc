@@ -1,6 +1,6 @@
 /** @module Components.Login.Password */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
@@ -22,7 +22,7 @@ export const errors = {
  * Password recover
  * @param value Value
  */
-export const passwordRecover = async (value: {
+export const _passwordRecover = async (value: {
   email: string
 }): Promise<void> => {
   try {
@@ -56,6 +56,34 @@ const PasswordRecover = (): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(async (values: { email: string }): Promise<void> => {
+    setLoading(true)
+    try {
+      await _passwordRecover(values)
+
+      // Close
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      setLoading(false)
+      throw err
+    }
+  }, [])
+
+  /**
    * Render
    */
   return (
@@ -63,20 +91,8 @@ const PasswordRecover = (): JSX.Element => {
       <Dialog
         title="Forgot your password ?"
         visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await passwordRecover(values)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
       >
         <Form.Item
@@ -92,7 +108,7 @@ const PasswordRecover = (): JSX.Element => {
         </Form.Item>
       </Dialog>
       <Typography.Text>
-        <Button type="link" onClick={() => setVisible(true)}>
+        <Button type="link" onClick={setVisibleTrue}>
           Forgot your password ?
         </Button>
       </Typography.Text>

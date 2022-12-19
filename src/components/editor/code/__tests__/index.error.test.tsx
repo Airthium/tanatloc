@@ -10,11 +10,11 @@ jest.mock('../json', () => {
 })
 
 describe('components/editor/code', () => {
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(<Code />)
 
-    await waitFor(() => screen.getByText('FreeFEM editor error'))
-    await waitFor(() => screen.getByText('JSON editor error'))
+    waitFor(() => screen.getByText('FreeFEM editor error'))
+    waitFor(() => screen.getByText('JSON editor error'))
 
     unmount()
   })

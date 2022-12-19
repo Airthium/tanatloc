@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
 import style from './index.style'
+import { useCallback } from 'react'
 
 /**
  * Props
@@ -25,6 +26,11 @@ function Error({ webStatusCode }: IProps): JSX.Element {
     electronStatusCode,
     err
   }: { electronStatusCode?: string; err?: string } = router.query
+
+  /**
+   * Reload
+   */
+  const reload = useCallback(() => router.reload(), [router])
 
   // Render
   let render: JSX.Element
@@ -63,11 +69,7 @@ function Error({ webStatusCode }: IProps): JSX.Element {
         <Typography.Title level={1}>
           An error occurred on the server
         </Typography.Title>
-        <Typography.Title
-          level={2}
-          underline={true}
-          onClick={() => router.reload()}
-        >
+        <Typography.Title level={2} underline={true} onClick={reload}>
           Please, refresh the page
         </Typography.Title>
       </>
@@ -76,11 +78,7 @@ function Error({ webStatusCode }: IProps): JSX.Element {
     render = (
       <>
         <Typography.Title level={1}>An error occurred</Typography.Title>
-        <Typography.Title
-          level={2}
-          underline={true}
-          onClick={() => router.reload()}
-        >
+        <Typography.Title level={2} underline={true} onClick={reload}>
           Please, refresh the page
         </Typography.Title>
       </>

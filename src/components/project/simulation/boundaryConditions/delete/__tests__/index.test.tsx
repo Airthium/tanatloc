@@ -105,7 +105,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
     unmount()
   })
 
-  test('onDelete', async () => {
+  test('onDelete', () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -128,19 +128,17 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

@@ -3,12 +3,7 @@
 import { NextRouter, useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Empty, Form, Input, InputRef, Layout, Tabs, Typography } from 'antd'
-
-import { LIMIT } from '@/config/string'
-
-import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
-import PageHeader from '@/components/assets/pageHeader'
+import { css } from '@emotion/react'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -17,14 +12,21 @@ import {
   IFrontUser,
   IFrontWorkspacesItem
 } from '@/api/index.d'
-import WorkspaceAPI from '@/api/workspace'
 
-import Workspace from '..'
-import Add from '../add'
+import { LIMIT } from '@/config/string'
+
 import { menuItems } from '@/components/dashboard'
 
+import Dialog from '@/components/assets/dialog'
+import { ErrorNotification } from '@/components/assets/notification'
+import PageHeader from '@/components/assets/pageHeader'
+
+import WorkspaceAPI from '@/api/workspace'
+
+import Add from '../add'
+import Workspace from '..'
+
 import dashboardStyle from '@/components/dashboard/index.style'
-import { css } from '@emotion/react'
 import { globalStyle } from '@/styles'
 
 /**
@@ -60,7 +62,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onOk = async (
+export const _onOk = async (
   router: NextRouter,
   values: Pick<IFrontWorkspacesItem, 'name'>,
   swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => void }
@@ -142,11 +144,11 @@ const WorkspacesList = ({
    * On ok
    * @param values Values
    */
-  const inElementOnOk = useCallback(
+  const onOk = useCallback(
     async (values: Pick<IFrontWorkspacesItem, 'name'>) => {
       setLoading(true)
       try {
-        await onOk(router, values, swr)
+        await _onOk(router, values, swr)
 
         // Close
         setLoading(false)
@@ -182,7 +184,7 @@ const WorkspacesList = ({
               loading={loading}
               title="Create a new workspace"
               onCancel={setVisibleFalse}
-              onOk={inElementOnOk}
+              onOk={onOk}
             >
               <Form.Item
                 label="Name"

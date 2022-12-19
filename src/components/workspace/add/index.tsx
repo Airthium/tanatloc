@@ -1,7 +1,9 @@
 /** @module Components.Workspace.Add */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
+
+import { IFrontNewWorkspace } from '@/api/index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -9,7 +11,6 @@ import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontNewWorkspace } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
@@ -33,7 +34,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onOk = async (
+export const _onAdd = async (
   values: Pick<IFrontNewWorkspace, 'name'>,
   swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => void }
 ): Promise<void> => {
@@ -68,31 +69,48 @@ const Add = ({ swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: Pick<IFrontNewWorkspace, 'name'>): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onAdd(values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [swr]
+  )
+
+  /**
    * Render
    */
   return (
     <>
-      <AddButton onAdd={() => setVisible(true)}>
-        Create a new workspace
-      </AddButton>
+      <AddButton onAdd={setVisibleTrue}>Create a new workspace</AddButton>
       <Dialog
         visible={visible}
         loading={loading}
         title="Create a new workspace"
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onOk(values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
       >
         <Form.Item
           label="Name"

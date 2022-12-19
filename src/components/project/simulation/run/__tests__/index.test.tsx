@@ -215,7 +215,7 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  test('running', async () => {
+  test('running', () => {
     const runningData = {
       scheme: { configuration: { run: { cloudServer: {} } } },
       tasks: [
@@ -256,7 +256,7 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  test('not running', async () => {
+  test('not running', () => {
     const notRunningData = {
       data: {
         scheme: { configuration: { run: {} } },
@@ -299,7 +299,7 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  test('onCloudServer', async () => {
+  test('onCloudServer', () => {
     mockCloudServer.mockImplementation((props) => (
       <div role="CloudServer" onClick={() => props.onOk({})} />
     ))
@@ -321,9 +321,9 @@ describe('components/project/simulation/run', () => {
       throw new Error('update error')
     })
     fireEvent.click(cloudServer)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -335,16 +335,14 @@ describe('components/project/simulation/run', () => {
       // mock
     })
     fireEvent.click(cloudServer)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() => expect(mockMutateSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockMutateSimulation).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('onRun', async () => {
+  test('onRun', () => {
     const { unmount } = render(
       <Run
         simulation={simulation}
@@ -363,28 +361,28 @@ describe('components/project/simulation/run', () => {
       throw new Error('run error')
     })
     fireEvent.click(run)
-    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.run,
         new Error('run error')
       )
     )
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Normal
     mockRun.mockImplementation(() => {
       // mock
     })
     fireEvent.click(run)
-    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
 
     unmount()
   })
 
-  test('onStop', async () => {
+  test('onStop', () => {
     const { unmount } = render(
       <Run
         simulation={simulation}
@@ -407,9 +405,9 @@ describe('components/project/simulation/run', () => {
       throw new Error('stop error')
     })
     fireEvent.click(stop)
-    await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.stop,
         new Error('stop error')
@@ -421,7 +419,7 @@ describe('components/project/simulation/run', () => {
       // Empty
     })
     fireEvent.click(stop)
-    await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockStop).toHaveBeenCalledTimes(2))
 
     unmount()
   })

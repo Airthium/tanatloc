@@ -39,14 +39,14 @@ describe('components/signup/validation', () => {
     unmount()
   })
 
-  test('render with id', async () => {
+  test('render with id', () => {
     mockRouter.mockImplementation(() => ({
       query: { id: 'id' }
     }))
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.wrongLink,
         undefined
@@ -56,7 +56,7 @@ describe('components/signup/validation', () => {
     unmount()
   })
 
-  test('correct type', async () => {
+  test('correct type', () => {
     const mockPush = jest.fn()
     mockRouter.mockImplementation(() => ({
       push: () => mockPush(),
@@ -65,12 +65,12 @@ describe('components/signup/validation', () => {
     mockLinkGet.mockImplementation(() => ({ type: 'subscribe' }))
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('get error', async () => {
+  test('get error', () => {
     const mockPush = jest.fn()
     mockRouter.mockImplementation(() => ({
       push: () => mockPush(),
@@ -81,8 +81,8 @@ describe('components/signup/validation', () => {
     })
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.internal,
         new Error('get error')
@@ -92,7 +92,7 @@ describe('components/signup/validation', () => {
     unmount()
   })
 
-  test('process error', async () => {
+  test('process error', () => {
     const mockPush = jest.fn()
     mockRouter.mockImplementation(() => ({
       push: () => mockPush(),
@@ -106,8 +106,8 @@ describe('components/signup/validation', () => {
     })
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.internal,
         new Error('process error')

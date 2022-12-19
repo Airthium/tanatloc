@@ -1,10 +1,6 @@
 /** @module Components.Project.View */
 
-import { useState, useEffect } from 'react'
-
-import { ErrorNotification } from '@/components/assets/notification'
-
-import { IGeometryPart } from '@/lib/index.d'
+import { useState } from 'react'
 
 import {
   IFrontGeometriesItem,
@@ -12,15 +8,25 @@ import {
   IFrontSimulationsItem,
   IFrontResult
 } from '@/api/index.d'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
+import { IGeometryPart } from '@/lib/index.d'
+
 import GeometryAPI from '@/api/geometry'
 import ResultAPI from '@/api/result'
 
 import ThreeView from './three'
 
-export type TGeometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'> & {
+// Local interfaces
+export interface TGeometry
+  extends Pick<IFrontGeometriesItem, 'id' | 'needCleanup'> {
   visible?: boolean
 }
-export type TResult = Pick<IFrontResult, 'glb' | 'originPath'>
+
+export interface TResult extends Pick<IFrontResult, 'glb' | 'originPath'> {}
 
 /**
  * Props
@@ -47,7 +53,7 @@ export const errors = {
  * @param type Type
  * @returns Part
  */
-const loadPart = async (
+export const _loadPart = async (
   simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
   file: Pick<IFrontGeometriesItem, 'id'> | TResult,
   type: 'geometry' | 'result'
@@ -72,6 +78,81 @@ const loadPart = async (
 }
 
 /**
+ * Load result
+ * @param simulation Simulation
+ * @param parts Parts
+ * @param result Result
+ * @param postprocessing Postprocessing
+ * @returns Result
+ */
+export const _loadResult = async (
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  parts: IGeometryPart[],
+  result?: TResult,
+  postprocessing?: TResult
+): Promise<IGeometryPart | undefined> => {
+  if (!postprocessing && result) {
+    const prevPart = parts.find((part) => part.extra?.glb === result.glb)
+    if (prevPart) {
+      return prevPart
+    } else {
+      const partContent = await _loadPart(simulation, result, 'result')
+      return partContent
+    }
+  }
+}
+
+/**
+ * Load postprocessing
+ * @param simulation Simulation
+ * @param parts Parts
+ * @param postprocessing Postprocessing
+ * @returns Postprocessing
+ */
+export const _loadPostprocessing = async (
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  parts: IGeometryPart[],
+  postprocessing?: TResult
+): Promise<IGeometryPart | undefined> => {
+  if (postprocessing) {
+    const prevPart = parts.find(
+      (part) => part.extra?.glb === postprocessing.glb
+    )
+    if (prevPart) {
+      return prevPart
+    } else {
+      const partContent = await _loadPart(simulation, postprocessing, 'result')
+      return partContent
+    }
+  }
+}
+
+/**
+ * Load geometries
+ * @param simulation Simulation
+ * @param parts Parts
+ * @param geometries Geometries
+ * @returns Geometries
+ */
+export const _loadGeometries = async (
+  simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
+  parts: IGeometryPart[],
+  geometries: TGeometry[]
+): Promise<IGeometryPart[]> => {
+  return Promise.all(
+    geometries.map(async (geometry) => {
+      const prevPart = parts.find((part) => part.extra?.id === geometry.id)
+      if (prevPart) {
+        return prevPart
+      } else {
+        const partContent = await _loadPart(simulation, geometry, 'geometry')
+        return partContent
+      }
+    })
+  )
+}
+
+/**
  * View
  * @param props Props
  * @returns View
@@ -88,7 +169,7 @@ const View = ({
   const [loading, setLoading] = useState<boolean>(false)
 
   // Parts
-  useEffect(() => {
+  useCustomEffect(() => {
     ;(async () => {
       setLoading(true)
 
@@ -96,53 +177,33 @@ const View = ({
         const newParts = []
 
         // Result
-        if (!postprocessing && result) {
-          const prevPart = parts.find((part) => part.extra?.glb === result.glb)
-          if (prevPart) {
-            newParts.push(prevPart)
-          } else {
-            const partContent = await loadPart(simulation, result, 'result')
-            newParts.push(partContent)
-          }
+        if (simulation) {
+          const newResult = await _loadResult(
+            simulation,
+            parts,
+            result,
+            postprocessing
+          )
+          newResult && newParts.push(newResult)
         }
 
         // Postprocessing
-        if (postprocessing) {
-          const prevPart = parts.find(
-            (part) => part.extra?.glb === postprocessing.glb
+        if (simulation) {
+          const newPostprocessing = await _loadPostprocessing(
+            simulation,
+            parts,
+            postprocessing
           )
-          if (prevPart) {
-            newParts.push(prevPart)
-          } else {
-            const partContent = await loadPart(
-              simulation,
-              postprocessing,
-              'result'
-            )
-            newParts.push(partContent)
-          }
+          newPostprocessing && newParts.push(newPostprocessing)
         }
 
         // Geometries
-        if (geometries.length) {
-          await Promise.all(
-            geometries.map(async (geometry) => {
-              const prevPart = parts.find(
-                (part) => part.extra?.id === geometry.id
-              )
-              if (prevPart) {
-                newParts.push(prevPart)
-              } else {
-                const partContent = await loadPart(
-                  simulation,
-                  geometry,
-                  'geometry'
-                )
-                newParts.push(partContent)
-              }
-            })
-          )
-        }
+        const newGeometries = await _loadGeometries(
+          simulation,
+          parts,
+          geometries
+        )
+        newParts.push(...newGeometries)
 
         setParts(newParts)
       } catch (err) {
@@ -150,8 +211,7 @@ const View = ({
         setLoading(false)
       }
     })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [simulation, `${geometries}`, result, postprocessing, `${parts}`])
+  }, [simulation, geometries, result, postprocessing, parts])
 
   /**
    * Render

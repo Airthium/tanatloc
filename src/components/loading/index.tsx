@@ -86,7 +86,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
 
     setErrorsDisplay(
       <div css={style.errors}>
-        {errors.map((err, index) => {
+        {errors.map((err) => {
           let child = null
           if (
             err.includes('docker: command not found') ||
@@ -115,7 +115,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
             )
 
           return (
-            <div key={index}>
+            <div key={err}>
               {err}
               {child}
             </div>
@@ -160,7 +160,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
               </>
             ) : (
               <>
-                <Spin size="large" />
+                <Spin size="large" indicator={<LoadingOutlined />} />
 
                 {text ?? 'Loading, please wait...'}
               </>

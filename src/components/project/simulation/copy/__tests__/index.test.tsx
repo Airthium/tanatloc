@@ -52,7 +52,7 @@ describe('components/project/simulation/copy', () => {
     unmount()
   })
 
-  test('onCopy', async () => {
+  test('onCopy', () => {
     const { unmount } = render(
       <Copy project={project} simulation={simulation} swr={swr} />
     )
@@ -62,20 +62,20 @@ describe('components/project/simulation/copy', () => {
     // Normal
     mockAdd.mockImplementation(() => ({}))
     fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.copy,
         new Error('add error')

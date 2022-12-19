@@ -1,6 +1,6 @@
 /** @module Components.Assets.Group.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -31,7 +31,7 @@ export const errors = {
  * @param group Group
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   group: Pick<IFrontGroupsItem, 'id'>,
   swr: { delOneGroup: (group: IFrontMutateGroupsItem) => void }
 ): Promise<void> => {
@@ -61,6 +61,18 @@ const Delete = ({ group, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(group, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [group, swr])
+
+  /**
    * Render
    */
   return (
@@ -74,14 +86,7 @@ const Delete = ({ group, swr }: IProps): JSX.Element => {
         </>
       }
       loading={loading}
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(group, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

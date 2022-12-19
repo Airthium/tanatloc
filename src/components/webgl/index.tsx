@@ -1,5 +1,6 @@
 /** @module Components.WebGL */
 
+import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
@@ -28,6 +29,81 @@ const WebGLError = (): JSX.Element => {
   const router = useRouter()
 
   /**
+   * Back
+   */
+  const back = useCallback(() => router.back(), [router])
+
+  /**
+   * Chrome Windows
+   */
+  const chromeWindows = useCallback(() => {
+    Modal.info({
+      title: 'Google Chrome (Windows)',
+      content: <NoManipBrowser />
+    })
+  }, [])
+
+  /**
+   * Chrome Mac/Linux
+   */
+  const chromeMacLinux = useCallback(
+    () =>
+      Modal.info({
+        title: 'Google Chrome (MacOS / Linux)',
+        content: <NoManipBrowser />
+      }),
+    []
+  )
+
+  /**
+   * Firefox Windows
+   */
+  const firefoxWindows = useCallback(
+    () =>
+      Modal.info({
+        title: 'Firefox (Windows)',
+        content: <FirefoxWindows />
+      }),
+    []
+  )
+
+  /**
+   * Firefox Mac/Linux
+   */
+  const firefoxMacLinux = useCallback(
+    () =>
+      Modal.info({
+        title: 'Firefox (MacOS / Linux)',
+        content: <FirefoxMac />
+      }),
+    []
+  )
+
+  /**
+   * Edge windows
+   */
+  const edgeWindows = useCallback(
+    () =>
+      Modal.info({
+        title: 'Microsoft Edge (Windows)',
+        content: <NoManipBrowser />
+      }),
+    []
+  )
+
+  /**
+   * Safari Mac
+   */
+  const safariMac = useCallback(
+    () =>
+      Modal.info({
+        title: 'Safari (MacOS)',
+        content: <SafariMac />
+      }),
+    []
+  )
+
+  /**
    * Render
    */
   return (
@@ -45,7 +121,7 @@ const WebGLError = (): JSX.Element => {
                 <AlertOutlined style={{ color: 'red' }} /> {errors.webGL}
               </Typography.Text>
               <Typography.Text>
-                <Button type="link" onClick={() => router.back()}>
+                <Button type="link" onClick={back}>
                   Return to the previous page
                 </Button>
               </Typography.Text>
@@ -56,41 +132,17 @@ const WebGLError = (): JSX.Element => {
               <Card title="Windows">
                 <ul>
                   <li>
-                    <Button
-                      type="text"
-                      onClick={() =>
-                        Modal.info({
-                          title: 'Google Chrome (Windows)',
-                          content: <NoManipBrowser />
-                        })
-                      }
-                    >
+                    <Button type="text" onClick={chromeWindows}>
                       Google Chrome
                     </Button>
                   </li>
                   <li>
-                    <Button
-                      type="text"
-                      onClick={() =>
-                        Modal.info({
-                          title: 'Firefox (Windows)',
-                          content: <FirefoxWindows />
-                        })
-                      }
-                    >
+                    <Button type="text" onClick={firefoxWindows}>
                       Mozilla Firefox
                     </Button>
                   </li>
                   <li>
-                    <Button
-                      type="text"
-                      onClick={() =>
-                        Modal.info({
-                          title: 'Microsoft Edge (Windows)',
-                          content: <NoManipBrowser />
-                        })
-                      }
-                    >
+                    <Button type="text" onClick={edgeWindows}>
                       Microsoft Edge
                     </Button>
                   </li>
@@ -99,41 +151,17 @@ const WebGLError = (): JSX.Element => {
               <Card title="MacOS / Linux">
                 <ul>
                   <li>
-                    <Button
-                      type="text"
-                      onClick={() =>
-                        Modal.info({
-                          title: 'Google Chrome (MacOS / Linux)',
-                          content: <NoManipBrowser />
-                        })
-                      }
-                    >
+                    <Button type="text" onClick={chromeMacLinux}>
                       Google Chrome
                     </Button>
                   </li>
                   <li>
-                    <Button
-                      type="text"
-                      onClick={() =>
-                        Modal.info({
-                          title: 'Firefox (MacOS / Linux)',
-                          content: <FirefoxMac />
-                        })
-                      }
-                    >
+                    <Button type="text" onClick={firefoxMacLinux}>
                       Mozilla Firefox
                     </Button>
                   </li>
                   <li>
-                    <Button
-                      type="text"
-                      onClick={() =>
-                        Modal.info({
-                          title: 'Safari (MacOS)',
-                          content: <SafariMac />
-                        })
-                      }
-                    >
+                    <Button type="text" onClick={safariMac}>
                       Safari
                     </Button>
                   </li>

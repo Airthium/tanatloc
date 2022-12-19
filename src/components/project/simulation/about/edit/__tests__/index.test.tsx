@@ -50,7 +50,7 @@ describe('components/project/simulation/about/edit', () => {
     unmount()
   })
 
-  test('onEdit', async () => {
+  test('onEdit', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -74,22 +74,18 @@ describe('components/project/simulation/about/edit', () => {
 
     // Normal
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

@@ -72,7 +72,7 @@ describe('components/project/simulation/run/log', () => {
     unmount()
   })
 
-  test('getCompleteLog', async () => {
+  test('getCompleteLog', () => {
     const { unmount } = render(<Log simulation={simulation} steps={steps} />)
 
     // Open drawer
@@ -87,23 +87,23 @@ describe('components/project/simulation/run/log', () => {
       throw new Error('log error')
     })
     fireEvent.click(logButton)
-    await waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.log,
         new Error('log error')
       )
     )
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Normal
     mockSimulationLog.mockImplementationOnce(() => ({
       log: Buffer.from('log')
     }))
     fireEvent.click(logButton)
-    await waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(2))
 
     unmount()
   })

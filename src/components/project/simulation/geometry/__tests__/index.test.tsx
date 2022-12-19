@@ -84,7 +84,7 @@ describe('components/project/simulation/geometry', () => {
     unmount()
   })
 
-  test('with geometry value', async () => {
+  test('with geometry value', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
@@ -137,9 +137,9 @@ describe('components/project/simulation/geometry', () => {
     const option = screen.getByText('geometry2')
     fireEvent.click(option)
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

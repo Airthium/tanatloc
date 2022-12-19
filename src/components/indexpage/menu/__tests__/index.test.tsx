@@ -14,6 +14,9 @@ jest.mock('@/api/user', () => ({
   useUser: () => [mockUser(), { loadingUser: mockLoadingUser() }]
 }))
 
+//@ts-ignore
+window.open = jest.fn
+
 describe('components/indexpage/menu', () => {
   beforeEach(() => {
     mockPush.mockReset()

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import PluginDialog, { errors } from '..'
@@ -130,7 +130,7 @@ describe('components/account/hpc/plugin/dialog', () => {
     unmount()
   })
 
-  test('onFinish', async () => {
+  test('onFinish', () => {
     mockDialog.mockImplementation(({ onOk }) => (
       <div
         onClick={async () => {
@@ -155,8 +155,8 @@ describe('components/account/hpc/plugin/dialog', () => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1)))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         ...plugin,
         configuration: {
@@ -176,8 +176,8 @@ describe('components/account/hpc/plugin/dialog', () => {
         }
       })
     )
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('add error')
@@ -189,13 +189,13 @@ describe('components/account/hpc/plugin/dialog', () => {
       // mock function
     })
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2)))
-    await waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('edit', async () => {
+  test('edit', () => {
     mockEditButton.mockImplementation(({ onEdit }) => (
       <div role="EditButton" onClick={onEdit} />
     ))
@@ -223,8 +223,8 @@ describe('components/account/hpc/plugin/dialog', () => {
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
 
-    await act(() => waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1)))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith({
         ...plugin,
         configuration: {
@@ -245,7 +245,7 @@ describe('components/account/hpc/plugin/dialog', () => {
         needReInit: true
       })
     )
-    await waitFor(() => expect(swr.mutateOnePlugin).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
   })

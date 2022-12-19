@@ -69,7 +69,7 @@ describe('components/project/simulation/run/sensors/list', () => {
     unmount()
   })
 
-  test('onEdit', async () => {
+  test('onEdit', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="Edit" onClick={props.onEdit} />
     ))
@@ -80,7 +80,7 @@ describe('components/project/simulation/run/sensors/list', () => {
     const edit = screen.getByRole('Edit')
     fireEvent.click(edit)
 
-    await new Promise((resolve) => setTimeout(resolve, 50))
+    // await new Promise((resolve) => setTimeout(resolve, 50))
 
     expect(onEdit).toHaveBeenCalledTimes(1)
 

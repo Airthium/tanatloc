@@ -62,7 +62,7 @@ describe('components/organizations/add', () => {
     unmount()
   })
 
-  test('onAdd', async () => {
+  test('onAdd', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -80,17 +80,17 @@ describe('components/organizations/add', () => {
     // Normal
     mockAdd.mockImplementation(() => ({}))
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneOrganization).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneOrganization).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')

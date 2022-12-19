@@ -2,7 +2,6 @@
 
 import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Form, Input } from 'antd'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
 
@@ -10,6 +9,7 @@ import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor, setModel } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
+import { FormListContainer, FormListItem } from '@/components/assets/form'
 
 import { globalStyle } from '@/styles'
 
@@ -180,23 +180,14 @@ const Save = (): JSX.Element => {
       >
         <Form.List name="scalarResults">
           {(fields, { add, remove }, { errors }) => (
-            <>
+            <FormListContainer label="scalar result" add={add} errors={errors}>
               {fields.map((field, index) => (
-                <Form.Item
+                <FormListItem
                   key={field.key}
-                  label={
-                    <div>
-                      <MinusCircleOutlined
-                        style={{
-                          fontSize: '16px',
-                          color: 'red',
-                          marginRight: '10px'
-                        }}
-                        onClick={() => remove(field.name)}
-                      />
-                      Scalar result {index + 1}
-                    </div>
-                  }
+                  label="Scalar result"
+                  field={field}
+                  index={index}
+                  remove={remove}
                 >
                   <Form.Item
                     name={[field.name, 'name']}
@@ -212,41 +203,25 @@ const Save = (): JSX.Element => {
                   >
                     <Input />
                   </Form.Item>
-                </Form.Item>
+                </FormListItem>
               ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  style={{ width: '60%' }}
-                  icon={<PlusOutlined />}
-                >
-                  Add scalar result
-                </Button>
-                <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
+            </FormListContainer>
           )}
         </Form.List>
         <Form.List name="vectorialResults">
           {(fields, { add, remove }, { errors }) => (
-            <>
+            <FormListContainer
+              label="vectorial result"
+              add={add}
+              errors={errors}
+            >
               {fields.map((field, index) => (
-                <Form.Item
+                <FormListItem
                   key={field.key}
-                  label={
-                    <div>
-                      <MinusCircleOutlined
-                        style={{
-                          fontSize: '16px',
-                          color: 'red',
-                          marginRight: '10px'
-                        }}
-                        onClick={() => remove(field.name)}
-                      />
-                      Vectorial result {index + 1}
-                    </div>
-                  }
+                  label="Vectorial result"
+                  field={field}
+                  index={index}
+                  remove={remove}
                 >
                   <Form.Item
                     name={[field.name, 'name']}
@@ -276,20 +251,9 @@ const Save = (): JSX.Element => {
                   >
                     <Input />
                   </Form.Item>
-                </Form.Item>
+                </FormListItem>
               ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  style={{ width: '60%' }}
-                  icon={<PlusOutlined />}
-                >
-                  Add vectorial result
-                </Button>
-                <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
+            </FormListContainer>
           )}
         </Form.List>
       </Dialog>

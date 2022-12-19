@@ -33,7 +33,11 @@ const load = async (
   )
 
   // Read summary
-  const jsons = extractJson(buffer.toString())
+  let toExtract = buffer.toString()
+  const pos = toExtract.indexOf('JSON{')
+  toExtract = toExtract.slice(pos + 4)
+
+  const jsons = extractJson(toExtract)
   const summary = jsons[0].scenes[0].extras
 
   return {

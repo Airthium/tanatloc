@@ -99,6 +99,16 @@ const Dialog = ({
   )
 
   /**
+   * On modal cancel
+   */
+  const onModalCancel = useCallback(() => {
+    if (onCancel) {
+      form.resetFields()
+      onCancel()
+    }
+  }, [form, onCancel])
+
+  /**
    * Render
    */
   return (
@@ -109,13 +119,7 @@ const Dialog = ({
       open={visible}
       closable={false}
       maskClosable={false}
-      onCancel={
-        onCancel &&
-        (() => {
-          form.resetFields()
-          onCancel()
-        })
-      }
+      onCancel={onModalCancel}
       cancelButtonProps={{
         ...cancelButtonProps,
         disabled: loading,

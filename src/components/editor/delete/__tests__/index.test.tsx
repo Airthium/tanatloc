@@ -48,7 +48,7 @@ describe('components/editor/delete', () => {
     unmount()
   })
 
-  test('onDelete', async () => {
+  test('onDelete', () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     mockDeleteButton.mockImplementation((props) => (
       <div
@@ -65,17 +65,17 @@ describe('components/editor/delete', () => {
     // Normal
     const button = screen.getByRole('DeleteButton')
     fireEvent.click(button)
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
     // Error
     mockUserUpdate.mockImplementation(() => {
       throw new Error('user update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.delete,
         new Error('user update error')

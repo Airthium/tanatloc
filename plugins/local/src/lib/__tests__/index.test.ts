@@ -671,7 +671,7 @@ describe('plugins/local/src/lib', () => {
     } as ISimulation<'scheme'[]>['scheme'])
   })
 
-  test('monitoring', async () => {
+  test('monitoring', () => {
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
     Local.monitoring(
       'id',

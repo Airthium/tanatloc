@@ -54,7 +54,7 @@ describe('components/assets/formula', () => {
     unmount()
   })
 
-  test('input change', async () => {
+  test('input change', () => {
     const { unmount } = render(
       <Formula defaultValue="value" onValueChange={onValueChange} />
     )
@@ -63,7 +63,7 @@ describe('components/assets/formula', () => {
     fireEvent.change(input, { target: { value: 'test' } })
     fireEvent.change(input, { target: { value: 'test1' } })
 
-    await waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
+    waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
 
     unmount()
   })

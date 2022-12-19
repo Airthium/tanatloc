@@ -1,15 +1,16 @@
 /** @module Components.Organizations.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
-
-import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import {
   IFrontMutateOrganizationsItem,
   IFrontOrganizationsItem
 } from '@/api/index.d'
+
+import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+
 import OrganizationAPI from '@/api/organization'
 
 /**
@@ -34,7 +35,7 @@ export const errors = {
  * @param organization Organization
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'name'>,
   swr: {
     delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
@@ -62,6 +63,18 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _onDelete(organization, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [organization, swr])
+
+  /**
    * Render
    */
   return (
@@ -74,14 +87,7 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
           <Typography.Text strong>{organization.name}</Typography.Text>?
         </>
       }
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(organization, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
       loading={loading}
     />
   )

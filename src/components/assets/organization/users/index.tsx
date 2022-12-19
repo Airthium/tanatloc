@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization.Users */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, Space, Table, TableColumnType } from 'antd'
 
 import {
@@ -48,100 +48,116 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const refTableUsers = useRef<HTMLDivElement>(null)
 
   // Columns
-  const avatarRender = (_: any, user: IFrontOrganizationsItem['users'][0]) =>
-    Utils.userToAvatar(user)
-  const ownerActionsRender = (
-    owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
-  ) => (
-    <Delete
-      disabled={organization.owners.length < 2 && !owner.pending}
-      user={{
-        id: owner.id,
-        email: owner.email
-      }}
-      organization={{
-        id: organization.id,
-        owners: organization.owners,
-        pendingowners: organization.pendingowners,
-        users: organization.users,
-        pendingusers: organization.pendingusers
-      }}
-      dBkey={owner.pending ? 'pendingowners' : 'owners'}
-      swr={{
-        mutateOneOrganization: swr.mutateOneOrganization
-      }}
-    />
-  )
-  const userActionsRender = (
-    user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
-  ) => (
-    <Delete
-      user={{
-        id: user.id,
-        email: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname
-      }}
-      organization={{
-        id: organization.id,
-        owners: organization.owners,
-        pendingowners: organization.pendingowners,
-        users: organization.users,
-        pendingusers: organization.pendingusers
-      }}
-      dBkey={user.pending ? 'pendingusers' : 'users'}
-      swr={{
-        mutateOneOrganization: swr.mutateOneOrganization
-      }}
-    />
+  const avatarRender = useCallback(
+    (_: any, user: IFrontOrganizationsItem['users'][0]) =>
+      Utils.userToAvatar(user),
+    []
   )
 
-  const columns = [
-    {
-      key: 'avatar',
-      dataIndex: 'avatar',
-      render: avatarRender
-    },
-    {
-      key: 'lastname',
-      title: 'Lastname',
-      dataIndex: 'lastname'
-    },
-    {
-      key: 'firstname',
-      title: 'Firstname',
-      dataIndex: 'firstname'
-    },
-    {
-      key: 'email',
-      title: 'Email',
-      dataIndex: 'email'
-    }
-  ]
+  const ownerActionsRender = useCallback(
+    (owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }) => (
+      <Delete
+        disabled={organization.owners.length < 2 && !owner.pending}
+        user={{
+          id: owner.id,
+          email: owner.email
+        }}
+        organization={{
+          id: organization.id,
+          owners: organization.owners,
+          pendingowners: organization.pendingowners,
+          users: organization.users,
+          pendingusers: organization.pendingusers
+        }}
+        dBkey={owner.pending ? 'pendingowners' : 'owners'}
+        swr={{
+          mutateOneOrganization: swr.mutateOneOrganization
+        }}
+      />
+    ),
+    [organization, swr]
+  )
 
-  const ownersColumns = [
-    ...columns,
-    {
-      key: 'actions',
-      title: 'Actions',
-      align: 'center' as TableColumnType<any>['align'],
-      fixed: 'right' as TableColumnType<any>['fixed'],
-      width: 75,
-      render: ownerActionsRender
-    }
-  ]
+  const userActionsRender = useCallback(
+    (user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }) => (
+      <Delete
+        user={{
+          id: user.id,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname
+        }}
+        organization={{
+          id: organization.id,
+          owners: organization.owners,
+          pendingowners: organization.pendingowners,
+          users: organization.users,
+          pendingusers: organization.pendingusers
+        }}
+        dBkey={user.pending ? 'pendingusers' : 'users'}
+        swr={{
+          mutateOneOrganization: swr.mutateOneOrganization
+        }}
+      />
+    ),
+    [organization, swr]
+  )
 
-  const usersColumns = [
-    ...columns,
-    {
-      key: 'actions',
-      title: 'Actions',
-      align: 'center' as TableColumnType<any>['align'],
-      fixed: 'right' as TableColumnType<any>['fixed'],
-      width: 75,
-      render: userActionsRender
-    }
-  ]
+  const columns = useMemo(
+    () => [
+      {
+        key: 'avatar',
+        dataIndex: 'avatar',
+        render: avatarRender
+      },
+      {
+        key: 'lastname',
+        title: 'Lastname',
+        dataIndex: 'lastname'
+      },
+      {
+        key: 'firstname',
+        title: 'Firstname',
+        dataIndex: 'firstname'
+      },
+      {
+        key: 'email',
+        title: 'Email',
+        dataIndex: 'email'
+      }
+    ],
+    [avatarRender]
+  )
+
+  const ownersColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        key: 'actions',
+        title: 'Actions',
+        align: 'center' as TableColumnType<any>['align'],
+        fixed: 'right' as TableColumnType<any>['fixed'],
+        width: 75,
+        render: ownerActionsRender
+      }
+    ],
+    [columns, ownerActionsRender]
+  )
+
+  const usersColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        key: 'actions',
+        title: 'Actions',
+        align: 'center' as TableColumnType<any>['align'],
+        fixed: 'right' as TableColumnType<any>['fixed'],
+        width: 75,
+        render: userActionsRender
+      }
+    ],
+    [columns, userActionsRender]
+  )
 
   const onResize = useCallback(() => {
     const table = refWrapper.current

@@ -1,10 +1,7 @@
 /** @module Components.Project.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Alert, Typography } from 'antd'
-
-import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import {
   IFrontMutateProjectsItem,
@@ -12,6 +9,10 @@ import {
   IFrontProjectsItem,
   IFrontWorkspacesItem
 } from '@/api/index.d'
+
+import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+
 import ProjectAPI from '@/api/project'
 
 /**
@@ -40,7 +41,7 @@ export const errors = {
  * @param project Project
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
   project: Pick<IFrontProjectsItem, 'id' | 'title'>,
   swr: {
@@ -78,6 +79,18 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(workspace, project, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [workspace, project, swr])
+
+  /**
    * Render
    */
   return (
@@ -96,14 +109,7 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
           />
         </>
       }
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(workspace, project, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

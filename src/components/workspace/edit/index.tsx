@@ -1,6 +1,6 @@
 /** @module Components.Workspace.Edit */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT } from '@/config/string'
@@ -37,7 +37,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onEdit = async (
+export const _onEdit = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'name'>,
   values: Pick<IFrontWorkspacesItem, 'name'>,
   swr: { mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void }
@@ -80,30 +80,49 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (values: Pick<IFrontWorkspacesItem, 'name'>): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onEdit(workspace, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [workspace, swr]
+  )
+
+  /**
    * Render
    */
   return (
     <>
-      <EditButton bordered dark onEdit={() => setVisible(true)} />
+      <EditButton bordered dark onEdit={setVisibleTrue} />
       <Dialog
         visible={visible}
         loading={loading}
         title="Edit the workspace"
         initialValues={{ name: workspace.name }}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            await onEdit(workspace, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
       >
         <Form.Item
           label="Name"

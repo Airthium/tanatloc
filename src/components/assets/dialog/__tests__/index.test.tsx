@@ -72,7 +72,7 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onOk', async () => {
+  test('onOk', () => {
     const { unmount } = render(
       <Dialog
         title="title"
@@ -89,16 +89,16 @@ describe('components/assets/dialog', () => {
 
     // Normal
     fireEvent.click(ok)
-    await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(1))
 
     // Error
     mockOnOk.mockImplementation(() => {
       throw new Error('onOk error')
     })
     fireEvent.click(ok)
-    await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.onOk,
         new Error('onOk error')
@@ -125,7 +125,7 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onKeyUp', async () => {
+  test('onKeyUp', () => {
     const { unmount } = render(
       <Dialog
         title="title"
@@ -147,7 +147,7 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onKeyUp, without onOk', async () => {
+  test('onKeyUp, without onOk', () => {
     const { unmount } = render(
       <Dialog
         title="title"

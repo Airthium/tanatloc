@@ -1,5 +1,6 @@
 /** @module Components.Assets.Dialog.Delete */
 
+import { useCallback } from 'react'
 import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 
@@ -45,6 +46,17 @@ const DeleteDialog = ({
   onOk
 }: IProps): JSX.Element => {
   /**
+   * On ok
+   */
+  const internalOnOk = useCallback(async () => {
+    try {
+      await onOk()
+    } catch (err) {
+      ErrorNotification(errors.onOk, err, false)
+    }
+  }, [onOk])
+
+  /**
    * Render
    */
   return (
@@ -57,14 +69,8 @@ const DeleteDialog = ({
       maskClosable={false}
       open={visible}
       cancelButtonProps={{ disabled: loading }}
-      onCancel={() => onCancel()}
-      onOk={async () => {
-        try {
-          await onOk()
-        } catch (err) {
-          ErrorNotification(errors.onOk, err, false)
-        }
-      }}
+      onCancel={onCancel}
+      onOk={internalOnOk}
       okButtonProps={{ danger: true, loading: loading }}
     >
       <Space align="start">

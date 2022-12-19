@@ -2,7 +2,6 @@
 
 import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Form, Input, Select } from 'antd'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
 
@@ -12,6 +11,7 @@ import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import { setCursor, setModel } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
+import { FormListContainer, FormListItem } from '@/components/assets/form'
 
 import { addOnCursor } from '..'
 
@@ -150,23 +150,14 @@ const Materials = (): JSX.Element => {
       >
         <Form.List name="materials">
           {(fields, { add, remove }, { errors }) => (
-            <>
+            <FormListContainer label="material" add={add} errors={errors}>
               {fields.map((field, index) => (
-                <Form.Item
+                <FormListItem
                   key={field.key}
-                  label={
-                    <div>
-                      <MinusCircleOutlined
-                        style={{
-                          fontSize: '16px',
-                          color: 'red',
-                          marginRight: '10px'
-                        }}
-                        onClick={() => remove(field.name)}
-                      />
-                      Material {index + 1}
-                    </div>
-                  }
+                  label="Material"
+                  field={field}
+                  index={index}
+                  remove={remove}
                 >
                   <Form.Item
                     name={[field.name, 'symbol']}
@@ -187,20 +178,9 @@ const Materials = (): JSX.Element => {
                   >
                     <Input />
                   </Form.Item>
-                </Form.Item>
+                </FormListItem>
               ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  style={{ width: '60%' }}
-                  icon={<PlusOutlined />}
-                >
-                  Add material
-                </Button>
-                <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
+            </FormListContainer>
           )}
         </Form.List>
       </Dialog>

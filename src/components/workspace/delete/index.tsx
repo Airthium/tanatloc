@@ -1,11 +1,12 @@
 /** @module Components.Workspace.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
+
+import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
@@ -30,7 +31,7 @@ export const errors = {
  * @param workspace Workspace
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   swr: { delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void }
 ): Promise<void> => {
@@ -56,6 +57,18 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(workspace, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [workspace, swr])
+
+  /**
    * Render
    */
   return (
@@ -63,14 +76,7 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
       bordered
       loading={loading}
       text="The projects contained in this workspace will be lost."
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(workspace, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

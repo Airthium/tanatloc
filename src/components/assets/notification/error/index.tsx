@@ -13,7 +13,7 @@ let closeNotification: string | undefined
 /**
  * Close all
  */
-export const closeAll = () => {
+export const _closeAll = () => {
   if (serverNotification) {
     notification.destroy(serverNotification)
     serverNotification = undefined
@@ -95,7 +95,7 @@ const ErrorNotification = (
     notification.info({
       key,
       message: (
-        <Button type="primary" onClick={closeAll}>
+        <Button type="primary" onClick={_closeAll}>
           Close all
         </Button>
       ),

@@ -1,7 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Data, { errors } from '..'
-import { act } from 'react-dom/test-utils'
 
 jest.mock('recharts', () => ({
   CartesianGrid: () => <div />,
@@ -24,7 +23,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => jest.fn()
+  colorGenerator: () => jest.fn()
 }))
 
 const mockSimulation = jest.fn()
@@ -82,7 +81,7 @@ describe('components/project/data', () => {
     unmount()
   })
 
-  test('with data', async () => {
+  test('with data', () => {
     const data = {
       tasks: [
         {
@@ -109,9 +108,7 @@ describe('components/project/data', () => {
     // Visible
 
     const button = screen.getByRole('button')
-    act(() => {
-      fireEvent.click(button)
-    })
+    fireEvent.click(button)
 
     // Checkbox
     const checkboxes = screen.getAllByTestId('table-checkbox')

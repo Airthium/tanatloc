@@ -1,8 +1,14 @@
 /** @module Components.Project.Add */
 
 import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
+
+import {
+  IFrontMutateWorkspacesItem,
+  IFrontNewProject,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 
 import { LIMIT } from '@/config/string'
 
@@ -10,11 +16,6 @@ import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import {
-  IFrontMutateWorkspacesItem,
-  IFrontNewProject,
-  IFrontWorkspacesItem
-} from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
 import { globalStyleFn } from '@/styles'
@@ -43,7 +44,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-export const onAdd = async (
+export const _onAdd = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
   values: Pick<IFrontNewProject, 'title' | 'description'>,
   swr: {
@@ -93,40 +94,61 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
   })
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On ok
+   * @param values Values
+   */
+  const onOk = useCallback(
+    async (
+      values: Pick<IFrontNewProject, 'title' | 'description'>
+    ): Promise<void> => {
+      setLoading(true)
+      try {
+        const newProject = await _onAdd(workspace, values, swr)
+
+        // Close
+        setLoading(false)
+        setVisible(false)
+
+        // Open project
+        router.push({
+          pathname: '/project',
+          query: {
+            page: 'workspaces',
+            workspaceId: workspace.id,
+            projectId: newProject.id
+          }
+        })
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [router, workspace, swr]
+  )
+
+  /**
    * Render
    */
   return (
     <>
-      <AddButton primary={false} dark onAdd={() => setVisible(true)}>
+      <AddButton primary={false} dark onAdd={setVisibleTrue}>
         Create a new project
       </AddButton>
       <Dialog
         title="Create a new project"
         visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={async (values) => {
-          setLoading(true)
-          try {
-            const newProject = await onAdd(workspace, values, swr)
-
-            // Close
-            setLoading(false)
-            setVisible(false)
-
-            // Open project
-            router.push({
-              pathname: '/project',
-              query: {
-                page: 'workspaces',
-                workspaceId: workspace.id,
-                projectId: newProject.id
-              }
-            })
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
+        onCancel={setVisibleFalse}
+        onOk={onOk}
         loading={loading}
       >
         <Form.Item

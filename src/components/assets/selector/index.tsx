@@ -17,6 +17,8 @@ import {
 } from '@ant-design/icons'
 import { css } from '@emotion/react'
 
+import { IFrontGeometriesItem } from '@/api/index.d'
+
 import { TGeometryColor } from '@/database/geometry/get'
 
 import { SelectContext, ISelect } from '@/context/select'
@@ -27,12 +29,15 @@ import {
   unselect
 } from '@/context/select/actions'
 
-import { IFrontGeometriesItem } from '@/api/index.d'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Utils from '@/lib/utils'
 
 import { globalStyle, globalStyleFn } from '@/styles'
 
+//TODO need global refactoring
+
+// Local interfaces
 export interface ISelection {
   label: string
   selected: { uuid: string; label: number }[]
@@ -69,9 +74,13 @@ const Selector = ({
   const { type, highlighted, selected, dispatch } = useContext(SelectContext)
 
   // Selected
-  useEffect(() => {
-    updateSelected(selected)
-  }, [updateSelected, selected])
+  useCustomEffect(
+    () => {
+      updateSelected(selected)
+    },
+    [selected],
+    [updateSelected]
+  )
 
   // Colors
   useEffect(() => {
@@ -98,26 +107,32 @@ const Selector = ({
    * On highglight
    * @param selection Selection
    */
-  const onHighlight = (selection: ISelect): void => {
-    dispatch(highlight(selection))
-  }
+  const onHighlight = useCallback(
+    (selection: ISelect): void => {
+      dispatch(highlight(selection))
+    },
+    [dispatch]
+  )
 
   /**
    * On unhighlight
    */
-  const onUnhighlight = (): void => {
+  const onUnhighlight = useCallback((): void => {
     dispatch(unhighlight())
-  }
+  }, [dispatch])
 
   /**
    * On select
    * @param selection Selection
    */
-  const onSelect = (selection: ISelect): void => {
-    if (selected.find((s) => s.uuid === selection.uuid))
-      dispatch(unselect(selection))
-    else dispatch(select(selection))
-  }
+  const onSelect = useCallback(
+    (selection: ISelect): void => {
+      if (selected.find((s) => s.uuid === selection.uuid))
+        dispatch(unselect(selection))
+      else dispatch(select(selection))
+    },
+    [selected, dispatch]
+  )
 
   /**
    * On color fitler
@@ -128,9 +143,16 @@ const Selector = ({
   }, [])
 
   /**
+   * On color fitler clear
+   */
+  const onColorFilterClear = useCallback((): void => {
+    setFilter(undefined)
+  }, [])
+
+  /**
    * Select all
    */
-  const selectAll = (): void => {
+  const selectAll = useCallback((): void => {
     geometry.summary[type!]?.forEach((element) => {
       if (
         !filter ||
@@ -146,12 +168,12 @@ const Selector = ({
           })
         )
     })
-  }
+  }, [geometry, type, filter, dispatch])
 
   /**
    * Unselect all
    */
-  const unselectAll = () => {
+  const unselectAll = useCallback(() => {
     geometry.summary[type!]?.forEach((element) => {
       if (
         !filter ||
@@ -167,12 +189,12 @@ const Selector = ({
           })
         )
     })
-  }
+  }, [geometry, type, filter, dispatch])
 
   /**
    * Swap selection
    */
-  const selectSwap = () => {
+  const selectSwap = useCallback(() => {
     geometry.summary[type!]?.forEach((element) => {
       if (
         !filter ||
@@ -204,7 +226,7 @@ const Selector = ({
         )
       }
     })
-  }
+  }, [geometry, selected, type, filter, dispatch])
 
   /**
    * On search
@@ -253,10 +275,7 @@ const Selector = ({
           {colors.length > 1 && (
             <>
               <Tooltip title="Reset">
-                <Button
-                  icon={<CloseOutlined />}
-                  onClick={() => onColorFilter()}
-                />
+                <Button icon={<CloseOutlined />} onClick={onColorFilterClear} />
               </Tooltip>
               {colors.map((color) => {
                 return (

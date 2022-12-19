@@ -35,7 +35,7 @@ describe('components/assets/input/password', () => {
     unmount()
   })
 
-  test('without system', async () => {
+  test('without system', () => {
     mockSystem.mockImplementation(() => undefined)
 
     const onFinish = jest.fn()
@@ -76,12 +76,12 @@ describe('components/assets/input/password', () => {
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('with system password', async () => {
+  test('with system password', () => {
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {
@@ -130,12 +130,12 @@ describe('components/assets/input/password', () => {
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('without system password', async () => {
+  test('without system password', () => {
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {}
@@ -179,12 +179,12 @@ describe('components/assets/input/password', () => {
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('without system password, without require', async () => {
+  test('without system password, without require', () => {
     mockConfig.mockImplementation(() => ({
       MIN_SIZE: 6,
       MAX_SIZE: 16,
@@ -235,12 +235,12 @@ describe('components/assets/input/password', () => {
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('edit mode', async () => {
+  test('edit mode', () => {
     const onFinish = jest.fn()
     const { unmount } = render(
       <Form name="form" onFinish={onFinish}>
@@ -254,7 +254,7 @@ describe('components/assets/input/password', () => {
 
     fireEvent.change(input, { target: { value: '******' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
   })

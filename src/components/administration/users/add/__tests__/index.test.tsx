@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import Add, { errors } from '..'
@@ -96,7 +96,7 @@ describe('components/administration/users/add', () => {
     unmount()
   })
 
-  test('onAdd', async () => {
+  test('onAdd', () => {
     mockAdd.mockImplementation(() => ({ alreadyExists: true }))
     mockDialog.mockImplementation((props) => (
       <div
@@ -116,9 +116,9 @@ describe('components/administration/users/add', () => {
 
     // Already exists
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1)))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('User already exists')
@@ -128,18 +128,18 @@ describe('components/administration/users/add', () => {
     // Not exists
     mockAdd.mockImplementation(() => ({}))
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneUser).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.addOneUser).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
     fireEvent.click(dialog)
-    await act(() => waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3)))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')

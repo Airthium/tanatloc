@@ -2,6 +2,12 @@
 
 // Bases classes
 
+class MockClock {
+  constructor() {
+    this.getDelta = () => 10
+  }
+}
+
 const traverse = (child, callback) => {
   callback(child)
 
@@ -193,6 +199,7 @@ class MockLineBasicMaterial extends MockMaterial {}
 
 class MockMesh {
   constructor() {
+    this.rotation = {}
     this.add = jest.fn()
     this.lookAt = jest.fn()
     this.rotateX = jest.fn()
@@ -227,6 +234,7 @@ class MockPerspectiveCamera {
     this.up = new MockVector3()
     this.position = new MockVector3()
     this.updateProjectionMatrix = jest.fn()
+    this.lookAt = jest.fn()
   }
 }
 
@@ -328,6 +336,7 @@ class MockVector3 {
     this.cross = () => new MockVector3()
     this.crossVectors = () => new MockVector3()
     this.dot = () => new MockVector3()
+    this.subVectors = jest.fn()
   }
 }
 
@@ -377,6 +386,7 @@ const MockBufferGeometryUtils = {
 }
 
 export const MockThree = {
+  Clock: MockClock,
   Object3D: MockObject3D,
   BufferGeometry: MockBufferGeometry,
   BufferAttribute: MockBufferAttribute,

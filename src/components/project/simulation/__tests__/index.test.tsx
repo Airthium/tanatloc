@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -102,7 +102,7 @@ describe('components/project/simulation.Selector', () => {
     onCancel.mockReset()
   })
 
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -112,12 +112,12 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => screen.getByText('Name2'))
+    waitFor(() => screen.getByText('Name2'))
 
     unmount()
   })
 
-  test('onCancel', async () => {
+  test('onCancel', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -127,7 +127,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => screen.getByText('Name2'))
+    waitFor(() => screen.getByText('Name2'))
 
     const button = screen.getByRole('button', { name: 'Close' })
     fireEvent.click(button)
@@ -135,7 +135,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('no user', async () => {
+  test('no user', () => {
     const { unmount } = render(
       <Simulation.Selector visible={visible} onOk={onOk} onCancel={onCancel} />
     )
@@ -143,7 +143,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('plugins error', async () => {
+  test('plugins error', () => {
     mockList.mockImplementation(() => {
       throw new Error()
     })
@@ -157,12 +157,12 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockList).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('onTanatocSelect', async () => {
+  test('onTanatocSelect', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -172,7 +172,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => screen.getByText('Name2'))
+    waitFor(() => screen.getByText('Name2'))
 
     const model = screen.getByText('Name')
     fireEvent.click(model)
@@ -180,7 +180,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('category (tanatloc)', async () => {
+  test('category (tanatloc)', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -190,22 +190,18 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => screen.getByText('Name2'))
+    waitFor(() => screen.getByText('Name2'))
 
     const select = screen.getByRole('combobox')
-    await act(async () => {
-      fireEvent.mouseDown(select)
-    })
+    fireEvent.mouseDown(select)
 
     const option = screen.getAllByText('category2')
-    await act(async () => {
-      fireEvent.click(option[1])
-    })
+    fireEvent.click(option[1])
 
     unmount()
   })
 
-  test('onCreate', async () => {
+  test('onCreate', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -215,7 +211,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => screen.getByText('Name2'))
+    waitFor(() => screen.getByText('Name2'))
 
     // Empty
     const create = screen.getByText('Create')
@@ -232,7 +228,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('onUserSelect', async () => {
+  test('onUserSelect', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -245,7 +241,7 @@ describe('components/project/simulation.Selector', () => {
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
     fireEvent.click(tab)
 
-    await waitFor(() => screen.getByText('Name User'))
+    waitFor(() => screen.getByText('Name User'))
 
     const model = screen.getByText('Name User')
     fireEvent.click(model)
@@ -253,7 +249,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('category (user)', async () => {
+  test('category (user)', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -266,22 +262,18 @@ describe('components/project/simulation.Selector', () => {
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
     fireEvent.click(tab)
 
-    await waitFor(() => screen.getByText('Name User'))
+    waitFor(() => screen.getByText('Name User'))
 
     const select = screen.getByRole('combobox')
-    await act(async () => {
-      fireEvent.mouseDown(select)
-    })
+    fireEvent.mouseDown(select)
 
     const option = screen.getAllByText('category2')
-    await act(async () => {
-      fireEvent.click(option[1])
-    })
+    fireEvent.click(option[1])
 
     unmount()
   })
 
-  test('authorized plugins', async () => {
+  test('authorized plugins', () => {
     const { unmount } = render(
       <Simulation.Selector
         user={{ ...user, authorizedplugins: ['model'] }}
@@ -291,7 +283,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    await waitFor(() => screen.getByText('NamePlugin'))
+    waitFor(() => screen.getByText('NamePlugin'))
 
     unmount()
   })
@@ -350,12 +342,10 @@ describe('components/project/simulation.Updater', () => {
     mockErrorNotification.mockReset()
   })
 
-  test('render', async () => {
+  test('render', () => {
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
-
-    await new Promise((resolve) => setTimeout(resolve, 100))
 
     unmount()
   })
@@ -366,7 +356,7 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('no user', async () => {
+  test('no user', () => {
     const { unmount } = render(
       <Simulation.Updater simulation={simulation} swr={swr} />
     )
@@ -374,15 +364,15 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('plugins error', async () => {
+  test('plugins error', () => {
     mockList.mockImplementation(() => {
       throw new Error('list error')
     })
 
     const { unmount } = render(<Simulation.Updater user={user} swr={swr} />)
 
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.plugins,
         new Error('list error')
@@ -392,21 +382,19 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('update', async () => {
+  test('update', () => {
     mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('update - error', async () => {
+  test('update - error', () => {
     mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
@@ -415,9 +403,9 @@ describe('components/project/simulation.Updater', () => {
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

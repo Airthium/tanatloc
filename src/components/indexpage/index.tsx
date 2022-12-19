@@ -26,12 +26,13 @@ import { login } from '@/api/login'
 
 import Side from '@/components/assets/side'
 
-import { globalStyle, globalStyleFn, variables } from '@/styles'
-import style from './index.style'
-
 import Menu, { scrollToView } from './menu'
 import Footer from './footer'
 
+import { globalStyle, globalStyleFn, variables } from '@/styles'
+import style from './index.style'
+
+// Local interfaces
 export interface IRelease {
   version: string
   appImage: Url
@@ -144,6 +145,58 @@ const Index = (): JSX.Element => {
   )
 
   /**
+   * Set docker open true
+   */
+  const setDockerOpenTrue = useCallback(() => setDockerOpen(true), [])
+
+  /**
+   * Set docker open false
+   */
+  const setDockerOpenFalse = useCallback(() => setDockerOpen(false), [])
+
+  /**
+   * Set troubleshooting open true
+   */
+  const setTroubleshootingOpenTrue = useCallback(
+    () => setTroubleshootingOpen(true),
+    []
+  )
+
+  /**
+   * Set troubleshooting open false
+   */
+  const setTroubleshootingOpenFalse = useCallback(
+    () => setTroubleshootingOpen(false),
+    []
+  )
+
+  /**
+   * Switch to docker
+   */
+  const switchToDocker = useCallback(() => {
+    setTroubleshootingOpen(false)
+    setDockerOpen(true)
+  }, [])
+
+  /**
+   * On download Windows
+   */
+  const onDownloadWindows = useCallback(
+    () => onDownload('Windows'),
+    [onDownload]
+  )
+
+  /**
+   * On download MacOS
+   */
+  const onDownloadMacOS = useCallback(() => onDownload('MacOS'), [onDownload])
+
+  /**
+   * On download Linux
+   */
+  const onDownloadLinux = useCallback(() => onDownload('Linux'), [onDownload])
+
+  /**
    * Render
    */
   return (
@@ -153,7 +206,7 @@ const Index = (): JSX.Element => {
         title="Docker Desktop installation instruction"
         width={500}
         bodyStyle={{ marginTop: 16 }}
-        onClose={() => setDockerOpen(false)}
+        onClose={setDockerOpenFalse}
       >
         <Typography>
           Once Docker Desktop is installed and you have reboooted your computer,
@@ -224,7 +277,7 @@ const Index = (): JSX.Element => {
         title="Troubleshooting"
         width={500}
         bodyStyle={{ marginTop: 16 }}
-        onClose={() => setTroubleshootingOpen(false)}
+        onClose={setTroubleshootingOpenFalse}
       >
         <Collapse>
           <Collapse.Panel key="appiamge" header="Linux AppImage">
@@ -248,13 +301,7 @@ const Index = (): JSX.Element => {
             </Typography>
             <Typography>
               Have a look at the{' '}
-              <Button
-                size="small"
-                onClick={() => {
-                  setTroubleshootingOpen(false)
-                  setDockerOpen(true)
-                }}
-              >
+              <Button size="small" onClick={switchToDocker}>
                 Docker Desktop instructions
               </Button>
               .
@@ -512,10 +559,7 @@ const Index = (): JSX.Element => {
                       </Typography>
                       <Typography>
                         Start Docker Desktop and make sure{' '}
-                        <Button
-                          size="small"
-                          onClick={() => setDockerOpen(true)}
-                        >
+                        <Button size="small" onClick={setDockerOpenTrue}>
                           everything is working
                         </Button>
                         .
@@ -552,7 +596,7 @@ const Index = (): JSX.Element => {
                           <Button
                             type="primary"
                             className="download"
-                            onClick={() => onDownload('Windows')}
+                            onClick={onDownloadWindows}
                           >
                             <img src="/images/indexpage/windows.svg" alt="" />
                             Windows
@@ -560,7 +604,7 @@ const Index = (): JSX.Element => {
                           <Button
                             type="primary"
                             className="download"
-                            onClick={() => onDownload('MacOS')}
+                            onClick={onDownloadMacOS}
                           >
                             <img src="/images/indexpage/MacOS.svg" alt="" />
                             MacOS
@@ -568,7 +612,7 @@ const Index = (): JSX.Element => {
                           <Button
                             type="primary"
                             className="download"
-                            onClick={() => onDownload('Linux')}
+                            onClick={onDownloadLinux}
                           >
                             <img src="/images/indexpage/Linux.svg" alt="" />
                             Linux
@@ -587,7 +631,7 @@ const Index = (): JSX.Element => {
                       <Button
                         size="small"
                         icon={<BugOutlined />}
-                        onClick={() => setTroubleshootingOpen(true)}
+                        onClick={setTroubleshootingOpenTrue}
                       >
                         Troubleshooting
                       </Button>

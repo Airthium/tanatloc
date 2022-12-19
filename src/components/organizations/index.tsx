@@ -1,7 +1,7 @@
 /** @module Components.Organizations */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Layout, Space, Typography } from 'antd'
 import { css } from '@emotion/react'
 
@@ -16,11 +16,11 @@ import {
 import Organization from '@/components/assets/organization'
 import PageHeader from '@/components/assets/pageHeader'
 
-import { globalStyle } from '@/styles'
-import dashboardStyle from '@/components/dashboard/index.style'
-
 import Add from './add'
 import List from './list'
+
+import { globalStyle } from '@/styles'
+import dashboardStyle from '@/components/dashboard/index.style'
 
 /**
  * Props
@@ -72,6 +72,37 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
   }, [organizations, organization])
 
   /**
+   * On close
+   */
+  const onClose = useCallback((): void => {
+    router.push({
+      pathname: 'dashboard',
+      query: {
+        page: 'organizations'
+      }
+    })
+    setOrganization(null)
+  }, [router])
+
+  /**
+   * Set org
+   * @param org Organization
+   */
+  const setOrg = useCallback(
+    (org: IFrontOrganizationsItem): void => {
+      router.push({
+        pathname: 'dashboard',
+        query: {
+          page: 'organizations',
+          organizationId: org.id
+        }
+      })
+      setOrganization(org)
+    },
+    [router]
+  )
+
+  /**
    * Render
    */
   return (
@@ -102,15 +133,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
               mutateOneOrganization: swr.mutateOneOrganization,
               loadingOrganizations: swr.loadingOrganizations
             }}
-            onClose={() => {
-              router.push({
-                pathname: 'dashboard',
-                query: {
-                  page: 'organizations'
-                }
-              })
-              setOrganization(null)
-            }}
+            onClose={onClose}
           />
         ) : (
           <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
@@ -125,16 +148,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
                 delOneOrganization: swr.delOneOrganization,
                 loadingOrganizations: swr.loadingOrganizations
               }}
-              setOrganization={(org) => {
-                router.push({
-                  pathname: 'dashboard',
-                  query: {
-                    page: 'organizations',
-                    organizationId: org.id
-                  }
-                })
-                setOrganization(org)
-              }}
+              setOrganization={setOrg}
             />
           </Space>
         )}

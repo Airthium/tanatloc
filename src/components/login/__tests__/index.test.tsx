@@ -80,12 +80,12 @@ describe('components/login', () => {
     unmount()
   })
 
-  test('electron', async () => {
+  test('electron', () => {
     mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Login />)
 
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })
@@ -116,7 +116,7 @@ describe('components/login', () => {
     unmount()
   })
 
-  test('onLogin', async () => {
+  test('onLogin', () => {
     const { unmount } = render(<Login />)
 
     const email = screen.getByLabelText('Your email address')
@@ -132,15 +132,15 @@ describe('components/login', () => {
       throw new Error('login error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockLogin).toHaveBeenCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenCalledWith({
         title: errors.internal,
         err: new Error('login error')
@@ -150,9 +150,9 @@ describe('components/login', () => {
     // Not ok
     mockLogin.mockImplementation(() => ({ ok: false }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
+    waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    waitFor(() =>
       expect(mockAPIError).toHaveBeenCalledWith({
         title: errors.credentials,
         type: 'warning'
@@ -162,8 +162,8 @@ describe('components/login', () => {
     // Ok
     mockLogin.mockImplementation(() => ({ ok: true }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(3))
+    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     unmount()
   })

@@ -161,7 +161,7 @@ export interface IFrontMutateSimulationsItem
   id: string
 }
 
-export interface IFrontSimulations extends Array<IFrontSimuationsItem> {}
+export interface IFrontSimulations extends Array<IFrontSimulationsItem> {}
 
 /**
  * System

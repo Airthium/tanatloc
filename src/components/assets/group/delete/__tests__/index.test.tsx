@@ -38,7 +38,7 @@ describe('components/assets/group/delete', () => {
     unmount()
   })
 
-  test('onDelete', async () => {
+  test('onDelete', () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -55,17 +55,17 @@ describe('components/assets/group/delete', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.delOneGroup).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.delOneGroup).toHaveBeenCalledTimes(1))
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error('del error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')

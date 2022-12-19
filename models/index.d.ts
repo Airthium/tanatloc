@@ -36,6 +36,7 @@ export interface IModelCommon {
   index: number
   title: string
   done?: boolean
+  error?: string | Error
 }
 
 /**
@@ -112,6 +113,7 @@ export interface IModelParameters extends IModelCommon {
     | boolean
     | number
     | string
+    | Error
     | {
         label: string
         advanced?: boolean
@@ -190,7 +192,12 @@ export interface IModelSensor {
  * Boundary conditions
  */
 export interface IModelBoundaryConditions extends IModelCommon {
-  [type: string]: boolean | number | string | IModelTypedBoundaryCondition
+  [type: string]:
+    | boolean
+    | number
+    | string
+    | Error
+    | IModelTypedBoundaryCondition
 }
 
 export interface IModelTypedBoundaryCondition {
@@ -229,7 +236,6 @@ export interface IModelBoundaryCondition {
  * Run
  */
 export interface IModelRun extends IModelCommon {
-  error?: string | Error
   results?: { name: string }[]
   resultsFilter?: {
     name: string

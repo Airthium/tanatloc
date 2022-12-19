@@ -131,7 +131,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     unmount()
   })
 
-  test('onEdit', async () => {
+  test('onEdit', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -150,22 +150,20 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
 
     // Normal
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(onError).toHaveBeenLastCalledWith())
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenLastCalledWith())
+    waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -175,7 +173,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     unmount()
   })
 
-  test('onEdit - without name', async () => {
+  test('onEdit - without name', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -205,18 +203,16 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     const button = screen.getByRole('EditButton')
 
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
-    )
-    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.name))
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.name))
+    waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onEdit - without type', async () => {
+  test('onEdit - without type', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -243,18 +239,16 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     const button = screen.getByRole('EditButton')
 
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
-    )
-    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.type))
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.type))
+    waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onEdit - without selected', async () => {
+  test('onEdit - without selected', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -281,20 +275,16 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     const button = screen.getByRole('EditButton')
 
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
-    )
-    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(onError).toHaveBeenLastCalledWith(errors.selected)
-    )
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0))
+    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.selected))
+    waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onEdit (different old type)', async () => {
+  test('onEdit (different old type)', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -312,17 +302,15 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
 
     const button = screen.getByRole('EditButton')
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('onEdit (different old type) - without values', async () => {
+  test('onEdit (different old type) - without values', () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -342,12 +330,10 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
 
     const button = screen.getByRole('EditButton')
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     unmount()
   })

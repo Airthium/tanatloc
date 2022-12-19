@@ -110,7 +110,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     unmount()
   })
 
-  test('selection', async () => {
+  test('selection', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
@@ -123,7 +123,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const button = screen.getByRole('button', { name: 'pushpin' })
     fireEvent.click(button)
 
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    // await new Promise((resolve) => setTimeout(resolve, 500))
 
     fireEvent.click(button)
 

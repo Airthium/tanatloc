@@ -191,7 +191,7 @@ const Selector = ({
 
     models.forEach((model) => {
       if (!category || model.category === category)
-        tanatlocMenuItems.push({ key: model.algorithm, label: model.name })
+        items.push({ key: model.algorithm, label: model.name })
     })
 
     return items
@@ -218,7 +218,7 @@ const Selector = ({
 
     user?.models.forEach((model) => {
       if (!category || model.category === category)
-        userMenuItems.push({ key: model.algorithm, label: model.name })
+        items.push({ key: model.algorithm, label: model.name })
     })
 
     return items

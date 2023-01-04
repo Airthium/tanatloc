@@ -11,10 +11,10 @@ import {
 } from '@/api/index.d'
 import { IModelSensor } from '@/models/index.d'
 
-import { globalStyle } from '@/styles'
-
 import Sensor from './sensor'
 import List from './list'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props

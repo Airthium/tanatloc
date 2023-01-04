@@ -162,7 +162,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('onTanatocSelect', () => {
+  test('onTanatocSelect', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -172,7 +172,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => screen.getByText('Name2'))
+    await waitFor(() => screen.getByText('Name2'))
 
     const model = screen.getByText('Name')
     fireEvent.click(model)
@@ -180,7 +180,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('category (tanatloc)', () => {
+  test('category (tanatloc)', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -190,7 +190,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => screen.getByText('Name2'))
+    await waitFor(() => screen.getByText('Name2'))
 
     const select = screen.getByRole('combobox')
     fireEvent.mouseDown(select)
@@ -201,7 +201,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('onCreate', () => {
+  test('onCreate', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -211,7 +211,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => screen.getByText('Name2'))
+    await waitFor(() => screen.getByText('Name2'))
 
     // Empty
     const create = screen.getByText('Create')
@@ -228,7 +228,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('onUserSelect', () => {
+  test('onUserSelect', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -241,7 +241,7 @@ describe('components/project/simulation.Selector', () => {
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
     fireEvent.click(tab)
 
-    waitFor(() => screen.getByText('Name User'))
+    await waitFor(() => screen.getByText('Name User'))
 
     const model = screen.getByText('Name User')
     fireEvent.click(model)
@@ -249,7 +249,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('category (user)', () => {
+  test('category (user)', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -262,7 +262,7 @@ describe('components/project/simulation.Selector', () => {
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
     fireEvent.click(tab)
 
-    waitFor(() => screen.getByText('Name User'))
+    await waitFor(() => screen.getByText('Name User'))
 
     const select = screen.getByRole('combobox')
     fireEvent.mouseDown(select)

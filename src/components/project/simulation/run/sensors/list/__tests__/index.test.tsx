@@ -80,8 +80,6 @@ describe('components/project/simulation/run/sensors/list', () => {
     const edit = screen.getByRole('Edit')
     fireEvent.click(edit)
 
-    // await new Promise((resolve) => setTimeout(resolve, 50))
-
     expect(onEdit).toHaveBeenCalledTimes(1)
 
     unmount()

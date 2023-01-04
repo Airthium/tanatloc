@@ -317,7 +317,7 @@ describe('components/project/simulation/initialization', () => {
     unmount()
   })
 
-  test('onChange', () => {
+  test('onChange', async () => {
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={props.onValueChange} />
     ))
@@ -337,7 +337,7 @@ describe('components/project/simulation/initialization', () => {
     fireEvent.click(direct)
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
-    waitFor(() => screen.getAllByRole('Formula'))
+    await waitFor(() => screen.getAllByRole('Formula'))
 
     // Click formula
     const formulas = screen.getAllByRole('Formula')
@@ -387,7 +387,7 @@ describe('components/project/simulation/initialization', () => {
     ])
   }
 
-  test('onCouplingChange', () => {
+  test('onCouplingChange', async () => {
     mockGetFilesNumbers.mockImplementation(() => [
       {
         type: 'result',
@@ -419,7 +419,7 @@ describe('components/project/simulation/initialization', () => {
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
-    waitFor(() => {
+    await waitFor(() => {
       const selects = screen.getAllByRole('combobox')
       expect(selects.length).toBe(2)
     })
@@ -444,6 +444,11 @@ describe('components/project/simulation/initialization', () => {
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3))
     waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(4))
 
+    await waitFor(() => {
+      const selects = screen.getAllByRole('combobox')
+      expect(selects.length).toBe(3)
+    })
+
     // Results
     const newSelects = screen.getAllByRole('combobox')
     const resultSelect = newSelects[2]
@@ -456,7 +461,6 @@ describe('components/project/simulation/initialization', () => {
     const resultOption1 = resultOptions1[0]
 
     // Error
-
     fireEvent.click(resultOption0)
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(4))
@@ -503,7 +507,7 @@ describe('components/project/simulation/initialization', () => {
     unmount()
   })
 
-  test('onCouplingChange, without multiplicator', () => {
+  test('onCouplingChange, without multiplicator', async () => {
     setTasksResults()
     mockGetFilesNumbers.mockImplementation(() => [
       {
@@ -609,7 +613,7 @@ describe('components/project/simulation/initialization', () => {
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
-    waitFor(() => screen.getByText('Coupling'))
+    await waitFor(() => screen.getByText('Coupling'))
 
     const coupling = screen.getByText('Coupling')
     fireEvent.click(coupling)
@@ -618,10 +622,11 @@ describe('components/project/simulation/initialization', () => {
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2))
 
     // Click simulation select
-    waitFor(() => {
+    await waitFor(() => {
       const selects = screen.getAllByRole('combobox')
       expect(selects.length).toBe(2)
     })
+
     const selects = screen.getAllByRole('combobox')
     fireEvent.mouseDown(selects[1])
 
@@ -636,7 +641,7 @@ describe('components/project/simulation/initialization', () => {
     unmount()
   })
 
-  test('onCouplingChange - error', () => {
+  test('onCouplingChange - error', async () => {
     mockGetFilesNumbers.mockImplementation(() => [
       {
         type: 'result',
@@ -669,7 +674,7 @@ describe('components/project/simulation/initialization', () => {
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
 
-    waitFor(() => screen.getByText('Coupling'))
+    await waitFor(() => screen.getByText('Coupling'))
 
     const coupling = screen.getByText('Coupling')
     fireEvent.click(coupling)
@@ -678,10 +683,11 @@ describe('components/project/simulation/initialization', () => {
     waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2))
 
     // Click simulation select
-    waitFor(() => {
+    await waitFor(() => {
       const selects = screen.getAllByRole('combobox')
       expect(selects.length).toBe(2)
     })
+
     const selects = screen.getAllByRole('combobox')
     fireEvent.mouseDown(selects[1])
 
@@ -753,7 +759,7 @@ describe('components/project/simulation/initialization', () => {
     unmount()
   })
 
-  test('with value.values', () => {
+  test('with value.values', async () => {
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={props.onValueChange} />
     ))
@@ -846,7 +852,7 @@ describe('components/project/simulation/initialization', () => {
     fireEvent.click(direct)
     waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
-    waitFor(() => screen.getAllByRole('Formula'))
+    await waitFor(() => screen.getAllByRole('Formula'))
 
     // Click formula
     const formulas = screen.getAllByRole('Formula')

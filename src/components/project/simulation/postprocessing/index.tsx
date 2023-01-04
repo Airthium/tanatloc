@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Postprocesssing */
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Button,
   Card,
@@ -19,16 +19,21 @@ import {
   RocketOutlined
 } from '@ant-design/icons'
 
+import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
+
 import PostprocessingList from '@/postprocessing'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import Download from '@/components/project/simulation/run/results/download'
 
-import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 import PostprocessingAPI from '@/api/postprocessing'
 
-import { globalStyle } from '@/styles'
+import { variables, globalStyle } from '@/styles'
+import { css } from '@emotion/react'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   result?: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>
@@ -42,6 +47,20 @@ export interface IPostProcessFile {
   originPath: string
   glb: string
   json: string
+}
+
+export interface IResultProps {
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
+  result: IPostProcessFile
+  setResult: (result?: IFrontResult) => void
+}
+
+export interface IResultsProps {
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
+  results: IPostProcessFile[]
+  setResult: (result?: IFrontResult) => void
 }
 
 /**
@@ -58,17 +77,107 @@ export const errors = {
  * @param filter Filter number
  * @param parameters Parameters
  */
-const run = async (
+const _run = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   result: Pick<IFrontResult, 'fileName' | 'originPath'>,
   filter: string,
   parameters: string[]
-): Promise<IPostProcessFile[] | undefined> => {
+): Promise<IPostProcessFile[]> => {
   try {
     return await PostprocessingAPI.run(simulation, result, filter, parameters)
   } catch (err) {
     ErrorNotification(errors.run, err)
+    throw err
   }
+}
+
+/**
+ * Result
+ * @param props Props
+ * @returns Result
+ */
+const Result = ({
+  simulation,
+  postprocessing,
+  result,
+  setResult
+}: IResultProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(
+    () =>
+      setResult(
+        postprocessing?.fileName === result.fileName &&
+          postprocessing?.name === result.name
+          ? undefined
+          : {
+              type: 'postprocessing',
+              ...result
+            }
+      ),
+    [postprocessing, result, setResult]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Space key={result.glb}>
+      <Button
+        icon={
+          postprocessing?.fileName === result.fileName &&
+          postprocessing?.name === result.name ? (
+            <EyeOutlined css={css({ color: variables.colorPrimary })} />
+          ) : (
+            <EyeInvisibleOutlined />
+          )
+        }
+        onClick={onClick}
+      />
+      <Download
+        simulation={{
+          id: simulation.id
+        }}
+        file={{
+          name: result.name,
+          fileName: result.fileName,
+          originPath: result.originPath
+        }}
+      />
+      {result.name}
+    </Space>
+  )
+}
+
+/**
+ * Results
+ * @param props Props
+ * @returns Results
+ */
+const Results = ({
+  simulation,
+  postprocessing,
+  results,
+  setResult
+}: IResultsProps): JSX.Element => {
+  /**
+   * Render
+   */
+  if (!results.length) return <>No results</>
+  return (
+    <Space direction="vertical" css={globalStyle.fullWidth}>
+      {results.map((res) => (
+        <Result
+          key={res.glb}
+          simulation={simulation}
+          postprocessing={postprocessing}
+          result={res}
+          setResult={setResult}
+        />
+      ))}
+    </Space>
+  )
 }
 
 /**
@@ -86,7 +195,10 @@ const Postprocessing = ({
   const [visible, setVisible] = useState<boolean>()
   const [filter, setFilter] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
-  const [results, setResults] = useState<IPostProcessFile[]>()
+  const [current, setCurrent] = useState<{
+    filter: string
+    results: IPostProcessFile[]
+  }>()
 
   // Update visible
   useEffect(() => {
@@ -97,96 +209,125 @@ const Postprocessing = ({
   useEffect(() => {
     if (!simulation) {
       setFilter(undefined)
-      setResults(undefined)
+      setCurrent(undefined)
     }
   }, [simulation, result])
 
-  /**
-   * Empty render
-   */
-  if (!simulation || !result) return null
-
   // Data
-  const postprocess = simulation.scheme.configuration.run.postprocessing
-
-  /**
-   * Empty render
-   */
-  if (!postprocess) return null
+  const postprocess = useMemo(
+    () => simulation?.scheme.configuration.run.postprocessing,
+    [simulation]
+  )
 
   // Options
-  const options = PostprocessingList.map((p) => {
-    if (postprocess.find((pp) => pp.key === p.key))
-      return {
-        label: p.label,
-        value: p.key
-      }
-  }).filter((p) => p) as { label: string; value: string }[]
-
-  /**
-   * Empty render
-   */
-  if (!options.length) return null
+  const options = useMemo(
+    () =>
+      PostprocessingList.map((p) => {
+        if (postprocess?.find((pp) => pp.key === p.key))
+          return {
+            label: p.label,
+            value: p.key
+          }
+      }).filter((p) => p) as { label: string; value: string }[],
+    [postprocess]
+  )
 
   // Parameters
-  let parameters = null
-  if (filter) {
+  const parameters = useMemo(() => {
+    if (!filter) return
+    if (!postprocess) return
+
     const post = PostprocessingList.find((pp) => pp.key === filter)
     const defaultPost = postprocess.find((pp) => pp.key === filter)
 
-    if (post?.parameters) {
-      parameters = post.parameters.map((parameter, index) => {
-        const defaultParameter = defaultPost?.parameters?.find(
-          (param) => param.key === parameter.key
+    if (!post?.parameters) return
+
+    return post.parameters.map((parameter, index) => {
+      const defaultParameter = defaultPost?.parameters?.find(
+        (param) => param.key === parameter.key
+      )
+
+      if (defaultParameter?.value) {
+        return (
+          <Form.Item
+            key={parameter.key}
+            label={parameter.label}
+            name={['parameters', index]}
+            initialValue={defaultParameter.value}
+            rules={parameter.rules}
+          >
+            <Input disabled={true} />
+          </Form.Item>
         )
-        if (defaultParameter?.value) {
-          return (
-            <Form.Item
-              key={parameter.key}
-              label={parameter.label}
-              name={['parameters', index]}
-              initialValue={defaultParameter.value}
-              rules={parameter.rules}
-            >
-              <Input disabled={true} />
-            </Form.Item>
-          )
-        } else if (defaultParameter?.options) {
-          return (
-            <Form.Item
-              key={parameter.key}
-              label={parameter.label}
-              name={['parameters', index]}
-              rules={parameter.rules}
-            >
-              <Select
-                options={defaultParameter.options.map((option) => ({
-                  label: option,
-                  value: option
-                }))}
-              />
-            </Form.Item>
-          )
-        } else {
-          return (
-            <Form.Item
-              key={parameter.key}
-              label={parameter.label}
-              name={['parameters', index]}
-              rules={parameter.rules}
-              initialValue={parameter.default}
-            >
-              <Input />
-            </Form.Item>
-          )
-        }
-      })
-    }
-  }
+      } else if (defaultParameter?.options) {
+        return (
+          <Form.Item
+            key={parameter.key}
+            label={parameter.label}
+            name={['parameters', index]}
+            rules={parameter.rules}
+          >
+            <Select
+              options={defaultParameter.options.map((option) => ({
+                label: option,
+                value: option
+              }))}
+            />
+          </Form.Item>
+        )
+      } else {
+        return (
+          <Form.Item
+            key={parameter.key}
+            label={parameter.label}
+            name={['parameters', index]}
+            rules={parameter.rules}
+            initialValue={parameter.default}
+          >
+            <Input />
+          </Form.Item>
+        )
+      }
+    })
+  }, [postprocess, filter])
+
+  /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On finish
+   * @param values Values
+   */
+  const onFinish = useCallback(
+    async (values: { parameters: string[] }): Promise<void> => {
+      setLoading(true)
+      try {
+        const newResults = await _run(
+          { id: simulation!.id },
+          result!,
+          filter!,
+          values.parameters || []
+        )
+        setCurrent({ filter: filter!, results: newResults })
+      } catch (err) {}
+      setLoading(false)
+    },
+    [simulation, result, filter]
+  )
 
   /**
    * Render
    */
+  if (!simulation || !result) return null
+  if (!postprocess) return null
+  if (!options.length) return null
   return (
     <Layout
       style={{
@@ -202,7 +343,7 @@ const Postprocessing = ({
           <Button
             type="primary"
             icon={<RadarChartOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={setVisibleTrue}
             style={{
               width: 40,
               height: 40,
@@ -216,7 +357,7 @@ const Postprocessing = ({
         <Drawer
           title="Post-processing"
           closable={true}
-          onClose={() => setVisible(false)}
+          onClose={setVisibleFalse}
           open={visible}
           mask={false}
           maskClosable={false}
@@ -233,19 +374,7 @@ const Postprocessing = ({
           <Form
             layout="vertical"
             style={{ margin: '24px 0' }}
-            onFinish={async (values) => {
-              setLoading(true)
-              try {
-                const newResults = await run(
-                  { id: simulation.id },
-                  result,
-                  filter!,
-                  values.parameters || []
-                )
-                setResults(newResults)
-              } catch (err) {}
-              setLoading(false)
-            }}
+            onFinish={onFinish}
           >
             {parameters}
             <Form.Item>
@@ -259,48 +388,14 @@ const Postprocessing = ({
               </Button>
             </Form.Item>
           </Form>
-          {results && (
-            <Card size="small" title="Post-processing" extra={filter}>
-              <Space direction="vertical" css={globalStyle.fullWidth}>
-                {results.length
-                  ? results.map((res) => (
-                      <Space key={res.glb}>
-                        <Button
-                          icon={
-                            postprocessing?.fileName === res.fileName &&
-                            postprocessing?.name === res.name ? (
-                              <EyeOutlined style={{ color: '#fad114' }} />
-                            ) : (
-                              <EyeInvisibleOutlined />
-                            )
-                          }
-                          onClick={() =>
-                            setResult(
-                              postprocessing?.fileName === res.fileName &&
-                                postprocessing?.name === res.name
-                                ? undefined
-                                : {
-                                    type: 'postprocessing',
-                                    ...res
-                                  }
-                            )
-                          }
-                        />
-                        <Download
-                          simulation={{
-                            id: simulation.id
-                          }}
-                          file={{
-                            name: res.name,
-                            fileName: res.fileName,
-                            originPath: res.originPath
-                          }}
-                        />
-                        {res.name}
-                      </Space>
-                    ))
-                  : 'No results'}
-              </Space>
+          {current && (
+            <Card size="small" title="Post-processing" extra={current.filter}>
+              <Results
+                simulation={simulation}
+                postprocessing={postprocessing}
+                results={current.results}
+                setResult={setResult}
+              />
             </Card>
           )}
         </Drawer>

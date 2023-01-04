@@ -176,7 +176,7 @@ describe('components/project/simulation/postprocessing', () => {
     unmount()
   })
 
-  test('filter & run', () => {
+  test('filter & run', async () => {
     const { unmount } = render(
       <Postprocessing
         simulation={simulation}
@@ -242,8 +242,7 @@ describe('components/project/simulation/postprocessing', () => {
     fireEvent.click(run)
     waitFor(() => expect(mockRun).toHaveBeenCalledTimes(3))
 
-    waitFor(() => screen.getByRole('button', { name: 'eye' }))
-    waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))
+    await waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))
 
     // on result
     const open = screen.getByRole('button', { name: 'eye-invisible' })

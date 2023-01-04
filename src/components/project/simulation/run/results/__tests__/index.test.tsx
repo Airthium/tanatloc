@@ -35,20 +35,20 @@ describe('components/project/simulation/run/results', () => {
         status: 'finish',
         file: {
           fileName: 'file.vtu',
-          name: 'file',
+          name: 'file1',
           type: 'result',
           originPath: 'originPath'
         },
         files: [
           {
             fileName: 'file_0.vtu',
-            name: 'file',
+            name: 'file2',
             type: 'result',
             originPath: 'originPath'
           },
           {
             fileName: 'file_1.vtu',
-            name: 'file',
+            name: 'file3',
             type: 'result',
             originPath: 'originPath'
           }
@@ -58,7 +58,7 @@ describe('components/project/simulation/run/results', () => {
   } as IFrontSimulation
   const result = {
     fileName: 'file.vtu',
-    name: 'file'
+    name: 'file1'
   }
   const setResult = jest.fn()
 

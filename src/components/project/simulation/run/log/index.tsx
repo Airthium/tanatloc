@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Log */
 
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import {
   Button,
   Collapse,
@@ -13,9 +13,10 @@ import {
 import { FileTextOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 
+import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 import style from '../../index.style'
@@ -26,6 +27,13 @@ import style from '../../index.style'
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id'>
   steps: IFrontSimulationTask[]
+}
+
+export interface IStepProps {
+  simulation: Pick<IFrontSimulationsItem, 'id'>
+  step: IFrontSimulationTask
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
 /**
@@ -40,7 +48,7 @@ export const errors = {
  * @param simulation Simulation
  * @param step Step
  */
-export const getCompleteLog = async (
+export const _getCompleteLog = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   step: IFrontSimulationTask
 ) => {
@@ -67,6 +75,85 @@ export const getCompleteLog = async (
 }
 
 /**
+ * Step
+ * @param props Props
+ * @returns Step
+ */
+const Step = ({
+  simulation,
+  step,
+  loading,
+  setLoading
+}: IStepProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _getCompleteLog(simulation, step)
+    } catch (err) {
+    } finally {
+      setLoading(false)
+    }
+  }, [simulation, step, setLoading])
+
+  /**
+   * Render
+   */
+  return (
+    <>
+      {step.systemLog && (
+        <>
+          <Button loading={loading} onClick={onClick}>
+            Complete log
+          </Button>
+          <br />
+        </>
+      )}
+      {step.link && (
+        <>
+          <a
+            href={'https://' + step.link.href}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Button type="primary">{step.link.label}</Button>
+          </a>
+          <br />
+        </>
+      )}
+      <Collapse ghost>
+        {step.warning && (
+          <Collapse.Panel
+            key="warnings"
+            css={style.warning}
+            header={<Typography.Text type="warning">Warnings</Typography.Text>}
+          >
+            {parse(
+              step.warning.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+            )}
+          </Collapse.Panel>
+        )}
+        {step.error && (
+          <Collapse.Panel
+            key="errors"
+            css={style.error}
+            header={<Typography.Text type="danger">Errors</Typography.Text>}
+          >
+            {parse(step.error.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
+          </Collapse.Panel>
+        )}
+      </Collapse>
+      {parse(
+        step.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
+      )}
+      {parse(step.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || '')}
+    </>
+  )
+}
+
+/**
  * Log
  * @param props Props
  * @returns Log
@@ -77,97 +164,32 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
    * Render
    */
   return (
     <>
-      <Drawer
-        title="Log"
-        open={visible}
-        onClose={() => setVisible(false)}
-        width="50%"
-      >
+      <Drawer title="Log" open={visible} onClose={setVisibleFalse} width="50%">
         <Tabs
           items={steps?.map((step, index) => ({
             key: '' + index,
             label: step.label,
             children: (
-              <>
-                {step.systemLog && (
-                  <>
-                    <Button
-                      loading={loading}
-                      onClick={async () => {
-                        setLoading(true)
-                        try {
-                          await getCompleteLog(simulation, step)
-                        } catch (err) {
-                        } finally {
-                          setLoading(false)
-                        }
-                      }}
-                    >
-                      Complete log
-                    </Button>
-                    <br />
-                  </>
-                )}
-                {step.link && (
-                  <>
-                    <a
-                      href={'https://' + step.link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button type="primary">{step.link.label}</Button>
-                    </a>
-                    <br />
-                  </>
-                )}
-                <Collapse ghost>
-                  {step.warning && (
-                    <Collapse.Panel
-                      key="warnings"
-                      css={style.warning}
-                      header={
-                        <Typography.Text type="warning">
-                          Warnings
-                        </Typography.Text>
-                      }
-                    >
-                      {parse(
-                        step.warning
-                          .replace(/\n\n/g, '\n')
-                          .replace(/\n/g, '<br />')
-                      )}
-                    </Collapse.Panel>
-                  )}
-                  {step.error && (
-                    <Collapse.Panel
-                      key="errors"
-                      css={style.error}
-                      header={
-                        <Typography.Text type="danger">Errors</Typography.Text>
-                      }
-                    >
-                      {parse(
-                        step.error
-                          .replace(/\n\n/g, '\n')
-                          .replace(/\n/g, '<br />')
-                      )}
-                    </Collapse.Panel>
-                  )}
-                </Collapse>
-                {parse(
-                  step.pluginLog
-                    ?.replace(/\n\n/g, '\n')
-                    .replace(/\n/g, '<br />') || ''
-                )}
-                {parse(
-                  step.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ||
-                    ''
-                )}
-              </>
+              <Step
+                simulation={simulation}
+                step={step}
+                loading={loading}
+                setLoading={setLoading}
+              />
             )
           }))}
         />
@@ -176,7 +198,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
         <Button
           disabled={!steps || !steps.length}
           icon={<FileTextOutlined />}
-          onClick={() => setVisible(true)}
+          onClick={setVisibleTrue}
         />
       </Tooltip>
     </>

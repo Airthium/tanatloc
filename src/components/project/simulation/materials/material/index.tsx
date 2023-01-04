@@ -1,10 +1,16 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import { useState, useCallback, useContext } from 'react'
+import { useState, useCallback, useContext, useMemo } from 'react'
 import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IModelMaterialsChild, IModelMaterialsValue } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
+} from '@/api/index.d'
+
 import { IMaterialDatabase } from '@/config/materials'
 
 import { SelectContext, ISelect } from '@/context/select'
@@ -16,18 +22,12 @@ import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem,
-  IFrontGeometriesItem
-} from '@/api/index.d'
-
-import { globalStyle } from '@/styles'
-import style from '../../../panel/index.style'
-
 import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
+
+import { globalStyle } from '@/styles'
+import style from '../../../panel/index.style'
 
 /**
  * Props
@@ -41,6 +41,50 @@ export interface IProps {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onClose: () => void
+}
+
+export interface IMaterialsChildProps {
+  child: IModelMaterialsChild
+  index: number
+  value: string | number | undefined
+  _onMaterialChange: (
+    child: IModelMaterialsChild,
+    index: number,
+    val: string
+  ) => void
+}
+
+/**
+ * MaterialsChild
+ * @param props Props
+ * @returns MaterialsChild
+ */
+const MaterialsChild = ({
+  child,
+  index,
+  value,
+  _onMaterialChange
+}: IMaterialsChildProps): JSX.Element => {
+  /**
+   * On material change
+   * @param val Value
+   */
+  const onMaterialChange = useCallback(
+    (val: string): void => {
+      _onMaterialChange(child, index, val)
+    },
+    [child, index, _onMaterialChange]
+  )
+
+  return (
+    <Formula
+      key={child.name}
+      label={child.name}
+      defaultValue={value ?? String(child.default)}
+      unit={child.unit}
+      onValueChange={onMaterialChange}
+    />
+  )
 }
 
 /**
@@ -66,7 +110,10 @@ const Material = ({
   const { dispatch } = useContext(SelectContext)
 
   // Data
-  const materials = simulation.scheme.configuration.materials
+  const materials = useMemo(
+    () => simulation.scheme.configuration.materials,
+    [simulation]
+  )
 
   // Init
   useCustomEffect(
@@ -191,6 +238,14 @@ const Material = ({
   )
 
   /**
+   * On cancel
+   */
+  const onCancel = useCallback(() => {
+    setCurrent(undefined)
+    onClose()
+  }, [onClose])
+
+  /**
    * Render
    */
   return (
@@ -203,24 +258,10 @@ const Material = ({
       mask={false}
       maskClosable={false}
       width={300}
-      extra={
-        <Button
-          type="text"
-          icon={<CloseOutlined />}
-          onClick={() => {
-            setCurrent(undefined)
-            onClose()
-          }}
-        />
-      }
+      extra={<Button type="text" icon={<CloseOutlined />} onClick={onCancel} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CancelButton
-            onCancel={() => {
-              setCurrent(undefined)
-              onClose()
-            }}
-          />
+          <CancelButton onCancel={onCancel} />
           {material ? (
             <Edit
               material={{
@@ -234,11 +275,8 @@ const Material = ({
                 scheme: simulation.scheme
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={(desc) => setError(desc)}
-              onClose={() => {
-                setCurrent(undefined)
-                onClose()
-              }}
+              onError={setError}
+              onClose={onCancel}
             />
           ) : (
             <Add
@@ -252,11 +290,8 @@ const Material = ({
                 scheme: simulation.scheme
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={(desc) => setError(desc)}
-              onClose={() => {
-                setCurrent(undefined)
-                onClose()
-              }}
+              onError={setError}
+              onClose={onCancel}
             />
           )}
         </div>
@@ -275,14 +310,12 @@ const Material = ({
               )
 
               return (
-                <Formula
+                <MaterialsChild
                   key={child.name}
-                  label={child.name}
-                  defaultValue={m ? m.value : String(child.default)}
-                  unit={child.unit}
-                  onValueChange={(val) => {
-                    onMaterialChange(child, index, val)
-                  }}
+                  child={child}
+                  index={index}
+                  value={m?.value}
+                  _onMaterialChange={onMaterialChange}
                 />
               )
             })}

@@ -27,19 +27,22 @@ import {
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
+import { ISelect, SelectContext } from '@/context/select'
+import { setPart } from '@/context/select/actions'
+
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
-import { ISelect, SelectContext } from '@/context/select'
-import { setPart } from '@/context/select/actions'
+import Add from '../add'
+import Edit from '../edit'
 
 import { globalStyle, globalStyleFn } from '@/styles'
 import style from '../../../panel/index.style'
 
-import Add from '../add'
-import Edit from '../edit'
-
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
@@ -77,8 +80,14 @@ const BoundaryCondition = ({
   const { dispatch } = useContext(SelectContext)
 
   // Data
-  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
-  const dimension = simulation.scheme.configuration.dimension
+  const boundaryConditions = useMemo(
+    () => simulation.scheme.configuration.boundaryConditions,
+    [simulation]
+  )
+  const dimension = useMemo(
+    () => simulation.scheme.configuration.dimension,
+    [simulation]
+  )
 
   // Init
   useCustomEffect(
@@ -208,7 +217,7 @@ const BoundaryCondition = ({
         values: values
       }))
     },
-    [`${boundaryConditions}`, types]
+    [boundaryConditions, types]
   )
 
   /**
@@ -317,6 +326,14 @@ const BoundaryCondition = ({
   )
 
   /**
+   * On cancel
+   */
+  const onCancel = useCallback(() => {
+    setCurrent(undefined)
+    onClose()
+  }, [onClose])
+
+  /**
    * Render
    */
   return (
@@ -329,24 +346,10 @@ const BoundaryCondition = ({
       mask={false}
       maskClosable={false}
       width={300}
-      extra={
-        <Button
-          type="text"
-          icon={<CloseOutlined />}
-          onClick={() => {
-            setCurrent(undefined)
-            onClose()
-          }}
-        />
-      }
+      extra={<Button type="text" icon={<CloseOutlined />} onClick={onCancel} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CancelButton
-            onCancel={() => {
-              setCurrent(undefined)
-              onClose()
-            }}
-          />
+          <CancelButton onCancel={onCancel} />
           {boundaryCondition ? (
             <Edit
               boundaryCondition={{
@@ -370,7 +373,7 @@ const BoundaryCondition = ({
                 scheme: simulation.scheme
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={(desc) => setError(desc)}
+              onError={setError}
               onClose={onClose}
             />
           ) : (
@@ -387,7 +390,7 @@ const BoundaryCondition = ({
                 scheme: simulation.scheme
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={(desc) => setError(desc)}
+              onError={setError}
               onClose={onClose}
             />
           )}

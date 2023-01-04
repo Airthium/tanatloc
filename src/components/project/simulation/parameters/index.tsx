@@ -30,7 +30,7 @@ export interface IProps {
 export interface IParameterProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   dimension: number | undefined
-  key: string
+  pkey: string
   parameter: {
     label: string
     advanced?: boolean
@@ -45,7 +45,7 @@ export interface IParameterChildProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   dimension: number | undefined
   child: any
-  key: string
+  pkey: string
   index: number
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -323,7 +323,7 @@ const ParameterChild = ({
   simulation,
   dimension,
   child,
-  key,
+  pkey,
   index,
   swr
 }: IParameterChildProps): JSX.Element | null => {
@@ -332,8 +332,8 @@ const ParameterChild = ({
    * @param value Value
    */
   const onChange = useCallback(
-    (value: string) => _onChange(simulation, key, index, value, swr),
-    [simulation, key, index, swr]
+    (value: string) => _onChange(simulation, pkey, index, value, swr),
+    [simulation, pkey, index, swr]
   )
 
   /**
@@ -342,8 +342,8 @@ const ParameterChild = ({
    */
   const onChangeEvent = useCallback(
     (e: CheckboxChangeEvent) =>
-      _onChange(simulation, key, index, e.target.checked, swr),
-    [simulation, key, index, swr]
+      _onChange(simulation, pkey, index, e.target.checked, swr),
+    [simulation, pkey, index, swr]
   )
 
   /**
@@ -352,20 +352,20 @@ const ParameterChild = ({
   if (dimension === 2) {
     if (child.only3D) return null
     else if (child.htmlEntity === 'formula') {
-      return _build2DFormula(key + '&' + index, child, onChange)
+      return _build2DFormula(pkey + '&' + index, child, onChange)
     } else if (child.htmlEntity === 'select') {
-      return _build2DSelect(key + '&' + index, child, onChange)
+      return _build2DSelect(pkey + '&' + index, child, onChange)
     } else if (child.htmlEntity === 'checkbox') {
-      return _build2DCheckbox(key + '&' + index, child, onChangeEvent)
+      return _build2DCheckbox(pkey + '&' + index, child, onChangeEvent)
     }
     return null
   } else {
     if (child.htmlEntity === 'formula') {
-      return _buildFormula(key + '&' + index, child, onChange)
+      return _buildFormula(pkey + '&' + index, child, onChange)
     } else if (child.htmlEntity === 'select') {
-      return _buildSelect(key + '&' + index, child, onChange)
+      return _buildSelect(pkey + '&' + index, child, onChange)
     } else if (child.htmlEntity === 'checkbox') {
-      return _buildCheckbox(key + '&' + index, child, onChangeEvent)
+      return _buildCheckbox(pkey + '&' + index, child, onChangeEvent)
     }
     return null
   }
@@ -379,7 +379,7 @@ const ParameterChild = ({
 const Parameter = ({
   simulation,
   dimension,
-  key,
+  pkey,
   parameter,
   swr
 }: IParameterProps): JSX.Element => {
@@ -388,22 +388,23 @@ const Parameter = ({
     () =>
       parameter.children.map((child, index) => (
         <ParameterChild
+          key={pkey + '&' + index}
           simulation={simulation}
           dimension={dimension}
           child={child}
-          key={key}
+          pkey={pkey}
           index={index}
           swr={swr}
         />
       )),
-    []
+    [simulation, dimension, pkey, parameter, swr]
   )
 
   /**
    * Render
    */
   return (
-    <Card size="small" key={key} title={parameter?.label}>
+    <Card size="small" key={pkey} title={parameter?.label}>
       <Space direction="vertical">{components}</Space>
     </Card>
   )
@@ -435,52 +436,58 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // Build parameters
   const parameters = useMemo(
     () =>
-      Object.keys(subScheme).map((key) => {
-        if (key === 'index' || key === 'title' || key == 'done') return null
-        const parameter = subScheme[key] as {
-          label: string
-          advanced?: boolean
-          children: IModelParameter[]
-        }
+      Object.keys(subScheme)
+        .map((key) => {
+          if (key === 'index' || key === 'title' || key == 'done') return null
+          const parameter = subScheme[key] as {
+            label: string
+            advanced?: boolean
+            children: IModelParameter[]
+          }
 
-        if (parameter.advanced) return null
+          if (parameter.advanced) return null
 
-        return (
-          <Parameter
-            simulation={simulation}
-            dimension={dimension}
-            key={key}
-            parameter={parameter}
-            swr={swr}
-          />
-        )
-      }),
-    [subScheme]
+          return (
+            <Parameter
+              key={key}
+              simulation={simulation}
+              dimension={dimension}
+              pkey={key}
+              parameter={parameter}
+              swr={swr}
+            />
+          )
+        })
+        .filter((p) => p),
+    [simulation, dimension, subScheme, swr]
   )
 
   const advanced = useMemo(
     () =>
-      Object.keys(subScheme).map((key) => {
-        if (key === 'index' || key === 'title' || key == 'done') return null
-        const parameter = subScheme[key] as {
-          label: string
-          advanced?: boolean
-          children: IModelParameter[]
-        }
+      Object.keys(subScheme)
+        .map((key) => {
+          if (key === 'index' || key === 'title' || key == 'done') return null
+          const parameter = subScheme[key] as {
+            label: string
+            advanced?: boolean
+            children: IModelParameter[]
+          }
 
-        if (!parameter.advanced) return null
+          if (!parameter.advanced) return null
 
-        return (
-          <Parameter
-            simulation={simulation}
-            dimension={dimension}
-            key={key}
-            parameter={parameter}
-            swr={swr}
-          />
-        )
-      }),
-    [subScheme]
+          return (
+            <Parameter
+              key={key}
+              simulation={simulation}
+              dimension={dimension}
+              pkey={key}
+              parameter={parameter}
+              swr={swr}
+            />
+          )
+        })
+        .filter((p) => p),
+    [simulation, dimension, subScheme, swr]
   )
 
   /**

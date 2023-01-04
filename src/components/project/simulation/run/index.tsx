@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run */
 
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
@@ -14,13 +14,6 @@ import {
   IModelBoundaryConditions
 } from '@/models/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
-import { ErrorNotification } from '@/components/assets/notification'
-
-import Utils from '@/lib/utils'
-
 import {
   IFrontSimulationsItem,
   IFrontResult,
@@ -28,14 +21,21 @@ import {
   IFrontMutateSimulationsItem,
   IFrontSimulationTask
 } from '@/api/index.d'
-import SimulationAPI from '@/api/simulation'
 
-import { globalStyle } from '@/styles'
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
+import SimulationAPI from '@/api/simulation'
 
 import Sensors from './sensors'
 import CloudServer from './cloudServer'
 import Log from './log'
 import Results from './results'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -64,7 +64,7 @@ export const errors = {
  * On cloud server
  * @param cloudServer Cloud server
  */
-export const onCloudServer = async (
+export const _onCloudServer = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   cloudServer: IClientPlugin,
   swr: {
@@ -103,7 +103,7 @@ export const onCloudServer = async (
 /**
  * On run
  */
-export const onRun = async (
+export const _onRun = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>
 ): Promise<void> => {
   try {
@@ -117,7 +117,7 @@ export const onRun = async (
 /**
  * On stop
  */
-export const onStop = async (
+export const _onStop = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>
 ): Promise<void> => {
   try {
@@ -152,8 +152,14 @@ const Run = ({
     2000
   )
 
-  const configuration = simulation.scheme.configuration
-  const currentConfiguration = currentSimulation?.scheme?.configuration
+  const configuration = useMemo(
+    () => simulation.scheme.configuration,
+    [simulation]
+  )
+  const currentConfiguration = useMemo(
+    () => currentSimulation?.scheme?.configuration,
+    [currentSimulation]
+  )
 
   // Check tasks
   useCustomEffect(() => {
@@ -212,6 +218,41 @@ const Run = ({
   }, [currentSimulation?.tasks])
 
   /**
+   * On ok
+   * @param cloudServer Cloud server
+   */
+  const onOk = useCallback(
+    async (cloudServer: IClientPlugin): Promise<void> =>
+      _onCloudServer(simulation, cloudServer, {
+        ...swr,
+        mutateSimulation
+      }),
+    [simulation, swr, mutateSimulation]
+  )
+
+  /**
+   * On run click
+   */
+  const onRunClick = useCallback(async () => {
+    setRunning(true)
+    try {
+      await _onRun(simulation)
+    } catch (err) {
+      setRunning(false)
+    }
+  }, [simulation])
+
+  /**
+   * On stop click
+   */
+  const onStopClick = useCallback(async () => {
+    try {
+      await _onStop(simulation)
+      setRunning(false)
+    } catch (err) {}
+  }, [simulation])
+
+  /**
    * Render
    */
   if (!simulation || !currentSimulation || currentSimulation?.id === '0')
@@ -224,104 +265,86 @@ const Run = ({
         </Layout.Content>
       </Layout>
     )
-  else
-    return (
-      <Layout>
-        <Layout.Content>
-          <Space direction="vertical" css={globalStyle.fullWidth}>
-            <Sensors
-              simulation={simulation}
-              setVisible={setVisible}
-              setResult={setResult}
-              setPostprocessing={setPostprocessing}
-              swr={{
-                mutateOneSimulation: swr.mutateOneSimulation
-              }}
-            />
-            <CloudServer
-              disabled={running}
-              cloudServer={currentConfiguration?.run?.cloudServer}
-              onOk={async (cloudServer) =>
-                onCloudServer(simulation, cloudServer, {
-                  ...swr,
-                  mutateSimulation
-                })
-              }
-            />
-            <Card size="small" title="Run">
-              <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
-                <div
-                  css={globalStyle.fullWidth}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
-                  <Space>
-                    <Button
-                      disabled={disabled}
-                      type="primary"
-                      icon={<RocketOutlined />}
-                      loading={running}
-                      onClick={async () => {
-                        setRunning(true)
-                        try {
-                          await onRun(simulation)
-                        } catch (err) {
-                          setRunning(false)
-                        }
-                      }}
-                    >
-                      Run
-                    </Button>
-                    <Button
-                      disabled={!running}
-                      danger
-                      icon={<StopOutlined />}
-                      shape="circle"
-                      onClick={async () => {
-                        try {
-                          await onStop(simulation)
-                          setRunning(false)
-                        } catch (err) {}
-                      }}
-                    />
-                  </Space>
-                  <Log simulation={{ id: simulation.id }} steps={steps} />
-                </div>
-                <Steps
-                  direction="vertical"
-                  items={steps.map((step, index) => ({
-                    key: index,
-                    title: step.label,
-                    description: '(' + (index + 1) + '/' + steps.length + ')',
-                    status: step.status
-                  }))}
-                />
-              </Space>
-            </Card>
+  return (
+    <Layout>
+      <Layout.Content>
+        <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Sensors
+            simulation={simulation}
+            setVisible={setVisible}
+            setResult={setResult}
+            setPostprocessing={setPostprocessing}
+            swr={{
+              mutateOneSimulation: swr.mutateOneSimulation
+            }}
+          />
+          <CloudServer
+            disabled={running}
+            cloudServer={currentConfiguration?.run?.cloudServer}
+            onOk={onOk}
+          />
+          <Card size="small" title="Run">
+            <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+              <div
+                css={globalStyle.fullWidth}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <Space>
+                  <Button
+                    disabled={disabled}
+                    type="primary"
+                    icon={<RocketOutlined />}
+                    loading={running}
+                    onClick={onRunClick}
+                  >
+                    Run
+                  </Button>
+                  <Button
+                    disabled={!running}
+                    danger
+                    icon={<StopOutlined />}
+                    shape="circle"
+                    onClick={onStopClick}
+                  />
+                </Space>
+                <Log simulation={{ id: simulation.id }} steps={steps} />
+              </div>
+              <Steps
+                direction="vertical"
+                items={steps.map((step, index) => ({
+                  key: index,
+                  title: step.label,
+                  description: '(' + (index + 1) + '/' + steps.length + ')',
+                  status: step.status
+                }))}
+              />
+            </Space>
+          </Card>
 
-            <Results
-              simulation={
-                currentSimulation && {
-                  id: currentSimulation.id,
-                  scheme: currentSimulation.scheme,
-                  tasks: currentSimulation.tasks
-                }
+          <Results
+            simulation={
+              currentSimulation && {
+                id: currentSimulation.id,
+                scheme: currentSimulation.scheme,
+                tasks: currentSimulation.tasks
               }
-              result={
-                result && {
-                  name: result.name,
-                  fileName: result.fileName
-                }
+            }
+            result={
+              result && {
+                name: result.name,
+                fileName: result.fileName
               }
-              setResult={setResult}
-            />
-          </Space>
-        </Layout.Content>
-      </Layout>
-    )
+            }
+            setResult={setResult}
+          />
+        </Space>
+      </Layout.Content>
+    </Layout>
+  )
 }
 
 export default Run

@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensor */
 
-import { useCallback, useContext, useState } from 'react'
+import { ChangeEvent, useCallback, useContext, useState } from 'react'
 import { Button, Card, Drawer, Input, Space, Tooltip, Typography } from 'antd'
 import {
   CloseOutlined,
@@ -22,10 +22,10 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 import Formula from '@/components/assets/formula'
 import { CancelButton } from '@/components/assets/button'
 
-import { globalStyle } from '@/styles'
-
 import Edit from '../edit'
 import Add from '../add'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -146,6 +146,42 @@ const Sensor = ({
   }, [dispatch, onClose])
 
   /**
+   * On change
+   * @param e Event
+   */
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>): void => setName(e.target.value),
+    []
+  )
+
+  /**
+   * On position x
+   * @param value Value
+   */
+  const onPositionX = useCallback(
+    (value: string): void => onPosition(+value, point?.y ?? 0, point?.z ?? 0),
+    [point, onPosition]
+  )
+
+  /**
+   * On position y
+   * @param value Value
+   */
+  const onPositionY = useCallback(
+    (value: string): void => onPosition(point?.x ?? 0, +value, point?.z ?? 0),
+    [point, onPosition]
+  )
+
+  /**
+   * On position z
+   * @param value Value
+   */
+  const onPositionZ = useCallback(
+    (value: string): void => onPosition(point?.x ?? 0, point?.y ?? 0, +value),
+    [point, onPosition]
+  )
+
+  /**
    * Render
    */
   return (
@@ -189,7 +225,7 @@ const Sensor = ({
       <Space direction="vertical" css={globalStyle.fullWidth}>
         <Card size="small">
           <Typography.Text>Name</Typography.Text>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input value={name} onChange={onChange} />
         </Card>
         <Card size="small">
           <Space direction="vertical" css={globalStyle.fullWidth}>
@@ -210,23 +246,17 @@ const Sensor = ({
             <Formula
               label="X"
               defaultValue={point?.x}
-              onValueChange={(value) =>
-                onPosition(+value, point?.y ?? 0, point?.z ?? 0)
-              }
+              onValueChange={onPositionX}
             />
             <Formula
               label="Y"
               defaultValue={point?.y}
-              onValueChange={(value) =>
-                onPosition(point?.x ?? 0, +value, point?.z ?? 0)
-              }
+              onValueChange={onPositionY}
             />
             <Formula
               label="Z"
               defaultValue={point?.z}
-              onValueChange={(value) =>
-                onPosition(point?.x ?? 0, point?.y ?? 0, +value)
-              }
+              onValueChange={onPositionZ}
             />
           </Space>
         </Card>

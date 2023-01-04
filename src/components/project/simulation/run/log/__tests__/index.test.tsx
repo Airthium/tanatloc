@@ -96,8 +96,6 @@ describe('components/project/simulation/run/log', () => {
       )
     )
 
-    // await new Promise((resolve) => setTimeout(resolve, 100))
-
     // Normal
     mockSimulationLog.mockImplementationOnce(() => ({
       log: Buffer.from('log')

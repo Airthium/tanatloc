@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Edit */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   IFrontMutateSimulationsItem,
@@ -44,7 +44,7 @@ export const errors = {
  * @param sensor Sensor (+ index)
  * @param swr SWR
  */
-export const onEdit = async (
+export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   sensor: IModelSensor & { index: number },
   swr: {
@@ -99,47 +99,47 @@ const Edit = ({
   const [loading, setLoading] = useState<boolean>()
 
   /**
+   * On edit
+   */
+  const onEdit = useCallback(async () => {
+    setLoading(true)
+    try {
+      // Check
+      if (!sensor.name) {
+        onError(errors.name)
+        setLoading(false)
+        return
+      }
+
+      if (!sensor.point) {
+        onError(errors.point)
+        setLoading(false)
+        return
+      }
+
+      if (!sensor.formula) {
+        onError(errors.formula)
+        setLoading(false)
+        return
+      }
+
+      onError()
+
+      await _onEdit(simulation, sensor, swr)
+
+      // Close
+      setLoading(false)
+      onClose()
+    } catch (err) {
+      setLoading(false)
+    }
+  }, [simulation, sensor, onError, onClose, swr])
+
+  /**
    * Render
    */
   return (
-    <EditButton
-      loading={loading}
-      primary
-      needMargin
-      onEdit={async () => {
-        setLoading(true)
-        try {
-          // Check
-          if (!sensor.name) {
-            onError(errors.name)
-            setLoading(false)
-            return
-          }
-
-          if (!sensor.point) {
-            onError(errors.point)
-            setLoading(false)
-            return
-          }
-
-          if (!sensor.formula) {
-            onError(errors.formula)
-            setLoading(false)
-            return
-          }
-
-          onError()
-
-          await onEdit(simulation, sensor, swr)
-
-          // Close
-          setLoading(false)
-          onClose()
-        } catch (err) {
-          setLoading(false)
-        }
-      }}
-    >
+    <EditButton loading={loading} primary needMargin onEdit={onEdit}>
       Edit
     </EditButton>
   )

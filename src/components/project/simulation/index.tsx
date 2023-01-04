@@ -171,8 +171,8 @@ const Selector = ({
   }, [current, onOk])
 
   // Menu items (Tanatloc)
-  const tanatlocMenuItems: ItemType[] = useMemo(() => {
-    const items = [
+  const tanatlocMenuItems = useMemo(() => {
+    const items: ItemType[] = [
       {
         key: 'category',
         disabled: true,
@@ -195,11 +195,11 @@ const Selector = ({
     })
 
     return items
-  }, [user, categories])
+  }, [models, categories, category])
 
   // Menu items (user)
-  const userMenuItems: ItemType[] = useMemo(() => {
-    const items = [
+  const userMenuItems = useMemo(() => {
+    const items: ItemType[] = [
       {
         key: 'category',
         disabled: true,
@@ -222,7 +222,7 @@ const Selector = ({
     })
 
     return items
-  }, [user, categories])
+  }, [user, categories, category])
 
   /**
    * Render

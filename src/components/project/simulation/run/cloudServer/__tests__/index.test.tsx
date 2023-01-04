@@ -158,7 +158,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
-  test('onMerge', () => {
+  test('onMerge', async () => {
     mockDynamic.mockImplementation(() => (props: any) => (
       <div role="Renderer" onClick={props.onSelect} />
     ))
@@ -171,7 +171,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     const button = screen.getByRole('button')
     fireEvent.click(button)
 
-    waitFor(() => screen.getByText('Plugin name'))
+    await waitFor(() => screen.getByText('Plugin name'))
 
     const renderer = screen.getByRole('Renderer')
     fireEvent.click(renderer)

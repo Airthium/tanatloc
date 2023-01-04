@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Delete */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useMemo, useState } from 'react'
 import { Typography } from 'antd'
 
 import {
@@ -43,7 +43,7 @@ export const errors = {
  * @param dispatch Disptach
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
   dispatch: Dispatch<ISelectAction>,
@@ -97,8 +97,20 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
 
   // Data
   const { dispatch } = useContext(SelectContext)
-  const run = simulation.scheme.configuration.run
-  const sensor = run.sensors![index]
+  const run = useMemo(() => simulation.scheme.configuration.run, [simulation])
+  const sensor = useMemo(() => run.sensors![index], [index, run])
+
+  /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(simulation, index, dispatch, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [simulation, index, dispatch, swr])
 
   /**
    * Render
@@ -112,14 +124,7 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
           <Typography.Text strong>{sensor.name}</Typography.Text>
         </>
       }
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(simulation, index, dispatch, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

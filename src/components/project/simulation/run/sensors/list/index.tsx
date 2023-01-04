@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.List */
 
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { Card, Typography } from 'antd'
 import { css } from '@emotion/react'
 
@@ -15,10 +15,10 @@ import { disable, enable, setPoint } from '@/context/select/actions'
 
 import { EditButton } from '@/components/assets/button'
 
+import Delete from '../delete'
+
 import { globalStyle } from '@/styles'
 import style from '../../../index.style'
-
-import Delete from '../delete'
 
 /**
  * Props
@@ -31,33 +31,84 @@ export interface IProps {
   }
 }
 
-const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
-  // State
-  const [enabled, setEnabled] = useState<boolean>(true)
+export interface IListItemProps {
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  sensor: IModelSensor
+  index: number
+  _onEdit: (sensor: IModelSensor & { index: number }) => void
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
+}
 
+/**
+ * ListItem
+ * @param props Props
+ * @returns ListItem
+ */
+const ListItem = ({
+  simulation,
+  sensor,
+  index,
+  _onEdit,
+  swr
+}: IListItemProps): JSX.Element => {
   // Data
-  const run = simulation.scheme.configuration.run
   const { dispatch } = useContext(SelectContext)
 
   /**
    * Highlight
    * @param sensor Sensor
    */
-  const highlight = useCallback(
-    (sensor: IModelSensor) => {
-      dispatch(enable())
-      dispatch(setPoint(sensor.point))
-    },
-    [dispatch]
-  )
+  const highlight = useCallback(() => {
+    dispatch(enable())
+    dispatch(setPoint(sensor.point))
+  }, [sensor, dispatch])
 
   /**
    * Unhighlight
    */
   const unhighlight = useCallback(() => {
-    enabled && dispatch(setPoint())
     dispatch(disable())
-  }, [enabled, dispatch])
+  }, [dispatch])
+
+  /**
+   * On edit
+   */
+  const onEdit = useCallback(
+    () => _onEdit({ ...sensor, index }),
+    [sensor, index, _onEdit]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Card
+      css={css([globalStyle.textAlignCenter, style.listItem])}
+      hoverable
+      onMouseEnter={highlight}
+      onMouseLeave={unhighlight}
+      actions={[
+        <EditButton key="edit" onEdit={onEdit} />,
+        <Delete key="delete" simulation={simulation} index={index} swr={swr} />
+      ]}
+    >
+      <Typography.Text strong css={globalStyle.textAlignCenter}>
+        {sensor.name}
+      </Typography.Text>
+    </Card>
+  )
+}
+
+/**
+ * List
+ * @param props Props
+ * @returns List
+ */
+const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
+  // Data
+  const run = useMemo(() => simulation.scheme.configuration.run, [simulation])
 
   /**
    * Render
@@ -65,33 +116,14 @@ const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
   return (
     <>
       {run.sensors?.map((sensor, index) => (
-        <Card
-          css={css([globalStyle.textAlignCenter, style.listItem])}
-          key={index}
-          hoverable
-          onMouseEnter={() => highlight(sensor)}
-          onMouseLeave={unhighlight}
-          actions={[
-            <EditButton
-              key="edit"
-              onEdit={() => {
-                setEnabled(false)
-                onEdit({ ...sensor, index })
-                setTimeout(() => setEnabled(true), 500)
-              }}
-            />,
-            <Delete
-              key="delete"
-              simulation={simulation}
-              index={index}
-              swr={swr}
-            />
-          ]}
-        >
-          <Typography.Text strong css={globalStyle.textAlignCenter}>
-            {sensor.name}
-          </Typography.Text>
-        </Card>
+        <ListItem
+          key={sensor.name}
+          simulation={simulation}
+          sensor={sensor}
+          index={index}
+          _onEdit={onEdit}
+          swr={swr}
+        />
       ))}
     </>
   )

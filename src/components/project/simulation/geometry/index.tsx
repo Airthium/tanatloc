@@ -240,7 +240,7 @@ const Geometry = ({
             swr
           )
     },
-    [multiple, loadedGeometries, simulation, swr]
+    [multiple, loadedGeometries, simulation, setGeometries, swr]
   )
 
   // List
@@ -258,7 +258,7 @@ const Geometry = ({
         />
       </div>
     ),
-    [multiple, geometryId, geometriesIds, loadedGeometries]
+    [multiple, geometryId, geometriesIds, onChange, loadedGeometries]
   )
 
   /**

@@ -1,9 +1,14 @@
 /** @module Components.Project.Simulation.Materials */
 
-import { useState, useCallback, useContext } from 'react'
+import { useState, useCallback, useContext, useMemo } from 'react'
 import { Card, Layout } from 'antd'
 
 import { IModelMaterialsValue } from '@/models/index.d'
+import {
+  IFrontGeometriesItem,
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
@@ -12,12 +17,6 @@ import Loading from '@/components/loading'
 
 import { SelectContext } from '@/context/select'
 import { enable, disable, setType } from '@/context/select/actions'
-
-import {
-  IFrontGeometriesItem,
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 
 import List from './list'
 import Material from './material'
@@ -53,7 +52,10 @@ const Materials = ({
   const { dispatch } = useContext(SelectContext)
 
   // Data
-  const materials = simulation.scheme.configuration.materials!
+  const materials = useMemo(
+    () => simulation.scheme.configuration.materials!,
+    [simulation]
+  )
 
   // Part
   useCustomEffect(

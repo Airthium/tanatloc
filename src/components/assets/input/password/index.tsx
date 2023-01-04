@@ -32,7 +32,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   password: 'Please enter a password',
   passwordTooSmall: (min: number) =>
     'Your password is too small (minimum ' + min + ' characters)',

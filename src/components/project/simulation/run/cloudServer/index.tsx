@@ -61,24 +61,34 @@ export const errors = {
  * @returns Plugin
  */
 const Plugin = ({ plugin, onOk, setVisible }: IPluginProps): JSX.Element => {
+  // Renderer
   const Renderer: ComponentType<{
     data: any
     onSelect: (diff: IClientPlugin) => void
   }> = dynamic(() => import(`/plugins/${plugin.key}/src/components`))
 
+  /**
+   * On select
+   * @param diff Plugin
+   */
+  const onSelect = useCallback(
+    (diff: IClientPlugin): void => {
+      // Merge
+      merge(plugin, diff)
+      // Ok
+      onOk(plugin)
+      // Close
+      setVisible(false)
+    },
+    [plugin, onOk, setVisible]
+  )
+
+  /**
+   * Render
+   */
   return (
     <Card key={plugin.uuid} title={plugin.configuration.name.value}>
-      <Renderer
-        data={plugin.data}
-        onSelect={(diff: IClientPlugin) => {
-          // Merge
-          merge(plugin, diff)
-          // Ok
-          onOk(plugin)
-          // Close
-          setVisible(false)
-        }}
-      />
+      <Renderer data={plugin.data} onSelect={onSelect} />
     </Card>
   )
 }

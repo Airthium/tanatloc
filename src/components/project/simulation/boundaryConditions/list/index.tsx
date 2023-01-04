@@ -71,24 +71,20 @@ const ListItem = ({
    * @param key Key
    * @param index Index
    */
-  const highlight = useCallback(
-    (): void => {
-      dispatch(enable())
+  const highlight = useCallback((): void => {
+    dispatch(enable())
 
-      // Geometry
-      const geometryId = boundaryCondition.geometry
-      const geometry = geometries.find((geometry) => geometry.id === geometryId)
-      dispatch(setPart(geometry?.summary.uuid))
+    // Geometry
+    const geometryId = boundaryCondition.geometry
+    const geometry = geometries.find((geometry) => geometry.id === geometryId)
+    dispatch(setPart(geometry?.summary.uuid))
 
-      // Selected
-      const currentSelected = boundaryCondition.selected
-      currentSelected?.forEach((s) => {
-        dispatch(select(s))
-      })
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [geometries, boundaryCondition, dispatch]
-  )
+    // Selected
+    const currentSelected = boundaryCondition.selected
+    currentSelected?.forEach((s) => {
+      dispatch(select(s))
+    })
+  }, [geometries, boundaryCondition, dispatch])
 
   /**
    * Unhighlight current

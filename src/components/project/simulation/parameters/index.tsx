@@ -388,7 +388,7 @@ const Parameter = ({
     () =>
       parameter.children.map((child, index) => (
         <ParameterChild
-          key={pkey + '&' + index}
+          key={pkey + '&' + child.label}
           simulation={simulation}
           dimension={dimension}
           child={child}

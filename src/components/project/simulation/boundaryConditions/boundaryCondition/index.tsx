@@ -16,6 +16,7 @@ import {
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import {
+  IModelBoundaryCondition,
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
@@ -52,6 +53,57 @@ export interface IProps {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onClose: () => void
+}
+
+export interface IBoundaryConditionItemProps {
+  boundaryCondition: IModelBoundaryCondition
+  index: number
+  value: string | number | undefined
+  checked: boolean | undefined
+  _onValueChange: (index: number, value: string) => void
+  _onCheckedChange: (index: number, checked: boolean) => void
+}
+
+const BoundaryConditionItem = ({
+  boundaryCondition,
+  index,
+  value,
+  checked,
+  _onValueChange,
+  _onCheckedChange
+}: IBoundaryConditionItemProps): JSX.Element => {
+  /**
+   * On value change
+   * @param value Value
+   */
+  const onValueChange = useCallback(
+    (value: string) => _onValueChange(index, value),
+    [index, _onValueChange]
+  )
+
+  /**
+   * On checked change
+   * @param checked Checked
+   */
+  const onCheckedChange = useCallback(
+    (checked: boolean) => _onCheckedChange(index, checked),
+    [index, _onCheckedChange]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Formula
+      css={globalStyleFn.marginBottom(10)}
+      label={boundaryCondition.label}
+      defaultValue={value}
+      defaultChecked={checked}
+      onValueChange={onValueChange}
+      onCheckedChange={onCheckedChange}
+      unit={boundaryCondition.unit}
+    />
+  )
 }
 
 /**
@@ -280,19 +332,18 @@ const BoundaryCondition = ({
           {current.type.children.map((child, index) => {
             if (dimension === 2 && child.only3D) return
             return (
-              <Formula
-                css={globalStyleFn.marginBottom(10)}
-                key={index}
-                label={child.label}
-                defaultValue={String(current.values![index].value)}
-                defaultChecked={
+              <BoundaryConditionItem
+                key={child.label}
+                boundaryCondition={child}
+                index={index}
+                value={String(current.values![index].value)}
+                checked={
                   current.type.children!.length > 1
                     ? current.values![index].checked
                     : undefined
                 }
-                onValueChange={(value) => onValueChange(index, value)}
-                onCheckedChange={(checked) => onCheckedChange(index, checked)}
-                unit={child.unit}
+                _onValueChange={onValueChange}
+                _onCheckedChange={onCheckedChange}
               />
             )
           })}
@@ -321,8 +372,7 @@ const BoundaryCondition = ({
         geometry: key
       }))
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [`${geometries}`, dispatch]
+    [geometries, dispatch]
   )
 
   /**

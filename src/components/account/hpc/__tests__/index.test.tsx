@@ -23,24 +23,24 @@ describe('components/account/hpc', () => {
     mockList.mockImplementation(() => [])
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<HPC />)
 
-    waitFor(() =>
+    await waitFor(() =>
       screen.getByText('You do not have access to any HPC plugin. Request it.')
     )
 
     unmount()
   })
 
-  test('plugins error', () => {
+  test('plugins error', async () => {
     mockList.mockImplementation(() => {
       throw new Error('list error')
     })
     const { unmount } = render(<HPC />)
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.plugins,
         new Error('list error')
@@ -50,7 +50,7 @@ describe('components/account/hpc', () => {
     unmount()
   })
 
-  test('with plugins', () => {
+  test('with plugins', async () => {
     mockList.mockImplementation(() => [
       {
         key: 'plugin',
@@ -61,7 +61,7 @@ describe('components/account/hpc', () => {
     ])
     const { unmount } = render(<HPC />)
 
-    waitFor(() => screen.getByRole('Plugin'))
+    await waitFor(() => screen.getByRole('Plugin'))
 
     unmount()
   })

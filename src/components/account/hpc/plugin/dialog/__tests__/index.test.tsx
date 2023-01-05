@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import PluginDialog, { errors } from '..'
@@ -130,7 +130,7 @@ describe('components/account/hpc/plugin/dialog', () => {
     unmount()
   })
 
-  test('onFinish', () => {
+  test('onFinish', async () => {
     mockDialog.mockImplementation(({ onOk }) => (
       <div
         onClick={async () => {
@@ -154,9 +154,9 @@ describe('components/account/hpc/plugin/dialog', () => {
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         ...plugin,
         configuration: {
@@ -176,8 +176,8 @@ describe('components/account/hpc/plugin/dialog', () => {
         }
       })
     )
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('add error')
@@ -188,14 +188,14 @@ describe('components/account/hpc/plugin/dialog', () => {
     mockAdd.mockImplementation(() => {
       // mock function
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('edit', () => {
+  test('edit', async () => {
     mockEditButton.mockImplementation(({ onEdit }) => (
       <div role="EditButton" onClick={onEdit} />
     ))
@@ -218,13 +218,13 @@ describe('components/account/hpc/plugin/dialog', () => {
     )
 
     const editButton = screen.getByRole('EditButton')
-    fireEvent.click(editButton)
+    await act(() => fireEvent.click(editButton))
 
     const dialog = screen.getByRole('Dialog')
-    fireEvent.click(dialog)
+    await act(() => fireEvent.click(dialog))
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith({
         ...plugin,
         configuration: {
@@ -245,7 +245,7 @@ describe('components/account/hpc/plugin/dialog', () => {
         needReInit: true
       })
     )
-    waitFor(() => expect(swr.mutateOnePlugin).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
   })

@@ -77,7 +77,7 @@ describe('components/account/delete', () => {
 
     // Normal
     mockDel.mockImplementation(() => undefined)
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(swr.clearUser).toHaveBeenCalledTimes(1))
 

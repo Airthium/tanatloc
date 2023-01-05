@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { Form, Input } from 'antd'
 
@@ -67,12 +67,18 @@ describe('components/account/password', () => {
     const button = screen.getByRole('button')
 
     // Mismatch
-    fireEvent.change(currentPassword, { target: { value: 'password' } })
-    fireEvent.change(newPassword, { target: { value: 'password' } })
-    fireEvent.change(passwordConfirmation, {
-      target: { value: 'otherpassword' }
-    })
-    fireEvent.click(button)
+    await act(() =>
+      fireEvent.change(currentPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(newPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(passwordConfirmation, {
+        target: { value: 'otherpassword' }
+      })
+    )
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
 
     unmount()
@@ -85,9 +91,15 @@ describe('components/account/password', () => {
     const currentPassword = screen.getByLabelText('Current password')
     const newPassword = screen.getByLabelText('New password')
     const passwordConfirmation = screen.getByLabelText('Password confirmation')
-    fireEvent.change(currentPassword, { target: { value: 'password' } })
-    fireEvent.change(newPassword, { target: { value: 'password' } })
-    fireEvent.change(passwordConfirmation, { target: { value: 'password' } })
+    await act(() =>
+      fireEvent.change(currentPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(newPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(passwordConfirmation, { target: { value: 'password' } })
+    )
 
     // Button
     const button = screen.getByRole('button')
@@ -96,7 +108,7 @@ describe('components/account/password', () => {
     mockCheck.mockImplementation(() => {
       throw new Error('check error')
     })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
@@ -116,7 +128,7 @@ describe('components/account/password', () => {
     mockCheck.mockImplementation(() => ({
       valid: false
     }))
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
@@ -133,7 +145,7 @@ describe('components/account/password', () => {
     mockCheck.mockImplementation(() => ({
       valid: true
     }))
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
     await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
@@ -159,7 +171,7 @@ describe('components/account/password', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(4))
     await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({

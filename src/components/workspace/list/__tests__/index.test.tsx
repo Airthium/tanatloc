@@ -31,7 +31,15 @@ jest.mock('../../add', () => () => <div />)
 describe('components/workspace/list', () => {
   const user = { id: 'id' }
   const workspaces = [
-    { id: 'id', name: 'name', projects: [], owners: [], users: [], groups: [] }
+    { id: 'id', name: 'name', projects: [], owners: [], users: [], groups: [] },
+    {
+      id: 'id2',
+      name: 'otherworkspace',
+      projects: [],
+      owners: [],
+      users: [],
+      groups: []
+    }
   ]
   const organizations = [
     { id: 'id', name: 'name', owners: [], users: [], groups: [] }
@@ -81,6 +89,22 @@ describe('components/workspace/list', () => {
         swr={swr}
       />
     )
+
+    unmount()
+  })
+
+  test('onChange', () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        workspaces={workspaces}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+
+    const tab = screen.getByRole('tab', { name: 'otherworkspace' })
+    fireEvent.click(tab)
 
     unmount()
   })

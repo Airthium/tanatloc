@@ -97,6 +97,15 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
+  test('empty plugins', () => {
+    mockPlugins.mockImplementation(() => [])
+    const { unmount } = render(
+      <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
+
+    unmount()
+  })
+
   test('without cloud server', () => {
     const { unmount } = render(<CloudServer onOk={onOk} />)
 

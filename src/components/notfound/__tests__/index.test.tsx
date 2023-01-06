@@ -47,7 +47,12 @@ jest.mock('three/examples/jsm/capabilities/WebGL', () => ({
   isWebGLAvailable: () => mockIsWebGLAvailable()
 }))
 
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => callback()
+})
+
 describe('components/notfound', () => {
+  let count = 0
   beforeEach(() => {
     mockRouter.mockReset()
 
@@ -62,7 +67,9 @@ describe('components/notfound', () => {
           {
             geometry: {
               attributes: {
-                color: {}
+                color: {
+                  setXYZ: jest.fn
+                }
               },
               boundingSphere: {
                 center: {
@@ -71,7 +78,14 @@ describe('components/notfound', () => {
                   z: 0
                 }
               },
-              getAttribute: () => ({}),
+              getAttribute: () => ({
+                count: 3,
+                getY: () => {
+                  count++
+                  if (count === 1) return 450
+                  else return 750
+                }
+              }),
               setAttribute: jest.fn
             }
           }
@@ -84,6 +98,21 @@ describe('components/notfound', () => {
   })
 
   test('render', () => {
+    //@ts-ignore
+    global.MockScene = {
+      children: [
+        { type: 'Group', rotateY: jest.fn, children: [{}] },
+        { type: 'Other' }
+      ]
+    }
+
+    const { unmount } = render(<NotFound />)
+
+    unmount()
+  })
+
+  test('no WebGL', () => {
+    mockIsWebGLAvailable.mockImplementation(() => false)
     const { unmount } = render(<NotFound />)
 
     unmount()

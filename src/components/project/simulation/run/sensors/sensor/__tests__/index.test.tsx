@@ -21,6 +21,10 @@ jest.mock('../../edit', () => (props: any) => mockEdit(props))
 const mockAdd = jest.fn()
 jest.mock('../../add', () => (props: any) => mockAdd(props))
 
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => callback()
+})
+
 describe('components/project/simulation/run/sensors/sensor', () => {
   const visible = true
   const simulation = {

@@ -1,4 +1,4 @@
-import { fireEvent, screen, render, waitFor } from '@testing-library/react'
+import { fireEvent, screen, render, waitFor, act } from '@testing-library/react'
 
 import Edit, { errors } from '..'
 
@@ -50,7 +50,7 @@ describe('components/project/simulation/about/edit', () => {
     unmount()
   })
 
-  test('onEdit', () => {
+  test('onEdit', async () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -68,24 +68,28 @@ describe('components/project/simulation/about/edit', () => {
 
     // Set visible
     const editButton = screen.getByRole('EditButton')
-    fireEvent.click(editButton)
+    await act(() => fireEvent.click(editButton))
 
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

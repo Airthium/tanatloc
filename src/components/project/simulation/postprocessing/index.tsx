@@ -234,8 +234,7 @@ const Postprocessing = ({
 
   // Parameters
   const parameters = useMemo(() => {
-    if (!filter) return
-    if (!postprocess) return
+    if (!postprocess || !filter) return
 
     const post = PostprocessingList.find((pp) => pp.key === filter)
     const defaultPost = postprocess.find((pp) => pp.key === filter)

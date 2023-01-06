@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -85,7 +85,7 @@ describe('components/administration/users/edit', () => {
     unmount()
   })
 
-  test('onUpdate', () => {
+  test('onUpdate', async () => {
     let returned = {}
     mockDialog.mockImplementation((props) => (
       <div
@@ -114,15 +114,15 @@ describe('components/administration/users/edit', () => {
       password: 'password',
       key: '******'
     }
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
 
     // Empty
     returned = {}
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
 
     // Error
     returned = {
@@ -131,10 +131,10 @@ describe('components/administration/users/edit', () => {
     mockUpdateById.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

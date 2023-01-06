@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import Group, { Delete, errors } from '..'
@@ -93,7 +93,7 @@ describe('components/assets/group', () => {
     unmount()
   })
 
-  test('onAdd', () => {
+  test('onAdd', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -111,18 +111,18 @@ describe('components/assets/group', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')
@@ -132,7 +132,7 @@ describe('components/assets/group', () => {
     unmount()
   })
 
-  test('onUpdate', () => {
+  test('onUpdate', async () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -159,27 +159,27 @@ describe('components/assets/group', () => {
     )
 
     const button = screen.getByRole('EditButton')
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     const dialog = screen.getByRole('Dialog')
 
     // Empty
-    fireEvent.click(dialog)
+    await act(() => fireEvent.click(dialog))
 
     name = 'new name'
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -189,7 +189,7 @@ describe('components/assets/group', () => {
     unmount()
   })
 
-  test('onUpdate wit different users', () => {
+  test('onUpdate wit different users', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -211,14 +211,14 @@ describe('components/assets/group', () => {
 
     const dialog = screen.getByRole('Dialog')
 
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  it('onUpdate with modifications', () => {
+  it('onUpdate with modifications', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -241,9 +241,9 @@ describe('components/assets/group', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
 
     unmount()
   })

@@ -1,4 +1,4 @@
-import { fireEvent, screen, render, waitFor } from '@testing-library/react'
+import { fireEvent, screen, render, waitFor, act } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -52,7 +52,7 @@ describe('components/project/simulation/copy', () => {
     unmount()
   })
 
-  test('onCopy', () => {
+  test('onCopy', async () => {
     const { unmount } = render(
       <Copy project={project} simulation={simulation} swr={swr} />
     )
@@ -61,19 +61,19 @@ describe('components/project/simulation/copy', () => {
 
     // Normal
     mockAdd.mockImplementation(() => ({}))
-    fireEvent.click(button)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.copy,
         new Error('add error')

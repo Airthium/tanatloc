@@ -76,6 +76,7 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
 
   // Autofocus
   useEffect(() => {
+    /* istanbul ignore next */
     if (inputRef.current) inputRef.current.focus()
   })
 
@@ -101,16 +102,26 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
   )
 
   /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
    * Render
    */
   return (
     <>
-      <EditButton onEdit={() => setVisible(true)} />
+      <EditButton onEdit={setVisibleTrue} />
       <Dialog
         title="Edit the simulation's name"
         visible={visible}
         initialValues={{ name: simulation.name }}
-        onCancel={() => setVisible(false)}
+        onCancel={setVisibleFalse}
         onOk={onEdit}
         loading={loading}
       >

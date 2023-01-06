@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import CloudServer from '@/components/project/simulation/run/cloudServer'
 
@@ -113,7 +113,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
-  test('plugins error', () => {
+  test('plugins error', async () => {
     mockList.mockImplementation(() => {
       throw new Error()
     })
@@ -121,7 +121,7 @@ describe('components/project/simulation/run/cloudServer', () => {
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -169,12 +169,12 @@ describe('components/project/simulation/run/cloudServer', () => {
 
     // Set visible
     const button = screen.getByRole('button')
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     await waitFor(() => screen.getByText('Plugin name'))
 
     const renderer = screen.getByRole('Renderer')
-    fireEvent.click(renderer)
+    await act(() => fireEvent.click(renderer))
 
     expect(onOk).toHaveBeenCalledTimes(1)
 

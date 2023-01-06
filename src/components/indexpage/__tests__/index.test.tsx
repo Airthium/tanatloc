@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Index from '..'
 
@@ -67,13 +67,13 @@ describe('components/indexpage', () => {
     unmount()
   })
 
-  test('electron', () => {
+  test('electron', async () => {
     //@ts-ignore
     window.process.type = 'renderer'
     const { unmount } = render(<Index />)
 
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })
@@ -98,6 +98,35 @@ describe('components/indexpage', () => {
       name: 'Docker Desktop instructions'
     })
     fireEvent.click(link)
+
+    unmount()
+  })
+
+  test('download', async () => {
+    const { unmount } = render(<Index />)
+
+    await waitFor(() => screen.getByRole('button', { name: 'Linux' }))
+
+    const windows = screen.getByRole('button', { name: 'Windows' })
+    const macos = screen.getByRole('button', { name: 'MacOS' })
+    const linux = screen.getByRole('button', { name: 'Linux' })
+
+    await act(() => fireEvent.click(windows))
+    await act(() => fireEvent.click(macos))
+    await act(() => fireEvent.click(linux))
+
+    unmount()
+  }, 10_000)
+
+  test('release error', async () => {
+    const { unmount } = render(<Index />)
+
+    //@ts-ignore
+    global.fetch = async () => {
+      throw new Error('fetch error')
+    }
+
+    await waitFor(() => expect(screen.getByText('fetch error')))
 
     unmount()
   })

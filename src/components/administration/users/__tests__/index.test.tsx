@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Users, { errors } from '..'
 
@@ -43,22 +43,22 @@ describe('components/administration/users', () => {
     ])
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    waitFor(() => screen.getByRole('table'))
+    await waitFor(() => screen.getByRole('table'))
 
     unmount()
   })
 
-  test('plugins error', () => {
+  test('plugins error', async () => {
     mockList.mockImplementation(() => {
       throw new Error('plugins error')
     })
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.plugins,
         new Error('plugins error')
@@ -68,42 +68,42 @@ describe('components/administration/users', () => {
     unmount()
   })
 
-  test('empty plugins', () => {
+  test('empty plugins', async () => {
     mockList.mockImplementation(() => {
       // Empty mock
     })
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    waitFor(() => screen.getByRole('table'))
+    await waitFor(() => screen.getByRole('table'))
 
     unmount()
   })
 
-  test('sorters', () => {
+  test('sorters', async () => {
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    waitFor(() => screen.getByRole('table'))
+    await waitFor(() => screen.getByRole('table'))
 
     const sorter1 = screen.getByText('First name')
-    fireEvent.click(sorter1)
+    await act(() => fireEvent.click(sorter1))
 
     const sorter2 = screen.getByText('Last name')
-    fireEvent.click(sorter2)
+    await act(() => fireEvent.click(sorter2))
 
     const sorter3 = screen.getByText('Email')
-    fireEvent.click(sorter3)
+    await act(() => fireEvent.click(sorter3))
 
     unmount()
   })
 
-  test('onResize', () => {
+  test('onResize', async () => {
     Object.defineProperty(Element.prototype, 'clientHeight', {
       value: '1000'
     })
 
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    waitFor(() => screen.getByText('email1'))
+    await waitFor(() => screen.getByText('email1'))
 
     unmount()
   })

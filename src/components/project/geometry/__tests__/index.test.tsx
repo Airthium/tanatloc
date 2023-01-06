@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontGeometriesItem } from '@/api/index.d'
 
@@ -106,7 +106,7 @@ describe('components/project/geometry', () => {
     unmount()
   })
 
-  test('download', () => {
+  test('download', async () => {
     window.URL.createObjectURL = jest.fn()
     mockDownloadButton.mockImplementation((props) => (
       <div role="DownloadButton" onClick={props.onDownload} />
@@ -128,17 +128,17 @@ describe('components/project/geometry', () => {
     const button = screen.getByRole('DownloadButton')
 
     // Normal
-    fireEvent.click(button)
-    waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(1))
 
     // Error
     mockDownload.mockImplementation(() => {
       throw new Error('download error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.download,
         new Error('download error')
@@ -148,7 +148,7 @@ describe('components/project/geometry', () => {
     unmount()
   })
 
-  test('onEdit', () => {
+  test('onEdit', async () => {
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -174,23 +174,23 @@ describe('components/project/geometry', () => {
 
     // Visible
     const visible = screen.getByRole('EditButton')
-    fireEvent.click(visible)
+    await act(() => fireEvent.click(visible))
 
     const button = screen.getByRole('Edit')
 
     // Normal
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneGeometry).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneGeometry).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -200,7 +200,7 @@ describe('components/project/geometry', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -224,19 +224,19 @@ describe('components/project/geometry', () => {
     const button = screen.getByRole('DeleteButton')
 
     // Normal
-    fireEvent.click(button)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.delOneGeometry).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.delOneGeometry).toHaveBeenCalledTimes(1))
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error('del error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')

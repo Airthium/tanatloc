@@ -108,14 +108,14 @@ describe('components/assets/organization/groups', () => {
     unmount()
   })
 
-  test('onResize', () => {
+  test('onResize', async () => {
     Object.defineProperty(Element.prototype, 'clientHeight', {
       value: '1000'
     })
 
     const { unmount } = render(<Groups organization={organization} swr={swr} />)
 
-    waitFor(() => screen.getByText('name'))
+    await waitFor(() => screen.getByText('name'))
 
     unmount()
   })

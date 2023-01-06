@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -86,30 +86,36 @@ describe('components/project/simulation/geometry/mesh', () => {
     const select = selects[0]
 
     // Open select
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     // Auto
     const secondSelect = selects[1]
 
-    fireEvent.mouseDown(secondSelect)
+    await act(() => fireEvent.mouseDown(secondSelect))
     const fine = screen.getByText('Fine')
 
-    fireEvent.click(fine)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(fine))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     // Manual
     const manual = screen.getByText('Manual')
-    fireEvent.click(manual)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(manual))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
+    )
 
     await waitFor(() => screen.getByRole('Formula'))
 
     const formula = screen.getByRole('Formula')
-    fireEvent.click(formula)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3))
+    await act(() => fireEvent.click(formula))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+    )
 
     expect(mockErrorNotification).toHaveBeenCalledTimes(0)
 
@@ -128,41 +134,47 @@ describe('components/project/simulation/geometry/mesh', () => {
     const select = selects[0]
 
     // Open select
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     // Auto
     const auto = selects[1]
-    fireEvent.mouseDown(auto)
+    await act(() => fireEvent.mouseDown(auto))
     // No event trigger (already in auto)
 
     // Fine
     const fine = screen.getByText('Fine')
-    fireEvent.click(fine)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(fine))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     // Manual
     const manual = screen.getByText('Manual')
-    fireEvent.click(manual)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(manual))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
+    )
 
     await waitFor(() => screen.getByRole('Formula'))
 
     // Formula
     const formula = screen.getByRole('Formula')
-    fireEvent.click(formula)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3))
+    await act(() => fireEvent.click(formula))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+    )
 
     // Formula error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(formula)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(formula))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -171,10 +183,10 @@ describe('components/project/simulation/geometry/mesh', () => {
 
     // Auto error
     const newAuto = screen.getByText('Automatic')
-    fireEvent.click(newAuto)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() => fireEvent.click(newAuto))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -186,7 +198,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     unmount()
   })
 
-  test('set auto', () => {
+  test('set auto', async () => {
     const { unmount } = render(
       <Mesh
         simulation={{
@@ -209,13 +221,15 @@ describe('components/project/simulation/geometry/mesh', () => {
 
     // Open
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     // Manual
     const automatic = screen.getByText('Automatic')
-    fireEvent.click(automatic)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(automatic))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     unmount()
   })

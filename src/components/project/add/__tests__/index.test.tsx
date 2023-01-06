@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form } from 'antd'
 
 import Add, { errors } from '..'
 
@@ -71,7 +72,7 @@ describe('components/project/add', () => {
     unmount()
   })
 
-  test('onAdd', () => {
+  test('onAdd', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -88,25 +89,35 @@ describe('components/project/add', () => {
 
     // Normal
     mockAdd.mockImplementation(() => ({}))
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneProject).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneProject).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')
       )
     )
+
+    unmount()
+  })
+
+  test('keyup', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(<Add workspace={workspace} swr={swr} />)
+
+    const textarea = screen.getByRole('textbox', { name: 'Description' })
+    fireEvent.keyUp(textarea)
 
     unmount()
   })

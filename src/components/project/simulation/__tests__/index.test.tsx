@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -102,7 +102,7 @@ describe('components/project/simulation.Selector', () => {
     onCancel.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -112,12 +112,12 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => screen.getByText('Name2'))
+    await waitFor(() => screen.getByText('Name2'))
 
     unmount()
   })
 
-  test('onCancel', () => {
+  test('onCancel', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={user}
@@ -127,7 +127,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => screen.getByText('Name2'))
+    await waitFor(() => screen.getByText('Name2'))
 
     const button = screen.getByRole('button', { name: 'Close' })
     fireEvent.click(button)
@@ -143,7 +143,7 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('plugins error', () => {
+  test('plugins error', async () => {
     mockList.mockImplementation(() => {
       throw new Error()
     })
@@ -157,7 +157,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => expect(mockList).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -175,7 +175,7 @@ describe('components/project/simulation.Selector', () => {
     await waitFor(() => screen.getByText('Name2'))
 
     const model = screen.getByText('Name')
-    fireEvent.click(model)
+    await act(() => fireEvent.click(model))
 
     unmount()
   })
@@ -193,10 +193,10 @@ describe('components/project/simulation.Selector', () => {
     await waitFor(() => screen.getByText('Name2'))
 
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     const option = screen.getAllByText('category2')
-    fireEvent.click(option[1])
+    await act(() => fireEvent.click(option[1]))
 
     unmount()
   })
@@ -215,14 +215,14 @@ describe('components/project/simulation.Selector', () => {
 
     // Empty
     const create = screen.getByText('Create')
-    fireEvent.click(create)
+    await act(() => fireEvent.click(create))
     expect(onOk).toHaveBeenCalledTimes(0)
 
     // With current
     const model = screen.getByText('Name')
-    fireEvent.click(model)
+    await act(() => fireEvent.click(model))
 
-    fireEvent.click(create)
+    await act(() => fireEvent.click(create))
     expect(onOk).toHaveBeenCalledTimes(1)
 
     unmount()
@@ -239,12 +239,12 @@ describe('components/project/simulation.Selector', () => {
     )
 
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
-    fireEvent.click(tab)
+    await act(() => fireEvent.click(tab))
 
     await waitFor(() => screen.getByText('Name User'))
 
     const model = screen.getByText('Name User')
-    fireEvent.click(model)
+    await act(() => fireEvent.click(model))
 
     unmount()
   })
@@ -260,20 +260,20 @@ describe('components/project/simulation.Selector', () => {
     )
 
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
-    fireEvent.click(tab)
+    await act(() => fireEvent.click(tab))
 
     await waitFor(() => screen.getByText('Name User'))
 
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     const option = screen.getAllByText('category2')
-    fireEvent.click(option[1])
+    await act(() => fireEvent.click(option[1]))
 
     unmount()
   })
 
-  test('authorized plugins', () => {
+  test('authorized plugins', async () => {
     const { unmount } = render(
       <Simulation.Selector
         user={{ ...user, authorizedplugins: ['model'] }}
@@ -283,7 +283,7 @@ describe('components/project/simulation.Selector', () => {
       />
     )
 
-    waitFor(() => screen.getByText('NamePlugin'))
+    await waitFor(() => screen.getByText('NamePlugin'))
 
     unmount()
   })
@@ -364,15 +364,15 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('plugins error', () => {
+  test('plugins error', async () => {
     mockList.mockImplementation(() => {
       throw new Error('list error')
     })
 
     const { unmount } = render(<Simulation.Updater user={user} swr={swr} />)
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.plugins,
         new Error('list error')
@@ -382,19 +382,21 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('update', () => {
+  test('update', async () => {
     mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     unmount()
   })
 
-  test('update - error', () => {
+  test('update - error', async () => {
     mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
@@ -403,9 +405,9 @@ describe('components/project/simulation.Updater', () => {
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

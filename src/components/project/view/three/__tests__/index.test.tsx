@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import ThreeView, { errors } from '@/components/project/view/three'
 import { SelectContext } from '@/context/select'
@@ -180,6 +180,21 @@ Object.defineProperty(window, 'requestAnimationFrame', {
   }
 })
 
+const contextValue0 = { enabled: false, selected: [], dispatch: jest.fn }
+
+const contextValue1 = {
+  enabled: false,
+  selected: [],
+  point: { x: 0, y: 1, z: 2 },
+  dispatch: jest.fn
+}
+
+const contextValue2 = {
+  enabled: true,
+  selected: [{ uuid: 'uuid', label: 1 }],
+  dispatch: jest.fn
+}
+
 describe('components/project/view/three', () => {
   const loading = false
   const project = {
@@ -308,14 +323,7 @@ describe('components/project/view/three', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{
-          enabled: false,
-          selected: [],
-          point: { x: 0, y: 1, z: 2 },
-          dispatch: jest.fn
-        }}
-      >
+      <SelectContext.Provider value={contextValue1}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -326,9 +334,7 @@ describe('components/project/view/three', () => {
   test('No WebGL', () => {
     mockWebGLAvailable.mockImplementation(() => false)
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -338,9 +344,7 @@ describe('components/project/view/three', () => {
 
   test('loading', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={true} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -352,9 +356,7 @@ describe('components/project/view/three', () => {
     //@ts-ignore
     global.MockScene.children = []
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={true} project={project} parts={[]} />
       </SelectContext.Provider>
     )
@@ -377,9 +379,7 @@ describe('components/project/view/three', () => {
       }
     ]
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={true} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -390,9 +390,7 @@ describe('components/project/view/three', () => {
   test('window pixelRatio', () => {
     Object.defineProperty(window, 'devicePixelRatio', { value: null })
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -402,9 +400,7 @@ describe('components/project/view/three', () => {
 
   test('resize', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -417,9 +413,7 @@ describe('components/project/view/three', () => {
     //@ts-ignore
     global.MockWebGLRenderer.toDataURL = () => ''
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -436,20 +430,20 @@ describe('components/project/view/three', () => {
     const snapshot = screen.getByRole('button', {
       name: 'fund-projection-screen'
     })
-    fireEvent.mouseEnter(snapshot)
+    await act(() => fireEvent.mouseEnter(snapshot))
     await waitFor(() => screen.getByText('Project snapshot'))
     const projectSnapshot = screen.getByText('Project snapshot')
-    fireEvent.click(projectSnapshot)
-    waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(projectSnapshot))
+    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
 
     // Avatar error
     mockAvatarAdd.mockImplementation(() => {
       throw new Error('avatar add error')
     })
-    fireEvent.click(projectSnapshot)
-    waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(projectSnapshot))
+    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.snapshot,
         new Error('avatar add error')
@@ -458,16 +452,16 @@ describe('components/project/view/three', () => {
 
     // Screnshot
     const exportImage = screen.getByText('Export image')
-    fireEvent.click(exportImage)
+    await act(() => fireEvent.click(exportImage))
 
     // Screenshot error
     //@ts-ignore
     global.Date = jest.fn(() => {
       throw new Error('Date error')
     })
-    fireEvent.click(exportImage)
-    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() => fireEvent.click(exportImage))
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.saveScreenshot,
         new Error('Date error')
@@ -476,41 +470,35 @@ describe('components/project/view/three', () => {
 
     // Zoom
     const zoomIn = screen.getByRole('button', { name: 'zoom-in' })
-    fireEvent.mouseDown(zoomIn)
-    fireEvent.mouseUp(zoomIn)
+    await act(() => fireEvent.mouseDown(zoomIn))
+    await act(() => fireEvent.mouseUp(zoomIn))
 
     const zoomOut = screen.getByRole('button', { name: 'zoom-out' })
-    fireEvent.mouseDown(zoomOut)
-    fireEvent.mouseUp(zoomOut)
+    await act(() => fireEvent.mouseDown(zoomOut))
+    await act(() => fireEvent.mouseUp(zoomOut))
 
     // Section view buttons
     const hide = screen.getByRole('button', { name: 'eye-invisible' })
-    fireEvent.click(hide)
+    await act(() => fireEvent.click(hide))
 
     const snapX = screen.getByRole('button', { name: 'X' })
-    fireEvent.click(snapX)
+    await act(() => fireEvent.click(snapX))
 
     const snapY = screen.getByRole('button', { name: 'Y' })
-    fireEvent.click(snapY)
+    await act(() => fireEvent.click(snapY))
 
     const snapZ = screen.getByRole('button', { name: 'Z' })
-    fireEvent.click(snapZ)
+    await act(() => fireEvent.click(snapZ))
 
     const flip = screen.getByRole('button', { name: 'retweet' })
-    fireEvent.click(flip)
+    await act(() => fireEvent.click(flip))
 
     unmount()
   })
 
   test('selection enabled', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{
-          enabled: true,
-          selected: [{ uuid: 'uuid', label: 1 }],
-          dispatch: jest.fn
-        }}
-      >
+      <SelectContext.Provider value={contextValue2}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -520,9 +508,7 @@ describe('components/project/view/three', () => {
 
   test('sectionView', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -540,9 +526,7 @@ describe('components/project/view/three', () => {
   test('selectionHelper', () => {
     mockSelectionEnabled.mockImplementation(() => true)
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
@@ -555,9 +539,7 @@ describe('components/project/view/three', () => {
 
   test('dimension 2', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView
           loading={loading}
           project={project}
@@ -576,27 +558,13 @@ describe('components/project/view/three', () => {
 
   test('load & load', () => {
     const { rerender, unmount } = render(
-      <SelectContext.Provider
-        value={{
-          enabled: false,
-          selected: [],
-          point: { x: 0, y: 1, z: 2 },
-          dispatch: jest.fn
-        }}
-      >
+      <SelectContext.Provider value={contextValue1}>
         <ThreeView loading={loading} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
     rerender(
-      <SelectContext.Provider
-        value={{
-          enabled: false,
-          selected: [],
-          point: { x: 0, y: 1, z: 2 },
-          dispatch: jest.fn
-        }}
-      >
+      <SelectContext.Provider value={contextValue1}>
         <ThreeView
           loading={loading}
           project={project}
@@ -613,22 +581,20 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('load error', () => {
+  test('load error', async () => {
     //@ts-ignore
     global.MockScene.children = []
     mockPartLoader.mockImplementation(() => {
       throw new Error('load error')
     })
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: false, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue0}>
         <ThreeView loading={true} project={project} parts={parts} />
       </SelectContext.Provider>
     )
 
-    waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErroNotification).toHaveBeenLastCalledWith(
         errors.load,
         new Error('load error')

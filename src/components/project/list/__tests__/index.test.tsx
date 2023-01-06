@@ -125,6 +125,10 @@ describe('component/project/list', () => {
     fireEvent.click(descriptions[0])
     expect(mockPush).toHaveBeenCalledTimes(2)
 
+    const archived = screen.getByText('archive 1')
+    fireEvent.click(archived)
+    expect(mockPush).toHaveBeenCalledTimes(2)
+
     const image = screen.getByRole('img', { name: 'Tanatloc' })
     fireEvent.click(image)
     expect(mockPush).toHaveBeenCalledTimes(3)

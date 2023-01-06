@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontGeometries, IFrontSimulations } from '@/api/index.d'
 
@@ -668,7 +668,7 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('Selector', () => {
+  test('Selector', async () => {
     mockProject.mockImplementation(() => ({}))
     mockSelector.mockImplementation((props) => (
       <div role="Selector" onClick={() => props.onOk({})} />
@@ -679,17 +679,17 @@ describe('components/project', () => {
 
     // Normal
     mockSimulationAdd.mockImplementation(() => ({ id: 'id' }))
-    fireEvent.click(selector)
-    waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(selector))
+    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
 
     // Error
     mockSimulationAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(selector)
-    waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(selector))
+    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')

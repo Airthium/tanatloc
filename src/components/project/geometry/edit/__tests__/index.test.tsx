@@ -1,4 +1,4 @@
-import { fireEvent, screen, render, waitFor } from '@testing-library/react'
+import { fireEvent, screen, render, waitFor, act } from '@testing-library/react'
 
 import Edit from '..'
 
@@ -29,7 +29,7 @@ describe('components/project/geometry/edit', () => {
     unmount()
   })
 
-  test('onEdit', () => {
+  test('onEdit', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -55,12 +55,12 @@ describe('components/project/geometry/edit', () => {
     onEdit.mockImplementationOnce(() => {
       throw new Error('edit error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(onEdit).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(onEdit).toHaveBeenCalledTimes(1))
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(onEdit).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(onEdit).toHaveBeenCalledTimes(2))
 
     unmount()
   })

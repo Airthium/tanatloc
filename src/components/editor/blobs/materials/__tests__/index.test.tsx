@@ -1,5 +1,5 @@
 import { EditorContext } from '@/context/editor'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import Materials from '..'
@@ -10,6 +10,14 @@ jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 jest.mock('../..', () => ({
   addOnCursor: jest.fn
 }))
+
+const contextValue = {
+  template: "include('/blobs/materials.edp.ejs'",
+  model: 'model',
+  dispatch: jest.fn(),
+  templateValid: true,
+  modelValid: true
+}
 
 describe('components/editor/blobs/materials', () => {
   beforeEach(() => {
@@ -86,15 +94,7 @@ describe('components/editor/blobs/materials', () => {
       />
     ))
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: "include('/blobs/materials.edp.ejs'",
-          model: 'model',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue}>
         <Materials />
       </EditorContext.Provider>
     )
@@ -105,7 +105,7 @@ describe('components/editor/blobs/materials', () => {
     unmount()
   })
 
-  test('form', () => {
+  test('form', async () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
 
     const { unmount } = render(
@@ -115,12 +115,12 @@ describe('components/editor/blobs/materials', () => {
     )
 
     const add = screen.getByRole('button', { name: 'plus Add material' })
-    fireEvent.click(add)
+    await act(() => fireEvent.click(add))
 
-    waitFor(() => screen.getByRole('img', { name: 'minus-circle' }))
+    await waitFor(() => screen.getByRole('img', { name: 'minus-circle' }))
 
     const remove = screen.getByRole('img', { name: 'minus-circle' })
-    fireEvent.click(remove)
+    await act(() => fireEvent.click(remove))
 
     unmount()
   })

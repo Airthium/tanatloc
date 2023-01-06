@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Download, { errors } from '../download'
 
@@ -33,7 +33,7 @@ describe('components/project/simulation/run/results/archive', () => {
     unmount()
   })
 
-  test('onArchive', () => {
+  test('onArchive', async () => {
     const { unmount } = render(<Download simulation={simulation} file={file} />)
 
     const button = screen.getByRole('button')
@@ -42,10 +42,10 @@ describe('components/project/simulation/run/results/archive', () => {
     mockResultDownload.mockImplementation(() => {
       throw new Error('download error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.download,
         new Error('download error')
@@ -57,8 +57,8 @@ describe('components/project/simulation/run/results/archive', () => {
     mockResultDownload.mockImplementation(() => ({
       blob: async () => 'archive'
     }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(2))
 
     unmount()
   })

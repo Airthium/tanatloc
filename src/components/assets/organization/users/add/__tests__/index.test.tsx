@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontOrganizationsItem } from '@/api/index.d'
 
@@ -76,7 +76,7 @@ describe('componenets/assets/organization/users/add', () => {
     unmount()
   })
 
-  test('onFinish', () => {
+  test('onFinish', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -94,18 +94,20 @@ describe('componenets/assets/organization/users/add', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('update error')
@@ -115,7 +117,7 @@ describe('componenets/assets/organization/users/add', () => {
     unmount()
   })
 
-  test('onFinish, exists', () => {
+  test('onFinish, exists', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -151,9 +153,9 @@ describe('componenets/assets/organization/users/add', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.existing,
         undefined

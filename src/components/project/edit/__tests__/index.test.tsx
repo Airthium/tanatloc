@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form } from 'antd'
 
 import Edit, { errors } from '..'
 
@@ -63,7 +64,7 @@ describe('components/project/edit', () => {
     unmount()
   })
 
-  test('onEdit', () => {
+  test('onEdit', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -79,23 +80,33 @@ describe('components/project/edit', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.edit,
         new Error('update error')
       )
     )
+
+    unmount()
+  })
+
+  test('keyup', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(<Edit project={project} swr={swr} />)
+
+    const textarea = screen.getByRole('textbox', { name: 'Description' })
+    fireEvent.keyUp(textarea)
 
     unmount()
   })

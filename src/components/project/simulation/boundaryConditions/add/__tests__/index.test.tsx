@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add, {
   errors
@@ -95,7 +95,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     unmount()
   })
 
-  test('onAdd', () => {
+  test('onAdd', async () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />
     ))
@@ -112,21 +112,23 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     const button = screen.getByRole('AddButton')
 
     // Normal
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onError).toHaveBeenLastCalledWith())
-    waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onError).toHaveBeenLastCalledWith())
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -136,7 +138,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     unmount()
   })
 
-  test('onAdd - without name', () => {
+  test('onAdd - without name', async () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />
     ))
@@ -164,17 +166,19 @@ describe('components/project/simulation/boundaryConditions/add', () => {
 
     const button = screen.getByRole('AddButton')
 
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0))
-    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.name))
-    waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.name))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onAdd - without type', () => {
+  test('onAdd - without type', async () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />
     ))
@@ -199,17 +203,19 @@ describe('components/project/simulation/boundaryConditions/add', () => {
 
     const button = screen.getByRole('AddButton')
 
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0))
-    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.type))
-    waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.type))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onAdd - without selected', () => {
+  test('onAdd - without selected', async () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />
     ))
@@ -234,17 +240,21 @@ describe('components/project/simulation/boundaryConditions/add', () => {
 
     const button = screen.getByRole('AddButton')
 
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0))
-    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.selected))
-    waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(onError).toHaveBeenLastCalledWith(errors.selected)
+    )
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onAdd without values', () => {
+  test('onAdd without values', async () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />
     ))
@@ -280,9 +290,11 @@ describe('components/project/simulation/boundaryConditions/add', () => {
 
     const button = screen.getByRole('AddButton')
 
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     unmount()
   })

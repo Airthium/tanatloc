@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Button, Form } from 'antd'
 
 import PasswordItem from '..'
@@ -48,23 +48,23 @@ describe('components/assets/input/password', () => {
     const button = screen.getByRole('SubmitButton')
 
     // Numbers only
-    fireEvent.change(input, { target: { value: '12345678' } })
-    fireEvent.click(button)
+    await act(() => fireEvent.change(input, { target: { value: '12345678' } }))
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     // Letters only
-    fireEvent.change(input, { target: { value: 'abcdefgh' } })
-    fireEvent.click(button)
+    await act(() => fireEvent.change(input, { target: { value: 'abcdefgh' } }))
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(2))
 
     // Letters and numbers
-    fireEvent.change(input, { target: { value: 'abcd1234' } })
-    fireEvent.click(button)
+    await act(() => fireEvent.change(input, { target: { value: 'abcd1234' } }))
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(3))
 
     // Ok
-    fireEvent.change(input, { target: { value: 'abcd1234&' } })
-    fireEvent.click(button)
+    await act(() => fireEvent.change(input, { target: { value: 'abcd1234&' } }))
+    await act(() => fireEvent.click(button))
     await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(4))
 
     unmount()

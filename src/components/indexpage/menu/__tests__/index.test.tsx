@@ -34,7 +34,12 @@ describe('components/indexpage/menu', () => {
   })
 
   test('buttons', () => {
-    const { unmount } = render(<Menu />)
+    const { unmount } = render(
+      <>
+        <Menu />
+        <div id="aboutUs"></div>
+      </>
+    )
 
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))

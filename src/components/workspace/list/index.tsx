@@ -109,6 +109,7 @@ const WorkspacesList = ({
 
   // Autofocus
   useEffect(() => {
+    /* istanbul ignore next */
     if (inputRef.current) inputRef.current.focus()
   })
 

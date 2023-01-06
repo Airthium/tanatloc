@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, {
   errors
@@ -27,6 +27,12 @@ const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
 }))
+
+const contextValue = {
+  enabled: true,
+  selected: [],
+  dispatch: jest.fn()
+} as ISelectState
 
 describe('components/project/simulation/materials/delete', () => {
   const simulation = {
@@ -63,11 +69,7 @@ describe('components/project/simulation/materials/delete', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={
-          { enabled: true, selected: [], dispatch: jest.fn() } as ISelectState
-        }
-      >
+      <SelectContext.Provider value={contextValue}>
         <Delete simulation={simulation} swr={swr} index={index} />
       </SelectContext.Provider>
     )
@@ -75,7 +77,7 @@ describe('components/project/simulation/materials/delete', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="button"
@@ -87,15 +89,7 @@ describe('components/project/simulation/materials/delete', () => {
       />
     ))
     const { unmount } = render(
-      <SelectContext.Provider
-        value={
-          {
-            enabled: true,
-            selected: [],
-            dispatch: jest.fn()
-          } as ISelectState
-        }
-      >
+      <SelectContext.Provider value={contextValue}>
         <Delete simulation={simulation} swr={swr} index={index} />
       </SelectContext.Provider>
     )
@@ -106,10 +100,10 @@ describe('components/project/simulation/materials/delete', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -126,10 +120,12 @@ describe('components/project/simulation/materials/delete', () => {
         selected: [{ uuid: 'uuid', label: 1 }]
       }
     ]
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     unmount()
   })

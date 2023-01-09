@@ -47,6 +47,7 @@ jest.mock('../geometry', () => {
     <div role="GeometryAdd" onClick={props.setVisible} />
   )
   Geometry.Add = Add
+  Geometry.componentName = 'Geometry'
   return Geometry
 })
 
@@ -637,7 +638,7 @@ describe('components/project', () => {
   test('Geometry cleanup', () => {
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     mockGeometry.mockImplementation((props) => (
-      <div role="Geometry" onClick={props.onCleanup} />
+      <div role="Geometry" onClick={() => props.onCleanup('idg')} />
     ))
     const { unmount } = render(<Project />)
 
@@ -664,6 +665,17 @@ describe('components/project', () => {
 
     const del = screen.getAllByRole('img', { name: 'eye' })
     fireEvent.click(del[0])
+
+    const reAdd = screen.getByRole('img', { name: 'eye-invisible' })
+    fireEvent.click(reAdd)
+
+    const open = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry eye'
+    })
+    fireEvent.click(open)
+
+    const reDel = screen.getAllByRole('img', { name: 'eye' })
+    fireEvent.click(reDel[0])
 
     unmount()
   })

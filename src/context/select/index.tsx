@@ -1,6 +1,6 @@
 /** @module Context.Select */
 
-import { createContext, Dispatch, ReactNode, useReducer } from 'react'
+import { createContext, Dispatch, ReactNode, useMemo, useReducer } from 'react'
 
 import { IPart } from '@/lib/three/loaders/PartLoader'
 
@@ -152,13 +152,20 @@ const SelectProvider = ({ children }: IProps) => {
   // Reducer
   const [selectState, selectDispatch] = useReducer(selectReducer, initialState)
 
+  // Context
+  const contextValue = useMemo(
+    () => ({
+      ...selectState,
+      dispatch: selectDispatch
+    }),
+    [selectState]
+  )
+
   /**
    * Render
    */
   return (
-    <SelectContext.Provider
-      value={{ ...selectState, dispatch: selectDispatch }}
-    >
+    <SelectContext.Provider value={contextValue}>
       {children}
     </SelectContext.Provider>
   )

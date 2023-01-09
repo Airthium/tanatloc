@@ -121,8 +121,6 @@ export const _onMultipleSelect = async (
   }
 ): Promise<void> => {
   try {
-    if (!geometriesIds.length) return
-
     const newSimulation = Utils.deepCopy(simulation)
     const newGeometries = loadedGeometries.filter((geometry) =>
       geometriesIds.includes(geometry.id)

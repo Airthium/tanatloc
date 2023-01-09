@@ -87,9 +87,9 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           otherOtherKey: {
             label: 'otherOther',
             children: [
-              { label: 'label', htmlEntity: 'entity', default: 1 },
-              { label: 'label', htmlEntity: 'entity', default: 2 },
-              { label: 'label', htmlEntity: 'entity', default: 3 }
+              { label: 'label1', htmlEntity: 'entity', default: 1 },
+              { label: 'label2', htmlEntity: 'entity', default: 2 },
+              { label: 'label3', htmlEntity: 'entity', default: 3 }
             ]
           }
         }
@@ -324,6 +324,36 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     // Edit
     const edit = screen.getByRole('Edit')
     fireEvent.click(edit)
+
+    unmount()
+  })
+
+  test('geometry change', () => {
+    const geometries = [
+      {
+        id: 'id1',
+        name: 'name1',
+        summary: {}
+      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
+      {
+        id: 'id2',
+        name: 'name2',
+        summary: {}
+      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+    ]
+
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        geometries={geometries}
+        simulation={simulation}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    const tabs = screen.getAllByRole('tab')
+    tabs.forEach((tab) => fireEvent.click(tab))
 
     unmount()
   })

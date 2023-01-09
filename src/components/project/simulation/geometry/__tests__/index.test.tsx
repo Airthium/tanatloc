@@ -17,6 +17,8 @@ jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
 }))
 
+jest.mock('../mesh', () => () => <div />)
+
 describe('components/project/simulation/geometry', () => {
   const loadedGeometries = [
     { id: 'id', name: 'geometry', summary: {} },
@@ -43,6 +45,26 @@ describe('components/project/simulation/geometry', () => {
           index: 1,
           title: 'Geometry',
           meshable: false
+        }
+      }
+    }
+  }
+  const simulationMultiple: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
+    id: 'id',
+    scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
+      //@ts-ignore
+      configuration: {
+        geometry: {
+          index: 1,
+          title: 'Geometry',
+          meshable: false,
+          multiple: true
         }
       }
     }
@@ -169,6 +191,84 @@ describe('components/project/simulation/geometry', () => {
                 index: 1,
                 title: 'Geometry',
                 meshable: true
+              }
+            }
+          }
+        }}
+        setGeometries={setGeometries}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('multiple', async () => {
+    const { unmount } = render(
+      <Geometry
+        loadedGeometries={[
+          {
+            id: 'id',
+            name: 'geometry',
+            //@ts-ignore
+            summary: {}
+          },
+          {
+            id: 'id2',
+            name: 'geometry2',
+            //@ts-ignore
+            summary: {}
+          }
+        ]}
+        geometries={geometries}
+        simulation={simulationMultiple}
+        setGeometries={setGeometries}
+        swr={swr}
+      />
+    )
+
+    const select = screen.getByRole('combobox')
+    await act(() => fireEvent.mouseDown(select))
+
+    const option = screen.getByText('geometry2')
+    await act(() => fireEvent.click(option))
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    const option2 = screen.getByText('geometry')
+    await act(() => fireEvent.click(option2))
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('multiple and n', () => {
+    const { unmount } = render(
+      <Geometry
+        loadedGeometries={loadedGeometries}
+        geometries={geometries}
+        simulation={{
+          ...simulationMultiple,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              geometry: {
+                ...simulation.scheme.configuration.geometry,
+                n: 2
               }
             }
           }

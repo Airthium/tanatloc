@@ -103,6 +103,10 @@ describe('components/project/simulation/run/cloudServer', () => {
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
 
+    // Set visible
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
     unmount()
   })
 

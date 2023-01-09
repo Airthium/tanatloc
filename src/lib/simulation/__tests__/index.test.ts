@@ -372,6 +372,99 @@ describe('lib/simulation', () => {
     expect(mockPluginCompute).toHaveBeenCalledTimes(1)
   })
 
+  test('run geometries', async () => {
+    // Normal
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {
+            values: ['id1', 'id2']
+          },
+          materials: {
+            values: [
+              {
+                geometry: 'id2'
+              }
+            ]
+          },
+          boundaryConditions: {
+            title: 'BC',
+            first: {
+              values: [
+                {
+                  geometry: 'id1'
+                },
+                { geometry: 'id2' }
+              ]
+            }
+          },
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      }
+    }))
+    mockUserGet.mockImplementation(() => ({
+      authorizedplugins: ['key']
+    }))
+    mockGeometryGet.mockImplementation(() => ({
+      brep: 'file.brep'
+    }))
+
+    await Simulation.run({ id: 'id' }, { id: 'id' })
+
+    expect(mockGeometryGet).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
+
+    // 2D
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          dimension: 2,
+          geometry: {
+            values: ['id1', 'id2']
+          },
+          materials: {
+            values: [
+              {
+                geometry: 'id2'
+              }
+            ]
+          },
+          boundaryConditions: {
+            title: 'BC',
+            first: {
+              values: [
+                {
+                  geometry: 'id1'
+                },
+                { geometry: 'id2' }
+              ]
+            }
+          },
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      }
+    }))
+    mockUserGet.mockImplementation(() => ({
+      authorizedplugins: ['key']
+    }))
+    mockGeometryGet.mockImplementation(() => ({
+      brep: 'file.brep'
+    }))
+
+    await Simulation.run({ id: 'id' }, { id: 'id' })
+
+    expect(mockGeometryGet).toHaveBeenCalledTimes(4)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(4)
+  })
+
   test('stop', async () => {
     mockGet.mockImplementation(() => ({
       scheme: {

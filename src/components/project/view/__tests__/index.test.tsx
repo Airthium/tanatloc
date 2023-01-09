@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
 import { ISimulationTaskFile } from '@/database/simulation/index'
 
@@ -20,7 +20,9 @@ jest.mock('@/api/result', () => ({
   load: async () => mockResultLoad()
 }))
 
-jest.mock('../three', () => () => <div />)
+jest.mock('../three', () => (props: any) => (
+  <div>{JSON.stringify(props.parts)}</div>
+))
 
 describe('components/project/view', () => {
   const project = {
@@ -137,7 +139,8 @@ describe('components/project/view', () => {
   })
 
   test('with result', async () => {
-    const { unmount } = render(
+    mockResultLoad.mockImplementation(() => ({ type: 'result' }))
+    const { unmount, rerender } = render(
       <View
         project={project}
         simulation={simulation}
@@ -147,6 +150,16 @@ describe('components/project/view', () => {
     )
 
     await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    await waitFor(() => screen.getByText('result', { exact: false }))
+
+    rerender(
+      <View
+        project={project}
+        simulation={simulation}
+        geometries={[{ id: 'id2' }]}
+        result={result}
+      />
+    )
 
     unmount()
   })

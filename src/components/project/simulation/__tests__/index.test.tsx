@@ -340,12 +340,16 @@ describe('components/project/simulation.Updater', () => {
     mockUpdate.mockReset()
 
     mockErrorNotification.mockReset()
+
+    swr.mutateOneSimulation.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     unmount()
   })
@@ -382,7 +386,7 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('update', async () => {
+  test('add', async () => {
     mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
@@ -396,10 +400,10 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('update - error', async () => {
+  test('add - error', async () => {
     mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     mockUpdate.mockImplementation(() => {
-      throw new Error('update error')
+      throw new Error('add error')
     })
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
@@ -410,8 +414,22 @@ describe('components/project/simulation.Updater', () => {
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
-        new Error('update error')
+        new Error('add error')
       )
+    )
+
+    unmount()
+  })
+
+  test('update', async () => {
+    mockUpdatedDiff.mockImplementation(() => ({ key: 'key' }))
+    const { unmount } = render(
+      <Simulation.Updater user={user} simulation={simulation} swr={swr} />
+    )
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
 
     unmount()

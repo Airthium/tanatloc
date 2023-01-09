@@ -62,13 +62,12 @@ const ListItem = ({
    * Highlight
    */
   const highlight = useCallback((): void => {
+    dispatch(enable())
+
     // Geometry
     const geometryId = material.geometry
     const geometry = geometries.find((geometry) => geometry.id === geometryId)
-    if (!geometry) return
-
-    dispatch(enable())
-    dispatch(setPart(geometry.summary.uuid))
+    dispatch(setPart(geometry?.summary.uuid))
 
     // Selected
     const currentSelected = material.selected

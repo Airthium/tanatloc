@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ISimulation } from '@/database/simulation/index'
 
@@ -32,7 +32,7 @@ describe('components/project/simulation/run/results/archive', () => {
     unmount()
   })
 
-  test('onArchive', () => {
+  test('onArchive', async () => {
     const { unmount } = render(
       <Archive simulation={simulation as ISimulation} />
     )
@@ -43,25 +43,23 @@ describe('components/project/simulation/run/results/archive', () => {
     mockResultArchive.mockImplementation(() => {
       throw new Error('archive error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.archive,
         new Error('archive error')
       )
     )
 
-    // await new Promise((resolve) => setTimeout(resolve, 100))
-
     // Normal
     window.URL.createObjectURL = jest.fn()
     mockResultArchive.mockImplementation(() => ({
       blob: async () => 'archive'
     }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(2))
 
     unmount()
   })

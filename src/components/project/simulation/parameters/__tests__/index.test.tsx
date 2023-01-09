@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -145,14 +145,14 @@ describe('components/project/simulation/parameters', () => {
     unmount()
   })
 
-  test('onDone error', () => {
+  test('onDone error', async () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
 
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -165,28 +165,28 @@ describe('components/project/simulation/parameters', () => {
     unmount()
   })
 
-  test('onChange', () => {
+  test('onChange', async () => {
     let value: number | undefined = 0
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={() => props.onValueChange(value)} />
     ))
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     // Formula
     const formulas = screen.getAllByRole('Formula')
-    fireEvent.click(formulas[0])
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await act(() => fireEvent.click(formulas[0]))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     // Update error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     value = undefined
-    fireEvent.click(formulas[1])
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(formulas[1]))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -198,28 +198,28 @@ describe('components/project/simulation/parameters', () => {
 
     // Open advanced
     const open = screen.getByRole('button', { name: 'right Advanced' })
-    fireEvent.click(open)
+    await act(() => fireEvent.click(open))
 
     // Select
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     const options2 = screen.getAllByText('option2')
     const option2 = options2[1]
-    fireEvent.click(option2)
+    await act(() => fireEvent.click(option2))
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
-    fireEvent.click(checkbox)
+    await act(() => fireEvent.click(checkbox))
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(9))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(9))
 
     unmount()
   })
 
-  test('2D', () => {
+  test('2D', async () => {
     mockFormula.mockImplementation((props) => (
       <div role="Formula" onClick={() => props.onValueChange()} />
     ))
@@ -231,28 +231,28 @@ describe('components/project/simulation/parameters', () => {
 
     // Formula
     const formulas = screen.getAllByRole('Formula')
-    fireEvent.click(formulas[0])
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(formulas[0]))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     // Open advanced
     const open = screen.getByRole('button', { name: 'right Advanced' })
-    fireEvent.click(open)
+    await act(() => fireEvent.click(open))
 
     // Select
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     const options2 = screen.getAllByText('option2')
     const option2 = options2[1]
-    fireEvent.click(option2)
+    await act(() => fireEvent.click(option2))
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
-    fireEvent.click(checkbox)
+    await act(() => fireEvent.click(checkbox))
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
 
     unmount()
   })

@@ -1,18 +1,19 @@
 /** @module Components.Project.Simulation.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Typography } from 'antd'
 
-import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
-
-import SimulationAPI from '@/api/simulation'
 import {
   IFrontMutateProject,
   IFrontProject,
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
+
+import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+
+import SimulationAPI from '@/api/simulation'
 
 /**
  * Props
@@ -39,7 +40,7 @@ export const errors = {
  * @param simulation Simulation
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   project: Pick<IFrontProject, 'id' | 'simulations'>,
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   swr: {
@@ -78,6 +79,18 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(project, simulation, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [project, simulation, swr])
+
+  /**
    * Render
    */
   return (
@@ -89,14 +102,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
           <Typography.Text strong>{simulation.name}</Typography.Text>?
         </>
       }
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(project, simulation, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

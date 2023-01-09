@@ -1,18 +1,18 @@
 /** @module Components.Project.Simulation.Materials.Edit */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { IModelMaterialsValue } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -43,7 +43,7 @@ export const errors = {
  * @param material Material
  * @param swr SWR
  */
-export const onEdit = async (
+export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   material: IModelMaterialsValue,
   swr: {
@@ -104,40 +104,40 @@ const Edit = ({
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On edit
+   */
+  const onEdit = useCallback(async () => {
+    setLoading(true)
+    try {
+      // Check
+      if (!material.material) {
+        onError(errors.material)
+        setLoading(false)
+        return
+      }
+
+      if (!material.selected?.length) {
+        onError(errors.selected)
+        setLoading(false)
+        return
+      }
+      onError()
+
+      await _onEdit(simulation, material, swr)
+
+      // Close
+      setLoading(false)
+      onClose()
+    } catch (err) {
+      setLoading(false)
+    }
+  }, [simulation, material, swr, onError, onClose])
+
+  /**
    * Render
    */
   return (
-    <EditButton
-      loading={loading}
-      primary
-      needMargin
-      onEdit={async () => {
-        setLoading(true)
-        try {
-          // Check
-          if (!material.material) {
-            onError(errors.material)
-            setLoading(false)
-            return
-          }
-
-          if (!material.selected?.length) {
-            onError(errors.selected)
-            setLoading(false)
-            return
-          }
-          onError()
-
-          await onEdit(simulation, material, swr)
-
-          // Close
-          setLoading(false)
-          onClose()
-        } catch (err) {
-          setLoading(false)
-        }
-      }}
-    >
+    <EditButton loading={loading} primary needMargin onEdit={onEdit}>
       Edit
     </EditButton>
   )

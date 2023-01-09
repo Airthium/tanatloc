@@ -1,10 +1,17 @@
 /** @module Components.Project.Simulation.Initialization */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 import { css } from '@emotion/react'
 
 import { IModelInitializationDirectChild } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem,
+  IFrontSimulationTask
+} from '@/api/index.d'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -15,11 +22,6 @@ import {
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem,
-  IFrontSimulationTask
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 import { globalStyle, globalStyleFn } from '@/styles'
@@ -40,6 +42,16 @@ export interface IProps {
   }
 }
 
+export interface IDirectItemProps {
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  child: IModelInitializationDirectChild
+  index: number
+  value: string | undefined
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
+}
+
 /**
  * Errors
  */
@@ -53,7 +65,7 @@ export const errors = {
  * @param key Key
  * @param swr SWR
  */
-const onSelectorChange = async (
+export const _onSelectorChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   key: TInitializationKey,
   swr: {
@@ -94,7 +106,7 @@ const onSelectorChange = async (
  * @param value Value
  * @param swr SWR
  */
-const onCouplingChange = async (
+export const _onCouplingChange = async (
   simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
@@ -104,7 +116,7 @@ const onCouplingChange = async (
 ): Promise<void> => {
   try {
     // Check results
-    const results = await loadResults(simulations, value)
+    const results = await _loadResults(simulations, value)
 
     // Update simulation
     // New simulation
@@ -143,7 +155,7 @@ const onCouplingChange = async (
  * @param option Option
  * @param swr SWR
  */
-const onCouplingResultChange = async (
+export const _onCouplingResultChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
   option: { file: string },
@@ -186,7 +198,7 @@ const onCouplingResultChange = async (
  * @param index Child index
  * @param value Value
  */
-const onChange = async (
+export const _onChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
   value: string,
@@ -226,7 +238,7 @@ const onChange = async (
  * @param simulations Simulations
  * @param id Simulation id
  */
-const loadResults = async (
+export const _loadResults = async (
   simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
   id: string
 ): Promise<{ label: string; value: string; file: string }[]> => {
@@ -316,6 +328,40 @@ const loadResults = async (
 }
 
 /**
+ * DirectItem
+ * @param props Props
+ * @returns DirectItem
+ */
+const DirectItem = ({
+  simulation,
+  child,
+  index,
+  value,
+  swr
+}: IDirectItemProps): JSX.Element => {
+  /**
+   * On change
+   * @param value Value
+   */
+  const onChange = useCallback(
+    (value: string): Promise<void> => _onChange(simulation, index, value, swr),
+    [simulation, index, swr]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Formula
+      label={child.label}
+      defaultValue={(value ?? child.default).toString()}
+      unit={child.unit}
+      onValueChange={onChange}
+    />
+  )
+}
+
+/**
  * Initialization
  * @param props Props
  */
@@ -333,8 +379,14 @@ const Initialization = ({
     useState<{ label: string; value: string; file: string }[]>()
 
   // Data
-  const subScheme = simulation?.scheme.configuration.initialization!
-  const dimension = simulation?.scheme.configuration.dimension
+  const subScheme = useMemo(
+    () => simulation?.scheme.configuration.initialization!,
+    [simulation]
+  )
+  const dimension = useMemo(
+    () => simulation?.scheme.configuration.dimension,
+    [simulation]
+  )
 
   /**
    * Set simulation
@@ -349,135 +401,178 @@ const Initialization = ({
   )
 
   // Key
-  useEffect(() => {
-    if (!currentKey && subScheme.value) setCurrentKey(subScheme.value.type)
+  useCustomEffect(
+    () => {
+      if (!currentKey && subScheme.value) setCurrentKey(subScheme.value.type)
 
-    if (!couplingSimulation && subScheme.value?.simulation)
-      setSimulation(subScheme.value?.simulation)
-  }, [subScheme, currentKey, couplingSimulation, setSimulation])
+      if (!couplingSimulation && subScheme.value?.simulation)
+        setSimulation(subScheme.value?.simulation)
+    },
+    [subScheme, currentKey, couplingSimulation],
+    [setSimulation]
+  )
 
   // Results
-  useEffect(() => {
+  useCustomEffect(() => {
     if (couplingSimulation)
-      loadResults(simulations, couplingSimulation.id).then((results) =>
+      _loadResults(simulations, couplingSimulation.id).then((results) =>
         setCouplingResults(results)
       )
   }, [simulations, couplingSimulation])
 
   // Build selector
-  const selectorOptions = [
-    {
-      label: 'None',
-      value: 'none'
-    }
-  ]
+  const selectorOptions = useMemo(() => {
+    const options = [
+      {
+        label: 'None',
+        value: 'none'
+      }
+    ]
 
-  if (subScheme['coupling'])
-    selectorOptions.push({
-      label: subScheme['coupling'].label,
-      value: 'coupling'
-    })
+    if (subScheme['coupling'])
+      options.push({
+        label: subScheme['coupling'].label,
+        value: 'coupling'
+      })
 
-  if (subScheme['direct'])
-    selectorOptions.push({
-      label: subScheme['direct'].label,
-      value: 'direct'
-    })
+    if (subScheme['direct'])
+      options.push({
+        label: subScheme['direct'].label,
+        value: 'direct'
+      })
 
-  // Build initialization
-  const initializations: {
-    none: JSX.Element
-    coupling?: JSX.Element
-    direct?: JSX.Element
-  } = {
-    none: <div />
-  }
+    return options
+  }, [subScheme])
+
+  // Renders
   const initializationValue = subScheme.value
 
+  /**
+   * On coupling change
+   * @param value Value
+   */
+  const onCouplingChange = useCallback(
+    async (value: string): Promise<void> => {
+      setLoading(true)
+      try {
+        await _onCouplingChange(simulations, simulation, value, swr)
+        setSimulation(value)
+      } catch (err) {
+      } finally {
+        setLoading(false)
+      }
+    },
+    [simulations, simulation, swr, setSimulation]
+  )
+
+  /**
+   * On coupling result change
+   * @param value Value
+   * @param option Option
+   */
+  const onCouplingResultChange = useCallback(
+    async (
+      value: string,
+      option:
+        | { label: string; value: string; file: string }
+        | { label: string; value: string; file: string }[]
+    ): Promise<void> => {
+      _onCouplingResultChange(
+        simulation,
+        value,
+        option as { label: string; value: string; file: string },
+        swr
+      )
+    },
+    [simulation, swr]
+  )
+
   // Render coupling
-  const renderCoupling = (
-    options: { label: string; value: string; disabled: boolean }[],
-    filter?: any
-  ) => (
-    <>
-      <Typography.Text>
-        If you use coupling, the selected simulation mesh will be used, at least
-        for the first iteration.
-      </Typography.Text>
-      <Space
-        direction="vertical"
-        css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
-      >
-        <Select
-          css={globalStyle.fullWidth}
-          options={options}
-          placeholder="Select a simulation"
-          value={initializationValue?.simulation}
-          onChange={async (value: string) => {
-            setLoading(true)
-            try {
-              await onCouplingChange(simulations, simulation, value, swr)
-              setSimulation(value)
-            } catch (err) {
-            } finally {
-              setLoading(false)
-            }
-          }}
-        />
-        {loading && <Spin />}
-        {couplingResults?.length ? (
-          <>
-            <Typography.Text key={'simulation'}>
-              {filter?.name}:
+  const renderCoupling = useCallback(
+    (
+      options: { label: string; value: string; disabled: boolean }[],
+      filter?: any
+    ) => (
+      <>
+        <Typography.Text>
+          If you use coupling, the selected simulation mesh will be used, at
+          least for the first iteration.
+        </Typography.Text>
+        <Space
+          direction="vertical"
+          css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+        >
+          <Select
+            css={globalStyle.fullWidth}
+            options={options}
+            placeholder="Select a simulation"
+            value={initializationValue?.simulation}
+            onChange={onCouplingChange}
+          />
+          {loading && <Spin />}
+          {couplingResults?.length ? (
+            <>
+              <Typography.Text key={'simulation'}>
+                {filter?.name}:
+              </Typography.Text>
+              <Select
+                css={globalStyle.fullWidth}
+                options={couplingResults}
+                placeholder={'Select a ' + filter.name}
+                value={initializationValue?.result}
+                onChange={onCouplingResultChange}
+              />
+            </>
+          ) : (
+            <Typography.Text type="danger">
+              No results, please select an other simulation.
             </Typography.Text>
-            <Select
-              css={globalStyle.fullWidth}
-              options={couplingResults}
-              placeholder={'Select a ' + filter.name}
-              value={initializationValue?.result}
-              onChange={async (value, option) => {
-                onCouplingResultChange(
-                  simulation,
-                  value,
-                  option as { label: string; value: string; file: string },
-                  swr
-                )
-              }}
-            />
-          </>
-        ) : (
-          <Typography.Text type="danger">
-            No results, please select an other simulation.
-          </Typography.Text>
-        )}
-      </Space>
-    </>
+          )}
+        </Space>
+      </>
+    ),
+    [
+      initializationValue,
+      couplingResults,
+      loading,
+      onCouplingChange,
+      onCouplingResultChange
+    ]
   )
 
   // Render direct
-  const renderDirect = (direct: {
-    label: string
-    children: IModelInitializationDirectChild[]
-  }) => (
-    <Space direction="vertical" css={globalStyle.fullWidth}>
-      {direct.children.map((child, index) => {
-        if (dimension === 2 && child.only3D) return
-        return (
-          <Formula
-            key={index}
-            label={child.label}
-            defaultValue={(
-              initializationValue?.values?.[index] ?? child.default
-            ).toString()}
-            unit={child.unit}
-            onValueChange={(value) => onChange(simulation, index, value, swr)}
-          />
-        )
-      })}
-    </Space>
+  const renderDirect = useCallback(
+    (direct: {
+      label: string
+      children: IModelInitializationDirectChild[]
+    }) => (
+      <Space direction="vertical" css={globalStyle.fullWidth}>
+        {direct.children.map((child, index) => {
+          if (dimension === 2 && child.only3D) return
+          return (
+            <DirectItem
+              key={child.label}
+              simulation={simulation}
+              child={child}
+              index={index}
+              value={initializationValue?.values?.[index]}
+              swr={swr}
+            />
+          )
+        })}
+      </Space>
+    ),
+    [initializationValue, dimension, simulation, swr]
   )
 
-  {
+  // Build initialization
+  const initializations = useMemo(() => {
+    const data: {
+      none: JSX.Element
+      coupling?: JSX.Element
+      direct?: JSX.Element
+    } = { none: <div /> }
+
     // Coupling
     const coupling = subScheme['coupling']
     if (coupling?.compatibility) {
@@ -500,15 +595,38 @@ const Initialization = ({
       // Filter
       const filter = compatibility?.filter
 
-      initializations['coupling'] = renderCoupling(simulationsOptions, filter)
+      data['coupling'] = renderCoupling(simulationsOptions, filter)
     }
 
     // Direct
     const direct = subScheme['direct']
     if (direct?.children) {
-      initializations['direct'] = renderDirect(direct)
+      data['direct'] = renderDirect(direct)
     }
-  }
+
+    return data
+  }, [
+    simulations,
+    simulation,
+    couplingSimulation,
+    subScheme,
+    renderCoupling,
+    renderDirect
+  ])
+
+  /**
+   * On change
+   * @param key Key
+   */
+  const onChange = useCallback(
+    async (key: TInitializationKey) => {
+      try {
+        await _onSelectorChange(simulation, key, swr)
+        setCurrentKey(key)
+      } catch (err) {}
+    },
+    [simulation, swr]
+  )
 
   /**
    * Render
@@ -522,12 +640,7 @@ const Initialization = ({
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}
-            onChange={async (key: TInitializationKey) => {
-              try {
-                await onSelectorChange(simulation, key, swr)
-                setCurrentKey(key)
-              } catch (err) {}
-            }}
+            onChange={onChange}
           />
 
           {initializations[currentKey || 'none']}

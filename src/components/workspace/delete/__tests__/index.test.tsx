@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -37,7 +37,7 @@ describe('components/workspace/delete', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -53,18 +53,18 @@ describe('components/workspace/delete', () => {
     const button = screen.getByRole('DeleteButton')
 
     // Normal
-    fireEvent.click(button)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.delOneWorkspace).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.delOneWorkspace).toHaveBeenCalledTimes(1))
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error('del error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')

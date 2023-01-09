@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Formula from '@/components/assets/formula'
 
@@ -54,16 +54,16 @@ describe('components/assets/formula', () => {
     unmount()
   })
 
-  test('input change', () => {
+  test('input change', async () => {
     const { unmount } = render(
       <Formula defaultValue="value" onValueChange={onValueChange} />
     )
 
     const input = screen.getByRole('textbox')
-    fireEvent.change(input, { target: { value: 'test' } })
-    fireEvent.change(input, { target: { value: 'test1' } })
+    await act(() => fireEvent.change(input, { target: { value: 'test' } }))
+    await act(() => fireEvent.change(input, { target: { value: 'test1' } }))
 
-    waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
+    await waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
 
     unmount()
   })

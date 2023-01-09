@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form, Input } from 'antd'
 
 import Signup, { errors } from '@/components/signup'
@@ -128,18 +128,24 @@ describe('components/signup', () => {
     const password = screen.getByRole('PasswordItem')
     const confirm = screen.getByLabelText('Confirm your password')
 
-    fireEvent.change(email, { target: { value: 'email@email.email' } })
-    fireEvent.change(password, { target: { value: 'password' } })
-    fireEvent.change(confirm, { target: { value: 'password' } })
+    await act(() =>
+      fireEvent.change(email, { target: { value: 'email@email.email' } })
+    )
+    await act(() =>
+      fireEvent.change(password, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(confirm, { target: { value: 'password' } })
+    )
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenCalledWith({
         title: errors.internal,
         err: new Error('add error')
@@ -148,17 +154,17 @@ describe('components/signup', () => {
 
     // Already exists
     mockAdd.mockImplementation(() => ({ alreadyExists: true }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         email: 'email@email.email',
         password: 'password',
         passwordConfirmation: 'password'
       })
     )
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.alreadyExists,
         render: expect.anything(),
@@ -169,19 +175,19 @@ describe('components/signup', () => {
     // Log in
     await waitFor(() => screen.getByText('Log in ?'))
     const logIn = screen.getByText('Log in ?')
-    fireEvent.click(logIn)
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(logIn))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Normal
     mockAdd.mockImplementation(() => ({ alreadyExists: false }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
 
     unmount()
   })
 
-  test('mismatch passwords rule', () => {
+  test('mismatch passwords rule', async () => {
     mockPassword()
     const { unmount } = render(<Signup />)
 
@@ -191,10 +197,14 @@ describe('components/signup', () => {
     const password = screen.getByRole('PasswordItem')
     const confirm = screen.getByLabelText('Confirm your password')
 
-    fireEvent.change(password, { target: { value: 'password' } })
-    fireEvent.change(confirm, { target: { value: 'other_password' } })
+    await act(() =>
+      fireEvent.change(password, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(confirm, { target: { value: 'other_password' } })
+    )
 
-    waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
 
     unmount()
   })

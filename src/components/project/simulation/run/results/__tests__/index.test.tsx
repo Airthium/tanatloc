@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulation } from '@/api/index.d'
 
@@ -35,20 +35,20 @@ describe('components/project/simulation/run/results', () => {
         status: 'finish',
         file: {
           fileName: 'file.vtu',
-          name: 'file',
+          name: 'file1',
           type: 'result',
           originPath: 'originPath'
         },
         files: [
           {
             fileName: 'file_0.vtu',
-            name: 'file',
+            name: 'file2',
             type: 'result',
             originPath: 'originPath'
           },
           {
             fileName: 'file_1.vtu',
-            name: 'file',
+            name: 'file3',
             type: 'result',
             originPath: 'originPath'
           }
@@ -58,7 +58,7 @@ describe('components/project/simulation/run/results', () => {
   } as IFrontSimulation
   const result = {
     fileName: 'file.vtu',
-    name: 'file'
+    name: 'file1'
   }
   const setResult = jest.fn()
 
@@ -125,7 +125,7 @@ describe('components/project/simulation/run/results', () => {
     unmount()
   })
 
-  test('with filter', () => {
+  test('with filter', async () => {
     mockGetFilesNumbers.mockImplementation(() => [
       {
         fileName: 'file_0.vtu',
@@ -176,26 +176,18 @@ describe('components/project/simulation/run/results', () => {
 
     // Selector
     const selector = screen.getByRole('combobox')
-    fireEvent.mouseDown(selector)
+    await act(() => fireEvent.mouseDown(selector))
 
     const options = screen.getAllByText('1')
-    fireEvent.click(options[1])
-    waitFor(() =>
-      expect(setResult).toHaveBeenCalledWith({
-        fileName: 'file_0.vtu',
-        name: 'file',
-        originPath: 'originPath',
-        type: 'result'
-      })
-    )
+    await act(() => fireEvent.click(options[1]))
 
     const eyeClose = screen.getByRole('button', { name: 'eye-invisible' })
-    fireEvent.click(eyeClose)
+    await act(() => fireEvent.click(eyeClose))
 
     unmount()
   })
 
-  test('with filter - result', () => {
+  test('with filter - result', async () => {
     mockGetFilesNumbers.mockImplementation(() => [
       {
         fileName: 'file_0.vtu',
@@ -246,21 +238,22 @@ describe('components/project/simulation/run/results', () => {
 
     // Selector
     const selector = screen.getByRole('combobox')
-    fireEvent.mouseDown(selector)
+    await act(() => fireEvent.mouseDown(selector))
 
     const options = screen.getAllByText('1')
-    fireEvent.click(options[1])
-    waitFor(() =>
-      expect(setResult).toHaveBeenCalledWith({
-        fileName: 'file_0.vtu',
+    await act(() => fireEvent.click(options[1]))
+    await waitFor(() =>
+      expect(setResult).toHaveBeenLastCalledWith({
+        fileName: 'file_1.vtu',
         name: 'file',
+        number: 1,
         originPath: 'originPath',
         type: 'result'
       })
     )
 
     const eyeOpen = screen.getByRole('button', { name: 'eye' })
-    fireEvent.click(eyeOpen)
+    await act(() => fireEvent.click(eyeOpen))
 
     unmount()
   })

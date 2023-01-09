@@ -71,7 +71,7 @@ const displacement = boundaryConditions.displacement.values ?? []
 			)
 		) + intN(Mesh)(-sigma*Rho*<%= unknownFunction -%>'*<%= testFunction -%>)
 <% for (const d of displacement) { -%>
-<% if (d.values[0].checked || d.values[1].checked || d.values[2].checked) { -%>
+<% if (d.values[0].checked || d.values[1].checked || (dimension !== 2 && d.values[2].checked)) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
 		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>

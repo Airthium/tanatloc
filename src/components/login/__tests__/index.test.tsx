@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Login, { errors } from '@/components/login'
 
@@ -80,12 +80,12 @@ describe('components/login', () => {
     unmount()
   })
 
-  test('electron', () => {
+  test('electron', async () => {
     mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Login />)
 
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })
@@ -116,14 +116,16 @@ describe('components/login', () => {
     unmount()
   })
 
-  test('onLogin', () => {
+  test('onLogin', async () => {
     const { unmount } = render(<Login />)
 
     const email = screen.getByLabelText('Your email address')
     const password = screen.getByLabelText('Your password')
 
-    fireEvent.change(email, { target: { value: 'email' } })
-    fireEvent.change(password, { target: { value: 'password' } })
+    await act(() => fireEvent.change(email, { target: { value: 'email' } }))
+    await act(() =>
+      fireEvent.change(password, { target: { value: 'password' } })
+    )
 
     const button = screen.getByRole('button', { name: 'Log in' })
 
@@ -131,16 +133,16 @@ describe('components/login', () => {
     mockLogin.mockImplementation(() => {
       throw new Error('login error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockLogin).toHaveBeenCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenCalledWith({
         title: errors.internal,
         err: new Error('login error')
@@ -149,10 +151,10 @@ describe('components/login', () => {
 
     // Not ok
     mockLogin.mockImplementation(() => ({ ok: false }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenCalledWith({
         title: errors.credentials,
         type: 'warning'
@@ -161,9 +163,9 @@ describe('components/login', () => {
 
     // Ok
     mockLogin.mockImplementation(() => ({ ok: true }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(3))
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     unmount()
   })

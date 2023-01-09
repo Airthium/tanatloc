@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Password, { errors } from '..'
 
@@ -50,7 +50,7 @@ describe('components/login/password', () => {
     unmount()
   })
 
-  test('passwordRecover', () => {
+  test('passwordRecover', async () => {
     const values = { email: 'test@email.com' }
     mockDialog.mockImplementation((props) => (
       <div
@@ -66,23 +66,25 @@ describe('components/login/password', () => {
 
     // Set visible
     const button = screen.getByRole('button')
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     // Validate
     const dialog = screen.getByRole('Dialog')
-    fireEvent.click(dialog)
+    await act(() => fireEvent.click(dialog))
 
     // Normal
-    waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockEmailRecover.mockImplementation(() => {
       throw new Error('recover error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenCalledWith(
         errors.recover,
         new Error('recover error')

@@ -1,5 +1,5 @@
 import Postprocessing, { errors } from '..'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 
@@ -176,7 +176,7 @@ describe('components/project/simulation/postprocessing', () => {
     unmount()
   })
 
-  test('filter & run', () => {
+  test('filter & run', async () => {
     const { unmount } = render(
       <Postprocessing
         simulation={simulation}
@@ -187,29 +187,29 @@ describe('components/project/simulation/postprocessing', () => {
     )
 
     const button = screen.getByRole('button')
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     const script1 = screen.getByText('Script 1')
-    fireEvent.click(script1)
+    await act(() => fireEvent.click(script1))
 
     const script2 = screen.getByText('Script 2')
-    fireEvent.click(script2)
+    await act(() => fireEvent.click(script2))
 
     const script3 = screen.getByText('Script 3')
-    fireEvent.click(script3)
+    await act(() => fireEvent.click(script3))
 
     // Run error
     mockRun.mockImplementation(() => {
       throw new Error('run error')
     })
     const run = screen.getByRole('button', { name: 'rocket Run' })
-    fireEvent.click(run)
-    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(run))
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.run,
         new Error('run error')
@@ -218,9 +218,9 @@ describe('components/project/simulation/postprocessing', () => {
 
     // Empty
     mockRun.mockImplementation(() => [])
-    fireEvent.click(run)
-    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
-    waitFor(() => screen.getByText('No results'))
+    await act(() => fireEvent.click(run))
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+    await waitFor(() => screen.getByText('No results'))
 
     // Run
     mockRun.mockImplementation(() => [
@@ -239,19 +239,18 @@ describe('components/project/simulation/postprocessing', () => {
         json: 'json'
       }
     ])
-    fireEvent.click(run)
-    waitFor(() => expect(mockRun).toHaveBeenCalledTimes(3))
+    await act(() => fireEvent.click(run))
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(3))
 
-    waitFor(() => screen.getByRole('button', { name: 'eye' }))
-    waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))
+    await waitFor(() => screen.getByRole('button', { name: 'eye-invisible' }))
 
     // on result
     const open = screen.getByRole('button', { name: 'eye-invisible' })
-    fireEvent.click(open)
+    await act(() => fireEvent.click(open))
     expect(setResult).toHaveBeenCalledTimes(1)
 
     const close = screen.getByRole('button', { name: 'eye' })
-    fireEvent.click(close)
+    await act(() => fireEvent.click(close))
     expect(setResult).toHaveBeenCalledTimes(2)
 
     unmount()

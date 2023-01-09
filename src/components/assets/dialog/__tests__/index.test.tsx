@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Input } from 'antd'
 
 import Dialog, { DeleteDialog, errors } from '@/components/assets/dialog'
@@ -44,7 +44,7 @@ describe('components/assets/dialog', () => {
 
   test('without onOk & onCancel', () => {
     const { unmount } = render(
-      <Dialog title="title" visible={false} loading={false}>
+      <Dialog title="title" visible={true} loading={false}>
         Test
       </Dialog>
     )
@@ -72,7 +72,7 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onOk', () => {
+  test('onOk', async () => {
     const { unmount } = render(
       <Dialog
         title="title"
@@ -88,17 +88,17 @@ describe('components/assets/dialog', () => {
     const ok = screen.getByRole('button', { name: 'OK' })
 
     // Normal
-    fireEvent.click(ok)
-    waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(ok))
+    await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(1))
 
     // Error
     mockOnOk.mockImplementation(() => {
       throw new Error('onOk error')
     })
-    fireEvent.click(ok)
-    waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(ok))
+    await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.onOk,
         new Error('onOk error')

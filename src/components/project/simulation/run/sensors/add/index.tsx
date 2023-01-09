@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Add */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   IFrontMutateSimulationsItem,
@@ -44,7 +44,7 @@ export const errors = {
  * @param sensor Sensor
  * @param swr SWR
  */
-export const onAdd = async (
+export const _onAdd = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   sensor: IModelSensor,
   swr: {
@@ -99,46 +99,47 @@ const Add = ({
   const [loading, setLoading] = useState<boolean>()
 
   /**
+   * On add
+   */
+  const onAdd = useCallback(async () => {
+    setLoading(true)
+    try {
+      // Check
+      if (!sensor.name) {
+        onError(errors.name)
+        setLoading(false)
+        return
+      }
+
+      if (!sensor.point) {
+        onError(errors.point)
+        setLoading(false)
+        return
+      }
+
+      if (!sensor.formula) {
+        onError(errors.formula)
+        setLoading(false)
+        return
+      }
+
+      onError()
+
+      await _onAdd(simulation, sensor, swr)
+
+      // Close
+      setLoading(false)
+      onClose()
+    } catch (err) {
+      setLoading(false)
+    }
+  }, [simulation, sensor, onError, onClose, swr])
+
+  /**
    * Render
    */
   return (
-    <AddButton
-      loading={loading}
-      needMargin
-      onAdd={async () => {
-        setLoading(true)
-        try {
-          // Check
-          if (!sensor.name) {
-            onError(errors.name)
-            setLoading(false)
-            return
-          }
-
-          if (!sensor.point) {
-            onError(errors.point)
-            setLoading(false)
-            return
-          }
-
-          if (!sensor.formula) {
-            onError(errors.formula)
-            setLoading(false)
-            return
-          }
-
-          onError()
-
-          await onAdd(simulation, sensor, swr)
-
-          // Close
-          setLoading(false)
-          onClose()
-        } catch (err) {
-          setLoading(false)
-        }
-      }}
-    >
+    <AddButton loading={loading} needMargin onAdd={onAdd}>
       Add
     </AddButton>
   )

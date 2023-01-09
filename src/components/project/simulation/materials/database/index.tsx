@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.MAterials.Database */
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
 import { DatabaseOutlined } from '@ant-design/icons'
 
@@ -34,7 +34,17 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
     useState<IMaterialDatabase['key']['children'][0]>()
 
   // Data
-  const keys = Object.keys(materialDatabase)
+  const keys = useMemo(() => Object.keys(materialDatabase), [])
+
+  /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
 
   /**
    * On first level menu
@@ -70,13 +80,10 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    * On material select
    * @param material Material
    */
-  const onMaterialSelect = useCallback(
-    (material: IMaterialDatabase['key']['children'][0]) => {
-      onSelect(material)
-      setVisible(false)
-    },
-    [onSelect]
-  )
+  const onMaterialSelect = useCallback(() => {
+    onSelect(current!)
+    setVisible(false)
+  }, [current, onSelect])
 
   /**
    * Render
@@ -85,7 +92,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
     <>
       <Button
         icon={<DatabaseOutlined />}
-        onClick={() => setVisible(true)}
+        onClick={setVisibleTrue}
         css={globalStyle.fullWidth}
       >
         Pick a material
@@ -93,8 +100,8 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       <Modal
         open={visible}
         title="Material database"
-        onCancel={() => setVisible(false)}
-        onOk={() => onMaterialSelect(current!)}
+        onCancel={setVisibleFalse}
+        onOk={onMaterialSelect}
         okText="Choose"
         okButtonProps={{ disabled: !current }}
         width="50%"

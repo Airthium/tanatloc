@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
@@ -27,6 +27,8 @@ const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
 }))
+
+const contextValue = { enabled: true, selected: [], dispatch: jest.fn }
 
 describe('components/project/simulation/boundaryConditions/delete', () => {
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
@@ -95,9 +97,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue}>
         <Delete simulation={simulation} type={type} index={index} swr={swr} />
       </SelectContext.Provider>
     )
@@ -105,7 +105,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteButton"
@@ -117,9 +117,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
       />
     ))
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
+      <SelectContext.Provider value={contextValue}>
         <Delete simulation={simulation} type={type} index={index} swr={swr} />
       </SelectContext.Provider>
     )
@@ -127,18 +125,20 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
     const button = screen.getByRole('DeleteButton')
 
     // Normal
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

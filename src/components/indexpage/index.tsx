@@ -49,6 +49,7 @@ const Index = (): JSX.Element => {
   const [dockerOpen, setDockerOpen] = useState<boolean>(false)
   const [troubleshootingOpen, setTroubleshootingOpen] = useState<boolean>(false)
   const [release, setRelease] = useState<IRelease>()
+  const [releaseError, setReleaseError] = useState<string>('')
 
   // Data
   const router = useRouter()
@@ -108,7 +109,7 @@ const Index = (): JSX.Element => {
         setRelease(newRelease as IRelease)
       })
       .catch((err) => {
-        console.error(err)
+        setReleaseError(err.message)
       })
   }, [])
 
@@ -591,6 +592,7 @@ const Index = (): JSX.Element => {
                       <Typography>
                         Download the latest app for Linux, MacOS or Windows.
                       </Typography>
+                      {releaseError}
                       {release ? (
                         <>
                           <Button

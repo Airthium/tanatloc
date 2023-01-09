@@ -1,11 +1,12 @@
 /** @module Components.Project.Simulation.Run.Results.Archive */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
+
+import { IFrontSimulationsItem } from '@/api/index.d'
 
 import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontSimulationsItem } from '@/api/index.d'
 import ResultAPI from '@/api/result'
 
 /**
@@ -25,7 +26,7 @@ export const errors = {
 /**
  * On archive
  */
-export const onArchive = async (
+export const _onArchive = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
 ) => {
   try {
@@ -52,22 +53,22 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On download
+   */
+  const onDownload = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onArchive(simulation)
+    } catch (err) {
+    } finally {
+      setLoading(false)
+    }
+  }, [simulation])
+
+  /**
    * Render
    */
-  return (
-    <DownloadButton
-      loading={loading}
-      onDownload={async () => {
-        setLoading(true)
-        try {
-          await onArchive(simulation)
-        } catch (err) {
-        } finally {
-          setLoading(false)
-        }
-      }}
-    />
-  )
+  return <DownloadButton loading={loading} onDownload={onDownload} />
 }
 
 export default Archive

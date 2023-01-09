@@ -1,21 +1,21 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Edit */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -46,7 +46,7 @@ export const errors = {
 /**
  * On edit
  */
-const onEdit = async (
+export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   boundaryCondition: IModelBoundaryConditionValue,
   oldBoundaryCondition: IModelBoundaryConditionValue,
@@ -136,7 +136,6 @@ const onEdit = async (
  */
 const Edit = ({
   simulation,
-
   boundaryCondition,
   oldBoundaryCondition,
   swr,
@@ -147,46 +146,53 @@ const Edit = ({
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On edit
+   */
+  const onEdit = useCallback(async () => {
+    setLoading(true)
+    try {
+      // Check
+      if (!boundaryCondition.name) {
+        onError(errors.name)
+        setLoading(false)
+        return
+      }
+
+      if (!boundaryCondition.type?.key) {
+        onError(errors.type)
+        setLoading(false)
+        return
+      }
+
+      if (!boundaryCondition.selected?.length) {
+        onError(errors.selected)
+        setLoading(false)
+        return
+      }
+      onError()
+
+      await _onEdit(simulation, boundaryCondition, oldBoundaryCondition, swr)
+
+      // Close
+      setLoading(false)
+      onClose()
+    } catch (err) {
+      setLoading(false)
+    }
+  }, [
+    simulation,
+    boundaryCondition,
+    oldBoundaryCondition,
+    swr,
+    onError,
+    onClose
+  ])
+
+  /**
    * Render
    */
   return (
-    <EditButton
-      loading={loading}
-      onEdit={async () => {
-        setLoading(true)
-        try {
-          // Check
-          if (!boundaryCondition.name) {
-            onError(errors.name)
-            setLoading(false)
-            return
-          }
-
-          if (!boundaryCondition.type?.key) {
-            onError(errors.type)
-            setLoading(false)
-            return
-          }
-
-          if (!boundaryCondition.selected?.length) {
-            onError(errors.selected)
-            setLoading(false)
-            return
-          }
-          onError()
-
-          await onEdit(simulation, boundaryCondition, oldBoundaryCondition, swr)
-
-          // Close
-          setLoading(false)
-          onClose()
-        } catch (err) {
-          setLoading(false)
-        }
-      }}
-      primary
-      needMargin
-    >
+    <EditButton loading={loading} onEdit={onEdit} primary needMargin>
       Edit
     </EditButton>
   )

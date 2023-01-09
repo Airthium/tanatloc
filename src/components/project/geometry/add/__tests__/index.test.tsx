@@ -1,4 +1,5 @@
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
+import { act } from 'react-dom/test-utils'
 
 import Add, { errors } from '..'
 
@@ -118,8 +119,8 @@ describe('components/project/geometry/add', () => {
     unmount()
   })
 
-  test('onUpload', () => {
-    let info
+  test('onUpload', async () => {
+    let info: {}
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     mockUpload.mockImplementation((props) => (
       <>
@@ -145,27 +146,35 @@ describe('components/project/geometry/add', () => {
 
     // Uploading
     info = { file: { status: 'uploading' } }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
 
-    waitFor(() => screen.getByRole('img', { name: 'loading' }))
+    await waitFor(() => screen.getByRole('img', { name: 'loading' }))
 
     info = { file: { status: 'other' } }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
 
     // Done
     info = { file: { status: 'done', originFileObj: {} } }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneGeometry).toHaveBeenCalledTimes(1))
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGeometry).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')

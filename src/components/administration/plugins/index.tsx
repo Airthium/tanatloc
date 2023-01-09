@@ -9,6 +9,8 @@ import { IClientPlugin } from '@/plugins/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import PluginsAPI from '@/api/plugins'
 import SystemAPI from '@/api/system'
 
@@ -45,7 +47,7 @@ export const _onChange = async (
     ])
 
     // Local
-    const defaultplugins = system?.defaultplugins || []
+    const defaultplugins = Utils.deepCopy(system?.defaultplugins || [])
     const index: number = defaultplugins.indexOf(plugin.key as string)
     if (checked && index === -1) {
       defaultplugins.push(plugin.key as string)

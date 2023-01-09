@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
 
@@ -84,7 +84,7 @@ describe('components/project/simulation/geometry', () => {
     unmount()
   })
 
-  test('with geometry value', () => {
+  test('with geometry value', async () => {
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
@@ -132,14 +132,14 @@ describe('components/project/simulation/geometry', () => {
 
     // Select error
     const select = screen.getByRole('combobox')
-    fireEvent.mouseDown(select)
+    await act(() => fireEvent.mouseDown(select))
 
     const option = screen.getByText('geometry2')
-    fireEvent.click(option)
+    await act(() => fireEvent.click(option))
 
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')

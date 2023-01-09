@@ -102,10 +102,8 @@ const Dialog = ({
    * On modal cancel
    */
   const onModalCancel = useCallback(() => {
-    if (onCancel) {
-      form.resetFields()
-      onCancel()
-    }
+    form.resetFields()
+    onCancel?.()
   }, [form, onCancel])
 
   /**

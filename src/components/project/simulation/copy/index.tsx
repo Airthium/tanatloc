@@ -1,20 +1,21 @@
 /** @module Components.Project.Simulation.Copy */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
-import { ErrorNotification } from '@/components/assets/notification'
-
-import Utils from '@/lib/utils'
-
-import SimulationAPI from '@/api/simulation'
 import {
   IFrontProject,
   IFrontSimulationsItem,
   IFrontMutateProject,
   IFrontNewSimulation
 } from '@/api/index.d'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
+import SimulationAPI from '@/api/simulation'
 
 import { globalStyle } from '@/styles'
 
@@ -43,7 +44,7 @@ export const errors = {
  * @param simulation Simulation
  * @param swr SWR
  */
-export const onCopy = async (
+export const _onCopy = async (
   project: Pick<IFrontProject, 'id' | 'simulations'>,
   simulation: Pick<IFrontSimulationsItem, 'name' | 'scheme'>,
   swr: {
@@ -86,6 +87,18 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On click
+   */
+  const onClick = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onCopy(project, simulation, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [project, simulation, swr])
+
+  /**
    * Render
    */
   return (
@@ -94,14 +107,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
         css={globalStyle.noBorder}
         loading={loading}
         icon={<CopyOutlined />}
-        onClick={async () => {
-          setLoading(true)
-          try {
-            await onCopy(project, simulation, swr)
-          } finally {
-            setLoading(false)
-          }
-        }}
+        onClick={onClick}
       />
     </Tooltip>
   )

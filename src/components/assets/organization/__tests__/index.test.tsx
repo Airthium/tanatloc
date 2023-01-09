@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Organization, { errors } from '..'
 
@@ -58,7 +58,7 @@ describe('components/assets/organization', () => {
     unmount()
   })
 
-  test('onName', () => {
+  test('onName', async () => {
     const { unmount } = render(
       <Organization organization={organization} swr={swr} onClose={onClose} />
     )
@@ -66,19 +66,27 @@ describe('components/assets/organization', () => {
     // Normal
     {
       const edit = screen.getByRole('button', { name: 'Edit' })
-      fireEvent.click(edit)
+      await act(() => fireEvent.click(edit))
 
       const input = screen.getByRole('textbox')
-      fireEvent.change(input, { target: { value: 'new name' } })
-      fireEvent.keyDown(input, {
-        keyCode: 13
-      })
-      fireEvent.keyUp(input, {
-        keyCode: 13
-      })
+      await act(() =>
+        fireEvent.change(input, { target: { value: 'new name' } })
+      )
+      await act(() =>
+        fireEvent.keyDown(input, {
+          keyCode: 13
+        })
+      )
+      await act(() =>
+        fireEvent.keyUp(input, {
+          keyCode: 13
+        })
+      )
 
-      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-      waitFor(() => expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+      await waitFor(() =>
+        expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+      )
     }
 
     // Error
@@ -87,20 +95,28 @@ describe('components/assets/organization', () => {
         throw new Error('update error')
       })
       const edit = screen.getByRole('button', { name: 'Edit' })
-      fireEvent.click(edit)
+      await act(() => fireEvent.click(edit))
 
       const input = screen.getByRole('textbox')
-      fireEvent.change(input, { target: { value: 'new name' } })
-      fireEvent.keyDown(input, {
-        keyCode: 13
-      })
-      fireEvent.keyUp(input, {
-        keyCode: 13
-      })
+      await act(() =>
+        fireEvent.change(input, { target: { value: 'new name' } })
+      )
+      await act(() =>
+        fireEvent.keyDown(input, {
+          keyCode: 13
+        })
+      )
+      await act(() =>
+        fireEvent.keyUp(input, {
+          keyCode: 13
+        })
+      )
 
-      waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-      waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-      waitFor(() =>
+      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+      await waitFor(() =>
+        expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+      )
+      await waitFor(() =>
         expect(mockErrorNotification).toHaveBeenLastCalledWith(
           errors.name,
           new Error('update error')

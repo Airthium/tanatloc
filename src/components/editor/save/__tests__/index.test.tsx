@@ -1,5 +1,5 @@
 import { EditorContext } from '@/context/editor'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Save, { errors } from '..'
 
@@ -18,6 +18,30 @@ const mockDeepCopy = jest.fn()
 jest.mock('@/lib/utils', () => ({
   deepCopy: (obj: any) => mockDeepCopy(obj)
 }))
+
+const contextValue0 = {
+  template: 'template',
+  model: '',
+  dispatch: jest.fn(),
+  templateValid: true,
+  modelValid: true
+}
+
+const contextValue1 = {
+  template: 'template',
+  model: '{}',
+  dispatch: jest.fn(),
+  templateValid: true,
+  modelValid: true
+}
+
+const contextValue2 = {
+  template: 'template',
+  model: '{"algorithm": "algorithm"}',
+  dispatch: jest.fn(),
+  templateValid: true,
+  modelValid: true
+}
 
 describe('components/editor/save', () => {
   const user = { id: 'id', models: [] }
@@ -43,26 +67,18 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('enabled, wrong JSON', () => {
+  test('enabled, wrong JSON', async () => {
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: '',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue0}>
         <Save user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
     const button = screen.getByRole('button', { name: 'save' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.json,
         new SyntaxError('Unexpected end of JSON input')
@@ -72,29 +88,21 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('no model', () => {
+  test('no model', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     //@ts-ignore
     user.models = undefined
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: '{"algorithm": "algorithm"}',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
     const button = screen.getByRole('button', { name: 'save' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.check,
         new TypeError("Cannot read properties of undefined (reading 'find')")
@@ -104,27 +112,19 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('add new', () => {
+  test('add new', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: '{}',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue1}>
         <Save user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
     const button = screen.getByRole('button', { name: 'save' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
-    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -139,30 +139,22 @@ describe('components/editor/save', () => {
     unmount()
   })
 
-  test('add new error', () => {
+  test('add new error', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     mockUserUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: '{}',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue1}>
         <Save user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
     const button = screen.getByRole('button', { name: 'save' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
-    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -173,8 +165,8 @@ describe('components/editor/save', () => {
         { key: 'templates', method: 'append', type: 'array', value: 'template' }
       ])
     )
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.save,
         new Error('update error')
@@ -188,30 +180,22 @@ describe('components/editor/save', () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     user.models = [{ algorithm: 'algorithm' } as never]
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: '{"algorithm": "algorithm"}',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
     const button = screen.getByRole('button', { name: 'save' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     await waitFor(() => screen.getByRole('button', { name: 'OK' }))
 
     const ok = screen.getByRole('button', { name: 'OK' })
-    fireEvent.click(ok)
     const cancel = screen.getByRole('button', { name: 'Cancel' })
+    await act(() => fireEvent.click(ok))
 
-    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -230,7 +214,7 @@ describe('components/editor/save', () => {
       ])
     )
 
-    fireEvent.click(cancel)
+    await act(() => fireEvent.click(cancel))
 
     unmount()
   })
@@ -242,30 +226,22 @@ describe('components/editor/save', () => {
     })
     user.models = [{ algorithm: 'algorithm' } as never]
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: '{"algorithm": "algorithm"}',
-          dispatch: jest.fn(),
-          templateValid: true,
-          modelValid: true
-        }}
-      >
+      <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
       </EditorContext.Provider>
     )
 
     const button = screen.getByRole('button', { name: 'save' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     await waitFor(() => screen.getByRole('button', { name: 'OK' }))
 
     const ok = screen.getByRole('button', { name: 'OK' })
-    fireEvent.click(ok)
     const cancel = screen.getByRole('button', { name: 'Cancel' })
+    await act(() => fireEvent.click(ok))
 
-    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUserUpdate).toHaveBeenLastCalledWith([
         {
           key: 'models',
@@ -283,15 +259,15 @@ describe('components/editor/save', () => {
         }
       ])
     )
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.save,
         new Error('update error')
       )
     )
 
-    fireEvent.click(cancel)
+    await act(() => fireEvent.click(cancel))
 
     unmount()
   })

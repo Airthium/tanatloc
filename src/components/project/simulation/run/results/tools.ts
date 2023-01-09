@@ -33,7 +33,7 @@ export const getFilesNumbers = (
 export const getMultiplicator = (
   configuration: IModel['configuration'],
   filter: IModel['configuration']['run']['resultsFilter']
-) => {
+): number | undefined => {
   const multiplicatorPath = filter!.multiplicator
   if (multiplicatorPath) {
     const multiplicatorObject = multiplicatorPath.reduce(

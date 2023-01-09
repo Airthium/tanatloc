@@ -1,12 +1,13 @@
 /** @module Components.Project.Simulation.Run.Results.Download */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
+import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
+
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 import ResultAPI from '@/api/result'
 
 /**
@@ -29,7 +30,7 @@ export const errors = {
  * @param simulation Simulation
  * @param file File
  */
-const onDownload = async (
+const _onDownload = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>
 ): Promise<void> => {
@@ -63,23 +64,24 @@ const Download = ({ simulation, file }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On click
+   */
+  const onClick = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDownload(simulation, file)
+    } catch (err) {
+    } finally {
+      setLoading(false)
+    }
+  }, [simulation, file])
+
+  /**
    * Render
    */
   return (
     <Tooltip title="Download">
-      <Button
-        loading={loading}
-        icon={<DownloadOutlined />}
-        onClick={async () => {
-          setLoading(true)
-          try {
-            await onDownload(simulation, file)
-          } catch (err) {
-          } finally {
-            setLoading(false)
-          }
-        }}
-      />
+      <Button loading={loading} icon={<DownloadOutlined />} onClick={onClick} />
     </Tooltip>
   )
 }

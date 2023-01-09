@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
@@ -45,7 +45,7 @@ describe('components/account/delete', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         onClick={async () => {
@@ -65,10 +65,10 @@ describe('components/account/delete', () => {
     mockDel.mockImplementation(() => {
       throw new Error('del error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')
@@ -76,12 +76,10 @@ describe('components/account/delete', () => {
     )
 
     // Normal
-    mockDel.mockImplementation(() => {
-      // mock function
-    })
-    fireEvent.click(button)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(swr.clearUser).toHaveBeenCalledTimes(1))
+    mockDel.mockImplementation(() => undefined)
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(swr.clearUser).toHaveBeenCalledTimes(1))
 
     unmount()
   })

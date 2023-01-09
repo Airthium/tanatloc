@@ -195,14 +195,14 @@ const NotFound = (): JSX.Element => {
      * Animate
      */
     const animate = () => {
+      setTimeout(() => requestAnimationFrame(animate), 1000 / 30)
+
       const timeElapsed = clock.getDelta()
 
       const group = scene.children.filter((child) => child.type === 'Group')[0]
       group && group.rotateY(0.2 * timeElapsed)
 
       renderer.render(scene, camera)
-
-      setTimeout(() => requestAnimationFrame(animate), 1000 / 30)
     }
 
     // Start

@@ -1,22 +1,25 @@
 /** @module Components.Project.Simulation.Geometry */
 
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
 import { Card, Select, Typography } from 'antd'
-
-import { ErrorNotification } from '@/components/assets/notification'
-
-import Utils from '@/lib/utils'
 
 import {
   IFrontGeometriesItem,
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem
 } from '@/api/index.d'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
+
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
 import SimulationAPI from '@/api/simulation'
 
-import style from '../index.style'
-
 import Mesh from './mesh'
+
+import style from '../index.style'
 
 /**
  * Props
@@ -46,7 +49,7 @@ export const errors = {
  * @param setGeometries Set geometries
  * @param swr Swr
  */
-export const onSelect = async (
+export const _onSelect = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
   geometryId: string,
@@ -108,7 +111,7 @@ export const onSelect = async (
  * @param setGeometries Set geometries
  * @param swr Swr
  */
-export const onMultipleSelect = async (
+export const _onMultipleSelect = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
   geometriesIds: string[],
@@ -141,8 +144,6 @@ export const onMultipleSelect = async (
         done: false
       }
     }
-
-    //TODO done is not set to true!
 
     // API
     await SimulationAPI.update({ id: simulation.id }, [
@@ -179,53 +180,85 @@ const Geometry = ({
   swr
 }: IProps): JSX.Element => {
   // Data
-  const multiple = simulation.scheme.configuration.geometry.multiple
-  const n = simulation.scheme.configuration.geometry.n
-  const geometryId = simulation.scheme.configuration.geometry.value
-  const geometriesIds = simulation.scheme.configuration.geometry.values
+  const multiple = useMemo(
+    () => simulation.scheme.configuration.geometry.multiple,
+    [simulation]
+  )
+  const n = useMemo(
+    () => simulation.scheme.configuration.geometry.n,
+    [simulation]
+  )
+  const geometryId = useMemo(
+    () => simulation.scheme.configuration.geometry.value,
+    [simulation]
+  )
+  const geometriesIds = useMemo(
+    () => simulation.scheme.configuration.geometry.values,
+    [simulation]
+  )
 
   // Auto select
-  if (!multiple && !geometryId && geometries.length) {
-    onSelect(simulation, loadedGeometries, geometries[0].id, setGeometries, swr)
-  } else if (multiple && !geometriesIds && geometries.length) {
-    onMultipleSelect(
-      simulation,
-      loadedGeometries,
-      geometries.map((geometry) => geometry.id),
-      setGeometries,
-      swr
-    )
-  }
+  useCustomEffect(() => {
+    if (!multiple && !geometryId && geometries.length) {
+      _onSelect(
+        simulation,
+        loadedGeometries,
+        geometries[0].id,
+        setGeometries,
+        swr
+      )
+    } else if (multiple && !geometriesIds && geometries.length) {
+      _onMultipleSelect(
+        simulation,
+        loadedGeometries,
+        geometries.map((geometry) => geometry.id),
+        setGeometries,
+        swr
+      )
+    }
+  }, [multiple, geometryId, geometriesIds, loadedGeometries, geometries, swr])
+
+  /**
+   * On change
+   * @param values Values
+   */
+  const onChange = useCallback(
+    (value: string | string[]): void => {
+      multiple
+        ? _onMultipleSelect(
+            simulation,
+            loadedGeometries,
+            value as string[],
+            setGeometries,
+            swr
+          )
+        : _onSelect(
+            simulation,
+            loadedGeometries,
+            value as string,
+            setGeometries,
+            swr
+          )
+    },
+    [multiple, loadedGeometries, simulation, setGeometries, swr]
+  )
 
   // List
-  const list = (
-    <div css={style.geometriesList}>
-      <Select
-        mode={multiple ? 'multiple' : undefined}
-        options={loadedGeometries.map((geometry) => ({
-          value: geometry.id,
-          label: geometry.name
-        }))}
-        value={multiple ? geometriesIds : geometryId}
-        onChange={(value) => {
-          multiple
-            ? onMultipleSelect(
-                simulation,
-                loadedGeometries,
-                value as string[],
-                setGeometries,
-                swr
-              )
-            : onSelect(
-                simulation,
-                loadedGeometries,
-                value as string,
-                setGeometries,
-                swr
-              )
-        }}
-      />
-    </div>
+  const list = useMemo(
+    () => (
+      <div css={style.geometriesList}>
+        <Select
+          mode={multiple ? 'multiple' : undefined}
+          options={loadedGeometries.map((geometry) => ({
+            value: geometry.id,
+            label: geometry.name
+          }))}
+          value={multiple ? geometriesIds : geometryId}
+          onChange={onChange}
+        />
+      </div>
+    ),
+    [multiple, geometryId, geometriesIds, onChange, loadedGeometries]
   )
 
   /**

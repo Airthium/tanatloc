@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Plugins, { errors } from '..'
 
@@ -38,23 +38,23 @@ describe('components/administration/plugins', () => {
     mockSystemUpdate.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<Plugins />)
 
-    waitFor(() => screen.getByText('No data'))
+    await waitFor(() => screen.getByText('No data'))
 
     unmount()
   })
 
-  test('completeList error', () => {
+  test('completeList error', async () => {
     mockPluginsCompleteList.mockImplementation(() => {
       throw new Error('completeList error')
     })
 
     const { unmount } = render(<Plugins />)
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.plugins,
         new Error('completeList error')
@@ -64,7 +64,7 @@ describe('components/administration/plugins', () => {
     unmount()
   })
 
-  test('completeList', () => {
+  test('completeList', async () => {
     mockPluginsCompleteList.mockImplementation(() => [
       {
         name: 'Plugin 1',
@@ -74,7 +74,7 @@ describe('components/administration/plugins', () => {
 
     const { unmount } = render(<Plugins />)
 
-    waitFor(() => screen.getByRole('cell', { name: 'Plugin 1' }))
+    await waitFor(() => screen.getByRole('cell', { name: 'Plugin 1' }))
 
     unmount()
   })
@@ -94,10 +94,10 @@ describe('components/administration/plugins', () => {
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
-    fireEvent.click(checkbox)
+    await act(() => fireEvent.click(checkbox))
 
-    waitFor(() => expect(mockSystemUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockSystemUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockSystemUpdate).toHaveBeenLastCalledWith([
         {
           key: 'defaultplugins',
@@ -107,16 +107,16 @@ describe('components/administration/plugins', () => {
         }
       ])
     )
-    waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
+    await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
 
     // Error
     mockSystemUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(checkbox)
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(checkbox))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
         new Error('update error')
@@ -140,13 +140,16 @@ describe('components/administration/plugins', () => {
     const { unmount } = render(<Plugins />)
 
     // Wait for loading
-    await waitFor(() => screen.getByRole('cell', { name: 'Plugin 1' }))
+    await waitFor(() => {
+      const check = screen.getByRole('checkbox')
+      expect(check).toHaveProperty('checked', true)
+    })
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
-    fireEvent.click(checkbox)
-    waitFor(() => expect(mockSystemUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(checkbox))
+    await waitFor(() => expect(mockSystemUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockSystemUpdate).toHaveBeenLastCalledWith([
         {
           key: 'defaultplugins',
@@ -156,20 +159,20 @@ describe('components/administration/plugins', () => {
         }
       ])
     )
-    waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
+    await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
 
     unmount()
   })
 
-  test('onResize', () => {
+  test('onResize', async () => {
     Object.defineProperty(Element.prototype, 'clientHeight', {
       value: '1000'
     })
 
     const { unmount } = render(<Plugins />)
 
-    waitFor(() => screen.getByText('No data'))
+    await waitFor(() => screen.getByText('No data'))
 
     unmount()
   })

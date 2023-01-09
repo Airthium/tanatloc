@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import DeleteDialog, { errors } from '@/components/assets/dialog/delete'
 
@@ -9,15 +9,18 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 describe('components/assets/dialog', () => {
+  const asyncEmptyFn = async () => undefined
+  const asyncErrorFn = async () => {
+    throw new Error('onOk error')
+  }
+
   test('render', () => {
     const { unmount } = render(
       <DeleteDialog
         title="title"
         visible={false}
         onCancel={jest.fn}
-        onOk={async () => {
-          // Empty
-        }}
+        onOk={asyncEmptyFn}
         loading={false}
       >
         Are you sure ?
@@ -33,9 +36,7 @@ describe('components/assets/dialog', () => {
         title="title"
         visible={true}
         onCancel={jest.fn}
-        onOk={async () => {
-          // Empty
-        }}
+        onOk={asyncEmptyFn}
         loading={false}
       >
         Are you sure ?
@@ -54,9 +55,7 @@ describe('components/assets/dialog', () => {
         title="title"
         visible={true}
         onCancel={jest.fn}
-        onOk={async () => {
-          // Empty
-        }}
+        onOk={asyncEmptyFn}
         loading={false}
       >
         Are you sure ?
@@ -69,15 +68,13 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onOk - error', () => {
+  test('onOk - error', async () => {
     const { unmount } = render(
       <DeleteDialog
         title="title"
         visible={true}
         onCancel={jest.fn}
-        onOk={async () => {
-          throw new Error('onOk error')
-        }}
+        onOk={asyncErrorFn}
         loading={false}
       >
         Are you sure ?
@@ -85,10 +82,10 @@ describe('components/assets/dialog', () => {
     )
 
     const button = screen.getByRole('button', { name: 'Delete' })
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.onOk,
         new Error('onOk error')

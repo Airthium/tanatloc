@@ -64,6 +64,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
 
   // Autofocus
   useEffect(() => {
+    /* istanbul ignore next */
     if (inputRef.current) inputRef.current.focus()
   })
 

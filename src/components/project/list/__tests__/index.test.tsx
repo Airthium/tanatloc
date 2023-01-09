@@ -110,7 +110,12 @@ describe('component/project/list', () => {
             users: [{ id: 'id1' } as TProject['users'][0]],
             groups: [{ id: 'id2' } as TProject['groups'][0]]
           } as TProject,
-          { id: 'id3', archived: true, title: 'archive 1' } as TProject
+          {
+            id: 'id3',
+            archived: true,
+            title: 'archive 1',
+            description: 'This is an archived project'
+          } as TProject
         ]}
         organizations={organizations}
         swr={swr}
@@ -123,6 +128,10 @@ describe('component/project/list', () => {
 
     const descriptions = screen.getAllByText('description')
     fireEvent.click(descriptions[0])
+    expect(mockPush).toHaveBeenCalledTimes(2)
+
+    const archived = screen.getAllByText('This is an archived project')
+    fireEvent.click(archived[1])
     expect(mockPush).toHaveBeenCalledTimes(2)
 
     const image = screen.getByRole('img', { name: 'Tanatloc' })

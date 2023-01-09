@@ -2,11 +2,18 @@ import { render } from '@testing-library/react'
 
 import { useProjects } from '../useProjects'
 
-const mockProjects = jest.fn()
-jest.mock('swr', () => () => ({
-  data: { projects: mockProjects() },
-  mutate: jest.fn()
+jest.mock('@/api/call', () => ({
+  fetcher: jest.fn
 }))
+
+const mockProjects = jest.fn()
+jest.mock('swr', () => (_route: string, payload?: Function) => {
+  payload?.(['url', 'payload'])
+  return {
+    data: { projects: mockProjects() },
+    mutate: jest.fn()
+  }
+})
 
 let data: any
 const FunctionalComponent = ({ ids }: { ids?: string[] }) => {

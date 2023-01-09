@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '@/components/project/simulation/delete'
 
@@ -42,7 +42,7 @@ describe('components/project/simulation/delete', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
       <div
         role="DeleteDialog"
@@ -60,19 +60,19 @@ describe('components/project/simulation/delete', () => {
     const dialog = screen.getByRole('DeleteDialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.delOneSimulation).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.delOneSimulation).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error('del error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.del,
         new Error('del error')

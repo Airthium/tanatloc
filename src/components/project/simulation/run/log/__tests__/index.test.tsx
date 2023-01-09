@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 
@@ -72,12 +72,12 @@ describe('components/project/simulation/run/log', () => {
     unmount()
   })
 
-  test('getCompleteLog', () => {
+  test('getCompleteLog', async () => {
     const { unmount } = render(<Log simulation={simulation} steps={steps} />)
 
     // Open drawer
     const button = screen.getByRole('button')
-    fireEvent.click(button)
+    await act(() => fireEvent.click(button))
 
     // Log button
     const logButton = screen.getByText('Complete log')
@@ -86,24 +86,22 @@ describe('components/project/simulation/run/log', () => {
     mockSimulationLog.mockImplementationOnce(() => {
       throw new Error('log error')
     })
-    fireEvent.click(logButton)
-    waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(logButton))
+    await waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.log,
         new Error('log error')
       )
     )
 
-    // await new Promise((resolve) => setTimeout(resolve, 100))
-
     // Normal
     mockSimulationLog.mockImplementationOnce(() => ({
       log: Buffer.from('log')
     }))
-    fireEvent.click(logButton)
-    waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(2))
+    await act(() => fireEvent.click(logButton))
+    await waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(2))
 
     unmount()
   })

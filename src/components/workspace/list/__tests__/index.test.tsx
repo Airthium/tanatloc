@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import List, { errors } from '..'
 
@@ -31,7 +31,15 @@ jest.mock('../../add', () => () => <div />)
 describe('components/workspace/list', () => {
   const user = { id: 'id' }
   const workspaces = [
-    { id: 'id', name: 'name', projects: [], owners: [], users: [], groups: [] }
+    { id: 'id', name: 'name', projects: [], owners: [], users: [], groups: [] },
+    {
+      id: 'id2',
+      name: 'otherworkspace',
+      projects: [],
+      owners: [],
+      users: [],
+      groups: []
+    }
   ]
   const organizations = [
     { id: 'id', name: 'name', owners: [], users: [], groups: [] }
@@ -85,7 +93,23 @@ describe('components/workspace/list', () => {
     unmount()
   })
 
-  test('onAdd', () => {
+  test('onChange', () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        workspaces={workspaces}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+
+    const tab = screen.getByRole('tab', { name: 'otherworkspace' })
+    fireEvent.click(tab)
+
+    unmount()
+  })
+
+  test('onAdd', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -112,19 +136,19 @@ describe('components/workspace/list', () => {
 
     // Normal
     mockWorkspaceAdd.mockImplementation(() => ({}))
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Error
     mockWorkspaceAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
         new Error('add error')

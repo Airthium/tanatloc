@@ -81,7 +81,6 @@ const Formula = ({
     (event: CheckboxChangeEvent): void => {
       const currentChecked = event.target.checked
       setInternalChecked(currentChecked)
-      setSaving(true)
 
       onCheckedChange?.(currentChecked)
 

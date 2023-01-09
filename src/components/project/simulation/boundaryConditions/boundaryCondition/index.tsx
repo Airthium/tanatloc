@@ -16,6 +16,7 @@ import {
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import {
+  IModelBoundaryCondition,
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
@@ -27,19 +28,22 @@ import {
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
+import { ISelect, SelectContext } from '@/context/select'
+import { setPart } from '@/context/select/actions'
+
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
-import { ISelect, SelectContext } from '@/context/select'
-import { setPart } from '@/context/select/actions'
+import Add from '../add'
+import Edit from '../edit'
 
 import { globalStyle, globalStyleFn } from '@/styles'
 import style from '../../../panel/index.style'
 
-import Add from '../add'
-import Edit from '../edit'
-
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
@@ -49,6 +53,57 @@ export interface IProps {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
   onClose: () => void
+}
+
+export interface IBoundaryConditionItemProps {
+  boundaryCondition: IModelBoundaryCondition
+  index: number
+  value: string | number | undefined
+  checked: boolean | undefined
+  _onValueChange: (index: number, value: string) => void
+  _onCheckedChange: (index: number, checked: boolean) => void
+}
+
+const BoundaryConditionItem = ({
+  boundaryCondition,
+  index,
+  value,
+  checked,
+  _onValueChange,
+  _onCheckedChange
+}: IBoundaryConditionItemProps): JSX.Element => {
+  /**
+   * On value change
+   * @param value Value
+   */
+  const onValueChange = useCallback(
+    (value: string) => _onValueChange(index, value),
+    [index, _onValueChange]
+  )
+
+  /**
+   * On checked change
+   * @param checked Checked
+   */
+  const onCheckedChange = useCallback(
+    (checked: boolean) => _onCheckedChange(index, checked),
+    [index, _onCheckedChange]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Formula
+      css={globalStyleFn.marginBottom(10)}
+      label={boundaryCondition.label}
+      defaultValue={value}
+      defaultChecked={checked}
+      onValueChange={onValueChange}
+      onCheckedChange={onCheckedChange}
+      unit={boundaryCondition.unit}
+    />
+  )
 }
 
 /**
@@ -77,8 +132,14 @@ const BoundaryCondition = ({
   const { dispatch } = useContext(SelectContext)
 
   // Data
-  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
-  const dimension = simulation.scheme.configuration.dimension
+  const boundaryConditions = useMemo(
+    () => simulation.scheme.configuration.boundaryConditions,
+    [simulation]
+  )
+  const dimension = useMemo(
+    () => simulation.scheme.configuration.dimension,
+    [simulation]
+  )
 
   // Init
   useCustomEffect(
@@ -208,7 +269,7 @@ const BoundaryCondition = ({
         values: values
       }))
     },
-    [`${boundaryConditions}`, types]
+    [boundaryConditions, types]
   )
 
   /**
@@ -271,19 +332,18 @@ const BoundaryCondition = ({
           {current.type.children.map((child, index) => {
             if (dimension === 2 && child.only3D) return
             return (
-              <Formula
-                css={globalStyleFn.marginBottom(10)}
-                key={index}
-                label={child.label}
-                defaultValue={String(current.values![index].value)}
-                defaultChecked={
+              <BoundaryConditionItem
+                key={child.label}
+                boundaryCondition={child}
+                index={index}
+                value={String(current.values![index].value)}
+                checked={
                   current.type.children!.length > 1
                     ? current.values![index].checked
                     : undefined
                 }
-                onValueChange={(value) => onValueChange(index, value)}
-                onCheckedChange={(checked) => onCheckedChange(index, checked)}
-                unit={child.unit}
+                _onValueChange={onValueChange}
+                _onCheckedChange={onCheckedChange}
               />
             )
           })}
@@ -312,9 +372,16 @@ const BoundaryCondition = ({
         geometry: key
       }))
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [`${geometries}`, dispatch]
+    [geometries, dispatch]
   )
+
+  /**
+   * On cancel
+   */
+  const onCancel = useCallback(() => {
+    setCurrent(undefined)
+    onClose()
+  }, [onClose])
 
   /**
    * Render
@@ -329,24 +396,10 @@ const BoundaryCondition = ({
       mask={false}
       maskClosable={false}
       width={300}
-      extra={
-        <Button
-          type="text"
-          icon={<CloseOutlined />}
-          onClick={() => {
-            setCurrent(undefined)
-            onClose()
-          }}
-        />
-      }
+      extra={<Button type="text" icon={<CloseOutlined />} onClick={onCancel} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CancelButton
-            onCancel={() => {
-              setCurrent(undefined)
-              onClose()
-            }}
-          />
+          <CancelButton onCancel={onCancel} />
           {boundaryCondition ? (
             <Edit
               boundaryCondition={{
@@ -370,7 +423,7 @@ const BoundaryCondition = ({
                 scheme: simulation.scheme
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={(desc) => setError(desc)}
+              onError={setError}
               onClose={onClose}
             />
           ) : (
@@ -387,7 +440,7 @@ const BoundaryCondition = ({
                 scheme: simulation.scheme
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={(desc) => setError(desc)}
+              onError={setError}
               onClose={onClose}
             />
           )}

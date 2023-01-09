@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Dashboard from '@/components/dashboard'
 
@@ -254,7 +254,7 @@ describe('components/dashboard', () => {
     unmount()
   })
 
-  test('logout error', () => {
+  test('logout error', async () => {
     const { unmount } = render(<Dashboard />)
 
     mockPush.mockImplementation(() => {
@@ -262,10 +262,10 @@ describe('components/dashboard', () => {
     })
 
     const logout = screen.getByRole('img', { name: 'logout' })
-    fireEvent.click(logout)
+    await act(() => fireEvent.click(logout))
 
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         'Unable to logout',
         new Error('push error')

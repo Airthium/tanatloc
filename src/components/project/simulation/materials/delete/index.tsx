@@ -1,7 +1,12 @@
 /** @module Components.Project.Simulation.Materials.Delete */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useMemo, useState } from 'react'
 import { Typography } from 'antd'
+
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -11,10 +16,6 @@ import { unselect } from '@/context/select/actions'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -38,7 +39,7 @@ export const errors = {
 /**
  * On delete
  */
-export const onDelete = async (
+export const _onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
   dispatch: Dispatch<ISelectAction>,
@@ -101,8 +102,23 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
 
   // Data
   const { dispatch } = useContext(SelectContext)
-  const materials = simulation.scheme.configuration.materials!
-  const material = materials.values![index]
+  const materials = useMemo(
+    () => simulation.scheme.configuration.materials!,
+    [simulation]
+  )
+  const material = useMemo(() => materials.values![index], [materials, index])
+
+  /**
+   * On delete
+   */
+  const onDelete = useCallback(async (): Promise<void> => {
+    setLoading(true)
+    try {
+      await _onDelete(simulation, index, dispatch, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [simulation, index, swr, dispatch])
 
   /**
    * Render
@@ -116,14 +132,7 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
           <Typography.Text strong>{material.material.label}</Typography.Text>
         </>
       }
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(simulation, index, dispatch, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
     />
   )
 }

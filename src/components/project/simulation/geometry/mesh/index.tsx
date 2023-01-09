@@ -3,15 +3,16 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, Form, Select, Space } from 'antd'
 
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
+
 import { ErrorNotification } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 import { globalStyle } from '@/styles'
@@ -39,7 +40,7 @@ export const errors = {
  * @param type Type
  * @param swr SWR
  */
-export const onMeshGlobalType = async (
+export const _onMeshGlobalType = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
   swr: {
@@ -98,7 +99,7 @@ export const onMeshGlobalType = async (
  * @param value Value
  * @param swr SWR
  */
-export const onMeshGlobalSize = async (
+export const _onMeshGlobalSize = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
   value: string,
@@ -176,13 +177,30 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   }, [simulation])
 
   /**
+   * On change
+   * @param type Type
+   */
+  const onChange = useCallback(
+    async (type: string): Promise<void> => {
+      try {
+        await _onMeshGlobalType(simulation, type, swr)
+
+        setMeshGlobalType(type)
+        if (type === 'auto') setMeshGlobalValue('normal')
+        else setMeshGlobalValue('1')
+      } catch (err) {}
+    },
+    [simulation, swr]
+  )
+
+  /**
    * On size
    * @param value Value
    */
   const onSize = useCallback(
     async (value: string) => {
       try {
-        await onMeshGlobalSize(simulation, meshGlobalType!, value, swr)
+        await _onMeshGlobalSize(simulation, meshGlobalType!, value, swr)
         setMeshGlobalValue(value)
       } catch (err) {}
     },
@@ -200,15 +218,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
             <Select
               css={globalStyle.fullWidth}
               value={meshGlobalType}
-              onChange={async (type) => {
-                try {
-                  await onMeshGlobalType(simulation, type, swr)
-
-                  setMeshGlobalType(type)
-                  if (type === 'auto') setMeshGlobalValue('normal')
-                  else setMeshGlobalValue('1')
-                } catch (err) {}
-              }}
+              onChange={onChange}
             >
               <Select.Option value="auto">Automatic</Select.Option>
               <Select.Option value="manual">Manual</Select.Option>

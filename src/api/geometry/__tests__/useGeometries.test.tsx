@@ -2,8 +2,15 @@ import { render } from '@testing-library/react'
 
 import { useGeometries } from '../useGeometries'
 
+jest.mock('@/api/call', () => ({
+  fetcher: jest.fn
+}))
+
 const mockData = jest.fn()
-jest.mock('swr', () => () => mockData())
+jest.mock('swr', () => (_route: string, payload?: Function) => {
+  payload?.(['url', 'payload'])
+  return mockData()
+})
 
 let data: any
 const FunctionalComponent = ({ ids }: { ids?: string[] }) => {

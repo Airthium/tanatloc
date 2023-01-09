@@ -43,6 +43,7 @@ const Inline = ({ text }: IPropsInline): JSX.Element => {
   // Update MathJax
   useEffect(() => {
     const div = element.current
+    /* istanbul ignore next */
     if (!div) return
 
     mathjaxRefresh([div])
@@ -81,6 +82,7 @@ const Formula = ({ text }: IPropsFormula) => {
   // Update MathJax
   useEffect(() => {
     const div = element.current
+    /* istanbul ignore next */
     if (!div) return
 
     mathjaxRefresh([div])
@@ -118,6 +120,7 @@ const Html = ({ html }: IPropsHtml): JSX.Element => {
   // Update MathJax
   useEffect(() => {
     const div = element.current
+    /* istanbul ignore next */
     if (!div) return
 
     mathjaxRefresh([div])

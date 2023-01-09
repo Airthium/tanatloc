@@ -103,14 +103,16 @@ describe('lib/result', () => {
         }
       ]
     }
-    mockReadFile.mockImplementation(() =>
-      JSON.stringify({
-        scenes: [
-          {
-            extras: summary
-          }
-        ]
-      })
+    mockReadFile.mockImplementation(
+      () =>
+        'JSON' +
+        JSON.stringify({
+          scenes: [
+            {
+              extras: summary
+            }
+          ]
+        })
     )
     const load = await Result.load(
       { id: 'id' },
@@ -120,13 +122,14 @@ describe('lib/result', () => {
     expect(load).toEqual({
       summary,
       buffer: Buffer.from(
-        JSON.stringify({
-          scenes: [
-            {
-              extras: summary
-            }
-          ]
-        })
+        'JSON' +
+          JSON.stringify({
+            scenes: [
+              {
+                extras: summary
+              }
+            ]
+          })
       )
     })
   })

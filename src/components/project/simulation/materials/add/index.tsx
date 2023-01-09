@@ -1,19 +1,19 @@
 /** @module Components.Project.Simulation.Materials.Add */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import { IModelMaterialsValue } from '@/models/index.d'
+import {
+  IFrontSimulationsItem,
+  IFrontMutateSimulationsItem
+} from '@/api/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
 
-import {
-  IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
-} from '@/api/index.d'
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -44,7 +44,7 @@ export const errors = {
  * @param material Material
  * @param swr SWR
  */
-export const onAdd = async (
+export const _onAdd = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   material: Omit<IModelMaterialsValue, 'uuid'>,
   swr: {
@@ -118,38 +118,39 @@ const Add = ({
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On add
+   */
+  const onAdd = useCallback(async () => {
+    setLoading(true)
+    try {
+      // Check
+      if (!material.material) {
+        onError(errors.material)
+        setLoading(false)
+        return
+      }
+
+      if (!material.selected?.length) {
+        onError(errors.selected)
+        setLoading(false)
+        return
+      }
+      onError()
+
+      await _onAdd(simulation, material, swr)
+
+      setLoading(false)
+      onClose()
+    } catch (err) {
+      setLoading(false)
+    }
+  }, [simulation, material, swr, onError, onClose])
+
+  /**
    * Render
    */
   return (
-    <AddButton
-      loading={loading}
-      needMargin
-      onAdd={async () => {
-        setLoading(true)
-        try {
-          // Check
-          if (!material.material) {
-            onError(errors.material)
-            setLoading(false)
-            return
-          }
-
-          if (!material.selected?.length) {
-            onError(errors.selected)
-            setLoading(false)
-            return
-          }
-          onError()
-
-          await onAdd(simulation, material, swr)
-
-          setLoading(false)
-          onClose()
-        } catch (err) {
-          setLoading(false)
-        }
-      }}
-    >
+    <AddButton loading={loading} needMargin onAdd={onAdd}>
       Add
     </AddButton>
   )

@@ -43,6 +43,7 @@ describe('components/project/simulation/materials/list', () => {
           values: [
             {
               uuid: 'uuid',
+              geometry: 'id',
               selected: [{ uuid: 'uuid', label: 1 }],
               material: { label: 'name', children: [] }
             }

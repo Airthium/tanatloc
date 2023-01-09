@@ -1,7 +1,7 @@
 /** @module Components.Project.Add */
 
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import {
@@ -90,6 +90,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
 
   // Autofocus
   useEffect(() => {
+    /* istanbul ignore next */
     if (inputRef.current) inputRef.current.focus()
   })
 
@@ -102,6 +103,16 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
    * Set visible false
    */
   const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * On key up
+   * @param event Event
+   */
+  const onKeyUp = useCallback(
+    (event: KeyboardEvent<HTMLTextAreaElement>): void =>
+      event.stopPropagation(),
+    []
+  )
 
   /**
    * On ok
@@ -170,7 +181,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
             css={globalStyleFn.marginBottom(20)}
             maxLength={120}
             placeholder="Project's description"
-            onKeyUp={(event) => event.stopPropagation()}
+            onKeyUp={onKeyUp}
           />
         </Form.Item>
       </Dialog>

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Delete, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
@@ -48,7 +48,7 @@ describe('components/editor/delete', () => {
     unmount()
   })
 
-  test('onDelete', () => {
+  test('onDelete', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     mockDeleteButton.mockImplementation((props) => (
       <div
@@ -64,18 +64,18 @@ describe('components/editor/delete', () => {
 
     // Normal
     const button = screen.getByRole('DeleteButton')
-    fireEvent.click(button)
-    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
     // Error
     mockUserUpdate.mockImplementation(() => {
       throw new Error('user update error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.delete,
         new Error('user update error')

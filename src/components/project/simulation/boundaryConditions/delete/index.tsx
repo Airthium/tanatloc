@@ -1,22 +1,22 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Delete */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useMemo, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
-
-import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
-
-import { ISelectAction, SelectContext } from '@/context/select'
-import { unselect } from '@/context/select/actions'
-
-import Utils from '@/lib/utils'
-
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
+
+import { ISelectAction, SelectContext } from '@/context/select'
+import { unselect } from '@/context/select/actions'
+
+import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
+
 import SimulationAPI from '@/api/simulation'
 
 /**
@@ -46,7 +46,7 @@ export const errors = {
  * @param dispatch Dispatch
  * @param swr SWR
  */
-export const onDelete = async (
+export const _onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
   index: number,
@@ -121,11 +121,30 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
 
   // Data
   const { dispatch } = useContext(SelectContext)
-  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
-  const typedBoundaryCondition = boundaryConditions[
-    type
-  ] as IModelTypedBoundaryCondition
-  const boundaryCondition = typedBoundaryCondition.values![index]
+  const boundaryConditions = useMemo(
+    () => simulation.scheme.configuration.boundaryConditions,
+    [simulation]
+  )
+  const typedBoundaryCondition = useMemo(
+    () => boundaryConditions[type] as IModelTypedBoundaryCondition,
+    [boundaryConditions, type]
+  )
+  const boundaryCondition = useMemo(
+    () => typedBoundaryCondition.values![index],
+    [typedBoundaryCondition, index]
+  )
+
+  /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(simulation, type, index, dispatch, swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [simulation, type, index, swr, dispatch])
 
   /**
    * Render
@@ -133,14 +152,7 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
-      onDelete={async () => {
-        setLoading(true)
-        try {
-          await onDelete(simulation, type, index, dispatch, swr)
-        } finally {
-          setLoading(false)
-        }
-      }}
+      onDelete={onDelete}
       text={
         <>
           Are you sure you want to delete the condition{' '}

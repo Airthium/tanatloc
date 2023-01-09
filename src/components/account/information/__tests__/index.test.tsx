@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Information, { errors } from '..'
 
@@ -108,7 +108,7 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  test('beforeUpload', () => {
+  test('beforeUpload', async () => {
     let file: File
     mockUpload.mockImplementation((props) => (
       <input
@@ -124,8 +124,8 @@ describe('components/account/information', () => {
 
     // Wrong format
     file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
-    fireEvent.click(upload, { target: { files: [file] } })
-    waitFor(() =>
+    await act(() => fireEvent.click(upload, { target: { files: [file] } }))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.badFormat,
         undefined
@@ -136,8 +136,8 @@ describe('components/account/information', () => {
     file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
       type: 'image/png'
     })
-    fireEvent.click(upload, { target: { files: [file] } })
-    waitFor(() =>
+    await act(() => fireEvent.click(upload, { target: { files: [file] } }))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.badSize,
         undefined
@@ -146,12 +146,12 @@ describe('components/account/information', () => {
 
     // Good format
     file = new File(['buffer'], 'file.png', { type: 'image/png' })
-    fireEvent.click(upload, { target: { files: [file] } })
+    await act(() => fireEvent.click(upload, { target: { files: [file] } }))
 
     unmount()
   })
 
-  test('onChange', () => {
+  test('onChange', async () => {
     let info: any
     mockUpload.mockImplementation((props) => (
       <input
@@ -169,33 +169,41 @@ describe('components/account/information', () => {
 
     // Uploading
     info = { file: { status: 'uploading' } }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
 
     info = { file: { status: 'other' } }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
 
     // Done
     info = {
       file: { status: 'done', name: 'name', uid: 'uid', originFileObj: {} }
     }
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         name: 'name',
         uid: 'uid',
         data: 'img'
       })
     )
-    waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('add error')
     })
-    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
-    waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() =>
+      fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    )
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.upload,
         new Error('add error')
@@ -205,7 +213,7 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  test('onFinish', () => {
+  test('onFinish', async () => {
     const { unmount } = render(<Information user={user} swr={swr} />)
 
     const submit = screen.getByRole('button', { name: 'Save changes' })
@@ -214,53 +222,65 @@ describe('components/account/information', () => {
     const lastname = screen.getByRole('textbox', { name: 'Last name' })
 
     // Not changed
-    fireEvent.click(submit)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await act(() => fireEvent.click(submit))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
 
     // Firstname
-    fireEvent.change(firstname, { target: { value: 'firstname1' } })
-    fireEvent.click(submit)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() =>
+      fireEvent.change(firstname, { target: { value: 'firstname1' } })
+    )
+    await act(() => fireEvent.click(submit))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         { key: 'firstname', value: 'firstname1' }
       ])
     )
-    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(0)
+    )
 
     // Email
-    fireEvent.change(email, { target: { value: 'test1@tanatloc.com' } })
-    fireEvent.click(submit)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() =>
+      fireEvent.change(email, { target: { value: 'test1@tanatloc.com' } })
+    )
+    await act(() => fireEvent.click(submit))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         { key: 'email', value: 'test1@tanatloc.com' },
         { key: 'firstname', value: 'firstname1' }
       ])
     )
-    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
 
     // Lastname
-    fireEvent.change(lastname, { target: { value: 'lastname1' } })
-    fireEvent.click(submit)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    waitFor(() =>
+    await act(() =>
+      fireEvent.change(lastname, { target: { value: 'lastname1' } })
+    )
+    await act(() => fireEvent.click(submit))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         { key: 'email', value: 'test1@tanatloc.com' },
         { key: 'firstname', value: 'firstname1' },
         { key: 'lastname', value: 'lastname1' }
       ])
     )
-    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(2)
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(submit)
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(submit))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.update,
         err: new Error('update error')

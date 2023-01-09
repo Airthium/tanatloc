@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add, { errors } from '..'
 
@@ -69,7 +69,7 @@ describe('components/project/simulation/run/sensors/add', () => {
     unmount()
   })
 
-  test('onAdd', () => {
+  test('onAdd', async () => {
     mockAddButton.mockImplementation((props) => (
       <div role="Add" onClick={props.onAdd} />
     ))
@@ -86,21 +86,23 @@ describe('components/project/simulation/run/sensors/add', () => {
     const add = screen.getByRole('Add')
 
     // Normal
-    fireEvent.click(add)
-    waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(add))
+    await waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockSimulationUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(add)
-    waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(onError).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(add))
+    await waitFor(() => expect(mockSimulationUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenCalledWith(
         errors.update,
         new Error('update error')

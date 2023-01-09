@@ -1,7 +1,14 @@
 /** @module Components.Project.Simulation.Run.CloudServer */
 
 import dynamic from 'next/dynamic'
-import { useState, useEffect, ComponentType } from 'react'
+import {
+  useState,
+  useEffect,
+  ComponentType,
+  useCallback,
+  Dispatch,
+  SetStateAction
+} from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
@@ -27,12 +34,95 @@ export interface IProps {
   onOk: (plugin: IClientPlugin) => Promise<void>
 }
 
+export interface IPluginProps {
+  plugin: IClientPlugin
+  onOk: (plugin: IClientPlugin) => Promise<void>
+  setVisible: Dispatch<SetStateAction<boolean>>
+}
+
+export interface IPluginsProps {
+  pluginsList: IClientPlugin[]
+  plugins: IClientPlugin[]
+  onOk: (plugin: IClientPlugin) => Promise<void>
+  setVisible: Dispatch<SetStateAction<boolean>>
+}
+
 /**
  * Errors
  */
 export const errors = {
   plugins: 'Plugins error',
   pluginsLoad: 'Unable to load plugins'
+}
+
+/**
+ * Plugin
+ * @param props Props
+ * @returns Plugin
+ */
+const Plugin = ({ plugin, onOk, setVisible }: IPluginProps): JSX.Element => {
+  // Renderer
+  const Renderer: ComponentType<{
+    data: any
+    onSelect: (diff: IClientPlugin) => void
+  }> = dynamic(() => import(`/plugins/${plugin.key}/src/components`))
+
+  /**
+   * On select
+   * @param diff Plugin
+   */
+  const onSelect = useCallback(
+    (diff: IClientPlugin): void => {
+      // Merge
+      merge(plugin, diff)
+      // Ok
+      onOk(plugin)
+      // Close
+      setVisible(false)
+    },
+    [plugin, onOk, setVisible]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Card key={plugin.uuid} title={plugin.configuration.name.value}>
+      <Renderer data={plugin.data} onSelect={onSelect} />
+    </Card>
+  )
+}
+
+/**
+ * Plugins
+ * @param props Props
+ * @returns Plugins
+ */
+const Plugins = ({
+  pluginsList,
+  plugins,
+  onOk,
+  setVisible
+}: IPluginsProps): JSX.Element | null => {
+  if (!plugins?.length) return null
+
+  return (
+    <Space align="start" direction="horizontal" wrap={true}>
+      {plugins.map((plugin) => {
+        const check = pluginsList.find((p) => p.key === plugin.key)
+        if (!check) return null
+
+        return (
+          <Plugin
+            key={plugin.key}
+            plugin={plugin}
+            onOk={onOk}
+            setVisible={setVisible}
+          />
+        )
+      })}
+    </Space>
+  )
 }
 
 /**
@@ -43,7 +133,7 @@ export const errors = {
 const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
-  const [Plugins, setPlugins] = useState<IClientPlugin[]>([])
+  const [pluginsList, setPluginsList] = useState<IClientPlugin[]>([])
 
   // Data
   const router = useRouter()
@@ -58,12 +148,32 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   useEffect(() => {
     PluginsAPI.list()
       .then((list) => {
-        setPlugins(list)
+        setPluginsList(list)
       })
       .catch((err) => {
         ErrorNotification(errors.pluginsLoad, err)
       })
   }, [])
+
+  /**
+   * Set visible true
+   */
+  const setVisibleTrue = useCallback(() => setVisible(true), [])
+
+  /**
+   * Set visible false
+   */
+  const setVisibleFalse = useCallback(() => setVisible(false), [])
+
+  /**
+   * Dashboard
+   */
+  const dashboard = useCallback(() => {
+    router.push({
+      pathname: '/dashboard',
+      query: { page: 'account', tab: 'hpc' }
+    })
+  }, [router])
 
   /**
    * Render
@@ -77,53 +187,21 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           disabled: true,
           style: { display: 'none' }
         }}
-        onCancel={() => setVisible(false)}
+        onCancel={setVisibleFalse}
         style={{ width: 'unset' }}
       >
         <Space direction="vertical">
           <Typography.Text>
             Your computational resource does not appear in this list? Create one
             in your{' '}
-            <LinkButton
-              onClick={() =>
-                router.push({
-                  pathname: '/dashboard',
-                  query: { page: 'account', tab: 'hpc' }
-                })
-              }
-            >
-              account settings
-            </LinkButton>
+            <LinkButton onClick={dashboard}>account settings</LinkButton>
           </Typography.Text>
-          <Space align="start" direction="horizontal" wrap={true}>
-            {plugins?.map((plugin) => {
-              const Plugin = Plugins.find((p) => p.key === plugin.key)
-              if (!Plugin) return
-
-              const Renderer: ComponentType<{
-                data: any
-                onSelect: (diff: IClientPlugin) => void
-              }> = dynamic(
-                () => import(`/plugins/${Plugin.key}/src/components`)
-              )
-
-              return (
-                <Card key={plugin.uuid} title={plugin.configuration.name.value}>
-                  <Renderer
-                    data={plugin.data}
-                    onSelect={(diff: IClientPlugin) => {
-                      // Merge
-                      merge(plugin, diff)
-                      // Ok
-                      onOk(plugin)
-                      // Close
-                      setVisible(false)
-                    }}
-                  />
-                </Card>
-              )
-            })}
-          </Space>
+          <Plugins
+            pluginsList={pluginsList}
+            plugins={plugins}
+            onOk={onOk}
+            setVisible={setVisible}
+          />
         </Space>
       </Modal>
       <Space direction="vertical" css={globalStyle.fullWidth}>
@@ -158,7 +236,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           disabled={disabled}
           type={cloudServer ? 'link' : 'primary'}
           icon={<CloudServerOutlined />}
-          onClick={() => setVisible(true)}
+          onClick={setVisibleTrue}
         >
           {cloudServer ? 'Modify the resource' : 'Select a resource'}
         </Button>

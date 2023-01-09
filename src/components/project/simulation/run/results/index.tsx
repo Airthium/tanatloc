@@ -1,18 +1,18 @@
 /** @module Components.Project.Simulation.Run.Results */
 
-import {  useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
 import { IFrontSimulation, IFrontResult } from '@/api/index.d'
 
-import { globalStyle } from '@/styles'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { getFilesNumbers, getMultiplicator } from './tools'
 import Download from './download'
 import Archive from './archive'
+
+import { globalStyle } from '@/styles'
 
 /**
  * Props
@@ -30,6 +30,67 @@ export interface IFilteredFiles {
   options: { label: number; value: number }[]
 }
 
+export interface ISingleResultProps {
+  simulation: Pick<IFrontSimulation, 'id'>
+  result?: Pick<IFrontResult, 'name' | 'fileName'>
+  file: IFrontResult
+  setResult: (result?: IFrontResult) => void
+}
+
+/**
+ * SingleResult
+ * @param props Props
+ * @returns SingleResult
+ */
+const SingleResult = ({
+  simulation,
+  result,
+  file,
+  setResult
+}: ISingleResultProps): JSX.Element => {
+  /**
+   * On click
+   */
+  const onClick = useCallback(
+    () =>
+      setResult(
+        result?.fileName === file.fileName && result.name === file.name
+          ? undefined
+          : file
+      ),
+    [result, file, setResult]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Space style={{ alignItems: 'center' }}>
+      <Button
+        icon={
+          result?.fileName === file.fileName && result.name === file.name ? (
+            <EyeOutlined style={{ color: '#fad114' }} />
+          ) : (
+            <EyeInvisibleOutlined />
+          )
+        }
+        onClick={onClick}
+      />
+      <Download
+        simulation={{
+          id: simulation.id
+        }}
+        file={{
+          name: file.name,
+          fileName: file.fileName,
+          originPath: file.originPath
+        }}
+      />
+      {file.name}
+    </Space>
+  )
+}
+
 /**
  * Results
  * @param props Props
@@ -42,7 +103,10 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   const [currentNumber, setCurrentNumber] = useState<number>()
 
   // Data
-  const configuration = simulation?.scheme?.configuration
+  const configuration = useMemo(
+    () => simulation?.scheme?.configuration,
+    [simulation]
+  )
 
   // Get files
   useCustomEffect(() => {
@@ -121,129 +185,77 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
     }
   }, [filteredFiles, currentNumber])
 
+  /**
+   * On change
+   * @param value Value
+   */
+  const onChange = useCallback(
+    (value: number): void => {
+      const nextResult = filteredFiles!.files.find(
+        (file) => file.number === value && file.name === result?.name
+      )
+      setResult(nextResult)
+      setCurrentNumber(value)
+    },
+    [result, filteredFiles, setResult]
+  )
+
   // Results render
   if (!singleFiles && !filteredFiles) return <Spin />
-  else if (!singleFiles?.length && !filteredFiles)
+  if (!singleFiles?.length && !filteredFiles)
     return <Card size="small">No results yet</Card>
-  else
-    return (
-      <Card
-        size="small"
-        title="Results"
-        extra={
-          <Archive
-            simulation={
-              simulation && {
-                id: simulation.id,
-                scheme: simulation.scheme
-              }
+  return (
+    <Card
+      size="small"
+      title="Results"
+      extra={
+        <Archive
+          simulation={
+            simulation && {
+              id: simulation.id,
+              scheme: simulation.scheme
             }
+          }
+        />
+      }
+    >
+      <Space direction="vertical" css={globalStyle.fullWidth}>
+        {singleFiles?.map((file) => (
+          <SingleResult
+            key={file.name}
+            simulation={simulation}
+            result={result}
+            file={file}
+            setResult={setResult}
           />
-        }
-      >
-        <Space direction="vertical" css={globalStyle.fullWidth}>
-          {singleFiles?.map((file, index) => (
-            <Space key={index} style={{ alignItems: 'center' }}>
-              <Button
-                icon={
-                  result?.fileName === file?.fileName &&
-                  result?.name === file?.name ? (
-                    <EyeOutlined style={{ color: '#fad114' }} />
-                  ) : (
-                    <EyeInvisibleOutlined />
-                  )
-                }
-                onClick={() =>
-                  setResult(
-                    result?.fileName === file?.fileName &&
-                      result?.name === file?.name
-                      ? undefined
-                      : file
-                  )
-                }
-              />
-              <Download
-                simulation={
-                  simulation && {
-                    id: simulation.id
-                  }
-                }
-                file={
-                  file && {
-                    name: file.name,
-                    fileName: file.fileName,
-                    originPath: file.originPath
-                  }
-                }
-              />
-              {file.name}
-            </Space>
-          ))}
-          {filteredFiles && (
-            <>
-              {filteredFiles.name}
-              <Select
-                css={globalStyle.fullWidth}
-                options={filteredFiles.options}
-                value={currentNumber}
-                onChange={(value) => {
-                  const nextResult = filteredFiles.files.find(
-                    (file) =>
-                      file.number === value && file.name === result?.name
-                  )
-                  setResult(nextResult)
-                  setCurrentNumber(value)
-                }}
-              />
-              {filteredFiles.files.map((filteredFile) => {
-                if (filteredFile.number === currentNumber) {
-                  return (
-                    <Space
-                      key={filteredFile.name}
-                      style={{ alignItems: 'center' }}
-                    >
-                      <Button
-                        icon={
-                          result?.fileName === filteredFile?.fileName &&
-                          result?.name === filteredFile?.name ? (
-                            <EyeOutlined style={{ color: '#fad114' }} />
-                          ) : (
-                            <EyeInvisibleOutlined />
-                          )
-                        }
-                        onClick={() =>
-                          setResult(
-                            result?.fileName === filteredFile?.fileName &&
-                              result?.name === filteredFile?.name
-                              ? undefined
-                              : filteredFile
-                          )
-                        }
-                      />
-                      <Download
-                        simulation={
-                          simulation && {
-                            id: simulation.id
-                          }
-                        }
-                        file={
-                          filteredFile && {
-                            name: filteredFile.name,
-                            fileName: filteredFile.fileName,
-                            originPath: filteredFile.originPath
-                          }
-                        }
-                      />
-                      {filteredFile.name}
-                    </Space>
-                  )
-                }
-              })}
-            </>
-          )}
-        </Space>
-      </Card>
-    )
+        ))}
+        {filteredFiles && (
+          <>
+            {filteredFiles.name}
+            <Select
+              css={globalStyle.fullWidth}
+              options={filteredFiles.options}
+              value={currentNumber}
+              onChange={onChange}
+            />
+            {filteredFiles.files.map((filteredFile) => {
+              if (filteredFile.number === currentNumber) {
+                return (
+                  <SingleResult
+                    key={filteredFile.name}
+                    simulation={simulation}
+                    result={result}
+                    file={filteredFile}
+                    setResult={setResult}
+                  />
+                )
+              }
+            })}
+          </>
+        )}
+      </Space>
+    </Card>
+  )
 }
 
 export default Results

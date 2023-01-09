@@ -26,6 +26,46 @@ const testModel = {
   }
 }
 
+const contextValue0 = {
+  template: 'template',
+  model: '{ test: "test" }',
+  dispatch: jest.fn(),
+  templateValid: false,
+  modelValid: false
+}
+
+const contextValue1 = {
+  template: 'template',
+  model: JSON.stringify(testModel),
+  dispatch: jest.fn(),
+  templateValid: false,
+  modelValid: false
+}
+
+const contextValue2 = {
+  template: 'template',
+  model: JSON.stringify({ ...testModel, name: undefined }),
+  dispatch: jest.fn(),
+  templateValid: false,
+  modelValid: false
+}
+
+const contextValue3 = {
+  template: '',
+  model: JSON.stringify(testModel),
+  dispatch: jest.fn(),
+  templateValid: false,
+  modelValid: false
+}
+
+const contextValue4 = {
+  template: 'template',
+  model: JSON.stringify(testModel),
+  dispatch: jest.fn(),
+  templateValid: false,
+  modelValid: false
+}
+
 describe('components/editor/steps', () => {
   const setName = jest.fn()
 
@@ -49,17 +89,19 @@ describe('components/editor/steps', () => {
     unmount()
   })
 
+  test('JSON5', () => {
+    const { unmount } = render(
+      <EditorContext.Provider value={contextValue0}>
+        <Steps setName={setName} />
+      </EditorContext.Provider>
+    )
+
+    unmount()
+  })
+
   test('with context', () => {
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: JSON.stringify(testModel),
-          dispatch: jest.fn(),
-          templateValid: false,
-          modelValid: false
-        }}
-      >
+      <EditorContext.Provider value={contextValue1}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
@@ -80,15 +122,7 @@ describe('components/editor/steps', () => {
       throw new Error('check error')
     })
     const { unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: JSON.stringify({ ...testModel, name: undefined }),
-          dispatch: jest.fn(),
-          templateValid: false,
-          modelValid: false
-        }}
-      >
+      <EditorContext.Provider value={contextValue2}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
@@ -105,15 +139,7 @@ describe('components/editor/steps', () => {
 
   test('without template', () => {
     const { rerender, unmount } = render(
-      <EditorContext.Provider
-        value={{
-          template: '',
-          model: JSON.stringify(testModel),
-          dispatch: jest.fn(),
-          templateValid: false,
-          modelValid: false
-        }}
-      >
+      <EditorContext.Provider value={contextValue3}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
@@ -127,15 +153,7 @@ describe('components/editor/steps', () => {
     expect(setName).toHaveBeenLastCalledWith('name')
 
     rerender(
-      <EditorContext.Provider
-        value={{
-          template: 'template',
-          model: JSON.stringify(testModel),
-          dispatch: jest.fn(),
-          templateValid: false,
-          modelValid: false
-        }}
-      >
+      <EditorContext.Provider value={contextValue4}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )

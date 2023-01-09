@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { Form, Input } from 'antd'
 
@@ -55,7 +55,7 @@ describe('components/account/password', () => {
     unmount()
   })
 
-  test('password mismatch', () => {
+  test('password mismatch', async () => {
     const { unmount } = render(<Password user={user} />)
 
     const mockWarn = jest.fn()
@@ -67,27 +67,39 @@ describe('components/account/password', () => {
     const button = screen.getByRole('button')
 
     // Mismatch
-    fireEvent.change(currentPassword, { target: { value: 'password' } })
-    fireEvent.change(newPassword, { target: { value: 'password' } })
-    fireEvent.change(passwordConfirmation, {
-      target: { value: 'otherpassword' }
-    })
-    fireEvent.click(button)
-    waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
+    await act(() =>
+      fireEvent.change(currentPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(newPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(passwordConfirmation, {
+        target: { value: 'otherpassword' }
+      })
+    )
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  test('onFinish', () => {
+  test('onFinish', async () => {
     const { unmount } = render(<Password user={user} />)
 
     // Fill
     const currentPassword = screen.getByLabelText('Current password')
     const newPassword = screen.getByLabelText('New password')
     const passwordConfirmation = screen.getByLabelText('Password confirmation')
-    fireEvent.change(currentPassword, { target: { value: 'password' } })
-    fireEvent.change(newPassword, { target: { value: 'password' } })
-    fireEvent.change(passwordConfirmation, { target: { value: 'password' } })
+    await act(() =>
+      fireEvent.change(currentPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(newPassword, { target: { value: 'password' } })
+    )
+    await act(() =>
+      fireEvent.change(passwordConfirmation, { target: { value: 'password' } })
+    )
 
     // Button
     const button = screen.getByRole('button')
@@ -96,16 +108,16 @@ describe('components/account/password', () => {
     mockCheck.mockImplementation(() => {
       throw new Error('check error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.check,
         err: new Error('check error')
@@ -116,16 +128,16 @@ describe('components/account/password', () => {
     mockCheck.mockImplementation(() => ({
       valid: false
     }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({ title: errors.invalid })
     )
 
@@ -133,16 +145,16 @@ describe('components/account/password', () => {
     mockCheck.mockImplementation(() => ({
       valid: true
     }))
-    fireEvent.click(button)
-    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         {
           type: 'crypt',
@@ -151,22 +163,24 @@ describe('components/account/password', () => {
         }
       ])
     )
-    waitFor(() => expect(mockSuccessNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
 
     // Update error
     mockUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    fireEvent.click(button)
-    waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(4))
-    waitFor(() =>
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(4))
+    await waitFor(() =>
       expect(mockCheck).toHaveBeenLastCalledWith({
         email: 'email',
         password: 'password'
       })
     )
-    waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() =>
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
       expect(mockUpdate).toHaveBeenLastCalledWith([
         {
           type: 'crypt',
@@ -175,8 +189,8 @@ describe('components/account/password', () => {
         }
       ])
     )
-    waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(3))
-    waitFor(() =>
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
       expect(mockAPIError).toHaveBeenLastCalledWith({
         title: errors.update,
         err: new Error('update error')

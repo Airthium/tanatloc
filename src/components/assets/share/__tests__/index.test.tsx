@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Share, { errors } from '..'
 import { IFrontProjectsItem, IFrontWorkspacesItem } from '@/api/index.d'
@@ -217,7 +217,7 @@ describe('components/assets/share', () => {
     unmount()
   })
 
-  test('onShare', () => {
+  test('onShare', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -235,18 +235,20 @@ describe('components/assets/share', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() => expect(projectSwr.mutateOneProject).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(projectSwr.mutateOneProject).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockProjectUpdate.mockImplementation(() => {
       throw new Error('project error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.share,
         new Error('project error')
@@ -256,7 +258,7 @@ describe('components/assets/share', () => {
     unmount()
   })
 
-  test('onShare with workspace', () => {
+  test('onShare with workspace', async () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -278,9 +280,9 @@ describe('components/assets/share', () => {
     const dialog = screen.getByRole('Dialog')
 
     // Normal
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(workspaceSwr.mutateOneWorkspace).toHaveBeenCalledTimes(1)
     )
 
@@ -288,10 +290,10 @@ describe('components/assets/share', () => {
     mockWorkspaceUpdate.mockImplementation(() => {
       throw new Error('workspace error')
     })
-    fireEvent.click(dialog)
-    waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2))
-    waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    waitFor(() =>
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.share,
         new Error('workspace error')

@@ -1,23 +1,22 @@
 /** @module Components.Project.Simulation.Materials.List */
 
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Card, Typography } from 'antd'
 import { css } from '@emotion/react'
 
 import { IModelMaterialsValue } from '@/models/index.d'
-
-import { EditButton } from '@/components/assets/button'
-
-import Delete from '../delete'
-
-import { SelectContext } from '@/context/select'
-import { enable, disable, select, setPart } from '@/context/select/actions'
-
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem,
   IFrontGeometriesItem
 } from '@/api/index.d'
+
+import { SelectContext } from '@/context/select'
+import { enable, disable, select, setPart } from '@/context/select/actions'
+
+import { EditButton } from '@/components/assets/button'
+
+import Delete from '../delete'
 
 import { globalStyle } from '@/styles'
 import style from '../../index.style'
@@ -34,50 +33,98 @@ export interface IProps {
   onEdit: (index: number) => void
 }
 
-/**
- * List materials
- * @param props Props
- * @returns List
- */
-const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
+export interface IListItemProps {
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  material: IModelMaterialsValue
+  index: number
+  swr: {
+    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+  }
+  _onEdit: (index: number) => void
+}
+
+const ListItem = ({
+  geometries,
+  simulation,
+  material,
+  index,
+  swr,
+  _onEdit
+}: IListItemProps): JSX.Element => {
   // State
   const [enabled, setEnabled] = useState<boolean>(true)
 
   // Context
   const { dispatch } = useContext(SelectContext)
 
-  // Data
-  const materials = simulation.scheme.configuration.materials!
-
   /**
-   * Highlight current
-   * @param index Index
+   * Highlight
    */
-  const highlight = useCallback(
-    (index: number): void => {
-      dispatch(enable())
+  const highlight = useCallback((): void => {
+    // Geometry
+    const geometryId = material.geometry
+    const geometry = geometries.find((geometry) => geometry.id === geometryId)
+    if (!geometry) return
 
-      // Geometry
-      const geometryId = materials.values![index].geometry
-      const geometry = geometries.find((geometry) => geometry.id === geometryId)
-      dispatch(setPart(geometry?.summary.uuid))
+    dispatch(enable())
+    dispatch(setPart(geometry.summary.uuid))
 
-      // Selected
-      const currentSelected = materials.values![index].selected
-      currentSelected?.forEach((s) => {
-        dispatch(select(s))
-      })
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [`${geometries}`, materials, dispatch]
-  )
+    // Selected
+    const currentSelected = material.selected
+    currentSelected?.forEach((s) => {
+      dispatch(select(s))
+    })
+  }, [geometries, material, dispatch])
 
   /**
-   * Unhighlight current
+   * Unhighlight
    */
   const unhighlight = useCallback((): void => {
-    dispatch(disable())
-  }, [dispatch])
+    enabled && dispatch(disable())
+  }, [enabled, dispatch])
+
+  /**
+   * On edit
+   */
+  const onEdit = useCallback(() => {
+    setEnabled(false)
+    _onEdit(index)
+    setTimeout(() => setEnabled(true), 500)
+  }, [index, _onEdit])
+
+  /**
+   * Render
+   */
+  return (
+    <Card
+      css={css([globalStyle.textAlignCenter, style.listItem])}
+      hoverable
+      onMouseEnter={highlight}
+      onMouseLeave={unhighlight}
+      actions={[
+        <EditButton key="edit" onEdit={onEdit} />,
+        <Delete key="delete" index={index} simulation={simulation} swr={swr} />
+      ]}
+    >
+      <Typography.Text strong css={globalStyle.textAlignCenter}>
+        {material.material.label}
+      </Typography.Text>
+    </Card>
+  )
+}
+
+/**
+ * List materials
+ * @param props Props
+ * @returns List
+ */
+const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
+  // Data
+  const materials = useMemo(
+    () => simulation.scheme.configuration.materials!,
+    [simulation]
+  )
 
   /**
    * Render
@@ -87,40 +134,15 @@ const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
       {materials.values
         ?.map((material: IModelMaterialsValue, index: number) => {
           return (
-            <Card
-              css={css([globalStyle.textAlignCenter, style.listItem])}
-              key={index}
-              hoverable
-              onMouseEnter={() => highlight(index)}
-              onMouseLeave={() => {
-                enabled && unhighlight()
-              }}
-              actions={[
-                <EditButton
-                  key="edit"
-                  onEdit={() => {
-                    setEnabled(false)
-                    onEdit(index)
-                    setTimeout(() => setEnabled(true), 500)
-                  }}
-                />,
-                <Delete
-                  key="delete"
-                  index={index}
-                  simulation={{
-                    id: simulation.id,
-                    scheme: simulation.scheme
-                  }}
-                  swr={{
-                    mutateOneSimulation: swr.mutateOneSimulation
-                  }}
-                />
-              ]}
-            >
-              <Typography.Text strong css={globalStyle.textAlignCenter}>
-                {material.material.label}
-              </Typography.Text>
-            </Card>
+            <ListItem
+              key={material.uuid}
+              geometries={geometries}
+              simulation={simulation}
+              material={material}
+              index={index}
+              swr={swr}
+              _onEdit={onEdit}
+            />
           )
         })
         .filter((l: any) => l)}

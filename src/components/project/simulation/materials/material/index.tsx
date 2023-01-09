@@ -190,13 +190,13 @@ const Material = ({
         material: {
           label: 'Custom',
           children: [
-            ...(prevCurrent?.material?.children?.slice(0, index) || []),
+            ...prevCurrent!.material.children.slice(0, index),
             {
               label: child.label,
               symbol: child.name,
               value: val
             },
-            ...(prevCurrent?.material?.children?.slice(index + 1) || [])
+            ...prevCurrent!.material.children.slice(index + 1)
           ]
         }
       }))

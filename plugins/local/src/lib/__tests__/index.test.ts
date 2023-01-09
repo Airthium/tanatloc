@@ -297,7 +297,7 @@ describe('plugins/local/src/lib', () => {
     )
   })
 
-  test('computeMesh', async () => {
+  test('computeMeshes', async () => {
     mockGmsh.mockImplementation((_, __, ___, callback) => {
       callback({ data: 'data', error: 'error' })
       return 0
@@ -361,6 +361,29 @@ describe('plugins/local/src/lib', () => {
             path: 'path',
             file: 'file'
           }
+        },
+        run: {}
+      } as IModel['configuration'],
+      []
+    )
+
+    // Multiple
+    await Local.computeMeshes(
+      'id',
+      'path',
+      {
+        geometry: {
+          index: 1,
+          title: 'Geometry',
+          meshable: true,
+          multiple: true,
+          datas: [
+            {
+              name: 'name',
+              path: 'path',
+              file: 'file'
+            }
+          ]
         },
         run: {}
       } as IModel['configuration'],

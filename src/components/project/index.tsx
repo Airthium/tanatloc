@@ -322,11 +322,11 @@ const Project = (): JSX.Element => {
   const delGeometry = useCallback(
     (geometry: IFrontGeometriesItem): void => {
       const index = geometries.findIndex((g) => g.id === geometry.id)
-      if (index === -1) return
-      setGeometries((prev) => [
-        ...prev.slice(0, index),
-        ...prev.slice(index + 1)
-      ])
+      if (index !== -1)
+        setGeometries((prev) => [
+          ...prev.slice(0, index),
+          ...prev.slice(index + 1)
+        ])
     },
     [geometries]
   )
@@ -619,6 +619,7 @@ const Project = (): JSX.Element => {
       // Display geometries
       const geometryId = current.scheme?.configuration?.geometry?.value
       const geometriesIds = current.scheme?.configuration?.geometry?.values
+
       if (geometryId) {
         const newGeometry = loadedGeometries.find((g) => g.id === geometryId)
         if (newGeometry) setGeometries([newGeometry])

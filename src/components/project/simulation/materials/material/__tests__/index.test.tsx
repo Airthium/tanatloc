@@ -112,6 +112,27 @@ describe('components/project/simulation/materials/material', () => {
     unmount()
   })
 
+  test('no materials', () => {
+    const { unmount } = render(
+      <Material
+        visible={true}
+        geometries={geometries}
+        simulation={
+          {
+            id: 'id',
+            scheme: {
+              configuration: {}
+            }
+          } as ISimulation
+        }
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
+
   test('not visible', () => {
     const { rerender, unmount } = render(
       <Material
@@ -288,6 +309,36 @@ describe('components/project/simulation/materials/material', () => {
         onClose={onClose}
       />
     )
+
+    unmount()
+  })
+
+  test('geometry change', () => {
+    const geometries = [
+      {
+        id: 'id1',
+        name: 'name1',
+        summary: {}
+      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
+      {
+        id: 'id2',
+        name: 'name2',
+        summary: {}
+      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+    ]
+
+    const { unmount } = render(
+      <Material
+        visible={true}
+        geometries={geometries}
+        simulation={simulation}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    const tabs = screen.getAllByRole('tab')
+    tabs.forEach((tab) => fireEvent.click(tab))
 
     unmount()
   })

@@ -167,7 +167,6 @@ const View = ({
   // State
   const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)
-
   // Parts
   useCustomEffect(() => {
     ;(async () => {

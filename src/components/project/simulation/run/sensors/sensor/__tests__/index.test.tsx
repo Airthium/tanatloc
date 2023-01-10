@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Sensor from '..'
+import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
+import { ISelectState, SelectContext } from '@/context/select'
 
-import { IFrontSimulationsItem } from '@/api/index.d'
+import Sensor from '..'
 
 const mockFormula = jest.fn()
 jest.mock(
@@ -21,8 +22,22 @@ jest.mock('../../edit', () => (props: any) => mockEdit(props))
 const mockAdd = jest.fn()
 jest.mock('../../add', () => (props: any) => mockAdd(props))
 
+const contextValue: ISelectState = {
+  enabled: false,
+  type: undefined,
+  part: undefined,
+  highlighted: undefined,
+  selected: [],
+  point: undefined,
+  dispatch: () => undefined
+}
+
 describe('components/project/simulation/run/sensors/sensor', () => {
   const visible = true
+  const geometries = [{ id: 'id', name: 'name', summary: {} }] as Pick<
+    IFrontGeometriesItem,
+    'id' | 'name' | 'summary'
+  >[]
   const simulation = {
     id: 'id',
     scheme: { configuration: { run: {} } } as IFrontSimulationsItem['scheme']
@@ -30,6 +45,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
   const sensor = {
     index: 0,
     name: 'name',
+    geometry: 'id',
     point: { x: 0, y: 1, z: 2 },
     formula: 'formula'
   }
@@ -58,6 +74,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
   test('render', () => {
     const { unmount } = render(
       <Sensor
+        geometries={geometries}
         visible={visible}
         simulation={simulation}
         onClose={onClose}
@@ -72,6 +89,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={{
           ...simulation,
           scheme: {
@@ -100,6 +118,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={simulation}
         sensor={sensor}
         onClose={onClose}
@@ -114,6 +133,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={simulation}
         onClose={onClose}
         swr={swr}
@@ -135,6 +155,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={simulation}
         onClose={onClose}
         swr={swr}
@@ -154,6 +175,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={simulation}
         onClose={onClose}
         swr={swr}
@@ -177,6 +199,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={simulation}
         onClose={onClose}
         swr={swr}
@@ -193,6 +216,7 @@ describe('components/project/simulation/run/sensors/sensor', () => {
     const { unmount } = render(
       <Sensor
         visible={visible}
+        geometries={geometries}
         simulation={simulation}
         onClose={onClose}
         swr={swr}
@@ -201,6 +225,57 @@ describe('components/project/simulation/run/sensors/sensor', () => {
 
     const close = screen.getByRole('button', { name: 'close' })
     fireEvent.click(close)
+
+    unmount()
+  })
+
+  test('on geomtry change', () => {
+    const geometries2 = [
+      { id: 'id1', name: 'name1', summary: {} },
+      { id: 'id2', name: 'name2', summary: {} }
+    ] as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
+    const { unmount } = render(
+      <Sensor
+        visible={visible}
+        geometries={geometries2}
+        simulation={simulation}
+        onClose={onClose}
+        swr={swr}
+      />
+    )
+
+    const tabs = screen.getAllByRole('tab')
+    tabs.forEach((tab) => fireEvent.click(tab))
+
+    unmount()
+  })
+
+  test('point', () => {
+    const { unmount, rerender } = render(
+      <SelectContext.Provider value={contextValue}>
+        <Sensor
+          visible={visible}
+          geometries={geometries}
+          simulation={simulation}
+          onClose={onClose}
+          swr={swr}
+        />
+      </SelectContext.Provider>
+    )
+
+    contextValue.point = { x: 1, y: 2, z: 3 }
+
+    rerender(
+      <SelectContext.Provider value={contextValue}>
+        <Sensor
+          visible={visible}
+          geometries={geometries}
+          simulation={simulation}
+          onClose={onClose}
+          swr={swr}
+        />
+      </SelectContext.Provider>
+    )
 
     unmount()
   })

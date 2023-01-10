@@ -583,6 +583,7 @@ const Project = (): JSX.Element => {
       setPanel(
         <Panel visible={panelVisible} title={'Run'} onClose={onPanelClose}>
           <Simulation.Run
+            geometries={geometries}
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -601,7 +602,7 @@ const Project = (): JSX.Element => {
         </Panel>
       )
     },
-    [result, panelVisible, mutateOneSimulation, onPanelClose]
+    [geometries, result, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**

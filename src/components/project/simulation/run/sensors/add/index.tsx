@@ -20,7 +20,7 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  sensor: IModelSensor
+  sensor: Partial<IModelSensor>
   onError: (error?: string) => void
   onClose: () => void
   swr: {
@@ -125,7 +125,7 @@ const Add = ({
 
       onError()
 
-      await _onAdd(simulation, sensor, swr)
+      await _onAdd(simulation, sensor as IModelSensor, swr)
 
       // Close
       setLoading(false)

@@ -1,6 +1,12 @@
 /** @module Components.Project.Data */
 
-import { useState, useEffect, useCallback } from 'react'
+import {
+  useState,
+  useEffect,
+  useCallback,
+  Dispatch,
+  SetStateAction
+} from 'react'
 import {
   Button,
   Checkbox,
@@ -41,6 +47,13 @@ import style from './index.style'
  */
 export interface IProps {
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'name'>
+}
+
+export interface IColumnRenderProps {
+  name: string
+  index: number
+  columnSelection: boolean[]
+  setColumnSelection: Dispatch<SetStateAction<boolean[]>>
 }
 
 /**
@@ -107,6 +120,45 @@ export const _exportCSV = (
   link.setAttribute('download', fileName)
   link.click()
   link.remove()
+}
+
+const ColumnRender = ({
+  name,
+  index,
+  columnSelection,
+  setColumnSelection
+}: IColumnRenderProps): JSX.Element => {
+  /**
+   * On change
+   * @param event Event
+   */
+  const onChange = useCallback(
+    (event: CheckboxChangeEvent): void => {
+      const checked = event.target.checked
+
+      const newSelection = [...columnSelection]
+      newSelection[index] = checked
+
+      setColumnSelection(newSelection)
+    },
+    [index, columnSelection, setColumnSelection]
+  )
+
+  /**
+   * Render
+   */
+  return (
+    <Space>
+      {name}
+      <Checkbox
+        data-testid="table-checkbox"
+        checked={columnSelection[index]}
+        onChange={onChange}
+      >
+        <LineChartOutlined style={{ fontSize: 20 }} />
+      </Checkbox>
+    </Space>
+  )
 }
 
 /**
@@ -206,18 +258,12 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       align: 'center',
       className: 'column' + (columnSelection[index] ? ' selected' : ''),
       title: (
-        <Space>
-          {name}
-          <Checkbox
-            data-testid="table-checkbox"
-            checked={columnSelection[index]}
-            onChange={(event) =>
-              setColumnSelection(_onCheck(event, index, columnSelection))
-            }
-          >
-            <LineChartOutlined style={{ fontSize: 20 }} />
-          </Checkbox>
-        </Space>
+        <ColumnRender
+          name={name}
+          index={index}
+          columnSelection={columnSelection}
+          setColumnSelection={setColumnSelection}
+        />
       ),
       dataIndex: camelNames[index],
       key: camelNames[index]
@@ -253,7 +299,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
 
         return (
           <Line
-            key={index}
+            key={key}
             name={name}
             type="monotone"
             dataKey={key}

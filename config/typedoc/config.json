@@ -32,7 +32,8 @@
     "**/.next/**",
     "**/public/**",
     "**/config/depcheck/**",
-    "**/config/jest/**"
+    "**/config/jest/**",
+    "**/*.style.tsx"
   ],
   "plugin": ["@airthium/typedoc-plugin-airthium"],
   "theme": "airthium",

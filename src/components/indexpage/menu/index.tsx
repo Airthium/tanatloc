@@ -1,3 +1,5 @@
+/** @module Components.Index.Menu */
+
 import { useRouter } from 'next/router'
 import { Button, Layout, Menu, Popover } from 'antd'
 import { BarsOutlined } from '@ant-design/icons'
@@ -61,7 +63,7 @@ const IndexMenu = () => {
    * Scroll to developers
    */
   const scrollToDevelopers = useCallback(
-    () => window.open('https://github.com/Airthium', '_blank'),
+    () => window.open('https://github.com/Airthium', '_blank', 'noopener'),
     []
   )
 

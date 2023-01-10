@@ -1,3 +1,5 @@
+/** @module Components.Assets.Form.List.Item */
+
 import { ReactNode, useCallback } from 'react'
 import { Form, FormListFieldData } from 'antd'
 import { MinusCircleOutlined } from '@ant-design/icons'

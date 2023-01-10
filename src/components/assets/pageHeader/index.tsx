@@ -1,3 +1,5 @@
+/** @module Components.Assets.PageHeader */
+
 import { SerializedStyles } from '@emotion/react'
 import { Divider } from 'antd'
 

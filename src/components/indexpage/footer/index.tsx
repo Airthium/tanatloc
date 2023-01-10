@@ -48,7 +48,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
    * Scroll to developers
    */
   const scrollToDevelopers = useCallback(
-    () => window.open('https://github.com/Airthium', '_blank'),
+    () => window.open('https://github.com/Airthium', '_blank', 'noopener'),
     []
   )
 

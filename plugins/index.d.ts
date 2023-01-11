@@ -7,6 +7,7 @@ export interface IPlugin {
   uuid?: string
   key?: string
   category?: string
+  haveInit?: boolean
   client?: {
     name?: string
     description?: string

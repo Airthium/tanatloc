@@ -6,8 +6,9 @@ import parse from 'html-react-parser'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
-import PluginDialog from '../dialog'
 import Delete from '../delete'
+import PluginDialog from '../dialog'
+import Refresh from '../refresh'
 
 /**
  * Props
@@ -73,33 +74,39 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
           })
           .filter((c) => c)
 
+        const actions = []
+        actions.push(
+          <Delete
+            key="delete"
+            plugin={{
+              uuid: p.uuid,
+              configuration: p.configuration
+            }}
+            swr={{ delOnePlugin: swr.delOnePlugin }}
+          />
+        )
+        if (plugin.haveInit) actions.push(<Refresh plugin={plugin} />)
+        actions.push(
+          <PluginDialog
+            key="plugin"
+            plugin={{
+              uuid: p.uuid,
+              key: p.key,
+              name: p.name,
+              needInit: p.needInit,
+              configuration: p.configuration,
+              inUseConfiguration: p.inUseConfiguration
+            }}
+            swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
+            edit={true}
+          />
+        )
+
         return (
           <Card
             key={p.uuid}
             title={configuration.name?.value}
-            actions={[
-              <Delete
-                key="delete"
-                plugin={{
-                  uuid: p.uuid,
-                  configuration: p.configuration
-                }}
-                swr={{ delOnePlugin: swr.delOnePlugin }}
-              />,
-              <PluginDialog
-                key="plugin"
-                plugin={{
-                  uuid: p.uuid,
-                  key: p.key,
-                  name: p.name,
-                  needInit: p.needInit,
-                  configuration: p.configuration,
-                  inUseConfiguration: p.inUseConfiguration
-                }}
-                swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
-                edit={true}
-              />
-            ]}
+            actions={actions}
           >
             <>
               <Typography.Text>{parse(p.description || '')}</Typography.Text>

@@ -29,8 +29,10 @@ describe('components/account/hpc/list', () => {
   test('haveInit', () => {
     const { unmount } = render(
       <List
-        plugin={{ ...plugin, haveInit: true }}
-        plugins={plugins}
+        plugin={plugin}
+        plugins={[
+          { key: 'key', uuid: 'uuid', haveInit: true, configuration: {} }
+        ]}
         swr={swr}
       />
     )

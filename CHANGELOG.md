@@ -3,6 +3,8 @@
 - Global:
   - :beetle: Code clean
   - :arrow_up: Airthium plugin update
+- Plugin:
+  - :arrow_up: Add refresh
 
 ---
 

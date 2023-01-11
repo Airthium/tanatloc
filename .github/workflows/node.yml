@@ -9,9 +9,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@main
-        with:
-          token: ${{ secrets.SUBMODULES_TOKEN }}
-          submodules: recursive
 
       - uses: actions/setup-node@master
         with:

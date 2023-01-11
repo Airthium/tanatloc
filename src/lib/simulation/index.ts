@@ -129,6 +129,88 @@ const del = async (simulation: { id: string }): Promise<void> => {
 }
 
 /**
+ * Copy geometry(ies)
+ * @param simulation Simulation
+ * @param configuration Configuration
+ */
+const copyGeometry = async (
+  simulation: { id: string },
+  configuration: IModel['configuration']
+): Promise<void> => {
+  const geometryId = configuration.geometry?.value
+  const geometriesIds = configuration.geometry?.values
+  if (geometryId) {
+    const geometry = await Geometry.get(geometryId, [
+      'name',
+      'uploadfilename',
+      'brep'
+    ])
+    configuration.geometry.data = {}
+    configuration.geometry.data.file =
+      configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
+    configuration.geometry.data.name = geometry.name
+    configuration.geometry.data.path = GEOMETRY_RELATIVE
+    await Tools.copyFile(
+      {
+        path: GEOMETRY,
+        file: configuration.geometry.data.file
+      },
+      {
+        path: path.join(SIMULATION, simulation.id, 'geometry'),
+        file: configuration.geometry.data.file
+      }
+    )
+  } else if (geometriesIds) {
+    configuration.geometry.datas = []
+    for (const gId of geometriesIds) {
+      const geometry = await Geometry.get(gId, [
+        'name',
+        'uploadfilename',
+        'brep'
+      ])
+      const file =
+        configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
+      configuration.geometry.datas.push({
+        file,
+        name: geometry.name,
+        path: GEOMETRY_RELATIVE
+      })
+      await Tools.copyFile(
+        {
+          path: GEOMETRY,
+          file: file
+        },
+        {
+          path: path.join(SIMULATION, simulation.id, 'geometry'),
+          file: file
+        }
+      )
+    }
+
+    // Check materials
+    configuration.materials?.values?.forEach((material) => {
+      const index = geometriesIds.findIndex((id) => id === material.geometry)
+      material.geometryIndex = index
+    })
+
+    // Check boundary conditions
+    Object.keys(configuration.boundaryConditions).forEach((key) => {
+      if (key === 'index' || key === 'title' || key === 'done') return
+
+      const typedBoundaryCondition = configuration.boundaryConditions[
+        key
+      ] as IModelTypedBoundaryCondition
+
+      const values = typedBoundaryCondition.values
+      values?.forEach((value) => {
+        const index = geometriesIds.findIndex((id) => id === value.geometry)
+        value.geometryIndex = index
+      })
+    })
+  }
+}
+
+/**
  * Run
  * @param user User
  * @param simulation Simulation
@@ -224,77 +306,7 @@ const run = async (
   await Tools.createPath(path.join(SIMULATION, simulation.id, 'run'))
 
   // Copy geometry
-  const geometryId = configuration.geometry?.value
-  const geometriesIds = configuration.geometry?.values
-  if (geometryId) {
-    const geometry = await Geometry.get(geometryId, [
-      'name',
-      'uploadfilename',
-      'brep'
-    ])
-    configuration.geometry.data = {}
-    configuration.geometry.data.file =
-      configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
-    configuration.geometry.data.name = geometry.name
-    configuration.geometry.data.path = GEOMETRY_RELATIVE
-    await Tools.copyFile(
-      {
-        path: GEOMETRY,
-        file: configuration.geometry.data.file
-      },
-      {
-        path: path.join(SIMULATION, simulation.id, 'geometry'),
-        file: configuration.geometry.data.file
-      }
-    )
-  } else if (geometriesIds) {
-    configuration.geometry.datas = []
-    for (const gId of geometriesIds) {
-      const geometry = await Geometry.get(gId, [
-        'name',
-        'uploadfilename',
-        'brep'
-      ])
-      const file =
-        configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
-      configuration.geometry.datas.push({
-        file,
-        name: geometry.name,
-        path: GEOMETRY_RELATIVE
-      })
-      await Tools.copyFile(
-        {
-          path: GEOMETRY,
-          file: file
-        },
-        {
-          path: path.join(SIMULATION, simulation.id, 'geometry'),
-          file: file
-        }
-      )
-    }
-
-    // Check materials
-    configuration.materials?.values?.forEach((material) => {
-      const index = geometriesIds.findIndex((id) => id === material.geometry)
-      material.geometryIndex = index
-    })
-
-    // Check boundary conditions
-    Object.keys(configuration.boundaryConditions).forEach((key) => {
-      if (key === 'index' || key === 'title' || key === 'done') return
-
-      const typedBoundaryCondition = configuration.boundaryConditions[
-        key
-      ] as IModelTypedBoundaryCondition
-
-      const values = typedBoundaryCondition.values
-      values?.forEach((value) => {
-        const index = geometriesIds.findIndex((id) => id === value.geometry)
-        value.geometryIndex = index
-      })
-    })
-  }
+  await copyGeometry(simulation, configuration)
 
   // Check coupling
   if (configuration.initialization && configuration.initialization.value) {

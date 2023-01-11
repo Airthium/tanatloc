@@ -64,25 +64,6 @@ export const errors = {
 }
 
 /**
- * On check
- * @param event Event
- * @param index Index
- * @param columnSelection Column selection
- */
-export const _onCheck = (
-  event: CheckboxChangeEvent,
-  index: number,
-  columnSelection: boolean[]
-): boolean[] => {
-  const checked = event.target.checked
-
-  const newSelection = [...columnSelection]
-  newSelection[index] = checked
-
-  return newSelection
-}
-
-/**
  * Export CSV
  * @param simulation Simulation
  * @param datas Datas

@@ -3,9 +3,11 @@
 import {
   ChangeEvent,
   useState,
-  useEffect,
   useCallback,
-  useContext
+  useContext,
+  Dispatch,
+  SetStateAction,
+  useMemo
 } from 'react'
 import { Button, Card, Input, Space, Tag, Tooltip, Typography } from 'antd'
 import {
@@ -21,7 +23,7 @@ import { IFrontGeometriesItem } from '@/api/index.d'
 
 import { TGeometryColor } from '@/database/geometry/get'
 
-import { SelectContext, ISelect } from '@/context/select'
+import { SelectContext, ISelect, ISelectAction } from '@/context/select'
 import {
   highlight,
   unhighlight,
@@ -34,8 +36,6 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 import Utils from '@/lib/utils'
 
 import { globalStyle, globalStyleFn } from '@/styles'
-
-//TODO need global refactoring
 
 // Local interfaces
 export interface ISelection {
@@ -50,6 +50,257 @@ export interface IProps {
   geometry: Pick<IFrontGeometriesItem, 'summary'>
   alreadySelected?: ISelection[]
   updateSelected: (selected: ISelect[]) => void
+}
+
+export interface IColorFilterProps {
+  color: TGeometryColor
+  setFilter: Dispatch<SetStateAction<TGeometryColor | undefined>>
+}
+
+export interface IColorFiltersProps {
+  colors: TGeometryColor[]
+  setFilter: Dispatch<SetStateAction<TGeometryColor | undefined>>
+}
+
+export interface IGeometryElementCardProps {
+  element: {
+    name: string
+    uuid: string
+    label: number
+    color?: TGeometryColor
+  }
+  alreadySelected?: ISelection[]
+  filter?: TGeometryColor
+  search?: string
+  context: {
+    selected: ISelect[]
+    highlighted: ISelect | undefined
+    dispatch: Dispatch<ISelectAction>
+  }
+}
+
+/**
+ * ColorFilter
+ * @param props Props
+ * @returns ColorFilter
+ */
+const ColorFilter = ({ color, setFilter }: IColorFilterProps): JSX.Element => {
+  /**
+   * On color fitler
+   * @param color Color
+   */
+  const onColorFilter = useCallback((): void => {
+    setFilter(color)
+  }, [color, setFilter])
+
+  /**
+   * Render
+   */
+  return (
+    <Tooltip title="Color" key={JSON.stringify(color)}>
+      <Button
+        style={{ backgroundColor: Utils.rgbToHex(color) }}
+        onClick={onColorFilter}
+      >
+        {' '}
+      </Button>
+    </Tooltip>
+  )
+}
+
+/**
+ * ColorFilters
+ * @param props Props
+ * @returns ColorFilters
+ */
+const ColorFilters = ({
+  colors,
+  setFilter
+}: IColorFiltersProps): JSX.Element => {
+  /**
+   * On color fitler clear
+   */
+  const onColorFilterClear = useCallback((): void => {
+    setFilter(undefined)
+  }, [setFilter])
+
+  /**
+   * Render
+   */
+  return (
+    <>
+      {colors.length > 1 && (
+        <>
+          <Tooltip title="Reset">
+            <Button icon={<CloseOutlined />} onClick={onColorFilterClear} />
+          </Tooltip>
+          {colors.map((color) => (
+            <ColorFilter
+              key={JSON.stringify(color)}
+              color={color}
+              setFilter={setFilter}
+            />
+          ))}
+        </>
+      )}
+    </>
+  )
+}
+
+/**
+ * GeometryElementCard
+ * @param props Props
+ * @returns GeometryElementCard
+ */
+const GeometryElementCard = ({
+  element,
+  alreadySelected,
+  filter,
+  search,
+  context
+}: IGeometryElementCardProps): JSX.Element | null => {
+  /**
+   * Display?
+   * @param element Element
+   * @returns True/false
+   */
+  const display = useCallback(
+    (element: {
+      uuid: string
+      label: number
+      name: string
+      color?: TGeometryColor
+    }) => {
+      // Color filter
+      if (
+        filter &&
+        (filter.r !== element.color?.r ||
+          filter.g !== element.color?.g ||
+          filter.b !== element.color?.b)
+      )
+        return false
+      // Search
+      if (search && element.name && !element.name.includes(search)) return false
+      return true
+    },
+    [filter, search]
+  )
+
+  /**
+   * On highglight
+   * @param selection Selection
+   */
+  const onHighlight = useCallback(
+    (selection: ISelect): void => {
+      context.dispatch(highlight(selection))
+    },
+    [context]
+  )
+
+  /**
+   * On unhighlight
+   */
+  const onUnhighlight = useCallback((): void => {
+    context.dispatch(unhighlight())
+  }, [context])
+
+  /**
+   * On select
+   * @param selection Selection
+   */
+  const onSelect = useCallback(
+    (selection: ISelect): void => {
+      if (context.selected.find((s) => s.uuid === selection.uuid))
+        context.dispatch(unselect(selection))
+      else context.dispatch(select(selection))
+    },
+    [context]
+  )
+
+  // Border color
+  const borderColor = useMemo(() => {
+    if (context.selected.find((s) => s.uuid === element.uuid)) return '#EE9817'
+    else if (context.highlighted?.uuid === element.uuid) return '#FAD114'
+    return 'transparent'
+  }, [element, context])
+
+  // Background color
+  const backgroundColor = useMemo(() => {
+    if (context.selected.find((s) => s.uuid === element.uuid))
+      return 'rgba(238, 152, 23, 0.3)'
+    else if (context.highlighted?.uuid === element.uuid)
+      return 'rgba(250, 209, 20, 0.3)'
+    return 'transparent'
+  }, [element, context])
+
+  /**
+   * On mouse enter
+   */
+  const onMouseEnter = useCallback(
+    () =>
+      onHighlight({
+        uuid: element.uuid,
+        label: element.label
+      }),
+    [element, onHighlight]
+  )
+
+  /**
+   * On click
+   */
+  const onClick = useCallback(
+    () =>
+      onSelect({
+        uuid: element.uuid,
+        label: element.label
+      }),
+    [element, onSelect]
+  )
+
+  /**
+   * Render
+   */
+  if (!display(element)) return null
+  return (
+    <Card
+      css={globalStyleFn.marginBottom(10)}
+      bodyStyle={{
+        position: 'relative',
+        padding: '10px 10px 10px 40px',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor,
+        backgroundColor
+      }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onUnhighlight}
+      onClick={onClick}
+    >
+      <Space direction="vertical">
+        <div>
+          <div
+            style={{
+              position: 'absolute',
+              left: '-2px',
+              top: '-2px',
+              bottom: '-2px',
+              width: '30px',
+              backgroundColor: Utils.rgbToRgba(element.color, 1)
+            }}
+          />
+          {element.name}
+        </div>
+        {alreadySelected?.map((a) => {
+          if (a.selected.find((s) => s.uuid === element.uuid))
+            return (
+              <Tag key={element.uuid} color={Utils.stringToColor(a.label)}>
+                {a.label}
+              </Tag>
+            )
+        })}
+      </Space>
+    </Card>
+  )
 }
 
 /**
@@ -74,16 +325,10 @@ const Selector = ({
   const { type, highlighted, selected, dispatch } = useContext(SelectContext)
 
   // Selected
-  useCustomEffect(
-    () => {
-      updateSelected(selected)
-    },
-    [selected],
-    [updateSelected]
-  )
+  useCustomEffect(() => updateSelected(selected), [selected], [updateSelected])
 
   // Colors
-  useEffect(() => {
+  useCustomEffect(() => {
     const colorsList: TGeometryColor[] = []
     if (type)
       geometry.summary[type]?.forEach((element) => {
@@ -102,52 +347,6 @@ const Selector = ({
 
     setColors(colorsList)
   }, [geometry, type])
-
-  /**
-   * On highglight
-   * @param selection Selection
-   */
-  const onHighlight = useCallback(
-    (selection: ISelect): void => {
-      dispatch(highlight(selection))
-    },
-    [dispatch]
-  )
-
-  /**
-   * On unhighlight
-   */
-  const onUnhighlight = useCallback((): void => {
-    dispatch(unhighlight())
-  }, [dispatch])
-
-  /**
-   * On select
-   * @param selection Selection
-   */
-  const onSelect = useCallback(
-    (selection: ISelect): void => {
-      if (selected.find((s) => s.uuid === selection.uuid))
-        dispatch(unselect(selection))
-      else dispatch(select(selection))
-    },
-    [selected, dispatch]
-  )
-
-  /**
-   * On color fitler
-   * @param color Color
-   */
-  const onColorFilter = useCallback((color?: TGeometryColor): void => {
-    setFilter(color)
-  }, [])
-
-  /**
-   * On color fitler clear
-   */
-  const onColorFilterClear = useCallback((): void => {
-    setFilter(undefined)
-  }, [])
 
   /**
    * Select all
@@ -238,33 +437,6 @@ const Selector = ({
   }, [])
 
   /**
-   * Display?
-   * @param element Element
-   * @returns True/false
-   */
-  const display = useCallback(
-    (element: {
-      uuid: string
-      label: number
-      name: string
-      color?: TGeometryColor
-    }) => {
-      // Color filter
-      if (
-        filter &&
-        (filter.r !== element.color?.r ||
-          filter.g !== element.color?.g ||
-          filter.b !== element.color?.b)
-      )
-        return false
-      // Search
-      if (search && element.name && !element.name.includes(search)) return false
-      return true
-    },
-    [filter, search]
-  )
-
-  /**
    * Render
    */
   return (
@@ -272,25 +444,7 @@ const Selector = ({
       <Space direction="vertical" css={globalStyle.fullWidth}>
         <Typography.Text strong>Filters</Typography.Text>
         <Space direction="horizontal" wrap={true}>
-          {colors.length > 1 && (
-            <>
-              <Tooltip title="Reset">
-                <Button icon={<CloseOutlined />} onClick={onColorFilterClear} />
-              </Tooltip>
-              {colors.map((color) => {
-                return (
-                  <Tooltip title="Color" key={JSON.stringify(color)}>
-                    <Button
-                      style={{ backgroundColor: Utils.rgbToHex(color) }}
-                      onClick={() => onColorFilter(color)}
-                    >
-                      {' '}
-                    </Button>
-                  </Tooltip>
-                )
-              })}
-            </>
-          )}
+          <ColorFilters colors={colors} setFilter={setFilter} />
           <Tooltip title="Select all">
             <Button icon={<PlusSquareOutlined />} onClick={selectAll} />
           </Tooltip>
@@ -311,75 +465,21 @@ const Selector = ({
 
       <div css={css([globalStyle.fullWidth, globalStyleFn.marginTop(20)])}>
         {type
-          ? geometry.summary[type]?.map((element, index) => {
-              if (display(element)) {
-                let borderColor = 'transparent'
-                let backgroundColor = 'transparent'
-                if (selected.find((s) => s.uuid === element.uuid)) {
-                  borderColor = '#EE9817'
-                  backgroundColor = 'rgba(238, 152, 23, 0.3)'
-                } else if (highlighted?.uuid === element.uuid) {
-                  borderColor = '#FAD114'
-                  backgroundColor = 'rgba(250, 209, 20, 0.3)'
-                }
-
-                return (
-                  <Card
-                    css={globalStyleFn.marginBottom(10)}
-                    key={index}
-                    bodyStyle={{
-                      position: 'relative',
-                      padding: '10px 10px 10px 40px',
-                      borderWidth: '2px',
-                      borderStyle: 'solid',
-                      borderColor,
-                      backgroundColor
-                    }}
-                    onMouseEnter={() =>
-                      onHighlight({
-                        uuid: element.uuid,
-                        label: element.label
-                      })
-                    }
-                    onMouseLeave={onUnhighlight}
-                    onClick={() =>
-                      onSelect({
-                        uuid: element.uuid,
-                        label: element.label
-                      })
-                    }
-                  >
-                    <Space direction="vertical">
-                      <div>
-                        <div
-                          style={{
-                            position: 'absolute',
-                            left: '-2px',
-                            top: '-2px',
-                            bottom: '-2px',
-                            width: '30px',
-                            backgroundColor: Utils.rgbToRgba(element.color, 1)
-                          }}
-                        />
-                        {element.name}
-                      </div>
-                      {alreadySelected?.map((a) => {
-                        if (a.selected.find((s) => s.uuid === element.uuid))
-                          return (
-                            <Tag
-                              key={element.uuid}
-                              color={Utils.stringToColor(a.label)}
-                            >
-                              {a.label}
-                            </Tag>
-                          )
-                      })}
-                    </Space>
-                  </Card>
-                )
-              }
-            })
-          : []}
+          ? geometry.summary[type]?.map((element) => (
+              <GeometryElementCard
+                key={element.uuid}
+                element={element}
+                alreadySelected={alreadySelected}
+                filter={filter}
+                search={search}
+                context={{
+                  selected,
+                  highlighted,
+                  dispatch
+                }}
+              />
+            ))
+          : null}
       </div>
     </Card>
   )

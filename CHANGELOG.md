@@ -1,3 +1,11 @@
+## v1.2.1
+
+- Global:
+  - :beetle: Code clean
+  - :arrow_up: Airthium plugin update
+
+---
+
 ## v1.2.0
 
 - Global:

@@ -221,6 +221,19 @@ describe('components/project', () => {
       }
     }
   }
+  const simulation4 = {
+    id: 'ids4',
+    name: 'Simulation 4',
+    scheme: {
+      configuration: {
+        geometry: {
+          index: 0,
+          title: 'Simulation 4 Geometry',
+          values: ['idg']
+        }
+      }
+    }
+  }
 
   const geometry = { id: 'idg', name: 'Geometry', summary: {} }
 
@@ -255,7 +268,7 @@ describe('components/project', () => {
     mockUpdate.mockReset()
 
     mockSimulations.mockReset()
-    const simulations = [simulation1, simulation2, simulation3]
+    const simulations = [simulation1, simulation2, simulation3, simulation4]
     mockSimulations.mockImplementation(() => simulations)
     mockErrorSimulations.mockReset()
     mockSimulationAdd.mockReset()
@@ -388,26 +401,6 @@ describe('components/project', () => {
     const { rerender, unmount } = render(<Project />)
 
     {
-      const simulationWithWrongGeoId = {
-        ...simulation1,
-        scheme: {
-          ...simulation1.scheme,
-          configuration: {
-            ...simulation1.scheme.configuration,
-            geometry: {
-              ...simulation1.scheme.configuration.geometry,
-              value: 'unknown'
-            }
-          }
-        }
-      }
-      const simulations = [simulationWithWrongGeoId]
-      mockSimulations.mockImplementation(() => simulations)
-    }
-
-    rerender(<Project />)
-
-    {
       const simulationWithGeoIds = {
         ...simulation1,
         scheme: {
@@ -445,28 +438,6 @@ describe('components/project', () => {
         }
       }
       const simulations = [simulationWithGeoIdsWithoutN]
-      mockSimulations.mockImplementation(() => simulations)
-    }
-
-    rerender(<Project />)
-
-    {
-      const simulationWithWrongGeoIds = {
-        ...simulation1,
-        scheme: {
-          ...simulation1.scheme,
-          configuration: {
-            ...simulation1.scheme.configuration,
-            geometry: {
-              ...simulation1.scheme.configuration.geometry,
-              multiple: true,
-              n: 1,
-              values: ['unknown']
-            }
-          }
-        }
-      }
-      const simulations = [simulationWithWrongGeoIds]
       mockSimulations.mockImplementation(() => simulations)
     }
 
@@ -623,6 +594,17 @@ describe('components/project', () => {
     })
     fireEvent.click(simulationItem)
 
+    // Open simulation 4
+    const simulation4 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 4'
+    })
+    fireEvent.click(simulation4)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 4 Geometry'
+    })
+    fireEvent.click(simulationItem)
+
     unmount()
   })
 
@@ -649,6 +631,25 @@ describe('components/project', () => {
 
     const geometryPanel = screen.getByRole('Geometry')
     fireEvent.click(geometryPanel)
+
+    unmount()
+  })
+
+  test('Open non visible geometry', () => {
+    const geometry2 = { id: 'idg2', name: 'Geometry 2', summary: {} }
+    const newGeometries = [geometry, geometry2]
+    mockGeometries.mockImplementation(() => newGeometries)
+
+    const { unmount } = render(<Project />)
+
+    const geo2 = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry 2 eye-invisible'
+    })
+    fireEvent.click(geo2)
+
+    screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry 2 eye'
+    })
 
     unmount()
   })

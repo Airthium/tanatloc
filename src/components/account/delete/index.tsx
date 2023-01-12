@@ -1,6 +1,6 @@
 /** @module Components.Account.Delete */
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Card } from 'antd'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -29,7 +29,7 @@ export const errors = {
  * Handle delete
  * @param swr SWR
  */
-export const onDelete = async (swr: {
+export const _onDelete = async (swr: {
   clearUser: () => void
 }): Promise<void> => {
   try {
@@ -57,6 +57,18 @@ const Delete = ({ swr }: IProps): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   /**
+   * On delete
+   */
+  const onDelete = useCallback(async () => {
+    setLoading(true)
+    try {
+      await _onDelete(swr)
+    } finally {
+      setLoading(false)
+    }
+  }, [swr])
+
+  /**
    * Render
    */
   return (
@@ -66,14 +78,7 @@ const Delete = ({ swr }: IProps): JSX.Element => {
         text="This action cannot be undone. If you delete your account, you will permanently lose your workspaces and projects."
         bordered
         loading={loading}
-        onDelete={async () => {
-          setLoading(true)
-          try {
-            await onDelete(swr)
-          } finally {
-            setLoading(false)
-          }
-        }}
+        onDelete={onDelete}
       >
         Delete your account
       </DeleteButton>

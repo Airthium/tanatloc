@@ -1,12 +1,24 @@
+## v1.2.1
+
+- Global:
+  - :beetle: Code clean
+  - :arrow_up: Airthium plugin update
+- Plugin:
+  - :arrow_up: Add refresh
+
+---
+
 ## v1.2.0
 
 - Global:
   - :arrow_up: Update dependencies
   - :arrow_up: Ant Design v5
-  - :rocket: Multiple geometry support - Phase 1
+  - :rocket: Multiple geometry support
 - Client:
   - :rocket: Focus & submit on enter in dialog
   - :rocket: JSON5 support in editor
+  - :rocket: Memory managment improvement
+  - :beetle: ThreeJS render frequency update
 
 ---
 

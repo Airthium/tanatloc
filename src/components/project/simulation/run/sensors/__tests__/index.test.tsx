@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { IFrontSimulationsItem } from '@/api/index.d'
+import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
 
 import Sensors from '..'
 
@@ -11,6 +11,7 @@ const mockList = jest.fn()
 jest.mock('../list', () => (props: any) => mockList(props))
 
 describe('components/project/simulation/run/sensors', () => {
+  const geometries = [] as IFrontGeometriesItem[]
   const simulation = {
     id: 'id',
     scheme: {} as IFrontSimulationsItem['scheme']
@@ -35,6 +36,7 @@ describe('components/project/simulation/run/sensors', () => {
   test('render', () => {
     const { unmount } = render(
       <Sensors
+        geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
         setResult={setResult}
@@ -49,6 +51,7 @@ describe('components/project/simulation/run/sensors', () => {
   test('onAdd', () => {
     const { unmount } = render(
       <Sensors
+        geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
         setResult={setResult}
@@ -72,6 +75,7 @@ describe('components/project/simulation/run/sensors', () => {
     ))
     const { unmount } = render(
       <Sensors
+        geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
         setResult={setResult}
@@ -95,6 +99,7 @@ describe('components/project/simulation/run/sensors', () => {
     ))
     const { unmount } = render(
       <Sensors
+        geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
         setResult={setResult}

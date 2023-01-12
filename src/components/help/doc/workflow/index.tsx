@@ -1,3 +1,6 @@
+/** @module Components.Help.Doc.Workflow */
+
+import { useCallback } from 'react'
 import { Card, List } from 'antd'
 
 const Workflow = () => {
@@ -18,14 +21,21 @@ const Workflow = () => {
   ]
 
   /**
+   * Render item
+   * @param item Item
+   * @returns Item
+   */
+  const renderItem = useCallback(
+    (item: string): JSX.Element => <List.Item> - {item}</List.Item>,
+    []
+  )
+
+  /**
    * Render
    */
   return (
     <Card title="Standard workflow">
-      <List
-        dataSource={list}
-        renderItem={(item) => <List.Item> - {item}</List.Item>}
-      ></List>
+      <List dataSource={list} renderItem={renderItem}></List>
     </Card>
   )
 }

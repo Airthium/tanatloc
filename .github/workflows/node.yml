@@ -9,17 +9,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@main
-        with:
-          token: ${{ secrets.SUBMODULES_TOKEN }}
-          submodules: recursive
 
       - uses: actions/setup-node@master
         with:
           node-version: '16.13.1'
-
-      - uses: webfactory/ssh-agent@master
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Install
         run: yarn install

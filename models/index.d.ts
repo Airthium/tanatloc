@@ -184,6 +184,7 @@ export interface IModelInitializationValue {
 
 export interface IModelSensor {
   name: string
+  geometry: string
   point: { x: number; y: number; z: number }
   formula: string
 }

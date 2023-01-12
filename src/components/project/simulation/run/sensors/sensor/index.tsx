@@ -1,7 +1,16 @@
 /** @module Components.Project.Simulation.Run.Sensor */
 
 import { ChangeEvent, useCallback, useContext, useState } from 'react'
-import { Button, Card, Drawer, Input, Space, Tooltip, Typography } from 'antd'
+import {
+  Button,
+  Card,
+  Drawer,
+  Input,
+  Space,
+  Tabs,
+  Tooltip,
+  Typography
+} from 'antd'
 import {
   CloseOutlined,
   ExclamationCircleOutlined,
@@ -11,11 +20,18 @@ import {
 import { IModelSensor } from '@/models/index.d'
 import {
   IFrontSimulationsItem,
-  IFrontMutateSimulationsItem
+  IFrontMutateSimulationsItem,
+  IFrontGeometriesItem
 } from '@/api/index.d'
 
 import { SelectContext } from '@/context/select'
-import { disable, enable, setPoint, setType } from '@/context/select/actions'
+import {
+  disable,
+  enable,
+  setPart,
+  setPoint,
+  setType
+} from '@/context/select/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
@@ -32,6 +48,7 @@ import { globalStyle } from '@/styles'
  */
 export interface IProps {
   visible?: boolean
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   sensor?: IModelSensor & { index: number }
   onClose: () => void
@@ -47,6 +64,7 @@ export interface IProps {
  */
 const Sensor = ({
   visible,
+  geometries,
   simulation,
   sensor,
   onClose,
@@ -54,14 +72,22 @@ const Sensor = ({
 }: IProps): JSX.Element => {
   // State
   const [selectionEnabled, setSelectionEnabled] = useState<boolean>()
-  const [name, setName] = useState<string>()
-  const [formula, setFormula] = useState<string>()
+  const [current, setCurrent] = useState<IModelSensor>()
+  const [activeKey, setActiveKey] = useState<string>()
   const [error, setError] = useState<string>()
 
   // Data
   const { point, dispatch } = useContext(SelectContext)
 
-  // TODO setPart
+  // Init
+  useCustomEffect(
+    () => {
+      dispatch(setPart(geometries[0]?.summary.uuid))
+      setActiveKey(sensor?.geometry)
+    },
+    [geometries, sensor],
+    [dispatch]
+  )
 
   // Set point type
   useCustomEffect(() => {
@@ -72,7 +98,10 @@ const Sensor = ({
   useCustomEffect(() => {
     if (!sensor) {
       const run = simulation.scheme.configuration.run
-      setName('Sensor ' + (run.sensors ? run.sensors.length + 1 : 1))
+      setCurrent((prev) => ({
+        ...(prev as IModelSensor),
+        name: 'Sensor ' + (run.sensors ? run.sensors.length + 1 : 1)
+      }))
     }
   }, [simulation, sensor])
 
@@ -80,16 +109,24 @@ const Sensor = ({
   useCustomEffect(
     () => {
       if (sensor) {
-        setName(sensor.name)
+        setCurrent(sensor)
         dispatch(
           setPoint({ x: sensor.point.x, y: sensor.point.y, z: sensor.point.z })
         )
-        setFormula(sensor.formula)
       }
     },
     [sensor],
     [dispatch]
   )
+
+  // Point
+  useCustomEffect(() => {
+    if (point)
+      setCurrent((prev) => ({
+        ...(prev as IModelSensor),
+        point
+      }))
+  }, [point])
 
   /**
    * Stop selection
@@ -114,6 +151,28 @@ const Sensor = ({
   }, [selectionEnabled, stopSelection, dispatch])
 
   /**
+   * On geometry change
+   * @param key Key
+   */
+  const onGeometryChange = useCallback(
+    (key: string) => {
+      // Active key
+      setActiveKey(key)
+
+      // Set part
+      const geometry = geometries.find((geometry) => geometry.id === key)
+      dispatch(setPart(geometry!.summary.uuid))
+
+      // Set geometry
+      setCurrent((prevCurrent) => ({
+        ...(prevCurrent as IModelSensor),
+        geometry: key
+      }))
+    },
+    [geometries, dispatch]
+  )
+
+  /**
    * On position
    * @param x Point X
    * @param y Point Y
@@ -131,17 +190,20 @@ const Sensor = ({
    * @param formula Formula
    */
   const onFormula = useCallback((newFormula: string) => {
-    setFormula(newFormula)
+    setCurrent((prev) => ({
+      ...(prev as IModelSensor),
+      formula: newFormula
+    }))
   }, [])
 
   /**
    * Close
    */
   const close = useCallback(() => {
-    setName(undefined)
-    setFormula(undefined)
+    setCurrent(undefined)
     setError(undefined)
     dispatch(setPoint())
+    dispatch(disable())
     onClose()
   }, [dispatch, onClose])
 
@@ -149,10 +211,12 @@ const Sensor = ({
    * On change
    * @param e Event
    */
-  const onChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>): void => setName(e.target.value),
-    []
-  )
+  const onChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
+    setCurrent((prev) => ({
+      ...(prev as IModelSensor),
+      name: e.target.value
+    }))
+  }, [])
 
   /**
    * On position x
@@ -202,9 +266,7 @@ const Sensor = ({
               simulation={simulation}
               sensor={{
                 ...sensor,
-                name: name!,
-                point: point!,
-                formula: formula!
+                ...current
               }}
               onError={setError}
               onClose={close}
@@ -213,7 +275,7 @@ const Sensor = ({
           ) : (
             <Add
               simulation={simulation}
-              sensor={{ name: name!, point: point!, formula: formula! }}
+              sensor={current!}
               onError={setError}
               onClose={close}
               swr={swr}
@@ -225,9 +287,17 @@ const Sensor = ({
       <Space direction="vertical" css={globalStyle.fullWidth}>
         <Card size="small">
           <Typography.Text>Name</Typography.Text>
-          <Input value={name} onChange={onChange} />
+          <Input value={current?.name} onChange={onChange} />
         </Card>
         <Card size="small">
+          <Tabs
+            items={geometries.map((geometry) => ({
+              key: geometry.id,
+              label: geometry.name
+            }))}
+            activeKey={activeKey}
+            onChange={onGeometryChange}
+          />
           <Space direction="vertical" css={globalStyle.fullWidth}>
             <Space
               css={globalStyle.fullWidth}
@@ -245,17 +315,17 @@ const Sensor = ({
             </Space>
             <Formula
               label="X"
-              defaultValue={point?.x}
+              defaultValue={current?.point?.x}
               onValueChange={onPositionX}
             />
             <Formula
               label="Y"
-              defaultValue={point?.y}
+              defaultValue={current?.point?.y}
               onValueChange={onPositionY}
             />
             <Formula
               label="Z"
-              defaultValue={point?.z}
+              defaultValue={current?.point?.z}
               onValueChange={onPositionZ}
             />
           </Space>
@@ -263,7 +333,7 @@ const Sensor = ({
         <Card size="small" css={globalStyle.noBorderBottom}>
           <Formula
             label="Formula"
-            defaultValue={formula}
+            defaultValue={current?.formula}
             onValueChange={onFormula}
           />
         </Card>

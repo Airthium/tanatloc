@@ -92,7 +92,13 @@ export const selectReducer = (
     case actionTypes.ENABLE:
       return { ...state, enabled: true }
     case actionTypes.DISABLE:
-      return { ...state, enabled: false, highlighted: undefined, selected: [] }
+      return {
+        ...state,
+        enabled: false,
+        highlighted: undefined,
+        selected: [],
+        point: undefined
+      }
     case actionTypes.CLEAR:
       return { ...initialState }
     case actionTypes.SETTYPE:

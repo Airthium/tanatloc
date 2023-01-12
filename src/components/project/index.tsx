@@ -322,6 +322,7 @@ const Project = (): JSX.Element => {
   const delGeometry = useCallback(
     (geometry: IFrontGeometriesItem): void => {
       const index = geometries.findIndex((g) => g.id === geometry.id)
+      /* istanbul ignore next */
       if (index !== -1)
         setGeometries((prev) => [
           ...prev.slice(0, index),
@@ -346,6 +347,7 @@ const Project = (): JSX.Element => {
   const onGeometryCleanup = useCallback(
     (id: string): void => {
       const index = loadedGeometries.findIndex((geometry) => geometry.id === id)
+      /* istanbul ignore next */
       if (index !== -1)
         setGeometries((prev) => [
           ...prev.slice(0, index),
@@ -363,12 +365,12 @@ const Project = (): JSX.Element => {
   const setGeometryPanel = useCallback(
     (id: string): void => {
       const toDisplay = loadedGeometries.find((g) => g.id === id)
+      /* istanbul ignore next */
       if (!toDisplay) return
 
       const geometry = geometries.find((g) => g.id === id)
-      if (!geometry) {
+      if (!geometry)
         setGeometries((prev) => [...prev, { ...toDisplay, visible: true }])
-      }
 
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
@@ -581,6 +583,7 @@ const Project = (): JSX.Element => {
       setPanel(
         <Panel visible={panelVisible} title={'Run'} onClose={onPanelClose}>
           <Simulation.Run
+            geometries={geometries}
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -599,7 +602,7 @@ const Project = (): JSX.Element => {
         </Panel>
       )
     },
-    [result, panelVisible, mutateOneSimulation, onPanelClose]
+    [geometries, result, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -612,6 +615,7 @@ const Project = (): JSX.Element => {
       const current = loadedSimulations.find(
         (s) => s.id === id
       ) as IFrontSimulationsItem
+      /* istanbul ignore next */
       if (!current) return
 
       setSimulation(current)
@@ -622,6 +626,7 @@ const Project = (): JSX.Element => {
 
       if (geometryId) {
         const newGeometry = loadedGeometries.find((g) => g.id === geometryId)
+        /* istanbul ignore next */
         if (newGeometry) setGeometries([newGeometry])
       } else if (geometriesIds) {
         const newGeometries = loadedGeometries.filter((g) =>

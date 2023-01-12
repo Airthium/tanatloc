@@ -5,6 +5,7 @@ import { Button, Card, Space } from 'antd'
 import { ApiOutlined } from '@ant-design/icons'
 
 import {
+  IFrontGeometriesItem,
   IFrontMutateSimulationsItem,
   IFrontResult,
   IFrontSimulationsItem
@@ -20,6 +21,7 @@ import { globalStyle } from '@/styles'
  * Props
  */
 export interface IProps {
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   setVisible: (visible: boolean) => void
   setResult: (result?: IFrontResult) => void
@@ -35,6 +37,7 @@ export interface IProps {
  * @returns Sensors
  */
 const Sensors = ({
+  geometries,
   simulation,
   setVisible,
   setResult,
@@ -87,6 +90,7 @@ const Sensors = ({
     <Card size="small" title="Sensors">
       <Sensor
         visible={sensorVisible}
+        geometries={geometries}
         simulation={simulation}
         sensor={sensor}
         onClose={onClose}

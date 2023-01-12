@@ -19,7 +19,8 @@ import {
   IFrontResult,
   IFrontMutateSimulation,
   IFrontMutateSimulationsItem,
-  IFrontSimulationTask
+  IFrontSimulationTask,
+  IFrontGeometriesItem
 } from '@/api/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
@@ -41,6 +42,7 @@ import { globalStyle } from '@/styles'
  * Props
  */
 export interface IProps {
+  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   result?: Pick<IFrontResult, 'name' | 'fileName'>
   setResult: (result?: IFrontResult) => void
@@ -133,6 +135,7 @@ export const _onStop = async (
  * @param props Props
  */
 const Run = ({
+  geometries,
   simulation,
   result,
   setResult,
@@ -270,6 +273,7 @@ const Run = ({
       <Layout.Content>
         <Space direction="vertical" css={globalStyle.fullWidth}>
           <Sensors
+            geometries={geometries}
             simulation={simulation}
             setVisible={setVisible}
             setResult={setResult}

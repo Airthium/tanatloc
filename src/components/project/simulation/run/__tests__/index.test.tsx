@@ -1,6 +1,10 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { IFrontSimulation, IFrontResult } from '@/api/index.d'
+import {
+  IFrontSimulation,
+  IFrontResult,
+  IFrontGeometriesItem
+} from '@/api/index.d'
 
 import Run, { errors } from '..'
 
@@ -54,6 +58,10 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/run', () => {
+  const geometries = [{ id: 'id', name: 'name', summary: {} }] as Pick<
+    IFrontGeometriesItem,
+    'id' | 'name' | 'summary'
+  >[]
   const simulation = {
     id: 'id',
     scheme: {
@@ -137,6 +145,7 @@ describe('components/project/simulation/run', () => {
   test('render', () => {
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}
@@ -153,6 +162,7 @@ describe('components/project/simulation/run', () => {
     mockSimulation.mockImplementation(() => null)
     const { container, unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}
@@ -171,6 +181,7 @@ describe('components/project/simulation/run', () => {
   test('no configuration', () => {
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={
           {
             id: 'id',
@@ -191,6 +202,7 @@ describe('components/project/simulation/run', () => {
   test('not done', () => {
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={
           {
             id: 'id',
@@ -244,6 +256,7 @@ describe('components/project/simulation/run', () => {
     mockSimulation.mockImplementation(() => runningData)
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}
@@ -287,6 +300,7 @@ describe('components/project/simulation/run', () => {
     mockSimulation.mockImplementationOnce(() => notRunningData)
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}
@@ -305,6 +319,7 @@ describe('components/project/simulation/run', () => {
     ))
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}
@@ -347,6 +362,7 @@ describe('components/project/simulation/run', () => {
   test('onRun', async () => {
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}
@@ -385,6 +401,7 @@ describe('components/project/simulation/run', () => {
   test('onStop', async () => {
     const { unmount } = render(
       <Run
+        geometries={geometries}
         simulation={simulation}
         result={result}
         setResult={setResult}

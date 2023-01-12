@@ -8,6 +8,8 @@ jest.mock('../../dialog', () => () => <div />)
 
 jest.mock('../../delete', () => () => <div />)
 
+jest.mock('../../refresh', () => () => <div />)
+
 describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
   const plugins: IClientPlugin[] = []
@@ -19,6 +21,20 @@ describe('components/account/hpc/list', () => {
   test('render', () => {
     const { unmount } = render(
       <List plugin={plugin} plugins={plugins} swr={swr} />
+    )
+
+    unmount()
+  })
+
+  test('haveInit', () => {
+    const { unmount } = render(
+      <List
+        plugin={plugin}
+        plugins={[
+          { key: 'key', uuid: 'uuid', haveInit: true, configuration: {} }
+        ]}
+        swr={swr}
+      />
     )
 
     unmount()

@@ -1,5 +1,6 @@
 /** @module Plugins.Local.Components */
 
+import { useCallback } from 'react'
 import { Button, Typography, Space } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
@@ -21,9 +22,9 @@ const Local = ({ onSelect }: IProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = () => {
+  const onClick = useCallback(() => {
     onSelect()
-  }
+  }, [onSelect])
 
   /**
    * Render
@@ -31,11 +32,7 @@ const Local = ({ onSelect }: IProps): JSX.Element => {
   return (
     <Space css={globalStyle.fullWidth}>
       <Typography.Text>Local computing</Typography.Text>
-      <Button
-        type="primary"
-        onClick={() => onClick()}
-        icon={<SelectOutlined />}
-      >
+      <Button type="primary" onClick={onClick} icon={<SelectOutlined />}>
         Select
       </Button>
     </Space>

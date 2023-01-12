@@ -1,7 +1,11 @@
+/** @module Models.LinearElasticityModal */
+
+import { IModel } from './index.d'
+
 /**
  * Linear elasticity Modal analysis
  */
-const LinearElasticityModal = {
+const LinearElasticityModal: IModel = {
   category: 'Mechanics',
   name: 'Linear elasticity - Modal analysis',
   algorithm: 'linearElasticityModal',

@@ -20,7 +20,7 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  sensor: IModelSensor & { index: number }
+  sensor: Partial<IModelSensor> & { index: number }
   onError: (error?: string) => void
   onClose: () => void
   swr: {
@@ -46,7 +46,7 @@ export const errors = {
  */
 export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  sensor: IModelSensor & { index: number },
+  sensor: IModelSensor & { index?: number },
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
   }
@@ -58,11 +58,8 @@ export const _onEdit = async (
 
     // Local
     const index = sensor.index
-    run.sensors![index] = {
-      name: sensor.name,
-      point: sensor.point,
-      formula: sensor.formula
-    }
+    delete sensor.index
+    run.sensors![index!] = sensor
 
     // API
     await SimulationAPI.update({ id: simulation.id }, [
@@ -125,7 +122,7 @@ const Edit = ({
 
       onError()
 
-      await _onEdit(simulation, sensor, swr)
+      await _onEdit(simulation, sensor as IModelSensor, swr)
 
       // Close
       setLoading(false)

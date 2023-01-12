@@ -1,6 +1,6 @@
 /** @module Context.Editor */
 
-import { createContext, Dispatch, ReactNode, useReducer } from 'react'
+import { createContext, Dispatch, ReactNode, useMemo, useReducer } from 'react'
 
 export interface IEditorCursor {
   row: number
@@ -97,13 +97,16 @@ const EditorProvider = ({ children }: IProps) => {
   // Reducer
   const [editorState, editorDispatch] = useReducer(editorReducer, initialState)
 
+  const contextValue = useMemo(
+    () => ({ ...editorState, dispatch: editorDispatch }),
+    [editorState]
+  )
+
   /**
    * Render
    */
   return (
-    <EditorContext.Provider
-      value={{ ...editorState, dispatch: editorDispatch }}
-    >
+    <EditorContext.Provider value={contextValue}>
       {children}
     </EditorContext.Provider>
   )

@@ -159,6 +159,7 @@ describe('components/account/hpc/plugin/dialog', () => {
     await waitFor(() =>
       expect(mockAdd).toHaveBeenLastCalledWith({
         ...plugin,
+        uuid: 'add',
         configuration: {
           ...plugin.configuration,
           input: {

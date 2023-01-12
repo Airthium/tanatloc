@@ -116,7 +116,7 @@ describe('route/plugin', () => {
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { key(string), needInit(?bool), configuration(object) }'
+        'Missing data in your request (body: { key(string), haveInit(?bool), configuration(object) }'
     })
 
     // Access denied

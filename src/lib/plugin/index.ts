@@ -31,7 +31,7 @@ const add = async (
     )
 
   // Plugin initialization
-  if (plugin.needInit) {
+  if (plugin.haveInit) {
     const plugins = await Plugins.serverList()
     const lib = plugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {
@@ -96,7 +96,7 @@ const update = async (
   if (index === -1) return
 
   // Re-init
-  if (plugin.needInit && plugin.needReInit) {
+  if (plugin.haveInit && plugin.needReInit) {
     const plugins = await Plugins.serverList()
     const lib = plugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {

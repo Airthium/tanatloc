@@ -45,13 +45,13 @@ describe('lib/plugin', () => {
     mockGet.mockImplementation(() => ({ plugins: [{}] }))
 
     // Init (without API)
-    await Plugin.add({ id: 'id' }, { key: 'nokey', needInit: true })
+    await Plugin.add({ id: 'id' }, { key: 'nokey', haveInit: true })
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockInit).toHaveBeenCalledTimes(0)
 
     // Init (with API)
-    await Plugin.add({ id: 'id' }, { key: 'key', needInit: true })
+    await Plugin.add({ id: 'id' }, { key: 'key', haveInit: true })
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mockInit).toHaveBeenCalledTimes(1)
@@ -109,14 +109,14 @@ describe('lib/plugin', () => {
     }))
     await Plugin.update(
       { id: 'id' },
-      { key: 'nokey', uuid: 'uuid', needInit: true, needReInit: true }
+      { key: 'nokey', uuid: 'uuid', haveInit: true, needReInit: true }
     )
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
     await Plugin.update(
       { id: 'id' },
-      { key: 'key', uuid: 'uuid', needInit: true, needReInit: true }
+      { key: 'key', uuid: 'uuid', haveInit: true, needReInit: true }
     )
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
@@ -124,7 +124,7 @@ describe('lib/plugin', () => {
     // Not found
     await Plugin.update(
       { id: 'id' },
-      { uuid: 'nouuid', needInit: true, needReInit: true }
+      { uuid: 'nouuid', haveInit: true, needReInit: true }
     )
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(3)

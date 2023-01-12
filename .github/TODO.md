@@ -11,7 +11,7 @@
 
 ## Models (Long term)
 
-- Linearelasticity: cylindrical coordinates
+- Linearelasticity:
   BC force with normal or with components
 
 ## Electron (Long term)
@@ -37,5 +37,3 @@
 - icon browse models
 
 - bug save in double
-
-TODO components/project/simulation

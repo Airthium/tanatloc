@@ -3,6 +3,13 @@ import { IModel } from '@/models/index.d'
 
 import Local from '..'
 
+const mockAccess = jest.fn()
+jest.mock('fs', () => ({
+  promises: {
+    access: async () => mockAccess()
+  }
+}))
+
 const mockSetInterval = jest.fn()
 jest.mock('set-interval-async/fixed', () => ({
   setIntervalAsync: (func: Function) => mockSetInterval(func)
@@ -60,6 +67,8 @@ jest.mock('@/lib/template', () => ({
 
 describe('plugins/local/src/lib', () => {
   beforeEach(() => {
+    mockAccess.mockReset()
+
     mockSetInterval.mockReset()
 
     mockUpdate.mockReset()
@@ -88,6 +97,28 @@ describe('plugins/local/src/lib', () => {
     expect(Local.paths.coupling).toBeDefined()
     expect(Local.paths.result).toBeDefined()
     expect(Local.paths.data).toBeDefined()
+  })
+
+  test('init', async () => {
+    // Empty
+    await Local.init({ freefemPath: {}, gmshPath: {} })
+
+    // Error
+    mockAccess.mockImplementation(() => {
+      throw new Error('access error')
+    })
+    try {
+      await Local.init({
+        freefemPath: {},
+        gmshPath: { value: 'path' }
+      })
+    } catch (err) {}
+    try {
+      await Local.init({
+        freefemPath: { value: 'path' },
+        gmshPath: {}
+      })
+    } catch (err) {}
   })
 
   test('updateTasks', () => {

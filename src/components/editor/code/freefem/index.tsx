@@ -41,26 +41,27 @@ const FreeFEMCode = (): JSX.Element => {
    * @param event Mouse Event
    */
   const onMouseMove = useCallback((event: MouseEvent) => {
-    if (editorRef.current) {
-      const editor = editorRef.current
-      const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
-        event.clientX,
-        event.clientY
-      )
-      const token = editor.editor.session.getTokenAt(
-        textCoords.row,
-        textCoords.column
-      )
-      if (token && token.type === 'support.function') {
-        setTooltipPosition({
-          x: event.clientX,
-          y: event.clientY,
-          display: true,
-          text: `Documentation for ${token.value}`
-        })
-      } else {
-        setTooltipPosition((prevState) => ({ ...prevState, display: false }))
-      }
+    /* istanbul ignore next */
+    if (!editorRef.current) return
+
+    const editor = editorRef.current
+    const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
+      event.clientX,
+      event.clientY
+    )
+    const token = editor.editor.session.getTokenAt(
+      textCoords.row,
+      textCoords.column
+    )
+    if (token && token.type === 'support.function') {
+      setTooltipPosition({
+        x: event.clientX,
+        y: event.clientY,
+        display: true,
+        text: `Documentation for ${token.value}`
+      })
+    } else {
+      setTooltipPosition((prevState) => ({ ...prevState, display: false }))
     }
   }, [])
 
@@ -81,10 +82,10 @@ const FreeFEMCode = (): JSX.Element => {
 
   // Init
   useEffect(() => {
-    if (editorRef.current) {
-      const editor = editorRef.current
-      editor.editor.on('mousemove', onMouseMove)
-    }
+    if (!editorRef.current) return
+
+    const editor = editorRef.current
+    editor.editor.on('mousemove', onMouseMove)
   }, [onMouseMove])
 
   /**

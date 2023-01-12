@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import React from 'react'
 
 import FreeFEMCode from '..'
 
@@ -9,10 +10,21 @@ jest.mock('ace-builds/src-noconflict/theme-sqlserver', () => {})
 
 jest.mock('../mode/mode-freefem-ejs', () => {})
 
+const mockRef = jest.fn()
+jest.mock('react', () => {
+  return {
+    ...jest.requireActual<typeof React>('react'),
+    useRef: () => mockRef()
+  }
+})
+
 describe('components/editor/code/freefem_editor', () => {
   beforeEach(() => {
     mockReactAce.mockReset()
     mockReactAce.mockImplementation(() => <div />)
+
+    mockRef.mockReset()
+    mockRef.mockImplementation(() => ({}))
   })
 
   test('render', () => {
@@ -63,6 +75,34 @@ describe('components/editor/code/freefem_editor', () => {
 
     const editor = screen.getByRole('ReactAce')
     fireEvent.click(editor)
+
+    unmount()
+  })
+
+  test('ref', () => {
+    let count = 0
+    const ace = {
+      editor: {
+        on: (_type: string, callback: Function) => {
+          callback({})
+          callback({})
+        },
+        renderer: {
+          pixelToScreenCoordinates: jest.fn
+        },
+        session: {
+          getTokenAt: () => {
+            count++
+            if (count === 1) return {}
+            else return { type: 'support.function' }
+          }
+        }
+      }
+    }
+    mockRef.mockImplementation(() => ({
+      current: ace
+    }))
+    const { unmount } = render(<FreeFEMCode />)
 
     unmount()
   })

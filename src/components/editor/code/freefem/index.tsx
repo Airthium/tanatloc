@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import AceEditor from 'react-ace'
+import ReactAce from 'react-ace/lib/ace'
 import 'ace-builds/src-noconflict/theme-sqlserver'
 import './mode/mode-freefem-ejs'
 
@@ -10,15 +11,19 @@ import { setCursor, setTemplate } from '@/context/editor/actions'
  * FreeFEM code
  */
 const FreeFEMCode = (): JSX.Element => {
-  // Data
-  const { template, dispatch } = useContext(EditorContext)
-  const editorRef = useRef(null)
+  // Ref
+  const editorRef = useRef<ReactAce>()
+
+  // State
   const [tooltipPosition, setTooltipPosition] = useState({
     x: 0,
     y: 0,
     display: false,
     text: ''
   })
+
+  // Data
+  const { template, dispatch } = useContext(EditorContext)
 
   /**
    * On change
@@ -35,10 +40,9 @@ const FreeFEMCode = (): JSX.Element => {
    * On Mouse Move
    * @param event Mouse Event
    */
-
-  const onMouseMove = (event: MouseEvent) => {
+  const onMouseMove = useCallback((event: MouseEvent) => {
     if (editorRef.current) {
-      const editor = editorRef.current as AceEditor
+      const editor = editorRef.current
       const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
         event.clientX,
         event.clientY
@@ -58,16 +62,11 @@ const FreeFEMCode = (): JSX.Element => {
         setTooltipPosition((prevState) => ({ ...prevState, display: false }))
       }
     }
-  }
+  }, [])
 
-  if (editorRef.current) {
-    const editor = editorRef.current as AceEditor
-    editor.editor.on('mousemove', onMouseMove)
-  }
   /**
-    
-    On cursor change
-    */
+   * On cursor change
+   */
   const onCursorChange = useCallback(
     (selection: any): void => {
       dispatch(
@@ -80,13 +79,22 @@ const FreeFEMCode = (): JSX.Element => {
     [dispatch]
   )
 
+  // Init
+  useEffect(() => {
+    if (editorRef.current) {
+      const editor = editorRef.current
+      editor.editor.on('mousemove', onMouseMove)
+    }
+  }, [onMouseMove])
+
   /**
-    
-    Render
-    */
+   * Render
+   */
   return (
     <>
       <AceEditor
+        //@ts-ignore
+        ref={editorRef}
         width="100%"
         height="calc(100% - 64px)"
         fontSize={16}
@@ -97,7 +105,6 @@ const FreeFEMCode = (): JSX.Element => {
         editorProps={{ $blockScrolling: true, $showPrintMargin: false }}
         onCursorChange={onCursorChange}
         onChange={onChange}
-        ref={editorRef}
       />
 
       {tooltipPosition.display && (

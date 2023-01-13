@@ -7,12 +7,8 @@
 ## UX
 
 - Simulation run: A rough estimate of run time
-- Meshing : Display logs infos (% of completion)
 
 ## Models (Long term)
-
-- Linearelasticity:
-  BC force with normal or with components
 
 ## Electron (Long term)
 
@@ -20,20 +16,7 @@
 
 ## Misc (Debug)
 
-- deploy without mail server, go to login after signup, not in /send
-
 ## Bugs
 
 - dxf import multiple parts
 - zoom to selection when we start outside the part
-
-## Editor
-
-- error on line
-- background on recently added lines
-- new model, warning before save and clean
-- name check name on save
-- save temporary version
-- icon browse models
-
-- bug save in double

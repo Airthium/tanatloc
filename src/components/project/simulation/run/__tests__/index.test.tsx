@@ -128,6 +128,7 @@ describe('components/project/simulation/run', () => {
           label: 'Simulation',
           index: -1,
           files: [{ name: 'name', fileName: 'resultFileName' }],
+          log: '[ 100%]',
           status: 'finish',
           systemLog: 'system'
         },

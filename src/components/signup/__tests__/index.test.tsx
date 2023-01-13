@@ -3,11 +3,13 @@ import { Form, Input } from 'antd'
 
 import Signup, { errors } from '@/components/signup'
 
-const mockPrefetch = jest.fn()
+jest.mock('@/config/email', () => ({
+  TOKEN: 'TOKEN'
+}))
+
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    prefetch: mockPrefetch,
     push: mockPush
   })
 }))
@@ -58,7 +60,6 @@ jest.mock('@/api/system', () => ({
 
 describe('components/signup', () => {
   beforeEach(() => {
-    mockPrefetch.mockReset()
     mockPush.mockReset()
 
     mockPasswordItem.mockReset()
@@ -177,12 +178,16 @@ describe('components/signup', () => {
     const logIn = screen.getByText('Log in ?')
     await act(() => fireEvent.click(logIn))
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/login'))
 
     // Normal
     mockAdd.mockImplementation(() => ({ alreadyExists: false }))
     await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockPush).toHaveBeenLastCalledWith('/signup/send')
+    )
 
     unmount()
   })

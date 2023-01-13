@@ -2,11 +2,9 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Login, { errors } from '@/components/login'
 
-const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    prefetch: mockPrefetch,
     push: mockPush
   })
 }))
@@ -53,7 +51,6 @@ jest.mock('../password', () => () => <div />)
 
 describe('components/login', () => {
   beforeEach(() => {
-    mockPrefetch.mockReset()
     mockPush.mockReset()
 
     mockIsElectron.mockReset()

@@ -1,6 +1,6 @@
 /** @module Components.Notauthorized */
 
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
@@ -19,11 +19,6 @@ export const errors = {
 const NotAuthorized = (): JSX.Element => {
   // Data
   const router = useRouter()
-
-  // Prefetech
-  useEffect(() => {
-    router.prefetch('/')
-  }, [router])
 
   /**
    * Home

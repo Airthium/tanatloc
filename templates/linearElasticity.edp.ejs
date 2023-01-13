@@ -58,7 +58,8 @@ const testFunction = dimension === 2 ? '[Uhx, Uhy]' : '[Uhx, Uhy, Uhz]'
 <%
 const fixed = boundaryConditions.fixed.values ?? []
 const displacement = boundaryConditions.displacement.values ?? []
-const presure = boundaryConditions.presure.values ?? []
+const normalPresure = boundaryConditions.presure.values ?? []
+const componentsPresure = boundaryConditions.componentsPresure.values ?? []
 const rhs = parameters.rightHandSide.children
 const rhsX = rhs[0].value ?? rhs[0].default
 const rhsY = rhs[1].value ?? rhs[1].default
@@ -96,10 +97,19 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 			Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 <% } -%>
 		)
-<% for (const p of presure) { -%>
+<% for (const p of normalPresure) { -%>
 		+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
 			(<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
+<% } -%>
+<% for (const p of componentsPresure) { -%>
+	+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+		  (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
+		+ (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
+<% if (dimension !== 2) { -%> 
+		+ (<%- p.values[2].value ?? p.values[2].default -%>) * N.z * Uhz
+<% } -%>
+	)
 <% } -%>
 <% for (const d of displacement) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>

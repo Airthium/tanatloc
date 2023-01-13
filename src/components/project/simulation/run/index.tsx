@@ -147,7 +147,9 @@ const Run = ({
   const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)
 
-  const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
+  const [steps, setSteps] = useState<
+    (IFrontSimulationTask & { percent?: number })[]
+  >([])
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -200,14 +202,19 @@ const Run = ({
     } else setRunning(false)
 
     // Steps
-    const newSteps: IFrontSimulationTask[] = []
+    const newSteps: (IFrontSimulationTask & { percent?: number })[] = []
     currentSimulation?.tasks?.forEach((task) => {
       if (!task) return
+
+      const percents = task.log?.match(/[\d\s]{3}\%/g)
+      const percent = percents ? parseFloat(percents.pop()) : undefined
+
       // Steps
       newSteps[task.index] = {
         index: task.index,
         label: task.label,
         status: task.status,
+        percent: percent,
         log: task.log,
         pluginLog: task.pluginLog,
         warning: task.warning,
@@ -323,6 +330,7 @@ const Run = ({
                   key: index,
                   title: step.label,
                   description: '(' + (index + 1) + '/' + steps.length + ')',
+                  percent: step.percent,
                   status: step.status
                 }))}
               />

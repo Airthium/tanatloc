@@ -45,6 +45,7 @@ const copyMathjaxAssets = async (): Promise<void> => {
  * @description Copy assets
  */
 export const copyAssets = async (): Promise<void> => {
+  console.info(' == Copy assets == ')
   await copyThreeAssets()
   await copyMathjaxAssets()
 }

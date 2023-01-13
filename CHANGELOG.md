@@ -3,6 +3,7 @@
 - Global:
   - :beetle: Code clean
   - :arrow_up: Airthium plugin update
+  - :beetle: Add components surface force for linearElasticity(Time)
 - Plugin:
   - :arrow_up: Add refresh
 

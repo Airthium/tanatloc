@@ -1,6 +1,6 @@
 /** @module Lib.Email */
 
-import MailerSend, { Recipient, EmailParams } from 'mailersend'
+import { MailerSend, Recipient, EmailParams, Sender } from 'mailersend'
 
 import { DOMAIN } from '@/config/domain'
 import { TOKEN, SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
@@ -9,7 +9,7 @@ import Link from '../link'
 import User from '../user'
 
 const mailerSend = new MailerSend({
-  api_key: TOKEN
+  apiKey: TOKEN
 })
 
 /**
@@ -19,8 +19,8 @@ const mailerSend = new MailerSend({
  */
 const send = async (email: EmailParams): Promise<boolean> => {
   if (TOKEN) {
-    const res = await mailerSend.send(email)
-    if (res.status !== 202) throw new Error('Mail error: ' + res.statusText)
+    const res = await mailerSend.email.send(email)
+    if (res.statusCode !== 202) throw new Error('Mail error: ' + res.body)
     return true
   } else {
     console.warn('No email token: email skip!')
@@ -39,6 +39,7 @@ const subscribe = async (email: string, userid: string): Promise<void> => {
 
   const subscribeLink = DOMAIN + '/signup/validation?id=' + link.id
 
+  const sender = new Sender('noreply@tanatloc.com', 'Tanatloc')
   const recipients = [new Recipient(email)]
   const personalization = [
     {
@@ -50,9 +51,8 @@ const subscribe = async (email: string, userid: string): Promise<void> => {
   ]
 
   const emailParams = new EmailParams()
-    .setFrom('noreply@tanatloc.com')
-    .setFromName('Tanatloc')
-    .setRecipients(recipients)
+    .setFrom(sender)
+    .setTo(recipients)
     .setSubject('Tanatloc subscription')
     .setTemplateId('3vz9dle2p6lkj50y')
     .setPersonalization(personalization)
@@ -83,6 +83,7 @@ const recover = async (email: string): Promise<void> => {
 
   const recoveryLink = DOMAIN + '/password?id=' + link.id
 
+  const sender = new Sender('noreply@tanatloc.com', 'Tanatloc')
   const recipients = [new Recipient(email)]
   const personalization = [
     {
@@ -93,9 +94,8 @@ const recover = async (email: string): Promise<void> => {
     }
   ]
   const emailParams = new EmailParams()
-    .setFrom('noreply@tanatloc.com')
-    .setFromName('Tanatloc')
-    .setRecipients(recipients)
+    .setFrom(sender)
+    .setTo(recipients)
     .setSubject('Recover your password')
     .setTemplateId('vywj2lp7n1l7oqzd')
     .setPersonalization(personalization)
@@ -120,6 +120,7 @@ const revalidate = async (email: string, userid: string): Promise<boolean> => {
 
   const subscribeLink = DOMAIN + '/signup/validation?id=' + link.id
 
+  const sender = new Sender('noreply@tanatloc.com', 'Tanatloc')
   const recipients = [new Recipient(email)]
   const personalization = [
     {
@@ -131,9 +132,8 @@ const revalidate = async (email: string, userid: string): Promise<boolean> => {
   ]
 
   const emailParams = new EmailParams()
-    .setFrom('noreply@tanatloc.com')
-    .setFromName('Tanatloc')
-    .setRecipients(recipients)
+    .setFrom(sender)
+    .setTo(recipients)
     .setSubject('Validate your email')
     .setTemplateId('jy7zpl9xq5l5vx6k')
     .setPersonalization(personalization)
@@ -157,6 +157,7 @@ const invite = async (
 ): Promise<void> => {
   const subscribeLink = DOMAIN + '/login'
 
+  const sender = new Sender('noreply@tanatloc.com', 'Tanatloc')
   const recipients = [new Recipient(email)]
   let userName = ''
   if (user.firstname || user.lastname) {
@@ -176,9 +177,8 @@ const invite = async (
   ]
 
   const emailParams = new EmailParams()
-    .setFrom('noreply@tanatloc.com')
-    .setFromName('Tanatloc')
-    .setRecipients(recipients)
+    .setFrom(sender)
+    .setTo(recipients)
     .setSubject('Your have been invited')
     .setTemplateId('jy7zpl9x95l5vx6k')
     .setPersonalization(personalization)

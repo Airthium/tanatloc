@@ -165,8 +165,10 @@ const SelectionHelper = (
    */
   const zoomToRect = (rect: Box2): void => {
     // Check size
-    const size = new Vector2()
-    rect.getSize(size)
+    const size = new Vector2(
+      Math.abs(rect.max.x - rect.min.x),
+      Math.abs(rect.max.y - rect.min.y)
+    )
     if (size.x < 5 || size.y < 5) return
 
     // Center

@@ -25,11 +25,6 @@ describe('lib/three/helpers/SelectionHelper', () => {
       parentElement: {
         appendChild: jest.fn
       }
-    },
-    getSize: (vector) => {
-      vector.x = 150
-      vector.y = 150
-      return vector
     }
   }
   const camera = {
@@ -75,10 +70,9 @@ describe('lib/three/helpers/SelectionHelper', () => {
 
     // 10x size
     //@ts-ignore
-    global.MockBox2.getSize = (vector) => {
-      vector.x = 10
-      vector.y = 0
-    }
+    global.MockVector2.x = 10
+    //@ts-ignore
+    global.MockVector2.y = 0
     selection.start()
     mouseDown({ button: 0 })
     mouseMove({ button: 0 })
@@ -86,10 +80,9 @@ describe('lib/three/helpers/SelectionHelper', () => {
 
     // 10x 10y size, no part
     //@ts-ignore
-    global.MockBox2.getSize = (vector) => {
-      vector.x = 10
-      vector.y = 10
-    }
+    global.MockVector2.x = 10
+    //@ts-ignore
+    global.MockVector2.y = 10
     selection.start()
     mouseDown({ button: 0 })
     mouseMove({ button: 0 })
@@ -116,10 +109,9 @@ describe('lib/three/helpers/SelectionHelper', () => {
 
   test('raycaster', () => {
     //@ts-ignore
-    global.MockBox2.getSize = (vector) => {
-      vector.x = 10
-      vector.y = 100
-    }
+    global.MockVector2.x = 10
+    //@ts-ignore
+    global.MockVector2.y = 100
     const selection = SelectionHelper(
       renderer,
       { children: [{ type: 'Part' }] } as Scene,

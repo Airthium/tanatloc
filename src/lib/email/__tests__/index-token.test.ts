@@ -10,7 +10,7 @@ jest.mock('@/config/email', () => ({
 const mockSend = jest.fn()
 jest.mock('mailersend', () => ({
   __esModule: true,
-  default: class {
+  MailerSend: class {
     send() {
       return mockSend()
     }
@@ -20,10 +20,7 @@ jest.mock('mailersend', () => ({
     setFrom() {
       return this
     }
-    setFromName() {
-      return this
-    }
-    setRecipients() {
+    setTo() {
       return this
     }
     setSubject() {
@@ -35,7 +32,8 @@ jest.mock('mailersend', () => ({
     setPersonalization() {
       return this
     }
-  }
+  },
+  Sender: class {}
 }))
 
 const mockLinkAdd = jest.fn()

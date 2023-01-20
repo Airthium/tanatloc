@@ -11113,7 +11113,7 @@ __metadata:
     sharp: 0.31.3
     swr: 2.0.0
     tar: 6.1.13
-    three: 0.148.0
+    three: 0.147.0
     typedoc: 0.23.24
     typescript: 4.9.4
     url-join: 5.0.0
@@ -11214,10 +11214,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:0.148.0":
-  version: 0.148.0
-  resolution: "three@npm:0.148.0"
-  checksum: 3f6359585c006c6f78b2fc1adeb90559d9b7cd6daf5cf916e81494ff228f4a9beffe37136bd8d5b0afbf377ac070b70624245bec2e9ee557035e2c485ce05197
+"three@npm:0.147.0":
+  version: 0.147.0
+  resolution: "three@npm:0.147.0"
+  checksum: 9d4abdf2125e8b20cd67200a826f23bc1e8f6fc2d325768f8233c24fab7d621968bbe2274a45acd6ca709c076dd271c92d3c9dc4fe2439e4a6b2fae0ba1e6828
   languageName: node
   linkType: hard
 

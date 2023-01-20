@@ -12,7 +12,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": [],
+  "ignoreDeps": ["three"],
   "lockFileMaintenance": {
     "enabled": false
   }

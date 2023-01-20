@@ -128,7 +128,6 @@ describe('components/project/simulation/run', () => {
           label: 'Simulation',
           index: -1,
           files: [{ name: 'name', fileName: 'resultFileName' }],
-          log: '[ 100%]',
           status: 'finish',
           systemLog: 'system'
         },
@@ -136,6 +135,7 @@ describe('components/project/simulation/run', () => {
           label: 'Mesh2',
           index: 2,
           status: 'error',
+          log: '[ 100%]',
           systemLog: 'system'
         }
       ]

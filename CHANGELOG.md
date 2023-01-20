@@ -1,7 +1,11 @@
 ## v\*
 
 - Global:
+  - :arrow_up: Airthium plugin update
   - :beetle: ThreeJS bug fix
+  - :no_entry_sign: Remove TODO file, move in Github projects
+- Client:
+  - :arrow_up: Add percent indicator in simulation
 
 ## v1.2.2
 

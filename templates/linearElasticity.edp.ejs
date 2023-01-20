@@ -168,6 +168,8 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	real maxh = h[].max;
 	int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
 	for (int i = 0; i < nLoops; ++i) {
+		int percent = 20. + 80 * i / nLoops;
+		appendLog("[" + percent + "%]");
 		<% if (dimension === 2) { -%>
 		Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
 		<% } else { -%>
@@ -203,6 +205,7 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	x: 0,
 	sensors: run.sensors
 }), 1) -%>
+	appendLog("[100%]");
 
 	appendLog("End");
 } catch(...) {

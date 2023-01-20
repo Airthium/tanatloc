@@ -193,6 +193,8 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 	int nbIter = T / dt;
 	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		// Update
+		int percent = 100 * t / T;
+		appendLog("[" + percent + "%]");
 		t += dt;
 		appendLog("Time: " + t);
 		
@@ -238,6 +240,7 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 	}
 }), 2) -%>
 	}
+	appendLog("[100%]");
 
 	appendLog("End");
 } catch(...) {

@@ -160,6 +160,8 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	int nbIter = T / dt;
 	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		// Update
+		int percent = 100 * t / T;
+		appendLog("[" + percent + "%]");
 		t += dt;
 		appendLog("Time: " + t);
 
@@ -253,6 +255,7 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 <% } -%>
 	}
 	// End Time loop
+	appendLog("[100%]");
 
 	appendLog("End");
 } catch(...) {

@@ -1,3 +1,12 @@
+## v1.2.2
+
+- Global
+  - :arrow_up: Add refresh to plugins
+  - :beetle: Bug fix
+  - :beetle: Install bug fix (ThreeJS libs path change)
+
+---
+
 ## v1.2.1
 
 - Global:

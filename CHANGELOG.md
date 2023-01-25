@@ -4,6 +4,7 @@
   - :arrow_up: Airthium plugin update
   - :beetle: ThreeJS bug fix
   - :no_entry_sign: Remove TODO file, move in Github projects
+  - :beetle: Fix converters (Bug with STEP conversion)
 - Client:
   - :arrow_up: Add percent indicator in simulation
 

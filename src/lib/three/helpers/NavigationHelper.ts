@@ -37,6 +37,39 @@ export interface INavigationHelperNewSize {
 }
 
 /**
+ * Shape smooth
+ * @param i Index
+ * @param positions Positions
+ * @param uvs UVs
+ * @param indices Indices
+ * @param geomParam Geometry params
+ * @param posParam Position params
+ */
+const shapeSmooth = (
+  i: number,
+  positions: number[],
+  uvs: number[],
+  indices: number[],
+  { smooth, radius, left, down }: { [key: string]: number },
+  { xc, yc, uc, vc }: { [key: string]: number }
+) => {
+  for (let j = 0; j <= smooth; j++) {
+    const phi = (Math.PI / 2) * (i + j / smooth)
+    const cos = Math.cos(phi)
+    const sin = Math.sin(phi)
+
+    positions.push(xc + radius * cos, yc + radius * sin, 0)
+
+    uvs.push(uc + left * cos, vc + down * sin)
+
+    if (j < smooth) {
+      const idx = (smooth + 1) * i + j + 4
+      indices.push(i, idx, idx + 1)
+    }
+  }
+}
+
+/**
  * Shape
  * @param width Width
  * @param height Height
@@ -50,7 +83,6 @@ const shape = (
   radius: number,
   smooth: number
 ): ShapeGeometry => {
-  // helper const's
   const innerWidth = width / 2 - radius
   const innerHeight = height / 2 - radius
   const left = radius / width
@@ -58,6 +90,7 @@ const shape = (
   const down = radius / height
   const top = (height - radius) / height
 
+  // Positions
   const positions = [
     innerWidth,
     innerHeight,
@@ -73,8 +106,10 @@ const shape = (
     0
   ]
 
+  // UVs
   const uvs = [right, top, left, top, left, down, right, down]
 
+  // Indices
   const n = [
     3 * (smooth + 1) + 3,
     3 * (smooth + 1) + 4,
@@ -111,6 +146,7 @@ const shape = (
     n[11]
   ]
 
+  // Smooth
   for (let i = 0; i < 4; i++) {
     const xc = i < 1 || i > 2 ? innerWidth : -innerWidth
     const yc = i < 2 ? innerHeight : -innerHeight
@@ -118,22 +154,17 @@ const shape = (
     const uc = i < 1 || i > 2 ? right : left
     const vc = i < 2 ? top : down
 
-    for (let j = 0; j <= smooth; j++) {
-      const phi = (Math.PI / 2) * (i + j / smooth)
-      const cos = Math.cos(phi)
-      const sin = Math.sin(phi)
-
-      positions.push(xc + radius * cos, yc + radius * sin, 0)
-
-      uvs.push(uc + left * cos, vc + down * sin)
-
-      if (j < smooth) {
-        const idx = (smooth + 1) * i + j + 4
-        indices.push(i, idx, idx + 1)
-      }
-    }
+    shapeSmooth(
+      i,
+      positions,
+      uvs,
+      indices,
+      { smooth, radius, left, down },
+      { xc, yc, uc, vc }
+    )
   }
 
+  // Geometry
   const geometry = new BufferGeometry()
   geometry.setIndex(new Uint32BufferAttribute(indices, 1))
   geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))

@@ -11,6 +11,8 @@
   - :beetle: Minor CSS
   - :arrow_up: Update navigation helper
 
+---
+
 ## v1.2.2
 
 - Global:

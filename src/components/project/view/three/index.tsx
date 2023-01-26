@@ -941,7 +941,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   return (
     <Layout css={css([globalStyle.noScroll, style.view])}>
       <Layout.Header css={style.head}>
-        <Tooltip title="Take snasphot" placement="left">
+        <Tooltip title="Take snapshot" placement="left">
           <Dropdown
             placement="bottom"
             menu={{

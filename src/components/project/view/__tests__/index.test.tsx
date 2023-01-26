@@ -191,7 +191,8 @@ describe('components/project/view', () => {
   })
 
   test('with postprocessing', async () => {
-    const { unmount } = render(
+    mockResultLoad.mockImplementation(() => ({ type: 'result' }))
+    const { unmount, rerender } = render(
       <View
         project={project}
         simulation={simulation}
@@ -202,6 +203,17 @@ describe('components/project/view', () => {
     )
 
     await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
+    await waitFor(() => screen.getByText('result', { exact: false }))
+
+    rerender(
+      <View
+        project={project}
+        simulation={simulation}
+        geometries={[{ id: 'id2' }]}
+        result={result}
+        postprocessing={postprocessing}
+      />
+    )
 
     unmount()
   })

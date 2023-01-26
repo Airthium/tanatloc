@@ -92,12 +92,10 @@ export const _loadResult = async (
   if (!result) return
 
   const prevPart = parts.find((part) => part.extra?.glb === result.glb)
-  if (prevPart) {
-    return prevPart
-  } else {
-    const partContent = await _loadPart(simulation, result, 'result')
-    return partContent
-  }
+  if (prevPart) return prevPart
+
+  const partContent = await _loadPart(simulation, result, 'result')
+  return partContent
 }
 
 /**
@@ -115,12 +113,10 @@ export const _loadPostprocessing = async (
   if (!postprocessing) return
 
   const prevPart = parts.find((part) => part.extra?.glb === postprocessing.glb)
-  if (prevPart) {
-    return prevPart
-  } else {
-    const partContent = await _loadPart(simulation, postprocessing, 'result')
-    return partContent
-  }
+  if (prevPart) return prevPart
+
+  const partContent = await _loadPart(simulation, postprocessing, 'result')
+  return partContent
 }
 
 /**
@@ -138,12 +134,10 @@ export const _loadGeometries = async (
   return Promise.all(
     geometries.map(async (geometry) => {
       const prevPart = parts.find((part) => part.extra?.id === geometry.id)
-      if (prevPart) {
-        return prevPart
-      } else {
-        const partContent = await _loadPart(simulation, geometry, 'geometry')
-        return partContent
-      }
+      if (prevPart) return prevPart
+
+      const partContent = await _loadPart(simulation, geometry, 'geometry')
+      return partContent
     })
   )
 }

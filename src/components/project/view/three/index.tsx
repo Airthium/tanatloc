@@ -951,7 +951,10 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      css={globalStyle.fullWidth}
+                      css={css([
+                        globalStyle.fullWidth,
+                        globalStyle.noBackground
+                      ])}
                       loading={screenshot}
                       onClick={takeScreenshot}
                     >
@@ -964,7 +967,10 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      css={globalStyle.fullWidth}
+                      css={css([
+                        globalStyle.fullWidth,
+                        globalStyle.noBackground
+                      ])}
                       loading={savingScreenshot}
                       onClick={downloadScreenshot}
                     >

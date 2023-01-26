@@ -7,6 +7,9 @@
   - :beetle: Fix converters (Bug with STEP conversion)
 - Client:
   - :arrow_up: Add percent indicator in simulation
+  - :beetle: Snapshot fix #293
+  - :beetle: Minor CSS
+  - :arrow_up: Update navigation helper
 
 ## v1.2.2
 

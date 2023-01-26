@@ -124,6 +124,7 @@ const style: { [key: string]: SerializedStyles } = {
     justifyContent: 'space-around',
     columnWidth: '160px',
     columnGap: 0,
+    marginTop: '40px !important',
 
     '> div': {
       breakInside: 'avoid-column',

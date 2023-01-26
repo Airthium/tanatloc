@@ -205,7 +205,6 @@ const Index = (): JSX.Element => {
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"
-        width={500}
         bodyStyle={{ marginTop: 16 }}
         onClose={setDockerOpenFalse}
       >
@@ -276,7 +275,6 @@ const Index = (): JSX.Element => {
       <Drawer
         open={troubleshootingOpen}
         title="Troubleshooting"
-        width={500}
         bodyStyle={{ marginTop: 16 }}
         onClose={setTroubleshootingOpenFalse}
       >
@@ -487,7 +485,7 @@ const Index = (): JSX.Element => {
               alt="tanatloc"
               css={css([
                 style.indexImgShadow,
-                globalStyleFn.marginTop(20),
+                globalStyleFn.marginTop(40),
                 globalStyle.textAlignCenter
               ])}
             />

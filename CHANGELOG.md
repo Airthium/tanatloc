@@ -1,4 +1,4 @@
-## v\*
+## v1.2.3
 
 - Global:
   - :arrow_up: Airthium plugin update

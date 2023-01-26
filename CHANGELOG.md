@@ -1,3 +1,10 @@
+## v1.2.4
+
+- Global
+  - :beetle: Denso fix
+
+---
+
 ## v1.2.3
 
 - Global:

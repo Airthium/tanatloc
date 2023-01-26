@@ -36,6 +36,8 @@ class MockVector3 {
   }
 }
 
+class MockUint32BufferAttribute {}
+
 // Bases classes
 
 class MockClock {
@@ -395,6 +397,7 @@ export const MockThree = {
   BufferAttribute: MockBufferAttribute,
   Material: MockMaterial,
   Float32BufferAttribute: MockFloat32BufferAttribute,
+  Uint32BufferAttribute: MockUint32BufferAttribute,
 
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,

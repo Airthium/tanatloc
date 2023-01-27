@@ -187,6 +187,14 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	}
 
 <% } -%>
+
+<%# Sensors -%>
+<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
+	path: run.dataPath,
+	x: 0,
+	sensors: run.sensors
+}), 1) -%>
+
 <%# Save -%>
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
 	solution: {
@@ -197,13 +205,6 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 		dataName: run.results.map(r => r.name),
 		order: [1, 1, 1, 1, 1, 1, 1, 1]
 	}
-}), 1) -%>
-
-<%# Sensors -%>
-<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
-	path: run.dataPath,
-	x: 0,
-	sensors: run.sensors
 }), 1) -%>
 	appendLog("[100%]");
 

@@ -4,6 +4,8 @@
   - :beetle: New convertes fix
   - :beetle: Rescale fix
 
+---
+
 ## v1.2.4
 
 - Global

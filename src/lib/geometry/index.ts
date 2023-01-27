@@ -44,15 +44,9 @@ const add = async (
       target: geometry.uid
     })
 
-    // Read summary
-    const content = await Tools.readFile(path.join(GEOMETRY, part[0].glb))
-    const jsons = extractJson(content.toString())
-    const summary = jsons[0].scenes[0].extras as TGeometrySummary
-
     // Update geometry
-    const newGeometry = {
+    const newGeometry: Partial<INewGeometryWithData> = {
       ...geometryData,
-      summary,
       glb: part[0].glb,
       brep: part[0].brep!
     }
@@ -64,7 +58,20 @@ const add = async (
       {
         key: 'brep',
         value: newGeometry.brep
-      },
+      }
+    ])
+
+    // Read summary
+    const content = await Tools.readFile(path.join(GEOMETRY, part[0].glb))
+    let fileContent = content.toString()
+    const pos = fileContent.indexOf('JSON{')
+    if (pos !== -1) fileContent = fileContent.substring(pos + 4)
+    const jsons = extractJson(fileContent)
+    const summary = jsons[0].scenes[0].extras as TGeometrySummary
+
+    // Update geometry
+    newGeometry.summary = summary
+    await GeometryDB.update({ id: geometryData.id }, [
       {
         key: 'summary',
         value: summary
@@ -82,7 +89,7 @@ const add = async (
     ])
 
     // Return
-    return newGeometry
+    return newGeometry as INewGeometryWithData
   } catch (err) {
     console.warn(err)
     console.warn('-> Delete geometry')

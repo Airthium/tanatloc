@@ -130,7 +130,35 @@ describe('lib/geometry', () => {
       summary: summary
     })
 
+    // With JSON{
+    mockToolsReadFile.mockImplementation(
+      () =>
+        'JSON' +
+        JSON.stringify({
+          scenes: [
+            {
+              extras: summary
+            }
+          ]
+        })
+    )
+    const geometry2 = await Geometry.add(
+      { id: 'id' },
+      { name: 'name.step', uid: 'test', buffer: Buffer.from('buffer') }
+    )
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
+    expect(mockToolsConvert).toHaveBeenCalledTimes(2)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(2)
+    expect(geometry2).toEqual({
+      id: 'id',
+      glb: 'glb',
+      summary: summary
+    })
+
     // Error
+
     mockGet.mockImplementation(() => ({}))
     mockToolsWriteFile.mockImplementation(() => {
       throw new Error()
@@ -141,11 +169,11 @@ describe('lib/geometry', () => {
         { name: 'name.step', uid: 'test', buffer: Buffer.from('buffer') }
       )
     } catch (err) {}
-    expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
-    expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
-    expect(mockToolsConvert).toHaveBeenCalledTimes(1)
-    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(3)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(3)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
+    expect(mockToolsConvert).toHaveBeenCalledTimes(2)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 

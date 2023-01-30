@@ -9,13 +9,14 @@ import { setCursor, setTemplate } from '@/context/editor/actions'
 
 // TODO
 // - Stay 1 second on keyword to trigger tooltip
+//      -> Look at debounce function, example in assets/formula
 // - Find a way to split JS / FreeFEM
 // - Find a way to make links to doc
+//      -> Ok with storage.type, support.function, ... ?
 // - Example of function in tooltip
 // - Create JSON with custom descriptions
 // - Display tooltip at the same position wherever function is hovered
 // - Add dark mode
-
 
 /**
  * FreeFEM code
@@ -54,30 +55,40 @@ const FreeFEMCode = (): JSX.Element => {
     /* istanbul ignore next */
     if (!editorRef.current) return
 
-    setTimeout(() => {
-      const editor = editorRef.current!
-      const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
-        event.clientX,
-        event.clientY
-      )
-      const token = editor.editor.session.getTokenAt(
-        textCoords.row,
-        textCoords.column
-      )
+    // setTimeout(() => {
+    const editor = editorRef.current
+    const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
+      event.clientX,
+      event.clientY
+    )
 
-      if (token && token.type === 'support.function') { // Add JS condition
-        setTooltipPosition({
-          x: event.clientX, // Fixed position here
-          y: event.clientY, // Fixed position here
-          display: true,
-          text: `Documentation for ${token.value} 
+    const token = editor.editor.session.getTokenAt(
+      textCoords.row,
+      textCoords.column
+    )
+
+    if (token && token.type === 'support.function') {
+      // Add JS condition
+      setTooltipPosition({
+        x: event.clientX - textCoords.offsetX, // Fixed position here
+        y: event.clientY, // Fixed position here
+        display: true,
+        text: `Documentation for ${token.value} 
           Link to FreeFEM : `, // Use JSON data ?
-          link: <a href={"https://doc.freefem.org/documentation/" + token.value}>https://doc.freefem.org/documentation/{token.value}</a>
-        })
-      } else {
-        setTooltipPosition((prevState) => ({ ...prevState, display: false }))
-      }
-    }, 1000)
+        link: (
+          <a
+            href={'https://doc.freefem.org/documentation/' + token.value}
+            target="_blank"
+            rel="noreferrer"
+          >
+            https://doc.freefem.org/documentation/{token.value}
+          </a>
+        )
+      })
+    } else {
+      setTooltipPosition((prevState) => ({ ...prevState, display: false }))
+    }
+    // }, 1000)
   }, [])
 
   /**
@@ -117,7 +128,7 @@ const FreeFEMCode = (): JSX.Element => {
         theme="sqlserver"
         mode="freefem-ejs"
         name="freefem_editor"
-        value={template}
+        value={template?.replace(/\t/g, '    ')}
         editorProps={{ $blockScrolling: true, $showPrintMargin: false }}
         onCursorChange={onCursorChange}
         onChange={onChange}
@@ -127,18 +138,20 @@ const FreeFEMCode = (): JSX.Element => {
         <div
           style={{
             position: 'absolute',
+            zIndex: 10,
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            backgroundColor: '#0D1117',
+            backgroundColor: 'rgba(13, 17, 23, 0.75)',
             padding: '15px',
             border: '1px solid gray',
-            color:"#fff",
-            fontFamily:"Saira",
-            whiteSpace:"pre-line",
-            fontSize:"18px"
+            color: '#fff',
+            fontFamily: 'Saira',
+            whiteSpace: 'pre-line',
+            fontSize: '18px'
           }}
         >
-          {tooltipPosition.text}{tooltipPosition.link}
+          {tooltipPosition.text}
+          {tooltipPosition.link}
         </div>
       )}
     </>

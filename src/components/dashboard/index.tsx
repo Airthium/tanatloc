@@ -66,7 +66,7 @@ export const menuItems = {
     key: 'administration'
   },
   editor: {
-    label: 'Editor',
+    label: 'Model Editor',
     key: 'editor'
   },
   help: {

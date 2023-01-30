@@ -38,7 +38,7 @@ export const _pluginsList = async (): Promise<JSX.Element[]> => {
                 key: plugin.key,
                 name: plugin.name,
                 description: plugin.description,
-                needInit: !!plugin.needInit,
+                haveInit: plugin.haveInit,
                 configuration: plugin.configuration,
                 inUseConfiguration: plugin.inUseConfiguration
               }}

@@ -58,7 +58,8 @@ const testFunction = dimension === 2 ? '[Uhx, Uhy]' : '[Uhx, Uhy, Uhz]'
 <%
 const fixed = boundaryConditions.fixed.values ?? []
 const displacement = boundaryConditions.displacement.values ?? []
-const presure = boundaryConditions.presure.values ?? []
+const normalPresure = boundaryConditions.presure.values ?? []
+const componentsPresure = boundaryConditions.componentsPresure.values ?? []
 const rhs = parameters.rightHandSide.children
 const rhsX = rhs[0].value ?? rhs[0].default
 const rhsY = rhs[1].value ?? rhs[1].default
@@ -96,10 +97,19 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 			Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 <% } -%>
 		)
-<% for (const p of presure) { -%>
+<% for (const p of normalPresure) { -%>
 		+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
 			(<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
+<% } -%>
+<% for (const p of componentsPresure) { -%>
+	+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+		  (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
+		+ (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
+<% if (dimension !== 2) { -%> 
+		+ (<%- p.values[2].value ?? p.values[2].default -%>) * N.z * Uhz
+<% } -%>
+	)
 <% } -%>
 <% for (const d of displacement) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
@@ -158,6 +168,8 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	real maxh = h[].max;
 	int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
 	for (int i = 0; i < nLoops; ++i) {
+		int percent = 20. + 80 * i / nLoops;
+		appendLog("[" + percent + "%]");
 		<% if (dimension === 2) { -%>
 		Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
 		<% } else { -%>
@@ -175,6 +187,14 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	}
 
 <% } -%>
+
+<%# Sensors -%>
+<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
+	path: run.dataPath,
+	x: 0,
+	sensors: run.sensors
+}), 1) -%>
+
 <%# Save -%>
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
 	solution: {
@@ -186,13 +206,7 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 		order: [1, 1, 1, 1, 1, 1, 1, 1]
 	}
 }), 1) -%>
-
-<%# Sensors -%>
-<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
-	path: run.dataPath,
-	x: 0,
-	sensors: run.sensors
-}), 1) -%>
+	appendLog("[100%]");
 
 	appendLog("End");
 } catch(...) {

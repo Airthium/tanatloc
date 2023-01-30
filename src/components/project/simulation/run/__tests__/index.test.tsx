@@ -135,6 +135,7 @@ describe('components/project/simulation/run', () => {
           label: 'Mesh2',
           index: 2,
           status: 'error',
+          log: '[ 100%]',
           systemLog: 'system'
         }
       ]

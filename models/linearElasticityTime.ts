@@ -219,7 +219,7 @@ const LinearElasticityTime: IModel = {
         refineFactor: 2
       },
       presure: {
-        label: 'Surface force',
+        label: 'Surface force (normal)',
         children: [
           {
             label: 'd(U)/d(N)',
@@ -229,6 +229,29 @@ const LinearElasticityTime: IModel = {
           }
         ],
         refineFactor: 2
+      },
+      componentsPresure: {
+        label: 'Surface force (components)',
+        children: [
+          {
+            label: 'x',
+            htmlEntity: 'formula',
+            default: '0',
+            unit: '\\(N.m^{-2}\\)'
+          },
+          {
+            label: 'y',
+            htmlEntity: 'formula',
+            default: '0',
+            unit: '\\(N.m^{-2}\\)'
+          },
+          {
+            label: 'z',
+            htmlEntity: 'formula',
+            default: '0',
+            unit: '\\(N.m^{-2}\\)'
+          }
+        ]
       }
     },
     run: {

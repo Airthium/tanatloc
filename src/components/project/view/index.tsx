@@ -82,24 +82,20 @@ export const _loadPart = async (
  * @param simulation Simulation
  * @param parts Parts
  * @param result Result
- * @param postprocessing Postprocessing
  * @returns Result
  */
 export const _loadResult = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   parts: IGeometryPart[],
-  result?: TResult,
-  postprocessing?: TResult
+  result?: TResult
 ): Promise<IGeometryPart | undefined> => {
-  if (!postprocessing && result) {
-    const prevPart = parts.find((part) => part.extra?.glb === result.glb)
-    if (prevPart) {
-      return prevPart
-    } else {
-      const partContent = await _loadPart(simulation, result, 'result')
-      return partContent
-    }
-  }
+  if (!result) return
+
+  const prevPart = parts.find((part) => part.extra?.glb === result.glb)
+  if (prevPart) return prevPart
+
+  const partContent = await _loadPart(simulation, result, 'result')
+  return partContent
 }
 
 /**
@@ -114,17 +110,13 @@ export const _loadPostprocessing = async (
   parts: IGeometryPart[],
   postprocessing?: TResult
 ): Promise<IGeometryPart | undefined> => {
-  if (postprocessing) {
-    const prevPart = parts.find(
-      (part) => part.extra?.glb === postprocessing.glb
-    )
-    if (prevPart) {
-      return prevPart
-    } else {
-      const partContent = await _loadPart(simulation, postprocessing, 'result')
-      return partContent
-    }
-  }
+  if (!postprocessing) return
+
+  const prevPart = parts.find((part) => part.extra?.glb === postprocessing.glb)
+  if (prevPart) return prevPart
+
+  const partContent = await _loadPart(simulation, postprocessing, 'result')
+  return partContent
 }
 
 /**
@@ -142,12 +134,10 @@ export const _loadGeometries = async (
   return Promise.all(
     geometries.map(async (geometry) => {
       const prevPart = parts.find((part) => part.extra?.id === geometry.id)
-      if (prevPart) {
-        return prevPart
-      } else {
-        const partContent = await _loadPart(simulation, geometry, 'geometry')
-        return partContent
-      }
+      if (prevPart) return prevPart
+
+      const partContent = await _loadPart(simulation, geometry, 'geometry')
+      return partContent
     })
   )
 }
@@ -176,13 +166,8 @@ const View = ({
         const newParts = []
 
         // Result
-        if (simulation) {
-          const newResult = await _loadResult(
-            simulation,
-            parts,
-            result,
-            postprocessing
-          )
+        if (simulation && !postprocessing) {
+          const newResult = await _loadResult(simulation, parts, result)
           newResult && newParts.push(newResult)
         }
 
@@ -197,12 +182,14 @@ const View = ({
         }
 
         // Geometries
-        const newGeometries = await _loadGeometries(
-          simulation,
-          parts,
-          geometries
-        )
-        newParts.push(...newGeometries)
+        if (!result && !postprocessing) {
+          const newGeometries = await _loadGeometries(
+            simulation,
+            parts,
+            geometries
+          )
+          newParts.push(...newGeometries)
+        }
 
         setParts(newParts)
       } catch (err) {

@@ -1,6 +1,7 @@
 /** @module Plugins.Local.Lib */
 
 import path from 'path'
+import { promises as fs } from 'fs'
 import {
   setIntervalAsync,
   SetIntervalAsyncTimer
@@ -12,6 +13,7 @@ import {
   IModelMeshRefinement,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
+import { IClientPlugin } from '@/plugins/index.d'
 
 import { SIMULATION } from '@/config/storage'
 
@@ -46,6 +48,28 @@ const dataPath = 'data'
 
 // dB update delay
 const updateDelay = 1000 // ms
+
+const init = async (
+  configuration: IClientPlugin['configuration']
+): Promise<void> => {
+  // Check FreeFEM
+  if (configuration.freefemPath.value) {
+    try {
+      await fs.access(configuration.freefemPath.value, fs.constants.X_OK)
+    } catch (err) {
+      throw new Error('No access to FreeFEM executable')
+    }
+  }
+
+  // Check Gmsh
+  if (configuration.gmshPath.value) {
+    try {
+      await fs.access(configuration.gmshPath.value, fs.constants.X_OK)
+    } catch (err) {
+      throw new Error('No access to GMSH executable')
+    }
+  }
+}
 
 /**
  * Update tasks
@@ -609,7 +633,6 @@ const stopProcess = async (
   update: () => void
 ): Promise<void> => {
   if (interval[id]) {
-    //@ts-ignore
     clearIntervalAsync(interval[id])
     delete interval[id]
   }
@@ -815,7 +838,6 @@ const processDatas = async (
  */
 const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
   if (interval[id]) {
-    //@ts-ignore
     clearIntervalAsync(interval[id])
     delete interval[id]
   }
@@ -831,6 +853,7 @@ const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
 const Local = {
   // Must be exported for each plugin
   key,
+  init,
   getRefinements,
   computeMeshes,
   computeMesh,

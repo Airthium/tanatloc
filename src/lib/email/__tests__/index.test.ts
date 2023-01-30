@@ -10,9 +10,12 @@ jest.mock('@/config/email', () => ({
 const mockSend = jest.fn()
 jest.mock('mailersend', () => ({
   __esModule: true,
-  default: class {
-    send() {
-      return mockSend()
+  MailerSend: class {
+    email
+    constructor() {
+      this.email = {
+        send: () => mockSend()
+      }
     }
   },
   Recipient: class {},
@@ -20,10 +23,7 @@ jest.mock('mailersend', () => ({
     setFrom() {
       return this
     }
-    setFromName() {
-      return this
-    }
-    setRecipients() {
+    setTo() {
       return this
     }
     setSubject() {
@@ -35,7 +35,8 @@ jest.mock('mailersend', () => ({
     setPersonalization() {
       return this
     }
-  }
+  },
+  Sender: class {}
 }))
 
 const mockLinkAdd = jest.fn()
@@ -54,8 +55,8 @@ describe('lib/email', () => {
   beforeEach(() => {
     mockSend.mockReset()
     mockSend.mockImplementation(() => ({
-      status: 202,
-      statusText: 'Success'
+      statusCode: 202,
+      body: 'Success'
     }))
 
     mockLinkAdd.mockReset()
@@ -73,8 +74,8 @@ describe('lib/email', () => {
 
     // Error
     mockSend.mockImplementation(() => ({
-      status: 422,
-      statusText: 'Unprocessable Entity'
+      statusCode: 422,
+      body: 'Unprocessable Entity'
     }))
     try {
       await Email.subscribe('email', 'id')
@@ -94,8 +95,8 @@ describe('lib/email', () => {
 
     // Error
     mockSend.mockImplementation(() => ({
-      status: 422,
-      statusText: 'Unprocessable Entity'
+      statusCode: 422,
+      body: 'Unprocessable Entity'
     }))
     try {
       await Email.recover('email')
@@ -115,8 +116,8 @@ describe('lib/email', () => {
 
     // Error
     mockSend.mockImplementation(() => ({
-      status: 422,
-      statusText: 'Unprocessable Entity'
+      statusCode: 422,
+      body: 'Unprocessable Entity'
     }))
     try {
       await Email.revalidate('email', 'id')

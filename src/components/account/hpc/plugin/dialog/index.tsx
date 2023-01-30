@@ -188,6 +188,7 @@ export const _onFinish = async (
     } else {
       // New plugin
       const newPlugin = Utils.deepCopy(plugin)
+      newPlugin.uuid = 'add'
 
       // Set values
       Object.keys(values).forEach((key) => {

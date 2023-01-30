@@ -1,4 +1,42 @@
 // THREEJS
+global.MockVector2 = {
+  x: 0,
+  y: 0
+}
+class MockVector2 {
+  constructor() {
+    this.x = global.MockVector2.x
+    this.y = global.MockVector2.y
+    this.copy = jest.fn()
+  }
+}
+
+global.MockVector3 = { x: 0, y: 0, z: 0, equals: jest.fn() }
+class MockVector3 {
+  constructor() {
+    this.x = global.MockVector3.x
+    this.y = global.MockVector3.y
+    this.z = global.MockVector3.z
+    this.distanceTo = jest.fn()
+    this.equals = global.MockVector3.equals
+    this.clone = () => new MockVector3()
+    this.applyQuaternion = () => new MockVector3()
+    this.unproject = () => new MockVector3()
+    this.set = () => new MockVector3()
+    this.sub = () => new MockVector3()
+    this.multiplyScalar = () => new MockVector3()
+    this.normalize = () => new MockVector3()
+    this.add = () => new MockVector3()
+    this.copy = () => new MockVector3()
+    this.setScalar = () => new MockVector3()
+    this.cross = () => new MockVector3()
+    this.crossVectors = () => new MockVector3()
+    this.dot = () => new MockVector3()
+    this.subVectors = jest.fn()
+  }
+}
+
+class MockUint32BufferAttribute {}
 
 // Bases classes
 
@@ -92,20 +130,20 @@ class MockMaterial {
 
 class MockFloat32BufferAttribute {}
 
-// Child classes
-
 class MockAmbientLight {}
 
 global.MockBox2 = {
   getSize: (vector) => {
     vector.x = 0
     vector.y = 0
-  }
+  },
+  min: new MockVector2(),
+  max: new MockVector2()
 }
 class MockBox2 {
   constructor() {
-    this.min = new MockVector2()
-    this.max = new MockVector2()
+    this.min = global.MockBox2.min
+    this.max = global.MockBox2.max
     this.getSize = global.MockBox2.getSize
   }
 }
@@ -307,39 +345,6 @@ class MockTexture {
 
 class MockTorusGeometry extends MockBufferGeometry {}
 
-class MockVector2 {
-  constructor() {
-    this.x = 0
-    this.y = 0
-    this.copy = jest.fn()
-  }
-}
-
-global.MockVector3 = { x: 0, y: 0, z: 0, equals: jest.fn() }
-class MockVector3 {
-  constructor() {
-    this.x = global.MockVector3.x
-    this.y = global.MockVector3.y
-    this.z = global.MockVector3.z
-    this.distanceTo = jest.fn()
-    this.equals = global.MockVector3.equals
-    this.clone = () => new MockVector3()
-    this.applyQuaternion = () => new MockVector3()
-    this.unproject = () => new MockVector3()
-    this.set = () => new MockVector3()
-    this.sub = () => new MockVector3()
-    this.multiplyScalar = () => new MockVector3()
-    this.normalize = () => new MockVector3()
-    this.add = () => new MockVector3()
-    this.copy = () => new MockVector3()
-    this.setScalar = () => new MockVector3()
-    this.cross = () => new MockVector3()
-    this.crossVectors = () => new MockVector3()
-    this.dot = () => new MockVector3()
-    this.subVectors = jest.fn()
-  }
-}
-
 global.MockWebGLRenderer = {
   toDataURL: jest.fn
 }
@@ -392,6 +397,7 @@ export const MockThree = {
   BufferAttribute: MockBufferAttribute,
   Material: MockMaterial,
   Float32BufferAttribute: MockFloat32BufferAttribute,
+  Uint32BufferAttribute: MockUint32BufferAttribute,
 
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,

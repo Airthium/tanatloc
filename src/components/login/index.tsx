@@ -98,12 +98,6 @@ const Login = (): JSX.Element => {
     if (user) router.push('/dashboard')
   }, [user, router])
 
-  // Prefetch
-  useEffect(() => {
-    router.prefetch('/signup')
-    router.prefetch('/dashboard')
-  }, [router])
-
   /**
    * Signup
    */

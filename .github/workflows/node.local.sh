@@ -2,29 +2,42 @@
 
 set -e
 
+export CI=1
+
 # Clean
-git clean -xdf
+echo " + Clean"
+git clean -xdf >node.local.log
 
 # Install
-yarn install
+echo " + Install"
+yarn install >>node.local.log
 
 # Depcheck
-yarn run depcheck | true
+echo " + Depcheck"
+yarn run depcheck >>node.local.log
 
 # Lint
-yarn run prettier | true
+echo " + Prettier"
+yarn run prettier >>node.local.log
 
 # Next lint
-yarn run next lint | true
+echo " + Next lint"
+yarn run next lint >>node.local.log
 
 # Doc
-yarn run doc | true
+echo " + Doc"
+yarn run doc >>node.local.log
 
 # Test
-yarn run test | true
+echo " + Test"
+yarn run test --no-color >>node.local.log
 
 # Prestart
-yarn run prestart
+echo " + Prestart"
+yarn run prestart >>node.local.log
 
 # Build
-yarn run build
+echo " + Build"
+yarn run build >>node.local.log
+
+echo "All done!"

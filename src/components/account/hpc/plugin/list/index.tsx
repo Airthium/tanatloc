@@ -85,18 +85,12 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
             swr={{ delOnePlugin: swr.delOnePlugin }}
           />
         )
-        if (p.haveInit) actions.push(<Refresh plugin={plugin} />)
+
+        if (p.haveInit) actions.push(<Refresh plugin={p} />)
         actions.push(
           <PluginDialog
             key="plugin"
-            plugin={{
-              uuid: p.uuid,
-              key: p.key,
-              name: p.name,
-              needInit: p.needInit,
-              configuration: p.configuration,
-              inUseConfiguration: p.inUseConfiguration
-            }}
+            plugin={p}
             swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
             edit={true}
           />

@@ -89,7 +89,6 @@ const setPluginsData = async (
   userData: Partial<IUser<TUserGet>>
 ): Promise<void> => {
   if (userData.plugins) {
-    //@ts-ignore
     userData.plugins = await decrypt(userData.plugins)
   } else {
     userData.plugins = []

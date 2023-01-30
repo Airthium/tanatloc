@@ -59,7 +59,7 @@ jest.mock('@/models', () => [
   },
   {
     name: 'Name2',
-    category: 'category2',
+    category: ['category2', 'category3'],
     algorithm: 'algorithm2',
     description: 'description2'
   }
@@ -195,7 +195,7 @@ describe('components/project/simulation.Selector', () => {
     const select = screen.getByRole('combobox')
     await act(() => fireEvent.mouseDown(select))
 
-    const option = screen.getAllByText('category2')
+    const option = screen.getAllByText('category')
     await act(() => fireEvent.click(option[1]))
 
     unmount()

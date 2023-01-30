@@ -7,12 +7,11 @@ export interface IPlugin {
   uuid?: string
   key?: string
   category?: string
-  haveInit?: boolean
   client?: {
     name?: string
     description?: string
     models?: IModel[]
-    needInit?: boolean
+    haveInit?: boolean
     needReInit?: boolean
     configuration?: {
       [key: string]: {
@@ -45,7 +44,7 @@ export interface IPlugin {
     lib?: {
       init?: (
         configuration: IClientPlugin['configuration']
-      ) => Promise<{ data: IClientPlugin['data'] }>
+      ) => Promise<{ data: IClientPlugin['data'] } | void>
       computeSimulation: (
         { id }: { id: string },
         scheme: ISimulation['scheme']
@@ -76,7 +75,7 @@ export interface IClientPlugin extends Omit<IPlugin, 'client' | 'server'> {
   name?: IPlugin['client']['name']
   description?: IPlugin['client']['description']
   models?: IPlugin['client']['models']
-  needInit?: IPlugin['client']['needInit']
+  haveInit?: IPlugin['client']['haveInit']
   needReInit?: IPlugin['client']['needReInit']
   configuration?: IPlugin['client']['configuration']
   data?: IPlugin['client']['data']

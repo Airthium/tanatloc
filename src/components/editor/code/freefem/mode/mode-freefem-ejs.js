@@ -1276,7 +1276,7 @@ ace.define(
       this.$getIndent = function (line) {
         return line.match(/^\s*/)[0]
       }
-    }.call(MatchingBraceOutdent.prototype))
+    }).call(MatchingBraceOutdent.prototype)
 
     exports.MatchingBraceOutdent = MatchingBraceOutdent
   }
@@ -1439,7 +1439,7 @@ ace.define(
           return new Range(startRow, startColumn, endRow, line.length)
         }
       }
-    }.call(FoldMode.prototype))
+    }).call(FoldMode.prototype)
   }
 )
 
@@ -1544,7 +1544,7 @@ ace.define(
 
       this.$id = 'ace/mode/javascript'
       this.snippetFileId = 'ace/snippets/javascript'
-    }.call(Mode.prototype))
+    }).call(Mode.prototype)
 
     exports.Mode = Mode
   }
@@ -1633,7 +1633,7 @@ ace.define(
 
       this.$id = 'ace/mode/freefem'
       this.snippetFileId = 'ace/snippets/freefem'
-    }.call(Mode.prototype))
+    }).call(Mode.prototype)
 
     exports.Mode = Mode
   }
@@ -1714,7 +1714,7 @@ ace.define(
     oop.inherits(Mode, FreefemMode)
     ;(function () {
       this.$id = 'ace/mode/ejs'
-    }.call(Mode.prototype))
+    }).call(Mode.prototype)
 
     exports.Mode = Mode
   }

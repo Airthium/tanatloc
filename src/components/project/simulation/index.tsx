@@ -100,6 +100,29 @@ export const _loadModels = (
 }
 
 /**
+ * Is in categories
+ * @param modelCategory Model category(ies)
+ * @param categories Categories
+ * @returns True / false
+ */
+export const _isInCategories = (
+  modelCategory: string | string[],
+  categories?: string[]
+): boolean => {
+  if (!categories || !categories.length) return true
+
+  if (Array.isArray(modelCategory)) {
+    const found = categories.filter((c) => modelCategory.includes(c))
+    if (found.length == categories.length) return true
+    return false
+  } else {
+    if (categories.length === 1 && categories.includes(modelCategory))
+      return true
+    return false
+  }
+}
+
+/**
  * Simulation Selector
  * @param props Props
  * @returns Simulation.Selector
@@ -114,9 +137,11 @@ const Selector = ({
   const [current, setCurrent] = useState<IModel>()
   const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<IModel[]>([])
-  const [categories, setCategories] =
+  const [availableCategories, setAvailableCategories] =
     useState<{ key: string; value: string }[]>()
-  const [category, setCategory] = useState<string>()
+  const [categories, setCategories] = useState<string[]>()
+
+  console.log(categories)
 
   // Models
   useCustomEffect(() => {
@@ -128,10 +153,11 @@ const Selector = ({
     // Categories
     const newCategories = models
       .map((m) => m.category)
+      .flat()
       .filter((value, index, self) => self.indexOf(value) === index)
       .map((c) => ({ key: c, value: c }))
 
-    setCategories(newCategories)
+    setAvailableCategories(newCategories)
   }, [models])
 
   /**
@@ -178,24 +204,25 @@ const Selector = ({
         disabled: true,
         label: (
           <Select
+            mode="multiple"
             css={globalStyle.fullWidth}
-            options={categories}
+            options={availableCategories}
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setCategory}
+            onChange={setCategories}
           />
         )
       }
     ]
 
     models.forEach((model) => {
-      if (!category || model.category === category)
+      if (_isInCategories(model.category, categories))
         items.push({ key: model.algorithm, label: model.name })
     })
 
     return items
-  }, [models, categories, category])
+  }, [models, availableCategories, categories])
 
   // Menu items (user)
   const userMenuItems = useMemo(() => {
@@ -205,24 +232,25 @@ const Selector = ({
         disabled: true,
         label: (
           <Select
+            mode="multiple"
             css={globalStyle.fullWidth}
-            options={categories}
+            options={availableCategories}
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setCategory}
+            onChange={setCategories}
           />
         )
       }
     ]
 
     user?.models.forEach((model) => {
-      if (!category || model.category === category)
+      if (_isInCategories(model.category, categories))
         items.push({ key: model.algorithm, label: model.name })
     })
 
     return items
-  }, [user, categories, category])
+  }, [user, availableCategories, categories])
 
   /**
    * Render

@@ -87,8 +87,7 @@ const style: { [key: string]: SerializedStyles } = {
   }),
   indexImgShadow: css({
     boxShadow:
-      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)',
-    marginTop: '20px !important'
+      '0px 0px 6px -4px rgba(0, 0, 0, 0.12), 0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05)'
   }),
   solveLeft: css({
     paddingLeft: '50px !important',
@@ -125,6 +124,7 @@ const style: { [key: string]: SerializedStyles } = {
     justifyContent: 'space-around',
     columnWidth: '160px',
     columnGap: 0,
+    marginTop: '40px !important',
 
     '> div': {
       breakInside: 'avoid-column',

@@ -205,7 +205,6 @@ const Index = (): JSX.Element => {
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"
-        width={500}
         bodyStyle={{ marginTop: 16 }}
         onClose={setDockerOpenFalse}
       >
@@ -276,7 +275,6 @@ const Index = (): JSX.Element => {
       <Drawer
         open={troubleshootingOpen}
         title="Troubleshooting"
-        width={500}
         bodyStyle={{ marginTop: 16 }}
         onClose={setTroubleshootingOpenFalse}
       >
@@ -346,7 +344,13 @@ const Index = (): JSX.Element => {
                 </Button>
               </Space>
             }
-            right={<img src="images/indexpage/capture1.png" alt="tanatloc" />}
+            right={
+              <img
+                src="images/indexpage/capture1.png"
+                alt="tanatloc"
+                css={style.indexImgShadow}
+              />
+            }
             leftCss={css([style.solveLeft, globalStyleFn.marginBottom(50)])}
           />
 
@@ -479,7 +483,11 @@ const Index = (): JSX.Element => {
             <img
               src="images/indexpage/capture2.png"
               alt="tanatloc"
-              css={css([style.imgShadow, globalStyle.textAlignCenter])}
+              css={css([
+                style.indexImgShadow,
+                globalStyleFn.marginTop(40),
+                globalStyle.textAlignCenter
+              ])}
             />
           </div>
 

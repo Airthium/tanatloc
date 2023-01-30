@@ -97,6 +97,8 @@ const temperature = boundaryConditions.temperature.values ?? []
     int nbIter = Time / dt;
 	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		// Update
+        int percent = 100 * t / Time;
+		appendLog("[" + percent + "%]");
 		t += dt;
 		appendLog("Time: " + t);
 
@@ -123,6 +125,7 @@ const temperature = boundaryConditions.temperature.values ?? []
 	}
 }), 2) -%>
     }
+    appendLog("[100%]");
 
     appendLog("End");
 } catch(...) {

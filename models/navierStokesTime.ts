@@ -263,7 +263,18 @@ const NavierStokesTime: IModel = {
         suffixPattern: '.vtu',
         pattern: 'Result_\\d+.vtu',
         multiplicator: ['parameters', 'time', 'children', '1']
-      }
+      },
+      postprocessing: [
+        {
+          key: 'streamTracer',
+          parameters: [
+            {
+              key: 'Vectors',
+              value: 'Velocity'
+            }
+          ]
+        }
+      ]
     }
   }
 }

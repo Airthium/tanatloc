@@ -3,24 +3,23 @@
 import {
   Box3,
   Color,
-  EdgesGeometry,
+  Float32BufferAttribute,
   Group,
   Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
-  PlaneGeometry,
   Scene,
   Vector3,
   CanvasTexture,
-  LineBasicMaterial,
-  LineSegments,
   SphereGeometry,
   Vector2,
   Raycaster,
   WebGLRenderer,
   PerspectiveCamera,
   BufferGeometry,
-  AmbientLight
+  AmbientLight,
+  ShapeGeometry,
+  Uint32BufferAttribute
 } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 
@@ -35,6 +34,143 @@ export interface INavigationHelperNewSize {
   newOffsetHeight: number
   newWidth: number
   newHeight: number
+}
+
+/**
+ * Shape smooth
+ * @param i Index
+ * @param positions Positions
+ * @param uvs UVs
+ * @param indices Indices
+ * @param geomParam Geometry params
+ * @param posParam Position params
+ */
+const shapeSmooth = (
+  i: number,
+  positions: number[],
+  uvs: number[],
+  indices: number[],
+  { smooth, radius, left, down }: { [key: string]: number },
+  { xc, yc, uc, vc }: { [key: string]: number }
+) => {
+  for (let j = 0; j <= smooth; j++) {
+    const phi = (Math.PI / 2) * (i + j / smooth)
+    const cos = Math.cos(phi)
+    const sin = Math.sin(phi)
+
+    positions.push(xc + radius * cos, yc + radius * sin, 0)
+
+    uvs.push(uc + left * cos, vc + down * sin)
+
+    if (j < smooth) {
+      const idx = (smooth + 1) * i + j + 4
+      indices.push(i, idx, idx + 1)
+    }
+  }
+}
+
+/**
+ * Shape
+ * @param width Width
+ * @param height Height
+ * @param radius Radius
+ * @param smooth Smooth
+ * @returns
+ */
+const shape = (
+  width: number,
+  height: number,
+  radius: number,
+  smooth: number
+): ShapeGeometry => {
+  const innerWidth = width / 2 - radius
+  const innerHeight = height / 2 - radius
+  const left = radius / width
+  const right = (width - radius) / width
+  const down = radius / height
+  const top = (height - radius) / height
+
+  // Positions
+  const positions = [
+    innerWidth,
+    innerHeight,
+    0,
+    -innerWidth,
+    innerHeight,
+    0,
+    -innerWidth,
+    -innerHeight,
+    0,
+    innerWidth,
+    -innerHeight,
+    0
+  ]
+
+  // UVs
+  const uvs = [right, top, left, top, left, down, right, down]
+
+  // Indices
+  const n = [
+    3 * (smooth + 1) + 3,
+    3 * (smooth + 1) + 4,
+    smooth + 4,
+    smooth + 5,
+    2 * (smooth + 1) + 4,
+    2,
+    1,
+    2 * (smooth + 1) + 3,
+    3,
+    4 * (smooth + 1) + 3,
+    4,
+    0
+  ]
+
+  const indices = [
+    n[0],
+    n[1],
+    n[2],
+    n[0],
+    n[2],
+    n[3],
+    n[4],
+    n[5],
+    n[6],
+    n[4],
+    n[6],
+    n[7],
+    n[8],
+    n[9],
+    n[10],
+    n[8],
+    n[10],
+    n[11]
+  ]
+
+  // Smooth
+  for (let i = 0; i < 4; i++) {
+    const xc = i < 1 || i > 2 ? innerWidth : -innerWidth
+    const yc = i < 2 ? innerHeight : -innerHeight
+
+    const uc = i < 1 || i > 2 ? right : left
+    const vc = i < 2 ? top : down
+
+    shapeSmooth(
+      i,
+      positions,
+      uvs,
+      indices,
+      { smooth, radius, left, down },
+      { xc, yc, uc, vc }
+    )
+  }
+
+  // Geometry
+  const geometry = new BufferGeometry()
+  geometry.setIndex(new Uint32BufferAttribute(indices, 1))
+  geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
+  geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2))
+
+  return geometry
 }
 
 /**
@@ -60,8 +196,6 @@ const NavigationHelper = (
 ): INavigationHelper => {
   // Cube color
   const cubeColor = '#d3d3d3'
-  // Edge color
-  const edgeColor = '#ffffff'
   // Text color
   const textColor = '#000000'
   // Highlight color
@@ -86,17 +220,13 @@ const NavigationHelper = (
   ]
 
   // Face geometry
-  const faceGeometry = new PlaneGeometry(
-    size * (1 - corner),
-    size * (1 - corner)
-  )
-
-  // Edge geometry
-  const edgeGeometry = new EdgesGeometry(faceGeometry)
+  const faceSize = size * (1 - corner)
+  const faceRadius = size * corner
+  const faceGeometry = shape(faceSize, faceSize, faceRadius, 20)
 
   // Hemisphere geometry
   const hemisphereGeometry = new SphereGeometry(
-    (size * (1 - corner)) / 2,
+    faceSize / 2,
     10,
     10,
     0,
@@ -124,7 +254,11 @@ const NavigationHelper = (
     texture.needsUpdate = true
 
     // Material
-    const frontMaterial = new MeshBasicMaterial({ map: texture })
+    const frontMaterial = new MeshBasicMaterial({
+      map: texture,
+      transparent: true,
+      opacity: 0.75
+    })
     const backMaterial = new MeshBasicMaterial({
       color: cubeColor
     })
@@ -133,10 +267,6 @@ const NavigationHelper = (
     const frontMesh = new Mesh(faceGeometry, frontMaterial)
     const backMesh = new Mesh(faceGeometry, backMaterial)
     backMesh.rotateY(Math.PI)
-
-    // Edge
-    const edgeMaterial = new LineBasicMaterial({ color: edgeColor })
-    const edgeMesh = new LineSegments(edgeGeometry, edgeMaterial)
 
     // Hemisphere
     const hemisphereMaterial = new MeshBasicMaterial({
@@ -148,7 +278,7 @@ const NavigationHelper = (
 
     // Group
     const faceGroup = new Group() as Group & { normal: Vector3 }
-    faceGroup.add(frontMesh, backMesh, edgeMesh, hemisphereMesh)
+    faceGroup.add(frontMesh, backMesh, hemisphereMesh)
 
     // Orientation
     faceGroup.lookAt(face.normal)

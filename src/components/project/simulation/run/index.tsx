@@ -148,6 +148,7 @@ const Run = ({
   const [running, setRunning] = useState<boolean>(false)
 
   const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
+  const [percent, setPercent] = useState<number>(0)
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -200,9 +201,17 @@ const Run = ({
     } else setRunning(false)
 
     // Steps
-    const newSteps: IFrontSimulationTask[] = []
-    currentSimulation?.tasks?.forEach((task) => {
+    const newSteps: (IFrontSimulationTask & { percent?: number })[] = []
+    currentSimulation?.tasks?.forEach((task, index) => {
       if (!task) return
+
+      if (index === currentSimulation.tasks.length - 1) {
+        const percents =
+          task.log?.match(/[\d\s]{3}\%/g) ?? task.log?.match(/[\d\s]*\%/g)
+        const percent = percents ? parseFloat(percents.pop()) : undefined
+        if (percent) setPercent(percent)
+      }
+
       // Steps
       newSteps[task.index] = {
         index: task.index,
@@ -319,6 +328,8 @@ const Run = ({
               </div>
               <Steps
                 direction="vertical"
+                current={steps.length - 1}
+                percent={percent}
                 items={steps.map((step, index) => ({
                   key: index,
                   title: step.label,

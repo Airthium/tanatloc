@@ -148,7 +148,19 @@ const Step = ({
       {parse(
         step.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
       )}
-      {parse(step.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || '')}
+      {parse(
+        step.log
+          ?.replace(/\n\n/g, '\n')
+          .replace(/\n/g, '<br />')
+          .replace(
+            /Info\s*:/g,
+            '<span style="color: blue; font-weight: bold;">Info: </span>'
+          )
+          .replace(
+            /Error:/g,
+            '<span style="color: red; font-weight: bold;">Error:</span>'
+          ) || ''
+      )}
     </>
   )
 }

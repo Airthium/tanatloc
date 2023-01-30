@@ -16,7 +16,7 @@ const copyThreeAssets = async (): Promise<void> => {
 
   // Copy
   await fs.cp(
-    'node_modules/three/examples/js/libs/draco',
+    'node_modules/three/examples/jsm/libs/draco',
     'public/three/libs/draco',
     { recursive: true }
   )
@@ -45,6 +45,15 @@ const copyMathjaxAssets = async (): Promise<void> => {
  * @description Copy assets
  */
 export const copyAssets = async (): Promise<void> => {
-  await copyThreeAssets()
-  await copyMathjaxAssets()
+  console.info(' == Copy assets == ')
+  try {
+    await copyThreeAssets()
+  } catch (err) {
+    console.warn(' ⚠ Unable to copy ThreeJS assets')
+  }
+  try {
+    await copyMathjaxAssets()
+  } catch (err) {
+    console.warn(' ⚠ Unable to copy MathJax assets')
+  }
 }

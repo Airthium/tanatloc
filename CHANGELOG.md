@@ -1,8 +1,66 @@
+## v1.2.7
+
+- Global:
+  - :arrow_up: Improve model category
+- Client:
+  - :arrow_up: Fix ColorbarHelper labels
+
+## v1.2.6
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :beetle: Rescale fix
+- Algorithm:
+  - :beetle: Sensor workaround
+  - :arrow_up: Navier-Stokes postprocessing
+
+---
+
+## v1.2.5
+
+- Global:
+  - :beetle: New convertes fix
+  - :beetle: Rescale fix
+
+---
+
+## v1.2.4
+
+- Global:
+  - :beetle: Denso fix
+
+---
+
+## v1.2.3
+
+- Global:
+  - :arrow_up: Airthium plugin update
+  - :beetle: ThreeJS bug fix
+  - :no_entry_sign: Remove TODO file, move in Github projects
+  - :beetle: Fix converters (Bug with STEP conversion)
+- Client:
+  - :arrow_up: Add percent indicator in simulation
+  - :beetle: Snapshot fix #293
+  - :beetle: Minor CSS
+  - :arrow_up: Update navigation helper
+
+---
+
+## v1.2.2
+
+- Global:
+  - :arrow_up: Add refresh to plugins
+  - :beetle: Bug fix
+  - :beetle: Install bug fix (ThreeJS libs path change)
+
+---
+
 ## v1.2.1
 
 - Global:
   - :beetle: Code clean
   - :arrow_up: Airthium plugin update
+  - :beetle: Add components surface force for linearElasticity(Time)
 - Plugin:
   - :arrow_up: Add refresh
 

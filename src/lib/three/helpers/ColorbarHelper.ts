@@ -55,7 +55,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * Clean scene (local)
    */
   const clearScene = (): void => {
-    colorScene.children.forEach((group) =>
+    colorScene.children.forEach((group) => {
       group.children.forEach((child) => {
         const label = child as ILabelHelper
         if (label.type === 'LabelHelper') label.dispose()
@@ -65,7 +65,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
         group.remove(child)
       })
-    )
+    })
   }
 
   /**
@@ -85,6 +85,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     sprite.material.rotation = -Math.PI / 2
     sprite.scale.x = 0.2
     sprite.scale.y = 1.2
+    sprite.renderOrder = 1
     sprite.dispose = sprite.material.dispose
     group.add(sprite)
 
@@ -100,19 +101,23 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     let max = NumberHelper(lut.maxV)
 
     const minLabel = LabelHelper(renderer, String(min), {
+      background: 'white',
       position: new Vector3(-0.62, 0, 0),
       width: 512,
       align: 'right'
     })
     minLabel.scale.x = 0.4
     minLabel.scale.y = 2.8
+    minLabel.renderOrder = 0
     const maxLabel = LabelHelper(renderer, String(max), {
+      background: 'white',
       position: new Vector3(0.62, 0, 0),
       width: 512,
       align: 'left'
     })
     maxLabel.scale.x = 0.4
     maxLabel.scale.y = 2.8
+    maxLabel.renderOrder = 0
 
     group.add(minLabel)
     group.add(maxLabel)

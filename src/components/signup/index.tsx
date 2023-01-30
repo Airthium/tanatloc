@@ -4,6 +4,8 @@ import { NextRouter, useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
+import { TOKEN } from '@/config/email'
+
 import { INewUser } from '@/database/user/index'
 
 import { PasswordItem } from '@/components/assets/input'
@@ -60,7 +62,8 @@ export const _onSignup = async (
       type: 'warning'
     })
 
-  router.push('/signup/send')
+  if (TOKEN) router.push('/signup/send')
+  else router.push('/login')
 }
 
 /**
@@ -95,12 +98,6 @@ const Signup = (): JSX.Element => {
   useEffect(() => {
     if (user) router.push('/dashboard')
   }, [user, router])
-
-  // Prefetch
-  useEffect(() => {
-    router.prefetch('/dashboard')
-    router.prefetch('/login')
-  }, [router])
 
   /**
    * On finish

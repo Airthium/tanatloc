@@ -36,12 +36,7 @@ describe('install/copyAssets', () => {
     mockMkdir.mockImplementationOnce(() => {
       throw new Error('mkdir error')
     })
-    try {
-      await copyAssets()
-      expect(true).toBe(false)
-    } catch (err: any) {
-      expect(err.message).toBe('mkdir error')
-    }
+    await copyAssets()
 
     mockMkdir
       .mockImplementationOnce(() => {
@@ -50,21 +45,11 @@ describe('install/copyAssets', () => {
       .mockImplementationOnce(() => {
         throw new Error('mkdir error')
       })
-    try {
-      await copyAssets()
-      expect(true).toBe(false)
-    } catch (err: any) {
-      expect(err.message).toBe('mkdir error')
-    }
+    await copyAssets()
 
     mockCp.mockImplementation(() => {
       throw new Error('cp error')
     })
-    try {
-      await copyAssets()
-      expect(true).toBe(false)
-    } catch (err: any) {
-      expect(err.message).toBe('cp error')
-    }
+    await copyAssets()
   })
 })

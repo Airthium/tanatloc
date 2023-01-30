@@ -63,7 +63,7 @@ const Plugin = ({ plugin }: IProps): JSX.Element => {
           key: plugin.key,
           name: plugin.name,
           description: plugin.description,
-          needInit: plugin.needInit,
+          haveInit: plugin.haveInit,
           configuration: plugin.configuration,
           inUseConfiguration: plugin.inUseConfiguration
         }}

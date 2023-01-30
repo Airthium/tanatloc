@@ -76,7 +76,8 @@ const unknownPPFunction = dimension === 2 ? '[Uppx, Uppy]' : '[Uppx, Uppy, Uppz]
 <%
 const fixed = boundaryConditions.fixed.values ?? []
 const displacement = boundaryConditions.displacement.values ?? []
-const presure = boundaryConditions.presure.values ?? []
+const normalPresure = boundaryConditions.presure.values ?? []
+const componentsPresure = boundaryConditions.componentsPresure.values ?? []
 const rhs = parameters.rightHandSide.children
 const rhsX = rhs[0].value ?? rhs[0].default
 const rhsY = rhs[1].value ?? rhs[1].default
@@ -117,17 +118,27 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 			+ Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 <% } -%>
 		)
-<% for (const p of presure) { -%>
+<% for (const p of normalPresure) { -%>
 		+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
 			(<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
 <% } -%>
+
 <% for (const d of displacement) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
 		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>
 		)
+<% } -%>
+<% for (const p of componentsPresure) { -%>
+	+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+		  (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
+		+ (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
+<% if (dimension !== 2) { -%> 
+		+ (<%- p.values[2].value ?? p.values[2].default -%>) * N.z * Uhz
+<% } -%>
+	)
 <% } -%>
 <% for (const f of fixed) { -%>
 		+ on(<%= f.selected.map(s => s.label).filter(s => s).join(', ') -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
@@ -149,6 +160,8 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	int nbIter = T / dt;
 	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		// Update
+		int percent = 100 * t / T;
+		appendLog("[" + percent + "%]");
 		t += dt;
 		appendLog("Time: " + t);
 
@@ -242,6 +255,7 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 <% } -%>
 	}
 	// End Time loop
+	appendLog("[100%]");
 
 	appendLog("End");
 } catch(...) {

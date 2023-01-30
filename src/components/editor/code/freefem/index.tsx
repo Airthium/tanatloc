@@ -7,19 +7,29 @@ import './mode/mode-freefem-ejs'
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
 
+// TODO
+// - Stay 1 second on keyword to trigger tooltip
+// - Find a way to split JS / FreeFEM
+// - Find a way to make links to doc
+// - Example of function in tooltip
+// - Create JSON with custom descriptions
+// - Display tooltip at the same position wherever function is hovered
+// - Add dark mode
+
+
 /**
  * FreeFEM code
  */
 const FreeFEMCode = (): JSX.Element => {
   // Ref
   const editorRef = useRef<ReactAce>()
-
   // State
   const [tooltipPosition, setTooltipPosition] = useState({
     x: 0,
     y: 0,
     display: false,
-    text: ''
+    text: '',
+    link: <></>
   })
 
   // Data
@@ -44,25 +54,30 @@ const FreeFEMCode = (): JSX.Element => {
     /* istanbul ignore next */
     if (!editorRef.current) return
 
-    const editor = editorRef.current
-    const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
-      event.clientX,
-      event.clientY
-    )
-    const token = editor.editor.session.getTokenAt(
-      textCoords.row,
-      textCoords.column
-    )
-    if (token && token.type === 'support.function') {
-      setTooltipPosition({
-        x: event.clientX,
-        y: event.clientY,
-        display: true,
-        text: `Documentation for ${token.value}`
-      })
-    } else {
-      setTooltipPosition((prevState) => ({ ...prevState, display: false }))
-    }
+    setTimeout(() => {
+      const editor = editorRef.current!
+      const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
+        event.clientX,
+        event.clientY
+      )
+      const token = editor.editor.session.getTokenAt(
+        textCoords.row,
+        textCoords.column
+      )
+
+      if (token && token.type === 'support.function') { // Add JS condition
+        setTooltipPosition({
+          x: event.clientX, // Fixed position here
+          y: event.clientY, // Fixed position here
+          display: true,
+          text: `Documentation for ${token.value} 
+          Link to FreeFEM : `, // Use JSON data ?
+          link: <a href={"https://doc.freefem.org/documentation/" + token.value}>https://doc.freefem.org/documentation/{token.value}</a>
+        })
+      } else {
+        setTooltipPosition((prevState) => ({ ...prevState, display: false }))
+      }
+    }, 1000)
   }, [])
 
   /**
@@ -85,7 +100,7 @@ const FreeFEMCode = (): JSX.Element => {
     if (!editorRef.current) return
 
     const editor = editorRef.current
-    editor.editor.on('mousemove', onMouseMove)
+    editor.editor.on('mousemove', onMouseMove) // Trigger ok, don't need to use another
   }, [onMouseMove])
 
   /**
@@ -114,12 +129,16 @@ const FreeFEMCode = (): JSX.Element => {
             position: 'absolute',
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            backgroundColor: 'white',
-            padding: '5px',
-            border: '1px solid gray'
+            backgroundColor: '#0D1117',
+            padding: '15px',
+            border: '1px solid gray',
+            color:"#fff",
+            fontFamily:"Saira",
+            whiteSpace:"pre-line",
+            fontSize:"18px"
           }}
         >
-          {tooltipPosition.text}
+          {tooltipPosition.text}{tooltipPosition.link}
         </div>
       )}
     </>

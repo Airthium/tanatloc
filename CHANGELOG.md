@@ -1,3 +1,8 @@
+## v1.2.7
+
+- Global:
+  - :arrow_up: Improve model category
+
 ## v1.2.6
 
 - Global:

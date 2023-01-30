@@ -1,6 +1,17 @@
+## v1.2.6
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :beetle: Rescale fix
+- Algorithm:
+  - :beetle: Sensor workaround
+  - :arrow_up: Navier-Stokes postprocessing
+
+---
+
 ## v1.2.5
 
-- Global
+- Global:
   - :beetle: New convertes fix
   - :beetle: Rescale fix
 
@@ -8,7 +19,7 @@
 
 ## v1.2.4
 
-- Global
+- Global:
   - :beetle: Denso fix
 
 ---

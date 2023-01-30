@@ -17,6 +17,7 @@ const LabelHelper = (
   renderer: WebGLRenderer,
   text: string,
   parameters?: {
+    background?: string
     position?: Vector3
     width?: number
     scale?: number
@@ -28,6 +29,10 @@ const LabelHelper = (
   canvas.width = parameters?.width || 256
   canvas.height = 256
   const context = canvas.getContext('2d') as CanvasRenderingContext2D
+  if (parameters?.background) {
+    context.fillStyle = parameters.background
+    context.fillRect(0, 0, canvas.width, canvas.height)
+  }
   context.fillStyle = 'grey'
   context.font = '50px sans-serif'
   context.textAlign = parameters?.align || 'center'

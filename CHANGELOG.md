@@ -2,6 +2,8 @@
 
 - Global:
   - :arrow_up: Improve model category
+- Client:
+  - :arrow_up: Fix ColorbarHelper labels
 
 ## v1.2.6
 

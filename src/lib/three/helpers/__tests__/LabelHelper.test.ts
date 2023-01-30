@@ -4,6 +4,7 @@ import { LabelHelper } from '../LabelHelper'
 
 document.createElement = jest.fn().mockImplementation(() => ({
   getContext: () => ({
+    fillRect: jest.fn,
     fillText: jest.fn
   })
 }))
@@ -25,6 +26,7 @@ describe('lib/three/helpers/LabelHelper', () => {
 
   test('with parameters', () => {
     const label = LabelHelper(renderer, 'text', {
+      background: 'white',
       position: new Vector3(0, 0, 1),
       align: 'right',
       scale: 2

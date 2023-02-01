@@ -63,6 +63,8 @@ const init = async (params?: {
 
   // Restart jobs
   await initJobs()
+
+  console.info('Ready!')
 }
 
 export default init

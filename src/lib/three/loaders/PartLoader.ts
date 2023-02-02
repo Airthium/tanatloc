@@ -21,7 +21,6 @@ import {
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
 import { IGeometryPart } from '@/lib/index.d'
@@ -65,7 +64,6 @@ export interface IPart extends Object3D {
   startSelection: (
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
-    outlinePass: OutlinePass,
     type: ISelectionType
   ) => void
   stopSelection: () => void
@@ -267,9 +265,8 @@ const PartLoader = (
     object.startSelection = (
       renderer: WebGLRenderer,
       camera: PerspectiveCamera,
-      outlinePass: OutlinePass,
       type: ISelectionType
-    ) => startSelection(object, renderer, camera, outlinePass, type)
+    ) => startSelection(object, renderer, camera, type)
     object.stopSelection = () => stopSelection()
     object.getHighlighted = () => highlighted
     object.getSelected = () => selected
@@ -348,7 +345,6 @@ const PartLoader = (
   let selectionType: ISelectionType | null = null
   let selectionRenderer: WebGLRenderer | null = null
   let selectionCamera: PerspectiveCamera | null = null
-  let selectionOutlinePass: OutlinePass | null = null
   let highlighted: { uuid: string; label: number } | null = null
   let selected: { uuid: string; label: number }[] = []
 
@@ -357,22 +353,18 @@ const PartLoader = (
    * @param part Part
    * @param renderer Renderer
    * @param camera Camera
-   * @param outlinePass OutlinePass
    * @param type Type (solid, face)
    */
   const startSelection = (
     part: IPart,
     renderer: WebGLRenderer,
     camera: PerspectiveCamera,
-    outlinePass: OutlinePass,
     type: ISelectionType
   ): void => {
     selectionPart = part
     selectionType = type
     selectionRenderer = renderer
     selectionCamera = camera
-    selectionOutlinePass = outlinePass
-    selectionOutlinePass.selectedObjects = []
     highlighted = null
     selected.length = 0
 
@@ -401,7 +393,6 @@ const PartLoader = (
     selectionPart = null
     selectionRenderer = null
     selectionCamera = null
-    selectionOutlinePass = null
   }
 
   /**
@@ -560,59 +551,6 @@ const PartLoader = (
   }
 
   /**
-   * Add outline pass
-   * @param mesh Mesh
-   * @param selection Selection
-   */
-  const addOutlineOn = (
-    mesh: IPartObject | IPartMesh,
-    selection?: boolean
-  ): void => {
-    if (selection) {
-      const alreadyOutlined = selectionOutlinePass!.selectedObjects.find(
-        (s) => s.userData.uuid === mesh.userData.uuid
-      )
-      if (!alreadyOutlined) selectionOutlinePass!.selectedObjects.push(mesh)
-    } else {
-      const alreadySelected = selected.find(
-        (s) => s.uuid === mesh.userData.uuid
-      )
-      if (!alreadySelected) selectionOutlinePass!.selectedObjects.push(mesh)
-    }
-  }
-
-  /**
-   * Remove outline pass
-   * @param mesh Mesh
-   * @param selection Selection
-   */
-  const removeOutlineOn = (
-    mesh: IPartObject | IPartMesh,
-    selection?: boolean
-  ): void => {
-    if (selection) {
-      const outlinedIndex = selectionOutlinePass!.selectedObjects.findIndex(
-        (s) => s.userData.uuid === mesh.userData.uuid
-      )
-      selectionOutlinePass!.selectedObjects = [
-        ...selectionOutlinePass!.selectedObjects.slice(0, outlinedIndex),
-        ...selectionOutlinePass!.selectedObjects.slice(outlinedIndex + 1)
-      ]
-    } else {
-      const selectedMesh = selected.find((s) => s.uuid === mesh.userData.uuid)
-      if (!selectedMesh) {
-        const outlinedIndex = selectionOutlinePass!.selectedObjects.findIndex(
-          (s) => s.userData.uuid === mesh.userData.uuid
-        )
-        selectionOutlinePass!.selectedObjects = [
-          ...selectionOutlinePass!.selectedObjects.slice(0, outlinedIndex),
-          ...selectionOutlinePass!.selectedObjects.slice(outlinedIndex + 1)
-        ]
-      }
-    }
-  }
-
-  /**
    * Highlight
    * @param uuid Mesh uuid
    */
@@ -626,7 +564,6 @@ const PartLoader = (
         uuid: mesh.userData.uuid,
         label: mesh.userData.label
       }
-      addOutlineOn(mesh)
 
       // Highlight
       if (mesh.type === 'Mesh') {
@@ -654,7 +591,6 @@ const PartLoader = (
 
     if (!mesh) return
 
-    removeOutlineOn(mesh)
     // Check selection
     const index = selected.findIndex((s) => s.uuid === mesh.userData.uuid)
     // Unhighlight
@@ -691,7 +627,6 @@ const PartLoader = (
     const mesh = findObject(selectionPart!, uuid)
     if (mesh) {
       selected.push({ uuid, label: mesh.userData.label })
-      addOutlineOn(mesh, true)
 
       // Select
       if (mesh.type === 'Mesh') {
@@ -722,8 +657,6 @@ const PartLoader = (
       selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
 
     if (mesh) {
-      removeOutlineOn(mesh, true)
-
       // Unselect
       if (mesh.type === 'Mesh') {
         const partMesh = mesh as IPartMesh
@@ -738,9 +671,6 @@ const PartLoader = (
           }
         })
       }
-
-      // To avoid strange face disapear on unselect
-      mesh.visible = true
     }
   }
 

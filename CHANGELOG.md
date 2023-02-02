@@ -4,6 +4,7 @@
   - :arrow_up: Improve model category
 - Client:
   - :arrow_up: Fix ColorbarHelper labels
+  - :arrow_up: Remove OutlinePass (RenderPass & EffectComposer)
 
 ## v1.2.6
 

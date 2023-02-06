@@ -2,6 +2,7 @@
 
 import {
   Box3,
+  BufferAttribute,
   BufferGeometry,
   Color,
   Float32BufferAttribute,
@@ -110,7 +111,7 @@ const loadResult = (object: IPart, clippingPlane: Plane): void => {
   object.traverse((child) => {
     if (child.type === 'Mesh' || child.type === 'Line') {
       const mesh = child as IPartMesh
-      const data = mesh.geometry.getAttribute('data')
+      const data = mesh.geometry.getAttribute('data') as BufferAttribute
       if (data) {
         let min = (data.array as number[]).reduce(
           (m, currentValue) => Math.min(m, currentValue),

@@ -94,12 +94,12 @@ const NotFound = (): JSX.Element => {
         const geometry = cone.geometry
 
         // Color
-        const position = geometry.getAttribute('position')
+        const position = geometry.getAttribute('position') as BufferAttribute
         geometry.setAttribute(
           'color',
           new BufferAttribute(new Float32Array(position.count * 3), 3)
         )
-        const color = geometry.attributes.color
+        const color = geometry.getAttribute('color') as BufferAttribute
         for (let i = 0; i < position.count; ++i) {
           const y = position.getY(i)
           if ((y > 400 && y < 500) || (y > 600 && y < 700)) {

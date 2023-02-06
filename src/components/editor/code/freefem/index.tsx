@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import AceEditor from 'react-ace'
 import ReactAce from 'react-ace/lib/ace'
-import 'ace-builds/src-noconflict/theme-sqlserver'
+import 'ace-builds/src-noconflict/theme-one_dark'
 import './mode/mode-freefem-ejs'
 
 import { EditorContext } from '@/context/editor'
@@ -132,13 +132,14 @@ const FreeFEMCode = (): JSX.Element => {
         width="100%"
         height="calc(100% - 64px)"
         fontSize={16}
-        theme="sqlserver"
+        theme="one_dark"
         mode="freefem-ejs"
         name="freefem_editor"
         value={template?.replace(/\t/g, '    ')}
         editorProps={{ $blockScrolling: true, $showPrintMargin: false }}
         onCursorChange={onCursorChange}
         onChange={onChange}
+        showPrintMargin={false}
       />
 
       {tooltipPosition.display && (

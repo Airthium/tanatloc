@@ -3,8 +3,8 @@
 - Global:
   - :arrow_up: Improve model category
 - Client:
-  - :arrow_up: Fix ColorbarHelper labels
-  - :arrow_up: Remove OutlinePass (RenderPass & EffectComposer)
+  - :beetle: Fix ColorbarHelper labels
+  - :beetle: Remove OutlinePass (RenderPass & EffectComposer)
   - :arrow_up: User doc
 
 ---

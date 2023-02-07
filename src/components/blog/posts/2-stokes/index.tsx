@@ -1,10 +1,11 @@
 /** @module Components.Blog.Posts.2Stokes */
 
-import { Carousel, Typography } from 'antd'
-
-import MathJax from '@/components/assets/mathjax'
+import { Typography } from 'antd'
 
 import PostLayout from '../layout'
+
+import MathJax from '@/components/assets/mathjax'
+import Carousel from '@/components/assets/carousel'
 
 export const key = '2-stokes'
 export const title = "Stokes's problem"
@@ -64,14 +65,20 @@ const Post = () => {
         We will use the same workspace as the previous post
         <Typography.Title level={3}>Project Creation</Typography.Title>
         <p>We will create the Stokes problem project</p>
-        <Carousel effect="fade">
-          <div>
-            <img src="/blog/2-stokes/project1.jpg" alt="Project creation" />
-          </div>
-          <div>
-            <img src="/blog/2-stokes/project2.jpg" alt="Project creation" />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'creation',
+              src: '/blog/2-stokes/project1.jpg',
+              alt: 'Project creation'
+            },
+            {
+              key: 'creation2',
+              src: '/blog/2-stokes/project2.jpg',
+              alt: 'Project creation'
+            }
+          ]}
+        />
       </section>
 
       <section>
@@ -90,14 +97,20 @@ const Post = () => {
           file in your file manager
         </p>
         <p>Here we can see the number of edges</p>
-        <Carousel effect="fade">
-          <div>
-            <img src="/blog/2-stokes/geometry1.jpg" alt="Geometry import" />
-          </div>
-          <div>
-            <img src="/blog/2-stokes/geometry2.jpg" alt="Geometry import" />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'geometry',
+              src: '/blog/2-stokes/geometry1.jpg',
+              alt: 'Geometry import'
+            },
+            {
+              key: 'geometry2',
+              src: '/blog/2-stokes/geometry2.jpg',
+              alt: 'Geometry import'
+            }
+          ]}
+        />
       </section>
 
       <section>
@@ -105,20 +118,20 @@ const Post = () => {
         <p>
           We click on &quot;New Simulation&quot;, select Stokes and create it
         </p>
-        <Carousel effect="fade">
-          <div>
-            <img
-              src="/blog/2-stokes/simulation1.jpg"
-              alt="Simulation creation"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation2.jpg"
-              alt="Simulation creation"
-            />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'simulation',
+              src: '/blog/2-stokes/simulation1.jpg',
+              alt: 'Simulation creation'
+            },
+            {
+              key: 'simulation2',
+              src: '/blog/2-stokes/simulation2.jpg',
+              alt: 'Simulation creation'
+            }
+          ]}
+        />
       </section>
 
       <section>
@@ -131,12 +144,15 @@ const Post = () => {
           As we have only one geometry, it is automatically selected. We will
           keep the mesh refinement automatic and with a normal size.
         </p>
-        <div className="img-container">
-          <img
-            src="/blog/2-stokes/simulation_param_geometry.jpg"
-            alt="Simulation parametrization geometry"
-          />
-        </div>
+        <Carousel
+          items={[
+            {
+              key: 'geoemtry',
+              src: '/blog/2-stokes/simulation_param_geometry.jpg',
+              alt: 'Simulation parametrization geometry'
+            }
+          ]}
+        />
 
         <Typography.Title level={5}>Material</Typography.Title>
         <p>Click on Materials, Add material</p>
@@ -144,60 +160,53 @@ const Post = () => {
           We will select the Water parameters directly in the material database,
           using &apos;Pick a material&apos; button, and select the face
         </p>
-        <Carousel effect="fade">
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_material1.jpg"
-              alt="Simulation parameterization material"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_material2.jpg"
-              alt="Simulation parameterization material"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_material3.jpg"
-              alt="Simulation parameterization material"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_material4.jpg"
-              alt="Simulation parameterization material"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_material5.jpg"
-              alt="Simulation parameterization material"
-            />
-          </div>
-        </Carousel>
-
-        {/*  */}
-        {/*  */}
-        {/*  */}
+        <Carousel
+          items={[
+            {
+              key: 'material',
+              src: '/blog/2-stokes/simulation_param_material1.jpg',
+              alt: 'Simulation parameterization material'
+            },
+            {
+              key: 'material2',
+              src: '/blog/2-stokes/simulation_param_material2.jpg',
+              alt: 'Simulation parameterization material'
+            },
+            {
+              key: 'material3',
+              src: '/blog/2-stokes/simulation_param_material3.jpg',
+              alt: 'Simulation parameterization material'
+            },
+            {
+              key: 'material4',
+              src: '/blog/2-stokes/simulation_param_material4.jpg',
+              alt: 'Simulation parameterization material'
+            },
+            {
+              key: 'material5',
+              src: '/blog/2-stokes/simulation_param_material5.jpg',
+              alt: 'Simulation parameterization material'
+            }
+          ]}
+        />
 
         <Typography.Title level={5}>Parameters</Typography.Title>
         <p>Click on Parameters</p>
         <p>We will keep all default parameters</p>
-        <Carousel effect="fade">
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_parameters1.jpg"
-              alt="Simulation parametrization parameters"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_parameters2.jpg"
-              alt="Simulation parametrization parameters"
-            />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'parameters1',
+              src: '/blog/2-stokes/simulation_param_parameters1.jpg',
+              alt: 'Simulation parametrization parameters'
+            },
+            {
+              key: 'parameters2',
+              src: '/blog/2-stokes/simulation_param_parameters2.jpg',
+              alt: 'Simulation parametrization parameters'
+            }
+          ]}
+        />
 
         <Typography.Title level={5}>Boundary Conditions</Typography.Title>
         <p>Click on Boundary conditions</p>
@@ -215,32 +224,30 @@ const Post = () => {
             }
           />
         </p>
-        <Carousel effect="fade">
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_boundaryconditions1.jpg"
-              alt="Simulation parametrization boundary conditions"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_boundaryconditions2.jpg"
-              alt="Simulation parametrization boundary conditions"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_boundaryconditions3.jpg"
-              alt="Simulation parametrization boundary conditions"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_boundaryconditions4.jpg"
-              alt="Simulation parametrization boundary conditions"
-            />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'bc1',
+              src: '/blog/2-stokes/simulation_param_boundaryconditions1.jpg',
+              alt: 'Simulation parametrization boundary conditions'
+            },
+            {
+              key: 'bc2',
+              src: '/blog/2-stokes/simulation_param_boundaryconditions2.jpg',
+              alt: 'Simulation parametrization boundary conditions'
+            },
+            {
+              key: 'bc3',
+              src: '/blog/2-stokes/simulation_param_boundaryconditions3.jpg',
+              alt: 'Simulation parametrization boundary conditions'
+            },
+            {
+              key: 'bc4',
+              src: '/blog/2-stokes/simulation_param_boundaryconditions4.jpg',
+              alt: 'Simulation parametrization boundary conditions'
+            }
+          ]}
+        />
 
         <Typography.Title level={5}>Run</Typography.Title>
         <p>Click on Run</p>
@@ -248,44 +255,45 @@ const Post = () => {
         <p>
           Finally, we will click on run to start the mesh process and simulation
         </p>
-        <Carousel effect="fade">
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_run1.jpg"
-              alt="Simulation parametrization run"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_run2.jpg"
-              alt="Simulation parametrization run"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_run3.jpg"
-              alt="Simulation parametrization run"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_run4.jpg"
-              alt="Simulation parametrization run"
-            />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'run1',
+              src: '/blog/2-stokes/simulation_param_run1.jpg',
+              alt: 'Simulation parametrization run'
+            },
+            {
+              key: 'run2',
+              src: '/blog/2-stokes/simulation_param_run2.jpg',
+              alt: 'Simulation parametrization run'
+            },
+            {
+              key: 'run3',
+              src: '/blog/2-stokes/simulation_param_run3.jpg',
+              alt: 'Simulation parametrization run'
+            },
+            {
+              key: 'run4',
+              src: '/blog/2-stokes/simulation_param_run4.jpg',
+              alt: 'Simulation parametrization run'
+            }
+          ]}
+        />
 
         <Typography.Title level={5}>Run - Mesh visualization</Typography.Title>
         <p>
           We will click on the closed eye near the Mesh result to display the
           mesh
         </p>
-        <div className="img-container">
-          <img
-            src="/blog/2-stokes/simulation_param_run_mesh.jpg"
-            alt="Simulation parametrization run mesh"
-          />
-        </div>
+        <Carousel
+          items={[
+            {
+              key: 'mesh',
+              src: '/blog/2-stokes/simulation_param_run_mesh.jpg',
+              alt: 'Simulation parametrization run mesh'
+            }
+          ]}
+        />
 
         <Typography.Title level={5}>
           Run - Result visualization
@@ -298,20 +306,20 @@ const Post = () => {
         <p>
           We can disable result mesh visualization using the switch on the right
         </p>
-        <Carousel effect="fade">
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_run_result1.jpg"
-              alt="Simulation parametrization run result"
-            />
-          </div>
-          <div>
-            <img
-              src="/blog/2-stokes/simulation_param_run_result2.jpg"
-              alt="Simulation parametrization run result"
-            />
-          </div>
-        </Carousel>
+        <Carousel
+          items={[
+            {
+              key: 'result1',
+              src: '/blog/2-stokes/simulation_param_run_result1.jpg',
+              alt: 'Simulation parametrization run result'
+            },
+            {
+              key: 'result2',
+              src: '/blog/2-stokes/simulation_param_run_result2.jpg',
+              alt: 'Simulation parametrization run result'
+            }
+          ]}
+        />
       </section>
     </PostLayout>
   )

@@ -71,7 +71,7 @@ const IndexMenu = () => {
    * Scroll to blog
    */
   const scrollToBlog = useCallback(
-    () => window.open('https://tanatloc.com/blog', '_blank', 'noopener'),
+    () => window.open('/blog', '_blank', 'noopener'),
     []
   )
 
@@ -79,7 +79,7 @@ const IndexMenu = () => {
    * Scroll to doc
    */
   const scrollToDoc = useCallback(
-    () => window.open('https://tanatloc.com/doc', '_blank', 'noopener'),
+    () => window.open('/doc', '_blank', 'noopener'),
     []
   )
 

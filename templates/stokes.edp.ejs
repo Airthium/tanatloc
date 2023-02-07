@@ -87,6 +87,7 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 			  Mu * (Grad(U) : Grad(Uh))
 			- p * Div(Uh)
 			- Div(U) * ph
+			- 1.e-9 * p * ph
 		)
 <% for (const d of dirichlet) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>

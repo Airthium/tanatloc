@@ -192,7 +192,7 @@ const style: { [key: string]: SerializedStyles } = {
   steps: css({
     margin: 'auto',
     display: 'grid !important',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr',
     gridTemplateRows: '1fr 1fr',
     rowGap: '25px',
     columnGap: '25px',

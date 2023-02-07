@@ -68,6 +68,22 @@ const IndexMenu = () => {
   )
 
   /**
+   * Scroll to blog
+   */
+  const scrollToBlog = useCallback(
+    () => window.open('https://tanatloc.com/blog', '_blank', 'noopener'),
+    []
+  )
+
+  /**
+   * Scroll to doc
+   */
+  const scrollToDoc = useCallback(
+    () => window.open('https://tanatloc.com/doc', '_blank', 'noopener'),
+    []
+  )
+
+  /**
    * Scroll to case study
    */
   const scrollToCaseStudy = useCallback(() => scrollToView('caseStudy'), [])
@@ -151,6 +167,22 @@ const IndexMenu = () => {
           )
         },
         {
+          key: 'doc',
+          label: (
+            <Button type="text" onClick={scrollToDoc}>
+              Doc
+            </Button>
+          )
+        },
+        {
+          key: 'blog',
+          label: (
+            <Button type="text" onClick={scrollToBlog}>
+              Blog
+            </Button>
+          )
+        },
+        {
           key: 'developers',
           label: (
             <Button type="text" onClick={scrollToDevelopers}>
@@ -178,6 +210,8 @@ const IndexMenu = () => {
       scrollToFeatures,
       scrollToCaseStudy,
       scrollToAboutUs,
+      scrollToDoc,
+      scrollToBlog,
       scrollToDevelopers
     ]
   )

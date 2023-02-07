@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import parse from 'html-react-parser'
+import { css } from '@emotion/react'
 
 import { mathjaxRefresh } from '@/lib/mathjax'
 
@@ -52,7 +53,11 @@ const Inline = ({ text }: IPropsInline): JSX.Element => {
   /**
    * Render
    */
-  return <div ref={element}>{content}</div>
+  return (
+    <div css={css({ display: 'inline-block' })} ref={element}>
+      {content}
+    </div>
+  )
 }
 
 export interface IPropsFormula {

@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@airthium/pg-format": "2.0.2",
-    "@airthium/typedoc-plugin-airthium": "1.0.17",
+    "@airthium/typedoc-plugin-airthium": "1.0.18",
     "@ant-design/icons": "5.0.1",
     "@babel/core": "7.20.12",
     "@emotion/react": "11.10.5",

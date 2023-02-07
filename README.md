@@ -6,7 +6,7 @@
 **See the world the way it really is!**
 
 Tanatloc is a graphical interface for FreeFEM, a powerful PDE solver.<br>
-Run your numerical simulations locally using the provided physics models (linear elasticity, Navier-Stokes, and more) or write your own using the [FreeFEM language](https://freefem.org/) (editor upcoming)!
+Run your numerical simulations locally using the provided physics models (linear elasticity, Navier-Stokes, and more) or write your own using the [FreeFEM language](https://freefem.org/)
 
 Deploy your code on [Qarnot](https://qarnot.com), a low-carbon emissions HPC cloud platform, or [Rescale](https://rescale.com) using our paid HPC plugins.<br> [Get in touch](mailto:contact@airthium.com) with our team to learn more.
 

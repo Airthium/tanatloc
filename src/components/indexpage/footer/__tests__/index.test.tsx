@@ -37,7 +37,7 @@ describe('components/indexpage/footer', () => {
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
 
-    expect(scroll).toHaveBeenCalledTimes(buttons.length - 3)
+    expect(scroll).toHaveBeenCalledTimes(buttons.length - 5)
 
     unmount()
   })

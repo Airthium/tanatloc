@@ -1,6 +1,7 @@
 /** @module Components.Index */
 
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import {
   Avatar,
@@ -398,6 +399,18 @@ const Index = (): JSX.Element => {
                 >
                   Thermal diffusion
                 </Checkbox>
+                <Checkbox
+                  checked
+                  style={{ pointerEvents: 'none', fontSize: '20px' }}
+                >
+                  Modal analysis
+                </Checkbox>
+                <Checkbox
+                  checked
+                  style={{ pointerEvents: 'none', fontSize: '20px' }}
+                >
+                  ...
+                </Checkbox>
               </>
             }
             sideCss={css({ backgroundColor: variables.colorPrimary })}
@@ -546,6 +559,13 @@ const Index = (): JSX.Element => {
 
           <div id="getStarted" css={globalStyleFn.marginBottom(50)}>
             <Typography.Title level={2}>Get started</Typography.Title>
+            <Typography.Text>
+              Complete description in the{' '}
+              <Link href="/doc" target="_blank">
+                documentation
+              </Link>
+            </Typography.Text>
+            <br />
             <br />
             <Steps
               direction="vertical"
@@ -572,22 +592,6 @@ const Index = (): JSX.Element => {
                           everything is working
                         </Button>
                         .
-                      </Typography>
-                    </>
-                  ),
-                  status: 'process'
-                },
-                {
-                  title: 'Disk space',
-                  description: (
-                    <>
-                      <Typography>
-                        Make sure you have at least 10GB of free disk space.
-                      </Typography>
-                      <Typography>
-                        This space is used for the installation only, make sure
-                        you have enough space to store the upcoming simulations
-                        results
                       </Typography>
                     </>
                   ),

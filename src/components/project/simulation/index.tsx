@@ -141,8 +141,6 @@ const Selector = ({
     useState<{ key: string; value: string }[]>()
   const [categories, setCategories] = useState<string[]>()
 
-  console.log(categories)
-
   // Models
   useCustomEffect(() => {
     user && _pluginsList(user, setModels)

@@ -12,10 +12,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/typedoc-plugin-airthium@npm:1.0.17":
-  version: 1.0.17
-  resolution: "@airthium/typedoc-plugin-airthium@npm:1.0.17"
-  checksum: b6959c2d1243eb1e09fce612f8aef9f9532b114f05aa2eb8adc5ea99964162746d3e691a2ea7809dede656779c4c42d4658d32527562d551dbc4318fb49815f1
+"@airthium/typedoc-plugin-airthium@npm:1.0.18":
+  version: 1.0.18
+  resolution: "@airthium/typedoc-plugin-airthium@npm:1.0.18"
+  checksum: 3b46229f98c16a86370dea2faa3bf2856241fe231a747d21cb530e38c0461b9691331e7f609405ee9a91e285758ef2aeadb7277fc9dba6c350e15bf4f522aa59
   languageName: node
   linkType: hard
 
@@ -10267,7 +10267,7 @@ __metadata:
   resolution: "tanatloc@workspace:."
   dependencies:
     "@airthium/pg-format": 2.0.2
-    "@airthium/typedoc-plugin-airthium": 1.0.17
+    "@airthium/typedoc-plugin-airthium": 1.0.18
     "@ant-design/icons": 5.0.1
     "@babel/core": 7.20.12
     "@emotion/react": 11.10.5

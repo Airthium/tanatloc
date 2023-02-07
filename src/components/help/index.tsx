@@ -4,17 +4,10 @@ import { Layout, Space, Typography } from 'antd'
 
 import PageHeader from '@/components/assets/pageHeader'
 
-import Workflow from './doc/workflow'
-import Workspace from './doc/workspace'
-import Project from './doc/project'
-import HPC from './doc/hpc'
-import Administration from './doc/administration'
-import Organizations from './doc/organizations'
-import About from './doc/about'
-
 import dashboardStyle from '@/components/dashboard/index.style'
 import { css } from '@emotion/react'
 import { globalStyle } from '@/styles'
+import Link from 'next/link'
 
 /**
  * Help
@@ -35,25 +28,42 @@ const Help = (): JSX.Element => {
             Help
           </Typography.Title>
         }
-        extra={
-          <a
-            href="https://github.com/Airthium/tanatloc/issues/new/choose"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Open an issue
-          </a>
-        }
       />
       <Layout.Content css={globalStyle.scroll}>
         <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
-          <Workflow />
-          <Workspace />
-          <Project />
-          <HPC />
-          <Organizations />
-          <Administration />
-          <About />
+          <Typography>
+            <Typography.Title level={3}>Documentation</Typography.Title>
+            <Typography.Text>
+              Full interface{' '}
+              <Link href="/doc" target="_blank">
+                Documentation
+              </Link>
+            </Typography.Text>
+          </Typography>
+          <Typography>
+            <Typography.Title level={3}>Bug report</Typography.Title>
+            <Typography.Text>
+              <Link
+                href="https://github.com/Airthium/tanatloc/issues/new/choose"
+                target="_blank"
+              >
+                Open an issue
+              </Link>{' '}
+              on Github
+            </Typography.Text>
+          </Typography>
+          <Typography>
+            <Typography.Title level={3}>Feature request</Typography.Title>
+            <Typography.Text>
+              <Link
+                href="https://github.com/Airthium/tanatloc/issues/new/choose"
+                target="_blank"
+              >
+                Open an issue
+              </Link>{' '}
+              on Github
+            </Typography.Text>
+          </Typography>
         </Space>
       </Layout.Content>
     </Layout>

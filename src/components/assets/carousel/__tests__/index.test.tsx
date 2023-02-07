@@ -31,8 +31,8 @@ describe('components/assets/carousel', () => {
   test('buttons', () => {
     const { unmount } = render(<Carousel items={multipleItems} />)
 
-    const left = screen.getByRole('button', { name: 'arrow-left' })
-    const right = screen.getByRole('button', { name: 'arrow-right' })
+    const left = screen.getByRole('button', { name: 'left' })
+    const right = screen.getByRole('button', { name: 'right' })
     const zoomIn = screen.getByRole('button', { name: 'zoom-in' })
 
     fireEvent.click(left)

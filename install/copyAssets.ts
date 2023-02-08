@@ -3,6 +3,24 @@
 import { promises as fs } from 'fs'
 
 /**
+ * Copy templates
+ * @description Copy templates in `public/templates` for editor
+ */
+const copyTemplates = async (): Promise<void> => {
+  // Create path
+  try {
+    await fs.mkdir('public/templates', { recursive: true })
+  } catch (err: any) {
+    if (err.code !== 'EEXIST') throw err
+  }
+
+  // Copy
+  await fs.cp('templates', 'public/templates', {
+    recursive: true
+  })
+}
+
+/**
  * Copy threejs assets
  * @description Copy threejs assets in `public/three/libs`
  */
@@ -46,6 +64,12 @@ const copyMathjaxAssets = async (): Promise<void> => {
  */
 export const copyAssets = async (): Promise<void> => {
   console.info(' == Copy assets == ')
+  try {
+    await copyTemplates()
+  } catch (err) {
+    console.warn(' ⚠ Unable to copy Templates')
+    console.warn(err)
+  }
   try {
     await copyThreeAssets()
   } catch (err) {

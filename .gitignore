@@ -24,6 +24,7 @@ dist-install
 # public
 /public/three
 /public/mathjax
+/public/templates
 
 # production
 /dist

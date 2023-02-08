@@ -1,6 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react'
 
-import { variables } from '@/styles'
+import { variables, mediaQuery } from '@/styles'
 
 const style: { [key: string]: SerializedStyles } = {
   carouselContainer: css({
@@ -8,7 +8,11 @@ const style: { [key: string]: SerializedStyles } = {
   }),
   carousel: css({
     position: 'relative',
-    width: '50%'
+    width: '50%',
+    [mediaQuery]: {
+      width: '90%',
+      margin: 'auto'
+    }
   }),
   fullCaroussel: css({
     position: 'absolute',
@@ -75,6 +79,9 @@ const style: { [key: string]: SerializedStyles } = {
     svg: {
       color: variables.colorPrimary,
       fontSize: 40
+    },
+    [mediaQuery]: {
+      display: 'none'
     }
   }),
   previous: css({

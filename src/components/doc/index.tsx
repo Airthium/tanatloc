@@ -49,9 +49,9 @@ const Doc = () => {
    */
   const onMenuClick = useCallback(
     ({ keyPath }: { keyPath: string[] }) => {
-      const key = keyPath.pop()
+      let key = keyPath.pop()
+      if (key === 'rc-menu-more') key = keyPath.pop()
       const subKey = keyPath.pop()
-      console.log(subKey)
 
       switch (key) {
         case 'installation':
@@ -274,14 +274,14 @@ const Doc = () => {
         </a>
       </Layout.Header>
       <Layout>
-        <Layout.Sider css={style.sider}>
-          <Typography.Title level={3}>Menu</Typography.Title>
+        <Layout.Header css={style.menu}>
           <Menu
+            mode="horizontal"
             selectedKeys={[(query.section as string) || 'introduction']}
             onClick={onMenuClick}
             items={menuItems}
           />
-        </Layout.Sider>
+        </Layout.Header>
         <Layout.Content css={css([globalStyle.scroll, style.content])}>
           {content ? (
             content

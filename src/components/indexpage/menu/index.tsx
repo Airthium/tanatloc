@@ -8,8 +8,8 @@ import { css } from '@emotion/react'
 
 import UserAPI from '@/api/user'
 
-import { globalStyle } from '@/styles'
-import style, { mediaQuery } from '../index.style'
+import { globalStyle, mediaQuery } from '@/styles'
+import style from '../index.style'
 import { useCallback, useMemo } from 'react'
 
 /**

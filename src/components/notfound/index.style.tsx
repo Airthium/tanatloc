@@ -1,8 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react'
 import { variables } from '@/styles'
 
-export const mediaQuery = `@media all and (max-width: 1100px)`
-
 const style: { [key: string]: SerializedStyles } = {
   index: css({
     display: 'block',

@@ -1,5 +1,6 @@
-import { variables } from '@/styles'
 import { css, SerializedStyles } from '@emotion/react'
+
+import { mediaQuery, variables } from '@/styles'
 
 const style: { [key: string]: SerializedStyles } = {
   header: css({
@@ -17,6 +18,24 @@ const style: { [key: string]: SerializedStyles } = {
       margin: 0,
       marginLeft: '20px',
       marginRight: 'auto'
+    },
+    [mediaQuery]: {
+      flexDirection: 'column',
+      padding: '10px 20px',
+      height: 'unset !important',
+      marginBottom: '0 !important',
+
+      '.ant-typography': {
+        margin: 0,
+        marginTop: -25,
+        fontSize: 50,
+        color: variables.colorPrimary
+      },
+
+      a: {
+        marginTop: -45,
+        alignSelf: 'flex-end'
+      }
     }
   }),
   github: css({
@@ -32,14 +51,26 @@ const style: { [key: string]: SerializedStyles } = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '64px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    [mediaQuery]: {
+      padding: '10px 8px'
+    }
   }),
-  sider: css({
+  menu: css({
     background: 'none !important',
-    padding: '0 20px 50px 20px'
+    height: 'unset !important',
+    marginBottom: '20px',
+    [mediaQuery]: {
+      padding: '10px 10px 10px',
+      paddingInline: 'unset !important',
+      marginBottom: 0
+    }
   }),
   content: css({
-    padding: '0 50px 50px 50px'
+    padding: '0 50px 50px 50px',
+    [mediaQuery]: {
+      padding: '10px'
+    }
   }),
   text: css({
     marginTop: '10px',

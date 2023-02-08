@@ -1,0 +1,1325 @@
+{
+    "function": {
+       "abs": {
+          "definition": "Return the absolute value.",
+          "example": "real a = abs(b);\n",
+          "params": [
+             "b (int, real, complex, fespace function, real[int] or real[int, int])"
+          ],
+          "output": [
+             "a (int, real, real[int] or real[int, int])"
+          ]
+       },
+       "acos": {
+          "definition": "\\(\\arccos\\) function.",
+          "example": "real theta = acos(x);\n",
+          "params": [
+             "x (real, real[int] or real[int, int])"
+          ],
+          "output": [
+             "theta (real, real[int] or real[int, int])"
+          ]
+       },
+       "acosh": {
+          "definition": "Parameter:",
+          "example": "real theta = acosh(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "theta (real)"
+          ]
+       },
+       "adaptmesh": {
+          "definition": "Mesh adaptation function.",
+          "example": "mesh Thnew = adaptmesh(Th, [fx, fy], hmin=HMin, hmax=HMax, err=Err, errg=ErrG, nbvx=NbVx, nbsmooth=NbSmooth, nbjacoby=NbJacoby, ratio=Ratio, omega=Omega, iso=Iso, abserror=AbsError, cutoff=CutOff, verbosity=Verbosity, inquire=Inquire, splitpbedge=SplitPbEdge, maxsubdiv=MaxSubdiv, rescaling=Rescaling, keepbackvertices=KeepBackVertices, IsMetric=isMetric, power=Power, thetamax=ThetaMax, splitin2=SplitIn2, metric=Metric, nomeshgeneration=NoMeshGeneration, periodic=Periodic);\n",
+          "params": [
+             "Th (mesh) Mesh to refine",
+             "[fx, fy] (func or fespace function), scalar or vectorial Function to follow for the mesh adaptation",
+             "hmin= (real) Minimum edge size",
+             "hmax= (real) Maximum edge size",
+             "err= (real) Error level (P1 interpolation)",
+             "errg= (real) Relative geometrical error",
+             "nbvx= (int) Maximum number of vertices",
+             "nbsmooth= (int) Number of smoothing iterations",
+             "nbjacoby= (int) Number of iterations for the smoothing procedure",
+             "ratio= (real) Ratio of the triangles",
+             "omega= (real) Relaxation parameter for the smoothing procedure",
+             "iso= (bool) Isotropic adaptation (if true)",
+             "abserror= (bool) Error (if true) - Relative error (if false)",
+             "cutoff= (real) Lower limit of the relative error evaluation",
+             "verbosity= (real) Verbosity level",
+             "inquire= (bool) If true, inquire graphically",
+             "splitpbedge= (bool) If true, split all internal edges in half",
+             "maxsubdiv= (int) Bound the maximum subdivisions",
+             "rescaling= (bool) Rescale the function in [0, 1]",
+             "keepbackvertices= (bool) If true, try to keep vertices of the original mesh",
+             "IsMetric= (bool) If true, the metric is defined explicitly",
+             "power= (int) Exponent of the Hessian",
+             "thetamax= (int) Minimum corner angle (in degree)",
+             "splitin2= (bool) Split all triangles into 4 sub-triangles if true",
+             "metric= ([real[int], real[int], real[int]]) Array of 3 real arrays defining the metric",
+             "nomeshgeneration= (bool) If true, the mesh is not generated",
+             "periodic= (real[int, int]) Build an adapted periodic mesh"
+          ],
+          "output": [
+             "Thnew (mesh or mesh3)"
+          ]
+       },
+       "adj": {
+          "definition": "Adjacent triangle of the triangle \\(k\\) by the edge \\(e\\)",
+          "example": "int T = Th[k].adj(e);\n",
+          "params": [
+             "e (int) Edge number"
+          ],
+          "output": [
+             "T (int) Triangle number"
+          ]
+       },
+       "affinecg": {
+          "definition": "Affine conjugate gradient solver",
+          "example": "int Conv = AffineCG(A, x, precon=Precon, nbiter=NbIter, eps=Eps, veps=VEps, stop=Stop);\n",
+          "params": [
+             "A (matrix) Matrix of the problem \\(Ax=b\\)",
+             "x (real[int]) Solution vector",
+             "precon= (real[int]) Preconditionning function",
+             "nbiter= (int) Maximum number of iterations",
+             "eps= (real)",
+             "veps= (real) Same as eps, but return -eps",
+             "stop= (func) Convergence criterion as a function"
+          ],
+          "output": [
+             "Conv (int) 0: converged - !0: not converged"
+          ]
+       },
+       "affinegmres": {
+          "definition": "Affine GMRES solver",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "arg": {
+          "definition": "Return the argument of a complex number.",
+          "example": "real a = arg(c);\n",
+          "params": [
+             "c (complex)"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "asin": {
+          "definition": "\\(\\arcsin\\) function.",
+          "example": "real theta = asin(x);\n",
+          "params": [
+             "x (real, real[int] or real[int, int])"
+          ],
+          "output": [
+             "theta (real, real[int] or real[int, int])"
+          ]
+       },
+       "asinh": {
+          "definition": "Parameter:",
+          "example": "real theta = asinh(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "theta (real)"
+          ]
+       },
+       "assert": {
+          "definition": "Verify if a condition is true (same as C), if not the program stops.",
+          "example": "assert(x==0)\n",
+          "params": [
+             "Boolean condition"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "atan": {
+          "definition": "\\(\\arctan\\) function.",
+          "example": "real theta = atan(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "theta (real)"
+          ]
+       },
+       "atan2": {
+          "definition": "\\(\\displaystyle{\\arctan\\left(\\frac{y}{x}\\right)}\\) function, returning the correct sign for \\(\\theta\\).",
+          "example": "real theta = atan2(y, x)\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "theta (real)"
+          ]
+       },
+       "atanh": {
+          "definition": "Parameter:",
+          "example": "real theta = atanh(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "theta (real)"
+          ]
+       },
+       "atoi": {
+          "definition": "Convert a string to an interger.",
+          "example": "int a = atoi(s);\n",
+          "params": [
+             "s (string)"
+          ],
+          "output": [
+             "a (int)"
+          ]
+       },
+       "atof": {
+          "definition": "Convert a string to a real.",
+          "example": "real a = atof(s);\n",
+          "params": [
+             "s (string)"
+          ],
+          "output": [
+             "a (real)"
+          ]
+       },
+       "bfgs": {
+          "definition": "Todo",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "buildmesh": {
+          "definition": "Build a 2D mesh using border elements.",
+          "example": "mesh Th = buildmesh(b1(nn) + b2(nn) + b3(nn) + b4(nn),[points=Points], ][nbvx=Nbvx], [fixedborder=FixedBorder]);\n",
+          "params": [
+             "b1, b2, b3, b4 (border)",
+             "points (real[int, int]) [Optional]",
+             "nbvx= (int) [Optional]",
+             "fixedborder= (bool) [Optional]"
+          ],
+          "output": [
+             "Th (mesh) Resulting mesh"
+          ]
+       },
+       "ceil": {
+          "definition": "Round fractions up of \\(x\\).",
+          "example": "int c = ceil(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "c (int)"
+          ]
+       },
+       "change": {
+          "definition": "Change a property of a mesh.",
+          "example": "int[int] L = [0, 1];\n2Thnew = change(Th, label=L);\n",
+          "params": [
+             "Th (mesh) Original mesh",
+             "label= L (int[int]) Pair of old and new label",
+             "region= R (int[int]) Pair of old and new region",
+             "flabel= l (func int) Function of int given the new label",
+             "fregion= r (func int) Function of int given the new region"
+          ],
+          "output": [
+             "Thnew (mesh) Mesh with changed\nparameters"
+          ]
+       },
+       "checkmovemesh": {
+          "definition": "Check a movemesh without mesh generation.",
+          "example": "real minT = checkmovemesh(Th, [Dx, Dy]);\n",
+          "params": [
+             "minT (real) Minimum triangle area"
+          ],
+          "output": []
+       },
+       "chi": {
+          "definition": "Characteristic function of a mesh.",
+          "example": "int IsInMesh = chi(Th)(x, y);\n",
+          "params": [
+             "Th (mesh or mesh3)",
+             "x (real) Position \\(x\\)",
+             "y (real) Position \\(y\\)"
+          ],
+          "output": [
+             "IsInMesh (int) 1 if \\((x,y)\\in\\) Th 0 if\n\\((x,y)\\not\\in\\) Th"
+          ]
+       },
+       "clock": {
+          "definition": "Get the clock in second.",
+          "example": "real t = clock();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "t (real) Current CPU time"
+          ]
+       },
+       "complexeigenvalue": {
+          "definition": "Same as EigenValue for complex problems.",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "conj": {
+          "definition": "Caculate the conjuguate of a complex number.",
+          "example": "complex C1 = 1 + 1i;\n2complex C2 = conj(C1);\n",
+          "params": [
+             "C1 (complex) Complex number"
+          ],
+          "output": [
+             "C2 (complex) Conjuguate of C1"
+          ]
+       },
+       "convect": {
+          "definition": "Characteristics Galerkin method.",
+          "example": "real cgm = convect([Ux, Uy], dt, c);\n2real cgm = convect([Ux, Uy, Uz], dt, c);\n",
+          "params": [
+             "ux (fespace function) Velocity: \\(x\\) component",
+             "uy (fespace function) Velocity: \\(y\\) component",
+             "uz (fespace function) 3D only",
+             "dt (real) Time step",
+             "c (fespace function) Function to convect"
+          ],
+          "output": [
+             "cgm (real) Result"
+          ]
+       },
+       "copysign": {
+          "definition": "C++ copysign function.",
+          "example": "real s = copysign(a, b);\n",
+          "params": [],
+          "output": []
+       },
+       "cos": {
+          "definition": "\\(\\cos\\) function.",
+          "example": "real x = cos(theta);\n",
+          "params": [
+             "theta (real or complex)"
+          ],
+          "output": [
+             "x (real or complex)"
+          ]
+       },
+       "cosh": {
+          "definition": "\\(\\cosh\\) function.",
+          "example": "real x = cosh(theta);\n",
+          "params": [
+             "theta (real)"
+          ],
+          "output": [
+             "x (real)"
+          ]
+       },
+       "diffnp": {
+          "definition": "Arithmetic useful function.",
+          "example": "diffnp(a, b) = (a<0)&(0<b) ? (b-a) : 0;\n",
+          "params": [],
+          "output": []
+       },
+       "diffpos": {
+          "definition": "Arithmetic useful function.",
+          "example": "diffpos(a, b) = max(b-a, 0);\n",
+          "params": [],
+          "output": []
+       },
+       "dist": {
+          "definition": "Arithmetic useful function.",
+          "example": "dist(a, b) = sqrt(a^2 + b^2);\n2dist(a, b, c) = sqrt(a^2 + b^2 + c^2);\n",
+          "params": [],
+          "output": []
+       },
+       "dumptable": {
+          "definition": "Show all types, operators and functions in FreeFEM.",
+          "example": "dumptable(out);\n",
+          "params": [
+             "out (ostream) cout of ofstream file."
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "dx": {
+          "definition": "\\(x\\) derivative.",
+          "example": "Uh up = dx(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "up (fespace function)"
+          ]
+       },
+       "dxx": {
+          "definition": "\\(x\\) double derivative.",
+          "example": "Uh upp = dxx(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dxy": {
+          "definition": "\\(xy\\) derivative.",
+          "example": "Uh upp = dxy(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dxz": {
+          "definition": "\\(xz\\) derivative.",
+          "example": "Uh upp = dxz(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dy": {
+          "definition": "\\(y\\) derivative.",
+          "example": "Uh up = dy(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dyx": {
+          "definition": "\\(yx\\) derivative.",
+          "example": "Uh upp = dyx(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dyy": {
+          "definition": "\\(y\\) double derivative.",
+          "example": "Uh upp = dyy(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dyz": {
+          "definition": "\\(yz\\) derivative.",
+          "example": "Uh upp = dyz(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dz": {
+          "definition": "\\(z\\) derivative.",
+          "example": "Uh up = dz(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dzx": {
+          "definition": "\\(zx\\) derivative.",
+          "example": "Uh upp = dzx(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dzy": {
+          "definition": "\\(zy\\) derivative.",
+          "example": "Uh upp = dzy(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "dzz": {
+          "definition": "\\(z\\) double derivative.",
+          "example": "Uh upp = dzz(u);\n",
+          "params": [
+             "u (fespace function)"
+          ],
+          "output": [
+             "upp (fespace function)"
+          ]
+       },
+       "eigenvalue": {
+          "definition": "Compute the generalized eigenvalue of \\(Au=\\lambda Bu\\).\nThe shifted-inverse method is used by default with sigma=\\(\\sigma\\), the shift of the method.\nThe function EigenValue can be used for either matrices or functions returning a matrix vector product.\nThe use of the matrix version is shown below.",
+          "example": "int k = EigenValue(A,B,nev= , sigma= );\n",
+          "params": [
+             "A, B: matrices of same size",
+             "nev=n: number of desired eigenvalues given by an integer n",
+             "sym=: the problem is symmetric or not",
+             "tol=: the relative accuracy to which eigenvalues are to be determined",
+             "value=: an array to store the real part of the eigenvalues",
+             "ivalue=: an array to store the imaginary part of the eigenvalues",
+             "vector=: a Finite Element function array to store the eigenvectors",
+             "sigma=: the shift value",
+             "Other parameters are available for more advanced use: see the ARPACK documentation."
+          ],
+          "output": []
+       },
+       "emptymesh": {
+          "definition": "Build an empty mesh.",
+          "example": "mesh eTh = emptymesh(Th, ssd);\n",
+          "params": [
+             "Th (mesh) Mesh to empty",
+             "ssd (int[int]) Pseudo subregion label"
+          ],
+          "output": [
+             "eTh (mesh) Empty mesh"
+          ]
+       },
+       "erf": {
+          "definition": "The error function:",
+          "example": "real err = erf(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "err (real)"
+          ]
+       },
+       "erfc": {
+          "definition": "Complementary of the error function:",
+          "example": "real errc = erfc(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "err (real)"
+          ]
+       },
+       "exec": {
+          "definition": "Execute an external command.",
+          "example": "int v = exec(command);\n",
+          "params": [
+             "command (string) Command to execute"
+          ],
+          "output": [
+             "v (int) Value returned by the command"
+          ]
+       },
+       "exit": {
+          "definition": "Exit function, equivalent to return.",
+          "example": "exit(N);\n",
+          "params": [
+             "N (int) Return value"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "exp": {
+          "definition": "Exponential function.",
+          "example": "real a = exp(b);\n",
+          "params": [
+             "b (real or complex)"
+          ],
+          "output": [
+             "a (real or complex)"
+          ]
+       },
+       "fdim": {
+          "definition": "Positive difference (cmath function).",
+          "example": "real fd = fdim(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "fd (real) If \\(x > y\\), return \\(x-y\\)If \\(x \\leq y\\), return \\(0\\)"
+          ]
+       },
+       "floor": {
+          "definition": "Floor function.",
+          "example": "real a = floor(b);\n",
+          "params": [
+             "b (real)"
+          ],
+          "output": [
+             "a (real)"
+          ]
+       },
+       "fmax": {
+          "definition": "Maximum (cmath function).",
+          "example": "real Max = fmax(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "Max (real)"
+          ]
+       },
+       "fmin": {
+          "definition": "Minimum (cmath function).",
+          "example": "real Min = fmin(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "Min (real)"
+          ]
+       },
+       "fmod": {
+          "definition": "Remainder of \\(a/b\\) (cmath function).",
+          "example": "real Mod = fmod(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "Mod (real)"
+          ]
+       },
+       "imag": {
+          "definition": "Imaginary part of a complex number.",
+          "example": "complex c = 1. + 1i;\n2real Im = imag(c);\n",
+          "params": [],
+          "output": []
+       },
+       "int1d": {
+          "definition": "1D integral.",
+          "example": "int1d(Th, [Label], [qfe=Qfe], [qforder=Qforder])(\n2    ...\n3)\n",
+          "params": [
+             "Th (mesh) Mesh where the integral is calculated",
+             "Label (int) [Optional]",
+             "qfe= (quadrature formula) [Optional]  (qf3E by default)",
+             "qforder= (quadrature formula) [Optional]"
+          ],
+          "output": [
+             "Depending on the situation: In a problem, solve or varf definition: Non relevant."
+          ]
+       },
+       "int2d": {
+          "definition": "2D integral.",
+          "example": "int2d(Th, [Region], [qft=Qft], [qforder=Qforder])(\n2    ...\n3)\n",
+          "params": [
+             "Th (mesh,  mesh3 ,  meshS`or :freefem:`meshL) Mesh where the integral is calculated",
+             "Region (int) [Optional] Label of the 2D region (2D simulation or Surface simulation) Default: all regions of the mesh",
+             "Label (int) [Optional] Label of the 2D border (3D simulation) Default: all borders of the mesh",
+             "qft= (quadrature formula) [Optional]  (qf5T by default)",
+             "qforder= (quadrature formula) [Optional]"
+          ],
+          "output": [
+             "Depending on the situation: In a problem, solve or varf definition: Non relevant. Outside: real (example: real s = int2d(Th, 1)(1.);)."
+          ]
+       },
+       "int3d": {
+          "definition": "3D integral.",
+          "example": "int3d(Th, [Region], [qfV=QfV], [qforder=Qforder])(\n2    ...\n3)\n",
+          "params": [
+             "Th (mesh3) Mesh where the integral is calculated",
+             "Region (int) [Optional]",
+             "qfV= (quadrature formula) [Optional]  (qf5V by default)",
+             "qforder= (quadrature formula) [Optional]"
+          ],
+          "output": [
+             "Depending on the situation: In a problem, solve or varf definition: Non relevant. Outside: real (example: real v = int3d(Th, 1)(1.);)."
+          ]
+       },
+       "intalledges": {
+          "definition": "Integral on all edges.",
+          "example": "intalledges(Th, [Region])(\n2    ...\n3)\n",
+          "params": [
+             "Th (mesh) Mesh where the integral is calculated",
+             "Region (int) [Optional]"
+          ],
+          "output": [
+             "Non relevant"
+          ]
+       },
+       "intallfaces": {
+          "definition": "Intergal on all faces.",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "interpolate": {
+          "definition": "Interpolation operator from a finite element space to another.",
+          "example": "matrix I = interpolate(Wh, Vh, [inside=Inside], [t=T], [op=Op], [U2Vc=U2VC]);\n",
+          "params": [
+             "Wh (fespace) Target finite element space",
+             "Vh (fespace) Original finite element space",
+             "inside= (bool) If true, create a zero extension outside the Vh domain",
+             "t= (bool) If true, return the transposed matrix",
+             "op= (int) 0: interpolate the function (default value) 1: interpolate \\(\\partial_x\\) 2: interpolate \\(\\partial_y\\) 3: interpolate \\(\\partial_z\\)",
+             "U2Vc= (int[int]) Array of the same size of Wh describing which component of Vhis interpolated in Wh"
+          ],
+          "output": [
+             "I (matrix) Interpolation matrix operator"
+          ]
+       },
+       "invdiff": {
+          "definition": "Arithmetic useful function.",
+          "example": "invdiff(a, b) = (abs(a-b) < 10^(-30)) ? (a-b) : 1/(a-b)\n2invdiff(a, b, e) = (abs(a-b) < e) ? (a-b) : 1/(a-b)\n",
+          "params": [],
+          "output": []
+       },
+       "invdiffnp": {
+          "definition": "Arithmetic useful function.",
+          "example": "invdiffnp(a, b) = (a<0)&(0<b) ? 1/(b-a) : 0\n",
+          "params": [],
+          "output": []
+       },
+       "invdiffpos": {
+          "definition": "Arithmetic useful function.",
+          "example": "invdiffpos(a, b) = (a<b) ? 1./(b-a) : 0\n",
+          "params": [],
+          "output": []
+       },
+       "isinf": {
+          "definition": "The C++ isInf function.",
+          "example": "bool b = isInf(a);\n",
+          "params": [],
+          "output": []
+       },
+       "isnan": {
+          "definition": "The C++ isNan function.",
+          "example": "bool b = isNaN(a);\n",
+          "params": [],
+          "output": []
+       },
+       "isnormal": {
+          "definition": "The C++ isNormal function.",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "j0": {
+          "definition": "Bessel function of first kind, order 0.",
+          "example": "real b = j0(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "b (real)"
+          ]
+       },
+       "j1": {
+          "definition": "Bessel function of first kind, order 1.",
+          "example": "real b = j1(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "b (real)"
+          ]
+       },
+       "jn": {
+          "definition": "Bessel function of first kind, order n.",
+          "example": "real b = jn(n, x);\n",
+          "params": [
+             "n (int)",
+             "x (real)"
+          ],
+          "output": [
+             "b (real)"
+          ]
+       },
+       "jump": {
+          "definition": "Jump function across an edge.",
+          "example": "intalledges(\n2    ... jump(c) ...\n3)\n",
+          "params": [
+             "c (fespace function) Discontinuous function"
+          ],
+          "output": [
+             "Non relevant"
+          ]
+       },
+       "linearcg": {
+          "definition": "Linear CG solver",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "lineargmres": {
+          "definition": "Linear GMRES solver",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "lgamma": {
+          "definition": "Natural logarithm of the absolute value of the \\(\\Gamma\\) function of \\(x\\).",
+          "example": "real lg = lgamma(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "lg (real)"
+          ]
+       },
+       "log": {
+          "definition": "Natural logarithm.",
+          "example": "real l = log(x);\n",
+          "params": [
+             "x (real or complex)"
+          ],
+          "output": [
+             "l (real or complex)"
+          ]
+       },
+       "log10": {
+          "definition": "Common logarithm.",
+          "example": "real l = log10(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "l (real)"
+          ]
+       },
+       "lrint": {
+          "definition": "Integer value nearest to \\(x\\).",
+          "example": "int l = lrint(a);\n",
+          "params": [
+             "a (real)"
+          ],
+          "output": [
+             "l (int)"
+          ]
+       },
+       "lround": {
+          "definition": "Round a value, and return an integer value.",
+          "example": "int l = lround(a);\n",
+          "params": [
+             "a (real)"
+          ],
+          "output": [
+             "l (int)"
+          ]
+       },
+       "ltime": {
+          "definition": "Return the current time since the Epcoh.",
+          "example": "int t = ltime();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "t (int)"
+          ]
+       },
+       "max": {
+          "definition": "Maximum value of two, three or four values.",
+          "example": "real m = max(a, b);\n2real m = max(a, b, c);\n3real m = max(a, b, c, d);\n",
+          "params": [
+             "a (int or real)",
+             "b (int or real)",
+             "c (int or real) [Optional]",
+             "d (int or real) [Optional]"
+          ],
+          "output": [
+             "b (int or real)"
+          ]
+       },
+       "min": {
+          "definition": "Minimum value of two, three or four values.",
+          "example": "real m = min(a, b);\n2real m = min(a, b, c);\n3real m = min(a, b, c, d);\n",
+          "params": [
+             "a (int or real)",
+             "b (int or real)",
+             "c (int or real) [Optional]",
+             "d (int or real) [Optional]"
+          ],
+          "output": [
+             "b (int or real)"
+          ]
+       },
+       "movemesh": {
+          "definition": "Move a mesh.",
+          "example": "mesh MovedTh = movemesh(Th, [Dx, Dy]);\n2mesh3 MovedTh = movemesh(Th, [Dx, Dy, Dz], [region=Region], [label=Label], [facemerge=FaceMerge], [ptmerge=PtMerge], [orientation=Orientation]);\n",
+          "params": [
+             "Th (mesh of mesh3) Mesh to move",
+             "Dx (fespace function) Displacement along \\(x\\)",
+             "Dy (fespace function) Displacement along \\(y\\)",
+             "Dz (fespace function) 3D only",
+             "region= (int) [Optional] 3D only",
+             "label= (int[int]) [Optional] 3D only",
+             "facemerge= (int) [Optional] 3D only",
+             "ptmerge= (real) [Optional] 3D only",
+             "orientation= (int) [Optional] 3D only"
+          ],
+          "output": [
+             "MovedTh (mesh or mesh3) Moved mesh"
+          ]
+       },
+       "nan": {
+          "definition": "C++ nan function.",
+          "example": "real n = NaN([String]);\n",
+          "params": [
+             "String (string) Default: \"\""
+          ],
+          "output": []
+       },
+       "nlcg": {
+          "definition": "Non-linear conjugate gradient.",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "on": {
+          "definition": "Dirichlet condition function.",
+          "example": "problem (u, v)\n2    ...\n3    + on(Label, u=uD)\n4    ...\n",
+          "params": [
+             "Label (int or border in 2D)",
+             "uD (fespace function, func or real or int)"
+          ],
+          "output": [
+             "Non relevant"
+          ]
+       },
+       "plot": {
+          "definition": "Plot meshes and results.",
+          "example": "plot([Th], [u], [[Ux, Uy, Uz]], [wait=Wait], [ps=PS], [coef=Coef], [fill=Fill], cmm=[Cmm], [value=Value], [aspectratio=AspectRatio], [bb=Bb], [nbiso=NbIso], [nbarrow=NbArrow], [viso=VIso], [varrow=VArrow], [bw=Bw], [grey=Grey], [hsv=Hsv], [boundary=Boundary], [dim=Dim], [prev=Prev], [WindowIndex=WI]);\n",
+          "params": [
+             "Th (mesh or mesh3) Mesh to display",
+             "u (fespace function) Scalar fespace function to display",
+             "[Ux, Uy] / [Ux, Uy, Uz] (fespace function array) Vectorial fespace function to display",
+             "[Ux, Uy] ([real[int], real[int]]) Couple a real array to display a curve",
+             "wait= (bool) If true, wait before continue",
+             "ps= (string) Name of the file to save the plot (.ps or .eps format)",
+             "coef= (real) Arrow size",
+             "fill= (bool) If true, fill color between isovalue (usable with scalar fespace function only)",
+             "cmm= (string) Text comment in the graphic window",
+             "value= (bool) If true, show the value scale",
+             "aspectratio= (bool) If true, preserve the aspect ratio",
+             "bb= ([real[int], real[int]]) Specify a bounding box using two corner points",
+             "nbiso= (int) Number of isovalues",
+             "nbarrow= (int) Number of colors of arrows values",
+             "viso= (real[int]) Specify an array of isovalues",
+             "varrow= (real[int]) Specify an array of arrows values color",
+             "bw= (bool) If true, the plot is in black and white",
+             "grey= (bool) If true, the plot is in grey scale",
+             "hsv= (real[int]) Array of \\(3\\times n\\) values defining HSV color model \\([h_1, s_1, v_1, ..., h_n, s_n, v_n]\\)",
+             "boundary= (bool) If true, display the boundary of the domain",
+             "dim= (int) Set the dimension of the plot: 2 or 3",
+             "prev= (bool) Use the graphic state of the previous state",
+             "WindowIndex= (int) Specify window index for multiple windows graphics"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "polar": {
+          "definition": "Polar coordinates.",
+          "example": "complex p = polar(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "p (complex)"
+          ]
+       },
+       "pow": {
+          "definition": "Power function.",
+          "example": "real p = pow(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "p (real)"
+          ]
+       },
+       "projection": {
+          "definition": "Arithmetic useful function.",
+          "example": "real p = projection(a, b, x);\n",
+          "params": [
+             "a (real)",
+             "b (real)",
+             "x (real)"
+          ],
+          "output": [
+             "p (real)"
+          ]
+       },
+       "randinit": {
+          "definition": "Initialize the state vector by using a seed.",
+          "example": "randinit(seed);\n",
+          "params": [
+             "seed (int)"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "randint31": {
+          "definition": "Generate unsigned int (31 bits) random number.",
+          "example": "int r = randint31();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "r (int)"
+          ]
+       },
+       "randint32": {
+          "definition": "Generate unsigned int (32 bits) random number.",
+          "example": "int r = randint32();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "r (int)"
+          ]
+       },
+       "randreal1": {
+          "definition": "Generate uniform real in \\([0, 1]\\) (32 bits).",
+          "example": "real r = randreal1();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "randreal2": {
+          "definition": "Generate uniform real in \\([0, 1)\\) (32 bits).",
+          "example": "real r = randreal2();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "randreal3": {
+          "definition": "Generate uniform real in \\((0, 1)\\) (32 bits).",
+          "example": "real r = randreal3();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "randres53": {
+          "definition": "Generate uniform real in \\([0, 1)\\) (53 bits).",
+          "example": "real r = randres53();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "readmesh": {
+          "definition": "Read a 2D mesh file at different formats (see Mesh Generation).",
+          "example": "mesh Th = readmesh(MeshFileName);\n",
+          "params": [
+             "MeshFileName (string)"
+          ],
+          "output": [
+             "Th (mesh)"
+          ]
+       },
+       "readmesh3": {
+          "definition": "Read a 3D mesh file at different formats (see Mesh Generation).",
+          "example": "mesh3 Th = readmesh3(MeshFileName);\n",
+          "params": [
+             "MeshFileName (string)"
+          ],
+          "output": [
+             "Th (mesh3)"
+          ]
+       },
+       "real": {
+          "definition": "Return the real part of a complex number.",
+          "example": "real r = real(c);\n",
+          "params": [
+             "c (complex)"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "rint": {
+          "definition": "Integer value nearest to \\(x\\) (real value).",
+          "example": "real r = rint(a);\n",
+          "params": [
+             "a (real)"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "round": {
+          "definition": "Round a value (real value).",
+          "example": "real r = round(a);\n",
+          "params": [
+             "a (real)"
+          ],
+          "output": [
+             "r (real)"
+          ]
+       },
+       "savemesh": {
+          "definition": "Save a 2D or 3D mesh in different formats (see Mesh Generation 2D and Mesh Generation 3D).",
+          "example": "savemesh(Th, MeshFileName);\n",
+          "params": [
+             "Th (mesh or mesh3)",
+             "MeshFileName (string)"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "set": {
+          "definition": "Set a property to a matrix. See matrix.",
+          "example": "",
+          "params": [],
+          "output": []
+       },
+       "sign": {
+          "definition": "Sign of a value.",
+          "example": "int s = sign(a);\n",
+          "params": [
+             "a (real or int)"
+          ],
+          "output": [
+             "s (int)"
+          ]
+       },
+       "signbit": {
+          "definition": "C++ signbit function",
+          "example": "int s = signbit(a);\n",
+          "params": [],
+          "output": []
+       },
+       "sin": {
+          "definition": "\\(\\sin\\) function.",
+          "example": "real x = sin(theta);\n",
+          "params": [
+             "theta (real or complex)"
+          ],
+          "output": [
+             "x (real or complex)"
+          ]
+       },
+       "sinh": {
+          "definition": "\\(\\sinh\\) function.",
+          "example": "real x = sinh(theta);\n",
+          "params": [
+             "theta (real)"
+          ],
+          "output": [
+             "x (real)"
+          ]
+       },
+       "sort": {
+          "definition": "Sort two array in parallel",
+          "example": "sort(A, B);\n",
+          "params": [
+             "A (real[int])",
+             "B (int[int])"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "splitmesh": {
+          "definition": "Split mesh triangles according to a function.",
+          "example": "Th = splitmesh(Th0, f);\n",
+          "params": [
+             "Th0 (mesh)",
+             "f (func or fespace function)"
+          ],
+          "output": [
+             "Th (mesh)"
+          ]
+       },
+       "sqrt": {
+          "definition": "Square root",
+          "example": "real s = sqrt(a);\n",
+          "params": [
+             "a (real)"
+          ],
+          "output": [
+             "s (real)"
+          ]
+       },
+       "square": {
+          "definition": "Square of a number.",
+          "example": "real S = square(a);\n",
+          "params": [
+             "a (real)"
+          ],
+          "output": [
+             "S (real)"
+          ]
+       },
+       "storagetotal": {
+          "definition": "",
+          "example": "int total = storagetotal();\n",
+          "params": [],
+          "output": []
+       },
+       "storageused": {
+          "definition": "",
+          "example": "int used = storageused();\n",
+          "params": [],
+          "output": []
+       },
+       "strtod": {
+          "definition": "C++ strtod function",
+          "example": "string text = \"10.5\";\n2real number = strtod(text);\n",
+          "params": [
+             "text (string)"
+          ],
+          "output": [
+             "number (real)"
+          ]
+       },
+       "strtol": {
+          "definition": "C++ strtol function",
+          "example": "string text = \"10\";\n2int number = strtol(text);\n3\n4int base = 16;\n5int number = strtol(text, base);\n",
+          "params": [
+             "text (string)",
+             "base (int) Base [Optional]"
+          ],
+          "output": [
+             "number (int)"
+          ]
+       },
+       "swap": {
+          "definition": "Swap values.",
+          "example": "swap(a, b);\n",
+          "params": [
+             "a (real)",
+             "b (real)"
+          ],
+          "output": [
+             "None"
+          ]
+       },
+       "system": {
+          "definition": "Execute a system command.",
+          "example": "int Res = system(Command);\n",
+          "params": [
+             "Command (string) System command"
+          ],
+          "output": [
+             "Res (int) Value returned by the system command"
+          ]
+       },
+       "tan": {
+          "definition": "\\(\\tan\\) function.",
+          "example": "real x = tan(theta);\n",
+          "params": [
+             "theta (real)"
+          ],
+          "output": [
+             "x (real)"
+          ]
+       },
+       "tanh": {
+          "definition": "\\(\\tanh\\) function.",
+          "example": "real x = tanh(theta);\n",
+          "params": [
+             "theta (real)"
+          ],
+          "output": [
+             "x (real)"
+          ]
+       },
+       "tgamma": {
+          "definition": "Calculate the \\(\\Gamma\\) function of \\(x\\).",
+          "example": "real tg = tgamma(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "tg (real)"
+          ]
+       },
+       "time": {
+          "definition": "Return the current time (C++ function).",
+          "example": "real t = time();\n",
+          "params": [
+             "None"
+          ],
+          "output": [
+             "t (real)"
+          ]
+       },
+       "trace": {
+          "definition": "Matrix trace",
+          "example": "real tr = trace([[1, 2], [3, 4]]);\n",
+          "params": [
+             "Matrix"
+          ],
+          "output": [
+             "Trace of the matrix (real)"
+          ]
+       },
+       "trunc": {
+          "definition": "Split triangle of a mesh.",
+          "example": "mesh Th = trunc(Th0, R, [split=Split], [label=Label]);\n",
+          "params": [
+             "Th0 (mesh)",
+             "R (bool or int) Split triangles where R is true or different from 0",
+             "split= (int) [Optional]",
+             "label= (int) [Optional]"
+          ],
+          "output": [
+             "Th (mesh)"
+          ]
+       },
+       "y0": {
+          "definition": "Bessel function of second kind, order 0.",
+          "example": "real B = y0(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "b (real)"
+          ]
+       },
+       "y1": {
+          "definition": "Bessel function of second kind, order 1.",
+          "example": "real B = y1(x);\n",
+          "params": [
+             "x (real)"
+          ],
+          "output": [
+             "b (real)"
+          ]
+       },
+       "yn": {
+          "definition": "Bessel function of second kind, order n.",
+          "example": "real B = yn(n, x);\n",
+          "params": [
+             "n (int)",
+             "x (real)"
+          ],
+          "output": [
+             "b (real)"
+          ]
+       }
+    }
+ }

@@ -3,7 +3,7 @@ import AceEditor from 'react-ace'
 import ReactAce from 'react-ace/lib/ace'
 import 'ace-builds/src-noconflict/theme-one_dark'
 import './mode/mode-freefem-ejs'
-
+import data from '../../doc/documentation.json' 
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
 
@@ -77,20 +77,26 @@ const FreeFEMCode = (): JSX.Element => {
 
     timeoutId.current = setTimeout(() => {
       if (token && token.type === 'support.function') {
+        let currentFunction = data['function'][token.value as keyof typeof data['function']]
         // Add JS condition
         setTooltipPosition({
           x: position.pageX,
           y: position.pageY + 16,
           display: true,
-          text: `Documentation for ${token.value} 
+          text: `Function: ${token.value} 
+
+          Definition : ${currentFunction.definition} 
+          Example : ${currentFunction.example} 
+          Parameters : ${currentFunction.params} 
+          Output : ${currentFunction.output} 
           Link to FreeFEM : `, // Use JSON data ?
           link: (
             <a
-              href={'https://doc.freefem.org/documentation/' + token.value}
+              href={'https://doc.freefem.org/references/functions.html#' + token.value}
               target="_blank"
               rel="noreferrer"
             >
-              https://doc.freefem.org/documentation/{token.value}
+              https://doc.freefem.org/references/functions.html#{token.value}
             </a>
           )
         })
@@ -112,6 +118,8 @@ const FreeFEMCode = (): JSX.Element => {
     },
     [dispatch]
   )
+
+  console.log(data)
 
   // Init
   useEffect(() => {

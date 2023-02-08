@@ -60,7 +60,10 @@ describe('components/doc', () => {
   test('with query', () => {
     const { unmount, rerender } = render(<Doc />)
 
-    mockQuery.mockImplementation(() => ({ section: 'dashboard' }))
+    mockQuery.mockImplementation(() => ({
+      section: 'rc-menu-more',
+      tab: 'dashboard'
+    }))
     rerender(<Doc />)
 
     unmount()

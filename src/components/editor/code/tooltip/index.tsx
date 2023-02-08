@@ -16,7 +16,7 @@ export interface IProps {
 }
 
 const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
-    console.log(tooltipInfos)
+  console.log(tooltipInfos.currentFunction.example.split('\n'))
   return (
     <div
       style={{
@@ -43,21 +43,24 @@ const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
       <br />
       <Typography.Text style={{ color: '#fff' }}>
         <strong>Example</strong> :{' '}
-        <code style={{ fontSize: 16 }}>
+        <div style={{ backgroundColor: '#rgb(64,68,74)' }}>
+          <pre>{tooltipInfos.currentFunction.example}</pre>
+        </div>
+        {/* <code style={{ fontSize: 16 }}>
           {tooltipInfos.currentFunction.example}
-        </code>{' '}
+        </code>{' '} */}
       </Typography.Text>
       <Typography.Text style={{ color: '#fff' }}>
         <strong>Params</strong> :{' '}
         <code style={{ fontSize: 16 }}>
-          {tooltipInfos.currentFunction.params}
+          {tooltipInfos.currentFunction.params.map((param) => '\n- ' + param)}
         </code>{' '}
       </Typography.Text>
       <br />
       <Typography.Text style={{ color: '#fff' }}>
         <strong>Output</strong> :{' '}
         <code style={{ fontSize: 16 }}>
-          {tooltipInfos.currentFunction.output}
+          {tooltipInfos.currentFunction.output.map((output) => '\n- ' + output)}
         </code>{' '}
       </Typography.Text>
       <br />

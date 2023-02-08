@@ -111,7 +111,6 @@ const FreeFEMCode = (): JSX.Element => {
     [dispatch]
   )
 
-  console.log(data)
 
   // Init
   useEffect(() => {

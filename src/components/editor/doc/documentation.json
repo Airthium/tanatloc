@@ -219,7 +219,7 @@
        },
        "change": {
           "definition": "Change a property of a mesh.",
-          "example": "int[int] L = [0, 1];\n2Thnew = change(Th, label=L);\n",
+          "example": "int[int] L = [0, 1];\nThnew = change(Th, label=L);\n",
           "params": [
              "Th (mesh) Original mesh",
              "label= L (int[int]) Pair of old and new label",
@@ -269,7 +269,7 @@
        },
        "conj": {
           "definition": "Caculate the conjuguate of a complex number.",
-          "example": "complex C1 = 1 + 1i;\n2complex C2 = conj(C1);\n",
+          "example": "complex C1 = 1 + 1i;\ncomplex C2 = conj(C1);\n",
           "params": [
              "C1 (complex) Complex number"
           ],
@@ -279,7 +279,7 @@
        },
        "convect": {
           "definition": "Characteristics Galerkin method.",
-          "example": "real cgm = convect([Ux, Uy], dt, c);\n2real cgm = convect([Ux, Uy, Uz], dt, c);\n",
+          "example": "real cgm = convect([Ux, Uy], dt, c);\nreal cgm = convect([Ux, Uy, Uz], dt, c);\n",
           "params": [
              "ux (fespace function) Velocity: \\(x\\) component",
              "uy (fespace function) Velocity: \\(y\\) component",
@@ -331,7 +331,7 @@
        },
        "dist": {
           "definition": "Arithmetic useful function.",
-          "example": "dist(a, b) = sqrt(a^2 + b^2);\n2dist(a, b, c) = sqrt(a^2 + b^2 + c^2);\n",
+          "example": "dist(a, b) = sqrt(a^2 + b^2);\ndist(a, b, c) = sqrt(a^2 + b^2 + c^2);\n",
           "params": [],
           "output": []
        },
@@ -598,13 +598,13 @@
        },
        "imag": {
           "definition": "Imaginary part of a complex number.",
-          "example": "complex c = 1. + 1i;\n2real Im = imag(c);\n",
+          "example": "complex c = 1. + 1i;\nreal Im = imag(c);\n",
           "params": [],
           "output": []
        },
        "int1d": {
           "definition": "1D integral.",
-          "example": "int1d(Th, [Label], [qfe=Qfe], [qforder=Qforder])(\n2    ...\n3)\n",
+          "example": "int1d(Th, [Label], [qfe=Qfe], [qforder=Qforder])(\n    ...\n)\n",
           "params": [
              "Th (mesh) Mesh where the integral is calculated",
              "Label (int) [Optional]",
@@ -617,7 +617,7 @@
        },
        "int2d": {
           "definition": "2D integral.",
-          "example": "int2d(Th, [Region], [qft=Qft], [qforder=Qforder])(\n2    ...\n3)\n",
+          "example": "int2d(Th, [Region], [qft=Qft], [qforder=Qforder])(\n    ...\n)\n",
           "params": [
              "Th (mesh,  mesh3 ,  meshS`or :freefem:`meshL) Mesh where the integral is calculated",
              "Region (int) [Optional] Label of the 2D region (2D simulation or Surface simulation) Default: all regions of the mesh",
@@ -631,7 +631,7 @@
        },
        "int3d": {
           "definition": "3D integral.",
-          "example": "int3d(Th, [Region], [qfV=QfV], [qforder=Qforder])(\n2    ...\n3)\n",
+          "example": "int3d(Th, [Region], [qfV=QfV], [qforder=Qforder])(\n    ...\n)\n",
           "params": [
              "Th (mesh3) Mesh where the integral is calculated",
              "Region (int) [Optional]",
@@ -644,7 +644,7 @@
        },
        "intalledges": {
           "definition": "Integral on all edges.",
-          "example": "intalledges(Th, [Region])(\n2    ...\n3)\n",
+          "example": "intalledges(Th, [Region])(\n    ...\n)\n",
           "params": [
              "Th (mesh) Mesh where the integral is calculated",
              "Region (int) [Optional]"
@@ -676,7 +676,7 @@
        },
        "invdiff": {
           "definition": "Arithmetic useful function.",
-          "example": "invdiff(a, b) = (abs(a-b) < 10^(-30)) ? (a-b) : 1/(a-b)\n2invdiff(a, b, e) = (abs(a-b) < e) ? (a-b) : 1/(a-b)\n",
+          "example": "invdiff(a, b) = (abs(a-b) < 10^(-30)) ? (a-b) : 1/(a-b)\ninvdiff(a, b, e) = (abs(a-b) < e) ? (a-b) : 1/(a-b)\n",
           "params": [],
           "output": []
        },
@@ -743,7 +743,7 @@
        },
        "jump": {
           "definition": "Jump function across an edge.",
-          "example": "intalledges(\n2    ... jump(c) ...\n3)\n",
+          "example": "intalledges(\n    ... jump(c) ...\n)\n",
           "params": [
              "c (fespace function) Discontinuous function"
           ],
@@ -825,7 +825,7 @@
        },
        "max": {
           "definition": "Maximum value of two, three or four values.",
-          "example": "real m = max(a, b);\n2real m = max(a, b, c);\n3real m = max(a, b, c, d);\n",
+          "example": "real m = max(a, b);\nreal m = max(a, b, c);\nreal m = max(a, b, c, d);\n",
           "params": [
              "a (int or real)",
              "b (int or real)",
@@ -838,7 +838,7 @@
        },
        "min": {
           "definition": "Minimum value of two, three or four values.",
-          "example": "real m = min(a, b);\n2real m = min(a, b, c);\n3real m = min(a, b, c, d);\n",
+          "example": "real m = min(a, b);\nreal m = min(a, b, c);\nreal m = min(a, b, c, d);\n",
           "params": [
              "a (int or real)",
              "b (int or real)",
@@ -851,7 +851,7 @@
        },
        "movemesh": {
           "definition": "Move a mesh.",
-          "example": "mesh MovedTh = movemesh(Th, [Dx, Dy]);\n2mesh3 MovedTh = movemesh(Th, [Dx, Dy, Dz], [region=Region], [label=Label], [facemerge=FaceMerge], [ptmerge=PtMerge], [orientation=Orientation]);\n",
+          "example": "mesh MovedTh = movemesh(Th, [Dx, Dy]);\nmesh3 MovedTh = movemesh(Th, [Dx, Dy, Dz], [region=Region], [label=Label], [facemerge=FaceMerge], [ptmerge=PtMerge], [orientation=Orientation]);\n",
           "params": [
              "Th (mesh of mesh3) Mesh to move",
              "Dx (fespace function) Displacement along \\(x\\)",
@@ -883,7 +883,7 @@
        },
        "on": {
           "definition": "Dirichlet condition function.",
-          "example": "problem (u, v)\n2    ...\n3    + on(Label, u=uD)\n4    ...\n",
+          "example": "problem (u, v)\n    ...\n    + on(Label, u=uD)\n    ...\n",
           "params": [
              "Label (int or border in 2D)",
              "uD (fespace function, func or real or int)"
@@ -1187,7 +1187,7 @@
        },
        "strtod": {
           "definition": "C++ strtod function",
-          "example": "string text = \"10.5\";\n2real number = strtod(text);\n",
+          "example": "string text = \"10.5\";\nreal number = strtod(text);\n",
           "params": [
              "text (string)"
           ],
@@ -1197,7 +1197,7 @@
        },
        "strtol": {
           "definition": "C++ strtol function",
-          "example": "string text = \"10\";\n2int number = strtol(text);\n3\n4int base = 16;\n5int number = strtol(text, base);\n",
+          "example": "string text = \"10\";\nint number = strtol(text);\n\nint base = 16;\nint number = strtol(text, base);\n",
           "params": [
              "text (string)",
              "base (int) Base [Optional]"

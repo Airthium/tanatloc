@@ -107,10 +107,10 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       <Button key="get_started" type="text" onClick={scrollToGetStarted}>
         Get started
       </Button>,
-      <Button key="developers" type="text" onClick={scrollToDoc}>
+      <Button key="doc" type="text" onClick={scrollToDoc}>
         Doc
       </Button>,
-      <Button key="developers" type="text" onClick={scrollToBlog}>
+      <Button key="blog" type="text" onClick={scrollToBlog}>
         Blog
       </Button>,
       <Button key="developers" type="text" onClick={scrollToDevelopers}>

@@ -50,10 +50,12 @@ export const copyAssets = async (): Promise<void> => {
     await copyThreeAssets()
   } catch (err) {
     console.warn(' ⚠ Unable to copy ThreeJS assets')
+    console.warn(err)
   }
   try {
     await copyMathjaxAssets()
   } catch (err) {
     console.warn(' ⚠ Unable to copy MathJax assets')
+    console.warn(err)
   }
 }

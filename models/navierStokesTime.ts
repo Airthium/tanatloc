@@ -65,7 +65,7 @@ const NavierStokesTime: IModel = {
           name: 'Mu',
           htmlEntity: 'formula',
           default: '1e-3',
-          unit: '\\(Pa.s^{-1}\\)'
+          unit: '\\(Pa.s\\)'
         }
       ]
     },

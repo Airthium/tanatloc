@@ -8,15 +8,14 @@ export interface IProps {
       name: string
       definition: string
       example: string
-      params: string[]
-      output: string[]
+      params?: string[]
+      output?: string[]
     }
     display: boolean
   }
 }
 
 const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
-  console.log(tooltipInfos.currentFunction.example.split('\n'))
   return (
     <div
       style={{
@@ -37,38 +36,55 @@ const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
         Function : {tooltipInfos.currentFunction.name}
       </Typography.Title>
       <br />
-      <Typography.Text style={{ color: '#fff' }}>
-        <strong>Definition</strong> : {tooltipInfos.currentFunction.definition}{' '}
-      </Typography.Text>
-      <br />
-      <Typography.Text style={{ color: '#fff' }}>
-        <strong>Example</strong> :{' '}
-        <div style={{ backgroundColor: '#rgb(64,68,74)' }}>
-          <pre>{tooltipInfos.currentFunction.example}</pre>
-        </div>
-        {/* <code style={{ fontSize: 16 }}>
-          {tooltipInfos.currentFunction.example}
-        </code>{' '} */}
-      </Typography.Text>
-      <Typography.Text style={{ color: '#fff' }}>
-        <strong>Params</strong> :{' '}
-        <code style={{ fontSize: 16 }}>
-          {tooltipInfos.currentFunction.params.map((param) => '\n- ' + param)}
-        </code>{' '}
-      </Typography.Text>
-      <br />
-      <Typography.Text style={{ color: '#fff' }}>
-        <strong>Output</strong> :{' '}
-        <code style={{ fontSize: 16 }}>
-          {tooltipInfos.currentFunction.output.map((output) => '\n- ' + output)}
-        </code>{' '}
-      </Typography.Text>
-      <br />
+      {tooltipInfos.currentFunction.definition && (
+        <>
+          <Typography.Text style={{ color: '#fff' }}>
+            <strong>Definition</strong> :{' '}
+            {tooltipInfos.currentFunction.definition}{' '}
+          </Typography.Text>
+          <br />
+        </>
+      )}
+
+      {tooltipInfos.currentFunction.example && (
+        <Typography.Text style={{ color: '#fff' }}>
+          <strong>Example</strong> :{' '}
+          <div style={{ backgroundColor: '#rgb(64,68,74)' }}>
+            <pre>{tooltipInfos.currentFunction.example}</pre>
+          </div>
+        </Typography.Text>
+      )}
+      {tooltipInfos.currentFunction.params && (
+        <>
+          <Typography.Text style={{ color: '#fff' }}>
+            <strong>Params</strong> :{' '}
+            <code style={{ fontSize: 16 }}>
+              {tooltipInfos.currentFunction.params.map(
+                (param) => '\n- ' + param
+              )}
+            </code>{' '}
+          </Typography.Text>
+          <br />
+        </>
+      )}
+
+      {tooltipInfos.currentFunction.output && (
+        <>
+          <Typography.Text style={{ color: '#fff' }}>
+            <strong>Output</strong> :{' '}
+            <code style={{ fontSize: 16 }}>
+              {tooltipInfos.currentFunction.output.map(
+                (output) => '\n- ' + output
+              )}
+            </code>{' '}
+          </Typography.Text>
+          <br />
+        </>
+      )}
       <Typography.Text style={{ color: '#fff' }}>
         <strong>Link to FreeFEM</strong> :{' '}
       </Typography.Text>
       <br />
-
       <a
         href={
           'https://doc.freefem.org/references/functions.html#' +

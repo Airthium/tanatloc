@@ -26,8 +26,8 @@ const FreeFEMCode = (): JSX.Element => {
       name: string
       definition: string
       example: string
-      params: string[]
-      output: string[]
+      params?: string[]
+      output?: string[]
     }
   })
 
@@ -80,11 +80,17 @@ const FreeFEMCode = (): JSX.Element => {
     }
 
     currentToken.current = token?.value
-
+    
     timeoutId.current = setTimeout(() => {
-      if (token && token.type === 'support.function') {
+      token && console.log(token.type)
+      if (
+        (token && token.type === 'support.function') ||
+        (token && token.type === 'storage.type')
+      ) {
         let currentFunction =
-          data['function'][token.value as keyof (typeof data)['function']]
+          token.type === 'support.function'
+            ? data['function'][token.value as keyof (typeof data)['function']]
+            : data['type'][token.value as keyof (typeof data)['type']]
         // Add JS condition
         setTooltipInfos({
           x: position.pageX,
@@ -110,7 +116,6 @@ const FreeFEMCode = (): JSX.Element => {
     },
     [dispatch]
   )
-
 
   // Init
   useEffect(() => {

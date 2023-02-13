@@ -1,0 +1,14 @@
+int ipn;        // integration point number by a segment
+real[int] tip1, tip2;
+real[int] wip;  // weight integration rule
+
+func int iprule(string integrule) {
+    if (integrule == "Gauss") {
+        // Gauss quadrature IP
+        ipn = 7; // integration point number by a segment
+        tip1 = [1./3., (6.-15^0.5)/21., (6.-15^0.5)/21., (9.+2*15^0.5)/21., (6.+15^0.5)/21., (6.+15^0.5)/21., (9.-2*15^0.5)/21.];			                // first component of the integration point (eta1)
+        tip2 = [1./3., (6.-15^0.5)/21., (9.+2*15^0.5)/21., (6.-15^0.5)/21., (6.+15^0.5)/21., (9.-2*15^0.5)/21., (6.+15^0.5)/21.];                           // first component of the integration point (eta1)
+        wip = 1/2.*[0.225, (155.-15^0.5)/1200., (155.-15^0.5)/1200., (155.-15^0.5)/1200., (155.+15^0.5)/1200., (155.+15^0.5)/1200., (155.+15^0.5)/1200.];   // weight integration rule
+    }
+    return 0;
+}

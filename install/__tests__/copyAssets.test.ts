@@ -21,8 +21,8 @@ describe('install/copyAssets', () => {
 
   test('normal', async () => {
     await copyAssets()
-    expect(mockMkdir).toHaveBeenCalledTimes(2)
-    expect(mockCp).toHaveBeenCalledTimes(2)
+    expect(mockMkdir).toHaveBeenCalledTimes(3)
+    expect(mockCp).toHaveBeenCalledTimes(3)
   })
 
   test('error', async () => {
@@ -41,6 +41,9 @@ describe('install/copyAssets', () => {
     mockMkdir
       .mockImplementationOnce(() => {
         // No error
+      })
+      .mockImplementationOnce(() => {
+        throw new Error('mkdir error')
       })
       .mockImplementationOnce(() => {
         throw new Error('mkdir error')

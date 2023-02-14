@@ -100,14 +100,14 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 			- Div(U) * ph
 		)
 <% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
+		+ on(<%= d.labels -%>
 		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=0<% } -%>
 		)
 <% } -%>
 <% for (const w of wall) { -%>
-		+ on(<%= w.selected.map(s => s.label).filter(s => s).join(', ') -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
+		+ on(<%= w.labels -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
 <% } -%>
 		;
 
@@ -122,18 +122,18 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 <% } -%>
 		)
 <% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+		- intN1(Mesh, <%= n.labels -%>)(
 			(<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
 <% } -%>
 <% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
+		+ on(<%= d.labels -%>
 		<% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, mUz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 <% } -%>
 <% for (const w of wall) { -%>
-		+ on(<%= w.selected.map(s => s.label).filter(s => s).join() -%>, mUx=0, mUy=0<% if (dimension !== 2) { -%> , mUz=0<% } -%>)
+		+ on(<%= w.labels -%>, mUx=0, mUy=0<% if (dimension !== 2) { -%> , mUz=0<% } -%>)
 <% } -%>
 		;
 

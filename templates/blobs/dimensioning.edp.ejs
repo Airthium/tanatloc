@@ -3,10 +3,12 @@ appendLog("Dimension: <%= dimension -%>");
 
 <% if (dimension === 2)  { -%>
 macro meshN()mesh//
+macro meshN1()meshL//
 macro intN()int2d//
 macro intN1()int1d//
 <% } else { -%>
 macro meshN()mesh3//
+macro meshN1()meshS//
 macro intN()int3d//
 macro intN1()int2d//
 <% } -%>

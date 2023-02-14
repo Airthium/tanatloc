@@ -358,6 +358,21 @@ const run = async (
     }
   }
 
+  // Prepare boundary conditions
+  Object.keys(configuration.boundaryConditions).forEach((key) => {
+    if (key === 'index' || key === 'title' || key === 'done') return
+
+    const boundaryCondition = configuration.boundaryConditions[
+      key
+    ] as IModelTypedBoundaryCondition
+    boundaryCondition.values?.forEach((value) => {
+      value.labels = value.selected
+        .map((s) => s.label)
+        .filter((s) => s)
+        .join(', ')
+    })
+  })
+
   // Compute
   plugin.lib
     .computeSimulation(simulation, simulationData.scheme)

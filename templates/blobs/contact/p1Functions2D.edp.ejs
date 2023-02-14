@@ -4,7 +4,7 @@
 // Ac of dimension 4
 // x(t) = x0*phi1(t) + x1*phi2(t), phi1, phi2 are the P1 shape functions on the segement
 
-func real[int] P1fun(real[int] & Ac, real & tt) {
+func real[int] P1fun(real[int] &Ac, real &tt) {
   real resx, resy;
   real[int] Res(2);
   real phi1 = 1 - tt;
@@ -20,7 +20,7 @@ func real[int] P1fun(real[int] & Ac, real & tt) {
 }
 
 // Derivative
-func real[int] dP1fun(real[int] & Ac, real & tt) {
+func real[int] dP1fun(real[int] &Ac, real &tt) {
   real resx, resy;
   real[int] Res(2);
 
@@ -37,7 +37,7 @@ func real[int] dP1fun(real[int] & Ac, real & tt) {
 }
 
 // Second Derivative
-func real[int] ddP1fun(real[int] & Ac, real & tt) {
+func real[int] ddP1fun(real[int] &Ac, real &tt) {
   real resx, resy;
   real[int] Res(2);
 

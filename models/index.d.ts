@@ -219,6 +219,7 @@ export interface IModelBoundaryConditionValue {
   geometry: string
   geometryIndex?: number
   selected: { uuid: string; label: number }[]
+  labels?: string
   values?: {
     checked?: boolean
     value?: TValue

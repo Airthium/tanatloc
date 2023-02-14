@@ -55,7 +55,7 @@ const rhsValue = rhs.value ?? rhs.default
 			grad(u)' * grad(uh)
 		)
 <% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>, u=0)
+		+ on(<%= d.labels -%>, u=0)
 <% } -%>
 		;
 
@@ -64,12 +64,12 @@ const rhsValue = rhs.value ?? rhs.default
 			(<%- rhsValue -%>) * uh
 		)
 <% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join(', ') %>) {
+		- intN1(Mesh, <%= n.labels %>) {
 			(<%- n.values[0].value ?? n.values[0].default %>) * uh
 		}
 <% } -%>
 <% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
+		+ on(<%= d.labels -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
 <% } -%>
 		;
 

@@ -4,7 +4,7 @@ export interface IProps {
   tooltipInfos: {
     x: number
     y: number
-    currentFunction: {
+    currentToken: {
       name: string
       definition: string
       example: string
@@ -16,13 +16,21 @@ export interface IProps {
 }
 
 const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
+  let bodyHeight = document.querySelector('body')?.offsetHeight
   return (
     <div
       style={{
         position: 'absolute',
         zIndex: 10,
         left: tooltipInfos.x,
-        top: tooltipInfos.y,
+        top:
+          bodyHeight && bodyHeight - tooltipInfos.y > tooltipInfos.y
+            ? tooltipInfos.y
+            : 'unset',
+        bottom:
+          bodyHeight && bodyHeight - tooltipInfos.y < tooltipInfos.y
+            ? bodyHeight - tooltipInfos.y + 16
+            : 'unset',
         backgroundColor: 'rgba(13, 17, 23, 0.75)',
         padding: '15px',
         border: '1px solid gray',
@@ -33,47 +41,44 @@ const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
       }}
     >
       <Typography.Title level={3} style={{ color: '#fff', margin: 0 }}>
-        Function : {tooltipInfos.currentFunction.name}
+        Function : {tooltipInfos.currentToken.name}
       </Typography.Title>
       <br />
-      {tooltipInfos.currentFunction.definition && (
+      {tooltipInfos.currentToken.definition && (
         <>
           <Typography.Text style={{ color: '#fff' }}>
-            <strong>Definition</strong> :{' '}
-            {tooltipInfos.currentFunction.definition}{' '}
+            <strong>Definition</strong> : {tooltipInfos.currentToken.definition}{' '}
           </Typography.Text>
           <br />
         </>
       )}
 
-      {tooltipInfos.currentFunction.example && (
+      {tooltipInfos.currentToken.example && (
         <Typography.Text style={{ color: '#fff' }}>
           <strong>Example</strong> :{' '}
           <div style={{ backgroundColor: '#rgb(64,68,74)' }}>
-            <pre>{tooltipInfos.currentFunction.example}</pre>
+            <pre>{tooltipInfos.currentToken.example}</pre>
           </div>
         </Typography.Text>
       )}
-      {tooltipInfos.currentFunction.params && (
+      {tooltipInfos.currentToken.params && (
         <>
           <Typography.Text style={{ color: '#fff' }}>
             <strong>Params</strong> :{' '}
             <code style={{ fontSize: 16 }}>
-              {tooltipInfos.currentFunction.params.map(
-                (param) => '\n- ' + param
-              )}
+              {tooltipInfos.currentToken.params.map((param) => '\n- ' + param)}
             </code>{' '}
           </Typography.Text>
           <br />
         </>
       )}
 
-      {tooltipInfos.currentFunction.output && (
+      {tooltipInfos.currentToken.output && (
         <>
           <Typography.Text style={{ color: '#fff' }}>
             <strong>Output</strong> :{' '}
             <code style={{ fontSize: 16 }}>
-              {tooltipInfos.currentFunction.output.map(
+              {tooltipInfos.currentToken.output.map(
                 (output) => '\n- ' + output
               )}
             </code>{' '}
@@ -88,13 +93,13 @@ const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
       <a
         href={
           'https://doc.freefem.org/references/functions.html#' +
-          tooltipInfos.currentFunction.name
+          tooltipInfos.currentToken.name
         }
         target="_blank"
         rel="noreferrer"
       >
         https://doc.freefem.org/references/functions.html#
-        {tooltipInfos.currentFunction.name}
+        {tooltipInfos.currentToken.name}
       </a>
     </div>
   )

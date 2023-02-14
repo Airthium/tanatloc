@@ -22,7 +22,7 @@ const FreeFEMCode = (): JSX.Element => {
     x: 0,
     y: 0,
     display: false,
-    currentFunction: {} as {
+    currentToken: {} as {
       name: string
       definition: string
       example: string
@@ -80,14 +80,14 @@ const FreeFEMCode = (): JSX.Element => {
     }
 
     currentToken.current = token?.value
-    
+
     timeoutId.current = setTimeout(() => {
       token && console.log(token.type)
       if (
         (token && token.type === 'support.function') ||
         (token && token.type === 'storage.type')
       ) {
-        let currentFunction =
+        let currentTokenInfos =
           token.type === 'support.function'
             ? data['function'][token.value as keyof (typeof data)['function']]
             : data['type'][token.value as keyof (typeof data)['type']]
@@ -96,7 +96,7 @@ const FreeFEMCode = (): JSX.Element => {
           x: position.pageX,
           y: position.pageY + 16,
           display: true,
-          currentFunction: { ...currentFunction, name: token.value }
+          currentToken: { ...currentTokenInfos, name: token.value }
         })
       }
     }, 100)

@@ -10,13 +10,21 @@ export interface IProps {
       example: string
       params?: string[]
       output?: string[]
+      docReference?: string
     }
     display: boolean
   }
 }
 
 const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
+  // TODO
+  // Find better way to separate freefem from ejs
+  // Check if token already exist / Careful on function existing in both languages
+  // Autocomplete
+  // JSON highlight (which part is about a freefem code element)
+
   let bodyHeight = document.querySelector('body')?.offsetHeight
+
   return (
     <div
       style={{
@@ -93,13 +101,17 @@ const CustomTooltip = ({ tooltipInfos }: IProps): JSX.Element => {
       <a
         href={
           'https://doc.freefem.org/references/functions.html#' +
-          tooltipInfos.currentToken.name
+          tooltipInfos.currentToken.docReference
+            ? tooltipInfos.currentToken.docReference
+            : tooltipInfos.currentToken.name
         }
         target="_blank"
         rel="noreferrer"
       >
         https://doc.freefem.org/references/functions.html#
-        {tooltipInfos.currentToken.name}
+        {tooltipInfos.currentToken.docReference
+          ? tooltipInfos.currentToken.docReference
+          : tooltipInfos.currentToken.name}
       </a>
     </div>
   )

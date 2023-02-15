@@ -46,3 +46,7 @@ body {
 .ant-typography {
   margin-bottom: 0 !important;
 }
+
+.ace_scrollbar {
+  display:unset !important;
+}

@@ -28,6 +28,7 @@ const FreeFEMCode = (): JSX.Element => {
       example: string
       params?: string[]
       output?: string[]
+      docReference?: string
     }
   })
 
@@ -53,12 +54,14 @@ const FreeFEMCode = (): JSX.Element => {
     /* istanbul ignore next */
     if (!editorRef.current) return
 
+    // Get event position
     const editor = editorRef.current
     const textCoords = editor.editor.renderer.pixelToScreenCoordinates(
       event.clientX,
       event.clientY
     )
 
+    // Get token position infos
     const start = editor.editor.session.getWordRange(
       textCoords.row,
       textCoords.column
@@ -68,11 +71,13 @@ const FreeFEMCode = (): JSX.Element => {
       start.column
     )
 
+    // Get token data
     const token = editor.editor.session.getTokenAt(
       textCoords.row,
       textCoords.column
     )
 
+    // Hover for a custom time to trigger tooltip
     if (timeoutId.current && currentToken.current === token?.value) return
     else if (timeoutId.current) {
       clearTimeout(timeoutId.current)
@@ -82,16 +87,14 @@ const FreeFEMCode = (): JSX.Element => {
     currentToken.current = token?.value
 
     timeoutId.current = setTimeout(() => {
-      token && console.log(token.type)
       if (
         (token && token.type === 'support.function') ||
-        (token && token.type === 'storage.type')
+        (token && token.type === 'storage.type') // Need better switch case
       ) {
         let currentTokenInfos =
           token.type === 'support.function'
             ? data['function'][token.value as keyof (typeof data)['function']]
-            : data['type'][token.value as keyof (typeof data)['type']]
-        // Add JS condition
+            : data['type'][token.value as keyof (typeof data)['type']] // Need better switch case
         setTooltipInfos({
           x: position.pageX,
           y: position.pageY + 16,
@@ -99,7 +102,7 @@ const FreeFEMCode = (): JSX.Element => {
           currentToken: { ...currentTokenInfos, name: token.value }
         })
       }
-    }, 100)
+    }, 500)
   }, [])
 
   /**
@@ -122,7 +125,7 @@ const FreeFEMCode = (): JSX.Element => {
     if (!editorRef.current) return
 
     const editor = editorRef.current
-    editor.editor.on('mousemove', onMouseMove) // Trigger ok, don't need to use another
+    editor.editor.on('mousemove', onMouseMove)
   }, [onMouseMove])
 
   /**

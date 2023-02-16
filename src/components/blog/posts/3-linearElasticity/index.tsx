@@ -53,7 +53,7 @@ const Post = () => {
             \\end{align}
           `}
           />
-          in addition to the Hook's law{' '}
+          in addition to the Hook&apos;s law{' '}
           <MathJax.Inline
             text={'\\sigma= \\lambda tr(\\epsilon)I + 2\\mu\\epsilon'}
           />
@@ -78,10 +78,10 @@ const Post = () => {
               '[0 \\, m \\, , 1 \\, m]\\times[0 \\, m \\, , 1 \\, m]\\times[0 \\, m \\, , 1 \\, m]'
             }
           />{' '}
-          with Young's modulus <MathJax.Inline text={'E=2.1e11 \\, Pa'} /> and
-          Poisson's ratio <MathJax.Inline text={'\\nu= 0.3'} />. The plan{' '}
-          <MathJax.Inline text={'\\{ z=0 \\}'} /> of the cube is fixed in the
-          direction <MathJax.Inline text={'z'} />, the plan{' '}
+          with Young&apos;s modulus <MathJax.Inline text={'E=2.1e11 \\, Pa'} />{' '}
+          and Poisson&apos;s ratio <MathJax.Inline text={'\\nu= 0.3'} />. The
+          plan <MathJax.Inline text={'\\{ z=0 \\}'} /> of the cube is fixed in
+          the direction <MathJax.Inline text={'z'} />, the plan{' '}
           <MathJax.Inline text={'\\{ x=1 \\}'} /> of the cube is fixed in the
           direction <MathJax.Inline text={'x'} /> and finally the plan{' '}
           <MathJax.Inline text={'\\{ y=0 \\}'} /> of the cube is fixed in the

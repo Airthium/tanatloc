@@ -37,11 +37,13 @@ describe('components/project/view', () => {
       id: 'id'
     }
   ]
-  const result = {
-    glb: 'test.glb',
-    originPath: 'originPath',
-    json: 'json'
-  } as ISimulationTaskFile
+  const results = [
+    {
+      glb: 'test.glb',
+      originPath: 'originPath',
+      json: 'json'
+    } as ISimulationTaskFile
+  ]
 
   const postprocessing = {
     glb: 'test.glb',
@@ -58,14 +60,21 @@ describe('components/project/view', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<View project={project} geometries={[]} />)
+    const { unmount } = render(
+      <View project={project} results={[]} geometries={[]} />
+    )
 
     unmount()
   })
 
   test('with simulation', () => {
     const { unmount } = render(
-      <View simulation={simulation} project={project} geometries={[]} />
+      <View
+        simulation={simulation}
+        project={project}
+        results={[]}
+        geometries={[]}
+      />
     )
 
     unmount()
@@ -76,6 +85,7 @@ describe('components/project/view', () => {
       <View
         simulation={simulation}
         project={project}
+        results={[]}
         geometries={[{ id: 'id0', needCleanup: true }]}
       />
     )
@@ -88,7 +98,12 @@ describe('components/project/view', () => {
       throw new Error('geometry get error')
     })
     const { unmount } = render(
-      <View simulation={simulation} project={project} geometries={geometries} />
+      <View
+        simulation={simulation}
+        project={project}
+        results={[]}
+        geometries={geometries}
+      />
     )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
@@ -105,7 +120,12 @@ describe('components/project/view', () => {
 
   test('with geometry', async () => {
     const { unmount } = render(
-      <View simulation={simulation} project={project} geometries={geometries} />
+      <View
+        simulation={simulation}
+        project={project}
+        results={[]}
+        geometries={geometries}
+      />
     )
 
     await waitFor(() => expect(mockGeometryGet).toHaveBeenCalledTimes(1))
@@ -122,7 +142,7 @@ describe('components/project/view', () => {
         project={project}
         simulation={simulation}
         geometries={geometries}
-        result={result}
+        results={results}
       />
     )
 
@@ -145,7 +165,7 @@ describe('components/project/view', () => {
         project={project}
         simulation={simulation}
         geometries={geometries}
-        result={result}
+        results={results}
       />
     )
 
@@ -157,7 +177,7 @@ describe('components/project/view', () => {
         project={project}
         simulation={simulation}
         geometries={[{ id: 'id2' }]}
-        result={result}
+        results={results}
       />
     )
 
@@ -173,7 +193,7 @@ describe('components/project/view', () => {
         project={project}
         simulation={simulation}
         geometries={geometries}
-        result={result}
+        results={results}
         postprocessing={postprocessing}
       />
     )
@@ -197,7 +217,7 @@ describe('components/project/view', () => {
         project={project}
         simulation={simulation}
         geometries={geometries}
-        result={result}
+        results={results}
         postprocessing={postprocessing}
       />
     )
@@ -210,7 +230,7 @@ describe('components/project/view', () => {
         project={project}
         simulation={simulation}
         geometries={[{ id: 'id2' }]}
-        result={result}
+        results={results}
         postprocessing={postprocessing}
       />
     )

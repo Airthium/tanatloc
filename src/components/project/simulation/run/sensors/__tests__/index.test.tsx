@@ -17,7 +17,7 @@ describe('components/project/simulation/run/sensors', () => {
     scheme: {} as IFrontSimulationsItem['scheme']
   }
   const setVisible = jest.fn()
-  const setResult = jest.fn()
+  const setResults = jest.fn()
   const setPostprocessing = jest.fn()
   const swr = {
     mutateOneSimulation: jest.fn()
@@ -39,7 +39,7 @@ describe('components/project/simulation/run/sensors', () => {
         geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
-        setResult={setResult}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         swr={swr}
       />
@@ -54,7 +54,7 @@ describe('components/project/simulation/run/sensors', () => {
         geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
-        setResult={setResult}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         swr={swr}
       />
@@ -78,7 +78,7 @@ describe('components/project/simulation/run/sensors', () => {
         geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
-        setResult={setResult}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         swr={swr}
       />
@@ -102,7 +102,7 @@ describe('components/project/simulation/run/sensors', () => {
         geometries={geometries}
         simulation={simulation}
         setVisible={setVisible}
-        setResult={setResult}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         swr={swr}
       />

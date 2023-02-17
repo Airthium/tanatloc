@@ -70,11 +70,13 @@ describe('components/project/simulation/postprocessing', () => {
       }
     } as IFrontSimulationsItem['scheme']
   }
-  const result: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'> = {
-    name: 'namer',
-    fileName: 'fileNamer',
-    originPath: 'originPathr'
-  }
+  const results: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>[] = [
+    {
+      name: 'namer',
+      fileName: 'fileNamer',
+      originPath: 'originPathr'
+    }
+  ]
   const postprocessing: Pick<IFrontResult, 'name' | 'fileName'> = {
     name: 'namep',
     fileName: 'fileNamep'
@@ -93,7 +95,9 @@ describe('components/project/simulation/postprocessing', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Postprocessing setResult={setResult} />)
+    const { unmount } = render(
+      <Postprocessing results={results} setResult={setResult} />
+    )
 
     unmount()
   })
@@ -102,7 +106,7 @@ describe('components/project/simulation/postprocessing', () => {
     const { unmount } = render(
       <Postprocessing
         simulation={simulation}
-        result={result}
+        results={results}
         setResult={setResult}
       />
     )
@@ -126,7 +130,7 @@ describe('components/project/simulation/postprocessing', () => {
             }
           }
         }}
-        result={result}
+        results={results}
         setResult={setResult}
       />
     )
@@ -150,7 +154,7 @@ describe('components/project/simulation/postprocessing', () => {
             }
           }
         }}
-        result={result}
+        results={results}
         setResult={setResult}
       />
     )
@@ -162,7 +166,7 @@ describe('components/project/simulation/postprocessing', () => {
     const { unmount } = render(
       <Postprocessing
         simulation={simulation}
-        result={result}
+        results={results}
         setResult={setResult}
       />
     )
@@ -180,7 +184,7 @@ describe('components/project/simulation/postprocessing', () => {
     const { unmount } = render(
       <Postprocessing
         simulation={simulation}
-        result={result}
+        results={results}
         postprocessing={postprocessing}
         setResult={setResult}
       />
@@ -260,7 +264,7 @@ describe('components/project/simulation/postprocessing', () => {
     const { rerender, unmount } = render(
       <Postprocessing
         simulation={simulation}
-        result={result}
+        results={results}
         setResult={setResult}
       />
     )
@@ -268,7 +272,13 @@ describe('components/project/simulation/postprocessing', () => {
     const button = screen.getByRole('button')
     fireEvent.click(button)
 
-    rerender(<Postprocessing simulation={simulation} setResult={setResult} />)
+    rerender(
+      <Postprocessing
+        results={[]}
+        simulation={simulation}
+        setResult={setResult}
+      />
+    )
 
     unmount()
   })

@@ -86,11 +86,13 @@ describe('components/project/simulation/run', () => {
       }
     }
   } as Pick<IFrontSimulation, 'id' | 'scheme'>
-  const result = {
-    fileName: 'fileName',
-    name: 'name'
-  } as IFrontResult
-  const setResult = jest.fn()
+  const results = [
+    {
+      fileName: 'fileName',
+      name: 'name'
+    }
+  ] as IFrontResult[]
+  const setResults = jest.fn()
   const setPostprocessing = jest.fn()
   const setVisible = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
@@ -148,8 +150,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -165,8 +167,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -189,8 +191,8 @@ describe('components/project/simulation/run', () => {
             scheme: {}
           } as IFrontSimulation
         }
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -217,8 +219,8 @@ describe('components/project/simulation/run', () => {
             }
           } as IFrontSimulation
         }
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -259,8 +261,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -303,8 +305,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -322,8 +324,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -365,8 +367,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}
@@ -404,8 +406,8 @@ describe('components/project/simulation/run', () => {
       <Run
         geometries={geometries}
         simulation={simulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
         setPostprocessing={setPostprocessing}
         setVisible={setVisible}
         swr={swr}

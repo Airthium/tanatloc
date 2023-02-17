@@ -44,8 +44,8 @@ import { globalStyle } from '@/styles'
 export interface IProps {
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  result?: Pick<IFrontResult, 'name' | 'fileName'>
-  setResult: (result?: IFrontResult) => void
+  results: IFrontResult[]
+  setResults: (results: IFrontResult[]) => void
   setPostprocessing: (result?: IFrontResult) => void
   setVisible: (visible: boolean) => void
   swr: {
@@ -137,8 +137,8 @@ export const _onStop = async (
 const Run = ({
   geometries,
   simulation,
-  result,
-  setResult,
+  results,
+  setResults,
   setPostprocessing,
   setVisible,
   swr
@@ -285,7 +285,7 @@ const Run = ({
             geometries={geometries}
             simulation={simulation}
             setVisible={setVisible}
-            setResult={setResult}
+            setResults={setResults}
             setPostprocessing={setPostprocessing}
             swr={{
               mutateOneSimulation: swr.mutateOneSimulation
@@ -348,13 +348,8 @@ const Run = ({
                 tasks: currentSimulation.tasks
               }
             }
-            result={
-              result && {
-                name: result.name,
-                fileName: result.fileName
-              }
-            }
-            setResult={setResult}
+            results={results}
+            setResults={setResults}
           />
         </Space>
       </Layout.Content>

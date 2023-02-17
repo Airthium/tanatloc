@@ -24,7 +24,7 @@ export interface IProps {
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   setVisible: (visible: boolean) => void
-  setResult: (result?: IFrontResult) => void
+  setResults: (results: IFrontResult[]) => void
   setPostprocessing: (result?: IFrontResult) => void
   swr: {
     mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
@@ -40,7 +40,7 @@ const Sensors = ({
   geometries,
   simulation,
   setVisible,
-  setResult,
+  setResults,
   setPostprocessing,
   swr
 }: IProps): JSX.Element => {
@@ -52,12 +52,12 @@ const Sensors = ({
    * on add
    */
   const onAdd = useCallback(() => {
-    setResult(undefined)
+    setResults([])
     setPostprocessing(undefined)
     setSensor(undefined)
     setVisible(false)
     setSensorVisible(true)
-  }, [setVisible, setResult, setPostprocessing])
+  }, [setVisible, setResults, setPostprocessing])
 
   /**
    * On edit
@@ -65,13 +65,13 @@ const Sensors = ({
    */
   const onEdit = useCallback(
     (toEdit: IModelSensor & { index: number }) => {
-      setResult(undefined)
+      setResults([])
       setPostprocessing(undefined)
       setSensor(toEdit)
       setVisible(false)
       setSensorVisible(true)
     },
-    [setVisible, setResult, setPostprocessing]
+    [setVisible, setResults, setPostprocessing]
   )
 
   /**

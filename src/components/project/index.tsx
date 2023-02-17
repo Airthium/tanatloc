@@ -244,7 +244,7 @@ const Project = (): JSX.Element => {
     useState<boolean>(false)
   const [simulation, setSimulation] = useState<IFrontSimulationsItem>()
 
-  const [result, setResult] = useState<IFrontResult>()
+  const [results, setResults] = useState<IFrontResult[]>([])
 
   const [postprocessing, setPostprocessing] = useState<IFrontResult>()
 
@@ -588,13 +588,8 @@ const Project = (): JSX.Element => {
               id: current.id,
               scheme: current.scheme
             }}
-            result={
-              result && {
-                name: result.name,
-                fileName: result.fileName
-              }
-            }
-            setResult={setResult}
+            results={results}
+            setResults={setResults}
             setPostprocessing={setPostprocessing}
             setVisible={setPanelVisible}
             swr={{ mutateOneSimulation }}
@@ -602,7 +597,7 @@ const Project = (): JSX.Element => {
         </Panel>
       )
     },
-    [geometries, result, panelVisible, mutateOneSimulation, onPanelClose]
+    [geometries, results, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -857,19 +852,19 @@ const Project = (): JSX.Element => {
 
         // Force geometry
         if (menuKey.item !== 'run') {
-          setResult(undefined)
+          setResults([])
           setPostprocessing(undefined)
         }
       }
     },
-    [menuKey, panelVisible, result],
+    [menuKey, panelVisible, results],
     [setGeometryPanel, setSimulationPanel, onPanelClose]
   )
 
   // Close result
   useEffect(() => {
-    if (!result && postprocessing) setPostprocessing(undefined)
-  }, [result, postprocessing])
+    if (!results.length && postprocessing) setPostprocessing(undefined)
+  }, [results, postprocessing])
 
   // Geometries render build
   const geometriesRender = useMemo(
@@ -1130,12 +1125,10 @@ const Project = (): JSX.Element => {
               id: geometry.id,
               needCleanup: geometry.needCleanup
             }))}
-            result={
-              result && {
-                glb: result.glb,
-                originPath: result.originPath
-              }
-            }
+            results={results.map((result) => ({
+              glb: result.glb,
+              originPath: result.originPath
+            }))}
             postprocessing={
               postprocessing && {
                 glb: postprocessing.glb,
@@ -1158,13 +1151,11 @@ const Project = (): JSX.Element => {
                 scheme: simulation.scheme
               }
             }
-            result={
-              result && {
-                name: result.name,
-                fileName: result.fileName,
-                originPath: result.originPath
-              }
-            }
+            results={results.map((result) => ({
+              name: result.name,
+              fileName: result.fileName,
+              originPath: result.originPath
+            }))}
             postprocessing={
               postprocessing && {
                 name: postprocessing.name,

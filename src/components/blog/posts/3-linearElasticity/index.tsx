@@ -1,4 +1,4 @@
-/** @module Components.Blog.Posts.1Poisson */
+/** @module Components.Blog.Posts.3LinearElasticity */
 
 import { Typography } from 'antd'
 
@@ -9,7 +9,7 @@ import PostLayout from '../layout'
 
 export const key = '1-LinearElasticity'
 export const title = 'Linear elasticity problems'
-export const description = 'First validation test, linear elasticity'
+export const description = 'Validation tests, linear elasticity'
 export const date = '2023-02-14'
 export const image = '/images/LinearElasticity.jpg'
 export const keywords = ['Mechanics', 'Validation', 'Academic', 'Theory']

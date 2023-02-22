@@ -1,0 +1,20 @@
+// Data for coupling
+appendLog("Save coupling data...");
+
+savemesh(<%- mesh -%>, "<%- path -%>/" + <%- name -%> + ".mesh");
+if (mpirank == 0) {
+    ofstream processOut("process_data.log", append);
+    string saveOutput = "PROCESS COUPLING FILE " + <%- name %> + ".mesh";
+    processOut << saveOutput << endl;
+}
+
+{
+    ofstream coupling("<%- path -%>/" + <%- name -%> + ".dat");
+    coupling << <%- data.join('[] << ') -%>[];
+}
+if (mpirank == 0) {
+    ofstream processOut("process_data.log", append);
+    string saveOutput = "PROCESS COUPLING FILE " + <%- name %> + ".dat";
+    processOut << saveOutput << endl;
+}
+// End Data for coupling

@@ -1,0 +1,44 @@
+// Sensors
+{
+<% if (sensors) { -%>
+<% sensors.forEach((sensor, index) => { -%>
+	x = <%= sensor.point.x -%>;
+	y = <%= sensor.point.y -%>;
+	z = <%= sensor.point.z -%>;
+	real sensor<%= index -%> = <%= sensor.formula -%>;
+<% }) -%>
+
+	if (mpirank == 0) {
+		ofstream data("<%= path %>/sensors_" + <%= x -%> + ".dat");
+		data << "{" << endl;
+		data << "  \"names\": [" << endl;
+<% sensors.forEach((sensor, index) =>  { -%>
+<% if (index < sensors.length - 1) { -%>
+		data << "    \"<%= sensor.name -%>\"," << endl;
+<% } else { -%>
+		data << "    \"<%= sensor.name -%>\"" << endl;
+<% } -%>
+<% }) -%>
+		data << "  ]," << endl;
+		data << "  \"x\": \"" << <%= x %> << "\"," << endl;
+		data << "  \"ys\": [" << endl;
+<% sensors.forEach((_, index) =>  { -%>
+<% if (index < sensors.length - 1) { -%>
+		data << "    " << sensor<%= index -%> << "," << endl;
+<% } else { -%>
+		data << "    " << sensor<%= index -%> << endl;
+<% } -%>
+<% }) -%>
+		data << "  ]" << endl;
+		data << " }" << endl;
+
+		ofstream processOut("process_data.log", append);
+		string saveOutput = "PROCESS DATA FILE " + "sensors_" + <%= x -%> + ".dat";
+		processOut << saveOutput << endl;
+	}
+<% } else { -%>
+	// No sensors
+	;
+<% } -%>
+}
+// End Sensors

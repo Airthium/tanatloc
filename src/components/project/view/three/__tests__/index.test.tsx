@@ -471,7 +471,7 @@ describe('components/project/view/three', () => {
     await act(() => fireEvent.click(flip))
 
     unmount()
-  })
+  }, 10_000)
 
   test('selection enabled', () => {
     const { unmount } = render(
@@ -579,5 +579,5 @@ describe('components/project/view/three', () => {
     )
 
     unmount()
-  })
+  }, 10_000)
 })

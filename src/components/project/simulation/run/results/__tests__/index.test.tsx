@@ -253,13 +253,15 @@ describe('components/project/simulation/run/results', () => {
     const options = screen.getAllByText('1')
     await act(() => fireEvent.click(options[1]))
     await waitFor(() =>
-      expect(setResults).toHaveBeenLastCalledWith({
-        fileName: 'file_1.vtu',
-        name: 'file',
-        number: 1,
-        originPath: 'originPath',
-        type: 'result'
-      })
+      expect(setResults).toHaveBeenLastCalledWith([
+        {
+          fileName: 'file_1.vtu',
+          name: 'file',
+          number: 1,
+          originPath: 'originPath',
+          type: 'result'
+        }
+      ])
     )
 
     const eyeOpen = screen.getByRole('button', { name: 'eye' })

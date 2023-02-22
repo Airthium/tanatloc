@@ -49,15 +49,12 @@ const style: { [key: string]: SerializedStyles } = {
   contentTools: css({
     display: 'flex',
     justifyContent: 'space-between',
-    '> div': {
+    flexDirection: 'column',
+    gap: '10px',
+    '> div:first-of-type': {
       display: 'flex',
       alignItems: 'center',
-      '>div': {
-        marginLeft: '10px'
-      }
-    },
-    '.ant-input': {
-      width: '50%'
+      gap: '10px'
     }
   }),
   footer: css({

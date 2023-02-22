@@ -1,8 +1,19 @@
 /** @module Components.Blog */
 
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Card, Empty, Input, Layout, Tag, Typography } from 'antd'
+import {
+  Button,
+  Card,
+  Empty,
+  Input,
+  Layout,
+  Select,
+  Tag,
+  Tooltip,
+  Typography
+} from 'antd'
+import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
 import { css } from '@emotion/react'
 
@@ -94,8 +105,9 @@ const PostCard = ({
 const Blog = () => {
   // State
   const [PostRender, setPostRender] = useState<JSX.Element>()
-  const [search, setSearch] = useState<string>()
   const [sort, setSort] = useState<number>(1)
+  const [tags, setTags] = useState<string[]>([])
+  const [search, setSearch] = useState<string>()
 
   // Data
   const router = useRouter()
@@ -139,12 +151,64 @@ const Blog = () => {
     setSort(-1)
   }, [])
 
+  /**
+   * Tag render
+   * @param props Props
+   * @returns Render
+   */
+  const tagRender = useCallback((props: CustomTagProps) => {
+    const { label, value, closable, onClose } = props
+    const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    return (
+      <Tag
+        color={Utils.stringToColor(value)}
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3 }}
+      >
+        {label}
+      </Tag>
+    )
+  }, [])
+
+  /**
+   * On tags change
+   * @param values Values
+   */
+  const onTagsChange = useCallback((values: string[]) => {
+    setTags(values)
+  }, [])
+
+  // Tags
+  const postsTags = useMemo(() => {
+    const keywords: string[] = Posts.map((Post) => Post.keywords).flatMap(
+      (k) => k
+    )
+    const uniqueKeywords = keywords.filter((keyword, index) => {
+      return keywords.indexOf(keyword) === index
+    })
+
+    return uniqueKeywords.map((keyword) => ({
+      label: keyword,
+      value: keyword
+    }))
+  }, [])
+
   // Posts
   Posts.sort(
     (a, b) => sort * (new Date(a.date).getDate() - new Date(b.date).getDate())
   )
   const postsList = Posts.map((Post) => {
     if (search && !Post.title.toLowerCase().includes(search.toLowerCase()))
+      return
+    if (
+      tags.length &&
+      !Post.keywords.filter((keywords) => tags.includes(keywords)).length
+    )
       return
     return (
       <PostCard
@@ -182,12 +246,23 @@ const Blog = () => {
         <Layout.Content css={css([globalStyle.scroll, style.content])}>
           <div css={style.contentTools}>
             <div>
-              Sort by date
-              <div>
-                <Button icon={<ArrowDownOutlined />} onClick={onSortDown} />
-                <Button icon={<ArrowUpOutlined />} onClick={onSortUp} />
-              </div>
+              Sort by date:
+              <Tooltip title="Older to newer">
+                <Button icon={<ArrowDownOutlined />} onClick={onSortUp} />
+              </Tooltip>
+              <Tooltip title="Newer to older">
+                <Button icon={<ArrowUpOutlined />} onClick={onSortDown} />
+              </Tooltip>
             </div>
+            <Select
+              options={postsTags}
+              value={tags}
+              tagRender={tagRender}
+              mode="tags"
+              placeholder="Select tags..."
+              maxTagCount="responsive"
+              onChange={onTagsChange}
+            />
             <Input placeholder="Search" value={search} onChange={onSearch} />
           </div>
           <div css={style.posts}>

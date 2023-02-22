@@ -12,7 +12,7 @@ export const title = 'Linear elasticity problems'
 export const description = 'Validation tests, linear elasticity'
 export const date = '2023-02-14'
 export const image = '/images/LinearElasticity.jpg'
-export const keywords = ['Mechanics', 'Validation', 'Academic', 'Theory']
+export const keywords = ['Mechanics', 'Validation', 'Theory']
 export const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'

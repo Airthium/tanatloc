@@ -12,7 +12,7 @@ export const title = 'Modal Analysis problems'
 export const description = 'Validation tests, modal analysis'
 export const date = '2023-02-17'
 export const image = '/images/modalAnalysis.jpeg'
-export const keywords = ['Modal Analysis', 'Validation', 'Academic', 'Theory']
+export const keywords = ['Modal Analysis', 'Validation', 'Theory']
 export const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'

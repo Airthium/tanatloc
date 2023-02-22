@@ -1,3 +1,19 @@
+## v1.2.8
+
+- Global:
+  - :beetle: Fix public template
+  - :beetle: Gmsh template fix
+- Client:
+  - :arrow_up: Responsive blog & doc
+  - :arrow_up: Blog articles (houssamh)
+  - :arrow_up: Multiple results display
+  - :arrow_up: Blog tags
+- Algorithm:
+  - :arrow_up: Stokes symmetric
+  - :arrow_up: Contact
+
+---
+
 ## v1.2.7
 
 - Global:

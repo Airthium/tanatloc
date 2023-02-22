@@ -36,7 +36,7 @@ jest.mock('../posts', () => [
     description: 'description2',
     date: 'date2',
     image: 'img2',
-    keywords: ['keyword1', 'keyword2'],
+    keywords: ['keyword2'],
     author: { name: 'name2', url: 'url2' },
     default: () => <div />
   }
@@ -98,6 +98,21 @@ describe('components/blog', () => {
 
     fireEvent.click(down)
     fireEvent.click(up)
+
+    unmount()
+  })
+
+  test('tags', () => {
+    const { unmount } = render(<Blog />)
+
+    const select = screen.getByRole('combobox')
+
+    fireEvent.mouseDown(select)
+
+    const option1 = screen.getAllByText('keyword1')
+    fireEvent.click(option1[2])
+
+    screen.debug(undefined, 10000)
 
     unmount()
   })

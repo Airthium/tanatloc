@@ -15,8 +15,8 @@ jobs:
       - uses: actions/setup-node@master
       - name: Install
         run: yarn
-      - name: Build
-        run: yarn build
+      - name: Prestart
+        run: NEXT_PUBLIC_SERVER_MODE=frontpage yarn prestart
       - name: Export
         run: NEXT_PUBLIC_SERVER_MODE=frontpage yarn export
       - name: Deploy

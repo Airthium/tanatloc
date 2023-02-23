@@ -1,0 +1,133 @@
+@value variables: "@/styles/variables.css";
+@value colorPrimary from variables;
+
+@value breakpoints: "@/styles/breakpoints.css";
+@value tablet from breakpoints;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 20px 120px;
+  display: flex;
+  align-items: center;
+  background: white !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header :global(.ant-typography) {
+  margin: 0 20px;
+}
+
+.logo {
+  padding: 20px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  cursor: pointer;
+}
+
+.content {
+  padding: 0 50px 50px 50px;
+}
+
+.contentTools {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contentTools > div:first-of-type {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer {
+  text-align: center;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.posts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.postCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.postCard :global(.ant-card-head-wrapper) {
+  flex-direction: column;
+}
+
+.postCard :global(.ant-card-head-wrapper) :global(.ant-card-extra) {
+  margin-inline-start: unset;
+}
+
+.postCard :global(.ant-card-cover) {
+  padding: 10px;
+  flex: 1 1 auto;
+}
+
+.postCard img {
+  max-width: 80%;
+  margin: auto;
+}
+
+.postLayout {
+  font-size: 16px;
+}
+
+.postTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.postTitle img {
+  width: 300px;
+}
+
+.postContent {
+  max-width: 900px;
+  margin: auto;
+}
+
+@media tablet {
+  .header {
+    flex-direction: column;
+    padding: 10px 20px;
+    height: unset !important;
+    margin-bottom: 0 !important;
+  }
+
+  .header :global(.ant-typography) {
+    margin-top: -25;
+    font-size: 50;
+    color: colorPrimary;
+  }
+
+  .logo {
+    padding: 10px 8px;
+  }
+
+  .content {
+    padding: 10px;
+  }
+
+  .posts {
+    grid-template-columns: 1fr;
+  }
+
+  .postTitle {
+    flex-direction: column;
+  }
+}

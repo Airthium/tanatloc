@@ -1,0 +1,16 @@
+@value variables: "./variables.css";
+@value textColorLight from variables;
+
+.noScroll {
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+.scroll {
+  max-height: 100% !important;
+  overflow: auto !important;
+}
+
+.textLight {
+  color: textColorLight !important;
+}

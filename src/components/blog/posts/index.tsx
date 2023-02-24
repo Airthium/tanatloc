@@ -4,7 +4,14 @@ import * as Poisson from './1-poisson'
 import * as Stokes from './2-stokes'
 import * as LinearElasticity from './3-linearElasticity'
 import * as ModalAnalysis from './4-modalAnalysis'
+import * as ThermalDiffusion from './5-thermalDiffusion'
 
-const Posts = [Poisson, Stokes, LinearElasticity, ModalAnalysis]
+const Posts = [
+  Poisson,
+  Stokes,
+  LinearElasticity,
+  ModalAnalysis,
+  ThermalDiffusion
+]
 
 export default Posts

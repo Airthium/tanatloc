@@ -1,0 +1,272 @@
+@value breakpoints: '@/styles/breakpoints.css';
+@value tablet from breakpoints;
+
+.index {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+  padding: 0 100px;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: 0 -100px;
+  padding: 20px 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white !important;
+  margin-bottom: 90px;
+  box-shadow: 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header ul {
+  flex: 1 1 auto;
+  justify-content: center;
+  border-bottom: none;
+}
+
+.header ul li {
+  padding: 0 !important;
+}
+
+.header ul li::after {
+  display: none;
+}
+
+.menu {
+  width: 100%;
+}
+
+.menu :global(.Menu-getStarted) {
+  display: none;
+}
+
+.menu :global(.Menu-login) {
+  display: none;
+}
+
+.menuMobile {
+  display: none;
+}
+
+.content {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.indexPadding {
+  padding: 50px;
+}
+
+.indexImgShadow {
+  box-shadow: 0px 0px 6px -4px rgba(0, 0, 0, 0.12),
+    0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.solveLeft {
+  padding-left: 50px !important;
+  padding-right: 50px !important;
+}
+
+.models {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  align-items: unset !important;
+  justify-items: stretch;
+  grid-gap: 20px;
+}
+
+.models :global(.ant-checkbox-wrapper) {
+  margin-inline-start: 0 !important;
+}
+
+.models :global(.ant-checkbox-inner) {
+  border-color: #fff;
+}
+
+.indexPlugins {
+  display: flex;
+  justify-content: space-around;
+  column-width: 160px;
+  column-gap: 0;
+  margin-top: 40px !important;
+}
+
+.indexPlugins > div {
+  break-inside: avoid-column;
+  page-break-inside: avoid;
+  width: 160px;
+  max-width: 160px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.indexPlugins :global(.ant-avatar) {
+  background-color: colorPrimary;
+  padding: 5px;
+  line-height: 60px !important;
+}
+
+.indexPlugins :global(.ant-avatar) > img {
+  object-fit: contain !important;
+  margin: auto;
+}
+
+.electron {
+  display: flex;
+  flex-direction: column;
+}
+
+.electron img {
+  max-width: 80%;
+  align-self: center;
+}
+
+.caseStudy {
+  box-shadow: 0px 0px 6px -4px rgba(0, 0, 0, 0.12),
+    0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+  justify-items: space-around !important;
+}
+
+.caseStudyLeft {
+  width: 70%;
+}
+
+.caseStudyLeft h3 {
+  margin-top: -0.5em !important;
+}
+
+.steps {
+  margin: auto;
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 25px;
+  column-gap: 25px;
+}
+
+.steps :global(.ant-steps-item) {
+  margin-bottom: 20px;
+}
+
+.steps :global(.ant-steps-item-title) {
+  font-weight: bold;
+  margin-top: -8px;
+}
+
+.steps :global(.ant-steps-item-icon) {
+  margin-top: 10px;
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  font-size: 32px;
+  background-color: white !important;
+}
+
+.steps :global(.ant-steps-icon) {
+  color: colorPrimary !important;
+}
+
+.steps :global(.ant-steps-item-tail) {
+  display: none !important;
+}
+
+.steps button.download {
+  height: 40px;
+  margin: 5px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.steps img {
+  height: 30px;
+  margin-right: 3px;
+}
+
+.about {
+  box-shadow: 0px 0px 6px -4px rgba(0, 0, 0, 0.12),
+    0px 0px 16px rgba(0, 0, 0, 0.08), 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 200px;
+  padding: 50px 0;
+}
+
+.turbine {
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/indexpage/turbine.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+@media tablet {
+  .index {
+    padding: 0 20px !important;
+  }
+
+  .header {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    padding: 20px 10px;
+  }
+
+  .header button {
+    display: none;
+  }
+
+  .menu {
+    display: 'none';
+  }
+
+  .menuMobile {
+    display: flex !important;
+    justify-content: center;
+  }
+
+  .indexPadding {
+    padding: 20px !important;
+  }
+
+  .solveLeft {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .models {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 20px !important;
+  }
+
+  .indexPlugins {
+    margin: auto;
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .indexPlugins > div {
+    height: unset !important;
+    margin-bottom: 20px !important;
+  }
+
+  .caseStudyRight img {
+    height: 250px;
+  }
+
+  .steps {
+    width: unset !important;
+    grid-template-columns: 1fr;
+  }
+
+  .crowdfunding a {
+    margin: auto;
+  }
+}

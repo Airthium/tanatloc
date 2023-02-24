@@ -18,7 +18,7 @@ import Save from './save'
 import Data from './data'
 import Sensors from './sensors'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Add on cursor
@@ -59,14 +59,14 @@ const Blobs = (): JSX.Element => {
     <>
       <Collapse style={{ overflow: 'auto', maxHeight: 'calc(100% - 443px)' }}>
         <Collapse.Panel key="head" header="Head">
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             <Header />
             <Dimension />
           </Space>
         </Collapse.Panel>
 
         <Collapse.Panel key="components" header="Components">
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             <Mesh />
             <Materials />
             <FiniteElementSpace />
@@ -77,7 +77,7 @@ const Blobs = (): JSX.Element => {
         </Collapse.Panel>
 
         <Collapse.Panel key="results" header="Results">
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             <Save />
             <Data />
             <Sensors />

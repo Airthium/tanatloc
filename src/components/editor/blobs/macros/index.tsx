@@ -10,7 +10,7 @@ import Dialog from '@/components/assets/dialog'
 
 import { addOnCursor } from '..'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * On add
@@ -117,7 +117,7 @@ const Macros = (): JSX.Element => {
           />
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
+      <Button className={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Macros
       </Button>
     </>

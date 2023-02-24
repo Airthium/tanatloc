@@ -78,3 +78,7 @@
 .colorPrimary {
   color: colorPrimary !important;
 }
+
+.backgroundPrimary {
+  background: colorPrimary !important;
+}

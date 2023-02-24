@@ -25,7 +25,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import Delete from '../delete'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -135,7 +135,7 @@ const TanatlocModel = ({
    */
   return (
     <div
-      css={globalStyle.displayFlex}
+      className={globalStyle.displayFlex}
       style={{
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -179,7 +179,7 @@ const UserModel = ({
    */
   return (
     <div
-      css={globalStyle.displayFlex}
+      className={globalStyle.displayFlex}
       style={{
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -268,7 +268,7 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
               key: 'models',
               label: 'Tanatloc models',
               children: (
-                <Space direction="vertical" css={globalStyle.fullWidth}>
+                <Space direction="vertical" className={globalStyle.fullWidth}>
                   {tanatlocModels}
                 </Space>
               )
@@ -277,7 +277,7 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
               key: 'personalModels',
               label: 'My models',
               children: (
-                <Space direction="vertical" css={globalStyle.fullWidth}>
+                <Space direction="vertical" className={globalStyle.fullWidth}>
                   {userModels}
                 </Space>
               )

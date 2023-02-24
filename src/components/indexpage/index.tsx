@@ -17,7 +17,6 @@ import {
   Typography
 } from 'antd'
 import { BugOutlined, SettingOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 import { Url } from 'url'
 
@@ -30,8 +29,8 @@ import Side from '@/components/assets/side'
 import Menu, { scrollToView } from './menu'
 import Footer from './footer'
 
-import { globalStyle, globalStyleFn, variables } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 // Local interfaces
 export interface IRelease {
@@ -202,7 +201,7 @@ const Index = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout id="index" css={style.index}>
+    <Layout id="index" className={style.index}>
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"
@@ -321,8 +320,8 @@ const Index = (): JSX.Element => {
       </Drawer>
       <Menu />
 
-      <Layout.Content css={style.content}>
-        <Space direction="vertical" size={90} css={globalStyle.fullWidth}>
+      <Layout.Content className={style.content}>
+        <Space direction="vertical" size={90} className={globalStyle.fullWidth}>
           <Side
             left={
               <Space direction="vertical" size={20}>
@@ -349,10 +348,11 @@ const Index = (): JSX.Element => {
               <img
                 src="images/indexpage/capture1.png"
                 alt="tanatloc"
-                css={style.indexImgShadow}
+                className={style.indexImgShadow}
               />
             }
-            leftCss={css([style.solveLeft, globalStyleFn.marginBottom(50)])}
+            leftClassName={style.solveLeft}
+            leftStyle={{ marginBottom: '50px' }}
           />
 
           <Side
@@ -413,19 +413,19 @@ const Index = (): JSX.Element => {
                 </Checkbox>
               </>
             }
-            sideCss={css({ backgroundColor: variables.colorPrimary })}
-            rightCss={css([style.models, style.indexPadding])}
-            leftCss={style.indexPadding}
+            sideClassName={globalStyle.colorPrimary}
+            rightClassName={`${style.models} ${style.indexPadding}`}
+            leftClassName={style.indexPadding}
             id="features"
           />
 
           <div id="developers">
-            <div css={style.indexPadding}>
+            <div className={style.indexPadding}>
               <Typography.Title level={2}>
                 Solve your numerical problems locally or in the cloud, using
                 dedicated plugins
               </Typography.Title>
-              <div css={style.indexPlugins}>
+              <div className={style.indexPlugins}>
                 <div>
                   <Avatar
                     size={64}
@@ -433,7 +433,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-rescale.svg"
                   />
                   <Typography.Title level={4}>Rescale</Typography.Title>
-                  <Typography.Text css={globalStyle.textLight}>
+                  <Typography.Text className={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                   <a href="mailto:contact@airthium.com">
@@ -447,7 +447,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-ancl.jpg"
                   />
                   <Typography.Title level={4}>ANCL Sharetask</Typography.Title>
-                  <Typography.Text css={globalStyle.textLight}>
+                  <Typography.Text className={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                   <a href="mailto:contact@airthium.com">
@@ -461,7 +461,7 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-slurm.svg"
                   />
                   <Typography.Title level={4}>Slurm</Typography.Title>
-                  <Typography.Text css={globalStyle.textLight}>
+                  <Typography.Text className={globalStyle.textLight}>
                     Upcoming
                   </Typography.Text>
                 </div>
@@ -472,14 +472,14 @@ const Index = (): JSX.Element => {
                     src="images/indexpage/logo-qarnot.svg"
                   />
                   <Typography.Title level={4}>Qarnot HPC</Typography.Title>
-                  <Typography.Text css={globalStyle.textLight}>
+                  <Typography.Text className={globalStyle.textLight}>
                     Upcoming
                   </Typography.Text>
                 </div>
                 <div>
                   <Avatar size={64} shape="square" icon={<SettingOutlined />} />
                   <Typography.Title level={4}>Your own plugin</Typography.Title>
-                  <Typography.Text css={globalStyle.textLight}>
+                  <Typography.Text className={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
                 </div>
@@ -487,7 +487,7 @@ const Index = (): JSX.Element => {
             </div>
           </div>
 
-          <div id="electron" css={style.electron}>
+          <div id="electron" className={style.electron}>
             <Typography.Title level={2}>
               Tanatloc is an FEA software based on FreeFEM, an extremely
               powerful and versatile open-source PDE solver. It runs locally
@@ -496,11 +496,8 @@ const Index = (): JSX.Element => {
             <img
               src="images/indexpage/capture2.png"
               alt="tanatloc"
-              css={css([
-                style.indexImgShadow,
-                globalStyleFn.marginTop(40),
-                globalStyle.textAlignCenter
-              ])}
+              className={`${style.indexImgShadow} ${globalStyle.textAlignCenter}`}
+              style={{ marginTop: '40px' }}
             />
           </div>
 
@@ -511,7 +508,7 @@ const Index = (): JSX.Element => {
                   <Typography.Title level={2}>Case Study</Typography.Title>
                   <Typography.Title
                     level={3}
-                    css={globalStyle.textLight}
+                    className={globalStyle.textLight}
                     style={{ marginBottom: 0 }}
                   >
                     DENSO
@@ -540,24 +537,17 @@ const Index = (): JSX.Element => {
               <img
                 src="images/indexpage/denso.jpg"
                 alt="tanatloc"
-                css={style.indexPadding}
+                className={style.indexPadding}
               />
             }
-            sideCss={css([
-              style.caseStudy,
-              globalStyleFn.marginTop(50),
-              globalStyleFn.marginBottom(50)
-            ])}
-            leftCss={css([
-              style.caseStudyLeft,
-              globalStyle.fullWidth,
-              style.indexPadding
-            ])}
-            rightCss={style.caseStudyRight}
+            sideClassName={style.caseStudy}
+            sideStyle={{ marginTop: '50px', marginBottom: '50px' }}
+            leftClassName={`${style.caseStudyLeft} ${globalStyle.fullWidth} ${style.indexPadding}`}
+            rightClassName={style.caseStudyRight}
             id="caseStudy"
           />
 
-          <div id="getStarted" css={globalStyleFn.marginBottom(50)}>
+          <div id="getStarted" style={{ marginBottom: '50px' }}>
             <Typography.Title level={2}>Get started</Typography.Title>
             <Typography.Text>
               Complete description in the{' '}
@@ -569,7 +559,7 @@ const Index = (): JSX.Element => {
             <br />
             <Steps
               direction="vertical"
-              css={style.steps}
+              className={style.steps}
               items={[
                 {
                   title: 'Install Docker Desktop',
@@ -639,7 +629,7 @@ const Index = (): JSX.Element => {
                           <br />
                         </>
                       )}
-                      <span css={globalStyleFn.marginRight(10)}>
+                      <span style={{ marginRight: '10px' }}>
                         Version: {release ? release.version : <Spin />}
                       </span>
                       <Button
@@ -700,16 +690,14 @@ const Index = (): JSX.Element => {
                     </a>
                   </>
                 }
-                sideCss={css({
-                  backgroundColor: variables.colorPrimary
-                })}
-                leftCss={style.turbine}
-                rightCss={css([style.indexPadding, style.crowdfunding])}
+                sideClassName={globalStyle.backgroundPrimary}
+                leftClassName={style.turbine}
+                rightClassName={`${style.indexPadding} ${style.crowdfunding}`}
               />
             }
-            sideCss={style.about}
-            leftCss={style.indexPadding}
-            rightCss={style.indexPadding}
+            sideClassName={style.about}
+            leftClassName={style.indexPadding}
+            rightClassName={style.indexPadding}
             id="aboutUs"
           />
         </Space>

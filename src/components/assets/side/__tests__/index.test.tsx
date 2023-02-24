@@ -1,4 +1,3 @@
-import { css } from '@emotion/react'
 import { render, screen } from '@testing-library/react'
 
 import Side from '..'

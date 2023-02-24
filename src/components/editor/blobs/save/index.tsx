@@ -11,9 +11,9 @@ import { setCursor, setModel } from '@/context/editor/actions'
 import Dialog from '@/components/assets/dialog'
 import { FormListContainer, FormListItem } from '@/components/assets/form'
 
-import { globalStyle } from '@/styles'
-
 import { addOnCursor } from '..'
+
+import globalStyle from '@/styles/index.module.css'
 
 // Local interfaces
 export interface ILocalValues {
@@ -257,7 +257,7 @@ const Save = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
+      <Button className={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Save
       </Button>
     </>

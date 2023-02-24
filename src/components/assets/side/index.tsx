@@ -1,17 +1,15 @@
 /** @module Components.Assets.Side */
 
-import { css, SerializedStyles } from '@emotion/react'
-
-import style from './index.style'
+import style from './index.module.css'
 
 export interface IProps {
   left: JSX.Element
   right: JSX.Element
   top?: JSX.Element
-  sideCss?: SerializedStyles
-  leftCss?: SerializedStyles
-  rightCss?: SerializedStyles
-  topCss?: SerializedStyles
+  sideClassName?: string
+  leftClassName?: string
+  rightClassName?: string
+  topClassName?: string
   id?: string
 }
 
@@ -24,20 +22,20 @@ const Side = ({
   left,
   right,
   top,
-  sideCss,
-  leftCss,
-  rightCss,
-  topCss,
+  sideClassName,
+  leftClassName,
+  rightClassName,
+  topClassName,
   id
 }: IProps): JSX.Element => {
   /**
    * Render
    */
   return (
-    <div css={css([style.side, sideCss || {}])} id={id}>
-      <div css={css([style.left, leftCss || {}])}>{left}</div>
-      <div css={css([style.right, rightCss || {}])}>{right}</div>
-      {top && <div css={css([style.top, topCss || {}])}>{top}</div>}
+    <div className={`${style.side} ${sideClassName || ''}`} id={id}>
+      <div className={`${style.left} ${leftClassName || ''}`}>{left}</div>
+      <div className={`${style.right} ${rightClassName || ''}`}>{right}</div>
+      {top && <div className={`${style.top} ${topClassName || ''}`}>{top}</div>}
     </div>
   )
 }

@@ -15,7 +15,6 @@ import {
 } from 'antd'
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import packageJson from '../../../package.json'
 
@@ -239,11 +238,11 @@ const Blog = () => {
         <Typography.Title level={1}>Blog</Typography.Title>
       </Layout.Header>
       {PostRender ? (
-        <Layout.Content className={globalStyle.scroll + ' ' + style.content}>
+        <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
           {PostRender}
         </Layout.Content>
       ) : (
-        <Layout.Content className={globalStyle.scroll + ' ' + style.content}>
+        <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
           <div className={style.contentTools}>
             <div>
               Sort by date:
@@ -256,6 +255,7 @@ const Blog = () => {
             </div>
             <Select
               options={postsTags}
+              style={{ width: '100%' }}
               value={tags}
               tagRender={tagRender}
               mode="tags"

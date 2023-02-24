@@ -1,0 +1,41 @@
+@value breakpoints: "@/styles/breakpoints.css"
+@value tablet from breakpoints
+
+.side {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+}
+
+.side img {
+  max-width: 100%;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.top {
+  position: absolute;
+  width: 80%;
+  top: calc(100% - 40px);
+}
+
+@media tablet {
+  .side {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -33,10 +33,10 @@ describe('components/assets/side', () => {
         left={left}
         right={right}
         top={top}
-        sideCss={css({ display: 'block' })}
-        leftCss={css({ display: 'block' })}
-        rightCss={css({ display: 'block' })}
-        topCss={css({ display: 'block' })}
+        sideClassName="className"
+        leftClassName="className"
+        rightClassName="className"
+        topClassName="className"
         id="id"
       />
     )

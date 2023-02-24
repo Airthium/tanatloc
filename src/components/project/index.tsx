@@ -56,7 +56,7 @@ import Geometry from './geometry'
 import View from './view'
 import Simulation from './simulation'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 import style from './index.style'
 
 const Data = dynamic(() => import('./data'), { ssr: false })
@@ -969,7 +969,7 @@ const Project = (): JSX.Element => {
                 disabled: true,
                 style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
                 label: (
-                  <GoBack buttonCss={globalStyle.fullWidth} onClick={dashboard}>
+                  <GoBack className={globalStyle.fullWidth} onClick={dashboard}>
                     Return to dashboard
                   </GoBack>
                 )

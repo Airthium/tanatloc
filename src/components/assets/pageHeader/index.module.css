@@ -1,0 +1,16 @@
+@value variables: "@/styles/index.module.css";
+@value colorPrimary from variables;
+
+.head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.head div:last-child {
+  padding: 16px 0;
+}
+
+.divider {
+  border-color: colorPrimary;
+  margin: 12px 0;
+}

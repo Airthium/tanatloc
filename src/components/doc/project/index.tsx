@@ -28,7 +28,7 @@ import {
 import { AddButton } from '@/components/assets/button'
 import Carousel from '@/components/assets/carousel'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Geometry
@@ -41,7 +41,7 @@ const Geometry = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>Geometry</Typography.Title>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           The first step when you open a new project is to import a geometry
         </Typography.Text>
@@ -78,8 +78,8 @@ const Geometry = (): JSX.Element => {
           }
         ]}
       />
-      <Typography css={style.text}>
-        <Typography.Text css={style.warnings}>
+      <Typography className={style.text}>
+        <Typography.Text className={style.warnings}>
           For the DXF upload, make sure your geometry is in the X-Y plane
         </Typography.Text>
       </Typography>
@@ -98,7 +98,7 @@ const Simulation = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>Simulation</Typography.Title>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           You can create a new simulation using{' '}
           <AddButton primary={false} onAdd={() => undefined}>
@@ -129,7 +129,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Geometry</Typography.Title>
         <Typography.Text>
           You have to click on the Geometry menu to select the geometry
@@ -169,7 +169,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Materials</Typography.Title>
         <Typography.Text>
           Depending on your simulation, you may have to choose a material
@@ -216,8 +216,8 @@ const Simulation = (): JSX.Element => {
           }
         ]}
       />
-      <Typography css={style.text}>
-        <Typography.Text css={style.tips}>
+      <Typography className={style.text}>
+        <Typography.Text className={style.tips}>
           Selector buttons:
           <ul>
             <li>
@@ -231,13 +231,13 @@ const Simulation = (): JSX.Element => {
             </li>
           </ul>
         </Typography.Text>
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           If you design your STEP file with color, you will be able to select by
           group of color with the selector
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Parameters</Typography.Title>
         <Typography.Text>Click on the Parameters menu</Typography.Text>
         <Typography.Text>Parameters depends on your simulation</Typography.Text>
@@ -260,7 +260,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Boundary Conditions</Typography.Title>
         <Typography.Text>Click on Boundary conditions menu</Typography.Text>
         <Typography.Text>
@@ -300,7 +300,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Run</Typography.Title>
         <Typography.Text>
           You can add a sensor before run the computation to extract data during
@@ -349,7 +349,7 @@ const Simulation = (): JSX.Element => {
           }
         ]}
       />
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           You can have a look on the output log of meshing and simulation using{' '}
           <Button icon={<FileTextOutlined />} />
@@ -365,7 +365,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Run summary</Typography.Title>
         <Typography.Text>
           You can download the simulation run summary using{' '}
@@ -386,7 +386,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Mesh</Typography.Title>
         <Typography.Text>
           To display the mesh, click on{' '}
@@ -407,7 +407,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Result</Typography.Title>
         <Typography.Text>
           To display a result, click on{' '}
@@ -429,7 +429,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Data</Typography.Title>
         <Typography.Text>
           To display the data, click on{' '}
@@ -455,7 +455,7 @@ const Simulation = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={5}>Post-processing</Typography.Title>
         <Typography.Text>
           To displat the post-processing tools, click on{' '}
@@ -497,7 +497,7 @@ const View = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>View Tools</Typography.Title>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           There is some visualization tools on the right of the project screen
         </Typography.Text>
@@ -655,13 +655,13 @@ const Project = (): JSX.Element => {
     <>
       <Typography.Title level={3}>Project</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           The project is used to manage geometries, simulation and results.
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Open a project</Typography.Title>
         <Typography.Text>
           Just click on the project card to open it

@@ -5,7 +5,7 @@ import { Typography } from 'antd'
 import Carousel from '@/components/assets/carousel'
 import { AddButton, DeleteButton, EditButton } from '@/components/assets/button'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Administration
@@ -18,11 +18,11 @@ const Administration = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>Administration</Typography.Title>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         Your need to be an administrator to have acces to this part
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Users management</Typography.Title>
         <Typography.Text>
           The first tab of Administration is the users management
@@ -64,7 +64,7 @@ const Administration = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Registration</Typography.Title>
         <Typography.Text>
           You can manage registration parameters in the Registration tab
@@ -85,7 +85,7 @@ const Administration = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Plugins</Typography.Title>
         <Typography.Text>
           The plugins tab allows you to manage default enabled plugins at user

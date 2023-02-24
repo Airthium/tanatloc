@@ -12,8 +12,8 @@ import {
 import Carousel from '@/components/assets/carousel'
 import { AddButton, DeleteButton, EditButton } from '@/components/assets/button'
 
-import style from '../../index.style'
-import { globalStyle } from '@/styles'
+import style from '../../index.module.css'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Workspace
@@ -27,7 +27,7 @@ const Workspace = (): JSX.Element => {
     <>
       <Typography.Title level={4}>Workspaces & Projects</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           The workspace is the place where all the projects are. You can create
           several workspaces to sort your different projects.
@@ -51,7 +51,7 @@ const Workspace = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Workspace creation</Typography.Title>
         <Typography.Text>
           In order to create a workspace:
@@ -82,7 +82,7 @@ const Workspace = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>
           Workspace edit, share, delete
         </Typography.Title>
@@ -94,7 +94,7 @@ const Workspace = (): JSX.Element => {
           You can share the workspace with organizations groups and members
           using the <Button icon={<ShareAltOutlined />} />
         </Typography.Text>
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           You must create an organization with users and groups before share a
           workspace
         </Typography.Text>
@@ -102,7 +102,7 @@ const Workspace = (): JSX.Element => {
           You can delete the workspace using the{' '}
           <DeleteButton bordered onDelete={async () => undefined} />
         </Typography.Text>
-        <Typography.Text css={style.warnings}>
+        <Typography.Text className={style.warnings}>
           Delete a workspace will delete all workspace&apos;s projects
         </Typography.Text>
       </Typography>
@@ -126,7 +126,7 @@ const Workspace = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Project creation</Typography.Title>
         <Typography.Text>
           The project is used to manage geometries, simulation and results.
@@ -157,7 +157,7 @@ const Workspace = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>
           Project edit, share, archive, delete
         </Typography.Title>
@@ -167,9 +167,13 @@ const Workspace = (): JSX.Element => {
         </Typography.Text>
         <Typography.Text>
           You can share the project with organizations groups and memebers using
-          the <Button icon={<ShareAltOutlined />} css={globalStyle.noBorder} />
+          the{' '}
+          <Button
+            icon={<ShareAltOutlined />}
+            className={globalStyle.noBorder}
+          />
         </Typography.Text>
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           You must create an organization with users and groups before share a
           project
         </Typography.Text>
@@ -188,7 +192,7 @@ const Workspace = (): JSX.Element => {
           You can delete the project using the{' '}
           <DeleteButton bordered onDelete={async () => undefined} />
         </Typography.Text>
-        <Typography.Text css={style.warnings}>
+        <Typography.Text className={style.warnings}>
           Delete a project will delete all project&apos;s geometries,
           simulations and results
         </Typography.Text>

@@ -22,8 +22,7 @@ import {
 
 import SystemAPI from '@/api/system'
 
-import { globalStyle, globalStyleFn } from '@/styles'
-import { css } from '@emotion/react'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Errors
@@ -130,7 +129,7 @@ const Registration = (): JSX.Element => {
    */
   if (loadingSystem) return <Loading.Simple />
   return (
-    <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+    <Space direction="vertical" className={globalStyle.fullWidth} size={20}>
       <Card title="Signup">
         <Checkbox checked={system?.allowsignup} onChange={onChange}>
           Allow signup
@@ -142,14 +141,11 @@ const Registration = (): JSX.Element => {
           form={form}
           name="form"
           onFinish={onFinish}
-          css={css({ display: 'flex', justifyContent: 'space-between' })}
+          style={{ display: 'flex', justifyContent: 'space-between' }}
         >
           <div
-            css={css([
-              globalStyle.displayFlex,
-              globalStyle.fullWidth,
-              { justifyContent: 'space-between' }
-            ])}
+            className={`${globalStyle.displayFlex} ${globalStyle.fullWidth}`}
+            style={{ justifyContent: 'space-between' }}
           >
             <div>
               <Form.Item
@@ -188,7 +184,7 @@ const Registration = (): JSX.Element => {
                 <Checkbox>Require symbol</Checkbox>
               </Form.Item>
             </div>
-            <div css={globalStyleFn.marginTop('auto')}>
+            <div style={{ marginTop: 'auto' }}>
               <Form.Item>
                 <Button
                   type="primary"

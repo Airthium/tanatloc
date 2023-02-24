@@ -11,7 +11,6 @@ import {
   Typography
 } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
 import {
@@ -31,7 +30,7 @@ import Utils from '@/lib/utils'
 import ProjectAPI from '@/api/project'
 import WorkspaceAPI from '@/api/workspace'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -281,7 +280,7 @@ const Share = ({
               showCheckedStrategy={TreeSelect.SHOW_ALL}
               placeholder="Select groups"
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              css={globalStyle.fullWidth}
+              className={globalStyle.fullWidth}
               treeData={treeGroupsData}
               value={groupsSelected}
               onChange={setGroupsSelected}
@@ -302,7 +301,7 @@ const Share = ({
               showCheckedStrategy={TreeSelect.SHOW_ALL}
               placeholder="Select users"
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              css={globalStyle.fullWidth}
+              className={globalStyle.fullWidth}
               treeData={treeUsersData}
               value={usersSelected}
               onChange={setUsersSelected}
@@ -367,13 +366,11 @@ const Share = ({
     <>
       <Tooltip title="Share">
         <Button
-          css={css([
-            globalStyle.noBackground,
-            style?.buttonLight ? globalStyle.textLight : {},
-            style?.buttonDark ? globalStyle.textDark : {},
-            style?.buttonBordered ? '' : globalStyle.noBorder,
-            isElectron() ? globalStyle.displayNone : ''
-          ])}
+          className={`${globalStyle.noBackground} ${
+            style?.buttonLight ? globalStyle.textLight : ''
+          } ${style?.buttonDark ? globalStyle.textDark : ''} ${
+            style?.buttonBordered ? '' : globalStyle.noBorder
+          } ${isElectron() ? globalStyle.displayNone : ''}`}
           key="share"
           disabled={disabled}
           type={disabled ? 'link' : undefined}

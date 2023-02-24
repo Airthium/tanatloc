@@ -3,15 +3,15 @@
 import Link from 'next/link'
 import { Typography } from 'antd'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 const Editor = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>Model Editor</Typography.Title>
 
-      <Typography css={style.text}>
-        <Typography.Text css={style.warnings}>
+      <Typography className={style.text}>
+        <Typography.Text className={style.warnings}>
           This is a beta version
         </Typography.Text>
         <Typography.Text>

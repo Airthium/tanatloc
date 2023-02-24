@@ -3,7 +3,6 @@
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Layout, Tabs, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import PageHeader from '@/components/assets/pageHeader'
@@ -14,7 +13,7 @@ import Users from './users'
 import Registration from './registration'
 import Plugins from './plugins'
 
-import dashboardStyle from '@/components/dashboard/index.style'
+import dashboardStyle from '@/components/dashboard/index.module.css'
 
 /**
  * Tab items
@@ -72,12 +71,14 @@ const Administration = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout css={dashboardStyle.inDashboard}>
+    <Layout className={dashboardStyle.inDashboard}>
       <PageHeader
         title={
           <Typography.Title
             level={2}
-            css={css({ marginBottom: '0 !important' })}
+            style={{
+              marginBottom: '0 !important'
+            }}
           >
             Administration
           </Typography.Title>
@@ -85,7 +86,7 @@ const Administration = (): JSX.Element => {
       />
       <Layout.Content>
         <Tabs
-          css={dashboardStyle.inDashboardTabs}
+          className={dashboardStyle.inDashboardTabs}
           type="card"
           items={[
             {

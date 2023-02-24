@@ -2,7 +2,7 @@
 
 import { Typography } from 'antd'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Editor
@@ -13,7 +13,7 @@ const Editor = (): JSX.Element => {
     <>
       <Typography.Title level={4}>Model Editor</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>Documentation is coming...</Typography.Text>
       </Typography>
     </>

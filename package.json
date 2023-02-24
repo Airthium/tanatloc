@@ -89,6 +89,7 @@
     "form-data": "4.0.0",
     "html-react-parser": "3.0.9",
     "https-proxy-agent": "5.0.1",
+    "identity-obj-proxy": "^3.0.0",
     "ignore-loader": "0.1.2",
     "is-docker": "3.0.0",
     "is-electron": "2.2.2",

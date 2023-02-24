@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Carousel as AntCarousel } from 'antd'
 import { CarouselRef } from 'antd/es/carousel'
-
-import style from './index.style'
 import {
   LeftOutlined,
   RightOutlined,
   ZoomInOutlined,
   ZoomOutOutlined
 } from '@ant-design/icons'
+
+import style from './index.module.css'
 
 /**
  * Props
@@ -81,17 +81,19 @@ const Carousel = ({ items }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <div css={style.carouselContainer}>
-      <div css={zoom ? style.fullCarousel : style.carousel}>
+    <div className={style.carouselContainer}>
+      <div className={zoom ? style.fullCarousel : style.carousel}>
         <AntCarousel ref={carouselRef} effect="fade" dots={false}>
           {items.map((item, index) => (
-            <div key={item.key} css={style.oneImage}>
+            <div key={item.key} className={style.oneImage}>
               <div
-                css={displayCount ? style.displayCount : style.noDisplayCount}
+                className={
+                  displayCount ? style.displayCount : style.noDisplayCount
+                }
               >
                 {index + 1} / {items.length}
               </div>
-              <figure css={style.figure}>
+              <figure className={style.figure}>
                 <img src={item.src} alt={item.alt ?? item.caption} />
                 {item.caption && <figcaption>{item.caption}</figcaption>}
               </figure>
@@ -100,14 +102,14 @@ const Carousel = ({ items }: IProps): JSX.Element => {
         </AntCarousel>
         {zoom ? (
           <Button
-            css={style.zoom}
+            className={style.zoom}
             icon={<ZoomOutOutlined />}
             onClick={zoomOut}
             type="link"
           />
         ) : (
           <Button
-            css={style.zoom}
+            className={style.zoom}
             icon={<ZoomInOutlined />}
             onClick={zoomIn}
             type="link"
@@ -116,13 +118,13 @@ const Carousel = ({ items }: IProps): JSX.Element => {
         {items.length > 1 ? (
           <>
             <Button
-              css={style.previous}
+              className={style.previous}
               icon={<LeftOutlined />}
               onClick={previous}
               type="link"
             />
             <Button
-              css={style.next}
+              className={style.next}
               icon={<RightOutlined />}
               onClick={next}
               type="link"

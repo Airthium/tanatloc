@@ -1,0 +1,146 @@
+@value variables: '@/styles/variables.css';
+@value colorPrimary from variables;
+
+@value breakpoints: "@/styles/breakpoints.css";
+@value tablet from breakpoints;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 20px 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header :global(.ant-typography) {
+  margin: 0;
+  margin-left: 20px;
+  margin-right: auto;
+}
+
+.github {
+  height: 32px;
+  display: flex;
+}
+
+.github img {
+  height: 32px;
+}
+
+.logo {
+  padding: 20px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  cursor: pointer;
+}
+
+.menu {
+  background: none !important;
+  height: unset !important;
+  margin-bottom: 20px;
+}
+
+.content {
+  padding: 0 50px 50px 50px;
+}
+
+.text {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.text img {
+  height: '16px';
+}
+
+.tips {
+  display: inline-block;
+  position: relative;
+  background-color: colorPrimary; /*22*/
+  box-shadow: 2px 2px 5px colorPrimary;
+  margin-top: 10px;
+  padding: 40px 20px 20px 20px;
+  margin-right: auto;
+}
+
+.tips::before {
+  position: absolute;
+  top: 10px;
+  font-weight: bold;
+  color: colorPrimary;
+  content: 'Tips';
+}
+
+.warnings {
+  display: inline-block;
+  position: relative;
+  background-color: #fc8c7922;
+  box-shadow: 2px 2px 5px #fc8c79;
+  margin-top: 10px;
+  padding: 40px 20px 20px 20px;
+  margin-right: auto;
+}
+
+.warnings::before {
+  position: absolute;
+  top: 10px;
+  font-weight: bold;
+  color: #fc8c79;
+  content: 'Warning';
+}
+
+.downloadButton {
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: auto;
+}
+
+.downloadButton img {
+  margin-right: 10px;
+}
+
+@media tablet {
+  .header {
+    flex-direction: column;
+    padding: 10px 20px;
+    height: unset !important;
+    margin-bottom: 0 !important;
+  }
+
+  .header :global(.ant-typography) {
+    margin: 0;
+    margin-top: -25px;
+    font-size: 50px;
+    color: colorPrimary;
+  }
+
+  .header a {
+    margin-top: -45px;
+    align-self: flex-end;
+  }
+
+  .logo {
+    padding: 10px 8px;
+  }
+
+  .menu {
+    padding: 10px 10px 10px;
+    padding-inline: unset !important;
+    margin-bottom: 0;
+  }
+
+  .content {
+    padding: 10px;
+  }
+}

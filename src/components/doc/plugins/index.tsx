@@ -7,7 +7,7 @@ import { Tabs, Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * HPC
@@ -21,14 +21,14 @@ const HPC = (): JSX.Element => {
     <>
       <Typography.Title level={4}>HPC Plugins</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           HPC plugins availability depends on your installation. Some plugins
           are in a pay-feature
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Local plugin</Typography.Title>
         <Typography.Text>
           Allow to compute a simulation directly on your computer with the
@@ -54,7 +54,7 @@ const HPC = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>
           Rescale plugin (Pay-feature)
         </Typography.Title>
@@ -91,7 +91,7 @@ const HPC = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>
           Sharetask plugin (Pay-feature)
         </Typography.Title>
@@ -141,7 +141,7 @@ const Model = (): JSX.Element => {
     <>
       <Typography.Title level={4}>Model Plugins</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           Model plugins allow to add specific algorithms to the already existing
           Tanatloc algorithms. It is a pay feature

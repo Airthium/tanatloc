@@ -11,7 +11,7 @@ import Administration from './administration'
 import Editor from './editor'
 import Help from './help'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Tabs
@@ -81,7 +81,7 @@ const Dashboard = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={3}>Dashboard</Typography.Title>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           The dashboard is the main place where you can manage your workspaces
           and projects, your account, your organizations and get help. There is

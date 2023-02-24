@@ -1,0 +1,25 @@
+.information {
+  display: flex;
+}
+
+.information div:first-of-type {
+  display: flex;
+  justify-content: center;
+  width: 300px;
+}
+
+.information div:first-of-type > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.information div:first-of-type > div > span:first-of-type {
+  margin-bottom: 10px;
+}
+
+.information > div:last-of-typ {
+  flex: '1 1 auto';
+}

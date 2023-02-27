@@ -8,7 +8,8 @@ import {
   SpriteMaterial,
   Sprite,
   WebGLRenderer,
-  Vector3
+  Vector3,
+  Color
 } from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
@@ -17,8 +18,10 @@ import NumberHelper from './NumberHelper'
 
 export interface IColorbarHelper {
   render: () => void
-  setLUT: (lut: Lut) => void
+  addLUT: (lut: Lut) => void
   setVisible: (visible: boolean) => void
+  setColorMap: (key: string) => void
+  getColor: (data: number) => Color
   dispose: () => void
 }
 
@@ -34,12 +37,15 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   const width = 700
   const height = 50
 
+  const lut = new Lut()
   const colorScene = new Scene()
   const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 2, 1)
   colorCamera.position.set(0, 0, 1)
 
   const group = new Group()
   colorScene.add(group)
+
+  let colormap = 'rainbow'
 
   /**
    * Set visible
@@ -69,15 +75,24 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   }
 
   /**
-   * Set LUT
+   * Add LUT
    * @param lutData LUT
    */
-  const setLUT = (lutData: Lut): void => {
-    clearScene()
+  const addLUT = (lutData: Lut): void => {
+    if (lut.n === 0) {
+      // Empty set
+      lut.setMin(lutData.minV)
+      lut.setMax(lutData.maxV)
 
-    const lut = new Lut('rainbow', lutData.n)
-    lut.setMin(lutData.minV)
-    lut.setMax(lutData.maxV)
+      lut.setColorMap(colormap, 512)
+    } else {
+      // Existing set
+      const min = lut.minV
+      const max = lut.maxV
+
+      lut.setMin(Math.min(min, lutData.minV))
+      lut.setMax(Math.max(max, lutData.maxV))
+    }
 
     const map = new CanvasTexture(lut.createCanvas())
     const material = new SpriteMaterial({ map: map, depthWrite: false })
@@ -124,6 +139,23 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   }
 
   /**
+   * Set color map
+   * @param key Key
+   */
+  const setColorMap = (key: string) => {
+    colormap = key
+  }
+
+  /**
+   * Get color
+   * @param data Data
+   * @returns Color
+   */
+  const getColor = (data: number) => {
+    return lut.getColor(data)
+  }
+
+  /**
    * Render
    */
   const render = (): void => {
@@ -139,9 +171,10 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
   const dispose = () => {
     clearScene()
+    lut.n = 0
   }
 
-  return { render, setLUT, setVisible, dispose }
+  return { render, addLUT, getColor, setVisible, setColorMap, dispose }
 }
 
 export { ColorbarHelper }

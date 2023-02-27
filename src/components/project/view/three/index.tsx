@@ -23,11 +23,15 @@ import {
   ScissorOutlined,
   StopOutlined,
   RetweetOutlined,
-  TableOutlined
+  TableOutlined,
+  BgColorsOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
   Box3,
+  BufferAttribute,
+  Float32BufferAttribute,
+  Mesh,
   Object3D,
   PerspectiveCamera,
   PointLight,
@@ -230,7 +234,6 @@ export const _loadPart = async (
   helpers: {
     gridHelper: IGridHelper
     sectionViewHelper: ISectionViewHelper
-    colorbarHelper: IColorbarHelper
     pointHelper: IPointHelper
   },
   dispatch: Dispatch<ISelectAction>
@@ -284,16 +287,51 @@ export const _loadPart = async (
   helpers.gridHelper.update()
   helpers.gridHelper.setVisible(true)
 
-  // Colorbar
-  if (mesh.children[0].userData.lut) {
-    helpers.colorbarHelper.setLUT(mesh.children[0].userData.lut)
-    helpers.colorbarHelper.setVisible(true)
-  } else {
-    helpers.colorbarHelper.setVisible(false)
-  }
-
   // Point
   helpers.pointHelper.build()
+}
+
+/**
+ * Compute colors
+ * @param scene Scene
+ * @param colorbarHelper ColorbarHelper
+ */
+const _computeColors = (
+  scene: Scene,
+  colorbarHelper: IColorbarHelper
+): void => {
+  colorbarHelper.dispose()
+  colorbarHelper.setVisible(false)
+
+  // Colorbar
+  for (const child of scene.children) {
+    if (child.type === 'Part' && child.userData.type === 'result') {
+      const mesh = child.children[0] as Mesh
+      colorbarHelper.addLUT(mesh.userData.lut)
+      colorbarHelper.setVisible(true)
+    }
+  }
+
+  // Colors
+  for (const child of scene.children) {
+    if (child.type === 'Part' && child.userData.type === 'result') {
+      const mesh = child.children[0] as Mesh
+
+      const data = mesh.geometry.getAttribute('data') as BufferAttribute
+      const vertexColors = new Float32Array(data.count * 3)
+      for (let i = 0; i < data.count; i++) {
+        const vertexColor = colorbarHelper.getColor(data.array[i])
+
+        vertexColors[3 * i + 0] = vertexColor.r
+        vertexColors[3 * i + 1] = vertexColor.g
+        vertexColors[3 * i + 2] = vertexColor.b
+      }
+      mesh.geometry.setAttribute(
+        'color',
+        new Float32BufferAttribute(vertexColors, 3)
+      )
+    }
+  }
 }
 
 /**
@@ -655,29 +693,36 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     })
 
     // Add
-    toAdd.forEach((part) => {
-      // Load
-      _loadPart(
-        part,
-        scene.current!,
-        camera.current!,
-        controls.current!,
-        {
-          transparent,
-          displayMesh
-        },
-        {
-          gridHelper: gridHelper.current!,
-          sectionViewHelper: sectionViewHelper.current!,
-          colorbarHelper: colorbarHelper.current!,
-          pointHelper: pointHelper.current!
-        },
-        dispatch
-      ).catch((err) => {
-        ErrorNotification(errors.load, err)
-        _computeSceneBoundingSphere(scene.current!)
-      })
-    })
+    ;(async () => {
+      await Promise.all(
+        toAdd.map(async (part) => {
+          try {
+            // Load
+            await _loadPart(
+              part,
+              scene.current!,
+              camera.current!,
+              controls.current!,
+              {
+                transparent,
+                displayMesh
+              },
+              {
+                gridHelper: gridHelper.current!,
+                sectionViewHelper: sectionViewHelper.current!,
+                pointHelper: pointHelper.current!
+              },
+              dispatch
+            )
+          } catch (err) {
+            ErrorNotification(errors.load, err)
+            _computeSceneBoundingSphere(scene.current!)
+          }
+        })
+      )
+
+      _computeColors(scene.current!, colorbarHelper.current!)
+    })()
   }, [parts, transparent, displayMesh, dispatch])
 
   // Dimension
@@ -908,6 +953,15 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   }, [])
 
   /**
+   * On colormap
+   * @param props { key }
+   */
+  const onColormap = useCallback((props: { key: string }): void => {
+    colorbarHelper.current?.setColorMap(props.key)
+    _computeColors(scene.current!, colorbarHelper.current!)
+  }, [])
+
+  /**
    * Render
    */
   return (
@@ -1052,22 +1106,49 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           </>
         )}
 
-        <div>
-          {parts.filter((part) => part.summary.type === 'result').length ? (
-            <>
-              <Divider className="no-margin" />
+        {parts.filter((part) => part.summary.type === 'result').length ? (
+          <>
+            <Divider className="no-margin" />
 
-              <Tooltip title="Display result mesh" placement="right">
-                <Switch
-                  checked={displayMesh}
-                  checkedChildren={<TableOutlined />}
-                  unCheckedChildren={<TableOutlined />}
-                  onChange={toggleDisplayMesh}
-                />
-              </Tooltip>
-            </>
-          ) : null}
-        </div>
+            <Tooltip title="Display result mesh" placement="right">
+              <Switch
+                checked={displayMesh}
+                checkedChildren={<TableOutlined />}
+                unCheckedChildren={<TableOutlined />}
+                onChange={toggleDisplayMesh}
+              />
+            </Tooltip>
+
+            <Tooltip title="Colormap" placement="right">
+              <Dropdown
+                placement="bottom"
+                menu={{
+                  items: [
+                    {
+                      key: 'rainbow',
+                      label: 'Rainbow'
+                    },
+                    {
+                      key: 'cooltowarm',
+                      label: 'Cool to warm'
+                    },
+                    {
+                      key: 'blackbody',
+                      label: 'Black body'
+                    },
+                    {
+                      key: 'grayscale',
+                      label: 'Gray scale'
+                    }
+                  ],
+                  onClick: onColormap
+                }}
+              >
+                <Button icon={<BgColorsOutlined />} />
+              </Dropdown>
+            </Tooltip>
+          </>
+        ) : null}
       </Layout.Header>
       <Layout.Content css={css([globalStyle.noScroll, style.content])}>
         <div

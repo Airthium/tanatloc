@@ -238,7 +238,7 @@ export interface IModelBoundaryCondition {
  * Run
  */
 export interface IModelRun extends IModelCommon {
-  results?: { name: string }[]
+  results?: { name: string }[] | { name: string }[][]
   resultsFilter?: {
     name: string
     prefixPattern: string | RegExp

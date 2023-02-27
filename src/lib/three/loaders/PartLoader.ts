@@ -5,7 +5,6 @@ import {
   BufferAttribute,
   BufferGeometry,
   Color,
-  Float32BufferAttribute,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -131,18 +130,6 @@ const loadResult = (object: IPart, clippingPlane: Plane): void => {
         lut.setMin(min)
         lut.setMax(max)
 
-        const vertexColors = new Float32Array(data.count * 3)
-        for (let i = 0; i < data.count; i++) {
-          const vertexColor = lut.getColor(data.array[i])
-
-          vertexColors[3 * i + 0] = vertexColor.r
-          vertexColors[3 * i + 1] = vertexColor.g
-          vertexColors[3 * i + 2] = vertexColor.b
-        }
-        mesh.geometry.setAttribute(
-          'color',
-          new Float32BufferAttribute(vertexColors, 3)
-        )
         mesh.userData = {
           ...mesh.userData,
           lut

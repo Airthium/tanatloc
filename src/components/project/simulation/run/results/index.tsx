@@ -90,7 +90,7 @@ const SingleResult = ({
           originPath: file.originPath
         }}
       />
-      {file.name}
+      {file.name?.replaceAll('_', ' ')}
     </Space>
   )
 }

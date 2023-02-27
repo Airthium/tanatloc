@@ -124,14 +124,20 @@ const Signup = (): JSX.Element => {
   else if (!system?.allowsignup)
     return (
       <Layout>
-        <Card css={style.signup}>The server does not allow signup for now</Card>
+        <Card className={style.signup}>
+          The server does not allow signup for now
+        </Card>
       </Layout>
     )
 
   return (
     <Layout>
-      <Card bordered={false} css={style.signup}>
-        <Space direction="vertical" size="large" css={globalStyle.fullWidth}>
+      <Card bordered={false} className={style.signup}>
+        <Space
+          direction="vertical"
+          size="large"
+          className={globalStyle.fullWidth}
+        >
           <div>
             <Typography.Title
               level={1}
@@ -180,7 +186,7 @@ const Signup = (): JSX.Element => {
               />
             </Form.Item>
             <FormError error={formError} />
-            <Form.Item css={style.submit}>
+            <Form.Item className={style.submit}>
               <Button type="primary" loading={loading} htmlType="submit">
                 Finish
               </Button>

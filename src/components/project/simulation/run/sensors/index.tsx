@@ -96,9 +96,9 @@ const Sensors = ({
         onClose={onClose}
         swr={swr}
       />
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Button
-          css={globalStyle.fullWidth}
+          className={globalStyle.fullWidth}
           disabled={false}
           type="primary"
           icon={<ApiOutlined />}

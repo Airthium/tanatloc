@@ -128,7 +128,7 @@ const Result = ({
         icon={
           postprocessing?.fileName === result.fileName &&
           postprocessing?.name === result.name ? (
-            <EyeOutlined css={css({ color: variables.colorPrimary })} />
+            <EyeOutlined className={css({ color: variables.colorPrimary })} />
           ) : (
             <EyeInvisibleOutlined />
           )
@@ -166,7 +166,7 @@ const Results = ({
    */
   if (!results.length) return <>No results</>
   return (
-    <Space direction="vertical" css={globalStyle.fullWidth}>
+    <Space direction="vertical" className={globalStyle.fullWidth}>
       {results.map((res) => (
         <Result
           key={res.glb}

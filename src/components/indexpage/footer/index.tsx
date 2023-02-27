@@ -14,8 +14,8 @@ import {
 
 import packageJson from '../../../../package.json'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -132,17 +132,17 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout.Footer css={style.footer}>
-      <div css={style.head}>
-        <Card title="Thanks" css={style.card} bordered={false}>
+    <Layout.Footer className={style.footer}>
+      <div className={style.head}>
+        <Card title="Thanks" className={style.card} bordered={false}>
           We would like to thanks:
           <List bordered={false} dataSource={thanks} renderItem={renderItem} />
           Without you this software would not have been possible.
         </Card>
-        <Card title="Navigate" css={style.card} bordered={false}>
+        <Card title="Navigate" className={style.card} bordered={false}>
           <List dataSource={navigate} renderItem={renderItem} />
         </Card>
-        <Card title="Contact" css={style.card} bordered={false}>
+        <Card title="Contact" className={style.card} bordered={false}>
           <Space direction="vertical">
             <div>
               <a href="mailto:contact@airthium.com">
@@ -170,8 +170,8 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
           </Space>
         </Card>
       </div>
-      <Divider css={style.divider} />
-      <div css={style.foot}>
+      <Divider className={style.divider} />
+      <div className={style.foot}>
         <img src="/images/logo.svg" alt="Tanatloc" />
         <Typography>
           Copyright© {new Date().getFullYear()} - version {packageJson.version}{' '}
@@ -180,7 +180,7 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
             href="https://www.commeth.com/"
             target="_blank"
             rel="noreferrer"
-            css={globalStyle.textDark}
+            className={globalStyle.textDark}
           >
             Enora Duvivier
           </a>

@@ -104,7 +104,7 @@ const ListItem = ({
 
   return (
     <Card
-      css={style.listItem}
+      className={style.listItem}
       hoverable
       onMouseEnter={highlight}
       onMouseLeave={unhighlight}

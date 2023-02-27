@@ -166,18 +166,18 @@ const WorkspacesList = ({
    * Render
    */
   return (
-    <Layout css={css([dashboardStyle.inDashboard, globalStyle.noScroll])}>
+    <Layout className={css([dashboardStyle.inDashboard, globalStyle.noScroll])}>
       <PageHeader
         title={
           <Typography.Title
             level={2}
-            css={css({ marginBottom: '0 !important' })}
+            className={css({ marginBottom: '0 !important' })}
           >
             Workspaces
           </Typography.Title>
         }
       />
-      <Layout.Content css={globalStyle.noScroll}>
+      <Layout.Content className={globalStyle.noScroll}>
         {workspaces.length ? (
           <>
             <Dialog
@@ -203,7 +203,10 @@ const WorkspacesList = ({
             </Dialog>
             <Tabs
               type="editable-card"
-              css={css([globalStyle.noScroll, dashboardStyle.inDashboardTabs])}
+              className={css([
+                globalStyle.noScroll,
+                dashboardStyle.inDashboardTabs
+              ])}
               items={workspaces.map((workspace) => ({
                 key: workspace.id,
                 label: workspace.name,

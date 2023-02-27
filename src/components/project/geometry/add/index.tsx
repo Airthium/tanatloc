@@ -146,9 +146,9 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       onCancel={setVisibleFalse}
       cancelButtonProps={{ loading: loading }}
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Upload
-          css={css({
+          className={css({
             '& .ant-upload': {
               width: '100% !important',
               height: '100px !important'

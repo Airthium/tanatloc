@@ -104,7 +104,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   return (
     <Tooltip title="Copy simulation">
       <Button
-        css={globalStyle.noBorder}
+        className={globalStyle.noBorder}
         loading={loading}
         icon={<CopyOutlined />}
         onClick={onClick}

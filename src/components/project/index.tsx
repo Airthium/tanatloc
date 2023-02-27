@@ -57,7 +57,7 @@ import View from './view'
 import Simulation from './simulation'
 
 import globalStyle from '@/styles/index.module.css'
-import style from './index.style'
+import style from './index.module.css'
 
 const Data = dynamic(() => import('./data'), { ssr: false })
 
@@ -956,12 +956,12 @@ const Project = (): JSX.Element => {
   return (
     <SelectProvider>
       <Layout hasSider={true}>
-        <Layout.Sider theme="light" css={style.sider} width={256}>
-          <div css={globalStyle.logo}>
+        <Layout.Sider theme="light" className={style.sider} width={256}>
+          <div className={globalStyle.logo}>
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
           <Menu
-            css={style.menu1}
+            className={style.menu1}
             mode="inline"
             items={[
               {
@@ -989,10 +989,10 @@ const Project = (): JSX.Element => {
               }
             ]}
           />
-          <div css={style.menuScroll}>
+          <div className={style.menuScroll}>
             <Menu
               mode="inline"
-              css={style.menu2}
+              className={style.menu2}
               defaultOpenKeys={[
                 menuItems.geometries.key,
                 menuItems.simulations.key
@@ -1072,7 +1072,8 @@ const Project = (): JSX.Element => {
           </div>
         </Layout.Sider>
         <Layout.Content
-          css={css([globalStyle.noScroll, { position: 'relative' }])}
+          className={globalStyle.noScroll}
+          style={{ position: 'relative' }}
         >
           <Geometry.Add
             visible={geometryAddVisible}

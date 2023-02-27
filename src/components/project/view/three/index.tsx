@@ -911,8 +911,8 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout css={css([globalStyle.noScroll, style.view])}>
-      <Layout.Header css={style.head}>
+    <Layout className={css([globalStyle.noScroll, style.view])}>
+      <Layout.Header className={style.head}>
         <Tooltip title="Take snapshot" placement="left">
           <Dropdown
             placement="bottom"
@@ -923,7 +923,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      css={css([
+                      className={css([
                         globalStyle.fullWidth,
                         globalStyle.noBackground
                       ])}
@@ -939,7 +939,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      css={css([
+                      className={css([
                         globalStyle.fullWidth,
                         globalStyle.noBackground
                       ])}
@@ -957,7 +957,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           </Dropdown>
         </Tooltip>
 
-        <Divider css={globalStyleFn.margin(0)} />
+        <Divider className={globalStyleFn.margin(0)} />
 
         <Tooltip title="Display grid" placement="left">
           <Switch
@@ -976,7 +976,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           />
         </Tooltip>
 
-        <Divider css={globalStyleFn.margin(0)} />
+        <Divider className={globalStyleFn.margin(0)} />
 
         <Tooltip title="Zoom out" placement="left">
           <Button
@@ -1008,7 +1008,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           />
         </Tooltip>
 
-        <Divider css={globalStyleFn.margin(0)} />
+        <Divider className={globalStyleFn.margin(0)} />
 
         {!sectionView && (
           <Tooltip title="Section view">
@@ -1069,22 +1069,22 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           ) : null}
         </div>
       </Layout.Header>
-      <Layout.Content css={css([globalStyle.noScroll, style.content])}>
+      <Layout.Content className={css([globalStyle.noScroll, style.content])}>
         <div
           style={{ display: loading ? 'flex' : 'none' }}
-          css={globalStyle.loading}
+          className={globalStyle.loading}
         >
           <Spin
             indicator={
               <LoadingOutlined
-                css={{ color: variables.colorPrimary }}
+                className={{ color: variables.colorPrimary }}
                 style={{ fontSize: 80 }}
                 spin
               />
             }
           />
         </div>
-        <div ref={mount} css={style.canvas} />
+        <div ref={mount} className={style.canvas} />
       </Layout.Content>
     </Layout>
   )

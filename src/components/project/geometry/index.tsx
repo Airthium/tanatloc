@@ -241,31 +241,36 @@ const Geometry = ({
             />
           ]}
         >
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             <Typography.Text>
-              <span css={globalStyle.textLight}>File:</span> {geometry.name}{' '}
+              <span className={globalStyle.textLight}>File:</span>{' '}
+              {geometry.name}{' '}
             </Typography.Text>
             <Typography.Text>
-              <span css={globalStyle.textLight}>Unit:</span>{' '}
+              <span className={globalStyle.textLight}>Unit:</span>{' '}
               <MathJax.Inline text={'m'} />
             </Typography.Text>
 
             <>
               {geometry.summary.dimension === 3 && (
                 <Typography.Text>
-                  <span css={globalStyle.textLight}>Number of solids:</span>{' '}
+                  <span className={globalStyle.textLight}>
+                    Number of solids:
+                  </span>{' '}
                   {geometry.summary.solids?.length ?? 0}
                 </Typography.Text>
               )}
 
               <Typography.Text>
-                <span css={globalStyle.textLight}>Number of faces:</span>{' '}
+                <span className={globalStyle.textLight}>Number of faces:</span>{' '}
                 {geometry.summary.faces?.length ?? 0}
               </Typography.Text>
 
               {geometry.summary.dimension === 2 && (
                 <Typography.Text>
-                  <span css={globalStyle.textLight}>Number of edges:</span>{' '}
+                  <span className={globalStyle.textLight}>
+                    Number of edges:
+                  </span>{' '}
                   {geometry.summary.edges?.length ?? 0}
                 </Typography.Text>
               )}

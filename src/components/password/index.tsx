@@ -21,8 +21,8 @@ import { ErrorNotification, FormError } from '@/components/assets/notification'
 import { APIError } from '@/api/error'
 import LinkAPI from '@/api/link'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 // Local interfaces
 export interface ILocalValues {
@@ -124,15 +124,19 @@ const PasswordRecovery = (): JSX.Element => {
   if (checking)
     return (
       <Layout>
-        <Card bordered={false} css={style.password}>
+        <Card bordered={false} className={style.password}>
           <Spin /> Loading...
         </Card>
       </Layout>
     )
   return (
     <Layout>
-      <Card bordered={false} css={style.password}>
-        <Space direction="vertical" size="large" css={globalStyle.fullWidth}>
+      <Card bordered={false} className={style.password}>
+        <Space
+          direction="vertical"
+          size="large"
+          className={globalStyle.fullWidth}
+        >
           <div>
             <Typography.Title
               level={1}
@@ -177,7 +181,7 @@ const PasswordRecovery = (): JSX.Element => {
               <Input.Password placeholder="Password" />
             </Form.Item>
             <FormError error={formError} />
-            <Form.Item css={style.submit}>
+            <Form.Item className={style.submit}>
               <Button type="primary" loading={loading} htmlType="submit">
                 Finish
               </Button>

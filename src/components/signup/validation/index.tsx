@@ -54,8 +54,8 @@ const Validation = (): JSX.Element => {
    */
   return (
     <Layout>
-      <Card bordered={false} css={style.signup}>
-        <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Card bordered={false} className={style.signup}>
+        <Space direction="vertical" className={globalStyle.fullWidth}>
           <Typography.Text>
             <Spin /> Validating...
           </Typography.Text>

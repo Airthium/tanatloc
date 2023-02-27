@@ -27,7 +27,7 @@ const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
    */
   return (
     <Card
-      css={css([style.panel, { display: visible ? 'block' : 'none' }])}
+      className={css([style.panel, { display: visible ? 'block' : 'none' }])}
       title={title}
       extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
     >

@@ -95,7 +95,7 @@ const BoundaryConditionItem = ({
    */
   return (
     <Formula
-      css={globalStyleFn.marginBottom(10)}
+      className={globalStyleFn.marginBottom(10)}
       label={boundaryCondition.label}
       defaultValue={value}
       defaultChecked={checked}
@@ -388,7 +388,7 @@ const BoundaryCondition = ({
    */
   return (
     <Drawer
-      css={style.subPanel}
+      className={style.subPanel}
       title="Boundary condition"
       placement="left"
       closable={false}
@@ -447,7 +447,7 @@ const BoundaryCondition = ({
         </div>
       }
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Card size="small">
           <Form layout="vertical">
             <Form.Item

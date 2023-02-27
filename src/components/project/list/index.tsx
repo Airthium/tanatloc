@@ -141,7 +141,7 @@ const ProjectCard = ({
     () => (
       <Space
         direction="vertical"
-        css={css([globalStyle.fullWidth, globalStyle.textAlignLeft])}
+        className={css([globalStyle.fullWidth, globalStyle.textAlignLeft])}
       >
         <Typography.Text>
           <b>Created:</b> {new Date(project.createddate).toLocaleDateString()}
@@ -192,11 +192,11 @@ const ProjectCard = ({
           {project.archived && <Tag>Archived</Tag>}
         </>
       }
-      css={css([style.card, project.archived ? style.cardArchived : {}])}
+      className={css([style.card, project.archived ? style.cardArchived : {}])}
       cover={
-        <Carousel css={style.carousel} dots={{ className: 'dots' }}>
+        <Carousel className={style.carousel} dots={{ className: 'dots' }}>
           <div
-            css={css([
+            className={css([
               style.carouselSnapshot,
               project.archived ? style.carouselSnapshotArchived : {}
             ])}
@@ -205,7 +205,7 @@ const ProjectCard = ({
             {snapshot}
           </div>
           <div
-            css={css([
+            className={css([
               style.carouselDescription,
               project.archived ? style.carouselDescriptionArchived : {}
             ])}
@@ -382,12 +382,12 @@ const ProjectList = ({
     return (
       <Empty
         image="images/empty.svg"
-        css={style.empty}
+        className={style.empty}
         description={
           filter ? (
             <>
               No project found with the current search{' '}
-              <span css={style.emptySearch}>{filter}</span>...
+              <span className={style.emptySearch}>{filter}</span>...
             </>
           ) : (
             <>No project for now... Get started!</>
@@ -398,7 +398,7 @@ const ProjectList = ({
   return (
     <div ref={containerRef} style={{ height: height }}>
       <Space
-        css={globalStyleFn.marginBottom(20)}
+        className={globalStyleFn.marginBottom(20)}
         wrap={true}
         align="start"
         size={20}

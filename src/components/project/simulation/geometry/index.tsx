@@ -244,7 +244,7 @@ const Geometry = ({
   // List
   const list = useMemo(
     () => (
-      <div css={style.geometriesList}>
+      <div className={style.geometriesList}>
         <Select
           mode={multiple ? 'multiple' : undefined}
           options={loadedGeometries.map((geometry) => ({

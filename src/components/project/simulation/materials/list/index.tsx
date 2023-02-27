@@ -97,7 +97,7 @@ const ListItem = ({
    */
   return (
     <Card
-      css={css([globalStyle.textAlignCenter, style.listItem])}
+      className={css([globalStyle.textAlignCenter, style.listItem])}
       hoverable
       onMouseEnter={highlight}
       onMouseLeave={unhighlight}
@@ -106,7 +106,7 @@ const ListItem = ({
         <Delete key="delete" index={index} simulation={simulation} swr={swr} />
       ]}
     >
-      <Typography.Text strong css={globalStyle.textAlignCenter}>
+      <Typography.Text strong className={globalStyle.textAlignCenter}>
         {material.material.label}
       </Typography.Text>
     </Card>

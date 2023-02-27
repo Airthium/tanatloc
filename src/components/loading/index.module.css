@@ -1,0 +1,25 @@
+.loading {
+  margin: auto !important;
+  max-width: 80%;
+}
+
+.content {
+  max-height: 50vh;
+  padding: 20px;
+  overflow: auto;
+}
+
+.status {
+  margin-top: 10px;
+}
+
+.errors {
+  margin-top: 10px;
+  color: red;
+}
+
+.error :global(.ant-card) {
+  margin: 10px 0;
+  border-color: red;
+  color: red;
+}

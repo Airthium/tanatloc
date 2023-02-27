@@ -500,10 +500,10 @@ const Initialization = ({
         </Typography.Text>
         <Space
           direction="vertical"
-          css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+          className={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
         >
           <Select
-            css={globalStyle.fullWidth}
+            className={globalStyle.fullWidth}
             options={options}
             placeholder="Select a simulation"
             value={initializationValue?.simulation}
@@ -516,7 +516,7 @@ const Initialization = ({
                 {filter?.name}:
               </Typography.Text>
               <Select
-                css={globalStyle.fullWidth}
+                className={globalStyle.fullWidth}
                 options={couplingResults}
                 placeholder={'Select a ' + filter.name}
                 value={initializationValue?.result}
@@ -546,7 +546,7 @@ const Initialization = ({
       label: string
       children: IModelInitializationDirectChild[]
     }) => (
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         {direct.children.map((child, index) => {
           if (dimension === 2 && child.only3D) return
           return (
@@ -636,7 +636,10 @@ const Initialization = ({
       <Layout.Content>
         <Card size="small">
           <Select
-            css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+            className={css([
+              globalStyle.fullWidth,
+              globalStyleFn.marginTop(10)
+            ])}
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}

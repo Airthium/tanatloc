@@ -203,7 +203,7 @@ const Selector = ({
         label: (
           <Select
             mode="multiple"
-            css={globalStyle.fullWidth}
+            className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
             showArrow={false}
@@ -231,7 +231,7 @@ const Selector = ({
         label: (
           <Select
             mode="multiple"
-            css={globalStyle.fullWidth}
+            className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
             showArrow={false}
@@ -292,7 +292,7 @@ const Selector = ({
             ]}
           />
         </Layout.Sider>
-        <Layout.Content css={style.selector}>
+        <Layout.Content className={style.selector}>
           <MathJax.Html html={current?.description} />
         </Layout.Content>
       </Layout>

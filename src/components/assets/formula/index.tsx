@@ -1,6 +1,12 @@
 /** @module Components.Assets.Formula */
 
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import {
+  ChangeEvent,
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useState
+} from 'react'
 import { Checkbox, Form, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -16,6 +22,7 @@ import globalStyle from '@/styles/index.module.css'
 export interface IProps {
   label?: string
   className?: string
+  style?: CSSProperties
   defaultValue?: string | number
   defaultChecked?: boolean
   onValueChange: (value: string) => void
@@ -34,6 +41,7 @@ const saveDelay = 500
  * @description Props list:
  * - label (string) Label
  * - className (string) Class name
+ * - style (CSSProperties) Style
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
@@ -43,6 +51,7 @@ const saveDelay = 500
 const Formula = ({
   label,
   className,
+  style,
   defaultValue,
   defaultChecked,
   onValueChange,
@@ -123,7 +132,11 @@ const Formula = ({
    * Render
    */
   return (
-    <Space className={`${globalStyle.fullWidth} ${className}`} align="start">
+    <Space
+      className={`${globalStyle.fullWidth} ${className}`}
+      style={style}
+      align="start"
+    >
       <Form layout="vertical">
         <Form.Item
           label={

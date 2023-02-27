@@ -29,7 +29,7 @@ const GoBack = ({ children, className, onClick }: IProps): JSX.Element => {
   return (
     <Button
       className={`${globalStyle.noBorder}  ${className}`}
-      icon={<ArrowLeftOutlined className={globalStyle.colorPrimary} />}
+      icon={<ArrowLeftOutlined className={globalStyle.primaryColor} />}
       onClick={onClick}
     >
       {children || 'Go back'}

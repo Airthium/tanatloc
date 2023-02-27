@@ -12,7 +12,6 @@ import {
   Tag,
   Typography
 } from 'antd'
-import { css } from '@emotion/react'
 
 import {
   IFrontMutateProjectsItem,
@@ -32,8 +31,8 @@ import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
-import { globalStyle, globalStyleFn } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -141,7 +140,7 @@ const ProjectCard = ({
     () => (
       <Space
         direction="vertical"
-        className={css([globalStyle.fullWidth, globalStyle.textAlignLeft])}
+        className={`${globalStyle.fullWidth} ${globalStyle.textAlignLeft}`}
       >
         <Typography.Text>
           <b>Created:</b> {new Date(project.createddate).toLocaleDateString()}
@@ -192,23 +191,21 @@ const ProjectCard = ({
           {project.archived && <Tag>Archived</Tag>}
         </>
       }
-      className={css([style.card, project.archived ? style.cardArchived : {}])}
+      className={`${style.card} ${project.archived ? style.cardArchived : ''}`}
       cover={
         <Carousel className={style.carousel} dots={{ className: 'dots' }}>
           <div
-            className={css([
-              style.carouselSnapshot,
-              project.archived ? style.carouselSnapshotArchived : {}
-            ])}
+            className={`${style.carouselSnapshot} ${
+              project.archived ? style.carouselSnapshotArchived : ''
+            }`}
             onClick={openProject}
           >
             {snapshot}
           </div>
           <div
-            className={css([
-              style.carouselDescription,
-              project.archived ? style.carouselDescriptionArchived : {}
-            ])}
+            className={`${style.carouselDescription} ${
+              project.archived ? style.carouselDescriptionArchived : ''
+            }`}
             onClick={openProject}
           >
             {description}
@@ -398,7 +395,7 @@ const ProjectList = ({
   return (
     <div ref={containerRef} style={{ height: height }}>
       <Space
-        className={globalStyleFn.marginBottom(20)}
+        style={{ marginBottom: '20px' }}
         wrap={true}
         align="start"
         size={20}

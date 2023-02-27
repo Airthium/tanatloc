@@ -17,8 +17,8 @@ import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Errors

@@ -20,7 +20,7 @@ import { EditButton } from '@/components/assets/button'
 
 import Delete from '../delete'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Props

@@ -38,8 +38,8 @@ import { CancelButton } from '@/components/assets/button'
 import Add from '../add'
 import Edit from '../edit'
 
-import { globalStyle, globalStyleFn } from '@/styles'
-import style from '../../../panel/index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../../../panel/index.module.css'
 
 /**
  * Props
@@ -95,7 +95,7 @@ const BoundaryConditionItem = ({
    */
   return (
     <Formula
-      className={globalStyleFn.marginBottom(10)}
+      style={{ marginBottom: '10px' }}
       label={boundaryCondition.label}
       defaultValue={value}
       defaultChecked={checked}

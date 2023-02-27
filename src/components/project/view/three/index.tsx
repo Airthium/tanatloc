@@ -41,7 +41,6 @@ import {
   WebGLRenderer
 } from 'three'
 import { v4 } from 'uuid'
-import { css } from '@emotion/react'
 
 import { IFrontProject } from '@/api/index.d'
 import { IGeometryPart } from '@/lib/index.d'
@@ -83,8 +82,8 @@ import {
 
 import AvatarAPI from '@/api/avatar'
 
-import { globalStyle, globalStyleFn, variables } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -965,7 +964,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className={css([globalStyle.noScroll, style.view])}>
+    <Layout className={`${globalStyle.noScroll} ${style.view}`}>
       <Layout.Header className={style.head}>
         <Tooltip title="Take snapshot" placement="left">
           <Dropdown
@@ -977,10 +976,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      className={css([
-                        globalStyle.fullWidth,
-                        globalStyle.noBackground
-                      ])}
+                      className={`${globalStyle.fullWidth} ${globalStyle.noBackground}`}
                       loading={screenshot}
                       onClick={takeScreenshot}
                     >
@@ -993,10 +989,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      className={css([
-                        globalStyle.fullWidth,
-                        globalStyle.noBackground
-                      ])}
+                      className={`${globalStyle.fullWidth} ${globalStyle.noBackground}`}
                       loading={savingScreenshot}
                       onClick={downloadScreenshot}
                     >
@@ -1011,7 +1004,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           </Dropdown>
         </Tooltip>
 
-        <Divider className={globalStyleFn.margin(0)} />
+        <Divider style={{ margin: 0 }} />
 
         <Tooltip title="Display grid" placement="left">
           <Switch
@@ -1030,7 +1023,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           />
         </Tooltip>
 
-        <Divider className={globalStyleFn.margin(0)} />
+        <Divider style={{ margin: 0 }} />
 
         <Tooltip title="Zoom out" placement="left">
           <Button
@@ -1062,7 +1055,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           />
         </Tooltip>
 
-        <Divider className={globalStyleFn.margin(0)} />
+        <Divider style={{ margin: 0 }} />
 
         {!sectionView && (
           <Tooltip title="Section view">
@@ -1150,20 +1143,12 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           </>
         ) : null}
       </Layout.Header>
-      <Layout.Content className={css([globalStyle.noScroll, style.content])}>
+      <Layout.Content className={`${globalStyle.noScroll} ${style.content}`}>
         <div
           style={{ display: loading ? 'flex' : 'none' }}
-          className={globalStyle.loading}
+          className={style.loading}
         >
-          <Spin
-            indicator={
-              <LoadingOutlined
-                className={{ color: variables.colorPrimary }}
-                style={{ fontSize: 80 }}
-                spin
-              />
-            }
-          />
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 80 }} spin />} />
         </div>
         <div ref={mount} className={style.canvas} />
       </Layout.Content>

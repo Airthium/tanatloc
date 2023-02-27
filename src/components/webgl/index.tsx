@@ -5,13 +5,13 @@ import { useRouter } from 'next/router'
 import { Button, Card, Modal, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
-
 import NoManipBrowser from './fixInfos/noManipBrowser'
 import FirefoxWindows from './fixInfos/firefoxWindows'
 import FirefoxMac from './fixInfos/firefoxMac'
 import SafariMac from './fixInfos/safariMac'
+
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Errors

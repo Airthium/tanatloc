@@ -2,9 +2,8 @@
 
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
-import style from './index.style'
+import style from './index.module.css'
 
 /**
  * Props
@@ -27,7 +26,8 @@ const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
    */
   return (
     <Card
-      className={css([style.panel, { display: visible ? 'block' : 'none' }])}
+      className={style.panel}
+      style={{ display: visible ? 'block' : 'none' }}
       title={title}
       extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
     >

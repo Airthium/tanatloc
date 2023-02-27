@@ -2,7 +2,7 @@
 
 import { Card, Layout } from 'antd'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Signup send

@@ -19,7 +19,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Props

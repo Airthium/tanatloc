@@ -2,7 +2,6 @@
 
 import { useCallback, useContext, useMemo } from 'react'
 import { Card, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import { IModelSensor } from '@/models/index.d'
 import {
@@ -17,8 +16,8 @@ import { EditButton } from '@/components/assets/button'
 
 import Delete from '../delete'
 
-import { globalStyle } from '@/styles'
-import style from '../../../index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../../../index.module.css'
 
 /**
  * Props
@@ -85,7 +84,7 @@ const ListItem = ({
    */
   return (
     <Card
-      className={css([globalStyle.textAlignCenter, style.listItem])}
+      className={`${globalStyle.textAlignCenter} ${style.listItem}`}
       hoverable
       onMouseEnter={highlight}
       onMouseLeave={unhighlight}

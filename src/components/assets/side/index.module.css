@@ -1,5 +1,5 @@
-@value breakpoints: "@/styles/breakpoints.css"
-@value tablet from breakpoints
+@value breakpoints: "@/styles/breakpoints.css";
+@value tablet from breakpoints;
 
 .side {
   position: relative;

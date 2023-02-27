@@ -26,8 +26,8 @@ import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
 
-import { globalStyle } from '@/styles'
-import style from '../../../panel/index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../../../panel/index.module.css'
 
 /**
  * Props

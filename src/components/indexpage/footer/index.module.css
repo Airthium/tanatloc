@@ -1,0 +1,87 @@
+@value variables: "@/styles/variables.css";
+@value colorPrimary from variables;
+
+@value breakpoints: "@/styles/breakpoints.css";
+@value tablet from breakpoints;
+
+.footer {
+  background: colorPrimary;
+  width: calc(100% + 200px);
+  margin-left: -100px;
+  margin-top: 90px;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
+}
+
+.card {
+  background-color: transparent;
+  box-shadow: none !important;
+}
+
+.card :global(.ant-card-head) {
+  border: none;
+}
+
+.card li {
+  border-block-end: none !important;
+  padding-left: 0 !important;
+}
+
+.card button {
+  margin-left: -15px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border: 1px solid #000;
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media tablet {
+  .footer {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    padding: unset !important;
+    padding-bottom: 20px !important;
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+  }
+  .head ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card :global(.ant-card-body) {
+    padding-top: 0;
+  }
+
+  .card :global(.ant-space) {
+    flex-direction: row;
+  }
+
+  .foot {
+    display: unset;
+    justify-content: unset;
+  }
+
+  .foot img {
+    display: none;
+  }
+
+  .foot :global(.ant-typography) {
+    text-align: right;
+    margin-right: 20px;
+  }
+}

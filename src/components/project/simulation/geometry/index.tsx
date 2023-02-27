@@ -19,7 +19,7 @@ import SimulationAPI from '@/api/simulation'
 
 import Mesh from './mesh'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Props

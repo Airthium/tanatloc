@@ -10,8 +10,8 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import LinkAPI from '@/api/link'
 
-import { globalStyle } from '@/styles'
-import style from '../index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../index.module.css'
 
 /**
  * Errors

@@ -28,8 +28,7 @@ import Download from '@/components/project/simulation/run/results/download'
 
 import PostprocessingAPI from '@/api/postprocessing'
 
-import { variables, globalStyle } from '@/styles'
-import { css } from '@emotion/react'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -128,7 +127,7 @@ const Result = ({
         icon={
           postprocessing?.fileName === result.fileName &&
           postprocessing?.name === result.name ? (
-            <EyeOutlined className={css({ color: variables.colorPrimary })} />
+            <EyeOutlined className={globalStyle.primaryColor} />
           ) : (
             <EyeInvisibleOutlined />
           )

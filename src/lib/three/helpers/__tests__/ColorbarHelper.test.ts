@@ -56,22 +56,22 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     colorbarHelper.setVisible(true)
   })
 
-  test('setLUT', () => {
+  test('addLUT', () => {
     const lut = {} as Lut
     lut.createCanvas = jest.fn()
 
     const colorbarHelper = ColorbarHelper(renderer)
     lut.minV = 1
     lut.maxV = 1
-    colorbarHelper.setLUT(lut)
+    colorbarHelper.addLUT(lut)
 
     lut.minV = 1e-5
     lut.maxV = 1e-5
-    colorbarHelper.setLUT(lut)
+    colorbarHelper.addLUT(lut)
 
     lut.minV = 0
     lut.maxV = 0
-    colorbarHelper.setLUT(lut)
+    colorbarHelper.addLUT(lut)
   })
 
   test('render', () => {

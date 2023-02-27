@@ -34,8 +34,8 @@ import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 import Postprocessing from './postprocessing'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Selector props

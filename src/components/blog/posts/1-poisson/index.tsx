@@ -12,7 +12,7 @@ export const title = "Poisson's problem"
 export const description = "First example, the Poisson's problem"
 export const date = '2023-01-30'
 export const image = '/images/Poisson.png'
-export const keywords = ['Poisson', 'Tutorial', 'Academic']
+export const keywords = ['Tutorial', 'Academic']
 export const author = {
   name: 'Simon Garnotel',
   url: 'https://github.com/sgarnotel'

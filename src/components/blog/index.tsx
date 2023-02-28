@@ -198,8 +198,9 @@ const Blog = () => {
   }, [])
 
   // Posts
+  console.log(sort)
   Posts.sort(
-    (a, b) => sort * (new Date(a.date).getDate() - new Date(b.date).getDate())
+    (a, b) => sort * (new Date(a.date).getTime() - new Date(b.date).getTime())
   )
   const postsList = Posts.map((Post) => {
     if (search && !Post.title.toLowerCase().includes(search.toLowerCase()))

@@ -12,7 +12,7 @@ export const title = 'Thermal diffusion problems'
 export const description = 'Validation tests, thermal diffusion'
 export const date = '2023-02-22'
 export const image = '/images/thermalDiffusion.png'
-export const keywords = ['Thermal diffusion', 'Validation', 'Theory']
+export const keywords = ['Thermic', 'Validation', 'Theory']
 export const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'

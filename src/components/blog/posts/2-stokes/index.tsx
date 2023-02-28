@@ -12,7 +12,7 @@ export const title = "Stokes's problem"
 export const description = 'A simple Stokes problem example'
 export const image = '/images/Stokes.png'
 export const date = '2023-01-31'
-export const keywords = ['Stokes', 'Tutorial', 'Fluid']
+export const keywords = ['Tutorial', 'Fluid']
 export const author = {
   name: 'Simon Garnotel',
   url: 'https://github.com/sgarnotel'

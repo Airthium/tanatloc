@@ -12,7 +12,7 @@ export const title = 'Thermal expansion problems'
 export const description = 'Validation tests, thermal expansion'
 export const date = '2023-02-24'
 export const image = '/images/thermalExpansion.png'
-export const keywords = ['Thermal Expansion', 'Validation', 'Theory']
+export const keywords = ['Thermic', 'Validation', 'Theory']
 export const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'

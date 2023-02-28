@@ -3,7 +3,6 @@
 import { useState, useEffect, ChangeEvent, useCallback } from 'react'
 import { Avatar, Input, Layout, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -26,8 +25,8 @@ import ProjectAPI from '@/api/project'
 import Edit from './edit'
 import Delete from './delete'
 
-import { globalStyle, globalStyleFn } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -104,23 +103,20 @@ const Workspace = ({
    * Render
    */
   return (
-    <Layout css={globalStyle.noScroll}>
+    <Layout className={globalStyle.noScroll}>
       <PageHeader
         footer={
           <Space
             direction="horizontal"
             size="large"
-            css={css([
-              globalStyle.fullWidth,
-              { '& > *:last-child': { marginLeft: 'auto !important' } }
-            ])}
+            className={`${style.search} ${globalStyle.fullWidth}`}
           >
             <Input
               placeholder="Enter a project name (case sensitive)"
               value={filter}
               onChange={onChange}
               style={{ width: 500 }}
-              suffix={<SearchOutlined css={globalStyle.textLight} />}
+              suffix={<SearchOutlined className={globalStyle.textLight} />}
             />
             {workspace?.owners?.find((o) => o.id === user.id) ? (
               <>
@@ -168,16 +164,16 @@ const Workspace = ({
         }
       >
         {workspace.users?.length || workspace.groups?.length ? (
-          <div css={style.shared}>
+          <div className={style.shared}>
             <div>
-              <span css={globalStyleFn.marginRight(10)}>Admin:</span>
+              <span style={{ marginRight: '10px' }}>Admin:</span>
               <Avatar.Group maxCount={5}>
                 {workspace.owners?.map((u) => Utils.userToAvatar(u))}
               </Avatar.Group>
             </div>
 
             <div>
-              <span css={globalStyleFn.marginRight(10)}>Shared with:</span>
+              <span style={{ marginRight: '10px' }}>Shared with:</span>
               <Avatar.Group maxCount={5}>
                 {workspace.users?.map((u) => Utils.userToAvatar(u))}
               </Avatar.Group>
@@ -189,7 +185,7 @@ const Workspace = ({
         ) : undefined}
       </PageHeader>
       <Tabs
-        css={style.tabs}
+        className={style.tabs}
         items={[
           {
             key: 'modifiedDesc',
@@ -208,7 +204,7 @@ const Workspace = ({
         onChange={setSorter}
       />
 
-      <Layout.Content css={globalStyle.scroll}>
+      <Layout.Content className={globalStyle.scroll}>
         <ProjectList
           user={user}
           page={page}

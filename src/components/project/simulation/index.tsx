@@ -34,8 +34,8 @@ import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 import Postprocessing from './postprocessing'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Selector props
@@ -203,7 +203,7 @@ const Selector = ({
         label: (
           <Select
             mode="multiple"
-            css={globalStyle.fullWidth}
+            className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
             showArrow={false}
@@ -231,7 +231,7 @@ const Selector = ({
         label: (
           <Select
             mode="multiple"
-            css={globalStyle.fullWidth}
+            className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
             showArrow={false}
@@ -292,7 +292,7 @@ const Selector = ({
             ]}
           />
         </Layout.Sider>
-        <Layout.Content css={style.selector}>
+        <Layout.Content className={style.selector}>
           <MathJax.Html html={current?.description} />
         </Layout.Content>
       </Layout>

@@ -12,7 +12,7 @@ import { getFilesNumbers, getMultiplicator } from './tools'
 import Download from './download'
 import Archive from './archive'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -225,7 +225,7 @@ const Results = ({ simulation, results, setResults }: IProps): JSX.Element => {
         />
       }
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         {singleFiles?.map((file) => (
           <SingleResult
             key={file.name}
@@ -239,7 +239,7 @@ const Results = ({ simulation, results, setResults }: IProps): JSX.Element => {
           <>
             {filteredFiles.name}
             <Select
-              css={globalStyle.fullWidth}
+              className={globalStyle.fullWidth}
               options={filteredFiles.options}
               value={currentNumber}
               onChange={onChange}

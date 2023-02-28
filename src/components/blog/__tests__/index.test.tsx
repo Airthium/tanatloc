@@ -112,7 +112,11 @@ describe('components/blog', () => {
     const option1 = screen.getAllByText('keyword1')
     fireEvent.click(option1[2])
 
-    screen.debug(undefined, 10000)
+    screen.debug()
+
+    // TODO does not display because of maxTagCount="responsive"
+    // const close = screen.getByRole('img', { name: 'close' })
+    // fireEvent.click(close)
 
     unmount()
   })

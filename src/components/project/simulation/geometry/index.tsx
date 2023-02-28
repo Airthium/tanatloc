@@ -19,7 +19,7 @@ import SimulationAPI from '@/api/simulation'
 
 import Mesh from './mesh'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Props
@@ -244,7 +244,7 @@ const Geometry = ({
   // List
   const list = useMemo(
     () => (
-      <div css={style.geometriesList}>
+      <div className={style.geometriesList}>
         <Select
           mode={multiple ? 'multiple' : undefined}
           options={loadedGeometries.map((geometry) => ({

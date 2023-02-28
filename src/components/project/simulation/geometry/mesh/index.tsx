@@ -15,7 +15,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -212,11 +212,11 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
    */
   return (
     <Card size="small" title="Mesh refinement">
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Form layout="vertical">
           <Form.Item label="Type">
             <Select
-              css={globalStyle.fullWidth}
+              className={globalStyle.fullWidth}
               value={meshGlobalType}
               onChange={onChange}
             >
@@ -229,7 +229,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
           <Form layout="vertical">
             <Form.Item label="Size">
               <Select
-                css={globalStyle.fullWidth}
+                className={globalStyle.fullWidth}
                 value={meshGlobalValue}
                 onChange={onSize}
               >

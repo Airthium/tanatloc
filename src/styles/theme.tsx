@@ -1,15 +1,17 @@
 import { ThemeConfig } from 'antd/es/config-provider/context'
 
-import { variables } from '.'
+const colorPrimary = '#fad114'
+const textColor = '#1f1f1f'
+const colorLink = '#ee9817'
 
 const theme: ThemeConfig = {
   token: {
-    colorPrimary: variables.colorPrimary,
+    colorPrimary: colorPrimary,
     fontFamily: 'Saira',
     borderRadius: 0,
-    colorText: variables.textColor,
+    colorText: textColor,
     colorBgLayout: '#fff',
-    colorLink: variables.colorLink
+    colorLink: colorLink
   }
 }
 

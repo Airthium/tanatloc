@@ -1,11 +1,11 @@
 /** @module Components.Error */
 
+import { useCallback } from 'react'
 import { NextPageContext } from 'next'
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
-import style from './index.style'
-import { useCallback } from 'react'
+import style from './index.module.css'
 
 /**
  * Props
@@ -90,7 +90,7 @@ function Error({ webStatusCode }: IProps): JSX.Element {
    */
   return (
     <Layout>
-      <Layout.Content css={style.error}>{render}</Layout.Content>
+      <Layout.Content className={style.error}>{render}</Layout.Content>
     </Layout>
   )
 }

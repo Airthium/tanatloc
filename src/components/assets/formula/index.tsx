@@ -1,22 +1,28 @@
 /** @module Components.Assets.Formula */
 
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import {
+  ChangeEvent,
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useState
+} from 'react'
 import { Checkbox, Form, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { css as Css, SerializedStyles } from '@emotion/react'
 
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
 import MathJax from '@/components/assets/mathjax'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
  */
 export interface IProps {
   label?: string
-  css?: SerializedStyles
+  className?: string
+  style?: CSSProperties
   defaultValue?: string | number
   defaultChecked?: boolean
   onValueChange: (value: string) => void
@@ -34,7 +40,8 @@ const saveDelay = 500
  * @param props Props
  * @description Props list:
  * - label (string) Label
- * - css (SerializedStyles) CSSinJS
+ * - className (string) Class name
+ * - style (CSSProperties) Style
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
@@ -43,7 +50,8 @@ const saveDelay = 500
  */
 const Formula = ({
   label,
-  css,
+  className,
+  style,
   defaultValue,
   defaultChecked,
   onValueChange,
@@ -125,10 +133,8 @@ const Formula = ({
    */
   return (
     <Space
-      css={Css({
-        ...globalStyle.fullWidth,
-        ...(css || {})
-      })}
+      className={`${globalStyle.fullWidth} ${className}`}
+      style={style}
       align="start"
     >
       <Form layout="vertical">
@@ -151,12 +157,12 @@ const Formula = ({
             value={internalValue}
             onChange={onInputChange}
             addonAfter={
-              <Space css={globalStyle.fullWidth}>
+              <Space className={globalStyle.fullWidth}>
                 <MathJax.Inline text={unit as string} />
                 {saving ? (
-                  <LoadingOutlined spin css={globalStyle.textOrange} />
+                  <LoadingOutlined spin className={globalStyle.textOrange} />
                 ) : (
-                  <CheckCircleOutlined css={globalStyle.textGreen} />
+                  <CheckCircleOutlined className={globalStyle.textGreen} />
                 )}
               </Space>
             }

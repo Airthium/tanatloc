@@ -17,7 +17,7 @@ jest.mock('@/components/assets/mathjax', () => ({
 
 jest.mock('../../layout', () => (props: any) => <div>{props.children}</div>)
 
-describe('components/blog/posts/1-modalAnalysis', () => {
+describe('components/blog/posts/4-modalAnalysis', () => {
   test('render', () => {
     const { unmount } = render(<Post />)
 

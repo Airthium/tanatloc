@@ -3,7 +3,6 @@
 import { useCallback } from 'react'
 import { Button } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -13,7 +12,7 @@ import Utils from '@/lib/utils'
 
 import PluginAPI from '@/api/plugin'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -67,7 +66,7 @@ const Refresh = ({ plugin }: IProps): JSX.Element => {
       key="refresh"
       icon={<ReloadOutlined />}
       onClick={onClick}
-      css={css([globalStyle.noBackground, globalStyle.noBorder])}
+      className={`${globalStyle.noBackground} ${globalStyle.noBorder}`}
     >
       Refresh
     </Button>

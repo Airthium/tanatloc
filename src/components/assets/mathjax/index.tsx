@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import parse from 'html-react-parser'
-import { css } from '@emotion/react'
 
 import { mathjaxRefresh } from '@/lib/mathjax'
 
@@ -54,7 +53,7 @@ const Inline = ({ text }: IPropsInline): JSX.Element => {
    * Render
    */
   return (
-    <div css={css({ display: 'inline-block' })} ref={element}>
+    <div style={{ display: 'inline-block' }} ref={element}>
       {content}
     </div>
   )

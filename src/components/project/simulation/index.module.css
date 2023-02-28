@@ -1,0 +1,50 @@
+.selector {
+  padding: 20px;
+  height: 60vh;
+  overflow: auto;
+}
+
+.selector figure {
+  max-width: 80%;
+  border: 1px solid #f0f0f0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selector figcaption {
+  text-align: center;
+  color: #9c9c9c;
+}
+
+.selector img {
+  max-width: 80%;
+}
+
+.geometriesList {
+  width: 100%;
+  padding: 12px;
+}
+
+.geometriesList > :global(.ant-select) {
+  width: 100%;
+}
+
+.waring :global(.ant-collapse-content) {
+  background-color: rgba(250, 173, 20, 0.5) !important;
+}
+
+.error :global(.ant-collapse-content) {
+  background-color: rgba(255, 77, 79, 0.5) !important;
+}
+
+.listItem {
+  margin-top: 12px !important;
+  border: 1px solid #f0f0f0 !important;
+  cursor: default;
+}
+
+.listItem :global(.ant-card-body) {
+  padding: 12px !important;
+}

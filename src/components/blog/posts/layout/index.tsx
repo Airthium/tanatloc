@@ -7,8 +7,8 @@ import { useCallback } from 'react'
 
 import Utils from '@/lib/utils'
 
-import { globalStyle } from '@/styles'
-import style from '../../index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../../index.module.css'
 
 /**
  * Props
@@ -54,11 +54,11 @@ const PostLayout = ({
    * Render
    */
   return (
-    <div css={style.postLayout}>
+    <div className={style.postLayout}>
       <div>
         <GoBack onClick={onGoBack} />
       </div>
-      <div css={style.postTitle}>
+      <div className={style.postTitle}>
         <div>
           <Typography.Title level={2}>{title}</Typography.Title>
           <Typography.Text>
@@ -75,7 +75,7 @@ const PostLayout = ({
             </Tag>
           ))}
           <br />
-          <Typography.Text css={globalStyle.textLight}>
+          <Typography.Text className={globalStyle.textLight}>
             Tanatloc version {version}
           </Typography.Text>
         </div>
@@ -84,7 +84,7 @@ const PostLayout = ({
         </div>
       </div>
 
-      <div css={style.postContent}>{children}</div>
+      <div className={style.postContent}>{children}</div>
     </div>
   )
 }

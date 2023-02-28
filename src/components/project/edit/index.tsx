@@ -12,8 +12,6 @@ import { ErrorNotification } from '@/components/assets/notification'
 import { IFrontMutateProjectsItem, IFrontProjectsItem } from '@/api/index.d'
 import ProjectAPI from '@/api/project'
 
-import { globalStyleFn } from '@/styles'
-
 /**
  * Props
  */
@@ -155,7 +153,7 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
         </Form.Item>
         <Form.Item label="Description" name="description">
           <Input.TextArea
-            css={globalStyleFn.marginBottom(20)}
+            style={{ marginBottom: '20px' }}
             placeholder="Project's description"
             showCount
             maxLength={120}

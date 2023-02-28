@@ -1,0 +1,84 @@
+@value variables: "./variables.css";
+@value colorPrimary, textColorDark, textColorLight from variables;
+
+.logo {
+  padding: 20px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: colorPrimary;
+  height: 64px;
+}
+
+.displayNone {
+  display: none !important;
+}
+
+.displayFlex {
+  display: flex !important;
+}
+
+.fullWidth {
+  width: 100% !important;
+}
+
+.fullHeight {
+  height: 100% !important;
+}
+
+.noScroll {
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+.scroll {
+  max-height: 100% !important;
+  overflow: auto !important;
+}
+
+.noBackground {
+  background: none !important;
+  background-color: none !important;
+}
+
+.noBorder {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.noBorderBottom {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.textLight {
+  color: textColorLight !important;
+}
+
+.textDark {
+  color: textColorDark !important;
+}
+
+.textOrange {
+  color: orange !important;
+}
+
+.textGreen {
+  color: green !important;
+}
+
+.textAlignLeft {
+  text-align: left !important;
+}
+
+.textAlignCenter {
+  text-align: center !important;
+}
+
+.primaryColor {
+  color: colorPrimary !important;
+}
+
+.backgroundPrimary {
+  background: colorPrimary !important;
+}

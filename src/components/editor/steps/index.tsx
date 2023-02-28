@@ -15,7 +15,7 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { checkModel } from './utils'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Props
@@ -122,7 +122,7 @@ const StatusSteps = ({ setName }: IProps) => {
    */
   return (
     <Steps
-      css={style.steps}
+      className={style.steps}
       direction="vertical"
       items={[
         {

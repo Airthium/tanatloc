@@ -15,7 +15,7 @@ import { IModelSensor } from '@/models/index.d'
 import Sensor from './sensor'
 import List from './list'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -96,9 +96,9 @@ const Sensors = ({
         onClose={onClose}
         swr={swr}
       />
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Button
-          css={globalStyle.fullWidth}
+          className={globalStyle.fullWidth}
           disabled={false}
           type="primary"
           icon={<ApiOutlined />}

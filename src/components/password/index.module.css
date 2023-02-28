@@ -1,0 +1,11 @@
+.password {
+  margin: auto !important;
+  width: 350px;
+}
+
+.submit {
+  margin-top: 32px;
+}
+.submit button {
+  width: 100%;
+}

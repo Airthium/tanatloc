@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Layout, Menu, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import Utils from '@/lib/utils'
 
@@ -18,8 +17,8 @@ import Project from './project'
 import Editor from './editor'
 import Plugins from './plugins'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import style from './index.module.css'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Doc
@@ -254,10 +253,10 @@ const Doc = () => {
    * Render
    */
   return (
-    <Layout css={globalStyle.noScroll}>
-      <Layout.Header css={style.header}>
+    <Layout className={globalStyle.noScroll}>
+      <Layout.Header className={style.header}>
         <img
-          css={style.logo}
+          className={style.logo}
           src="/images/logo.svg"
           alt="Tanatloc"
           onClick={onTanatloc}
@@ -268,13 +267,13 @@ const Doc = () => {
           href="https://github.com/Airthium/tanatloc"
           target="_blank"
           rel="noreferrer"
-          css={style.github}
+          className={style.github}
         >
           <img src="/images/github-mark.svg" alt="Github Airthium/tanatloc" />
         </a>
       </Layout.Header>
       <Layout>
-        <Layout.Header css={style.menu}>
+        <Layout.Header className={style.menu}>
           <Menu
             mode="horizontal"
             selectedKeys={[(query.section as string) || 'introduction']}
@@ -282,19 +281,22 @@ const Doc = () => {
             items={menuItems}
           />
         </Layout.Header>
-        <Layout.Content css={css([globalStyle.scroll, style.content])}>
+        <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
           {content ? (
             content
           ) : (
             <>
-              <div css={css([globalStyle.logo, { display: 'inline-flex' }])}>
+              <div
+                className={globalStyle.logo}
+                style={{ display: 'inline-flex' }}
+              >
                 <img src="/images/logo.svg" alt="Tanatloc" />
               </div>
               <Typography.Title level={3}>
                 See the world the way it really is!
               </Typography.Title>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Text>
                   Tanatloc is a graphical interface for FreeFEM, a powerful PDE
                   solver.
@@ -314,7 +316,7 @@ const Doc = () => {
                 </Typography.Text>
               </Typography>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Text>
                   Tanatloc is an open-source project by{' '}
                   <a
@@ -340,7 +342,7 @@ const Doc = () => {
                 </Typography.Text>
               </Typography>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Title level={3}>
                   Local app - Electron
                 </Typography.Title>
@@ -364,7 +366,7 @@ const Doc = () => {
                 </Typography.Text>
               </Typography>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Title level={3}>
                   Server deployment - Docker
                 </Typography.Title>
@@ -398,7 +400,7 @@ const Doc = () => {
                 </Typography.Text>
               </Typography>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Title level={3}>
                   Bug report / Feature request
                 </Typography.Title>
@@ -413,7 +415,7 @@ const Doc = () => {
                 </Typography.Text>
               </Typography>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Title level={3}>About</Typography.Title>
                 <Typography.Text>
                   Version:{' '}
@@ -427,7 +429,7 @@ const Doc = () => {
                 </Typography.Text>
               </Typography>
 
-              <Typography css={style.text}>
+              <Typography className={style.text}>
                 <Typography.Title level={3}>Development</Typography.Title>
                 <Typography.Text>
                   See{' '}

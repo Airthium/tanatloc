@@ -26,8 +26,8 @@ import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
 
-import { globalStyle } from '@/styles'
-import style from '../../../panel/index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../../../panel/index.module.css'
 
 /**
  * Props
@@ -250,7 +250,7 @@ const Material = ({
    */
   return (
     <Drawer
-      css={style.subPanel}
+      className={style.subPanel}
       title="Material"
       placement="left"
       closable={false}
@@ -297,9 +297,9 @@ const Material = ({
         </div>
       }
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Card size="small">
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             <DataBase onSelect={onMaterialSelect} />
             <Typography.Text>
               Material: {current?.material?.label ?? 'default'}

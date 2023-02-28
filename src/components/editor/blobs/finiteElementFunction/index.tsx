@@ -15,9 +15,9 @@ import { setCursor } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
-import { globalStyle } from '@/styles'
-
 import { addOnCursor } from '..'
+
+import globalStyle from '@/styles/index.module.css'
 
 // Local interfaces
 export interface ILocalValues {
@@ -151,7 +151,7 @@ const FiniteElementFunction = (): JSX.Element => {
           </Form.Item>
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
+      <Button className={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Finite element function
       </Button>
     </>

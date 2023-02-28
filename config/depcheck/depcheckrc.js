@@ -70,6 +70,10 @@ const customJest = async (fileName, deps) => {
       Object.values(config.transform).forEach((value) => {
         if (!value.includes('<rootDir>')) newDeps.push(value[0])
       })
+
+      Object.values(config.moduleNameMapper).forEach((value) => {
+        if (!value.includes('<rootDir>')) newDeps.push(value)
+      })
     }
   } catch (err) {
     console.error(err)
@@ -83,6 +87,7 @@ const options = {
     'mathjax', // MathJax
     'electron', // Mandatory for electron-store
     'electron-serve', // Mandatory for electron-store
+    'rc-select', // Ant type
     'form-data', // For plugins
     'node-fetch', // For plugins
     'url-join' // For plugins

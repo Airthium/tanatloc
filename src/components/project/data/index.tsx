@@ -40,7 +40,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-import style from './index.style'
+import style from './index.module.css'
 
 /**
  * Props
@@ -129,7 +129,7 @@ const ColumnRender = ({
    * Render
    */
   return (
-    <Space>
+    <Space className={style.tableHead}>
       {name}
       <Checkbox
         data-testid="table-checkbox"
@@ -250,7 +250,8 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       key: camelNames[index]
     }))
     tableColumns.unshift({
-      title: title,
+      align: 'center',
+      title: title || 'Iteration',
       dataIndex: 'x',
       key: 'x',
       fixed: 'left'
@@ -378,14 +379,14 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   if (!simulation) return null
   if (!datas || !names || !camelNames) return null
   return (
-    <Layout css={style.data}>
+    <Layout className={style.data}>
       <Layout.Content>
         <Tooltip title="Data visualization">
           <Button
             type="primary"
             icon={<LineChartOutlined />}
             onClick={setVisibleTrue}
-            css={style.button}
+            className={style.button}
           />
         </Tooltip>
 
@@ -428,15 +429,17 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
             </Dropdown.Button>
           }
         >
-          <div css={style.container}>
-            <div css={style.tableContainer}>
+          <div className={style.container}>
+            <div className={style.tableContainer}>
               <Table
                 size="small"
                 sticky={true}
                 pagination={false}
                 dataSource={datas}
                 columns={columns}
-                scroll={{ x: 'calc(60vw)' }}
+                scroll={{
+                  x: ((columns?.length ? +columns.length : 1) - 1) * 200
+                }}
               />
             </div>
 

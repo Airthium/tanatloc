@@ -12,7 +12,7 @@ import PluginAPI from '@/api/plugin'
 import PluginDialog from './dialog'
 import List from './list'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -56,7 +56,7 @@ const Plugin = ({ plugin }: IProps): JSX.Element => {
    */
   if (loadingPlugins) return <Spin />
   return (
-    <Space direction="vertical" css={globalStyle.fullWidth}>
+    <Space direction="vertical" className={globalStyle.fullWidth}>
       <PluginDialog
         plugin={{
           uuid: plugin.uuid,

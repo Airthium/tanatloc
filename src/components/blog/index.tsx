@@ -15,7 +15,6 @@ import {
 } from 'antd'
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import packageJson from '../../../package.json'
 
@@ -23,8 +22,8 @@ import Utils from '@/lib/utils'
 
 import Posts from './posts'
 
-import style from './index.style'
-import { globalStyle } from '@/styles'
+import style from './index.module.css'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Post card interface
@@ -71,7 +70,7 @@ const PostCard = ({
    */
   return (
     <Card
-      css={style.postCard}
+      className={style.postCard}
       title={title}
       hoverable
       onClick={onClick}
@@ -80,7 +79,7 @@ const PostCard = ({
         <>
           <Typography.Text>{author.name}</Typography.Text>
           <br />
-          <Typography.Text css={globalStyle.textLight}>
+          <Typography.Text className={globalStyle.textLight}>
             {new Date(date).toLocaleDateString()}
           </Typography.Text>
         </>
@@ -228,10 +227,10 @@ const Blog = () => {
    * Render
    */
   return (
-    <Layout css={globalStyle.noScroll}>
-      <Layout.Header css={style.header}>
+    <Layout className={globalStyle.noScroll}>
+      <Layout.Header className={style.header}>
         <img
-          css={style.logo}
+          className={style.logo}
           src="/images/logo.svg"
           alt="Tanatloc"
           onClick={onTanatloc}
@@ -239,12 +238,12 @@ const Blog = () => {
         <Typography.Title level={1}>Blog</Typography.Title>
       </Layout.Header>
       {PostRender ? (
-        <Layout.Content css={css([globalStyle.scroll, style.content])}>
+        <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
           {PostRender}
         </Layout.Content>
       ) : (
-        <Layout.Content css={css([globalStyle.scroll, style.content])}>
-          <div css={style.contentTools}>
+        <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
+          <div className={style.contentTools}>
             <div>
               Sort by date:
               <Tooltip title="Older to newer">
@@ -256,6 +255,7 @@ const Blog = () => {
             </div>
             <Select
               options={postsTags}
+              style={{ width: '100%' }}
               value={tags}
               tagRender={tagRender}
               mode="tags"
@@ -265,12 +265,12 @@ const Blog = () => {
             />
             <Input placeholder="Search" value={search} onChange={onSearch} />
           </div>
-          <div css={style.posts}>
+          <div className={style.posts}>
             {postsList.length ? postsList : <Empty />}
           </div>
         </Layout.Content>
       )}
-      <Layout.Footer css={style.footer}>
+      <Layout.Footer className={style.footer}>
         Copyright© {new Date().getFullYear()} - version {packageJson.version}
       </Layout.Footer>
     </Layout>

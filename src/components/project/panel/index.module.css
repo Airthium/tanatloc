@@ -1,0 +1,72 @@
+.panel {
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 256px;
+  max-height: 100vh;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.panel img {
+  max-width: 80%;
+}
+
+.panel > :global(.ant-card-body) {
+  max-height: calc(100vh - 65px);
+  overflow: auto;
+  padding: 0;
+}
+
+.panel :global(.ant-card-head) {
+  height: 48px;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 12px;
+  border: none;
+}
+
+.panel :global(.ant-card-head) :global(.ant-btn) {
+  border: none;
+}
+
+.panel :global(.ant-card) {
+  border: none;
+}
+
+.panel :global(.ant-collapse) {
+  border: none;
+}
+
+.panel :global(.ant-collapse-item) {
+  border: none;
+}
+
+.panel :global(.ant-collapse-content-box) {
+  padding: 0 !important;
+  background-color: #fafafa;
+}
+
+.panel :global(.ant-collapse-content-box) :global(.ant-card-head) {
+  background-color: #fafafa;
+}
+
+.panel :global(.ant-collapse-content-box) :global(.ant-card-body) {
+  background-color: #fafafa;
+}
+
+.subPanel :global(.ant-card) {
+  border: none;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.subPanel :global(.ant-card-body) {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.subPanel :global(.ant-radio-group) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}

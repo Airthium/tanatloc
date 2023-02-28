@@ -1,16 +1,15 @@
 /** @module Components.Index.Menu */
 
+import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Layout, Menu, Popover } from 'antd'
 import { BarsOutlined } from '@ant-design/icons'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { css } from '@emotion/react'
 
 import UserAPI from '@/api/user'
 
-import { globalStyle, mediaQuery } from '@/styles'
-import style from '../index.style'
-import { useCallback, useMemo } from 'react'
+import globalStyle from '@/styles/index.module.css'
+import style from '../index.module.css'
 
 /**
  * Scroll to view
@@ -105,7 +104,7 @@ const IndexMenu = () => {
     if (!user)
       return (
         <Button
-          css={css({ [mediaQuery]: { width: '100%' } })}
+          className={style.menuButton}
           type="primary"
           onClick={getStarted}
         >
@@ -126,10 +125,7 @@ const IndexMenu = () => {
       else
         return (
           <Button
-            css={css([
-              globalStyle.noBorder,
-              { [mediaQuery]: { width: '100%' } }
-            ])}
+            className={`${globalStyle.noBorder} ${style.menuButton}`}
             onClick={toLogin}
           >
             Login
@@ -220,10 +216,10 @@ const IndexMenu = () => {
    * Render
    */
   return (
-    <Layout.Header id="header" css={style.header}>
+    <Layout.Header id="header" className={style.header}>
       <img src="/images/logo.svg" alt="Tanatloc" />
-      <Menu mode="horizontal" css={style.menu} items={menuItems} />
-      <div css={style.menuMobile}>
+      <Menu mode="horizontal" className={style.menu} items={menuItems} />
+      <div className={style.menuMobile}>
         <Popover
           content={<Menu mode="inline" items={menuItems} />}
           placement="leftBottom"

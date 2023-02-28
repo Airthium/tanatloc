@@ -36,7 +36,7 @@ import CloudServer from './cloudServer'
 import Log from './log'
 import Results from './results'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -280,7 +280,7 @@ const Run = ({
   return (
     <Layout>
       <Layout.Content>
-        <Space direction="vertical" css={globalStyle.fullWidth}>
+        <Space direction="vertical" className={globalStyle.fullWidth}>
           <Sensors
             geometries={geometries}
             simulation={simulation}
@@ -297,9 +297,13 @@ const Run = ({
             onOk={onOk}
           />
           <Card size="small" title="Run">
-            <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+            <Space
+              direction="vertical"
+              className={globalStyle.fullWidth}
+              size={20}
+            >
               <div
-                css={globalStyle.fullWidth}
+                className={globalStyle.fullWidth}
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',

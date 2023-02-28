@@ -23,7 +23,7 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
-import style from '@/components/notfound/index.style'
+import style from '@/components/notfound/index.module.css'
 
 /**
  * 404
@@ -252,17 +252,21 @@ const NotFound = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout css={style.index}>
-      <Layout.Content css={style.content}>
-        <div ref={mount} css={style.three} />
-        <div css={style.description}>
+    <Layout className={style.index}>
+      <Layout.Content className={style.content}>
+        <div ref={mount} className={style.three} />
+        <div className={style.description}>
           <Typography.Title level={1} style={{ textAlign: 'center' }}>
             Page not found
           </Typography.Title>
           <Typography.Title level={3} style={{ textAlign: 'center' }}>
             The requested URL was not found on the server
           </Typography.Title>
-          <Button type="primary" css={style.descriptionButton} onClick={home}>
+          <Button
+            type="primary"
+            className={style.descriptionButton}
+            onClick={home}
+          >
             Return to Home
           </Button>
         </div>

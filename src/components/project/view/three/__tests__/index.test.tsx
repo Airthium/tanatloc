@@ -101,7 +101,9 @@ jest.mock('@/lib/three/helpers/SectionViewHelper', () => ({
 jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   ColorbarHelper: () => ({
     setVisible: jest.fn(),
-    setLUT: jest.fn(),
+    addLUT: jest.fn(),
+    setColorMap: jest.fn(),
+    getColor: () => ({ r: 1, g: 1, b: 1 }),
     render: jest.fn(),
     dispose: jest.fn()
   })
@@ -258,6 +260,36 @@ describe('components/project/view/three', () => {
         }
       },
       { type: 'AxisHelper' },
+      {
+        type: 'Part',
+        boundingBox: {
+          min: { x: 0, y: 0, z: 0 },
+          max: { x: 1, y: 1, z: 1 }
+        },
+        material: {},
+        userData: { type: 'result' },
+        children: [
+          {
+            geometry: {
+              getAttribute: () => ({
+                count: 1,
+                array: [1, 2, 3]
+              }),
+              setAttribute: jest.fn
+            },
+            userData: {}
+          }
+        ],
+        dispose: jest.fn(),
+        setTransparent: jest.fn(),
+        setDisplayMesh: jest.fn(),
+        startSelection: jest.fn(),
+        stopSelection: jest.fn(),
+        getSelected: () => [{}],
+        highlight: jest.fn(),
+        select: jest.fn(),
+        unselect: jest.fn()
+      },
       {
         type: 'Part',
         boundingBox: {
@@ -469,6 +501,15 @@ describe('components/project/view/three', () => {
 
     const flip = screen.getByRole('button', { name: 'retweet' })
     await act(() => fireEvent.click(flip))
+
+    // Colormap
+    const colorMap = screen.getByRole('button', { name: 'bg-colors' })
+    fireEvent.mouseEnter(colorMap)
+
+    await waitFor(() => screen.getByText('Rainbow'))
+
+    const rainbow = screen.getByRole('menuitem', { name: 'Rainbow' })
+    fireEvent.click(rainbow)
 
     unmount()
   }, 10_000)

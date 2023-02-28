@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { Button, Collapse, Spin, Table, Tabs, Typography } from 'antd'
 import { URL } from 'url'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 // Local interfaces
 export interface IRelease {
@@ -97,7 +97,7 @@ const Desktop = (): JSX.Element => {
    */
   return (
     <>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Description</Typography.Title>
         <Typography.Text>
           The Tanatloc desktop application is build using{' '}
@@ -121,7 +121,7 @@ const Desktop = (): JSX.Element => {
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Docker Desktop</Typography.Title>
         <Typography.Text>
           The first step is to install{' '}
@@ -138,12 +138,12 @@ const Desktop = (): JSX.Element => {
           needs to install Linux kernel, WSL2 backend, ... and reboot the
           computer
         </Typography.Text>
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           Docker Desktop must display &apos;Docker Desktop Running&apos;
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Download the app</Typography.Title>
         <Typography.Text>
           Download the latest app version for your OS, and run it
@@ -156,7 +156,7 @@ const Desktop = (): JSX.Element => {
               <Button
                 type="primary"
                 onClick={onDownloadWindows}
-                css={style.downloadButton}
+                className={style.downloadButton}
               >
                 <img src="/images/indexpage/windows.svg" alt="" />
                 Windows
@@ -166,7 +166,7 @@ const Desktop = (): JSX.Element => {
               <Button
                 type="primary"
                 onClick={onDownloadMacOS}
-                css={style.downloadButton}
+                className={style.downloadButton}
               >
                 <img src="/images/indexpage/MacOS.svg" alt="" />
                 MacOS
@@ -176,7 +176,7 @@ const Desktop = (): JSX.Element => {
               <Button
                 type="primary"
                 onClick={onDownloadLinux}
-                css={style.downloadButton}
+                className={style.downloadButton}
               >
                 <img src="/images/indexpage/Linux.svg" alt="" />
                 Linux
@@ -190,7 +190,7 @@ const Desktop = (): JSX.Element => {
           </>
         )}
 
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           On Linux, you must allow execution of the AppImage file.
           <br />
           Right-click, Properties, Permissions, Allow executing file as program
@@ -202,7 +202,7 @@ const Desktop = (): JSX.Element => {
           </Typography.Text>
         </Typography.Text>
 
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           If you want to try a beta version, you can directly look at{' '}
           <a
             href="https://github.com/Airthium/tanatloc-electron/releases"
@@ -345,7 +345,7 @@ const Server = (): JSX.Element => {
    */
   return (
     <>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Description</Typography.Title>
         <Typography.Text>
           The Tanatloc server runs through a Docker, with Docker Compose.
@@ -373,7 +373,7 @@ const Server = (): JSX.Element => {
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Docker</Typography.Title>
         <Typography.Text>
           Install{' '}
@@ -395,7 +395,7 @@ const Server = (): JSX.Element => {
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Certbot</Typography.Title>
         <Typography.Text>
           If you need an HTTPS certificate, install{' '}
@@ -409,7 +409,7 @@ const Server = (): JSX.Element => {
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Deployment script</Typography.Title>
         <Typography.Text>
           <strong>Clone</strong> the tanatloc-deploy repository
@@ -450,15 +450,15 @@ const Server = (): JSX.Element => {
           <strong>Start</strong> Tanatloc
         </Typography.Text>
         <Typography.Text code>./tanatloc.sh start</Typography.Text>
-        <Typography.Text css={style.warnings}>
+        <Typography.Text className={style.warnings}>
           The first start can take time, you will not have access to Tanatloc
           before the start process ends.
         </Typography.Text>
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           You can have a look on the log using{' '}
           <Typography.Text code>./tanatloc.sh log</Typography.Text>
         </Typography.Text>
-        <Typography.Text css={style.tips}>
+        <Typography.Text className={style.tips}>
           You can display all available commands of{' '}
           <Typography.Text code>./tanatloc.sh</Typography.Text> using{' '}
           <Typography.Text code>./tanatloc.sh help</Typography.Text>

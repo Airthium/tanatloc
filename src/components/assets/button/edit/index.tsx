@@ -2,9 +2,8 @@
 
 import { Button, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
-import { globalStyle, globalStyleFn } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -58,13 +57,12 @@ const EditButton = ({
   return (
     <Tooltip title={children || 'Edit'}>
       <Button
-        css={css([
-          type == 'primary' ? '' : globalStyle.noBackground,
-          needMargin ? globalStyleFn.marginLeft(5) : {},
-          light ? globalStyle.textLight : {},
-          dark ? globalStyle.textDark : {},
-          bordered ? {} : globalStyle.noBorder
-        ])}
+        className={`${type == 'primary' ? '' : globalStyle.noBackground} ${
+          light ? globalStyle.textLight : ''
+        } ${dark ? globalStyle.textDark : ''} ${
+          bordered ? '' : globalStyle.noBorder
+        }`}
+        style={needMargin ? { marginLeft: '5px' } : {}}
         disabled={disabled}
         loading={loading}
         type={type}

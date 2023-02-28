@@ -1,0 +1,49 @@
+@value variables: "@/styles/variables.css";
+@value colorPrimary, colorPrimary55 from variables;
+
+.data {
+  position: absolute;
+  z-index: 100;
+  right: 50px;
+  bottom: 25px;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.button {
+  width: 40px !important;
+  height: 40px;
+  border: 1px solid #5e14fa;
+  border-radius: 20px;
+  margin-bottom: -20px;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.tableContainer {
+  display: flex;
+  height: 100%;
+  width: 49%;
+  overflow: auto;
+}
+
+.tableContainer :global(.column) :global(.ant-checkbox) {
+  display: none;
+}
+
+.tableContainer :global(.selected) {
+  background-color: colorPrimary55;
+}
+
+.tableContainer :global(.selected) svg {
+  color: colorPrimary;
+}
+
+.tableHead {
+  width: 100%;
+  justify-content: space-between;
+}

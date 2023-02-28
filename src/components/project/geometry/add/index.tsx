@@ -4,7 +4,6 @@ import { useCallback, useState } from 'react'
 import { Space, Typography, Upload, UploadFile } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 
@@ -13,7 +12,8 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -146,14 +146,9 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       onCancel={setVisibleFalse}
       cancelButtonProps={{ loading: loading }}
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Upload
-          css={css({
-            '& .ant-upload': {
-              width: '100% !important',
-              height: '100px !important'
-            }
-          })}
+          className={style.upload}
           action={'/api/noop'}
           accept=".stp,.step,.dxf"
           showUploadList={false}

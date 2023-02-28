@@ -1,6 +1,7 @@
 ## v1.2.8
 
 - Global:
+  - :arrow_up: Update dependencies
   - :beetle: Fix public template
   - :beetle: Gmsh template fix
 - Client:
@@ -8,6 +9,9 @@
   - :arrow_up: Blog articles (houssamh)
   - :arrow_up: Multiple results display
   - :arrow_up: Blog tags
+  - :beetle: Fix blog posts order
+  - :beetle: Remove @emotion/react
+  - :arrow_up: Improve ColorbarHelper
 - Algorithm:
   - :arrow_up: Stokes symmetric
   - :arrow_up: Contact

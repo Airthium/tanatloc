@@ -9,7 +9,17 @@ import {
   useCallback,
   useContext
 } from 'react'
-import { Button, Divider, Dropdown, Layout, Spin, Switch, Tooltip } from 'antd'
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Form,
+  Input,
+  Layout,
+  Spin,
+  Switch,
+  Tooltip
+} from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
@@ -24,7 +34,9 @@ import {
   StopOutlined,
   RetweetOutlined,
   TableOutlined,
-  BgColorsOutlined
+  BgColorsOutlined,
+  ColumnWidthOutlined,
+  ArrowsAltOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
@@ -47,6 +59,7 @@ import { IGeometryPart } from '@/lib/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
+import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -444,6 +457,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   const [sectionView, setSectionView] = useState<boolean>(false)
   const [screenshot, setScreenshot] = useState<boolean>(false)
   const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
+  const [customRangeOpen, setCustomRangeOpen] = useState<boolean>(false)
 
   // Data
   const router = useRouter()
@@ -961,10 +975,62 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   }, [])
 
   /**
+   * Open custom range
+   */
+  const openCustomRange = useCallback(() => {
+    setCustomRangeOpen(true)
+  }, [])
+
+  /**
+   * Close custom range
+   */
+  const closeCustomRange = useCallback(() => {
+    setCustomRangeOpen(false)
+  }, [])
+
+  /**
+   * On custom range
+   * @param values Values
+   */
+  const onCustomRange = useCallback(
+    async (values: { min: string; max: string }): Promise<void> => {
+      colorbarHelper.current?.setRange(+values.min, +values.max)
+      _computeColors(scene.current!, colorbarHelper.current!)
+      closeCustomRange()
+    },
+    [closeCustomRange]
+  )
+
+  /**
+   * On automatic range
+   */
+  const onAutomaticRange = useCallback(() => {
+    colorbarHelper.current?.setAutomaticRange()
+    _computeColors(scene.current!, colorbarHelper.current!)
+  }, [])
+
+  /**
    * Render
    */
   return (
     <Layout className={`${globalStyle.noScroll} ${style.view}`}>
+      <Dialog
+        visible={customRangeOpen}
+        title="Custom range"
+        initialValues={{
+          min: colorbarHelper.current?.getMinV(),
+          max: colorbarHelper.current?.getMaxV()
+        }}
+        onCancel={closeCustomRange}
+        onOk={onCustomRange}
+      >
+        <Form.Item label="Min" name="min">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Max" name="max">
+          <Input />
+        </Form.Item>
+      </Dialog>
       <Layout.Header className={style.head}>
         <Tooltip title="Take snapshot" placement="left">
           <Dropdown
@@ -1139,6 +1205,17 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
               >
                 <Button icon={<BgColorsOutlined />} />
               </Dropdown>
+            </Tooltip>
+
+            <Tooltip title="Custom range">
+              <Button
+                icon={<ColumnWidthOutlined />}
+                onClick={openCustomRange}
+              />
+            </Tooltip>
+
+            <Tooltip title="Automatic range">
+              <Button icon={<ArrowsAltOutlined />} onClick={onAutomaticRange} />
             </Tooltip>
           </>
         ) : null}

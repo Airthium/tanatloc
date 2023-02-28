@@ -21,6 +21,10 @@ export interface IColorbarHelper {
   addLUT: (lut: Lut) => void
   setVisible: (visible: boolean) => void
   setColorMap: (key: string) => void
+  setRange: (minV: number, maxV: number) => void
+  setAutomaticRange: () => void
+  getMinV: () => number
+  getMaxV: () => number
   getColor: (data: number) => Color
   dispose: () => void
 }
@@ -37,7 +41,10 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   const width = 700
   const height = 50
 
-  const lut = new Lut()
+  const lut = new Lut('rainbow', 512)
+  lut.setMin(Number.MAX_VALUE)
+  lut.setMax(-Number.MAX_VALUE)
+
   const colorScene = new Scene()
   const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 2, 1)
   colorCamera.position.set(0, 0, 1)
@@ -45,7 +52,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   const group = new Group()
   colorScene.add(group)
 
-  let colormap = 'rainbow'
+  let customRange = false
 
   /**
    * Set visible
@@ -79,14 +86,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * @param lutData LUT
    */
   const addLUT = (lutData: Lut): void => {
-    if (!lut.n) {
-      // Empty set
-      lut.setColorMap(colormap, 512)
-
-      lut.setMin(lutData.minV)
-      lut.setMax(lutData.maxV)
-    } else {
-      // Existing set
+    if (!customRange) {
       const min = lut.minV
       const max = lut.maxV
 
@@ -143,8 +143,32 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * @param key Key
    */
   const setColorMap = (key: string) => {
-    colormap = key
+    lut.setColorMap(key, 512)
   }
+
+  const setRange = (minV: number, maxV: number): void => {
+    customRange = true
+    lut.setMin(minV)
+    lut.setMax(maxV)
+  }
+
+  const setAutomaticRange = (): void => {
+    customRange = false
+    lut.setMin(Number.MAX_VALUE)
+    lut.setMax(-Number.MAX_VALUE)
+  }
+
+  /**
+   * Get minV
+   * @returns minV
+   */
+  const getMinV = (): number => lut.minV
+
+  /**
+   * Get maxV
+   * @returns maxV
+   */
+  const getMaxV = (): number => lut.maxV
 
   /**
    * Get color
@@ -171,10 +195,20 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
   const dispose = () => {
     clearScene()
-    lut.n = 0
   }
 
-  return { render, addLUT, getColor, setVisible, setColorMap, dispose }
+  return {
+    render,
+    addLUT,
+    getMinV,
+    getMaxV,
+    getColor,
+    setVisible,
+    setColorMap,
+    setRange,
+    setAutomaticRange,
+    dispose
+  }
 }
 
 export { ColorbarHelper }

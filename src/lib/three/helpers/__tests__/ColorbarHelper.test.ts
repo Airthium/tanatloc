@@ -78,22 +78,15 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     lut.maxV = 1.5
     colorbarHelper.addLUT(lut)
 
-    mockLUT.mockImplementation(() => ({
-      setMin: jest.fn,
-      setMax: jest.fn,
-      setColorMap: jest.fn,
-      minV: 0,
-      maxV: 1,
-      n: 512,
-      getColor: jest.fn,
-      createCanvas: jest.fn
-    }))
-
-    const colorbarHelper2 = ColorbarHelper(renderer)
-
+    colorbarHelper.setRange(0, 1)
     lut.minV = -1e-5
     lut.maxV = 1e-5
-    colorbarHelper2.addLUT(lut)
+    colorbarHelper.addLUT(lut)
+
+    colorbarHelper.setAutomaticRange()
+
+    expect(colorbarHelper.getMinV()).toBe(0)
+    expect(colorbarHelper.getMaxV()).toBe(1)
   })
 
   test('getColor', () => {

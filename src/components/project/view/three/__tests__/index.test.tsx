@@ -25,6 +25,9 @@ jest.mock('@/components/assets/notification', () => ({
     mockErroNotification(title, err)
 }))
 
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
+
 jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
   TrackballControls: jest.fn().mockImplementation(() => ({
     target: {
@@ -100,11 +103,15 @@ jest.mock('@/lib/three/helpers/SectionViewHelper', () => ({
 
 jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   ColorbarHelper: () => ({
-    setVisible: jest.fn(),
-    addLUT: jest.fn(),
-    setColorMap: jest.fn(),
-    getColor: () => ({ r: 1, g: 1, b: 1 }),
     render: jest.fn(),
+    addLUT: jest.fn(),
+    setVisible: jest.fn(),
+    setColorMap: jest.fn(),
+    setRange: jest.fn(),
+    setAutomaticRange: jest.fn(),
+    getMinV: jest.fn(),
+    getMaxV: jest.fn(),
+    getColor: () => ({ r: 1, g: 1, b: 1 }),
     dispose: jest.fn()
   })
 }))
@@ -189,6 +196,11 @@ describe('components/project/view/three', () => {
 
   beforeEach(() => {
     mockErroNotification.mockReset()
+
+    mockDialog.mockReset()
+    mockDialog.mockImplementation((props: any) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
 
     mockAvatarAdd.mockReset()
 
@@ -510,6 +522,10 @@ describe('components/project/view/three', () => {
 
     const rainbow = screen.getByRole('menuitem', { name: 'Rainbow' })
     fireEvent.click(rainbow)
+
+    // Custom range
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
     unmount()
   }, 10_000)

@@ -87,6 +87,7 @@ const options = {
     'mathjax', // MathJax
     'electron', // Mandatory for electron-store
     'electron-serve', // Mandatory for electron-store
+    'rc-select', // Ant type
     'form-data', // For plugins
     'node-fetch', // For plugins
     'url-join' // For plugins

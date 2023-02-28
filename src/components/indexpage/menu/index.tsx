@@ -104,7 +104,7 @@ const IndexMenu = () => {
     if (!user)
       return (
         <Button
-          // className={css({ [mediaQuery]: { width: '100%' } })}//TODO
+          className={style.menuButton}
           type="primary"
           onClick={getStarted}
         >
@@ -125,8 +125,7 @@ const IndexMenu = () => {
       else
         return (
           <Button
-            className={globalStyle.noBorder}
-            // { [mediaQuery]: { width: '100%' } }  // TODO
+            className={`${globalStyle.noBorder} ${style.menuButton}`}
             onClick={toLogin}
           >
             Login

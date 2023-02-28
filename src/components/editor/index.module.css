@@ -1,4 +1,4 @@
-@value variables: '@/styles/variables.css';
+@value variables: "@/styles/variables.css";
 @value colorPrimary from variables;
 
 .editor {

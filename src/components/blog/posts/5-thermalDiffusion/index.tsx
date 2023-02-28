@@ -1,7 +1,6 @@
 /** @module Components.Blog.Posts.5ThermalDiffusion */
 
-import { Typography } from 'antd'
-import { Table } from 'antd'
+import { Table, Typography } from 'antd'
 
 import MathJax from '@/components/assets/mathjax'
 import Carousel from '@/components/assets/carousel'

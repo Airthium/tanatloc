@@ -11,14 +11,9 @@ jest.mock('../LabelHelper', () => ({
   })
 }))
 
+const mockLUT = jest.fn()
 jest.mock('three/examples/jsm/math/Lut', () => ({
-  Lut: jest.fn().mockImplementation(() => ({
-    setMin: jest.fn,
-    setMax: jest.fn,
-    minV: 0,
-    maxV: 1,
-    createCanvas: jest.fn
-  }))
+  Lut: jest.fn().mockImplementation(() => mockLUT())
 }))
 
 describe('lib/three/helpers/ColorbarHelper', () => {
@@ -46,6 +41,19 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     }
   ]
 
+  beforeEach(() => {
+    mockLUT.mockImplementation(() => ({
+      setMin: jest.fn,
+      setMax: jest.fn,
+      setColorMap: jest.fn,
+      minV: 0,
+      maxV: 1,
+      n: undefined,
+      getColor: jest.fn,
+      createCanvas: jest.fn
+    }))
+  })
+
   test('call', () => {
     const colorbarHelper = ColorbarHelper(renderer)
     expect(colorbarHelper).toBeDefined()
@@ -56,22 +64,41 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     colorbarHelper.setVisible(true)
   })
 
+  test('setColorMap', () => {
+    const colorbarHelper = ColorbarHelper(renderer)
+    colorbarHelper.setColorMap('rainbow')
+  })
+
   test('addLUT', () => {
     const lut = {} as Lut
     lut.createCanvas = jest.fn()
 
     const colorbarHelper = ColorbarHelper(renderer)
-    lut.minV = 1
-    lut.maxV = 1
+    lut.minV = 0.5
+    lut.maxV = 1.5
     colorbarHelper.addLUT(lut)
 
-    lut.minV = 1e-5
+    mockLUT.mockImplementation(() => ({
+      setMin: jest.fn,
+      setMax: jest.fn,
+      setColorMap: jest.fn,
+      minV: 0,
+      maxV: 1,
+      n: 512,
+      getColor: jest.fn,
+      createCanvas: jest.fn
+    }))
+
+    const colorbarHelper2 = ColorbarHelper(renderer)
+
+    lut.minV = -1e-5
     lut.maxV = 1e-5
-    colorbarHelper.addLUT(lut)
+    colorbarHelper2.addLUT(lut)
+  })
 
-    lut.minV = 0
-    lut.maxV = 0
-    colorbarHelper.addLUT(lut)
+  test('getColor', () => {
+    const colorbarHelper = ColorbarHelper(renderer)
+    colorbarHelper.getColor(1)
   })
 
   test('render', () => {

@@ -79,12 +79,12 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * @param lutData LUT
    */
   const addLUT = (lutData: Lut): void => {
-    if (lut.n === 0) {
+    if (!lut.n) {
       // Empty set
+      lut.setColorMap(colormap, 512)
+
       lut.setMin(lutData.minV)
       lut.setMax(lutData.maxV)
-
-      lut.setColorMap(colormap, 512)
     } else {
       // Existing set
       const min = lut.minV

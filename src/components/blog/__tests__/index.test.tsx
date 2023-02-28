@@ -102,7 +102,7 @@ describe('components/blog', () => {
     unmount()
   })
 
-  test('tags', async () => {
+  test('tags', () => {
     const { unmount } = render(<Blog />)
 
     const select = screen.getByRole('combobox')
@@ -111,6 +111,8 @@ describe('components/blog', () => {
 
     const option1 = screen.getAllByText('keyword1')
     fireEvent.click(option1[2])
+
+    screen.debug()
 
     // TODO does not display because of maxTagCount="responsive"
     // const close = screen.getByRole('img', { name: 'close' })

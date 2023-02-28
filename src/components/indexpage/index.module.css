@@ -1,7 +1,7 @@
-@value variables: '@/styles/variables.css';
+@value variables: "@/styles/variables.css";
 @value colorPrimary from variables;
 
-@value breakpoints: '@/styles/breakpoints.css';
+@value breakpoints: "@/styles/breakpoints.css";
 @value tablet from breakpoints;
 
 .index {
@@ -231,6 +231,10 @@
   .menuMobile {
     display: flex !important;
     justify-content: center;
+  }
+
+  .menuButton {
+    width: 100%;
   }
 
   .indexPadding {

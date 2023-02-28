@@ -249,7 +249,6 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       dataIndex: camelNames[index],
       key: camelNames[index]
     }))
-    console.log(title)
     tableColumns.unshift({
       align: 'center',
       title: title || 'Iteration',

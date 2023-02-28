@@ -12,7 +12,7 @@ import Utils from '@/lib/utils'
 
 import PluginAPI from '@/api/plugin'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

@@ -23,7 +23,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

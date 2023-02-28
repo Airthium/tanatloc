@@ -17,7 +17,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

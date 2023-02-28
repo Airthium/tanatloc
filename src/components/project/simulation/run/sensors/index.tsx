@@ -15,7 +15,7 @@ import { IModelSensor } from '@/models/index.d'
 import Sensor from './sensor'
 import List from './list'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

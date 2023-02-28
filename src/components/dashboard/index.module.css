@@ -24,7 +24,7 @@
   border: 1px solid colorPrimary !important;
 }
 
-.menu .version {
+.menu :global(.version) {
   position: absolute !important;
   bottom: 0;
   left: 5px;

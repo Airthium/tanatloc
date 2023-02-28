@@ -236,7 +236,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
   return (
     <Card title="Contact Details">
       <Space direction="horizontal" className={style.information}>
-        <div>
+        <div className={style.avatar}>
           <Avatar
             size={128}
             src={user.avatar && Buffer.from(user.avatar).toString()}
@@ -254,7 +254,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             </Button>
           </Upload>
         </div>
-        <div>
+        <div className={style.form}>
           <Form
             {...layout}
             style={{ maxWidth: 500 }}

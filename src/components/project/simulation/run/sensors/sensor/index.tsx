@@ -41,7 +41,7 @@ import { CancelButton } from '@/components/assets/button'
 import Edit from '../edit'
 import Add from '../add'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

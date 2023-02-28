@@ -18,7 +18,6 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined
 } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import {
   IFrontGeometriesItem,

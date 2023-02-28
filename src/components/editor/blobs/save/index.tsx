@@ -116,6 +116,7 @@ export const _onAdd = (
       index: index + 1,
       title: 'Run',
       ...(modelJSON.configuration?.run ?? {}),
+      //@ts-ignore
       results: [
         ...(modelJSON.configuration?.run?.results || []),
         ...(values.scalarResults?.map((result) => ({ name: result.name })) ||

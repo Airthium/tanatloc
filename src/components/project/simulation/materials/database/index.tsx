@@ -6,7 +6,7 @@ import { DatabaseOutlined } from '@ant-design/icons'
 
 import { IMaterialDatabase, materialDatabase } from '@/config/materials'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

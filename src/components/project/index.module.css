@@ -52,11 +52,15 @@
 
 .menu2 :global(.SubMenu) ul li > div {
   padding-left: 0 !important;
+  background: transparent !important;
+  border: none;
 }
 
 .menu2 :global(.SubMenu) ul li :global(.ant-menu-title-content) > div {
   display: flex;
   justify-content: space-between;
+  background: transparent !important;
+  border: none;
 }
 
 .menu2 :global(.SubMenu) ul li ul li {

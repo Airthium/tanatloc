@@ -1,3 +1,6 @@
+@value variables: '@/styles/variables.css';
+@value colorPrimary from variables;
+
 @value breakpoints: '@/styles/breakpoints.css';
 @value tablet from breakpoints;
 
@@ -179,7 +182,7 @@
   display: none !important;
 }
 
-.steps button.download {
+.steps :global(button.download) {
   height: 40px;
   margin: 5px;
   display: inline-flex;

@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import { IModelInitializationDirectChild } from '@/models/index.d'
 import {
@@ -24,7 +23,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-import { globalStyle, globalStyleFn } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Custom Types
@@ -500,7 +499,8 @@ const Initialization = ({
         </Typography.Text>
         <Space
           direction="vertical"
-          className={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+          className={globalStyle.fullWidth}
+          style={{ marginTop: '10px' }}
         >
           <Select
             className={globalStyle.fullWidth}
@@ -636,10 +636,8 @@ const Initialization = ({
       <Layout.Content>
         <Card size="small">
           <Select
-            className={css([
-              globalStyle.fullWidth,
-              globalStyleFn.marginTop(10)
-            ])}
+            className={globalStyle.fullWidth}
+            style={{ marginTop: '10px' }}
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}

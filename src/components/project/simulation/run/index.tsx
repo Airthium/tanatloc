@@ -36,7 +36,7 @@ import CloudServer from './cloudServer'
 import Log from './log'
 import Results from './results'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

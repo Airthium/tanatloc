@@ -1,4 +1,4 @@
-@value variables: "./variables.css";
+@value variables: "@/styles//variables.css";
 @value colorPrimary from variables;
 
 @value breakpoints: "@/styles/breakpoints.css";

@@ -1,7 +1,6 @@
 /** @module Components.Project.Simulation.About*/
 
 import { Alert, Card, Layout, Space, Spin, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import {
   IFrontProject,
@@ -17,7 +16,7 @@ import Copy from '../copy'
 import Edit from './edit'
 import Delete from '../delete'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -108,7 +107,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
               {simulation.scheme.version}
             </Typography.Text>
 
-            <div className={css([globalStyle.fullWidth, globalStyle.scroll])}>
+            <div className={`${globalStyle.fullWidth} ${globalStyle.scroll}`}>
               <MathJax.Html html={simulation.scheme.description} />
             </div>
           </Space>

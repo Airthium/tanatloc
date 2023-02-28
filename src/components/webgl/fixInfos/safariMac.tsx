@@ -2,7 +2,7 @@
 
 import { Layout, Typography } from 'antd'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Safari Mac

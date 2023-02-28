@@ -1,5 +1,5 @@
-@value variables: '@/styles/variables.css';
-@value colorPrimary from variables;
+@value variables: "@/styles/variables.css";
+@value colorPrimary, colorPrimary22 from variables;
 
 @value breakpoints: "@/styles/breakpoints.css";
 @value tablet from breakpoints;
@@ -59,13 +59,13 @@
 }
 
 .text img {
-  height: '16px';
+  height: 16px;
 }
 
 .tips {
   display: inline-block;
   position: relative;
-  background-color: colorPrimary; /*22*/
+  background-color: colorPrimary22;
   box-shadow: 2px 2px 5px colorPrimary;
   margin-top: 10px;
   padding: 40px 20px 20px 20px;

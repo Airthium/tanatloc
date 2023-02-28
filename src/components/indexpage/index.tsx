@@ -413,7 +413,7 @@ const Index = (): JSX.Element => {
                 </Checkbox>
               </>
             }
-            sideClassName={globalStyle.primaryColor}
+            sideClassName={globalStyle.backgroundPrimary}
             rightClassName={`${style.models} ${style.indexPadding}`}
             leftClassName={style.indexPadding}
             id="features"

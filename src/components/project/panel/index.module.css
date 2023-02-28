@@ -12,7 +12,7 @@
   max-width: 80%;
 }
 
-.panel :global(.ant-card-body) {
+.panel > :global(.ant-card-body) {
   max-height: calc(100vh - 65px);
   overflow: auto;
   padding: 0;

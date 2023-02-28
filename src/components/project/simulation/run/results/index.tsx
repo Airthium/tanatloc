@@ -12,7 +12,7 @@ import { getFilesNumbers, getMultiplicator } from './tools'
 import Download from './download'
 import Archive from './archive'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

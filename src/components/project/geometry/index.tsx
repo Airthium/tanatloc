@@ -24,7 +24,7 @@ import GeometryAPI from '@/api/geometry'
 import Add from './add'
 import Edit from './edit'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props

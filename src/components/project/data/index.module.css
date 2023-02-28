@@ -1,5 +1,5 @@
 @value variables: "@/styles/variables.css";
-@value colorPrimary from variables;
+@value colorPrimary, colorPrimary55 from variables;
 
 .data {
   position: absolute;
@@ -36,9 +36,14 @@
 }
 
 .tableContainer :global(.selected) {
-  background-color: colorPrimary; /* TODO 55 */
+  background-color: colorPrimary55;
 }
 
 .tableContainer :global(.selected) svg {
   color: colorPrimary;
+}
+
+.tableHead {
+  width: 100%;
+  justify-content: space-between;
 }

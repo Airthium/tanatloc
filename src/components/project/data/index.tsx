@@ -129,7 +129,7 @@ const ColumnRender = ({
    * Render
    */
   return (
-    <Space>
+    <Space className={style.tableHead}>
       {name}
       <Checkbox
         data-testid="table-checkbox"
@@ -249,8 +249,10 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
       dataIndex: camelNames[index],
       key: camelNames[index]
     }))
+    console.log(title)
     tableColumns.unshift({
-      title: title,
+      align: 'center',
+      title: title || 'Iteration',
       dataIndex: 'x',
       key: 'x',
       fixed: 'left'
@@ -436,7 +438,9 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
                 pagination={false}
                 dataSource={datas}
                 columns={columns}
-                scroll={{ x: 'calc(60vw)' }}
+                scroll={{
+                  x: ((columns?.length ? +columns.length : 1) - 1) * 200
+                }}
               />
             </div>
 

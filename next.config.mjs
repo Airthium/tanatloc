@@ -27,9 +27,6 @@ const nextConfig = {
   env: {
     SENTRY_DSN: Sentry.DSN
   },
-  compiler: {
-    emotion: true
-  },
   basePath
 }
 

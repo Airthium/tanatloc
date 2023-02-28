@@ -97,7 +97,7 @@ const Post = () => {
             \\begin{align}
               \\rho C_p \\frac{\\partial T}{\\partial t} - \\lambda\\Delta T &= 0&\\text{on }\\Omega\\\\
               T &= T_D&\\text{on }\\Gamma_D\\\\
-              -\\lambda\\frac{\\partial T}{\\partial n} &= g_N&\\text{on }\\Gamma_N
+              \\lambda\\frac{\\partial T}{\\partial n} &= \\Phi_d&\\text{on }\\Gamma_N
             \\end{align}
           `}
           />
@@ -105,7 +105,7 @@ const Post = () => {
           <MathJax.Inline text={'C_{p}'} /> the heat capacity,{' '}
           <MathJax.Inline text={'\\lambda'} /> the thermal conductivity,{' '}
           <MathJax.Inline text={'T_{D}'} /> an imposed temperature and{' '}
-          <MathJax.Inline text={'g_N'} /> an imposed heat flux.
+          <MathJax.Inline text={'\\Phi_d'} /> an imposed heat flux.
         </p>
       </section>
       <section>
@@ -144,7 +144,7 @@ const Post = () => {
               &T = sin(\\frac{\\pi}{2}x)&\\text{on }AB\\\\
               &T = sin(\\frac{\\pi}{2}x)e^{\\frac{\\pi}{2}}&\\text{on }CD\\\\
               &T = 0&\\text{on }DA\\\\
-              -&\\lambda\\frac{\\partial T}{\\partial n} = 0&\\text{on } BC
+              &\\lambda\\frac{\\partial T}{\\partial n} = 0&\\text{on } BC
             \\end{align}
           `}
           />

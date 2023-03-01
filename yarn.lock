@@ -5,10 +5,10 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@airthium/extract-json-from-string@npm:1.0.1":
-  version: 1.0.1
-  resolution: "@airthium/extract-json-from-string@npm:1.0.1"
-  checksum: b7f627a6dd90257bdcb76e5d30626d4a8cc74b2d79b41518693e4645d1cd0ff8415ce5a70cdc5aa6ea20a9ec4a700a5ef44428f2cf116da506fcbf8900e7e04d
+"@airthium/extract-json-from-string@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@airthium/extract-json-from-string@npm:1.0.2"
+  checksum: 7bf73b058c0d1f6bb4671a357e72c7d4c80eb984e608eeb06394bd0fb50ace19a9e1012fedf6d80d6bfa851a3a289e3fa8f4333b00201d886a1df02b8f78487f
   languageName: node
   linkType: hard
 
@@ -10145,7 +10145,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
-    "@airthium/extract-json-from-string": 1.0.1
+    "@airthium/extract-json-from-string": 1.0.2
     "@airthium/pg-format": 2.0.6
     "@airthium/typedoc-plugin-airthium": 1.0.20
     "@ant-design/icons": 5.0.1

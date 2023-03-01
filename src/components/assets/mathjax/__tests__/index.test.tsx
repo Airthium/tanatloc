@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
 import MathJax from '..'
 
@@ -7,7 +7,12 @@ jest.mock('@/lib/mathjax', () => ({
   mathjaxRefresh: jest.fn
 }))
 
-jest.mock('html-react-parser', () => (html) => 'parsed ' + html)
+jest.mock(
+  'html-react-parser',
+  () =>
+    (html: string): string =>
+      'parsed ' + html
+)
 
 describe('components/assets/mathjax', () => {
   test('Head', () => {
@@ -66,10 +71,10 @@ describe('components/assets/mathjax', () => {
     unmount()
   })
 
-  test('Html', () => {
+  test('Html', async () => {
     const { unmount } = render(<MathJax.Html html={'html'} />)
 
-    screen.getByText('parsed html')
+    await waitFor(() => screen.getByText('parsed html'))
 
     unmount()
   })

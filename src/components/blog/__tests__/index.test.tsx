@@ -2,6 +2,28 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Blog from '..'
 
+let tag: JSX.Element
+jest.mock('antd', () => {
+  const actual = jest.requireActual('antd')
+  return {
+    ...actual,
+    Select: (props: any) => (
+      <div
+        role="Select"
+        onClick={() => props.onChange(['keyword'])}
+        onMouseEnter={() =>
+          (tag = props.tagRender({
+            label: 'Tag',
+            value: 'tag',
+            closable: false,
+            onClose: jest.fn
+          }))
+        }
+      />
+    )
+  }
+})
+
 const mockPush = jest.fn()
 const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
@@ -105,18 +127,11 @@ describe('components/blog', () => {
   test('tags', () => {
     const { unmount } = render(<Blog />)
 
-    const select = screen.getByRole('combobox')
+    const select = screen.getByRole('Select')
+    fireEvent.click(select)
+    fireEvent.mouseEnter(select)
 
-    fireEvent.mouseDown(select)
-
-    const option1 = screen.getAllByText('keyword1')
-    fireEvent.click(option1[2])
-
-    screen.debug()
-
-    // TODO does not display because of maxTagCount="responsive"
-    // const close = screen.getByRole('img', { name: 'close' })
-    // fireEvent.click(close)
+    tag.props.onMouseDown({ preventDefault: jest.fn, stopPropagation: jest.fn })
 
     unmount()
   })

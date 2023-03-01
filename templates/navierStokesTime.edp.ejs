@@ -78,7 +78,8 @@ if (dimension === 2) {
 }), 1) -%>
 
 <%# Problem -%>
-<% 
+<%
+const symmetric = parameters.symmetric.children[0].value ?? parameters.symmetric.children[0].default
 const wall = boundaryConditions.wall.values || []
 const freeOutlet = boundaryConditions.freeOutlet.values || []
 const dirichlet = boundaryConditions.dirichlet.values || []
@@ -96,6 +97,17 @@ const rhsZ = rhs[2].value ?? rhs[2].default
 		= intN(Mesh)(
 			Rhodt * <%= U -%>' * <%= Uh %>
 			+ Mu * (Grad(U) : Grad(Uh))
+<% if (symmetric) { -%>
+			+ (Mu/4.) * (
+				  (grad(Ux) + grad(Ux)')' * (grad(Uhx) + grad(Uhx)')
+				+ (grad(Uy) + grad(Uy)')' * (grad(Uhy) + grad(Uhy)')
+<% if (dimension !== 2) { -%>
+				+ (grad(Uz) + grad(Uz)')' * (grad(Uhz) + grad(Uhz)')
+<% } -%>
+				)
+<% } else { -%>
+			+ Mu * (Grad(U) : Grad(Uh))
+<% } -%>
 			- p * Div(Uh)
 			- Div(U) * ph
 		)

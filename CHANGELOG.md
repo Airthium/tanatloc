@@ -15,6 +15,7 @@
   - :beetle: Fix simulation selector
 - Algorithm:
   - :arrow_up: Stokes symmetric
+  - :arrow_up: Navier-Stokes time symmetric
   - :arrow_up: Contact
 
 ---

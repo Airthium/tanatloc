@@ -153,6 +153,17 @@ const NavierStokesTime: IModel = {
             default: 'MUMPS'
           }
         ]
+      },
+      symmetric: {
+        advanced: true,
+        label: 'Symmetric formulation',
+        children: [
+          {
+            label: 'Enabled',
+            htmlEntity: 'checkbox',
+            default: false
+          }
+        ]
       }
     },
     initialization: {

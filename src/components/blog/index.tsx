@@ -198,7 +198,6 @@ const Blog = () => {
   }, [])
 
   // Posts
-  console.log(sort)
   Posts.sort(
     (a, b) => sort * (new Date(a.date).getTime() - new Date(b.date).getTime())
   )

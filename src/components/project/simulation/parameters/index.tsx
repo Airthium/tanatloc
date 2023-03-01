@@ -498,11 +498,13 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       <Layout.Content>
         <Space direction="vertical">
           {parameters}
-          <Collapse>
-            <Collapse.Panel key="advanced" header="Advanced">
-              <Space direction="vertical">{advanced}</Space>
-            </Collapse.Panel>
-          </Collapse>
+          {advanced.length ? (
+            <Collapse>
+              <Collapse.Panel key="advanced" header="Advanced">
+                <Space direction="vertical">{advanced}</Space>
+              </Collapse.Panel>
+            </Collapse>
+          ) : null}
         </Space>
       </Layout.Content>
     </Layout>

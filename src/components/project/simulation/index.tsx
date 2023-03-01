@@ -263,8 +263,8 @@ const Selector = ({
       onCancel={onCancel}
       width="80%"
     >
-      <Layout>
-        <Layout.Sider theme="light" width={300}>
+      <Layout className={style.selectorContent}>
+        <Layout.Sider theme="light" width={300} className={style.selectorSider}>
           <Tabs
             items={[
               {
@@ -284,6 +284,7 @@ const Selector = ({
                 children: (
                   <Menu
                     mode="inline"
+                    className={style.selectorMenu}
                     items={userMenuItems}
                     onSelect={onUserSelect}
                   />

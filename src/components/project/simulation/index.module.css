@@ -1,6 +1,13 @@
+.selectorContent {
+  height: 70vh !important;
+}
+
+.selectorSider {
+  overflow: auto;
+}
+
 .selector {
   padding: 20px;
-  height: 60vh;
   overflow: auto;
 }
 

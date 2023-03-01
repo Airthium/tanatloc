@@ -12,6 +12,7 @@
   - :beetle: Fix blog posts order
   - :beetle: Remove @emotion/react
   - :arrow_up: Improve ColorbarHelper
+  - :beetle: Fix simulation selector
 - Algorithm:
   - :arrow_up: Stokes symmetric
   - :arrow_up: Contact

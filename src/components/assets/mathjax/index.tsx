@@ -5,6 +5,7 @@ import Script from 'next/script'
 import parse from 'html-react-parser'
 
 import { mathjaxRefresh } from '@/lib/mathjax'
+import { Spin } from 'antd'
 
 /**
  * Head
@@ -109,14 +110,23 @@ export interface IPropsHtml {
 const Html = ({ html }: IPropsHtml): JSX.Element => {
   // State
   const [content, setContent] = useState<string | JSX.Element | JSX.Element[]>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Ref
   const element = useRef<HTMLDivElement>(null)
 
   // Update text
   useEffect(() => {
-    if (!html) setContent('')
-    else setContent(parse(html))
+    setContent('')
+
+    if (html) {
+      setContent('')
+      setLoading(true)
+      setTimeout(() => {
+        setContent(parse(html))
+        setLoading(false)
+      }, 100)
+    }
 
     mathjaxRefresh()
   }, [html])
@@ -133,6 +143,7 @@ const Html = ({ html }: IPropsHtml): JSX.Element => {
   /**
    * Render
    */
+  if (loading) return <Spin />
   return <div ref={element}>{content}</div>
 }
 

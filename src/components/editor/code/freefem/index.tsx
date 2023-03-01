@@ -7,6 +7,7 @@ import './mode/mode-freefem-ejs'
 import data from '../../doc/documentation.json'
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
+import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
 
 /**
  * FreeFEM code
@@ -128,6 +129,42 @@ const FreeFEMCode = (): JSX.Element => {
     editor.editor.on('mousemove', onMouseMove)
   }, [onMouseMove])
 
+  useEffect(() => {
+    const completer = {
+      getCompletions: function (
+        _editor: any,
+        _session: any,
+        _pos: any,
+        _prefix: any,
+        callback: any
+      ) {
+        let completions = [
+          {
+            caption: 'snippet',
+            snippet: `This is a react snippet`,
+            type: 'snippet'
+          },
+          {
+            caption: 'demo',
+            snippet: `This is Another Snippet`,
+            type: 'snippet'
+          }
+        ]
+
+        completions.forEach((i) => {
+          completions.push({
+            caption: i.caption,
+            snippet: i.snippet,
+            type: i.type
+          })
+        })
+        callback(null, completions)
+      }
+    }
+
+    setCompleters([completer])
+  }, [])
+
   /**
    * Render
    */
@@ -147,6 +184,9 @@ const FreeFEMCode = (): JSX.Element => {
         onCursorChange={onCursorChange}
         onChange={onChange}
         showPrintMargin={false}
+        enableSnippets={true}
+        enableBasicAutocompletion={true}
+        enableLiveAutocompletion={true}
       />
 
       {tooltipInfos.display && <CustomTooltip tooltipInfos={tooltipInfos} />}

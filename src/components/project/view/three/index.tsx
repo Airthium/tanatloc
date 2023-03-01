@@ -318,30 +318,38 @@ const _computeColors = (
   // Colorbar
   for (const child of scene.children) {
     if (child.type === 'Part' && child.userData.type === 'result') {
-      const mesh = child.children[0] as Mesh
-      colorbarHelper.addLUT(mesh.userData.lut)
-      colorbarHelper.setVisible(true)
+      child.traverse((subChild) => {
+        if (subChild.type === 'Mesh' || subChild.type === 'Line') {
+          const mesh = subChild as Mesh
+          colorbarHelper.addLUT(mesh.userData.lut)
+          colorbarHelper.setVisible(true)
+        }
+      })
     }
   }
 
   // Colors
   for (const child of scene.children) {
     if (child.type === 'Part' && child.userData.type === 'result') {
-      const mesh = child.children[0] as Mesh
+      child.traverse((subChild) => {
+        if (subChild.type === 'Mesh' || subChild.type === 'Line') {
+          const mesh = subChild as Mesh
 
-      const data = mesh.geometry.getAttribute('data') as BufferAttribute
-      const vertexColors = new Float32Array(data.count * 3)
-      for (let i = 0; i < data.count; i++) {
-        const vertexColor = colorbarHelper.getColor(data.array[i])
+          const data = mesh.geometry.getAttribute('data') as BufferAttribute
+          const vertexColors = new Float32Array(data.count * 3)
+          for (let i = 0; i < data.count; i++) {
+            const vertexColor = colorbarHelper.getColor(data.array[i])
 
-        vertexColors[3 * i + 0] = vertexColor.r
-        vertexColors[3 * i + 1] = vertexColor.g
-        vertexColors[3 * i + 2] = vertexColor.b
-      }
-      mesh.geometry.setAttribute(
-        'color',
-        new Float32BufferAttribute(vertexColors, 3)
-      )
+            vertexColors[3 * i + 0] = vertexColor.r
+            vertexColors[3 * i + 1] = vertexColor.g
+            vertexColors[3 * i + 2] = vertexColor.b
+          }
+          mesh.geometry.setAttribute(
+            'color',
+            new Float32BufferAttribute(vertexColors, 3)
+          )
+        }
+      })
     }
   }
 }
@@ -1124,7 +1132,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
         <Divider style={{ margin: 0 }} />
 
         {!sectionView && (
-          <Tooltip title="Section view">
+          <Tooltip title="Section view" placement="left">
             <Button icon={<ScissorOutlined />} onClick={toggleSectionView} />
           </Tooltip>
         )}
@@ -1169,7 +1177,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           <>
             <Divider className="no-margin" />
 
-            <Tooltip title="Display result mesh" placement="right">
+            <Tooltip title="Display result mesh" placement="left">
               <Switch
                 checked={displayMesh}
                 checkedChildren={<TableOutlined />}
@@ -1178,7 +1186,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
               />
             </Tooltip>
 
-            <Tooltip title="Colormap" placement="right">
+            <Tooltip title="Colormap" placement="left">
               <Dropdown
                 placement="bottom"
                 menu={{
@@ -1207,14 +1215,14 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
               </Dropdown>
             </Tooltip>
 
-            <Tooltip title="Custom range">
+            <Tooltip title="Custom range" placement="left">
               <Button
                 icon={<ColumnWidthOutlined />}
                 onClick={openCustomRange}
               />
             </Tooltip>
 
-            <Tooltip title="Automatic range">
+            <Tooltip title="Automatic range" placement="left">
               <Button icon={<ArrowsAltOutlined />} onClick={onAutomaticRange} />
             </Tooltip>
           </>

@@ -169,28 +169,107 @@ const Post = () => {
           items={[
             {
               key: 'MeshGeometry',
-              src: '/blog/6-thermalExpansion/meshCube.jpg',
+              src: '/blog/6-thermalExpansion/Validation1MeshCube.jpg',
               caption: 'Geometry and Mesh'
             },
             {
               key: 'temperature',
-              src: '/blog/6-thermalExpansion/temperature.jpg',
+              src: '/blog/6-thermalExpansion/Validation1Temperature.jpg',
               caption: 'Temperature'
             },
             {
               key: 'stress11',
-              src: '/blog/6-thermalExpansion/sigma11.jpg',
+              src: '/blog/6-thermalExpansion/Validation1Sigma11.jpg',
               caption: 'Sigma11'
             },
             {
               key: 'stress22',
-              src: '/blog/6-thermalExpansion/sigma22.jpg',
+              src: '/blog/6-thermalExpansion/Validation1Sigma22.jpg',
               caption: 'Sigma22'
             },
             {
               key: 'stress33',
-              src: '/blog/6-thermalExpansion/sigma33.jpg',
+              src: '/blog/6-thermalExpansion/Validation1Sigma33.jpg',
               caption: 'Sigma33'
+            }
+          ]}
+        />
+      </section>
+
+      <section>
+        <Typography.Title level={3}>
+          Validation test: cube free to expand
+        </Typography.Title>
+
+        <Typography.Title level={4}>Problem</Typography.Title>
+        <p>
+          In this example we consider an elastic cube{' '}
+          <MathJax.Inline
+            text={
+              '[0 \\, m \\, , 1 \\, m]\\times[0 \\, m \\, , 1 \\, m]\\times[0 \\, m \\, , 1 \\, m]'
+            }
+          />{' '}
+          with Young&apos;s modulus <MathJax.Inline text={'E=2.1e11 \\, Pa'} />{' '}
+          and Poisson&apos;s ratio <MathJax.Inline text={'\\nu= 0.3'} />. The
+          plan <MathJax.Inline text={'\\{ z=0 \\}'} /> of the cube is fixed in
+          the direction <MathJax.Inline text={'z'} />, the plan{' '}
+          <MathJax.Inline text={'\\{ x=0 \\}'} /> of the cube is fixed in the
+          direction <MathJax.Inline text={'x'} /> and finally the plan{' '}
+          <MathJax.Inline text={'\\{ y=0 \\}'} /> of the cube is fixed in the
+          direction <MathJax.Inline text={'y'} />. The initial temperature is
+          equal to <MathJax.Inline text={'T_{0}= 293.15\\, K'} />, the
+          coefficient of the linear thermal expansion is equal to{' '}
+          <MathJax.Inline text={'\\alpha=10^{-5} \\, K^{-1} '} /> and the
+          thermal conductivity is equal to{' '}
+          <MathJax.Inline text={'\\lambda=1 \\, W.m^{-1}.K^{-1}'} />.
+        </p>
+        <p>
+          We impose a temperature of <MathJax.Inline text={'T= 493.15\\, K'} />{' '}
+          on a face of the cube, so the temperature is constant in the cube and
+          is equal to <MathJax.Inline text={'T= 493.15\\, K'} />. As the cube is
+          free to expand, the mechanical strain tensor is zero{' '}
+          <MathJax.Inline text={'\\epsilon_{m}= 0'} /> and the stress tensor is
+          zero <MathJax.Inline text={'\\sigma= 0'} />, in addition
+          <MathJax.Formula
+            text={`         
+            \\epsilon=  \\epsilon^{th} = \\alpha (T-T_{0}) I = 0.002
+          `}
+          />
+          Therefore the maximum of the displacement field in the directions{' '}
+          <MathJax.Inline text={'x'} />, <MathJax.Inline text={'y'} /> and{' '}
+          <MathJax.Inline text={'z'} /> is{' '}
+          <MathJax.Inline text={'u_{x}^{max}=u_{y}^{max}=u_{z}^{max}=0.002'} />.
+        </p>
+      </section>
+      <section>
+        <Typography.Title level={4}>Simulation and Results</Typography.Title>
+        <p>
+          Using Tanatloc, we create our geometry with the corresponding mesh
+          (see Figures below) and we use P1 linear finite elements. We can also
+          see in the Figures below that we obtain the theoretical results,
+          independently of the used mesh.
+        </p>
+        <Carousel
+          items={[
+            {
+              key: 'MeshGeometry',
+              src: '/blog/6-thermalExpansion/Validation2MeshCube.jpg',
+              caption: 'Geometry and Mesh'
+            },
+            {
+              key: 'displacementx',
+              src: '/blog/6-thermalExpansion/Validation2DisplX.jpg',
+              caption: 'Displacement Ux'
+            },
+            {
+              key: 'displacementy',
+              src: '/blog/6-thermalExpansion/Validation2DisplY.jpg',
+              caption: 'Displacement Uy'
+            },
+            {
+              key: 'displacementz',
+              src: '/blog/6-thermalExpansion/Validation2DisplZ.jpg',
+              caption: 'Displacement Uz'
             }
           ]}
         />

@@ -4,6 +4,7 @@
   - :arrow_up: Update dependencies
   - :beetle: Fix public template
   - :beetle: Gmsh template fix
+  - :arrow_up: @airthium/extract-json-from-string
 - Client:
   - :arrow_up: Responsive blog & doc
   - :arrow_up: Blog articles (houssamh)

@@ -5,6 +5,13 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@airthium/extract-json-from-string@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@airthium/extract-json-from-string@npm:1.0.1"
+  checksum: b7f627a6dd90257bdcb76e5d30626d4a8cc74b2d79b41518693e4645d1cd0ff8415ce5a70cdc5aa6ea20a9ec4a700a5ef44428f2cf116da506fcbf8900e7e04d
+  languageName: node
+  linkType: hard
+
 "@airthium/pg-format@npm:2.0.6":
   version: 2.0.6
   resolution: "@airthium/pg-format@npm:2.0.6"
@@ -39,8 +46,8 @@ __metadata:
   linkType: hard
 
 "@ant-design/cssinjs@npm:^1.5.6":
-  version: 1.6.0
-  resolution: "@ant-design/cssinjs@npm:1.6.0"
+  version: 1.6.1
+  resolution: "@ant-design/cssinjs@npm:1.6.1"
   dependencies:
     "@babel/runtime": ^7.11.1
     "@emotion/hash": ^0.8.0
@@ -52,7 +59,7 @@ __metadata:
   peerDependencies:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: b61ec27d83118932829099d3078c65e3215ef7c5cb32e8feea316ea26bb5cc9797aeacb790473b59ee3bbdf586283541c59b91a6c061b654e9d147c3a8a24d11
+  checksum: 0e702668610ca8a0b35725f14403cc3482bfc5a1ff9c39c57732625ea828d5071551860cd6ad00ca5a1e36e1c5f158426602f38c443c9945a9590194c9cd882a
   languageName: node
   linkType: hard
 
@@ -3949,9 +3956,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.284":
-  version: 1.4.313
-  resolution: "electron-to-chromium@npm:1.4.313"
-  checksum: 694c379e0800e55e3e2966f73557bfc3bad66e1eb120928d33e8f0619b59ec057eb94ecb27a06e6f7ea1892565f6b8a87b03129a8243baa0d1ccea9579040a83
+  version: 1.4.314
+  resolution: "electron-to-chromium@npm:1.4.314"
+  checksum: c6d0c7158e663e5a3ea90c2adeb242b182d8c9c453a530158e3c10292c8507615e469c680771f6fab0166e59afc146546e4bfd8fec952a8c26c315ddcedf0b21
   languageName: node
   linkType: hard
 
@@ -4656,13 +4663,6 @@ __metadata:
   version: 3.0.2
   resolution: "extend@npm:3.0.2"
   checksum: a50a8309ca65ea5d426382ff09f33586527882cf532931cb08ca786ea3146c0553310bda688710ff61d7668eba9f96b923fe1420cdf56a2c3eaf30fcab87b515
-  languageName: node
-  linkType: hard
-
-"extract-json-from-string@npm:1.0.1":
-  version: 1.0.1
-  resolution: "extract-json-from-string@npm:1.0.1"
-  checksum: be985ef7bdbd24fec5c975ef200b311aa1281219eb4ee6831f71c30953cb1a831473a8e2b987d58595e9848f013f5528b3dc6887056f7c829a32c485515affc5
   languageName: node
   linkType: hard
 
@@ -6948,9 +6948,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^7.7.1":
-  version: 7.17.0
-  resolution: "lru-cache@npm:7.17.0"
-  checksum: 28c2a98ad313b8d61beac1f08257b6f0ca990e39d24a9bc831030b6e209447cfb11c6d9d1a774282189bfc9609d1dfd17ebe485228dd68f7b96b6b9b7740894e
+  version: 7.18.1
+  resolution: "lru-cache@npm:7.18.1"
+  checksum: ab0ec1360c552f1ffa54b1eaf0026126c5116a07bee156b92d1e971f4c8c88e9160f0fad4ab6fed4e0fdea84f25a4590ece085bc57ed9ab1d90b17f0b138c556
   languageName: node
   linkType: hard
 
@@ -7181,11 +7181,11 @@ __metadata:
   linkType: hard
 
 "minimatch@npm:^7.1.3":
-  version: 7.3.0
-  resolution: "minimatch@npm:7.3.0"
+  version: 7.4.1
+  resolution: "minimatch@npm:7.4.1"
   dependencies:
     brace-expansion: ^2.0.1
-  checksum: c4d9af992958339d5fc593c9ce496f4b9615597e57cdd663e57bd3a745ebd208c2bba19c3290c25ed8dcf259586fa1f68e4e1acf304f8694927b84c5381167d0
+  checksum: fd930530878ba08e5a57eacc0e69fbc980d4c1dfeb98c6c5eba3a05a10b1f6d8dd4ecca59442a1909107b7ef891b43c005720c1a8ed1a02db962fd0327bf9557
   languageName: node
   linkType: hard
 
@@ -10145,6 +10145,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
+    "@airthium/extract-json-from-string": 1.0.1
     "@airthium/pg-format": 2.0.6
     "@airthium/typedoc-plugin-airthium": 1.0.20
     "@ant-design/icons": 5.0.1
@@ -10187,7 +10188,6 @@ __metadata:
     eslint: 8.35.0
     eslint-config-next: 13.2.1
     express: 4.18.2
-    extract-json-from-string: 1.0.1
     form-data: 4.0.0
     html-react-parser: 3.0.9
     https-proxy-agent: 5.0.1

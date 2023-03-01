@@ -5,7 +5,9 @@ jest.mock('path', () => ({
   join: (_: string, path: string) => mockPath(path)
 }))
 
-jest.mock('extract-json-from-string', () => (str: string) => [JSON.parse(str)])
+jest.mock('@airthium/extract-json-from-string', () => (str: string) => [
+  JSON.parse(str)
+])
 
 jest.mock('@/config/storage', () => ({
   GEOMETRY: 'geometry'

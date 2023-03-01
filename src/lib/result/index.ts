@@ -3,7 +3,7 @@
 import path from 'path'
 import archiver from 'archiver'
 import { ReadStream } from 'fs'
-import extractJson from 'extract-json-from-string'
+import extractJson from '@airthium/extract-json-from-string'
 
 import { SIMULATION } from '@/config/storage'
 

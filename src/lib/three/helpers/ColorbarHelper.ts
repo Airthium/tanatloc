@@ -194,6 +194,10 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   }
 
   const dispose = () => {
+    if (!customRange) {
+      lut.setMin(Number.MAX_VALUE)
+      lut.setMax(-Number.MAX_VALUE)
+    }
     clearScene()
   }
 

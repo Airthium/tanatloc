@@ -8,7 +8,7 @@ import data from '../../doc/documentation.json'
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
 import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
-
+import allSnippets from "./snippets/snippets.json"
 /**
  * FreeFEM code
  */
@@ -138,27 +138,7 @@ const FreeFEMCode = (): JSX.Element => {
         _prefix: any,
         callback: any
       ) {
-        let completions = [
-          {
-            caption: 'snippet',
-            snippet: `This is a react snippet`,
-            type: 'snippet'
-          },
-          {
-            caption: 'demo',
-            snippet: `This is Another Snippet`,
-            type: 'snippet'
-          }
-        ]
-
-        completions.forEach((i) => {
-          completions.push({
-            caption: i.caption,
-            snippet: i.snippet,
-            type: i.type
-          })
-        })
-        callback(null, completions)
+        callback(null, allSnippets)
       }
     }
 

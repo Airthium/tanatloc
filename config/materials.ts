@@ -50,7 +50,7 @@ export const availableSymbols: IMaterialDatabaseSymbol[] = [
   {
     label: 'Dynamic viscosity',
     symbol: 'Mu',
-    unit: '\\(Pa.s^{-1}\\)'
+    unit: '\\(Pa.s\\)'
   }
 ]
 

@@ -8,8 +8,8 @@ import { css } from '@emotion/react'
 
 import UserAPI from '@/api/user'
 
-import { globalStyle } from '@/styles'
-import style, { mediaQuery } from '../index.style'
+import { globalStyle, mediaQuery } from '@/styles'
+import style from '../index.style'
 import { useCallback, useMemo } from 'react'
 
 /**
@@ -64,6 +64,22 @@ const IndexMenu = () => {
    */
   const scrollToDevelopers = useCallback(
     () => window.open('https://github.com/Airthium', '_blank', 'noopener'),
+    []
+  )
+
+  /**
+   * Scroll to blog
+   */
+  const scrollToBlog = useCallback(
+    () => window.open('/blog', '_blank', 'noopener'),
+    []
+  )
+
+  /**
+   * Scroll to doc
+   */
+  const scrollToDoc = useCallback(
+    () => window.open('/doc', '_blank', 'noopener'),
     []
   )
 
@@ -151,6 +167,22 @@ const IndexMenu = () => {
           )
         },
         {
+          key: 'doc',
+          label: (
+            <Button type="text" onClick={scrollToDoc}>
+              Doc
+            </Button>
+          )
+        },
+        {
+          key: 'blog',
+          label: (
+            <Button type="text" onClick={scrollToBlog}>
+              Blog
+            </Button>
+          )
+        },
+        {
           key: 'developers',
           label: (
             <Button type="text" onClick={scrollToDevelopers}>
@@ -178,6 +210,8 @@ const IndexMenu = () => {
       scrollToFeatures,
       scrollToCaseStudy,
       scrollToAboutUs,
+      scrollToDoc,
+      scrollToBlog,
       scrollToDevelopers
     ]
   )

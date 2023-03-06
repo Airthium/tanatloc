@@ -1,7 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react'
-import { variables } from '@/styles'
 
-export const mediaQuery = `@media all and (max-width: 1100px)`
+import { mediaQuery, variables } from '@/styles'
 
 const style: { [key: string]: SerializedStyles } = {
   index: css({
@@ -192,7 +191,7 @@ const style: { [key: string]: SerializedStyles } = {
   steps: css({
     margin: 'auto',
     display: 'grid !important',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr',
     gridTemplateRows: '1fr 1fr',
     rowGap: '25px',
     columnGap: '25px',

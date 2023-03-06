@@ -33,7 +33,6 @@ import {
   PointLight,
   Scene,
   Sphere,
-  Vector2,
   Vector3,
   WebGLRenderer
 } from 'three'
@@ -48,9 +47,6 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
 import { AxisHelper } from '@/lib/three/helpers/AxisHelper'
@@ -398,8 +394,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   const scene = useRef<Scene & { boundingBox: Box3; boundingSphere: Sphere }>()
   const camera = useRef<PerspectiveCamera>()
   const renderer = useRef<WebGLRenderer>()
-  const outlinePass = useRef<OutlinePass>()
-  const effectComposer = useRef<EffectComposer>()
   const controls = useRef<TrackballControls>()
   const gridHelper = useRef<IGridHelper>()
   const selectionHelper = useRef<ISelectionHelper>()
@@ -475,23 +469,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     renderer.current.autoClear = false
     currentMount.appendChild(renderer.current.domElement)
 
-    // Render pass
-    const renderPass = new RenderPass(scene.current, camera.current)
-
-    // Outline pass
-    outlinePass.current = new OutlinePass(
-      new Vector2(width, height),
-      scene.current,
-      camera.current
-    )
-    outlinePass.current.visibleEdgeColor.set('#FAD114')
-    outlinePass.current.hiddenEdgeColor.set('#FAD114')
-
-    // Effect composer
-    effectComposer.current = new EffectComposer(renderer.current)
-    effectComposer.current.addPass(renderPass)
-    effectComposer.current.addPass(outlinePass.current)
-
     // Controls
     controls.current = new TrackballControls(camera.current, currentMount)
     controls.current.rotateSpeed = 3
@@ -561,8 +538,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
 
       gridHelper.current!.update()
 
-      effectComposer.current!.render()
-
       axisHelper.render()
 
       navigationHelper.render()
@@ -580,8 +555,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
       camera.current!.updateProjectionMatrix()
 
       renderer.current!.setSize(width, height)
-
-      effectComposer.current!.setSize(width, height)
 
       axisHelper.resize({
         newOffsetWidth: width - 155,
@@ -750,7 +723,6 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           partChild.startSelection(
             renderer.current!,
             camera.current!,
-            outlinePass.current!,
             selectType!
           )
         else {

@@ -1,6 +1,5 @@
 import { TGeometrySummary } from '@/database/geometry/get'
 import { PerspectiveCamera, Plane, WebGLRenderer } from 'three'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { PartLoader } from '../PartLoader'
 
 jest.mock('three/examples/jsm/math/Lut', () => ({
@@ -139,7 +138,6 @@ describe('lib/three/loaders/PartLoader', () => {
     jest.fn as WebGLRenderer['domElement']['removeEventListener']
   renderer.getSize = (vector) => vector
   const camera = {} as PerspectiveCamera
-  const outlinePass = {} as OutlinePass
   const mouseMoveEvent = jest.fn()
   const mouseDownEvent = jest.fn()
 
@@ -164,7 +162,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
 
     // Empty
     //@ts-ignore
@@ -196,7 +194,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'edges')
+    mesh.startSelection(renderer, camera, 'edges')
 
     // Empty
     //@ts-ignore

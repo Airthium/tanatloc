@@ -80,17 +80,13 @@ globalMaxSize = globalSize;
 // End global size
 
 // Physical labels for each surfaces & curves
-SLabel = 1;
-CLabel = 1;
 For i In {0:#S[]-1}
-	Physical Surface (SLabel) = { S[i] };
-	SLabel = SLabel + 1;
+	Physical Surface (S[i]) = { S[i] };
 
 	C() = Boundary { Surface{S[i]}; };
 
 	For j In {0:#C[]-1}
-		Physical Curve (CLabel) = { C[j] };
-		CLabel = CLabel + 1;
+		Physical Curve (C[j]) = { C[j] };
 	EndFor
 
 	P() = PointsOf { Surface{S[i]}; };

@@ -240,7 +240,7 @@ const computeMesh = async (
   // Task
   const meshingTask: ISimulationTask = {
     index: tasks.length,
-    label: 'Mesh',
+    label: 'Mesh (' + configuration.geometry.data?.name + ')',
     status: 'wait',
     pid: undefined,
     file: undefined,

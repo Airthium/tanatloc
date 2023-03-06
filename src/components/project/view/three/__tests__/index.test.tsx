@@ -46,29 +46,6 @@ jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
   }))
 }))
 
-jest.mock('three/examples/jsm/postprocessing/RenderPass', () => ({
-  RenderPass: class MockRenderPass {}
-}))
-
-jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
-  OutlinePass: jest.fn().mockImplementation(() => ({
-    visibleEdgeColor: {
-      set: jest.fn()
-    },
-    hiddenEdgeColor: {
-      set: jest.fn()
-    }
-  }))
-}))
-
-jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
-  EffectComposer: jest.fn().mockImplementation(() => ({
-    addPass: jest.fn(),
-    render: jest.fn(),
-    setSize: jest.fn()
-  }))
-}))
-
 const mockWebGLAvailable = jest.fn()
 jest.mock('three/examples/jsm/capabilities/WebGL', () => ({
   isWebGLAvailable: () => mockWebGLAvailable()

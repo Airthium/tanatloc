@@ -1,0 +1,72 @@
+// 3D
+// P1 functions on reference triangle
+// Ac=[x0,x1,x2] in order to construct the P1 functions, x0 is the first vertices of the triangle, x1 the second, x3 the third
+// t1 \in [0,1]
+// t2 \in [0,1]
+// Ac of dimension 3*3
+// x(t) = x0*phi1(t) + x1*phi2(t) + x3*phi3, phi1,phi2,phi3 are the P1 shape functions on the triangle
+
+func real[int] P1fun(real[int] & Ac, real & tt1, real & tt2) {
+  real resx, resy, resz;
+  real[int] Res(3);
+  real phi1 = 1 - tt1 - tt2;
+  real phi2 = tt1;
+  real phi3 = tt2;
+
+  resx = phi1 * Ac[0] + phi2 * Ac[3] + phi3 * Ac[6];
+  resy = phi1 * Ac[1] + phi2 * Ac[4] + phi3 * Ac[7];
+  resz = phi1 * Ac[2] + phi2 * Ac[5] + phi3 * Ac[8];
+
+  Res[0] = resx; // The abscissa
+  Res[1] = resy; // The ordinate
+  Res[2] = resz; // The Height
+
+  return Res;
+}
+
+// Derivative
+func real[int] dP1funx(real[int] & Ac, real & tt1, real & tt2) {
+  real resx, resy, resz;
+  real[int] Res(3);
+  real dphi1 = -1.;
+  real dphi2 = 1.;
+  real dphi3 = 0.;
+
+  resx = dphi1 * Ac[0] + dphi2 * Ac[3] + dphi3 * Ac[6];
+  resy = dphi1 * Ac[1] + dphi2 * Ac[4] + dphi3 * Ac[7];
+  resz = dphi1 * Ac[2] + dphi2 * Ac[5] + dphi3 * Ac[8];
+
+  Res[0] = resx; // The abscissa
+  Res[1] = resy; // The ordinate
+  Res[2] = resz; // The Height
+
+  return Res;
+}
+
+func real[int] dP1funy(real[int] & Ac, real & tt1, real & tt2) {
+  real resx, resy, resz;
+  real[int] Res(3);
+  real dphi1 = -1.;
+  real dphi2 = 0.;
+  real dphi3 = 1.;
+
+  resx = dphi1 * Ac[0] + dphi2 * Ac[3] + dphi3 * Ac[6];
+  resy = dphi1 * Ac[1] + dphi2 * Ac[4] + dphi3 * Ac[7];
+  resz = dphi1 * Ac[2] + dphi2 * Ac[5] + dphi3 * Ac[8];
+
+  Res[0] = resx; // The abscissa
+  Res[1] = resy; // The ordinate
+  Res[2] = resz; // The Height
+
+  return Res;
+}
+
+// Second Derivative is zero
+func real[int] ddP1fun(real[int] & Ac, real & tt1, real & tt2) {
+  real[int] Res(3);
+  Res[0] = 0.; // The abscissa
+  Res[1] = 0.; // The ordinate
+  Res[2] = 0.; // The Height
+
+  return Res;
+}

@@ -1,7 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react'
-import { variables } from '@/styles'
 
-const mediaQuery = `@media all and (max-width: 1100px)`
+import { mediaQuery, variables } from '@/styles'
 
 const style: { [key: string]: SerializedStyles } = {
   footer: css({

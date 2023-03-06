@@ -84,7 +84,8 @@ describe('components/notfound', () => {
                   count++
                   if (count === 1) return 450
                   else return 750
-                }
+                },
+                setXYZ: jest.fn
               }),
               setAttribute: jest.fn
             }

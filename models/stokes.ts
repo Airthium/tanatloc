@@ -57,7 +57,7 @@ const Stokes: IModel = {
           name: 'Mu',
           htmlEntity: 'formula',
           default: '1e-3',
-          unit: '\\(Pa.s^{-1}\\)'
+          unit: '\\(Pa.s\\)'
         }
       ]
     },
@@ -126,6 +126,17 @@ const Stokes: IModel = {
               { label: 'UMFPACK', value: 'UMFPACK' }
             ],
             default: 'MUMPS'
+          }
+        ]
+      },
+      symmetric: {
+        advanced: true,
+        label: 'Symmetric formulation',
+        children: [
+          {
+            label: 'Enabled',
+            htmlEntity: 'checkbox',
+            default: false
           }
         ]
       }

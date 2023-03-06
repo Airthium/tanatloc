@@ -8,6 +8,8 @@ export const variables = {
   textColorLight: 'rgba(0, 0, 0, 0.45)'
 }
 
+export const mediaQuery = `@media all and (max-width: 1100px)`
+
 export const globalStyle: {
   [key: string]: SerializedStyles
 } = {

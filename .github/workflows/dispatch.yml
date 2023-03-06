@@ -65,3 +65,12 @@ jobs:
       - name: Dispatch for docker
         run: |
           curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-docker/actions/workflows/submodule-update.yml/dispatches -d '{"ref": "main"}'
+
+  doc:
+    name: Dispatch for tanatloc-doc
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Disptach for doc
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-doc/actions/workflows/submodule-update.yml/dispatches -d '{"ref": "main"}'

@@ -45,6 +45,22 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
   const scrollToFeatures = useCallback(() => scroll('features'), [scroll])
 
   /**
+   * Scroll to doc
+   */
+  const scrollToDoc = useCallback(
+    () => window.open('/doc', '_blank', 'noopener'),
+    []
+  )
+
+  /**
+   * Scroll to blog
+   */
+  const scrollToBlog = useCallback(
+    () => window.open('/blog', '_blank', 'noopener'),
+    []
+  )
+
+  /**
    * Scroll to developers
    */
   const scrollToDevelopers = useCallback(
@@ -82,17 +98,23 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       <Button key="features" type="text" onClick={scrollToFeatures}>
         Features
       </Button>,
-      <Button key="developers" type="text" onClick={scrollToDevelopers}>
-        Developers
-      </Button>,
       <Button key="case_studies" type="text" onClick={scrollToCaseStudy}>
         Case Studies
+      </Button>,
+      <Button key="about_us" type="text" onClick={scrollToAboutUs}>
+        About us
       </Button>,
       <Button key="get_started" type="text" onClick={scrollToGetStarted}>
         Get started
       </Button>,
-      <Button key="about_us" type="text" onClick={scrollToAboutUs}>
-        About us
+      <Button key="doc" type="text" onClick={scrollToDoc}>
+        Doc
+      </Button>,
+      <Button key="blog" type="text" onClick={scrollToBlog}>
+        Blog
+      </Button>,
+      <Button key="developers" type="text" onClick={scrollToDevelopers}>
+        Developers
       </Button>
     ],
     [
@@ -100,7 +122,9 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
       scrollToDevelopers,
       scrollToCaseStudy,
       scrollToGetStarted,
-      scrollToAboutUs
+      scrollToAboutUs,
+      scrollToBlog,
+      scrollToDoc
     ]
   )
 

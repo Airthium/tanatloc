@@ -1,6 +1,5 @@
 import { TGeometrySummary } from '@/database/geometry/get'
 import { PerspectiveCamera, Plane, WebGLRenderer } from 'three'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { PartLoader } from '../PartLoader'
 
 jest.mock('three/examples/jsm/math/Lut', () => ({
@@ -134,7 +133,6 @@ describe('lib/three/loaders/PartLoader', () => {
     jest.fn as WebGLRenderer['domElement']['removeEventListener']
   renderer.getSize = (vector) => vector
   const camera = {} as PerspectiveCamera
-  const outlinePass = {} as OutlinePass
   const mouseMoveEvent = jest.fn()
   const mouseDownEvent = jest.fn()
 
@@ -181,13 +179,13 @@ describe('lib/three/loaders/PartLoader', () => {
   test('startSelection', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
 
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
 
-    mesh.startSelection(renderer, camera, outlinePass, 'edges')
+    mesh.startSelection(renderer, camera, 'edges')
 
-    mesh.startSelection(renderer, camera, outlinePass, 'point')
+    mesh.startSelection(renderer, camera, 'point')
   })
 
   test('stopSelection', async () => {
@@ -196,11 +194,11 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.stopSelection()
 
     // Add selection
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
     mesh.select('uuidf1')
     mesh.stopSelection()
 
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
     mesh.select('uuids1')
     mesh.stopSelection()
   })
@@ -224,7 +222,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
 
     // Empty
     //@ts-ignore
@@ -252,7 +250,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseMoveEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
 
     // Empty
     //@ts-ignore
@@ -271,7 +269,7 @@ describe('lib/three/loaders/PartLoader', () => {
   test('mouseMove - point', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'point')
+    mesh.startSelection(renderer, camera, 'point')
 
     // Empty
     //@ts-ignore
@@ -291,12 +289,12 @@ describe('lib/three/loaders/PartLoader', () => {
     const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
     mesh.highlight('uuids1')
     mesh.stopSelection()
 
     // Faces
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
     mesh.highlight('uuidf1')
     mesh.highlight('uuidf1')
     mesh.highlight('uuid')
@@ -308,7 +306,7 @@ describe('lib/three/loaders/PartLoader', () => {
     const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
     mesh.unhighlight()
 
     mesh.select('uuids1')
@@ -317,7 +315,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.stopSelection()
 
     // Faces
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
     mesh.unhighlight()
 
     mesh.select('uuidf1')
@@ -331,7 +329,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseDownEvent.mockImplementation((_, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part, true, true, clippingPlane)
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
 
     mouseDown()
     expect(mouseDownEvent).toHaveBeenCalledTimes(0)
@@ -347,12 +345,12 @@ describe('lib/three/loaders/PartLoader', () => {
     const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
     mesh.select('uuids1')
     mesh.stopSelection()
 
     // Faces
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
     mesh.select('uuidf1')
     mesh.select('uuidf1')
     mesh.select('uuid')
@@ -368,13 +366,13 @@ describe('lib/three/loaders/PartLoader', () => {
     const mesh = await partLoader.load(part, true, true, clippingPlane)
 
     // Solids
-    mesh.startSelection(renderer, camera, outlinePass, 'solids')
+    mesh.startSelection(renderer, camera, 'solids')
     mesh.select('uuids1')
     mesh.unselect('uuid')
     mesh.unselect('uuids1')
 
     // Faces
-    mesh.startSelection(renderer, camera, outlinePass, 'faces')
+    mesh.startSelection(renderer, camera, 'faces')
     mesh.select('uuidf1')
     mesh.unselect('uuid')
     mesh.unselect('uuidf1')

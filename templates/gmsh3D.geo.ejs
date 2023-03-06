@@ -77,17 +77,13 @@ globalMaxSize = globalSize;
 // End global size
 
 // Physical labels for each volumes & surfaces
-SLabel = 1;
-VLabel = 1;
 For i In {0:#V[]-1}
-	Physical Volume (VLabel) = { V[i] };
-	VLabel = VLabel + 1;
+	Physical Volume (V[i]) = { V[i] };
 
 	S() = Boundary { Volume{V[i]}; };
 
 	For j In {0:#S[]-1}
-		Physical Surface (SLabel) = { S[j] };
-		SLabel = SLabel + 1;
+		Physical Surface (S[j]) = { S[j] };
 	EndFor
 
 	P() = PointsOf { Surface{S[]}; };

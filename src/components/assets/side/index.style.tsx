@@ -1,6 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react'
 
-const mediaQuery = `@media all and (max-width: 1100px)`
+import { mediaQuery } from '@/styles'
 
 const style: { [key: string]: SerializedStyles } = {
   side: css({

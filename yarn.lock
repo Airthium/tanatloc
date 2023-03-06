@@ -12,10 +12,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/pg-format@npm:2.0.6":
-  version: 2.0.6
-  resolution: "@airthium/pg-format@npm:2.0.6"
-  checksum: ec221e6277b3c22a110b1de840a3784c292cd748d037291bf5f80f85feeb08ea0e1b3e3e886242fc34214b47cf74e20db11f5002387440c86c4b5749742622bd
+"@airthium/pg-format@npm:2.0.7":
+  version: 2.0.7
+  resolution: "@airthium/pg-format@npm:2.0.7"
+  checksum: 54461d361dc0d500e0696c85de0c1e4ba366c46c563cc068fc5a325f5411f254b8aa0973cfbcb77c41cee34ad3900fbd4da96756a2b075cf0d777a98a15b36de
   languageName: node
   linkType: hard
 
@@ -10158,7 +10158,7 @@ __metadata:
   resolution: "tanatloc@workspace:."
   dependencies:
     "@airthium/extract-json-from-string": 1.0.2
-    "@airthium/pg-format": 2.0.6
+    "@airthium/pg-format": 2.0.7
     "@airthium/typedoc-plugin-airthium": 1.0.20
     "@ant-design/icons": 5.0.1
     "@babel/core": 7.21.0

@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@airthium/extract-json-from-string": "1.0.2",
-    "@airthium/pg-format": "2.0.6",
+    "@airthium/pg-format": "2.0.7",
     "@airthium/typedoc-plugin-airthium": "1.0.20",
     "@ant-design/icons": "5.0.1",
     "@babel/core": "7.21.0",

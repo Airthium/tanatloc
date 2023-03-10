@@ -1,342 +1,342 @@
 [
   {
     "caption": "abs",
-    "snippet": "abs(${1:expression})",
+    "snippet": "abs(${1:x})",
     "type": "function"
   },
   {
     "caption": "acos",
-    "snippet": "acos(${1:expression})",
+    "snippet": "acos(${1:x})",
     "type": "function"
   },
   {
     "caption": "acosh",
-    "snippet": "acosh(${1:expression})",
+    "snippet": "acosh(${1:x})",
     "type": "function"
   },
   {
     "caption": "adaptmesh",
-    "snippet": "adaptmesh(${1:expression})",
+    "snippet": "adaptmesh(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr}, ${5:expr})",
     "type": "function"
   },
   {
     "caption": "adj",
-    "snippet": "adj(${1:expression})",
+    "snippet": "adj(${1:expr})",
     "type": "function"
   },
   {
     "caption": "affinecg",
-    "snippet": "affinecg(${1:expression})",
+    "snippet": "affinecg(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr}, ${5:expr})",
     "type": "function"
   },
   {
     "caption": "affinegmres",
-    "snippet": "affinegmres(${1:expression})",
+    "snippet": "affinegmres(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr}, ${5:expr})",
     "type": "function"
   },
   {
     "caption": "arg",
-    "snippet": "arg(${1:expression})",
+    "snippet": "arg(${1:x})",
     "type": "function"
   },
   {
     "caption": "asin",
-    "snippet": "asin(${1:expression})",
+    "snippet": "asin(${1:x})",
     "type": "function"
   },
   {
     "caption": "asinh",
-    "snippet": "asinh(${1:expression})",
+    "snippet": "asinh(${1:x})",
     "type": "function"
   },
   {
     "caption": "assert",
-    "snippet": "assert(${1:expression})",
+    "snippet": "assert(${1:expr})",
     "type": "function"
   },
   {
     "caption": "atan",
-    "snippet": "atan(${1:expression})",
+    "snippet": "atan(${1:x})",
     "type": "function"
   },
   {
     "caption": "atan2",
-    "snippet": "atan2(${1:x}, ${2:y})",
+    "snippet": "atan2(${1:y}, ${2:x})",
     "type": "function"
   },
   {
     "caption": "atanh",
-    "snippet": "atanh(${1:expression})",
+    "snippet": "atanh(${1:x})",
     "type": "function"
   },
   {
     "caption": "atoi",
-    "snippet": "atoi(${1:string})",
+    "snippet": "atoi(${1:str})",
     "type": "function"
   },
   {
     "caption": "atof",
-    "snippet": "atof(${1:string})",
+    "snippet": "atof(${1:str})",
     "type": "function"
   },
   {
     "caption": "bfgs",
-    "snippet": "bfgs(${1:expression})",
+    "snippet": "bfgs(${1:expr}, ${2:expr}, ${3:expr})",
     "type": "function"
   },
   {
     "caption": "buildmesh",
-    "snippet": "buildmesh(${1:expression})",
+    "snippet": "buildmesh(${1:expr})",
     "type": "function"
   },
   {
     "caption": "ceil",
-    "snippet": "ceil(${1:expression})",
+    "snippet": "ceil(${1:x})",
     "type": "function"
   },
   {
     "caption": "change",
-    "snippet": "change(${1:expression})",
+    "snippet": "change(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "checkmovemesh",
-    "snippet": "checkmovemesh();",
+    "snippet": "checkmovemesh(${1:expr})",
     "type": "function"
   },
   {
     "caption": "chi",
-    "snippet": "chi();",
+    "snippet": "chi(${1:x})",
     "type": "function"
   },
   {
     "caption": "clock",
-    "snippet": "clock();",
+    "snippet": "clock()",
     "type": "function"
   },
   {
     "caption": "complexeigenvalue",
-    "snippet": "complexeigenvalue();",
+    "snippet": "complexeigenvalue(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "conj",
-    "snippet": "conj();",
+    "snippet": "conj(${1:x})",
     "type": "function"
   },
   {
     "caption": "convect",
-    "snippet": "convect();",
+    "snippet": "convect(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr})",
     "type": "function"
   },
   {
     "caption": "copysign",
-    "snippet": "copysign();",
+    "snippet": "copysign(${1:x}, ${2:y})",
     "type": "function"
   },
   {
     "caption": "cos",
-    "snippet": "cos();",
+    "snippet": "cos(${1:x})",
     "type": "function"
   },
   {
     "caption": "cosh",
-    "snippet": "cosh();",
+    "snippet": "cosh(${1:x})",
     "type": "function"
   },
   {
     "caption": "diffnp",
-    "snippet": "diffnp();",
+    "snippet": "diffnp(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "diffpos",
-    "snippet": "diffpos();",
+    "snippet": "diffpos(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "dist",
-    "snippet": "dist();",
+    "snippet": "dist(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "dumptable",
-    "snippet": "dumptable();",
+    "snippet": "dumptable(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dx",
-    "snippet": "dx();",
+    "snippet": "dx(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dxx",
-    "snippet": "dxx();",
+    "snippet": "dxx(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dxy",
-    "snippet": "dxy();",
+    "snippet": "dxy(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dxz",
-    "snippet": "dxz();",
+    "snippet": "dxz(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dy",
-    "snippet": "dy();",
+    "snippet": "dy(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dyx",
-    "snippet": "dyx();",
+    "snippet": "dyx(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dyy",
-    "snippet": "dyy();",
+    "snippet": "dyy(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dyz",
-    "snippet": "dyz();",
+    "snippet": "dyz(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dz",
-    "snippet": "dz();",
+    "snippet": "dz(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dzx",
-    "snippet": "dzx();",
+    "snippet": "dzx(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dzy",
-    "snippet": "dzy();",
+    "snippet": "dzy(${1:expr})",
     "type": "function"
   },
   {
     "caption": "dzz",
-    "snippet": "dzz();",
+    "snippet": "dzz(${1:expr})",
     "type": "function"
   },
   {
     "caption": "eigenvalue",
-    "snippet": "eigenvalue();",
+    "snippet": "eigenvalue(${1:expr})",
     "type": "function"
   },
   {
     "caption": "emptymesh",
-    "snippet": "emptymesh(${1:mesh});",
+    "snippet": "emptymesh()",
     "type": "function"
   },
   {
     "caption": "erf",
-    "snippet": "erf(${1:x});",
+    "snippet": "erf(${1:x})",
     "type": "function"
   },
   {
     "caption": "erfc",
-    "snippet": "erfc(${1:x});",
+    "snippet": "erfc(${1:x})",
     "type": "function"
   },
   {
     "caption": "exec",
-    "snippet": "exec(\"${1:command}\");",
+    "snippet": "exec(${1:command})",
     "type": "function"
   },
   {
     "caption": "exit",
-    "snippet": "exit(${1:code});",
+    "snippet": "exit(${1:expr})",
     "type": "function"
   },
   {
     "caption": "exp",
-    "snippet": "exp(${1:x});",
+    "snippet": "exp(${1:x})",
     "type": "function"
   },
   {
     "caption": "fdim",
-    "snippet": "fdim(${1:x},${2:y});",
+    "snippet": "fdim(${1:x}, ${2:y})",
     "type": "function"
   },
   {
     "caption": "floor",
-    "snippet": "floor(${1:x});",
+    "snippet": "floor(${1:x})",
     "type": "function"
   },
   {
     "caption": "fmax",
-    "snippet": "fmax(${1:x},${2:y});",
+    "snippet": "fmax(${1:x}, ${2:y})",
     "type": "function"
   },
   {
     "caption": "fmin",
-    "snippet": "fmin(${1:x},${2:y});",
+    "snippet": "fmin(${1:x}, ${2:y})",
     "type": "function"
   },
   {
     "caption": "fmod",
-    "snippet": "fmod(${1:x},${2:y});",
+    "snippet": "fmod(${1:x}, ${2:y})",
     "type": "function"
   },
   {
     "caption": "imag",
-    "snippet": "imag(${1:x});",
+    "snippet": "imag(${1:x})",
     "type": "function"
   },
   {
     "caption": "int1d",
-    "snippet": "int1d(${1:f},${2:a},${3:b});",
+    "snippet": "int1d(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "int2d",
-    "snippet": "int2d(${1:f},${2:a1},${3:b1},${4:a2},${5:b2});",
+    "snippet": "int2d(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "int3d",
-    "snippet": "int3d(${1:f},${2:a1},${3:b1},${4:a2},${5:b2},${6:a3},${7:b3});",
+    "snippet": "int3d(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "intN",
-    "snippet": "intN(${1:f},${2:a},${3:b},${4:n});",
+    "snippet": "intN(${1:n}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "intalledges",
-    "snippet": "intalledges(${1:f},${2:a},${3:b});",
+    "snippet": "intalledges(${1:expr})",
     "type": "function"
   },
   {
     "caption": "intallfaces",
-    "snippet": "intallfaces(${1:f},${2:a},${3:b});",
+    "snippet": "intallfaces(${1:expr})",
     "type": "function"
   },
   {
     "caption": "interpolate",
-    "snippet": "interpolate(${1:f},${2:a},${3:b});",
+    "snippet": "interpolate(${1:expr}, ${2:expr}, ${3:expr})",
     "type": "function"
   },
   {
     "caption": "invdiff",
-    "snippet": "invdiff(${1:f},${2:a},${3:b});",
+    "snippet": "invdiff(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "invdiffnp",
-    "snippet": "invdiffnp(${1:n}, ${2:h})",
+    "snippet": "invdiffnp(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "invdiffpos",
-    "snippet": "invdiffpos(${1:n}, ${2:h})",
+    "snippet": "invdiffpos(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
@@ -371,17 +371,17 @@
   },
   {
     "caption": "jump",
-    "snippet": "jump(${1:expr})",
+    "snippet": "jump(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
     "caption": "linearcg",
-    "snippet": "linearcg(${1:A}, ${2:b}, ${3:x})",
+    "snippet": "linearcg(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr}, ${5:expr})",
     "type": "function"
   },
   {
     "caption": "lineargmres",
-    "snippet": "lineargmres(${1:A}, ${2:b}, ${3:x})",
+    "snippet": "lineargmres(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr}, ${5:expr})",
     "type": "function"
   },
   {
@@ -426,7 +426,7 @@
   },
   {
     "caption": "movemesh",
-    "snippet": "movemesh(${1:mesh}, ${2:V})",
+    "snippet": "movemesh(${1:expr}, ${2:expr})",
     "type": "function"
   },
   {
@@ -436,7 +436,217 @@
   },
   {
     "caption": "nlcg",
-    "snippet": "nlcg(${1:func}, ${2:x0})",
+    "snippet": "nlcg(${1:expr}, ${2:expr}, ${3:expr}, ${4:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "on",
+    "snippet": "on(${1:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "plot",
+    "snippet": "plot(${1:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "polar",
+    "snippet": "polar(${1:expr}, ${2:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "pow",
+    "snippet": "pow(${1:x}, ${2:y})",
+    "type": "function"
+  },
+  {
+    "caption": "projection",
+    "snippet": "projection(${1:expr}, ${2:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "randinit",
+    "snippet": "randinit(${1:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "randint31",
+    "snippet": "randint31(${1:n})",
+    "type": "function"
+  },
+  {
+    "caption": "randint32",
+    "snippet": "randint32(${1:n})",
+    "type": "function"
+  },
+  {
+    "caption": "randreal1",
+    "snippet": "randreal1(${1:n})",
+    "type": "function"
+  },
+  {
+    "caption": "randreal2",
+    "snippet": "randreal2(${1:n})",
+    "type": "function"
+  },
+  {
+    "caption": "randreal3",
+    "snippet": "randreal3(${1:n})",
+    "type": "function"
+  },
+  {
+    "caption": "randres53",
+    "snippet": "randres53(${1:n})",
+    "type": "function"
+  },
+  {
+    "caption": "readmesh",
+    "snippet": "readmesh(${1:filename})",
+    "type": "function"
+  },
+  {
+    "caption": "readmesh3",
+    "snippet": "readmesh3(${1:filename})",
+    "type": "function"
+  },
+  {
+    "caption": "real",
+    "snippet": "real(${1:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "rint",
+    "snippet": "rint(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "round",
+    "snippet": "round(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "savemesh",
+    "snippet": "savemesh(${1:filename}, ${2:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "set",
+    "snippet": "set(${1:name}, ${2:value})",
+    "type": "function"
+  },
+  {
+    "caption": "sign",
+    "snippet": "sign(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "signbit",
+    "snippet": "signbit(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "sin",
+    "snippet": "sin(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "sinh",
+    "snippet": "sinh(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "sort",
+    "snippet": "sort(${1:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "splitmesh",
+    "snippet": "splitmesh(${1:expr}, ${2:expr}, ${3:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "sqrt",
+    "snippet": "sqrt(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "square",
+    "snippet": "square(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "storagetotal",
+    "snippet": "storagetotal()",
+    "type": "function"
+  },
+  {
+    "caption": "storageused",
+    "snippet": "storageused()",
+    "type": "function"
+  },
+  {
+    "caption": "strtod",
+    "snippet": "strtod(${1:str})",
+    "type": "function"
+  },
+  {
+    "caption": "strtol",
+    "snippet": "strtol(${1:str})",
+    "type": "function"
+  },
+  {
+    "caption": "swap",
+    "snippet": "swap(${1:x}, ${2:y})",
+    "type": "function"
+  },
+  {
+    "caption": "system",
+    "snippet": "system(${1:command})",
+    "type": "function"
+  },
+  {
+    "caption": "tan",
+    "snippet": "tan(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "tanh",
+    "snippet": "tanh(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "tgamma",
+    "snippet": "tgamma(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "time",
+    "snippet": "time()",
+    "type": "function"
+  },
+  {
+    "caption": "trace",
+    "snippet": "trace(${1:expr})",
+    "type": "function"
+  },
+  {
+    "caption": "trunc",
+    "snippet": "trunc(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "y0",
+    "snippet": "y0(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "y1",
+    "snippet": "y1(${1:x})",
+    "type": "function"
+  },
+  {
+    "caption": "yn",
+    "snippet": "yn(${1:n}, ${2:x})",
     "type": "function"
   }
 ]

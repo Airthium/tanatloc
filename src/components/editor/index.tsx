@@ -32,13 +32,17 @@ import Code from './code'
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
 
+import Joyride, { STATUS, Step } from 'react-joyride'
+
 /**
  * Editor
  * @returns Editor
  */
 const Editor = () => {
-  // Sate
+  // State
   const [name, setName] = useState<string>()
+  const [run, setRun] = useState(false)
+  const [steps, setSteps] = useState([] as Step[])
 
   // Data
   const router = useRouter()
@@ -64,6 +68,37 @@ const Editor = () => {
       duration: 0
     })
   }, [])
+
+  useEffect(() => {
+    setSteps([
+      {
+        target: '.ant-space-horizontal',
+        content: "Ceci est le bouton 1. Cliquez ici pour effectuer l'action 1.",
+        placement: 'bottom',
+        disableBeacon:true
+      },
+      {
+        target: '.editor_code__MLS9F',
+        content: "Ceci est le bouton 2. Cliquez ici pour effectuer l'action 2.",
+        placement: 'bottom',
+        disableBeacon:true
+      }
+    ])
+  }, [])
+
+  // Handle Joyride callback
+  const handleJoyrideCallback = (data: any) => {
+    const { status } = data
+
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      setRun(false)
+    }
+  }
+
+  // Start the tour
+  const startTour = () => {
+    setRun(true)
+  }
 
   /**
    * Handle dashboard
@@ -112,6 +147,7 @@ const Editor = () => {
             <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
+                <button onClick={startTour}>Démarrer le guide</button>
                 <New />
                 <Browser
                   user={{
@@ -131,13 +167,28 @@ const Editor = () => {
               </Space>
             </div>
           </Layout.Header>
-          <Layout.Header css={style.header}>
+          <Layout.Header className={style.header}>
             <div style={{ display: 'flex' }}>
-              <h2 style={{ width:"50%" }}>FREEFEM EDITOR</h2>
-              <h2 style={{ width:"50%", paddingInline:"50px" }}>JSON EDITOR</h2>
+              <h2 style={{ width: '50%' }}>FREEFEM EDITOR</h2>
+              <h2 style={{ width: '50%', paddingInline: '50px' }}>
+                JSON EDITOR
+              </h2>
             </div>
           </Layout.Header>
           <Code />
+          <Joyride
+            steps={steps}
+            run={run}
+            callback={handleJoyrideCallback}
+            continuous={true}
+            showProgress={true}
+            showSkipButton={true}
+            styles={{
+              options: {
+                zIndex: 10000
+              }
+            }}
+          />
         </Layout.Content>
       </Layout>
     </EditorProvider>

@@ -23,7 +23,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -204,16 +204,16 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           />
         </Space>
       </Modal>
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         {cloudServer && (
           <>
             <Typography.Text>
-              <span css={globalStyle.textLight}>Plugin:</span>{' '}
+              <span className={globalStyle.textLight}>Plugin:</span>{' '}
               {cloudServer.name}
             </Typography.Text>
 
             <Typography.Text>
-              <span css={globalStyle.textLight}>Name:</span>{' '}
+              <span className={globalStyle.textLight}>Name:</span>{' '}
               {cloudServer.configuration.name.value}
             </Typography.Text>
 
@@ -225,14 +225,15 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
 
               return (
                 <Typography.Text key={key}>
-                  <span css={globalStyle.textLight}>{item.label}:</span> {value}
+                  <span className={globalStyle.textLight}>{item.label}:</span>{' '}
+                  {value}
                 </Typography.Text>
               )
             })}
           </>
         )}
         <Button
-          css={globalStyle.fullWidth}
+          className={globalStyle.fullWidth}
           disabled={disabled}
           type={cloudServer ? 'link' : 'primary'}
           icon={<CloudServerOutlined />}

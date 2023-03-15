@@ -1,0 +1,4 @@
+.upload :global(.ant-upload) {
+  width: 100% !important;
+  height: 100px !important;
+}

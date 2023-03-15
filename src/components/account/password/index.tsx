@@ -13,8 +13,6 @@ import { IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 
-import { globalStyleFn } from '@/styles'
-
 /**
  * Props
  */
@@ -118,7 +116,7 @@ const Password = ({ user }: IProps): JSX.Element => {
     <Card title="Your Password">
       <Form
         {...layout}
-        css={globalStyleFn.maxWidth(500)}
+        style={{ maxWidth: 500 }}
         layout="vertical"
         onFinish={onFinish}
         name="passwordForm"

@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import { IModelInitializationDirectChild } from '@/models/index.d'
 import {
@@ -24,7 +23,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-import { globalStyle, globalStyleFn } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Custom Types
@@ -500,10 +499,11 @@ const Initialization = ({
         </Typography.Text>
         <Space
           direction="vertical"
-          css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+          className={globalStyle.fullWidth}
+          style={{ marginTop: '10px' }}
         >
           <Select
-            css={globalStyle.fullWidth}
+            className={globalStyle.fullWidth}
             options={options}
             placeholder="Select a simulation"
             value={initializationValue?.simulation}
@@ -516,7 +516,7 @@ const Initialization = ({
                 {filter?.name}:
               </Typography.Text>
               <Select
-                css={globalStyle.fullWidth}
+                className={globalStyle.fullWidth}
                 options={couplingResults}
                 placeholder={'Select a ' + filter.name}
                 value={initializationValue?.result}
@@ -546,7 +546,7 @@ const Initialization = ({
       label: string
       children: IModelInitializationDirectChild[]
     }) => (
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         {direct.children.map((child, index) => {
           if (dimension === 2 && child.only3D) return
           return (
@@ -636,7 +636,8 @@ const Initialization = ({
       <Layout.Content>
         <Card size="small">
           <Select
-            css={css([globalStyle.fullWidth, globalStyleFn.marginTop(10)])}
+            className={globalStyle.fullWidth}
+            style={{ marginTop: '10px' }}
             defaultValue="none"
             value={currentKey}
             options={selectorOptions}

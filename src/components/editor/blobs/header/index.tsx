@@ -8,7 +8,7 @@ import { setCursor } from '@/context/editor/actions'
 
 import { addOnCursor } from '..'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * On add
@@ -53,7 +53,7 @@ const Header = (): JSX.Element => {
    * Render
    */
   return (
-    <Button css={globalStyle.fullWidth} onClick={onClick}>
+    <Button className={globalStyle.fullWidth} onClick={onClick}>
       Header
     </Button>
   )

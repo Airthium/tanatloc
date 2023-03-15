@@ -1,0 +1,42 @@
+@value variables: "@/styles/index.module.css";
+@value colorPrimary textColorLight from variables;
+
+.dashboard {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sider > div {
+  position: relative;
+}
+
+.menu {
+  overflow-x: hidden;
+  border-right: 0px !important;
+}
+
+.menu .display-none {
+  display: none !important;
+}
+
+.menu .ant-menu-item-divider {
+  border: 1px solid colorPrimary !important;
+}
+
+.menu :global(.version) {
+  position: absolute !important;
+  bottom: 0;
+  left: 5px;
+  cursor: default;
+  line-height: 1em;
+}
+
+.inDashboard {
+  padding: 0 64px;
+  height: 100vh;
+}
+
+.inDashboardTabs {
+  color: textColorLight;
+}

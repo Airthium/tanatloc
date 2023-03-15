@@ -47,7 +47,7 @@ const main = async (params?: IParams): Promise<void> => {
   await params?.addStatus('Starting installation')
 
   if (!isElectron()) await copyAssets()
-  if (!process.env.CI) {
+  if (!process.env.CI && process.env.NEXT_PUBLIC_SERVER_MODE !== 'frontpage') {
     if (!isDocker()) {
       await params?.addStatus('Initializing dockers')
       await initDockers(params)

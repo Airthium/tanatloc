@@ -78,14 +78,14 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 			)
 		)
 <% for (const d of displacement) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
+		+ on(<%= d.labels -%>
 		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=0<% } -%>
 		)
 <% } -%>
 <% for (const f of fixed) { -%>
-		+ on(<%= f.selected.map(s => s.label).filter(s => s).join(', ') -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
+		+ on(<%= f.labels -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
 <% } -%>
 		;
 
@@ -98,12 +98,12 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 <% } -%>
 		)
 <% for (const p of normalPresure) { -%>
-		+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+		+ intN1(Mesh, <%= p.labels -%>)(
 			(<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
 <% } -%>
 <% for (const p of componentsPresure) { -%>
-	+ intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join(', ') -%>)(
+	+ intN1(Mesh, <%= p.labels -%>)(
 		  (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
 		+ (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
 <% if (dimension !== 2) { -%> 
@@ -112,14 +112,14 @@ const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 	)
 <% } -%>
 <% for (const d of displacement) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>
+		+ on(<%= d.labels -%>
 		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
 		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
 		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>
 		)
 <% } -%>
 <% for (const f of fixed) { -%>
-		+ on(<%= f.selected.map(s => s.label).filter(s => s).join(', ') -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
+		+ on(<%= f.labels -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
 <% } -%>
 		;
 

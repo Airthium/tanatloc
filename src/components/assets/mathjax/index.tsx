@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import parse from 'html-react-parser'
-import { css } from '@emotion/react'
 
 import { mathjaxRefresh } from '@/lib/mathjax'
+import { Spin } from 'antd'
 
 /**
  * Head
@@ -54,7 +54,7 @@ const Inline = ({ text }: IPropsInline): JSX.Element => {
    * Render
    */
   return (
-    <div css={css({ display: 'inline-block' })} ref={element}>
+    <div style={{ display: 'inline-block' }} ref={element}>
       {content}
     </div>
   )
@@ -110,14 +110,23 @@ export interface IPropsHtml {
 const Html = ({ html }: IPropsHtml): JSX.Element => {
   // State
   const [content, setContent] = useState<string | JSX.Element | JSX.Element[]>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Ref
   const element = useRef<HTMLDivElement>(null)
 
   // Update text
   useEffect(() => {
-    if (!html) setContent('')
-    else setContent(parse(html))
+    setContent('')
+
+    if (html) {
+      setContent('')
+      setLoading(true)
+      setTimeout(() => {
+        setContent(parse(html))
+        setLoading(false)
+      }, 100)
+    }
 
     mathjaxRefresh()
   }, [html])
@@ -134,6 +143,7 @@ const Html = ({ html }: IPropsHtml): JSX.Element => {
   /**
    * Render
    */
+  if (loading) return <Spin />
   return <div ref={element}>{content}</div>
 }
 

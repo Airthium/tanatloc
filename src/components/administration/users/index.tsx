@@ -30,8 +30,7 @@ import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
 
-import { globalStyle } from '@/styles'
-import { css } from '@emotion/react'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Custom Types
@@ -103,7 +102,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
 
   const superuserRender = useCallback(
     (superuser: boolean) =>
-      superuser && <CheckOutlined css={globalStyle.textGreen} />,
+      superuser && <CheckOutlined className={globalStyle.textGreen} />,
     []
   )
 
@@ -250,7 +249,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   return (
     <Space
       direction="vertical"
-      css={css([globalStyle.fullWidth, globalStyle.fullHeight])}
+      className={`${globalStyle.fullWidth} ${globalStyle.fullHeight}`}
       size={20}
     >
       <Add

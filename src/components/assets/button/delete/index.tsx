@@ -3,11 +3,10 @@
 import { useCallback, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import { DeleteDialog } from '@/components/assets/dialog'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -81,10 +80,9 @@ const DeleteButton = ({
       </DeleteDialog>
       <Tooltip title={children || 'Delete'}>
         <Button
-          css={css([
-            globalStyle.noBackground,
-            bordered ? {} : globalStyle.noBorder
-          ])}
+          className={`${globalStyle.noBackground} ${
+            bordered ? '' : globalStyle.noBorder
+          }`}
           danger
           disabled={disabled}
           type={disabled ? 'link' : undefined}

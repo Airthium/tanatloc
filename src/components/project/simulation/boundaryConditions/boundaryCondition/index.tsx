@@ -38,8 +38,8 @@ import { CancelButton } from '@/components/assets/button'
 import Add from '../add'
 import Edit from '../edit'
 
-import { globalStyle, globalStyleFn } from '@/styles'
-import style from '../../../panel/index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from '../../../panel/index.module.css'
 
 /**
  * Props
@@ -95,7 +95,7 @@ const BoundaryConditionItem = ({
    */
   return (
     <Formula
-      css={globalStyleFn.marginBottom(10)}
+      style={{ marginBottom: '10px' }}
       label={boundaryCondition.label}
       defaultValue={value}
       defaultChecked={checked}
@@ -388,7 +388,7 @@ const BoundaryCondition = ({
    */
   return (
     <Drawer
-      css={style.subPanel}
+      className={style.subPanel}
       title="Boundary condition"
       placement="left"
       closable={false}
@@ -447,7 +447,7 @@ const BoundaryCondition = ({
         </div>
       }
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Card size="small">
           <Form layout="vertical">
             <Form.Item

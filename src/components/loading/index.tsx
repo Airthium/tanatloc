@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
 
-import { globalStyle, globalStyleFn } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Simple
@@ -60,7 +60,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
     }
 
     setStatusDisplay(
-      <div css={style.status}>
+      <div className={style.status}>
         <Steps
           direction="vertical"
           items={status
@@ -85,7 +85,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
     }
 
     setErrorsDisplay(
-      <div css={style.errors}>
+      <div className={style.errors}>
         {errors.map((err) => {
           let child = null
           if (
@@ -136,18 +136,18 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
    */
   return (
     <Layout>
-      <div css={globalStyle.logo}>
+      <div className={globalStyle.logo}>
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>
       <Card
-        css={style.loading}
+        className={style.loading}
         bodyStyle={{ padding: 0 }}
         title={
           <Space>
             {errors?.length ? (
               <>
                 <WarningOutlined style={{ fontSize: '32px', color: 'red' }} />
-                <Typography.Title level={3} css={globalStyleFn.margin(0)}>
+                <Typography.Title level={3} style={{ margin: '0' }}>
                   An error occurs
                 </Typography.Title>
                 <a
@@ -169,7 +169,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
         }
       >
         {display ? (
-          <div ref={contentRef} css={style.content}>
+          <div ref={contentRef} className={style.content}>
             {errorsDisplay}
             {statusDisplay}
           </div>

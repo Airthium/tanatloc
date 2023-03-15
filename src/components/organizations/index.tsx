@@ -3,7 +3,6 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
 import { Layout, Space, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import {
   IFrontUser,
@@ -19,8 +18,8 @@ import PageHeader from '@/components/assets/pageHeader'
 import Add from './add'
 import List from './list'
 
-import { globalStyle } from '@/styles'
-import dashboardStyle from '@/components/dashboard/index.style'
+import globalStyle from '@/styles/index.module.css'
+import dashboardStyle from '@/components/dashboard/index.module.css'
 
 /**
  * Props
@@ -106,18 +105,15 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout css={dashboardStyle.inDashboard}>
+    <Layout className={dashboardStyle.inDashboard}>
       <PageHeader
         title={
-          <Typography.Title
-            level={2}
-            css={css({ marginBottom: '0 !important' })}
-          >
+          <Typography.Title level={2} style={{ marginBottom: '0 !important' }}>
             Organizations
           </Typography.Title>
         }
       />
-      <Layout.Content css={globalStyle.noScroll}>
+      <Layout.Content className={globalStyle.noScroll}>
         {organization ? (
           <Organization
             organization={{
@@ -136,7 +132,11 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
             onClose={onClose}
           />
         ) : (
-          <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+          <Space
+            direction="vertical"
+            className={globalStyle.fullWidth}
+            size={20}
+          >
             <Add swr={{ addOneOrganization: swr.addOneOrganization }} />
             <List
               user={{

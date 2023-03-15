@@ -36,7 +36,7 @@ import CloudServer from './cloudServer'
 import Log from './log'
 import Results from './results'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -44,8 +44,8 @@ import { globalStyle } from '@/styles'
 export interface IProps {
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  result?: Pick<IFrontResult, 'name' | 'fileName'>
-  setResult: (result?: IFrontResult) => void
+  results: IFrontResult[]
+  setResults: (results: IFrontResult[]) => void
   setPostprocessing: (result?: IFrontResult) => void
   setVisible: (visible: boolean) => void
   swr: {
@@ -137,8 +137,8 @@ export const _onStop = async (
 const Run = ({
   geometries,
   simulation,
-  result,
-  setResult,
+  results,
+  setResults,
   setPostprocessing,
   setVisible,
   swr
@@ -280,12 +280,12 @@ const Run = ({
   return (
     <Layout>
       <Layout.Content>
-        <Space direction="vertical" css={globalStyle.fullWidth}>
+        <Space direction="vertical" className={globalStyle.fullWidth}>
           <Sensors
             geometries={geometries}
             simulation={simulation}
             setVisible={setVisible}
-            setResult={setResult}
+            setResults={setResults}
             setPostprocessing={setPostprocessing}
             swr={{
               mutateOneSimulation: swr.mutateOneSimulation
@@ -297,9 +297,13 @@ const Run = ({
             onOk={onOk}
           />
           <Card size="small" title="Run">
-            <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+            <Space
+              direction="vertical"
+              className={globalStyle.fullWidth}
+              size={20}
+            >
               <div
-                css={globalStyle.fullWidth}
+                className={globalStyle.fullWidth}
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -348,13 +352,8 @@ const Run = ({
                 tasks: currentSimulation.tasks
               }
             }
-            result={
-              result && {
-                name: result.name,
-                fileName: result.fileName
-              }
-            }
-            setResult={setResult}
+            results={results}
+            setResults={setResults}
           />
         </Space>
       </Layout.Content>

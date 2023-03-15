@@ -19,7 +19,7 @@ import Dialog from '@/components/assets/dialog'
 
 import { addOnCursor } from '..'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * On add
@@ -146,7 +146,7 @@ const Mesh = (): JSX.Element => {
           <Input ref={inputRef} />
         </Form.Item>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
+      <Button className={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Mesh
       </Button>
     </>

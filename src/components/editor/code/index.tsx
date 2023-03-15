@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 const FreeFEMCode = dynamic(
   () =>
@@ -39,7 +39,7 @@ const Code = (): JSX.Element => {
    * Render
    */
   return (
-    <div css={style.code}>
+    <div className={style.code}>
       <FreeFEMCode />
       <JSONCode />
     </div>

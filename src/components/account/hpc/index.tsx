@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Card, Space, Spin } from 'antd'
-import { css } from '@emotion/react'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -10,7 +9,7 @@ import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Errors
@@ -87,7 +86,7 @@ const HPC = (): JSX.Element => {
   return (
     <Space
       direction="vertical"
-      css={css([globalStyle.fullWidth, globalStyle.scroll])}
+      className={`${globalStyle.fullWidth} ${globalStyle.scroll}`}
       size={20}
     >
       {list}

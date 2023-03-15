@@ -1,0 +1,119 @@
+@values variables: "@/styles/variables.css";
+@value colorPrimary, textColorLight from variables;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 412px;
+}
+
+.card :global(.ant-card-head) {
+  height: 80px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+}
+
+.card :global(.ant-card-head-title) {
+  white-space: unset !important;
+}
+
+.card :global(.ant-card-cover) {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.card :global(.ant-card-body) {
+  height: 70px;
+  border-top: 1px solid #f0f0f0;
+  padding: 0 24px;
+}
+
+.card :global(.ant-card-actions) > li {
+  margin: 8px 0;
+  flex: 0 1 auto;
+}
+
+.cardArchived {
+  background-color: #fafafa;
+}
+
+.carousel {
+  margin: auto !important;
+  text-align: center;
+}
+
+.carousel img {
+  margin: auto !important;
+}
+
+.carousel :global(.dots) {
+  bottom: 10px !important;
+  left: unset !important;
+  right: calc(50% - 30px) !important;
+  padding: 1px;
+  padding-left: unset !important;
+  margin: unset !important;
+  background-color: rgba(217, 217, 217, 0.5);
+  border-radius: 5px !important;
+}
+
+.carousel :global(.dots) li {
+  height: 10px !important;
+}
+
+.carousel :global(.dots) li button {
+  height: 10px !important;
+  border-radius: 5px !important;
+  background: colorPrimary !important;
+}
+
+.carouselSnapshot {
+  width: 260px;
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.carouselSnapshot img {
+  max-width: 98%;
+  max-height: 98%;
+}
+
+.carouselSnapshotArchived {
+  cursor: not-allowed;
+}
+
+.carouselDescription {
+  width: 260px;
+  height: 190px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.carouselDescription :global(.ant-typography) {
+  margin-bottom: 0;
+}
+
+.carouselDescriptionArchived {
+  cursor: not-allowed;
+}
+
+.empty {
+  margin-top: min(10%, 20px);
+}
+
+.empty :global(.ant-empty-description) {
+  font-size: 1.25em;
+  color: textColorLight;
+}
+
+.emptySearch {
+  font-style: italic;
+  color: textColorLight;
+}

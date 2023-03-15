@@ -1,15 +1,14 @@
 /** @module Components.Assets.PageHeader */
 
-import { SerializedStyles } from '@emotion/react'
 import { Divider } from 'antd'
 
-import style from './index.style'
+import style from './index.module.css'
 
 /**
  * Props
  */
 export interface IProps {
-  css?: SerializedStyles
+  className?: string
   title?: string | JSX.Element
   footer?: string | JSX.Element
   extra?: string | JSX.Element
@@ -22,22 +21,22 @@ export interface IProps {
  * @returns PageHeader
  */
 const PageHeader = ({
-  css,
+  className,
   title,
   footer,
   extra,
   children
 }: IProps): JSX.Element => {
   return (
-    <div css={css}>
+    <div className={className}>
       {(title || extra) && (
-        <div css={style.head}>
+        <div className={style.head}>
           <div>{title}</div>
           <div>{extra}</div>
         </div>
       )}
       <div>{children}</div>
-      {footer || <Divider css={style.divider} />}
+      {footer || <Divider className={style.divider} />}
     </div>
   )
 }

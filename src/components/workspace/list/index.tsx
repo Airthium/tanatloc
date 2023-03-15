@@ -3,7 +3,6 @@
 import { NextRouter, useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Empty, Form, Input, InputRef, Layout, Tabs, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -26,8 +25,8 @@ import WorkspaceAPI from '@/api/workspace'
 import Add from '../add'
 import Workspace from '..'
 
-import dashboardStyle from '@/components/dashboard/index.style'
-import { globalStyle } from '@/styles'
+import dashboardStyle from '@/components/dashboard/index.module.css'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -166,18 +165,15 @@ const WorkspacesList = ({
    * Render
    */
   return (
-    <Layout css={css([dashboardStyle.inDashboard, globalStyle.noScroll])}>
+    <Layout className={`${dashboardStyle.inDashboard} ${globalStyle.noScroll}`}>
       <PageHeader
         title={
-          <Typography.Title
-            level={2}
-            css={css({ marginBottom: '0 !important' })}
-          >
+          <Typography.Title level={2} style={{ marginBottom: '0 !important' }}>
             Workspaces
           </Typography.Title>
         }
       />
-      <Layout.Content css={globalStyle.noScroll}>
+      <Layout.Content className={globalStyle.noScroll}>
         {workspaces.length ? (
           <>
             <Dialog
@@ -203,7 +199,7 @@ const WorkspacesList = ({
             </Dialog>
             <Tabs
               type="editable-card"
-              css={css([globalStyle.noScroll, dashboardStyle.inDashboardTabs])}
+              className={`${globalStyle.noScroll} ${dashboardStyle.inDashboardTabs}`}
               items={workspaces.map((workspace) => ({
                 key: workspace.id,
                 label: workspace.name,

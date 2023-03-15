@@ -4,7 +4,7 @@ import { Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 const Account = (): JSX.Element => {
   /**
@@ -14,7 +14,7 @@ const Account = (): JSX.Element => {
     <>
       <Typography.Title level={4}>Account Settings</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           Account settings allow you to:
           <ul>
@@ -45,8 +45,8 @@ const Account = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
-        <Typography.Text css={style.warnings}>
+      <Typography className={style.text}>
+        <Typography.Text className={style.warnings}>
           Deleting your account is not reversible. If you delete your account,
           all data will be lose
         </Typography.Text>

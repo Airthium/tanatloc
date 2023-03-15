@@ -19,7 +19,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Props
@@ -127,7 +127,7 @@ const Step = ({
         {step.warning && (
           <Collapse.Panel
             key="warnings"
-            css={style.warning}
+            className={style.warning}
             header={<Typography.Text type="warning">Warnings</Typography.Text>}
           >
             {parse(
@@ -138,7 +138,7 @@ const Step = ({
         {step.error && (
           <Collapse.Panel
             key="errors"
-            css={style.error}
+            className={style.error}
             header={<Typography.Text type="danger">Errors</Typography.Text>}
           >
             {parse(step.error.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}

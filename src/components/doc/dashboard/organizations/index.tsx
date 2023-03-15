@@ -6,7 +6,7 @@ import { ControlOutlined } from '@ant-design/icons'
 import Carousel from '@/components/assets/carousel'
 import { AddButton } from '@/components/assets/button'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Organizations
@@ -19,14 +19,14 @@ const Organizations = (): JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>Organizations</Typography.Title>
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           Allow you to manage an organization, and associated users and groups
           for sharing purpose.
         </Typography.Text>
       </Typography>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Create organization</Typography.Title>
         <Typography.Text>
           To create an organization, use{' '}
@@ -56,7 +56,7 @@ const Organizations = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Organization</Typography.Title>
         <Typography.Text>
           Click on <Button icon={<ControlOutlined />}>Manage</Button> to enter
@@ -97,7 +97,7 @@ const Organizations = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>User invitation</Typography.Title>
         <Typography.Text>
           On the invited user side, the user has to accept or decline the
@@ -122,7 +122,7 @@ const Organizations = (): JSX.Element => {
         ]}
       />
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Title level={4}>Groups</Typography.Title>
         <Typography.Text>
           Use the &apos;Group&apos; tab item to go to group

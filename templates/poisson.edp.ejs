@@ -55,26 +55,28 @@ const rhsValue = rhs.value ?? rhs.default
 			grad(u)' * grad(uh)
 		)
 <% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>, u=0)
+		+ on(<%= d.labels -%>, u=0)
 <% } -%>
 		;
 
 	varf vLaplacianRHS (u, uh)
 		= intN(Mesh)(
-			(<%- rhsValue -%>) * uh
+			(<%= rhsValue -%>) * uh
 		)
 <% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join(', ') %>) {
-			(<%- n.values[0].value ?? n.values[0].default %>) * uh
+		- intN1(Mesh, <%= n.labels -%>) {
+			(<%= n.values[0].value ?? n.values[0].default -%>) * uh
 		}
 <% } -%>
 <% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join(', ') -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
+		+ on(<%= d.labels -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
 <% } -%>
 		;
 
 <%# Solver -%>
-<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
+<%
+const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default
+-%>
 <%- helpers.indent(include('/blobs/solver.edp.ejs', {
 	solver
 }), 1) -%>

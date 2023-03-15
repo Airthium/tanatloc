@@ -203,6 +203,7 @@ describe('lib/simulation', () => {
           geometry: {
             value: 'id'
           },
+          boundaryConditions: {},
           run: {
             cloudServer: {
               key: 'key'
@@ -237,6 +238,7 @@ describe('lib/simulation', () => {
               type: 'coupling'
             }
           },
+          boundaryConditions: {},
           run: {
             cloudServer: {
               key: 'key'
@@ -266,6 +268,7 @@ describe('lib/simulation', () => {
               result: 'id'
             }
           },
+          boundaryConditions: {},
           run: {
             cloudServer: {
               key: 'key'
@@ -291,6 +294,7 @@ describe('lib/simulation', () => {
               type: 'default'
             }
           },
+          boundaryConditions: {},
           run: {
             cloudServer: {
               key: 'key'
@@ -349,6 +353,7 @@ describe('lib/simulation', () => {
           geometry: {
             value: 'id'
           },
+          boundaryConditions: {},
           run: {
             cloudServer: {
               key: 'key'
@@ -392,9 +397,10 @@ describe('lib/simulation', () => {
             first: {
               values: [
                 {
-                  geometry: 'id1'
+                  geometry: 'id1',
+                  selected: [{ label: 1 }]
                 },
-                { geometry: 'id2' }
+                { geometry: 'id2', selected: [] }
               ]
             }
           },
@@ -438,9 +444,10 @@ describe('lib/simulation', () => {
             first: {
               values: [
                 {
-                  geometry: 'id1'
+                  geometry: 'id1',
+                  selected: [{ label: 1 }]
                 },
-                { geometry: 'id2' }
+                { geometry: 'id2', selected: [] }
               ]
             }
           },

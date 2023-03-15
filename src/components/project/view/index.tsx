@@ -35,7 +35,7 @@ export interface IProps {
   project: Pick<IFrontProject, 'id' | 'title'>
   simulation?: Pick<IFrontSimulationsItem, 'id'>
   geometries: TGeometry[]
-  result?: TResult
+  results: TResult[]
   postprocessing?: TResult
 }
 
@@ -81,21 +81,23 @@ export const _loadPart = async (
  * Load result
  * @param simulation Simulation
  * @param parts Parts
- * @param result Result
+ * @param results Results
  * @returns Result
  */
-export const _loadResult = async (
+export const _loadResults = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   parts: IGeometryPart[],
-  result?: TResult
-): Promise<IGeometryPart | undefined> => {
-  if (!result) return
+  results: TResult[]
+): Promise<IGeometryPart[]> => {
+  return Promise.all(
+    results.map(async (result) => {
+      const prevPart = parts.find((part) => part.extra?.glb === result.glb)
+      if (prevPart) return prevPart
 
-  const prevPart = parts.find((part) => part.extra?.glb === result.glb)
-  if (prevPart) return prevPart
-
-  const partContent = await _loadPart(simulation, result, 'result')
-  return partContent
+      const partContent = await _loadPart(simulation, result, 'result')
+      return partContent
+    })
+  )
 }
 
 /**
@@ -151,7 +153,7 @@ const View = ({
   project,
   simulation,
   geometries,
-  result,
+  results,
   postprocessing
 }: IProps): JSX.Element => {
   // State
@@ -165,10 +167,10 @@ const View = ({
       try {
         const newParts = []
 
-        // Result
+        // Results
         if (simulation && !postprocessing) {
-          const newResult = await _loadResult(simulation, parts, result)
-          newResult && newParts.push(newResult)
+          const newResults = await _loadResults(simulation, parts, results)
+          newParts.push(...newResults)
         }
 
         // Postprocessing
@@ -182,7 +184,7 @@ const View = ({
         }
 
         // Geometries
-        if (!result && !postprocessing) {
+        if (!results.length && !postprocessing) {
           const newGeometries = await _loadGeometries(
             simulation,
             parts,
@@ -197,7 +199,7 @@ const View = ({
         setLoading(false)
       }
     })()
-  }, [simulation, geometries, result, postprocessing, parts])
+  }, [simulation, geometries, results, postprocessing, parts])
 
   /**
    * Render

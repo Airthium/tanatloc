@@ -28,15 +28,14 @@ import Download from '@/components/project/simulation/run/results/download'
 
 import PostprocessingAPI from '@/api/postprocessing'
 
-import { variables, globalStyle } from '@/styles'
-import { css } from '@emotion/react'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
  */
 export interface IProps {
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  result?: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>
+  results: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>[]
   postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
   setResult: (result?: IFrontResult) => void
 }
@@ -128,7 +127,7 @@ const Result = ({
         icon={
           postprocessing?.fileName === result.fileName &&
           postprocessing?.name === result.name ? (
-            <EyeOutlined css={css({ color: variables.colorPrimary })} />
+            <EyeOutlined className={globalStyle.primaryColor} />
           ) : (
             <EyeInvisibleOutlined />
           )
@@ -166,7 +165,7 @@ const Results = ({
    */
   if (!results.length) return <>No results</>
   return (
-    <Space direction="vertical" css={globalStyle.fullWidth}>
+    <Space direction="vertical" className={globalStyle.fullWidth}>
       {results.map((res) => (
         <Result
           key={res.glb}
@@ -187,7 +186,7 @@ const Results = ({
  */
 const Postprocessing = ({
   simulation,
-  result,
+  results,
   postprocessing,
   setResult
 }: IProps): JSX.Element | null => {
@@ -202,8 +201,10 @@ const Postprocessing = ({
 
   // Update visible
   useEffect(() => {
-    if (!result && visible) setVisible(false)
-  }, [result, visible])
+    if (results.length !== 1 && visible) setVisible(false)
+  }, [results, visible])
+
+  const result = useMemo(() => results[0], [results])
 
   // Cleanup
   useEffect(() => {
@@ -211,7 +212,7 @@ const Postprocessing = ({
       setFilter(undefined)
       setCurrent(undefined)
     }
-  }, [simulation, result])
+  }, [simulation])
 
   // Data
   const postprocess = useMemo(
@@ -310,7 +311,7 @@ const Postprocessing = ({
       try {
         const newResults = await _run(
           { id: simulation!.id },
-          result!,
+          result,
           filter!,
           values.parameters || []
         )
@@ -324,7 +325,7 @@ const Postprocessing = ({
   /**
    * Render
    */
-  if (!simulation || !result) return null
+  if (!simulation || results.length !== 1) return null
   if (!postprocess) return null
   if (!options.length) return null
   return (

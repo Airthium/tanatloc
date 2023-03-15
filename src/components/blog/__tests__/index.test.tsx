@@ -2,6 +2,28 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Blog from '..'
 
+let tag: JSX.Element
+jest.mock('antd', () => {
+  const actual = jest.requireActual('antd')
+  return {
+    ...actual,
+    Select: (props: any) => (
+      <div
+        role="Select"
+        onClick={() => props.onChange(['keyword'])}
+        onMouseEnter={() =>
+          (tag = props.tagRender({
+            label: 'Tag',
+            value: 'tag',
+            closable: false,
+            onClose: jest.fn
+          }))
+        }
+      />
+    )
+  }
+})
+
 const mockPush = jest.fn()
 const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
@@ -36,7 +58,7 @@ jest.mock('../posts', () => [
     description: 'description2',
     date: 'date2',
     image: 'img2',
-    keywords: ['keyword1', 'keyword2'],
+    keywords: ['keyword2'],
     author: { name: 'name2', url: 'url2' },
     default: () => <div />
   }
@@ -98,6 +120,18 @@ describe('components/blog', () => {
 
     fireEvent.click(down)
     fireEvent.click(up)
+
+    unmount()
+  })
+
+  test('tags', () => {
+    const { unmount } = render(<Blog />)
+
+    const select = screen.getByRole('Select')
+    fireEvent.click(select)
+    fireEvent.mouseEnter(select)
+
+    tag.props.onMouseDown({ preventDefault: jest.fn, stopPropagation: jest.fn })
 
     unmount()
   })

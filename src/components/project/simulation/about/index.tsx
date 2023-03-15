@@ -1,7 +1,6 @@
 /** @module Components.Project.Simulation.About*/
 
 import { Alert, Card, Layout, Space, Spin, Typography } from 'antd'
-import { css } from '@emotion/react'
 
 import {
   IFrontProject,
@@ -17,7 +16,7 @@ import Copy from '../copy'
 import Edit from './edit'
 import Delete from '../delete'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -87,28 +86,28 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
             />
           ]}
         >
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             {simulation.scheme.user && (
               <Alert message="User algorithm" type="info" showIcon />
             )}
             <Typography.Text>
-              <span css={globalStyle.textLight}>Category:</span>{' '}
+              <span className={globalStyle.textLight}>Category:</span>{' '}
               {simulation.scheme.category}
             </Typography.Text>
             <Typography.Text>
-              <span css={globalStyle.textLight}>Algorithm:</span>{' '}
+              <span className={globalStyle.textLight}>Algorithm:</span>{' '}
               {simulation.scheme.algorithm}
             </Typography.Text>
             <Typography.Text>
-              <span css={globalStyle.textLight}>Code:</span>{' '}
+              <span className={globalStyle.textLight}>Code:</span>{' '}
               {simulation.scheme.code}
             </Typography.Text>
             <Typography.Text>
-              <span css={globalStyle.textLight}>Version:</span>{' '}
+              <span className={globalStyle.textLight}>Version:</span>{' '}
               {simulation.scheme.version}
             </Typography.Text>
 
-            <div css={css([globalStyle.fullWidth, globalStyle.scroll])}>
+            <div className={`${globalStyle.fullWidth} ${globalStyle.scroll}`}>
               <MathJax.Html html={simulation.scheme.description} />
             </div>
           </Space>

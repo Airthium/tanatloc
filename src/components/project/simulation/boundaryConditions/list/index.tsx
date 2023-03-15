@@ -20,7 +20,7 @@ import { EditButton } from '@/components/assets/button'
 
 import Delete from '../delete'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Props
@@ -104,7 +104,7 @@ const ListItem = ({
 
   return (
     <Card
-      css={style.listItem}
+      className={style.listItem}
       hoverable
       onMouseEnter={highlight}
       onMouseLeave={unhighlight}

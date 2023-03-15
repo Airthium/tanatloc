@@ -17,7 +17,6 @@ import {
   SearchOutlined,
   SwapOutlined
 } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import { IFrontGeometriesItem } from '@/api/index.d'
 
@@ -35,7 +34,7 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Utils from '@/lib/utils'
 
-import { globalStyle, globalStyleFn } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 // Local interfaces
 export interface ISelection {
@@ -263,7 +262,7 @@ const GeometryElementCard = ({
   if (!display(element)) return null
   return (
     <Card
-      css={globalStyleFn.marginBottom(10)}
+      style={{ marginBottom: '10px' }}
       bodyStyle={{
         position: 'relative',
         padding: '10px 10px 10px 40px',
@@ -440,8 +439,8 @@ const Selector = ({
    * Render
    */
   return (
-    <Card size="small" css={globalStyle.noBorderBottom}>
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+    <Card size="small" className={globalStyle.noBorderBottom}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Typography.Text strong>Filters</Typography.Text>
         <Space direction="horizontal" wrap={true}>
           <ColorFilters colors={colors} setFilter={setFilter} />
@@ -459,11 +458,11 @@ const Selector = ({
           placeholder="Search"
           value={search}
           onChange={onSearch}
-          suffix={<SearchOutlined css={globalStyle.textLight} />}
+          suffix={<SearchOutlined className={globalStyle.textLight} />}
         />
       </Space>
 
-      <div css={css([globalStyle.fullWidth, globalStyleFn.marginTop(20)])}>
+      <div className={globalStyle.fullWidth} style={{ marginTop: '20px' }}>
         {type
           ? geometry.summary[type]?.map((element) => (
               <GeometryElementCard

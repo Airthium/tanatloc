@@ -132,7 +132,31 @@ describe('components/project/simulation/parameters', () => {
             configuration: {
               ...simulation.scheme.configuration,
               parameters: {
-                ...simulation.scheme.configuration.parameters,
+                index: 0,
+                title: 'title',
+                param1: {
+                  label: 'param1',
+                  children: [
+                    {
+                      label: 'Formula',
+                      htmlEntity: 'formula',
+                      default: 0
+                    },
+                    {
+                      label: 'Formula',
+                      htmlEntity: 'formula',
+                      value: 1,
+                      default: 0
+                    },
+                    {
+                      only3D: true,
+                      label: 'Formula',
+                      htmlEntity: 'formula',
+                      value: 1,
+                      default: 0
+                    }
+                  ]
+                },
                 done: true
               }
             }

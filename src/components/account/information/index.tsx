@@ -19,8 +19,7 @@ import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
 
-import { globalStyleFn } from '@/styles'
-import style from './index.style'
+import style from './index.module.css'
 
 /**
  * Local interfaces
@@ -236,8 +235,8 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   return (
     <Card title="Contact Details">
-      <Space direction="horizontal" css={style.information}>
-        <div>
+      <Space direction="horizontal" className={style.information}>
+        <div className={style.avatar}>
           <Avatar
             size={128}
             src={user.avatar && Buffer.from(user.avatar).toString()}
@@ -255,10 +254,10 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             </Button>
           </Upload>
         </div>
-        <div>
+        <div className={style.form}>
           <Form
             {...layout}
-            css={globalStyleFn.maxWidth(500)}
+            style={{ maxWidth: 500 }}
             initialValues={{
               email: user.email,
               firstname: user.firstname || '',

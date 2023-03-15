@@ -18,8 +18,6 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
-import { globalStyleFn } from '@/styles'
-
 /**
  * Props
  */
@@ -178,7 +176,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         <Form.Item label="Description" name="description">
           <Input.TextArea
             showCount
-            css={globalStyleFn.marginBottom(20)}
+            style={{ marginBottom: '20px' }}
             maxLength={120}
             placeholder="Project's description"
             onKeyUp={onKeyUp}

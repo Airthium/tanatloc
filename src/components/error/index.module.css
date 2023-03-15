@@ -1,0 +1,7 @@
+@values variables: "@/styles/variables.css";
+@value colorPrimary from variables;
+
+.error {
+  background: colorPrimary;
+  padding: 50px;
+}

@@ -13,7 +13,7 @@ import {
 } from 'three'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
-import style from './index.style'
+import style from './index.module.css'
 
 /**
  * Background
@@ -177,7 +177,7 @@ const Background = (): JSX.Element => {
   /**
    * Render
    */
-  return <div css={style.background} ref={mount} />
+  return <div className={style.background} ref={mount} />
 }
 
 export default Background

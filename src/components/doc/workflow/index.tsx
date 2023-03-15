@@ -2,7 +2,7 @@
 
 import { Steps, Typography } from 'antd'
 
-import style from '../index.style'
+import style from '../index.module.css'
 
 /**
  * Workflow
@@ -16,7 +16,7 @@ const Workflow = (): JSX.Element => {
     <>
       <Typography.Title level={3}>Workflow</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Steps
           direction="vertical"
           items={[

@@ -29,8 +29,8 @@ import Browser from './browser'
 import Save from './save'
 import Code from './code'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Editor
@@ -80,9 +80,9 @@ const Editor = () => {
   if (loadingUser || !user) return <Loading />
   return (
     <EditorProvider>
-      <Layout css={style.editor}>
+      <Layout className={style.editor}>
         <Layout.Sider theme="light" width="256">
-          <div css={globalStyle.logo}>
+          <div className={globalStyle.logo}>
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
           <Menu
@@ -107,8 +107,8 @@ const Editor = () => {
           <Blobs />
         </Layout.Sider>
 
-        <Layout.Content css={globalStyle.noScroll}>
-          <Layout.Header css={style.header}>
+        <Layout.Content className={globalStyle.noScroll}>
+          <Layout.Header className={style.header}>
             <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>

@@ -18,7 +18,6 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined
 } from '@ant-design/icons'
-import { css } from '@emotion/react'
 
 import {
   IFrontGeometriesItem,
@@ -56,8 +55,8 @@ import Geometry from './geometry'
 import View from './view'
 import Simulation from './simulation'
 
-import { globalStyle } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 const Data = dynamic(() => import('./data'), { ssr: false })
 
@@ -244,7 +243,7 @@ const Project = (): JSX.Element => {
     useState<boolean>(false)
   const [simulation, setSimulation] = useState<IFrontSimulationsItem>()
 
-  const [result, setResult] = useState<IFrontResult>()
+  const [results, setResults] = useState<IFrontResult[]>([])
 
   const [postprocessing, setPostprocessing] = useState<IFrontResult>()
 
@@ -588,13 +587,8 @@ const Project = (): JSX.Element => {
               id: current.id,
               scheme: current.scheme
             }}
-            result={
-              result && {
-                name: result.name,
-                fileName: result.fileName
-              }
-            }
-            setResult={setResult}
+            results={results}
+            setResults={setResults}
             setPostprocessing={setPostprocessing}
             setVisible={setPanelVisible}
             swr={{ mutateOneSimulation }}
@@ -602,7 +596,7 @@ const Project = (): JSX.Element => {
         </Panel>
       )
     },
-    [geometries, result, panelVisible, mutateOneSimulation, onPanelClose]
+    [geometries, results, panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -857,19 +851,19 @@ const Project = (): JSX.Element => {
 
         // Force geometry
         if (menuKey.item !== 'run') {
-          setResult(undefined)
+          setResults([])
           setPostprocessing(undefined)
         }
       }
     },
-    [menuKey, panelVisible, result],
+    [menuKey, panelVisible, results],
     [setGeometryPanel, setSimulationPanel, onPanelClose]
   )
 
   // Close result
   useEffect(() => {
-    if (!result && postprocessing) setPostprocessing(undefined)
-  }, [result, postprocessing])
+    if (!results.length && postprocessing) setPostprocessing(undefined)
+  }, [results, postprocessing])
 
   // Geometries render build
   const geometriesRender = useMemo(
@@ -961,12 +955,12 @@ const Project = (): JSX.Element => {
   return (
     <SelectProvider>
       <Layout hasSider={true}>
-        <Layout.Sider theme="light" css={style.sider} width={256}>
-          <div css={globalStyle.logo}>
+        <Layout.Sider theme="light" className={style.sider} width={256}>
+          <div className={globalStyle.logo}>
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
           <Menu
-            css={style.menu1}
+            className={style.menu1}
             mode="inline"
             items={[
               {
@@ -974,7 +968,7 @@ const Project = (): JSX.Element => {
                 disabled: true,
                 style: { cursor: 'unset', margin: '10px 0', paddingLeft: 10 },
                 label: (
-                  <GoBack buttonCss={globalStyle.fullWidth} onClick={dashboard}>
+                  <GoBack className={globalStyle.fullWidth} onClick={dashboard}>
                     Return to dashboard
                   </GoBack>
                 )
@@ -994,10 +988,10 @@ const Project = (): JSX.Element => {
               }
             ]}
           />
-          <div css={style.menuScroll}>
+          <div className={style.menuScroll}>
             <Menu
               mode="inline"
-              css={style.menu2}
+              className={style.menu2}
               defaultOpenKeys={[
                 menuItems.geometries.key,
                 menuItems.simulations.key
@@ -1077,7 +1071,8 @@ const Project = (): JSX.Element => {
           </div>
         </Layout.Sider>
         <Layout.Content
-          css={css([globalStyle.noScroll, { position: 'relative' }])}
+          className={globalStyle.noScroll}
+          style={{ position: 'relative' }}
         >
           <Geometry.Add
             visible={geometryAddVisible}
@@ -1130,12 +1125,10 @@ const Project = (): JSX.Element => {
               id: geometry.id,
               needCleanup: geometry.needCleanup
             }))}
-            result={
-              result && {
-                glb: result.glb,
-                originPath: result.originPath
-              }
-            }
+            results={results.map((result) => ({
+              glb: result.glb,
+              originPath: result.originPath
+            }))}
             postprocessing={
               postprocessing && {
                 glb: postprocessing.glb,
@@ -1158,13 +1151,11 @@ const Project = (): JSX.Element => {
                 scheme: simulation.scheme
               }
             }
-            result={
-              result && {
-                name: result.name,
-                fileName: result.fileName,
-                originPath: result.originPath
-              }
-            }
+            results={results.map((result) => ({
+              name: result.name,
+              fileName: result.fileName,
+              originPath: result.originPath
+            }))}
             postprocessing={
               postprocessing && {
                 name: postprocessing.name,

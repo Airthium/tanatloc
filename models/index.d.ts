@@ -219,6 +219,7 @@ export interface IModelBoundaryConditionValue {
   geometry: string
   geometryIndex?: number
   selected: { uuid: string; label: number }[]
+  labels?: string
   values?: {
     checked?: boolean
     value?: TValue
@@ -237,7 +238,7 @@ export interface IModelBoundaryCondition {
  * Run
  */
 export interface IModelRun extends IModelCommon {
-  results?: { name: string }[]
+  results?: { name: string }[] | { name: string }[][]
   resultsFilter?: {
     name: string
     prefixPattern: string | RegExp

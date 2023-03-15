@@ -1,0 +1,23 @@
+.search > *:last-child {
+  margin-left: auto !important;
+}
+
+.shared {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.shared > div {
+  display: flex;
+  align-items: center;
+}
+
+.tabs {
+  margin: 16px 0;
+  color: textColorLight;
+}
+
+.tabs :global(.ant-tabs-nav::before) {
+  border-bottom: none;
+}

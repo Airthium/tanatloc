@@ -17,7 +17,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -104,7 +104,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   return (
     <Tooltip title="Copy simulation">
       <Button
-        css={globalStyle.noBorder}
+        className={globalStyle.noBorder}
         loading={loading}
         icon={<CopyOutlined />}
         onClick={onClick}

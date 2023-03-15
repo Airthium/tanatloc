@@ -1,0 +1,133 @@
+@value variables: "@/styles//variables.css";
+@value colorPrimary from variables;
+
+@value breakpoints: "@/styles/breakpoints.css";
+@value tablet from breakpoints;
+
+.carouselContainer {
+  position: relative;
+}
+
+.carousel {
+  position: relative;
+  width: 50%;
+}
+
+.fullCaroussel {
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+.figure {
+  box-shadow: 2px 2px 5px #ccc;
+}
+
+.figure img {
+  max-width: 100%;
+}
+
+.figure figcaption {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background: #ccc;
+}
+
+.figure figcaption::before {
+  margin: 0 10px;
+  color: #fff;
+  content: 'Figure:';
+}
+
+.oneImage {
+  position: relative;
+}
+
+.displayCount {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: #ccc;
+  opacity: 1;
+  transition: all 2s linear;
+}
+
+.noDisplayCount {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: #ccc;
+  opacity: 0;
+  transition: all 2s linear;
+}
+
+.zoom {
+  position: absolute;
+  width: 100% !important;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  opacity: 0.1;
+}
+
+.zoom:hover {
+  opacity: 1;
+}
+
+.zoom svg {
+  color: colorPrimary;
+  font-size: 40px;
+}
+
+.previous {
+  position: absolute;
+  top: 0;
+  left: -8px;
+  height: 100%;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.previous svg {
+  color: colorPrimary;
+  font-size: 40px;
+}
+
+.next {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.next svg {
+  color: colorPrimary;
+  font-size: 40px;
+}
+
+@media tablet {
+  .carousel {
+    width: 90%;
+    margin: auto;
+  }
+
+  .zoom {
+    display: none;
+  }
+}

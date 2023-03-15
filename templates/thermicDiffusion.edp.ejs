@@ -63,7 +63,7 @@ const temperature = boundaryConditions.temperature.values ?? []
             + Lambda * grad(T)' * grad(Th)
         )
 <% for (const t of temperature) { -%>
-            + on(<%= t.selected.map(s => s.label).filter(s => s).join(', ') -%>,
+            + on(<%= t.labels -%>,
             T=0
             )
 <% } -%>
@@ -74,7 +74,7 @@ const temperature = boundaryConditions.temperature.values ?? []
               (Rho*Cp/dt) * T * Th
         )
 <% for (const t of temperature) { -%>
-        + on(<%= t.selected.map(s => s.label).filter(s => s).join(', ') -%>,
+        + on(<%= t.labels -%>,
         Td=<%= t.values[0].value ?? t.values[0].default -%>
         )
 <% } -%>

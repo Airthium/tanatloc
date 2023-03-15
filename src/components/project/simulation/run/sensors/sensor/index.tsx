@@ -41,7 +41,7 @@ import { CancelButton } from '@/components/assets/button'
 import Edit from '../edit'
 import Add from '../add'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -284,7 +284,7 @@ const Sensor = ({
         </div>
       }
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         <Card size="small">
           <Typography.Text>Name</Typography.Text>
           <Input value={current?.name} onChange={onChange} />
@@ -298,9 +298,9 @@ const Sensor = ({
             activeKey={activeKey}
             onChange={onGeometryChange}
           />
-          <Space direction="vertical" css={globalStyle.fullWidth}>
+          <Space direction="vertical" className={globalStyle.fullWidth}>
             <Space
-              css={globalStyle.fullWidth}
+              className={globalStyle.fullWidth}
               style={{ justifyContent: 'space-between' }}
             >
               <Typography.Text>Point selection</Typography.Text>
@@ -330,7 +330,7 @@ const Sensor = ({
             />
           </Space>
         </Card>
-        <Card size="small" css={globalStyle.noBorderBottom}>
+        <Card size="small" className={globalStyle.noBorderBottom}>
           <Formula
             label="Formula"
             defaultValue={current?.formula}

@@ -20,7 +20,7 @@ import { FormListContainer, FormListItem } from '@/components/assets/form'
 
 import { addOnCursor } from '..'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 // Local interfaces
 export interface ILocalValues {
@@ -208,7 +208,7 @@ const FiniteElementSpace = (): JSX.Element => {
           )}
         </Form.List>
       </Dialog>
-      <Button css={globalStyle.fullWidth} onClick={setVisibleTrue}>
+      <Button className={globalStyle.fullWidth} onClick={setVisibleTrue}>
         Finite element space
       </Button>
     </>

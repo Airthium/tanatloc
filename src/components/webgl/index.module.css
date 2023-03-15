@@ -1,0 +1,14 @@
+.header {
+  background: white !important;
+  padding-inline: 0 !important;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.content > * {
+  width: 30%;
+}

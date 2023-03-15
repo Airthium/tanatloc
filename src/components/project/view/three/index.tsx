@@ -9,7 +9,17 @@ import {
   useCallback,
   useContext
 } from 'react'
-import { Button, Divider, Dropdown, Layout, Spin, Switch, Tooltip } from 'antd'
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Form,
+  Input,
+  Layout,
+  Spin,
+  Switch,
+  Tooltip
+} from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
@@ -23,11 +33,17 @@ import {
   ScissorOutlined,
   StopOutlined,
   RetweetOutlined,
-  TableOutlined
+  TableOutlined,
+  BgColorsOutlined,
+  ColumnWidthOutlined,
+  ArrowsAltOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
   Box3,
+  BufferAttribute,
+  Float32BufferAttribute,
+  Mesh,
   Object3D,
   PerspectiveCamera,
   PointLight,
@@ -37,13 +53,13 @@ import {
   WebGLRenderer
 } from 'three'
 import { v4 } from 'uuid'
-import { css } from '@emotion/react'
 
 import { IFrontProject } from '@/api/index.d'
 import { IGeometryPart } from '@/lib/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
+import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -79,8 +95,8 @@ import {
 
 import AvatarAPI from '@/api/avatar'
 
-import { globalStyle, globalStyleFn, variables } from '@/styles'
-import style from './index.style'
+import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -230,7 +246,6 @@ export const _loadPart = async (
   helpers: {
     gridHelper: IGridHelper
     sectionViewHelper: ISectionViewHelper
-    colorbarHelper: IColorbarHelper
     pointHelper: IPointHelper
   },
   dispatch: Dispatch<ISelectAction>
@@ -284,16 +299,59 @@ export const _loadPart = async (
   helpers.gridHelper.update()
   helpers.gridHelper.setVisible(true)
 
-  // Colorbar
-  if (mesh.children[0].userData.lut) {
-    helpers.colorbarHelper.setLUT(mesh.children[0].userData.lut)
-    helpers.colorbarHelper.setVisible(true)
-  } else {
-    helpers.colorbarHelper.setVisible(false)
-  }
-
   // Point
   helpers.pointHelper.build()
+}
+
+/**
+ * Compute colors
+ * @param scene Scene
+ * @param colorbarHelper ColorbarHelper
+ */
+const _computeColors = (
+  scene: Scene,
+  colorbarHelper: IColorbarHelper
+): void => {
+  colorbarHelper.dispose()
+  colorbarHelper.setVisible(false)
+
+  // Colorbar
+  for (const child of scene.children) {
+    if (child.type === 'Part' && child.userData.type === 'result') {
+      child.traverse((subChild) => {
+        if (subChild.type === 'Mesh' || subChild.type === 'Line') {
+          const mesh = subChild as Mesh
+          colorbarHelper.addLUT(mesh.userData.lut)
+          colorbarHelper.setVisible(true)
+        }
+      })
+    }
+  }
+
+  // Colors
+  for (const child of scene.children) {
+    if (child.type === 'Part' && child.userData.type === 'result') {
+      child.traverse((subChild) => {
+        if (subChild.type === 'Mesh' || subChild.type === 'Line') {
+          const mesh = subChild as Mesh
+
+          const data = mesh.geometry.getAttribute('data') as BufferAttribute
+          const vertexColors = new Float32Array(data.count * 3)
+          for (let i = 0; i < data.count; i++) {
+            const vertexColor = colorbarHelper.getColor(data.array[i])
+
+            vertexColors[3 * i + 0] = vertexColor.r
+            vertexColors[3 * i + 1] = vertexColor.g
+            vertexColors[3 * i + 2] = vertexColor.b
+          }
+          mesh.geometry.setAttribute(
+            'color',
+            new Float32BufferAttribute(vertexColors, 3)
+          )
+        }
+      })
+    }
+  }
 }
 
 /**
@@ -407,6 +465,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   const [sectionView, setSectionView] = useState<boolean>(false)
   const [screenshot, setScreenshot] = useState<boolean>(false)
   const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
+  const [customRangeOpen, setCustomRangeOpen] = useState<boolean>(false)
 
   // Data
   const router = useRouter()
@@ -655,29 +714,36 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     })
 
     // Add
-    toAdd.forEach((part) => {
-      // Load
-      _loadPart(
-        part,
-        scene.current!,
-        camera.current!,
-        controls.current!,
-        {
-          transparent,
-          displayMesh
-        },
-        {
-          gridHelper: gridHelper.current!,
-          sectionViewHelper: sectionViewHelper.current!,
-          colorbarHelper: colorbarHelper.current!,
-          pointHelper: pointHelper.current!
-        },
-        dispatch
-      ).catch((err) => {
-        ErrorNotification(errors.load, err)
-        _computeSceneBoundingSphere(scene.current!)
-      })
-    })
+    ;(async () => {
+      await Promise.all(
+        toAdd.map(async (part) => {
+          try {
+            // Load
+            await _loadPart(
+              part,
+              scene.current!,
+              camera.current!,
+              controls.current!,
+              {
+                transparent,
+                displayMesh
+              },
+              {
+                gridHelper: gridHelper.current!,
+                sectionViewHelper: sectionViewHelper.current!,
+                pointHelper: pointHelper.current!
+              },
+              dispatch
+            )
+          } catch (err) {
+            ErrorNotification(errors.load, err)
+            _computeSceneBoundingSphere(scene.current!)
+          }
+        })
+      )
+
+      _computeColors(scene.current!, colorbarHelper.current!)
+    })()
   }, [parts, transparent, displayMesh, dispatch])
 
   // Dimension
@@ -908,11 +974,72 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   }, [])
 
   /**
+   * On colormap
+   * @param props { key }
+   */
+  const onColormap = useCallback((props: { key: string }): void => {
+    colorbarHelper.current?.setColorMap(props.key)
+    _computeColors(scene.current!, colorbarHelper.current!)
+  }, [])
+
+  /**
+   * Open custom range
+   */
+  const openCustomRange = useCallback(() => {
+    setCustomRangeOpen(true)
+  }, [])
+
+  /**
+   * Close custom range
+   */
+  const closeCustomRange = useCallback(() => {
+    setCustomRangeOpen(false)
+  }, [])
+
+  /**
+   * On custom range
+   * @param values Values
+   */
+  const onCustomRange = useCallback(
+    async (values: { min: string; max: string }): Promise<void> => {
+      colorbarHelper.current?.setRange(+values.min, +values.max)
+      _computeColors(scene.current!, colorbarHelper.current!)
+      closeCustomRange()
+    },
+    [closeCustomRange]
+  )
+
+  /**
+   * On automatic range
+   */
+  const onAutomaticRange = useCallback(() => {
+    colorbarHelper.current?.setAutomaticRange()
+    _computeColors(scene.current!, colorbarHelper.current!)
+  }, [])
+
+  /**
    * Render
    */
   return (
-    <Layout css={css([globalStyle.noScroll, style.view])}>
-      <Layout.Header css={style.head}>
+    <Layout className={`${globalStyle.noScroll} ${style.view}`}>
+      <Dialog
+        visible={customRangeOpen}
+        title="Custom range"
+        initialValues={{
+          min: colorbarHelper.current?.getMinV(),
+          max: colorbarHelper.current?.getMaxV()
+        }}
+        onCancel={closeCustomRange}
+        onOk={onCustomRange}
+      >
+        <Form.Item label="Min" name="min">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Max" name="max">
+          <Input />
+        </Form.Item>
+      </Dialog>
+      <Layout.Header className={style.head}>
         <Tooltip title="Take snapshot" placement="left">
           <Dropdown
             placement="bottom"
@@ -923,10 +1050,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      css={css([
-                        globalStyle.fullWidth,
-                        globalStyle.noBackground
-                      ])}
+                      className={`${globalStyle.fullWidth} ${globalStyle.noBackground}`}
                       loading={screenshot}
                       onClick={takeScreenshot}
                     >
@@ -939,10 +1063,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
                   label: (
                     <Button
                       type="text"
-                      css={css([
-                        globalStyle.fullWidth,
-                        globalStyle.noBackground
-                      ])}
+                      className={`${globalStyle.fullWidth} ${globalStyle.noBackground}`}
                       loading={savingScreenshot}
                       onClick={downloadScreenshot}
                     >
@@ -957,7 +1078,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           </Dropdown>
         </Tooltip>
 
-        <Divider css={globalStyleFn.margin(0)} />
+        <Divider style={{ margin: 0 }} />
 
         <Tooltip title="Display grid" placement="left">
           <Switch
@@ -976,7 +1097,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           />
         </Tooltip>
 
-        <Divider css={globalStyleFn.margin(0)} />
+        <Divider style={{ margin: 0 }} />
 
         <Tooltip title="Zoom out" placement="left">
           <Button
@@ -1008,10 +1129,10 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           />
         </Tooltip>
 
-        <Divider css={globalStyleFn.margin(0)} />
+        <Divider style={{ margin: 0 }} />
 
         {!sectionView && (
-          <Tooltip title="Section view">
+          <Tooltip title="Section view" placement="left">
             <Button icon={<ScissorOutlined />} onClick={toggleSectionView} />
           </Tooltip>
         )}
@@ -1052,39 +1173,69 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
           </>
         )}
 
-        <div>
-          {parts.filter((part) => part.summary.type === 'result').length ? (
-            <>
-              <Divider className="no-margin" />
+        {parts.filter((part) => part.summary.type === 'result').length ? (
+          <>
+            <Divider className="no-margin" />
 
-              <Tooltip title="Display result mesh" placement="right">
-                <Switch
-                  checked={displayMesh}
-                  checkedChildren={<TableOutlined />}
-                  unCheckedChildren={<TableOutlined />}
-                  onChange={toggleDisplayMesh}
-                />
-              </Tooltip>
-            </>
-          ) : null}
-        </div>
+            <Tooltip title="Display result mesh" placement="left">
+              <Switch
+                checked={displayMesh}
+                checkedChildren={<TableOutlined />}
+                unCheckedChildren={<TableOutlined />}
+                onChange={toggleDisplayMesh}
+              />
+            </Tooltip>
+
+            <Tooltip title="Colormap" placement="left">
+              <Dropdown
+                placement="bottom"
+                menu={{
+                  items: [
+                    {
+                      key: 'rainbow',
+                      label: 'Rainbow'
+                    },
+                    {
+                      key: 'cooltowarm',
+                      label: 'Cool to warm'
+                    },
+                    {
+                      key: 'blackbody',
+                      label: 'Black body'
+                    },
+                    {
+                      key: 'grayscale',
+                      label: 'Gray scale'
+                    }
+                  ],
+                  onClick: onColormap
+                }}
+              >
+                <Button icon={<BgColorsOutlined />} />
+              </Dropdown>
+            </Tooltip>
+
+            <Tooltip title="Custom range" placement="left">
+              <Button
+                icon={<ColumnWidthOutlined />}
+                onClick={openCustomRange}
+              />
+            </Tooltip>
+
+            <Tooltip title="Automatic range" placement="left">
+              <Button icon={<ArrowsAltOutlined />} onClick={onAutomaticRange} />
+            </Tooltip>
+          </>
+        ) : null}
       </Layout.Header>
-      <Layout.Content css={css([globalStyle.noScroll, style.content])}>
+      <Layout.Content className={`${globalStyle.noScroll} ${style.content}`}>
         <div
           style={{ display: loading ? 'flex' : 'none' }}
-          css={globalStyle.loading}
+          className={style.loading}
         >
-          <Spin
-            indicator={
-              <LoadingOutlined
-                css={{ color: variables.colorPrimary }}
-                style={{ fontSize: 80 }}
-                spin
-              />
-            }
-          />
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 80 }} spin />} />
         </div>
-        <div ref={mount} css={style.canvas} />
+        <div ref={mount} className={style.canvas} />
       </Layout.Content>
     </Layout>
   )

@@ -1,3 +1,26 @@
+## v1.2.8
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :beetle: Fix public template
+  - :beetle: Gmsh template fix
+  - :arrow_up: @airthium/extract-json-from-string
+- Client:
+  - :arrow_up: Responsive blog & doc
+  - :arrow_up: Blog articles (houssamh)
+  - :arrow_up: Multiple results display
+  - :arrow_up: Blog tags
+  - :beetle: Fix blog posts order
+  - :beetle: Remove @emotion/react
+  - :arrow_up: Improve ColorbarHelper
+  - :beetle: Fix simulation selector
+- Algorithm:
+  - :arrow_up: Stokes symmetric
+  - :arrow_up: Navier-Stokes time symmetric
+  - :arrow_up: Contact
+
+---
+
 ## v1.2.7
 
 - Global:

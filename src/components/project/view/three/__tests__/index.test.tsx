@@ -25,6 +25,9 @@ jest.mock('@/components/assets/notification', () => ({
     mockErroNotification(title, err)
 }))
 
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
+
 jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
   TrackballControls: jest.fn().mockImplementation(() => ({
     target: {
@@ -100,9 +103,15 @@ jest.mock('@/lib/three/helpers/SectionViewHelper', () => ({
 
 jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   ColorbarHelper: () => ({
-    setVisible: jest.fn(),
-    setLUT: jest.fn(),
     render: jest.fn(),
+    addLUT: jest.fn(),
+    setVisible: jest.fn(),
+    setColorMap: jest.fn(),
+    setRange: jest.fn(),
+    setAutomaticRange: jest.fn(),
+    getMinV: jest.fn(),
+    getMaxV: jest.fn(),
+    getColor: () => ({ r: 1, g: 1, b: 1 }),
     dispose: jest.fn()
   })
 }))
@@ -188,6 +197,11 @@ describe('components/project/view/three', () => {
   beforeEach(() => {
     mockErroNotification.mockReset()
 
+    mockDialog.mockReset()
+    mockDialog.mockImplementation((props: any) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+
     mockAvatarAdd.mockReset()
 
     mockWebGLAvailable.mockReset()
@@ -258,6 +272,36 @@ describe('components/project/view/three', () => {
         }
       },
       { type: 'AxisHelper' },
+      {
+        type: 'Part',
+        boundingBox: {
+          min: { x: 0, y: 0, z: 0 },
+          max: { x: 1, y: 1, z: 1 }
+        },
+        material: {},
+        userData: { type: 'result' },
+        children: [
+          {
+            geometry: {
+              getAttribute: () => ({
+                count: 1,
+                array: [1, 2, 3]
+              }),
+              setAttribute: jest.fn
+            },
+            userData: {}
+          }
+        ],
+        dispose: jest.fn(),
+        setTransparent: jest.fn(),
+        setDisplayMesh: jest.fn(),
+        startSelection: jest.fn(),
+        stopSelection: jest.fn(),
+        getSelected: () => [{}],
+        highlight: jest.fn(),
+        select: jest.fn(),
+        unselect: jest.fn()
+      },
       {
         type: 'Part',
         boundingBox: {
@@ -470,8 +514,21 @@ describe('components/project/view/three', () => {
     const flip = screen.getByRole('button', { name: 'retweet' })
     await act(() => fireEvent.click(flip))
 
+    // Colormap
+    const colorMap = screen.getByRole('button', { name: 'bg-colors' })
+    fireEvent.mouseEnter(colorMap)
+
+    await waitFor(() => screen.getByText('Rainbow'))
+
+    const rainbow = screen.getByRole('menuitem', { name: 'Rainbow' })
+    fireEvent.click(rainbow)
+
+    // Custom range
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
+
     unmount()
-  })
+  }, 10_000)
 
   test('selection enabled', () => {
     const { unmount } = render(
@@ -579,5 +636,5 @@ describe('components/project/view/three', () => {
     )
 
     unmount()
-  })
+  }, 10_000)
 })

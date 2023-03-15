@@ -3,7 +3,6 @@
 import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { Layout, Typography, Tabs, Space, TabsProps } from 'antd'
-import { css } from '@emotion/react'
 import isElectron from 'is-electron'
 
 import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
@@ -15,8 +14,8 @@ import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
 
-import dashboardStyle from '@/components/dashboard/index.style'
-import { globalStyle } from '@/styles'
+import dashboardStyle from '@/components/dashboard/index.module.css'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -46,7 +45,11 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
           key: 'personal',
           label: 'Personal Information',
           children: (
-            <Space direction="vertical" css={globalStyle.fullWidth} size={20}>
+            <Space
+              direction="vertical"
+              className={globalStyle.fullWidth}
+              size={20}
+            >
               <Information
                 user={{
                   email: user.email,
@@ -68,7 +71,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
               children: (
                 <Space
                   direction="vertical"
-                  css={globalStyle.fullWidth}
+                  className={globalStyle.fullWidth}
                   size={20}
                 >
                   <Password
@@ -106,20 +109,17 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout css={css([globalStyle.noScroll, dashboardStyle.inDashboard])}>
+    <Layout className={`${globalStyle.noScroll} ${dashboardStyle.inDashboard}`}>
       <PageHeader
         title={
-          <Typography.Title
-            level={2}
-            css={css({ marginBottom: '0 !important' })}
-          >
+          <Typography.Title level={2} style={{ marginBottom: '0 !important' }}>
             Account Settings
           </Typography.Title>
         }
       />
-      <Layout.Content css={globalStyle.noScroll}>
+      <Layout.Content className={globalStyle.noScroll}>
         <Tabs
-          css={css([globalStyle.noScroll, dashboardStyle.inDashboardTabs])}
+          className={`${globalStyle.noScroll} ${dashboardStyle.inDashboardTabs}`}
           type="card"
           items={tabItems}
           defaultActiveKey={tab || 'personal'}

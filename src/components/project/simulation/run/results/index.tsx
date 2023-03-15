@@ -12,15 +12,15 @@ import { getFilesNumbers, getMultiplicator } from './tools'
 import Download from './download'
 import Archive from './archive'
 
-import { globalStyle } from '@/styles'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
  */
 export interface IProps {
   simulation: Pick<IFrontSimulation, 'id' | 'scheme' | 'tasks'>
-  result?: Pick<IFrontResult, 'name' | 'fileName'>
-  setResult: (result?: IFrontResult) => void
+  results: IFrontResult[]
+  setResults: (results: IFrontResult[]) => void
 }
 
 export interface IFilteredFiles {
@@ -32,9 +32,9 @@ export interface IFilteredFiles {
 
 export interface ISingleResultProps {
   simulation: Pick<IFrontSimulation, 'id'>
-  result?: Pick<IFrontResult, 'name' | 'fileName'>
+  results: IFrontResult[]
   file: IFrontResult
-  setResult: (result?: IFrontResult) => void
+  setResults: (results: IFrontResult[]) => void
 }
 
 /**
@@ -44,22 +44,26 @@ export interface ISingleResultProps {
  */
 const SingleResult = ({
   simulation,
-  result,
+  results,
   file,
-  setResult
+  setResults
 }: ISingleResultProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = useCallback(
-    () =>
-      setResult(
-        result?.fileName === file.fileName && result.name === file.name
-          ? undefined
-          : file
-      ),
-    [result, file, setResult]
-  )
+  const onClick = useCallback(() => {
+    const index = results.findIndex(
+      (result) => result.fileName === file.fileName && result.name === file.name
+    )
+    if (index === -1) setResults([...results, file])
+    else setResults([...results.slice(0, index), ...results.slice(index + 1)])
+  }, [results, file, setResults])
+
+  const visible = useMemo(() => {
+    return results.find(
+      (result) => result.fileName === file.fileName && result.name === file.name
+    )
+  }, [results, file])
 
   /**
    * Render
@@ -68,7 +72,7 @@ const SingleResult = ({
     <Space style={{ alignItems: 'center' }}>
       <Button
         icon={
-          result?.fileName === file.fileName && result.name === file.name ? (
+          visible ? (
             <EyeOutlined style={{ color: '#fad114' }} />
           ) : (
             <EyeInvisibleOutlined />
@@ -86,7 +90,7 @@ const SingleResult = ({
           originPath: file.originPath
         }}
       />
-      {file.name}
+      {file.name?.replaceAll('_', ' ')}
     </Space>
   )
 }
@@ -96,7 +100,7 @@ const SingleResult = ({
  * @param props Props
  * @returns Results
  */
-const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
+const Results = ({ simulation, results, setResults }: IProps): JSX.Element => {
   //State
   const [singleFiles, setSingleFiles] = useState<IFrontResult[]>()
   const [filteredFiles, setFilteredFiles] = useState<IFilteredFiles>()
@@ -191,13 +195,15 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
    */
   const onChange = useCallback(
     (value: number): void => {
-      const nextResult = filteredFiles!.files.find(
-        (file) => file.number === value && file.name === result?.name
+      const nextResults = filteredFiles!.files.filter(
+        (file) =>
+          file.number === value &&
+          results.find((result) => result.name === file.name)
       )
-      setResult(nextResult)
+      setResults(nextResults)
       setCurrentNumber(value)
     },
-    [result, filteredFiles, setResult]
+    [results, filteredFiles, setResults]
   )
 
   // Results render
@@ -219,21 +225,21 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
         />
       }
     >
-      <Space direction="vertical" css={globalStyle.fullWidth}>
+      <Space direction="vertical" className={globalStyle.fullWidth}>
         {singleFiles?.map((file) => (
           <SingleResult
             key={file.name}
             simulation={simulation}
-            result={result}
+            results={results}
             file={file}
-            setResult={setResult}
+            setResults={setResults}
           />
         ))}
         {filteredFiles && (
           <>
             {filteredFiles.name}
             <Select
-              css={globalStyle.fullWidth}
+              className={globalStyle.fullWidth}
               options={filteredFiles.options}
               value={currentNumber}
               onChange={onChange}
@@ -244,9 +250,9 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                   <SingleResult
                     key={filteredFile.name}
                     simulation={simulation}
-                    result={result}
+                    results={results}
                     file={filteredFile}
-                    setResult={setResult}
+                    setResults={setResults}
                   />
                 )
               }

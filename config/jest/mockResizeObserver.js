@@ -1,14 +1,7 @@
 if (typeof window !== 'undefined') {
-  class ResizeObserver {
-    disconnect() {
-      // mock method
-    }
-    observe() {
-      // mock method
-    }
-    unobserve() {
-      // mock method
-    }
-  }
-  window.ResizeObserver = ResizeObserver
+  global.ResiseObserver = jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn()
+  }))
 }

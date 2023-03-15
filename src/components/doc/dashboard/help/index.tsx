@@ -4,7 +4,7 @@ import { Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
 
-import style from '../../index.style'
+import style from '../../index.module.css'
 
 /**
  * Help
@@ -18,7 +18,7 @@ const Help = (): JSX.Element => {
     <>
       <Typography.Title level={4}>Help</Typography.Title>
 
-      <Typography css={style.text}>
+      <Typography className={style.text}>
         <Typography.Text>
           You will find the link to this documentation, and to Github Issues
         </Typography.Text>

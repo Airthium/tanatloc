@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { IFrontSimulation } from '@/api/index.d'
+import { IFrontResult, IFrontSimulation } from '@/api/index.d'
 
 import Results from '..'
 
@@ -56,11 +56,13 @@ describe('components/project/simulation/run/results', () => {
       }
     ]
   } as IFrontSimulation
-  const result = {
-    fileName: 'file.vtu',
-    name: 'file1'
-  }
-  const setResult = jest.fn()
+  const results = [
+    {
+      fileName: 'file.vtu',
+      name: 'file1'
+    }
+  ] as IFrontResult[]
+  const setResults = jest.fn()
 
   beforeEach(() => {
     mockDownload.mockReset()
@@ -75,7 +77,11 @@ describe('components/project/simulation/run/results', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Results simulation={simulation} result={result} setResult={setResult} />
+      <Results
+        simulation={simulation}
+        results={results}
+        setResults={setResults}
+      />
     )
 
     unmount()
@@ -88,8 +94,8 @@ describe('components/project/simulation/run/results', () => {
           ...simulation,
           tasks: [{ label: 'label', status: 'finish', file: null, files: null }]
         }}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
       />
     )
 
@@ -100,8 +106,8 @@ describe('components/project/simulation/run/results', () => {
     const { unmount } = render(
       <Results
         simulation={{ id: 'id' } as IFrontSimulation}
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
       />
     )
 
@@ -112,7 +118,11 @@ describe('components/project/simulation/run/results', () => {
 
   test('setResult', () => {
     const { unmount } = render(
-      <Results simulation={simulation} result={result} setResult={setResult} />
+      <Results
+        simulation={simulation}
+        results={results}
+        setResults={setResults}
+      />
     )
 
     const eyeOpen = screen.getByRole('button', { name: 'eye' })
@@ -169,8 +179,8 @@ describe('components/project/simulation/run/results', () => {
             }
           } as IFrontSimulation
         }
-        result={result}
-        setResult={setResult}
+        results={results}
+        setResults={setResults}
       />
     )
 
@@ -231,8 +241,8 @@ describe('components/project/simulation/run/results', () => {
             }
           } as IFrontSimulation
         }
-        result={{ fileName: 'file_1.vtu', name: 'file' }}
-        setResult={setResult}
+        results={[{ fileName: 'file_1.vtu', name: 'file' } as IFrontResult]}
+        setResults={setResults}
       />
     )
 
@@ -243,13 +253,15 @@ describe('components/project/simulation/run/results', () => {
     const options = screen.getAllByText('1')
     await act(() => fireEvent.click(options[1]))
     await waitFor(() =>
-      expect(setResult).toHaveBeenLastCalledWith({
-        fileName: 'file_1.vtu',
-        name: 'file',
-        number: 1,
-        originPath: 'originPath',
-        type: 'result'
-      })
+      expect(setResults).toHaveBeenLastCalledWith([
+        {
+          fileName: 'file_1.vtu',
+          name: 'file',
+          number: 1,
+          originPath: 'originPath',
+          type: 'result'
+        }
+      ])
     )
 
     const eyeOpen = screen.getByRole('button', { name: 'eye' })
@@ -304,7 +316,8 @@ describe('components/project/simulation/run/results', () => {
             }
           } as IFrontSimulation
         }
-        setResult={setResult}
+        results={[]}
+        setResults={setResults}
       />
     )
 

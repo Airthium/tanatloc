@@ -61,11 +61,11 @@ const rhsValue = rhs.value ?? rhs.default
 
 	varf vLaplacianRHS (u, uh)
 		= intN(Mesh)(
-			(<%- rhsValue -%>) * uh
+			(<%= rhsValue -%>) * uh
 		)
 <% for (const n of neumann) { -%>
-		- intN1(Mesh, <%= n.labels %>) {
-			(<%- n.values[0].value ?? n.values[0].default %>) * uh
+		- intN1(Mesh, <%= n.labels -%>) {
+			(<%= n.values[0].value ?? n.values[0].default -%>) * uh
 		}
 <% } -%>
 <% for (const d of dirichlet) { -%>
@@ -74,7 +74,9 @@ const rhsValue = rhs.value ?? rhs.default
 		;
 
 <%# Solver -%>
-<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
+<%
+const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default
+-%>
 <%- helpers.indent(include('/blobs/solver.edp.ejs', {
 	solver
 }), 1) -%>

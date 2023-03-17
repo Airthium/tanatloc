@@ -56,7 +56,7 @@ const Blobs = (): JSX.Element => {
    * Render
    */
   return (
-    <>
+    <div id='blobs'>
       <Collapse style={{ overflow: 'auto', maxHeight: 'calc(100% - 443px)' }}>
         <Collapse.Panel key="head" header="Head">
           <Space direction="vertical" className={globalStyle.fullWidth}>
@@ -84,7 +84,7 @@ const Blobs = (): JSX.Element => {
           </Space>
         </Collapse.Panel>
       </Collapse>
-    </>
+    </div>
   )
 }
 

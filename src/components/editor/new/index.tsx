@@ -70,7 +70,7 @@ const New = () => {
    */
   return (
     <Tooltip title="New model">
-      <Button icon={<FileAddOutlined />} onClick={onClick} />
+      <Button icon={<FileAddOutlined />} onClick={onClick} id="new" />
     </Tooltip>
   )
 }

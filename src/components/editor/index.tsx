@@ -13,6 +13,7 @@ import {
   notification
 } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
+import Joyride, { STATUS, Step } from 'react-joyride'
 
 import EditorProvider from '@/context/editor'
 
@@ -32,7 +33,6 @@ import Code from './code'
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
 
-import Joyride, { STATUS, Step } from 'react-joyride'
 
 /**
  * Editor
@@ -72,15 +72,39 @@ const Editor = () => {
   useEffect(() => {
     setSteps([
       {
-        target: '.ant-space-horizontal',
-        content: "Ceci est le bouton 1. Cliquez ici pour effectuer l'action 1.",
+        target: '#new',
+        content: "Create your brand new script.",
         placement: 'bottom',
         disableBeacon:true
       },
       {
-        target: '.editor_code__MLS9F',
-        content: "Ceci est le bouton 2. Cliquez ici pour effectuer l'action 2.",
+        target: '#browser',
+        content: "Find one of your previous script or choose a premade one.",
         placement: 'bottom',
+        disableBeacon:true
+      },
+      {
+        target: '#save',
+        content: "Save your script so you can access it later.",
+        placement: 'bottom',
+        disableBeacon:true
+      },
+      {
+        target: '.editor_steps__8Zh42',
+        content: "It checks if you are doing correctly. Keep an eye on these steps to make sure everything is ok.",
+        placement: 'right-end',
+        disableBeacon:true
+      },
+      {
+        target: '.editor_code__MLS9F',
+        content: "Write your script here. You can find examples of working scripts by clicking the browse button on top of the JSON editor.",
+        placement: 'top-start',
+        disableBeacon:true
+      },
+      {
+        target: '#blobs',
+        content: "Are you struggling to write your script ? Find some premade parts of code right here.",
+        placement: 'top-start',
         disableBeacon:true
       }
     ])
@@ -147,7 +171,7 @@ const Editor = () => {
             <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
-                <button onClick={startTour}>Démarrer le guide</button>
+                <Button onClick={startTour}>Start guide</Button>
                 <New />
                 <Browser
                   user={{

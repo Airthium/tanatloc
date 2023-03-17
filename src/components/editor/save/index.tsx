@@ -197,6 +197,7 @@ const Save = ({ user, swr }: IProps): JSX.Element => {
         loading={loading}
         icon={<SaveOutlined />}
         onClick={onClick}
+        id="save"
       />
     </Tooltip>
   )

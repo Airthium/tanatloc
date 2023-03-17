@@ -286,7 +286,11 @@ const Browser = ({ user, swr }: IProps): JSX.Element => {
         />
       </Dialog>
       <Tooltip title="Browse existing models">
-        <Button icon={<FileSearchOutlined />} onClick={setVisibleTrue} />
+        <Button
+          icon={<FileSearchOutlined />}
+          onClick={setVisibleTrue}
+          id="browser"
+        />
       </Tooltip>
     </>
   )

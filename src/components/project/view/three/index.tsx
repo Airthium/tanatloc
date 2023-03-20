@@ -304,17 +304,16 @@ export const _loadPart = async (
 }
 
 /**
- * Compute colors
+ * Set colorbar
  * @param scene Scene
- * @param colorbarHelper ColorbarHelper
+ * @param colorbarHelper Colorbar helper
  */
-const _computeColors = (
+const _setColorbarhelper = (
   scene: Scene,
   colorbarHelper: IColorbarHelper
 ): void => {
   colorbarHelper.dispose()
   colorbarHelper.setVisible(false)
-
   // Colorbar
   for (const child of scene.children) {
     if (child.type === 'Part' && child.userData.type === 'result') {
@@ -327,6 +326,18 @@ const _computeColors = (
       })
     }
   }
+}
+
+/**
+ * Compute colors
+ * @param scene Scene
+ * @param colorbarHelper ColorbarHelper
+ */
+const _computeColors = (
+  scene: Scene,
+  colorbarHelper: IColorbarHelper
+): void => {
+  _setColorbarhelper(scene, colorbarHelper)
 
   // Colors
   for (const child of scene.children) {

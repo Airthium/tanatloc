@@ -2,114 +2,115 @@
 // ABC is the array of the current coordinates of the second contact area nodes
 // Projection of a point (xp,yp) to the segments of the second body
 
-<% if (dimension !== 2) { -%>
+<% if (dimension !== 2){ -%>
 // vector product functions
-func real[int] vecprod(real[int] &v1, real[int] &v2) {    // Vector product
-  real[int] vecp(3);
-  vecp[0]=v1[1]*v2[2]-v1[2]*v2[1];
-  vecp[1]=v1[2]*v2[0]-v1[0]*v2[2];
-  vecp[2]=v1[0]*v2[1]-v1[1]*v2[0];
-  return vecp;
+func real[int] vecprod(real[int] &v1, real[int] &v2) {
+    // Vector product
+    real[int] vecp(3);
+    vecp[0] = v1[1] * v2[2] - v1[2] * v2[1];
+    vecp[1] = v1[2] * v2[0] - v1[0] * v2[2];
+    vecp[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    return vecp;
 }
 
-func real[int] vecpro(real[int] &v1, real[int] &v2) {       // Normalized Vector product
-  real[int] vecp(3);
-  vecp[0]=v1[1]*v2[2]-v1[2]*v2[1];
-  vecp[1]=v1[2]*v2[0]-v1[0]*v2[2];
-  vecp[2]=v1[0]*v2[1]-v1[1]*v2[0];
-  vecp=vecp/((vecp[0]^2 + vecp[1]^2 +vecp[2]^2)^0.5);  // normalized
-  return vecp;
+func real[int] vecpro(real[int] &v1, real[int] &v2) {
+    // Normalized Vector product
+    real[int] vecp(3);
+    vecp[0] = v1[1] * v2[2] - v1[2] * v2[1];
+    vecp[1] = v1[2] * v2[0] - v1[0] * v2[2];
+    vecp[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    vecp = vecp / ((vecp[0]^2 + vecp[1]^2 + vecp[2]^2)^0.5); // normalized
+    return vecp;
 }
 <% } -%>
 
-
-func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &segdof2){
-
-  meshN Th2=ThFu;
-  int dimensio =xxx.n/dim;        // points number to be projected
-  real[int] etab((dim-1)*dimensio);     // eta parameters of the projected points of the ip points
-  int nu;                       // The border segment number
-  R3 ph;
-
-  <% if (dimension == 2) { -%>
-  meshL Lh = extract(Th2);    // The border of Th2
-  <% } else { -%>
-  meshS Lh = extract(Th2);    // The border of Th2
-  <% } -%>
-
-  for(int i=0;i<dimensio;i++){              // Loop on the integration points
-    x=xxx[dim*i];                           // The abssica of the integration point
-    y=xxx[dim*i+1];                         // The ordinate of the integration point
-    z=0;                                    // 2D case
-    <% if (dimension !== 2) { -%>
-    z=xxx[3*i+2];                           // 3D case
-    <% } -%>
-
-    R3 proj=projection(Lh,nu=nu,Phat=ph); // Projection of the integration point
-    real xproj=proj.x;                    // Abssica of the projection of the integration point
-    real yproj=proj.y;                    // Ordinate of the projection of the integration point
-    <% if (dimension !== 2) { -%>
-    real zproj=proj.z;                    // 3D case
-    <% } -%>
-
-    int IDseg=nu;
-    posi[i]=IDseg;                    // The segment ID in 2D and The triangle ID in 3D
-
-    int dofx0=segdof2[dim*IDseg];    // dof x of the first vertice of the segment IDseg (tridof2[3*IDtri] in 3D)
-    int dofx1=segdof2[dim*IDseg+1];  // dof x of the second vertice of the segment IDseg
-    <% if (dimension !== 2) { -%>
-    int dofx2=segdof2[dim*IDseg+2];  // dof x of the third vertice of the triangle IDseg =IDtri
-    <% } -%>
-
-    real xA=XY2[dofx0];            // x of the first vertice of the segment IDseg
-    real yA=XY2[dofx0+1];          // y of the first vertice of the segment IDseg
-    <% if (dimension !== 2) { -%>
-    real zA=XY2[dofx0+2];          // z of the first vertice of the triangle IDtri
-    <% } -%>
-
-
-    real xB=XY2[dofx1];            // x of the second vertice of the segment IDseg
-    real yB=XY2[dofx1+1];          // y of the second vertice of the segment IDseg
-    <% if (dimension !== 2) { -%>
-    real zB=XY2[dofx1+2];          // z of the second vertice of the triangle IDtri
-    <% } -%>
-
-    <% if (dimension !== 2) { -%>
-    real xC=XY2[dofx2];            // x of the second vertice of the triangle IDtri
-    real yC=XY2[dofx2+1];          // y of the second vertice of the triangle IDtri
-    real zC=XY2[dofx2+2];          // z of the second vertice of the triangle IDtri
-    <% } -%>
-
-
-    <% if (dimension == 2) { -%>
-    real dPA=sqrt((xproj-xA)^2 + (yproj-yA)^2);
-    real dAB=sqrt((xB-xA)^2 + (yB-yA)^2);
-    etab[i]=dPA/dAB;
-    <% } -%>
-
-    <% if (dimension !== 2) { -%>
-    real SABC, SPAC, SPAB;
-    real[int] AB(3), AC(3), BC(3), PA(3), PC(3), PB(3), provec(3);
-    AB=[xB-xA,yB-yA,zB-zA];
-    AC=[xC-xA,yC-yA,zC-zA];
-
-    PA=[xA-xproj,yA-yproj,zA-zproj];
-    PC=[xC-xproj,yC-yproj,zC-zproj];
-    PB=[xB-xproj,yB-yproj,zB-zproj];
-
-    provec=vecprod(AB,AC);		// Vectorial product in order to compute the area of a triangle
-    SABC=0.5*(provec[0]^2+provec[1]^2+provec[2]^2)^0.5;		//= The surface of the triangle
-
-    provec=vecprod(PA,PC);		// Vectorial product in order to compute the area of a triangle
-    SPAC=0.5*(provec[0]^2+provec[1]^2+provec[2]^2)^0.5;		//= The surface of the triangle
-
-    provec=vecprod(PA,PB);		// Vectorial product in order to compute the area of a triangle
-    SPAB=0.5*(provec[0]^2+provec[1]^2+provec[2]^2)^0.5;		//= The surface of the triangle
-
-    etab[2*i]=SPAC/SABC;              // First parameter (surface of triangle PAC / surface of triangle ABC)
-    etab[2*i+1]=SPAB/SABC;            // Second parameter (surface of triangle PAB / surface of triangle ABC)
-    <% } -%>
-
-  }
-  return etab;
+func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &segdof2) {
+    
+    meshN Th2 = ThFu;
+    int dimensio = xxx.n / dim; // points number to be projected
+    real[int] etab((dim - 1) * dimensio); // eta parameters of the projected points of the ip points
+    int nu; // The border segment number
+    R3 ph;
+    
+<% if (dimension==2){ -%>
+    meshL Lh = extract(Th2); // The border of Th2
+<% } else { -%>
+    meshS Lh = extract(Th2); // The border of Th2
+<% } -%>
+    
+    for (int i = 0; i < dimensio; i++) {
+        // Loop on the integration points
+        x = xxx[dim * i]; // The abssica of the integration point
+        y = xxx[dim * i + 1]; // The ordinate of the integration point
+        z = 0; // 2D case
+<% if (dimension !== 2){ -%>
+        z = xxx[3 * i + 2]; // 3D case
+<% } -%>
+        
+        R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
+        real xproj = proj.x; // Abssica of the projection of the integration point
+        real yproj = proj.y; // Ordinate of the projection of the integration point
+<% if (dimension !== 2){ -%>
+        real zproj = proj.z; // 3D case
+<% } -%>
+        
+        int IDseg = nu;
+        posi[i] = IDseg; // The segment ID in 2D and The triangle ID in 3D
+        
+        int dofx0 = segdof2[dim * IDseg]; // dof x of the first vertice of the segment IDseg (tridof2[3*IDtri] in 3D)
+        int dofx1 = segdof2[dim * IDseg + 1]; // dof x of the second vertice of the segment IDseg
+<% if (dimension !== 2){ -%>
+        int dofx2 = segdof2[dim * IDseg + 2]; // dof x of the third vertice of the triangle IDseg =IDtri
+<% } -%>
+        
+        real xA = XY2[dofx0]; // x of the first vertice of the segment IDseg
+        real yA = XY2[dofx0 + 1]; // y of the first vertice of the segment IDseg
+<% if (dimension !== 2){ -%>
+        real zA = XY2[dofx0 + 2]; // z of the first vertice of the triangle IDtri
+<% } -%>
+        
+        real xB = XY2[dofx1]; // x of the second vertice of the segment IDseg
+        real yB = XY2[dofx1 + 1]; // y of the second vertice of the segment IDseg
+<% if (dimension !== 2){ -%>
+        real zB = XY2[dofx1 + 2]; // z of the second vertice of the triangle IDtri
+<% } -%>
+        
+<% if (dimension !== 2){ -%>
+        real xC = XY2[dofx2]; // x of the second vertice of the triangle IDtri
+        real yC = XY2[dofx2 + 1]; // y of the second vertice of the triangle IDtri
+        real zC = XY2[dofx2 + 2]; // z of the second vertice of the triangle IDtri
+<% } -%>
+        
+<% if (dimension==2){ -%>
+        real dPA = sqrt((xproj - xA)^2 + (yproj - yA)^2);
+        real dAB = sqrt((xB - xA)^2 + (yB - yA)^2);
+        etab[i] = dPA / dAB;
+<% } -%>
+        
+<% if (dimension !== 2){ -%>
+        real SABC, SPAC, SPAB;
+        real[int] AB(3), AC(3), BC(3), PA(3), PC(3), PB(3), provec(3);
+        AB = [xB - xA, yB - yA, zB - zA];
+        AC = [xC - xA, yC - yA, zC - zA];
+        
+        PA = [xA - xproj, yA - yproj, zA - zproj];
+        PC = [xC - xproj, yC - yproj, zC - zproj];
+        PB = [xB - xproj, yB - yproj, zB - zproj];
+        
+        provec = vecprod(AB, AC); // Vectorial product in order to compute the area of a triangle
+        SABC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        provec = vecprod(PA, PC); // Vectorial product in order to compute the area of a triangle
+        SPAC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        provec = vecprod(PA, PB); // Vectorial product in order to compute the area of a triangle
+        SPAB = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        etab[2 * i] = SPAC / SABC; // First parameter (surface of triangle PAC / surface of triangle ABC)
+        etab[2 * i + 1] = SPAB / SABC; // Second parameter (surface of triangle PAB / surface of triangle ABC)
+<% } -%>
+        
+    }
+    return etab;
 }
+

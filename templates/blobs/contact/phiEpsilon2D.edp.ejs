@@ -2,42 +2,43 @@
 
 // Definition of the function Phi_{epsilon}
 func real phieps(real xx, real yy, real epsil) {
-  real resu;
-  resu = (xx^2 + yy^2 + epsil)^0.5;
-  return resu;
+    real resu;
+    resu = (xx^2 + yy^2 + epsil)^0.5;
+    return resu;
 }
 
 // ax Derivative of the function Phi_{epsilon}
 func real axphieps(real xx, real yy, real epsil) {
-  real resu;
-  resu = xx / ((xx^2 + yy^2 + epsil)^0.5);
-  return resu;
+    real resu;
+    resu = xx / ((xx^2 + yy^2 + epsil)^0.5);
+    return resu;
 }
 
 // ay Derivative of the function Phi_{epsilon}
 func real ayphieps(real xx, real yy, real epsil) {
-  real resu;
-  resu = yy / ((xx^2 + yy^2 + epsil)^0.5);
-  return resu;
+    real resu;
+    resu = yy / ((xx^2 + yy^2 + epsil)^0.5);
+    return resu;
 }
 
 // axx Derivative of the function Phi_{epsilon}
 func real axxphieps(real xx, real yy, real epsil) {
-  real resu;
-  resu = (yy^2 + epsil) / (((xx^2 + yy^2 + epsil)^0.5) * (xx^2 + yy^2 + epsil));
-  return resu;
+    real resu;
+    resu = (yy^2 + epsil) / (((xx^2 + yy^2 + epsil)^0.5) * (xx^2 + yy^2 + epsil));
+    return resu;
 }
 
 // ayy Derivative of the function Phi_{epsilon}
 func real ayyphieps(real xx, real yy, real epsil) {
-  real resu;
-  resu = (xx^2 + epsil) / (((xx^2 + yy^2 + epsil)^0.5) * (xx^2 + yy^2 + epsil));
-  return resu;
+    real resu;
+    resu = (xx^2 + epsil) / (((xx^2 + yy^2 + epsil)^0.5) * (xx^2 + yy^2 + epsil));
+    return resu;
 }
 
 // axy Derivative of the function Phi_{epsilon}
 func real axyphieps(real xx, real yy, real epsil) {
-  real resu;
-  resu = -xx * yy / (((xx^2 + yy^2 + epsil)^0.5) * (xx^2 + yy^2 + epsil));
-  return resu;
+    real resu;
+    resu = - xx * yy / (((xx^2 + yy^2 + epsil)^0.5) * (xx^2 + yy^2 + epsil));
+    return resu;
 }
+

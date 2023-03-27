@@ -8,7 +8,7 @@ import data from '../../doc/documentation.json'
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
 import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
-import allSnippets from "./snippets/snippets.json"
+import allSnippets from './snippets/snippets.json'
 /**
  * FreeFEM code
  */

@@ -5,50 +5,51 @@
 // x(t) = x0*phi1(t) + x1*phi2(t), phi1, phi2 are the P1 shape functions on the segement
 
 func real[int] P1fun(real[int] &Ac, real &tt) {
-  real resx, resy;
-  real[int] Res(2);
-  real phi1 = 1 - tt;
-  real phi2 = tt;
-
-  resx = phi1 * Ac[0] + phi2 * Ac[2];
-  resy = phi1 * Ac[1] + phi2 * Ac[3];
-
-  Res[0] = resx; // The abscissa
-  Res[1] = resy; // The ordinate
-
-  return Res;
+    real resx, resy;
+    real[int] Res(2);
+    real phi1 = 1 - tt;
+    real phi2 = tt;
+    
+    resx = phi1 * Ac[0] + phi2 * Ac[2];
+    resy = phi1 * Ac[1] + phi2 * Ac[3];
+    
+    Res[0] = resx; // The abscissa
+    Res[1] = resy; // The ordinate
+    
+    return Res;
 }
 
 // Derivative
 func real[int] dP1fun(real[int] &Ac, real &tt) {
-  real resx, resy;
-  real[int] Res(2);
-
-  real dphi1 = -1.;
-  real dphi2 = 1.;
-
-  resx = dphi1 * Ac[0] + dphi2 * Ac[2];
-  resy = dphi1 * Ac[1] + dphi2 * Ac[3];
-
-  Res[0] = resx; // The abscissa
-  Res[1] = resy; // The ordinate
-
-  return Res;
+    real resx, resy;
+    real[int] Res(2);
+    
+    real dphi1 = - 1.;
+    real dphi2 = 1.;
+    
+    resx = dphi1 * Ac[0] + dphi2 * Ac[2];
+    resy = dphi1 * Ac[1] + dphi2 * Ac[3];
+    
+    Res[0] = resx; // The abscissa
+    Res[1] = resy; // The ordinate
+    
+    return Res;
 }
 
 // Second Derivative
 func real[int] ddP1fun(real[int] &Ac, real &tt) {
-  real resx, resy;
-  real[int] Res(2);
-
-  real ddphi1 = 0.;
-  real ddphi2 = 0.;
-
-  resx = ddphi1 * Ac[0] + ddphi2 * Ac[2];
-  resy = ddphi1 * Ac[1] + ddphi2 * Ac[3];
-
-  Res[0] = resx; // The abscissa
-  Res[1] = resy; // The ordinate
-
-  return Res;
+    real resx, resy;
+    real[int] Res(2);
+    
+    real ddphi1 = 0.;
+    real ddphi2 = 0.;
+    
+    resx = ddphi1 * Ac[0] + ddphi2 * Ac[2];
+    resy = ddphi1 * Ac[1] + ddphi2 * Ac[3];
+    
+    Res[0] = resx; // The abscissa
+    Res[1] = resy; // The ordinate
+    
+    return Res;
 }
+

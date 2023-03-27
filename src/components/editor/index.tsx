@@ -33,7 +33,6 @@ import Code from './code'
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
 
-
 /**
  * Editor
  * @returns Editor
@@ -73,39 +72,42 @@ const Editor = () => {
     setSteps([
       {
         target: '#new',
-        content: "Create your brand new script.",
+        content: 'Create your brand new script.',
         placement: 'bottom',
-        disableBeacon:true
+        disableBeacon: true
       },
       {
         target: '#browser',
-        content: "Find one of your previous script or choose a premade one.",
+        content: 'Find one of your previous script or choose a premade one.',
         placement: 'bottom',
-        disableBeacon:true
+        disableBeacon: true
       },
       {
         target: '#save',
-        content: "Save your script so you can access it later.",
+        content: 'Save your script so you can access it later.',
         placement: 'bottom',
-        disableBeacon:true
+        disableBeacon: true
       },
       {
         target: '.editor_steps__8Zh42',
-        content: "It checks if you are doing correctly. Keep an eye on these steps to make sure everything is ok.",
+        content:
+          'It checks if you are doing correctly. Keep an eye on these steps to make sure everything is ok.',
         placement: 'right-end',
-        disableBeacon:true
+        disableBeacon: true
       },
       {
         target: '.editor_code__MLS9F',
-        content: "Write your script here. You can find examples of working scripts by clicking the browse button on top of the JSON editor.",
+        content:
+          'Write your script here. You can find examples of working scripts by clicking the browse button on top of the JSON editor.',
         placement: 'top-start',
-        disableBeacon:true
+        disableBeacon: true
       },
       {
         target: '#blobs',
-        content: "Are you struggling to write your script ? Find some premade parts of code right here.",
+        content:
+          'Are you struggling to write your script ? Find some premade parts of code right here.',
         placement: 'top-start',
-        disableBeacon:true
+        disableBeacon: true
       }
     ])
   }, [])

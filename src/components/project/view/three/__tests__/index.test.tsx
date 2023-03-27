@@ -207,6 +207,17 @@ describe('components/project/view/three', () => {
     mockWebGLAvailable.mockReset()
     mockWebGLAvailable.mockImplementation(() => true)
 
+    const traverse = jest.fn().mockImplementation((callback) => {
+      callback({ type: 'Other' })
+      callback({
+        type: 'Mesh',
+        userData: { lut: 'lut' },
+        geometry: {
+          getAttribute: () => ({ count: 1, array: [1, 2, 3] }),
+          setAttribute: jest.fn()
+        }
+      })
+    })
     mockPartLoader.mockImplementation((mouseMove, mouseDown, count) => {
       mouseMove({
         unhighlight: jest.fn()
@@ -292,6 +303,7 @@ describe('components/project/view/three', () => {
             userData: {}
           }
         ],
+        traverse,
         dispose: jest.fn(),
         setTransparent: jest.fn(),
         setDisplayMesh: jest.fn(),
@@ -310,6 +322,7 @@ describe('components/project/view/three', () => {
         },
         material: {},
         userData: {},
+        traverse,
         dispose: jest.fn(),
         setTransparent: jest.fn(),
         setDisplayMesh: jest.fn(),
@@ -329,6 +342,7 @@ describe('components/project/view/three', () => {
         },
         material: {},
         userData: {},
+        traverse,
         dispose: jest.fn(),
         setTransparent: jest.fn(),
         setDisplayMesh: jest.fn(),

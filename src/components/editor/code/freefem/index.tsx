@@ -1,14 +1,19 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import AceEditor from 'react-ace'
 import ReactAce from 'react-ace/lib/ace'
-import CustomTooltip from '../tooltip'
+import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
+
 import 'ace-builds/src-noconflict/theme-one_dark'
 import './mode/mode-freefem-ejs'
-import data from '../../doc/documentation.json'
+
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
-import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
+
+import data from '../../doc/documentation.json'
+
 import allSnippets from './snippets/snippets.json'
+import CustomTooltip from '../tooltip'
+
 /**
  * FreeFEM code
  */

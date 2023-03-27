@@ -68,7 +68,7 @@ describe('component/editor', () => {
     ])
     const { unmount } = render(<Editor />)
 
-    expect(mockReplace).toHaveBeenCalledTimes(1)
+    expect(mockReplace).toHaveBeenCalledTimes(2)
     expect(mockReplace).toHaveBeenLastCalledWith('/')
 
     unmount()

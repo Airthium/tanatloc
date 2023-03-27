@@ -6,7 +6,11 @@ import FreeFEMCode from '..'
 const mockReactAce = jest.fn()
 jest.mock('react-ace', () => (props: any) => mockReactAce(props))
 
-jest.mock('ace-builds/src-noconflict/theme-sqlserver', () => {})
+jest.mock('ace-builds/src-noconflict/theme-one_dark', () => {})
+
+jest.mock('ace-builds/src-noconflict/ext-language_tools', () => ({
+  setCompleters: jest.fn()
+}))
 
 jest.mock('../mode/mode-freefem-ejs', () => {})
 
@@ -88,14 +92,18 @@ describe('components/editor/code/freefem_editor', () => {
           callback({})
         },
         renderer: {
-          pixelToScreenCoordinates: jest.fn
+          pixelToScreenCoordinates: jest.fn,
+          textToScreenCoordinates: jest.fn
         },
         session: {
           getTokenAt: () => {
             count++
             if (count === 1) return {}
             else return { type: 'support.function' }
-          }
+          },
+          getWordRange: () => ({
+            start: { row: 1, column: 1 }
+          })
         }
       }
     }

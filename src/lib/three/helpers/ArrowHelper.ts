@@ -1,6 +1,7 @@
 /** @module Lib.Three.Helpers.ArrowHelper */
 
 import {
+  ColorRepresentation,
   ConeGeometry,
   CylinderGeometry,
   Group,
@@ -18,7 +19,7 @@ export interface IArrowHelper extends Omit<Group, 'type'> {
  * @memberof Lib.Three.Helpers
  * @param color Color
  */
-const ArrowHelper = (color: string): IArrowHelper => {
+const ArrowHelper = (color: ColorRepresentation): IArrowHelper => {
   // Cylinder
   const cylinderGeometry = new CylinderGeometry(0.025, 0.025, 0.8, 50)
   cylinderGeometry.translate(0, 0.4, 0)

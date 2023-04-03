@@ -18,7 +18,6 @@ import {
   PerspectiveCamera,
   BufferGeometry,
   AmbientLight,
-  ShapeGeometry,
   Uint32BufferAttribute
 } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -82,7 +81,7 @@ const shape = (
   height: number,
   radius: number,
   smooth: number
-): ShapeGeometry => {
+): BufferGeometry => {
   const innerWidth = width / 2 - radius
   const innerHeight = height / 2 - radius
   const left = radius / width

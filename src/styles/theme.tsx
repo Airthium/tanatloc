@@ -1,3 +1,5 @@
+/** @module Style */
+
 import { ThemeConfig } from 'antd/es/config-provider/context'
 
 const colorPrimary = '#fad114'

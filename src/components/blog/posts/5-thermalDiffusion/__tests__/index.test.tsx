@@ -1,14 +1,6 @@
 import { render } from '@testing-library/react'
 
-import Post, {
-  author,
-  date,
-  description,
-  image,
-  key,
-  keywords,
-  title
-} from '../index'
+import Post from '../index'
 
 jest.mock('@/components/assets/mathjax', () => ({
   Inline: () => <div />,
@@ -19,18 +11,18 @@ jest.mock('../../layout', () => (props: any) => <div>{props.children}</div>)
 
 describe('components/blog/posts/5-thermalDiffusion', () => {
   test('render', () => {
-    const { unmount } = render(<Post />)
+    const { unmount } = render(<Post.default />)
 
     unmount()
   })
 
   test('data', () => {
-    expect(key).toBeDefined()
-    expect(title).toBeDefined()
-    expect(description).toBeDefined()
-    expect(date).toBeDefined()
-    expect(image).toBeDefined()
-    expect(keywords).toBeDefined()
-    expect(author).toBeDefined()
+    expect(Post.key).toBeDefined()
+    expect(Post.title).toBeDefined()
+    expect(Post.description).toBeDefined()
+    expect(Post.date).toBeDefined()
+    expect(Post.image).toBeDefined()
+    expect(Post.keywords).toBeDefined()
+    expect(Post.author).toBeDefined()
   })
 })

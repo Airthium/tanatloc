@@ -1,3 +1,5 @@
+/** @module Components.Dashboard.Updater */
+
 import { useCallback, useEffect, useState } from 'react'
 import { Space, Typography } from 'antd'
 

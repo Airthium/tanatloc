@@ -99,6 +99,12 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     colorbarHelper.render()
   })
 
+  test('setRange', () => {
+    const colorbarHelper = ColorbarHelper(renderer)
+    colorbarHelper.setRange(0, 10)
+    colorbarHelper.dispose()
+  })
+
   test('dispose', () => {
     const colorbarHelper = ColorbarHelper(renderer)
     colorbarHelper.dispose()

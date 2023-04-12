@@ -41,9 +41,9 @@ const Updater = (): JSX.Element => {
     window.open(
       'https://github.com/Airthium/tanatloc-electron/releases/tag/' +
         needUpdate?.res.tag_name,
-      '_blank',
-      'top=500,left=200,frame=false,nodeIntegration=no'
+      '_blank'
     )
+    setVisible(false)
   }, [needUpdate])
 
   return (

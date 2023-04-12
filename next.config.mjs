@@ -24,6 +24,7 @@ const nextConfig = {
 
     return config
   },
+  pageExtensions: ['page.tsx', 'api.ts'],
   env: {
     SENTRY_DSN: Sentry.DSN
   },

@@ -133,13 +133,13 @@ export const _onUpdate = async (
       ...(values as any)
     })
 
-    const groupIndex = organization.groups?.findIndex((g) => g.id === group.id)
+    const groupIndex = organization.groups.findIndex((g) => g.id === group.id)
     swr.mutateOneOrganization({
       id: organization.id,
       groups: [
-        ...organization.groups?.slice(0, groupIndex),
+        ...organization.groups.slice(0, groupIndex),
         group,
-        ...organization.groups?.slice(groupIndex + 1)
+        ...organization.groups.slice(groupIndex + 1)
       ]
     })
   } catch (err) {

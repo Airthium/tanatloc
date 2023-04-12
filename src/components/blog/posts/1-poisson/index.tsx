@@ -7,13 +7,13 @@ import Carousel from '@/components/assets/carousel'
 
 import PostLayout from '../layout'
 
-export const key = '1-poisson'
-export const title = "Poisson's problem"
-export const description = "First example, the Poisson's problem"
-export const date = '2023-01-30'
-export const image = '/images/Poisson.png'
-export const keywords = ['Tutorial', 'Academic']
-export const author = {
+const key = '1-poisson'
+const title = "Poisson's problem"
+const description = "First example, the Poisson's problem"
+const date = '2023-01-30'
+const image = '/images/Poisson.png'
+const keywords = ['Tutorial', 'Academic']
+const author = {
   name: 'Simon Garnotel',
   url: 'https://github.com/sgarnotel'
 }
@@ -347,4 +347,15 @@ const Post = () => {
   )
 }
 
-export default Post
+const Poisson = {
+  default: Post,
+  key,
+  title,
+  description,
+  date,
+  image,
+  keywords,
+  author
+}
+
+export default Poisson

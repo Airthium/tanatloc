@@ -239,7 +239,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
                   ...o,
                   key: o.id
                 })),
-                ...organization.pendingowners?.map((o) => ({
+                ...organization.pendingowners.map((o) => ({
                   ...o,
                   pending: true,
                   key: o.id
@@ -276,11 +276,11 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
               size="small"
               columns={usersColumns}
               dataSource={[
-                ...organization.users?.map((u) => ({
+                ...organization.users.map((u) => ({
                   ...u,
                   key: u.id
                 })),
-                ...organization.pendingusers?.map((u) => ({
+                ...organization.pendingusers.map((u) => ({
                   ...u,
                   pending: true,
                   key: u.id

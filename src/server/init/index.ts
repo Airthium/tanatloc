@@ -1,3 +1,5 @@
+/** @module Server.Init */
+
 import { loadPlugins, restartJobs } from '@/lib/plugins'
 import { loadTemplates } from '@/lib/template'
 

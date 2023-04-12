@@ -1,35 +1,51 @@
-/** @module Update */
+/** @module Lib.Update */
 
 import isElectron from 'is-electron'
-import fetch from 'node-fetch'
-import appData from '../../../package.json'
+
+import packageJson from '../../../package.json'
+
+export interface IUpdateFalse {
+  needed: false
+}
+
+export interface IUpdateTrue {
+  needed: boolean
+  res: any
+}
+
+export type IUpdate = IUpdateFalse | IUpdateTrue
 
 /**
- * Get latest version
+ * Need update
  * @returns Update needed
  */
-const isUpdateNeeded = async (): Promise<boolean> => {
-  const myToken = 'XXX'
-  if (!isElectron()) return false
+const needUpdate = async (): Promise<IUpdate> => {
+  if (!isElectron())
+    return {
+      needed: false
+    }
 
   // Get current version from github
   const response: any = await fetch(
     'https://api.github.com/repos/Airthium/tanatloc-electron/releases/latest',
     {
-      method: 'GET',
-      headers: {
-        Authorization: 'token ' + myToken
-      }
+      method: 'GET'
     }
   )
   const json = await response.json()
 
   // Get current downloaded version
-  const currentVersion = appData.version
+  const currentVersion = packageJson.version
+
+  console.log(currentVersion)
+  console.log(packageJson.version)
 
   // Need update ?
-  return currentVersion !== json.tag_name
+  return {
+    needed: currentVersion !== json.tag_name,
+    res: json
+  }
 }
 
-const Update = { isUpdateNeeded }
+const Update = { needUpdate }
 export default Update

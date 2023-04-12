@@ -7,13 +7,13 @@ import Carousel from '@/components/assets/carousel'
 
 import PostLayout from '../layout'
 
-export const key = '2-ModalAnalysis'
-export const title = 'Modal Analysis problems'
-export const description = 'Validation tests, modal analysis'
-export const date = '2023-02-17'
-export const image = '/images/modalAnalysis.jpeg'
-export const keywords = ['Modal', 'Validation', 'Theory']
-export const author = {
+const key = '2-ModalAnalysis'
+const title = 'Modal Analysis problems'
+const description = 'Validation tests, modal analysis'
+const date = '2023-02-17'
+const image = '/images/modalAnalysis.jpeg'
+const keywords = ['Modal', 'Validation', 'Theory']
+const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'
 }
@@ -276,4 +276,15 @@ const Post = () => {
   )
 }
 
-export default Post
+const ModalAnalysis = {
+  default: Post,
+  key,
+  title,
+  description,
+  date,
+  image,
+  keywords,
+  author
+}
+
+export default ModalAnalysis

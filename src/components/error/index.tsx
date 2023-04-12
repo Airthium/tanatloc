@@ -19,7 +19,7 @@ export interface IProps {
  * @param props Props
  * @return Error
  */
-function Error({ webStatusCode }: IProps): JSX.Element {
+function ErrorPage({ webStatusCode }: IProps): JSX.Element {
   // Data
   const router = useRouter()
   const {
@@ -95,10 +95,10 @@ function Error({ webStatusCode }: IProps): JSX.Element {
   )
 }
 
-Error.getInitialProps = ({ res, err }: NextPageContext) => {
+ErrorPage.getInitialProps = ({ res, err }: NextPageContext) => {
   if (res) return { webStatusCode: res.statusCode }
   else if (err) return { webStatusCode: err.statusCode }
   else return { webStatusCode: 404 }
 }
 
-export default Error
+export default ErrorPage

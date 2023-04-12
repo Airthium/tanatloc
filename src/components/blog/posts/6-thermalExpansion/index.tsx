@@ -7,13 +7,13 @@ import Carousel from '@/components/assets/carousel'
 
 import PostLayout from '../layout'
 
-export const key = '3-ThermalExpansion'
-export const title = 'Thermal expansion problems'
-export const description = 'Validation tests, thermal expansion'
-export const date = '2023-02-24'
-export const image = '/images/thermalExpansion.png'
-export const keywords = ['Thermic', 'Validation', 'Theory']
-export const author = {
+const key = '3-ThermalExpansion'
+const title = 'Thermal expansion problems'
+const description = 'Validation tests, thermal expansion'
+const date = '2023-02-24'
+const image = '/images/thermalExpansion.png'
+const keywords = ['Thermic', 'Validation', 'Theory']
+const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'
 }
@@ -278,4 +278,15 @@ const Post = () => {
   )
 }
 
-export default Post
+const ThermalExpansion = {
+  default: Post,
+  key,
+  title,
+  description,
+  date,
+  image,
+  keywords,
+  author
+}
+
+export default ThermalExpansion

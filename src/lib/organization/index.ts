@@ -387,13 +387,13 @@ const accept = async (organization: { id: string }, user: { id: string }) => {
   // Update organization
   await update(organization, [
     {
-      key: !!pendingOwner ? 'pendingowners' : 'pendingusers',
+      key: pendingOwner ? 'pendingowners' : 'pendingusers',
       type: 'array',
       method: 'remove',
       value: user.id
     },
     {
-      key: !!pendingOwner ? 'owners' : 'users',
+      key: pendingOwner ? 'owners' : 'users',
       type: 'array',
       method: 'append',
       value: user.id
@@ -423,7 +423,7 @@ const decline = async (organization: { id: string }, user: { id: string }) => {
   // Update organization
   await update(organization, [
     {
-      key: !!pendingOwner ? 'pendingowners' : 'pendingusers',
+      key: pendingOwner ? 'pendingowners' : 'pendingusers',
       type: 'array',
       method: 'remove',
       value: user.id

@@ -1,3 +1,5 @@
+/** @module Server.Init.Database */
+
 import { checkdB, startdB } from '@/database'
 
 /**

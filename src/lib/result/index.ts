@@ -96,33 +96,30 @@ const archive = async (simulation: { id: string }): Promise<ReadStream> => {
   const output = Tools.writeStream(archiveName)
   const zip = archiver('zip')
 
-  await new Promise(async (resolve, reject) => {
+  await new Promise((resolve, reject) => {
     zip.on('warning', (err: Error) => console.warn(err))
     zip.on('error', (err: Error) => reject(err))
     zip.pipe(output)
 
     // Append files
-    await Promise.all(
-      files.map(async (file) => {
-        const extension = file.split('.').pop()
-        if (extension === 'vtu')
-          zip.append(Tools.readStream(path.join(resultPath, file)), {
-            name: path.join('result', file)
-          })
-      })
-    )
+    files.forEach((file) => {
+      const extension = file.split('.').pop()
+      if (extension === 'vtu')
+        zip.append(Tools.readStream(path.join(resultPath, file)), {
+          name: path.join('result', file)
+        })
+    })
 
     zip.append(Tools.readStream(summary.path), { name: summary.name })
 
-    await Promise.all(
-      pvdFiles.map(async (file) => {
-        zip.append(Tools.readStream(file.path), { name: file.name })
-      })
-    )
+    pvdFiles.forEach((file) => {
+      zip.append(Tools.readStream(file.path), { name: file.name })
+    })
 
     output.on('close', resolve)
+
     // Finalize
-    await zip.finalize()
+    zip.finalize()
   })
 
   // Read stream

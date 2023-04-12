@@ -1,3 +1,5 @@
+/** @module Server.Clean */
+
 import { execSync } from 'child_process'
 
 import { stopdB } from '@/database'

@@ -2,8 +2,6 @@
 
 set -e
 
-export CI=1
-
 # Clean
 echo " + Clean"
 git clean -xdf >node.local.log

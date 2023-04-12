@@ -139,6 +139,7 @@ const SectionViewHelper = (
       opacity: 0.5
     })
     const plane = new Mesh(geometry, material)
+    //@ts-ignore
     plane.type = 'Plane'
 
     controller.add(plane)
@@ -158,6 +159,7 @@ const SectionViewHelper = (
       opacity: 0.5
     })
     const dome = new Mesh(geometry, material)
+    //@ts-ignore
     dome.type = 'Dome'
 
     controller.add(dome)
@@ -198,6 +200,7 @@ const SectionViewHelper = (
       })
       const arcX = new Mesh(geometry, material)
       arcX.rotateX(Math.PI / 2)
+      //@ts-ignore
       arcX.type = 'ArcX'
 
       controller.add(arcX)
@@ -214,6 +217,7 @@ const SectionViewHelper = (
       const arcY = new Mesh(geometry, material)
       arcY.rotateX(Math.PI / 2)
       arcY.rotateY(Math.PI / 2)
+      //@ts-ignore
       arcY.type = 'ArcY'
 
       controller.add(arcY)

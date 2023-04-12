@@ -7,13 +7,13 @@ import PostLayout from '../layout'
 import MathJax from '@/components/assets/mathjax'
 import Carousel from '@/components/assets/carousel'
 
-export const key = '2-stokes'
-export const title = "Stokes's problem"
-export const description = 'A simple Stokes problem example'
-export const image = '/images/Stokes.png'
-export const date = '2023-01-31'
-export const keywords = ['Tutorial', 'Fluid']
-export const author = {
+const key = '2-stokes'
+const title = "Stokes's problem"
+const description = 'A simple Stokes problem example'
+const image = '/images/Stokes.png'
+const date = '2023-01-31'
+const keywords = ['Tutorial', 'Fluid']
+const author = {
   name: 'Simon Garnotel',
   url: 'https://github.com/sgarnotel'
 }
@@ -325,4 +325,15 @@ const Post = () => {
   )
 }
 
-export default Post
+const Stokes = {
+  default: Post,
+  key,
+  title,
+  description,
+  date,
+  image,
+  keywords,
+  author
+}
+
+export default Stokes

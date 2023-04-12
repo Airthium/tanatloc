@@ -26,6 +26,7 @@ import Account from '@/components/account'
 import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
 import Help from '@/components/help'
+import Updater from '@/components/dashboard/updater'
 
 import UserAPI from '@/api/user'
 import OrganizationAPI from '@/api/organization'
@@ -194,6 +195,7 @@ const Dashboard = () => {
 
   return (
     <Layout className={style.dashboard}>
+      <Updater />
       <Layout.Sider theme="light" width="256" className={style.sider}>
         <div className={globalStyle.logo}>
           <img src="/images/logo.svg" alt="Tanatloc" />

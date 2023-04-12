@@ -70,7 +70,7 @@ const Index = (): JSX.Element => {
 
   // Release
   useEffect(() => {
-    new Promise(async (resolve, reject) => {
+    ;(async () => {
       try {
         const releaseResponse = await fetch(
           'https://api.github.com/repos/Airthium/tanatloc-electron/releases'
@@ -95,22 +95,16 @@ const Index = (): JSX.Element => {
           a.name.includes('.exe')
         )?.browser_download_url
 
-        resolve({
+        setRelease({
           version: latestRelease.name,
           appImage,
           dmg,
           exe
         })
-      } catch (err) {
-        reject(err)
-      }
-    })
-      .then((newRelease) => {
-        setRelease(newRelease as IRelease)
-      })
-      .catch((err) => {
+      } catch (err: any) {
         setReleaseError(err.message)
-      })
+      }
+    })()
   }, [])
 
   /**

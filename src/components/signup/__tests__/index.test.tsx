@@ -196,9 +196,6 @@ describe('components/signup', () => {
     mockPassword()
     const { unmount } = render(<Signup />)
 
-    const mockWarn = jest.fn()
-    console.warn = mockWarn
-
     const password = screen.getByRole('PasswordItem')
     const confirm = screen.getByLabelText('Confirm your password')
 
@@ -209,7 +206,7 @@ describe('components/signup', () => {
       fireEvent.change(confirm, { target: { value: 'other_password' } })
     )
 
-    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
+    await waitFor(() => screen.getByText('Passwords mismatch'))
 
     unmount()
   })

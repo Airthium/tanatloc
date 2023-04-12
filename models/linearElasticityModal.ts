@@ -30,7 +30,7 @@ const LinearElasticityModal: IModel = {
   and \\(\\sigma\\) the shift of the method which helps to find eigenvalues near \\(\\sigma\\). By default \\(\\sigma\\) \\(=\\) \\(0\\). <br/>
   </p>
   <p>
-  You can see <a target=\"_blank\" href=\"https://freefem.org\">FreeFEM</a>.\n </p> `,
+  You can see <a target="_blank" href="https://freefem.org">FreeFEM</a>.\n</p> `,
   variables: [
     {
       name: 'Displacement (x)',

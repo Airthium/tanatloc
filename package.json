@@ -16,7 +16,7 @@
     "prettier:write": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,css}'",
     "doc": "typedoc --options config/typedoc/config.json",
     "testwatch": "jest --config config/jest/jest.config.js --watch",
-    "test": "jest --config config/jest/jest.config.js --coverage --silent ",
+    "test": "jest --config config/jest/jest.config.js --coverage --silent --runInBand",
     "sonar": ".github/workflows/sonar.local.sh",
     "prestart": "yarn prestart:config && yarn prestart:database && yarn prestart:init && yarn prestart:install && yarn prestart:run",
     "prestart:config": "swc config/db.ts --out-dir dist-install/config && swc config/storage.ts --out-dir dist-install/config",

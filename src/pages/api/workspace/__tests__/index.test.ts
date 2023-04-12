@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import workspace from '..'
+import workspace from '../index.api'
 
 jest.mock('@/route/workspace', () => jest.fn())
 

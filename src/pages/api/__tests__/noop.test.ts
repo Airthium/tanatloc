@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import noop from '../noop'
+import noop from '../noop.api'
 
 describe('pages/api/noop', () => {
   const req = {} as Request

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import avatar from '../'
+import avatar from '../index.api'
 
 jest.mock('@/route/avatar', () => jest.fn())
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import log from '../log'
+import log from '../log.api'
 
 jest.mock('@/route/simulation/[id]/log', () => () => {})
 

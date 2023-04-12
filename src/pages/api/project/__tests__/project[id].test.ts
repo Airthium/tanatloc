@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import id from '../[id]'
+import id from '../[id].api'
 
 jest.mock('@/route/project/[id]', () => jest.fn())
 

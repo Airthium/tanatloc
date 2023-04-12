@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import group from '..'
+import group from '../index.api'
 
 jest.mock('@/route/group', () => jest.fn())
 

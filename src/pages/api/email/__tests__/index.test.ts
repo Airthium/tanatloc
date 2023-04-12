@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import email from '..'
+import email from '../index.api'
 
 jest.mock('@/route/email', () => jest.fn())
 

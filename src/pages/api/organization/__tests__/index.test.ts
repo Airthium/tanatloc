@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import route from '..'
+import route from '../index.api'
 
 jest.mock('@/route/organization', () => jest.fn())
 

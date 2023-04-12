@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import run from '../run'
+import run from '../run.api'
 
 jest.mock('@/route/simulation/[id]/run', () => () => {})
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import part from '../part'
+import part from '../part.api'
 
 jest.mock('@/route/geometry/[id]/part', () => jest.fn())
 

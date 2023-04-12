@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import archive from '../archive'
+import archive from '../archive.api'
 
 jest.mock('@/route/project/[id]/archive', () => jest.fn())
 

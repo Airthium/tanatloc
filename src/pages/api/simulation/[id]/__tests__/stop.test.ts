@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import stop from '../stop'
+import stop from '../stop.api'
 
 jest.mock('@/route/simulation/[id]/stop', () => () => {})
 

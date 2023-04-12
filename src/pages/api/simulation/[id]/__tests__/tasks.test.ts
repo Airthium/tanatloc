@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import tasks from '../tasks'
+import tasks from '../tasks.api'
 
 jest.mock('@/route/simulation/[id]/tasks', () => () => {})
 

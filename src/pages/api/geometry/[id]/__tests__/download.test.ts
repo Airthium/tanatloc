@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import download from '../download'
+import download from '../download.api'
 
 jest.mock('@/route/geometry/[id]/download', () => jest.fn())
 

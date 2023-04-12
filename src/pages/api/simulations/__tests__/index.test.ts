@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import simulations from '..'
+import simulations from '../index.api'
 
 jest.mock('@/route/simulations', () => jest.fn())
 

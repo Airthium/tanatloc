@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import geometry from '..'
+import geometry from '../index.api'
 
 jest.mock('@/route/geometry', () => jest.fn())
 

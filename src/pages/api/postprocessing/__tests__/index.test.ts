@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import postprocessing from '..'
+import postprocessing from '../index.api'
 
 jest.mock('@/route/postprocessing', () => jest.fn())
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import logout from '../logout'
+import logout from '../logout.api'
 
 jest.mock('@/route/logout', () => ({
   logout: jest.fn()

@@ -1,7 +1,7 @@
 /** @module Components.Loading */
 
 import { useEffect, useRef, useState } from 'react'
-import { Card, Layout, Space, Spin, Steps, Typography } from 'antd'
+import { Card, Layout, Space, Spin, Steps, StepsProps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
 
 import globalStyle from '@/styles/index.module.css'
@@ -49,82 +49,70 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
   const contentRef = useRef<HTMLDivElement>(null)
 
   // State
-  const [statusDisplay, setStatusDisplay] = useState<JSX.Element>()
-  const [errorsDisplay, setErrorsDisplay] = useState<JSX.Element>()
+  const [steps, setSteps] = useState<StepsProps['items']>([])
+  const [errorMessages, setErrorMessages] = useState<JSX.Element[]>([])
 
   // Status
   useEffect(() => {
     if (!status?.length) {
-      setStatusDisplay(undefined)
+      setSteps([])
       return
     }
 
-    setStatusDisplay(
-      <div className={style.status}>
-        <Steps
-          direction="vertical"
-          items={status
-            .map((desc, index) => ({
-              key: index,
-              status: 'finish' as 'finish',
-              icon:
-                index === status.length - 1 ? <LoadingOutlined /> : undefined,
-              title: desc
-            }))
-            .reverse()}
-        />
-      </div>
+    setSteps(
+      status
+        .map((desc, index) => ({
+          key: index,
+          status: 'finish' as 'finish',
+          icon: index === status.length - 1 ? <LoadingOutlined /> : undefined,
+          title: desc
+        }))
+        .reverse()
     )
   }, [status, errors])
 
   // Errors
   useEffect(() => {
     if (!errors?.length) {
-      setErrorsDisplay(undefined)
+      setErrorMessages([])
       return
     }
 
-    setErrorsDisplay(
-      <div className={style.errors}>
-        {errors.map((err) => {
-          let child = null
-          if (
-            err.includes('docker: command not found') ||
-            err.includes('Is the docker daemon running')
+    setErrorMessages(
+      errors.map((err) => {
+        let child = null
+        if (
+          err.includes('docker: command not found') ||
+          err.includes('Is the docker daemon running')
+        )
+          child = (
+            <Card>
+              There is an error with your Docker installation.
+              <br />
+              Please verify that Docker is correctly installed and running.
+            </Card>
           )
-            child = (
-              <Card>
-                There is an error with your Docker installation.
-                <br />
-                Please verify that Docker is correctly installed and running.
-              </Card>
-            )
-          else if (
-            err.includes('EHOSTUNREACH') ||
-            err.includes('ENETUNREACH') ||
-            err.includes('ETIMEOUT')
+        else if (
+          err.includes('EHOSTUNREACH') ||
+          err.includes('ENETUNREACH') ||
+          err.includes('ETIMEOUT')
+        )
+          child = (
+            <Card>
+              There is an error with your PostgreSQL installation.
+              <br />
+              Please verify that postgres Docker container
+              &quot;tanatloc-postgres&quot; is correctly installed and running.
+            </Card>
           )
-            child = (
-              <Card>
-                There is an error with your PostgreSQL installation.
-                <br />
-                Please verify that postgres Docker container
-                &quot;tanatloc-postgres&quot; is correctly installed and
-                running.
-              </Card>
-            )
 
-          return (
-            <div key={err}>
-              {err}
-              {child}
-            </div>
-          )
-        })}
-        <Typography.Title level={5} style={{ color: 'red' }}>
-          Please restart the application
-        </Typography.Title>
-      </div>
+        return (
+          <div key={err}>
+            {err}
+            {child}
+          </div>
+        )
+      })
     )
   }, [errors])
 
@@ -170,8 +158,17 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
       >
         {display ? (
           <div ref={contentRef} className={style.content}>
-            {errorsDisplay}
-            {statusDisplay}
+            {errorMessages.length ? (
+              <div className={style.errors}>
+                {errorMessages.map((err) => err)}
+                <Typography.Title level={5} style={{ color: 'red' }}>
+                  Please restart the application
+                </Typography.Title>
+              </div>
+            ) : null}
+            <div className={style.status}>
+              <Steps direction="vertical" items={steps} />
+            </div>
           </div>
         ) : null}
       </Card>

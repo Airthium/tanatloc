@@ -33,7 +33,7 @@ describe('lib/update', () => {
     })
   })
 
-  test('wrong version', async () => {
+  test('new version', async () => {
     mockIsElectron.mockImplementation(() => true)
     mockFetch.mockImplementation(() => ({
       json: () => ({
@@ -43,6 +43,32 @@ describe('lib/update', () => {
     expect(await Update.needUpdate()).toEqual({
       needed: true,
       res: { tag_name: '2.0.0' }
+    })
+  })
+
+  test('new alpha version', async () => {
+    mockIsElectron.mockImplementation(() => true)
+    mockFetch.mockImplementation(() => ({
+      json: () => ({
+        tag_name: '2.0.0-alpha.1'
+      })
+    }))
+    expect(await Update.needUpdate()).toEqual({
+      needed: false,
+      res: { tag_name: '2.0.0-alpha.1' }
+    })
+  })
+
+  test('new beta version', async () => {
+    mockIsElectron.mockImplementation(() => true)
+    mockFetch.mockImplementation(() => ({
+      json: () => ({
+        tag_name: '2.0.0-beta.1'
+      })
+    }))
+    expect(await Update.needUpdate()).toEqual({
+      needed: false,
+      res: { tag_name: '2.0.0-beta.1' }
     })
   })
 })

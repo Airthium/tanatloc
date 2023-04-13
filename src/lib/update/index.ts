@@ -37,12 +37,14 @@ const needUpdate = async (): Promise<IUpdate> => {
   // Get current downloaded version
   const currentVersion = packageJson.version
 
-  console.log(currentVersion)
-  console.log(packageJson.version)
-
   // Need update ?
+  const needed =
+    !json.tag_name.includes('alpha') &&
+    !json.tag_name.includes('beta') &&
+    currentVersion !== json.tag_name
+
   return {
-    needed: currentVersion !== json.tag_name,
+    needed,
     res: json
   }
 }

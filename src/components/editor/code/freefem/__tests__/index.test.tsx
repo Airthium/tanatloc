@@ -22,6 +22,8 @@ jest.mock('react', () => {
   }
 })
 
+jest.mock('../tooltip', () => () => <div />)
+
 describe('components/editor/code/freefem_editor', () => {
   beforeEach(() => {
     mockReactAce.mockReset()

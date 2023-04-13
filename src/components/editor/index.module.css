@@ -36,3 +36,19 @@
   width: 100%;
   height: 100%;
 }
+
+.tooltip {
+  position: absolute;
+  z-index: 10;
+  background-color: #1f1f1f;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  overflow: auto;
+}
+
+.tooltip :global(.ant-card-head) {
+  color: #fff;
+}
+
+.tooltip :global(.ant-card-extra) {
+  margin-left: 20px;
+}

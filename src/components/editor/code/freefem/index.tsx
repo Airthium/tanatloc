@@ -1,3 +1,5 @@
+/** @module Components.Editor.Code.FreeFEM */
+
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import AceEditor from 'react-ace'
 import ReactAce from 'react-ace/lib/ace'
@@ -9,13 +11,33 @@ import './mode/mode-freefem-ejs'
 import { EditorContext } from '@/context/editor'
 import { setCursor, setTemplate } from '@/context/editor/actions'
 
-import data from '../../doc/documentation.json'
-
 import allSnippets from './snippets/snippets.json'
-import CustomTooltip from '../tooltip'
+import data from './doc/documentation.json'
+import CustomTooltip from './tooltip'
+
+/**
+ * Token
+ */
+export interface IToken {
+  name: string
+  definition: string
+  example: string
+  params?: string[]
+  output?: string[]
+  docReference?: string
+}
+
+/**
+ * Position
+ */
+export interface IPosition {
+  x: number
+  y: number
+}
 
 /**
  * FreeFEM code
+ * @returns FreeFEMCode
  */
 const FreeFEMCode = (): JSX.Element => {
   // Ref
@@ -24,19 +46,11 @@ const FreeFEMCode = (): JSX.Element => {
   const timeoutId = useRef<NodeJS.Timeout>()
 
   // State
-  const [tooltipInfos, setTooltipInfos] = useState({
+  const [tooltipPosition, setTooltipPosition] = useState<IPosition>({
     x: 0,
-    y: 0,
-    display: false,
-    currentToken: {} as {
-      name: string
-      definition: string
-      example: string
-      params?: string[]
-      output?: string[]
-      docReference?: string
-    }
+    y: 0
   })
+  const [tooltipToken, setTooltipToken] = useState<IToken>()
 
   // Data
   const { template, dispatch } = useContext(EditorContext)
@@ -87,25 +101,23 @@ const FreeFEMCode = (): JSX.Element => {
     if (timeoutId.current && currentToken.current === token?.value) return
     else if (timeoutId.current) {
       clearTimeout(timeoutId.current)
-      setTooltipInfos((prev) => ({ ...prev, display: false }))
+      setTooltipToken(undefined)
     }
-
     currentToken.current = token?.value
 
     timeoutId.current = setTimeout(() => {
-      if (
-        (token && token.type === 'support.function') ||
-        (token && token.type === 'storage.type') // Need better switch case
-      ) {
-        let currentTokenInfos =
-          token.type === 'support.function'
-            ? data['function'][token.value as keyof (typeof data)['function']]
-            : data['type'][token.value as keyof (typeof data)['type']] // Need better switch case
-        setTooltipInfos({
-          x: position.pageX,
-          y: position.pageY + 16,
-          display: true,
-          currentToken: { ...currentTokenInfos, name: token.value }
+      if (!token) return
+
+      const currentToken =
+        token.type === 'support.function'
+          ? data['function'][token.value as keyof (typeof data)['function']]
+          : data['type'][token.value as keyof (typeof data)['type']]
+
+      if (currentToken) {
+        setTooltipPosition({ x: position.pageX, y: position.pageY })
+        setTooltipToken({
+          ...currentToken,
+          name: token.value
         })
       }
     }, 500)
@@ -134,6 +146,7 @@ const FreeFEMCode = (): JSX.Element => {
     editor.editor.on('mousemove', onMouseMove)
   }, [onMouseMove])
 
+  // Completer
   useEffect(() => {
     const completer = {
       getCompletions: function (
@@ -173,8 +186,11 @@ const FreeFEMCode = (): JSX.Element => {
         enableBasicAutocompletion={true}
         enableLiveAutocompletion={true}
       />
-
-      {tooltipInfos.display && <CustomTooltip tooltipInfos={tooltipInfos} />}
+      <CustomTooltip
+        x={tooltipPosition.x}
+        y={tooltipPosition.y}
+        token={tooltipToken}
+      />
     </>
   )
 }

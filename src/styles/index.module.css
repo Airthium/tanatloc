@@ -51,6 +51,10 @@
   box-shadow: none !important;
 }
 
+.textWhite {
+  color: #fff !important;
+}
+
 .textLight {
   color: textColorLight !important;
 }

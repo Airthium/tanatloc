@@ -33,6 +33,7 @@ const JSONCode = dynamic(
 
 /**
  * Code
+ * @returns Code
  */
 const Code = (): JSX.Element => {
   /**

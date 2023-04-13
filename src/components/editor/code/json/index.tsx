@@ -10,6 +10,7 @@ import { setModel } from '@/context/editor/actions'
 
 /**
  * JSON code
+ * @returns JSONCode
  */
 const JSONCode = (): JSX.Element => {
   // Data

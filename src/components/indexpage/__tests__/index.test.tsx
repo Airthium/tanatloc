@@ -9,11 +9,6 @@ jest.mock('next/router', () => ({
   })
 }))
 
-const mockLogin = jest.fn()
-jest.mock('@/api/login', () => ({
-  login: async () => mockLogin()
-}))
-
 jest.mock('@/components/assets/side', () => (props: any) => (
   <div>
     {props.left}
@@ -63,17 +58,6 @@ describe('components/indexpage', () => {
     buttons.forEach((button) => fireEvent.click(button))
 
     expect(mockPush).toHaveBeenCalledTimes(0)
-
-    unmount()
-  })
-
-  test('electron', async () => {
-    //@ts-ignore
-    window.process.type = 'renderer'
-    const { unmount } = render(<Index />)
-
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/dashboard'))
 
     unmount()
   })

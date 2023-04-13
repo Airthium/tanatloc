@@ -31,6 +31,7 @@ import Updater from '@/components/dashboard/updater'
 import UserAPI from '@/api/user'
 import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
+import { login } from '@/api/login'
 import { logout } from '@/api/logout'
 
 import style from './index.module.css'
@@ -161,7 +162,12 @@ const Dashboard = () => {
 
   // Not logged -> go to login page
   useCustomEffect(() => {
-    if (!loadingUser && !user) router.replace('/')
+    if (isElectron()) {
+      login({
+        email: 'admin',
+        password: 'password'
+      }).catch()
+    } else if (!loadingUser && !user) router.replace('/')
   }, [user, loadingUser, router])
 
   // Page effect, only on mount

@@ -88,6 +88,11 @@ jest.mock('@/api/workspace', () => ({
   ]
 }))
 
+const mockLogin = jest.fn()
+jest.mock('@/api/login', () => ({
+  login: async () => mockLogin()
+}))
+
 const mockLogout = jest.fn()
 jest.mock('@/api/logout', () => ({
   logout: () => mockLogout()
@@ -127,6 +132,8 @@ describe('components/dashboard', () => {
     mockDelOneWorkspace.mockReset()
     mockMutateOneWorkspace.mockReset()
     mockErrorWorkspaces.mockReset()
+
+    mockLogin.mockReset()
 
     mockLogout.mockReset()
   })

@@ -17,12 +17,9 @@ import {
   Typography
 } from 'antd'
 import { BugOutlined, SettingOutlined } from '@ant-design/icons'
-import isElectron from 'is-electron'
 import { Url } from 'url'
 
 import packageJson from '../../../package.json'
-
-import { login } from '@/api/login'
 
 import Side from '@/components/assets/side'
 
@@ -53,20 +50,6 @@ const Index = (): JSX.Element => {
 
   // Data
   const router = useRouter()
-
-  // Electron
-  useEffect(() => {
-    if (isElectron()) {
-      login({
-        email: 'admin',
-        password: 'password'
-      })
-        .then(() => {
-          router.push('/dashboard')
-        })
-        .catch()
-    }
-  }, [router])
 
   // Release
   useEffect(() => {

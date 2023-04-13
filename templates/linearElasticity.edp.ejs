@@ -1,215 +1,216 @@
 try {
 <%# Headers -%>
 <%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>
-
+    
 <%# Dimension -%>
 <%- helpers.indent(include('/blobs/dimensioning.edp.ejs', {
-	dimension
+    dimension
 }), 1) -%>
-
+    
 <%# Mesh -%>
 <%
-const mesh = geometry.mesh
-mesh.name = 'Mesh'
+    const mesh = geometry.mesh
+    mesh.name = 'Mesh'
 -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
-	dimension,
-	mesh
+    dimension,
+    mesh
 }), 1) -%>
-
+    
 <%# Material -%>
 <%- helpers.indent(include('/blobs/materials.edp.ejs', {
-	materials
+    materials
 }), 1) -%>
-
+    
 <%# Finite element space -%>
 <%
-const finiteElementSpace = parameters.finiteElementSpace.children[0]
-finiteElementSpace.name = 'Uh'
+    const finiteElementSpace = parameters.finiteElementSpace.children[0]
+    finiteElementSpace.name = 'Uh'
 -%>
 <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
-	mesh,
-	dimension,
-	finiteElementSpace
+    mesh,
+    dimension,
+    finiteElementSpace
 }), 1) -%>
-
+    
 <%# Finite element function -%>
 <%
-const unknownFunction = dimension === 2 ? '[Ux, Uy]' : '[Ux, Uy, Uz]'
-const testFunction = dimension === 2 ? '[Uhx, Uhy]' : '[Uhx, Uhy, Uhz]'
+    const unknownFunction = dimension === 2 ? '[Ux, Uy]' : '[Ux, Uy, Uz]'
+    const testFunction = dimension === 2 ? '[Uhx, Uhy]' : '[Uhx, Uhy, Uhz]'
 -%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
-	finiteElementSpace,
-	finiteElementFunction: dimension === 2 ? ['Ux', 'Uy'] :['Ux', 'Uy', 'Uz']
+    finiteElementSpace,
+    finiteElementFunction: dimension === 2 ? ['Ux', 'Uy'] : ['Ux', 'Uy', 'Uz']
 }), 1) -%>
-
+    
 <%# Macro -%>
 <%- helpers.indent(include('/blobs/macro.edp.ejs', {
-	dimension,
-	type: ['vectorialDivergence', 'vectorialEpsilon']
+    dimension,
+    type: ['vectorialDivergence', 'vectorialEpsilon']
 }), 1) -%>
-
-	// Variables
-	real Mu = E/(2.*(1.+Nu));
-	real Lambda = E*Nu/((1.+ Nu)*(1.-2.*Nu));
-	real g = <%= parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
-
+    
+    // Variables
+    real Mu = E / (2. * (1. + Nu));
+    real Lambda = E * Nu / ((1. + Nu) * (1. - 2. * Nu));
+    real g = <%= parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
+    
 <%# Problem -%>
 <%
-const fixed = boundaryConditions.fixed.values ?? []
-const displacement = boundaryConditions.displacement.values ?? []
-const normalPresure = boundaryConditions.presure.values ?? []
-const componentsPresure = boundaryConditions.componentsPresure.values ?? []
-const rhs = parameters.rightHandSide.children
-const rhsX = rhs[0].value ?? rhs[0].default
-const rhsY = rhs[1].value ?? rhs[1].default
-const rhsZ = rhs[2].value ?? rhs[2].default
-
-const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
+    const fixed = boundaryConditions.fixed.values ?? []
+    const displacement = boundaryConditions.displacement.values ?? []
+    const normalPresure = boundaryConditions.presure.values ?? []
+    const componentsPresure = boundaryConditions.componentsPresure.values ?? []
+    const rhs = parameters.rightHandSide.children
+    const rhsX = rhs[0].value ?? rhs[0].default
+    const rhsY = rhs[1].value ?? rhs[1].default
+    const rhsZ = rhs[2].value ?? rhs[2].default
+    
+    const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 -%>
-	// Problem
-	appendLog("Define the problem...");
-
-	varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
-		= intN(Mesh)(
-			Lambda * Div(U) * Div(Uh)
-			+ 2. * Mu * (
-				Epsilon(U)' * Epsilon(Uh)
-			)
-		)
-<% for (const d of displacement) { -%>
-		+ on(<%= d.labels -%>
-		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
-		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
-		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=0<% } -%>
-		)
+    // Problem
+    appendLog("Define the problem...");
+    
+    varf vLinearElasticity(<%= unknownFunction -%>, <%= testFunction -%>)
+        = intN(Mesh)(
+            Lambda * Div(U) * Div(Uh)
+            + 2. * Mu * (
+                Epsilon(U)' * Epsilon(Uh)
+            )
+        )
+<% for (const d of displacement){ -%>
+        + on(<%= d.labels -%>
+<% if (d.values[0].checked){ -%>, Ux = 0 <% } -%>
+<% if (d.values[1].checked){ -%>, Uy = 0 <% } -%>
+<% if (dimension !== 2 && d.values[2].checked){ -%>, Uz = 0 <% } -%>
+        )
 <% } -%>
-<% for (const f of fixed) { -%>
-		+ on(<%= f.labels -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
+<% for (const f of fixed){ -%>
+        + on(<%= f.labels -%>, Ux = 0, Uy = 0 <% if (dimension !== 2){ -%>, Uz = 0 <% } -%>)
 <% } -%>
-		;
-
-	varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
-		= intN(Mesh)(
-<% if (dimension === 2) { -%>
-			Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+        ;
+    
+    varf vLinearElasticityRHS(<%= unknownFunction -%>, <%= testFunction -%>)
+        = intN(Mesh)(
+<% if (dimension === 2){ -%>
+            Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction%>
 <% } else { -%>
-			Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+            Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction%>
 <% } -%>
-		)
-<% for (const p of normalPresure) { -%>
-		+ intN1(Mesh, <%= p.labels -%>)(
-			(<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
-		)
+        )
+<% for (const p of normalPresure){ -%>
+        + intN1(Mesh, <%= p.labels -%>)(
+            (<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
+        )
 <% } -%>
-<% for (const p of componentsPresure) { -%>
-	+ intN1(Mesh, <%= p.labels -%>)(
-		  (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
-		+ (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
-<% if (dimension !== 2) { -%> 
-		+ (<%- p.values[2].value ?? p.values[2].default -%>) * N.z * Uhz
+<% for (const p of componentsPresure){ -%>
+        + intN1(Mesh, <%= p.labels -%>)(
+            (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
+            + (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
+<% if (dimension !== 2){ -%>
+            + (<%- p.values[2].value ?? p.values[2].default -%>) * N.z * Uhz
 <% } -%>
-	)
+        )
 <% } -%>
-<% for (const d of displacement) { -%>
-		+ on(<%= d.labels -%>
-		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
-		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
-		<% if (dimension !== 2 && d.values[2].checked) { -%>, Uz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>
-		)
+<% for (const d of displacement){ -%>
+        + on(<%= d.labels -%>
+<% if (d.values[0].checked){ -%>, Ux = <%- d.values[0].value ?? d.values[0].default -%> <% } -%>
+<% if (d.values[1].checked){ -%>, Uy = <%- d.values[1].value ?? d.values[1].default -%> <% } -%>
+<% if (dimension !== 2 && d.values[2].checked){ -%>, Uz = <%- d.values[2].value ?? d.values[2].default -%> <% } -%>
+        )
 <% } -%>
-<% for (const f of fixed) { -%>
-		+ on(<%= f.labels -%>, Ux=0, Uy=0<% if (dimension !== 2) { -%> , Uz=0<% } -%>)
+<% for (const f of fixed){ -%>
+        + on(<%= f.labels -%>, Ux = 0, Uy = 0 <% if (dimension !== 2){ -%>, Uz = 0 <% } -%>)
 <% } -%>
-		;
-
+        ;
+    
 <%# Solver -%>
 <% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
 <%- helpers.indent(include('/blobs/solver.edp.ejs', {
-	solver
+    solver
 }), 1) -%>
-
+    
 <%# Solve -%>
-	// Solve
-	appendLog("Solve the problem...");
-
-	matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-	real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
-	Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
-
-	// Von mises stress
-	fespace Sh(Mesh, P2);
-	Sh epsilon11 = dx(Ux);
-	Sh epsilon22 = dy(Uy);
-	Sh epsilon33 = <% if (dimension === 2) { -%>0<% } else { -%>dz(Uz)<% } -%>;
-	Sh epsilon12 = 0.5 * (dy(Ux) + dx(Uy));
-	Sh epsilon13 = <% if (dimension === 2) { -%>0<% } else { -%>0.5 * (dz(Ux) + dx(Uz))<% } -%>;
-	Sh epsilon23 = <% if (dimension === 2) { -%>0<% } else { -%>0.5 * (dy(Uz) + dz(Uy))<% } -%>;
-
-	Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
-
-	Sh gamma11 = 2. * Mu * epsilon11 + Lambda * traceEpsilon;
-	Sh gamma22 = 2. * Mu * epsilon22 + Lambda * traceEpsilon;
-	Sh gamma33 = 2. * Mu * epsilon33 + Lambda * traceEpsilon;
-	Sh gamma12 = 2. * Mu * epsilon12;
-	Sh gamma13 = 2. * Mu * epsilon13;
-	Sh gamma23 = 2. * Mu * epsilon23;
-
-	Sh Sigma = sqrt(
-		  0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
-		+ 3.*(gamma12^2 + gamma23^2 + gamma13^2)
-	);
-
-<% if (parameters.meshAdaptation.children[0].value) { -%>
-	// Mesh adaptation
-	fespace Hh(Mesh, P0);
-	Hh h = hTriangle;
-	real minh = h[].min;
-	real maxh = h[].max;
-	int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
-	for (int i = 0; i < nLoops; ++i) {
-		int percent = 20. + 80 * i / nLoops;
-		appendLog("[" + percent + "%]");
-		<% if (dimension === 2) { -%>
-		Mesh = adaptmesh(Mesh, Sigma, hmin=minh/5., hmax=maxh);
-		<% } else { -%>
-		load "mshmet"
-		load "mmg"
-		real[int] metric = mshmet(Mesh, Sigma, aniso=1, hmin=minh/5., hmax=maxh);
-		Mesh = mmg3d(Mesh, metric=metric);
-		<% } -%>
-
-		<%= unknownFunction -%> = <%= unknownFunction -%>;
-
-		matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-		real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
-		Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
-	}
-
+    // Solve
+    appendLog("Solve the problem...");
+    
+    matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
+    real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+    Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+    
+    // Von mises stress
+    fespace Sh(Mesh, P2);
+    Sh epsilon11 = dx(Ux);
+    Sh epsilon22 = dy(Uy);
+    Sh epsilon33 = <% if (dimension === 2){ -%> 0 <% } else { -%> dz(Uz) <% } -%>;
+    Sh epsilon12 = 0.5 * (dy(Ux) + dx(Uy));
+    Sh epsilon13 = <% if (dimension === 2){ -%> 0 <% } else { -%> 0.5 * (dz(Ux) + dx(Uz)) <% } -%>;
+    Sh epsilon23 = <% if (dimension === 2){ -%> 0 <% } else { -%> 0.5 * (dy(Uz) + dz(Uy)) <% } -%>;
+    
+    Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
+    
+    Sh gamma11 = 2. * Mu * epsilon11 + Lambda * traceEpsilon;
+    Sh gamma22 = 2. * Mu * epsilon22 + Lambda * traceEpsilon;
+    Sh gamma33 = 2. * Mu * epsilon33 + Lambda * traceEpsilon;
+    Sh gamma12 = 2. * Mu * epsilon12;
+    Sh gamma13 = 2. * Mu * epsilon13;
+    Sh gamma23 = 2. * Mu * epsilon23;
+    
+    Sh Sigma = sqrt(
+        0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
+        + 3. * (gamma12^2 + gamma23^2 + gamma13^2)
+    );
+    
+<% if (parameters.meshAdaptation.children[0].value){ -%>
+    // Mesh adaptation
+    fespace Hh(Mesh, P0);
+    Hh h = hTriangle;
+    real minh = h[].min;
+    real maxh = h[].max;
+    int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
+    for (int i = 0; i < nLoops; ++i) {
+        int percent = 20. + 80 * i / nLoops;
+        appendLog("[" + percent + "%]");
+<% if (dimension === 2){ -%>
+        Mesh = adaptmesh(Mesh, Sigma, hmin = minh / 5., hmax = maxh);
+<% } else { -%>
+        load "mshmet"
+        load "mmg"
+        real[int] metric = mshmet(Mesh, Sigma, aniso = 1, hmin = minh / 5., hmax = maxh);
+        Mesh = mmg3d(Mesh, metric = metric);
 <% } -%>
-
+        
+<%= unknownFunction -%> = <%= unknownFunction -%>;
+        
+        matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
+        real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+        Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+    }
+    
+<% } -%>
+    
 <%# Sensors -%>
 <%- helpers.indent(include('/blobs/sensors.edp.ejs', {
-	path: run.dataPath,
-	x: 0,
-	sensors: run.sensors
+    path: run.dataPath,
+    x: 0,
+    sensors: run.sensors
 }), 1) -%>
-
+    
 <%# Save -%>
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
-	solution: {
-		path: run.resultPath,
-		name: '"Result"',
-		mesh: mesh.name,
-		sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'Sigma', 'gamma11', 'gamma12', 'gamma13', 'gamma22', 'gamma23', 'gamma33'],
-		dataName: run.results.map(r => r.name),
-		order: [1, 1, 1, 1, 1, 1, 1, 1]
-	}
+    solution: {
+        path: run.resultPath,
+        name: '"Result"',
+        mesh: mesh.name,
+        sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'Sigma', 'gamma11', 'gamma12', 'gamma13', 'gamma22', 'gamma23', 'gamma33'],
+        dataName: run.results.map(r => r.name),
+        order: [1, 1, 1, 1, 1, 1, 1, 1]
+    }
 }), 1) -%>
-	appendLog("[100%]");
-
-	appendLog("End");
-} catch(...) {
-	appendError("An internal error occurs");
-	exit(-1);
+    appendLog("[100%]");
+    
+    appendLog("End");
+} catch (...) {
+    appendError("An internal error occurs");
+    exit(- 1);
 }
+

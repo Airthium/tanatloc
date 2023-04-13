@@ -182,7 +182,6 @@ const FreeFEMCode = (): JSX.Element => {
         onCursorChange={onCursorChange}
         onChange={onChange}
         showPrintMargin={false}
-        enableSnippets={true}
         enableBasicAutocompletion={true}
         enableLiveAutocompletion={true}
       />

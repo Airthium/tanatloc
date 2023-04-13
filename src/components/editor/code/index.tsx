@@ -42,6 +42,7 @@ const Code = (): JSX.Element => {
   return (
     <div className={style.code}>
       <FreeFEMCode />
+      <div className="divider" />
       <JSONCode />
     </div>
   )

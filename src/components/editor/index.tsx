@@ -2,16 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
-import {
-  Layout,
-  Menu,
-  Space,
-  Button,
-  Typography,
-  Divider,
-  Tooltip,
-  notification
-} from 'antd'
+import { Layout, Menu, Space, Button, Typography, Divider, Tooltip } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 import Joyride, { STATUS, Step } from 'react-joyride'
 
@@ -51,22 +42,6 @@ const Editor = () => {
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/')
   }, [user, loadingUser, router])
-
-  // Beta version message
-  useEffect(() => {
-    notification.warning({
-      message: 'This is a beta version',
-      description: (
-        <>
-          <br />
-          - You may encounter unexpected bugs
-          <br />- Some features are not totally functionnal
-        </>
-      ),
-      placement: 'top',
-      duration: 0
-    })
-  }, [])
 
   useEffect(() => {
     setSteps([

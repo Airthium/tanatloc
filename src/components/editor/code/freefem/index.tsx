@@ -144,22 +144,25 @@ const FreeFEMCode = (): JSX.Element => {
 
     const editor = editorRef.current
     editor.editor.on('mousemove', onMouseMove)
+
+    return () => {
+      editor.editor.removeAllListeners()
+    }
   }, [onMouseMove])
 
   // Completer
   useEffect(() => {
     const completer = {
-      getCompletions: function (
+      getCompletions: (
         _editor: any,
         _session: any,
         _pos: any,
         _prefix: any,
         callback: any
-      ) {
+      ) => {
         callback(null, allSnippets)
       }
     }
-
     setCompleters([completer])
   }, [])
 
@@ -182,8 +185,6 @@ const FreeFEMCode = (): JSX.Element => {
         onCursorChange={onCursorChange}
         onChange={onChange}
         showPrintMargin={false}
-        enableBasicAutocompletion={true}
-        enableLiveAutocompletion={true}
       />
       <CustomTooltip
         x={tooltipPosition.x}

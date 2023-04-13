@@ -2,9 +2,18 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Menu, Space, Button, Typography, Divider, Tooltip } from 'antd'
+import {
+  Layout,
+  Menu,
+  Space,
+  Button,
+  Typography,
+  Divider,
+  Tooltip,
+  Tour,
+  TourProps
+} from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
-import Joyride, { STATUS, Step } from 'react-joyride'
 
 import EditorProvider from '@/context/editor'
 
@@ -24,6 +33,42 @@ import Code from './code'
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
 
+// Steps
+const steps: TourProps['steps'] = [
+  {
+    title: 'New',
+    description: 'Create your brand new script.',
+    target: () => document.getElementById('new')!
+  },
+  {
+    title: 'Code browser',
+    description: 'Find one of your previous script or choose a predefined one.',
+    target: () => document.getElementById('browser')!
+  },
+  {
+    title: 'Save',
+    description: 'Save your script so you can access it later.',
+    target: () => document.getElementById('save')!
+  },
+  {
+    title: '',
+    description:
+      'It checks if you are doing correctly. Keep an eye on these steps to make sure everything is ok.',
+    target: () => document.getElementById('steps')!
+  },
+  {
+    title: '',
+    description:
+      'Write your script here. You can find examples of working scripts by clicking the browse button on top of the JSON editor.'
+  },
+  {
+    title: 'Blobs',
+    description:
+      'Are you struggling to write your script ? Find some predefined parts of code right here.',
+    target: () => document.getElementById('blobs')!
+  }
+]
+
 /**
  * Editor
  * @returns Editor
@@ -31,8 +76,7 @@ import style from './index.module.css'
 const Editor = () => {
   // State
   const [name, setName] = useState<string>()
-  const [run, setRun] = useState(false)
-  const [steps, setSteps] = useState([] as Step[])
+  const [tourOpened, setTourOpened] = useState<boolean>(false)
 
   // Data
   const router = useRouter()
@@ -43,63 +87,19 @@ const Editor = () => {
     if (!loadingUser && !user) router.replace('/')
   }, [user, loadingUser, router])
 
-  useEffect(() => {
-    setSteps([
-      {
-        target: '#new',
-        content: 'Create your brand new script.',
-        placement: 'bottom',
-        disableBeacon: true
-      },
-      {
-        target: '#browser',
-        content: 'Find one of your previous script or choose a premade one.',
-        placement: 'bottom',
-        disableBeacon: true
-      },
-      {
-        target: '#save',
-        content: 'Save your script so you can access it later.',
-        placement: 'bottom',
-        disableBeacon: true
-      },
-      {
-        target: '.editor_steps__8Zh42',
-        content:
-          'It checks if you are doing correctly. Keep an eye on these steps to make sure everything is ok.',
-        placement: 'right-end',
-        disableBeacon: true
-      },
-      {
-        target: '.editor_code__MLS9F',
-        content:
-          'Write your script here. You can find examples of working scripts by clicking the browse button on top of the JSON editor.',
-        placement: 'top-start',
-        disableBeacon: true
-      },
-      {
-        target: '#blobs',
-        content:
-          'Are you struggling to write your script ? Find some premade parts of code right here.',
-        placement: 'top-start',
-        disableBeacon: true
-      }
-    ])
+  /**
+   * Open tour
+   */
+  const openTour = useCallback(() => {
+    setTourOpened(true)
   }, [])
 
-  // Handle Joyride callback
-  const handleJoyrideCallback = (data: any) => {
-    const { status } = data
-
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-      setRun(false)
-    }
-  }
-
-  // Start the tour
-  const startTour = () => {
-    setRun(true)
-  }
+  /**
+   * Close tour
+   */
+  const closeTour = useCallback(() => {
+    setTourOpened(false)
+  }, [])
 
   /**
    * Handle dashboard
@@ -148,7 +148,7 @@ const Editor = () => {
             <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
-                <Button onClick={startTour}>Start guide</Button>
+                <Button onClick={openTour}>Start guide</Button>
                 <New />
                 <Browser
                   user={{
@@ -177,19 +177,7 @@ const Editor = () => {
             </div>
           </Layout.Header>
           <Code />
-          <Joyride
-            steps={steps}
-            run={run}
-            callback={handleJoyrideCallback}
-            continuous={true}
-            showProgress={true}
-            showSkipButton={true}
-            styles={{
-              options: {
-                zIndex: 10000
-              }
-            }}
-          />
+          <Tour open={tourOpened} onClose={closeTour} steps={steps} />
         </Layout.Content>
       </Layout>
     </EditorProvider>

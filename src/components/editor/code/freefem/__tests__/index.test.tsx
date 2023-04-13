@@ -9,7 +9,9 @@ jest.mock('react-ace', () => (props: any) => mockReactAce(props))
 jest.mock('ace-builds/src-noconflict/theme-one_dark', () => {})
 
 jest.mock('ace-builds/src-noconflict/ext-language_tools', () => ({
-  setCompleters: jest.fn()
+  setCompleters: (completers: any[]) => {
+    completers[0].getCompletions(0, 0, 0, 0, jest.fn)
+  }
 }))
 
 jest.mock('../mode/mode-freefem-ejs', () => {})
@@ -23,6 +25,15 @@ jest.mock('react', () => {
 })
 
 jest.mock('../tooltip', () => () => <div />)
+
+let timeoutCount = -1
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => {
+    timeoutCount++
+    callback()
+    return timeoutCount
+  }
+})
 
 describe('components/editor/code/freefem_editor', () => {
   beforeEach(() => {
@@ -92,7 +103,11 @@ describe('components/editor/code/freefem_editor', () => {
         on: (_type: string, callback: Function) => {
           callback({})
           callback({})
+          callback({})
+          callback({})
+          callback({})
         },
+        removeAllListeners: jest.fn,
         renderer: {
           pixelToScreenCoordinates: jest.fn,
           textToScreenCoordinates: jest.fn
@@ -101,7 +116,11 @@ describe('components/editor/code/freefem_editor', () => {
           getTokenAt: () => {
             count++
             if (count === 1) return {}
-            else return { type: 'support.function' }
+            else if (count === 2 || count === 3)
+              return { type: 'support.function', value: 'abs' }
+            else if (count === 4)
+              return { type: 'support.other', value: 'unknown' }
+            else return undefined
           },
           getWordRange: () => ({
             start: { row: 1, column: 1 }

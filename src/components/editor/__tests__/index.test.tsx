@@ -68,7 +68,7 @@ describe('component/editor', () => {
     ])
     const { unmount } = render(<Editor />)
 
-    expect(mockReplace).toHaveBeenCalledTimes(2)
+    expect(mockReplace).toHaveBeenCalledTimes(1)
     expect(mockReplace).toHaveBeenLastCalledWith('/')
 
     unmount()
@@ -89,11 +89,28 @@ describe('component/editor', () => {
     unmount()
   })
 
-  test('warning message', () => {
+  test('tour', () => {
     const { unmount } = render(<Editor />)
 
-    const close = screen.getAllByRole('img', { name: 'close' })
-    fireEvent.click(close[0])
+    const button = screen.getByRole('button', { name: 'Start guide' })
+    fireEvent.click(button)
+
+    let next: HTMLElement | undefined = screen.getByRole('button', {
+      name: 'Next'
+    })
+    fireEvent.click(next)
+
+    while (next) {
+      try {
+        next = screen.getByRole('button', { name: 'Next' })
+        fireEvent.click(next)
+      } catch (err) {
+        next = undefined
+      }
+    }
+
+    const close = screen.getByRole('button', { name: 'Finish' })
+    fireEvent.click(close)
 
     unmount()
   })

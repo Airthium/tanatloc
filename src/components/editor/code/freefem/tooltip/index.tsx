@@ -1,5 +1,6 @@
 /** @module Components.Editor.Code.FreeFEM.Tooltip */
 
+import { CSSProperties, useMemo } from 'react'
 import Link from 'next/link'
 import { Card, Space, Typography } from 'antd'
 
@@ -7,7 +8,6 @@ import { IToken } from '..'
 
 import globalStyle from '@/styles/index.module.css'
 import style from '../../../index.module.css'
-import { CSSProperties, useMemo } from 'react'
 
 /**
  * Props
@@ -85,36 +85,28 @@ const CustomTooltip = ({ x, y, token }: IProps): JSX.Element | null => {
       style={position}
     >
       <Space direction="vertical">
-        {token.definition && (
-          <div>
-            <Typography.Text className={globalStyle.textWhite} strong>
-              Definition:
-            </Typography.Text>{' '}
-            <Typography.Text className={globalStyle.textWhite}>
-              {token.definition}{' '}
-            </Typography.Text>
-          </div>
-        )}
+        <div>
+          <Typography.Text className={globalStyle.textWhite} strong>
+            Definition:
+          </Typography.Text>{' '}
+          <Typography.Text className={globalStyle.textWhite}>
+            {token.definition}{' '}
+          </Typography.Text>
+        </div>
 
-        {token.example && (
-          <>
-            <Typography.Text className={globalStyle.textWhite} strong>
-              Example:
-            </Typography.Text>
-            {token.example.split('\n').map((ex) => {
-              if (!ex) return
-              return (
-                <Typography.Text
-                  key={ex}
-                  className={globalStyle.textWhite}
-                  code
-                >
-                  {ex}
-                </Typography.Text>
-              )
-            })}
-          </>
-        )}
+        <>
+          <Typography.Text className={globalStyle.textWhite} strong>
+            Example:
+          </Typography.Text>
+          {token.example.split('\n').map((ex) => {
+            if (!ex) return
+            return (
+              <Typography.Text key={ex} className={globalStyle.textWhite} code>
+                {ex}
+              </Typography.Text>
+            )
+          })}
+        </>
 
         {token.params && (
           <>

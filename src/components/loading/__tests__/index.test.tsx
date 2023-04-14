@@ -14,7 +14,11 @@ describe('components/loading', () => {
   })
 
   test('status', () => {
-    const { unmount } = render(<Loading status={['test1', 'test2']} />)
+    const { rerender, unmount } = render(<Loading status={[]} />)
+
+    rerender(<Loading status={['test1', 'test2']} />)
+
+    rerender(<Loading status={['test1', 'test2', 'test3', 'test4']} />)
 
     unmount()
   })

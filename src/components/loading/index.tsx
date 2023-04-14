@@ -1,6 +1,7 @@
 /** @module Components.Loading */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Card, Layout, Space, Spin, Steps, StepsProps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
 
@@ -45,9 +46,6 @@ export interface IProps {
  * @returns Loading
  */
 const Loading = ({ text, status, errors }: IProps): JSX.Element => {
-  // Ref
-  const contentRef = useRef<HTMLDivElement>(null)
-
   // State
   const [steps, setSteps] = useState<StepsProps['items']>([])
   const [errorMessages, setErrorMessages] = useState<JSX.Element[]>([])
@@ -86,7 +84,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
           err.includes('Is the docker daemon running')
         )
           child = (
-            <Card>
+            <Card className={style.errorCard}>
               There is an error with your Docker installation.
               <br />
               Please verify that Docker is correctly installed and running.
@@ -98,7 +96,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
           err.includes('ETIMEOUT')
         )
           child = (
-            <Card>
+            <Card className={style.errorCard}>
               There is an error with your PostgreSQL installation.
               <br />
               Please verify that postgres Docker container
@@ -131,20 +129,19 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
         className={style.loading}
         bodyStyle={{ padding: 0 }}
         title={
-          <Space>
+          <div className={style.title}>
             {errors?.length ? (
               <>
-                <WarningOutlined style={{ fontSize: '32px', color: 'red' }} />
+                <WarningOutlined className="warning" />
                 <Typography.Title level={3} style={{ margin: '0' }}>
                   An error occurs
                 </Typography.Title>
-                <a
+                <Link
                   href="https://github.com/Airthium/tanatloc/issues/new/choose"
                   target="_blank"
-                  rel="noreferrer"
                 >
                   Open an issue
-                </a>
+                </Link>
               </>
             ) : (
               <>
@@ -153,15 +150,15 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
                 {text ?? 'Loading, please wait...'}
               </>
             )}
-          </Space>
+          </div>
         }
       >
         {display ? (
-          <div ref={contentRef} className={style.content}>
+          <div className={style.content}>
             {errorMessages.length ? (
               <div className={style.errors}>
                 {errorMessages.map((err) => err)}
-                <Typography.Title level={5} style={{ color: 'red' }}>
+                <Typography.Title level={5}>
                   Please restart the application
                 </Typography.Title>
               </div>

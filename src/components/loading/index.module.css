@@ -3,6 +3,21 @@
   max-width: 80%;
 }
 
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title :global(.warning) {
+  font-size: 32px;
+  color: #d9363e;
+}
+
+.title a {
+  margin-left: auto;
+}
+
 .content {
   max-height: 50vh;
   padding: 20px;
@@ -15,11 +30,20 @@
 
 .errors {
   margin-top: 10px;
-  color: red;
+  color: #d9363e;
+}
+
+.errors h5 {
+  color: #d9363e;
 }
 
 .error :global(.ant-card) {
   margin: 10px 0;
-  border-color: red;
-  color: red;
+  border-color: #d9363e;
+  color: #d9363e;
+}
+
+.errorCard {
+  border-color: #d9363e;
+  color: #d9363e;
 }

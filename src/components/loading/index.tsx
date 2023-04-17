@@ -1,6 +1,6 @@
 /** @module Components.Loading */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, Layout, Space, Spin, StepProps, Steps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
@@ -46,49 +46,31 @@ export interface IProps {
  * @returns Loading
  */
 const Loading = ({ text, status, errors }: IProps): JSX.Element => {
-  // Ref
-  const currentStatus = useRef<string[]>()
-
   // State
   const [steps, setSteps] = useState<(StepProps & { index: number })[]>([])
   const [errorMessages, setErrorMessages] = useState<JSX.Element[]>([])
 
   // Status
   useEffect(() => {
-    if (currentStatus.current === status) return
-    currentStatus.current = status
-
     if (!status?.length) {
       setSteps([])
       return
     }
 
-    // Last step
-    const firstStep = steps?.shift()
-
     // New step
     const newSteps = status
       .map((desc, index) => {
-        if ((!firstStep || index > firstStep.index) && desc)
-          return {
-            index: index,
-            status: 'finish' as 'finish',
-            icon: index === status.length - 1 ? <LoadingOutlined /> : undefined,
-            title: desc
-          }
+        return {
+          index: index,
+          status: 'finish' as 'finish',
+          icon: index === 0 ? <LoadingOutlined /> : undefined,
+          title: desc
+        }
       })
       .filter((s) => s)
-      .reverse() as unknown as (StepProps & { index: number })[]
-
-    // Last step icon
-    if (firstStep)
-      newSteps.push({
-        ...firstStep,
-        icon: undefined
-      })
 
     // Update
-    setSteps([...newSteps, ...steps])
+    setSteps(newSteps)
   }, [steps, status, errors])
 
   // Errors

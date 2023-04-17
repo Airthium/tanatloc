@@ -1,7 +1,8 @@
 /** @module Components.Start */
 
+import { useEffect, useState } from 'react'
 import { Typography } from 'antd'
-import { useRouter } from 'next/router'
+import isElectron from 'is-electron'
 
 import Loading from '../loading'
 
@@ -10,9 +11,27 @@ import Loading from '../loading'
  * @returns Start
  */
 const Start = () => {
-  //Data
-  const router = useRouter()
-  const { status, err }: { status?: string; err?: string } = router.query
+  // State
+  const [status, setStatus] = useState<string[]>([])
+  const [errors, setErrors] = useState<string[]>([])
+
+  useEffect(() => {
+    if (isElectron()) {
+      try {
+        //@ts-ignore
+        window.electronAPI.handleStatus((_: any, value: string[]) => {
+          setStatus(value)
+        })
+
+        //@ts-ignore
+        window.electronAPI.handleErrors((_: any, value: string[]) => {
+          setErrors(value)
+        })
+      } catch (err: any) {
+        setErrors((prev) => [err.message, ...prev])
+      }
+    }
+  }, [])
 
   /**
    * Render
@@ -25,8 +44,8 @@ const Start = () => {
             Tanatloc is starting, please wait...
           </Typography.Title>
         }
-        status={status?.length ? status?.split(';') : []}
-        errors={err?.length ? err?.split(';') : []}
+        status={status}
+        errors={errors}
       />
     </>
   )

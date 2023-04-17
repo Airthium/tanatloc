@@ -45,8 +45,8 @@
     "electron-store": "8.1.0"
   },
   "devDependencies": {
-    "@airthium/extract-json-from-string": "1.0.7",
-    "@airthium/pg-format": "2.0.12",
+    "@airthium/extract-json-from-string": "1.0.8",
+    "@airthium/pg-format": "2.0.13",
     "@airthium/typedoc-plugin-airthium": "1.1.3",
     "@ant-design/icons": "5.0.1",
     "@babel/core": "7.21.4",

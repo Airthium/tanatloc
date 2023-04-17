@@ -1,20 +1,21 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import Start from '..'
 
-jest.mock('../../loading', () => () => <div />)
+const mockElectron = jest.fn()
+jest.mock('is-electron', () => () => mockElectron())
 
-const mockQuery = jest.fn()
-jest.mock('next/router', () => ({
-  useRouter: () => ({
-    query: mockQuery()
-  })
-}))
+jest.mock('../../loading', () => (props: any) => (
+  <div>
+    <div>{JSON.stringify(props.status)}</div>
+    <div>{JSON.stringify(props.errors)}</div>
+  </div>
+))
 
 describe('components/start', () => {
   beforeEach(() => {
-    mockQuery.mockReset()
-    mockQuery.mockImplementation(() => ({}))
+    mockElectron.mockReset()
+    mockElectron.mockImplementation(() => false)
   })
 
   test('render', () => {
@@ -23,9 +24,32 @@ describe('components/start', () => {
     unmount()
   })
 
-  test('status, err', () => {
-    mockQuery.mockImplementation(() => ({ status: 'status', err: 'error' }))
+  test('electron - error', () => {
+    mockElectron.mockImplementation(() => true)
     const { unmount } = render(<Start />)
+
+    expect(
+      screen.getByText(
+        '["Cannot read properties of undefined (reading \'handleStatus\')"]'
+      )
+    )
+
+    unmount()
+  })
+
+  test('electron - status, err', () => {
+    mockElectron.mockImplementation(() => true)
+    Object.defineProperty(window, 'electronAPI', {
+      value: {
+        handleStatus: (callback: Function) =>
+          callback('', ['status1', 'status2']),
+        handleErrors: (callback: Function) => callback('', ['error1', 'error2'])
+      }
+    })
+    const { unmount } = render(<Start />)
+
+    expect(screen.getByText('["status1","status2"]'))
+    expect(screen.getByText('["error1","error2"]'))
 
     unmount()
   })

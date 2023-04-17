@@ -71,7 +71,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
 
     // Update
     setSteps(newSteps)
-  }, [steps, status, errors])
+  }, [status])
 
   // Errors
   useEffect(() => {

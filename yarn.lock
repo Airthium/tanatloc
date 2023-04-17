@@ -8465,8 +8465,8 @@ __metadata:
   linkType: hard
 
 "rc-cascader@npm:~3.10.0":
-  version: 3.10.1
-  resolution: "rc-cascader@npm:3.10.1"
+  version: 3.10.2
+  resolution: "rc-cascader@npm:3.10.2"
   dependencies:
     "@babel/runtime": ^7.12.5
     array-tree-filter: ^2.1.0
@@ -8477,7 +8477,7 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 5cbed437e4f5fc3426b8974d51edef93df39389122125e0cb1cf3c8dd09b7cc686dfda26d24639f1d51f7d2a3f100633fd98a59c20e2f7a84b27ecaf76b5e507
+  checksum: f4df7dc148578410e24521120ef2b96108164a83aa6339e522c682c911cc8368729a8d04ac66bfd7cc785bc69b5ffbbc6f9d98ec11a62f8b273871ad63d4941c
   languageName: node
   linkType: hard
 

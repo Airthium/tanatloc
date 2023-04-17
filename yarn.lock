@@ -5,24 +5,24 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@airthium/extract-json-from-string@npm:1.0.7":
-  version: 1.0.7
-  resolution: "@airthium/extract-json-from-string@npm:1.0.7"
-  checksum: 1436f98fe012ec0d6f840223d96e4087d0709f2fef26a572f555edaabba8ac13cef14c4793f80e5b37c66d1124bbf0a9fdfb9a923bf5995c69691e283856b647
+"@airthium/extract-json-from-string@npm:1.0.8":
+  version: 1.0.8
+  resolution: "@airthium/extract-json-from-string@npm:1.0.8"
+  checksum: 37aadcb4dd70d574625a92296516147e0c4617af33ecb15e78192f644ab57e8df2bd17ba9741ae3d2728b4e00ce11d089ddac8969384e6aff5b1579dc7eac1e1
   languageName: node
   linkType: hard
 
-"@airthium/pg-format@npm:2.0.12":
-  version: 2.0.12
-  resolution: "@airthium/pg-format@npm:2.0.12"
-  checksum: 655397bc14965ed785ab83baae1546759f2c293afd503a52fc11466fe020b3f6d5db0189f0f607383440a1d68a72821e5764049d4c698e52c8afc4996f2c2332
+"@airthium/pg-format@npm:2.0.13":
+  version: 2.0.13
+  resolution: "@airthium/pg-format@npm:2.0.13"
+  checksum: 3c051dcfcfe8ba65ee300feedda5c35daf497b2314acc58becfbbd558bb9df76f4f8ed195819c60d5d2d619068a380419b97abfad972cc25276f65237f9298ed
   languageName: node
   linkType: hard
 
-"@airthium/typedoc-plugin-airthium@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.2"
-  checksum: 19201619cfc7f160bc6f60c41dfba19190e87215d12ab44d1e30f31ab4b99460bc69d731273c3a02ca88a7f68af998dbfed3bf3713dbf827777f9191db1080fd
+"@airthium/typedoc-plugin-airthium@npm:1.1.3":
+  version: 1.1.3
+  resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.3"
+  checksum: d969225e4f2a9f7b31da5bd6f185da783d5ac17ee7d51513ecd4a664b41f0c89f2a4d9fc04dff45372a836925b78a1e88f8ec721b8a295dbdbf094963c991101
   languageName: node
   linkType: hard
 
@@ -10202,9 +10202,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
-    "@airthium/extract-json-from-string": 1.0.7
-    "@airthium/pg-format": 2.0.12
-    "@airthium/typedoc-plugin-airthium": 1.1.2
+    "@airthium/extract-json-from-string": 1.0.8
+    "@airthium/pg-format": 2.0.13
+    "@airthium/typedoc-plugin-airthium": 1.1.3
     "@ant-design/icons": 5.0.1
     "@babel/core": 7.21.4
     "@hapi/iron": 7.0.1

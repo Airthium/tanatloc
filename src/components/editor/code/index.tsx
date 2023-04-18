@@ -53,10 +53,8 @@ const Code = (): JSX.Element => {
    *
    */
   const onResize = useCallback(
-    (_event: SyntheticEvent, { size }: ResizeCallbackData): void => {
-      console.log(size.width)
-      setWidth(size.width)
-    },
+    (_event: SyntheticEvent, { size }: ResizeCallbackData): void =>
+      setWidth(size.width),
     []
   )
 
@@ -93,7 +91,7 @@ const Code = (): JSX.Element => {
         width={width}
         minConstraints={[constraints.min, 0]}
         maxConstraints={[constraints.max, 0]}
-        handle={<div className="handler" />}
+        handle={<div className="handler" onDoubleClick={onWindowResize} />}
         onResize={onResize}
       >
         <FreeFEMCode />

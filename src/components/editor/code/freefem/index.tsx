@@ -145,10 +145,6 @@ const FreeFEMCode = (): JSX.Element => {
 
     const editor = editorRef.current
     editor.editor.on('mousemove', onMouseMove)
-
-    return () => {
-      editor.editor.removeAllListeners()
-    }
   }, [onMouseMove])
 
   // Completer
@@ -177,7 +173,7 @@ const FreeFEMCode = (): JSX.Element => {
         //@ts-ignore
         ref={editorRef}
         width="100%"
-        height="calc(100% - 64px)"
+        height="calc(100% - 32px)"
         fontSize={16}
         theme="one_dark"
         mode="freefem-ejs"

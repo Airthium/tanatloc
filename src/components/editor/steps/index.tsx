@@ -1,7 +1,7 @@
 /** @module Components.Editor.Steps */
 
 import { useContext, useState } from 'react'
-import { Button, Steps } from 'antd'
+import { Steps } from 'antd'
 import JSON5 from 'json5'
 
 import { EditorContext } from '@/context/editor'
@@ -135,27 +135,6 @@ const StatusSteps = ({ setName }: IProps) => {
             title: 'Check description format',
             description: status.model?.err?.replace(/\./g, ' > ') ?? 'JSON',
             status: status.model?.status ?? 'wait'
-          },
-          {
-            title: 'Test template + description',
-            description: (
-              <>
-                <Button
-                  disabled={
-                    true
-                    // !(
-                    //   status.template?.status === 'finish' &&
-                    //   status.model?.status === 'finish'
-                    // )
-                  }
-                  onClick={console.log}
-                >
-                  Run
-                </Button>{' '}
-                template on Tanatloc server
-              </>
-            ),
-            status: status.test?.status ?? 'wait'
           }
         ]}
       />

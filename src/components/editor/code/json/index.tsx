@@ -36,7 +36,7 @@ const JSONCode = (): JSX.Element => {
       <Typography.Title level={3}>JSON code</Typography.Title>
       <AceEditor
         width="100%"
-        height="calc(100% - 64px)"
+        height="calc(100% - 32px)"
         fontSize={16}
         mode="json5"
         theme="one_dark"

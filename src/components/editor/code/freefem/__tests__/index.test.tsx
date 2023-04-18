@@ -108,7 +108,6 @@ describe('components/editor/code/freefem_editor', () => {
           callback({})
           callback({})
         },
-        removeAllListeners: jest.fn,
         renderer: {
           pixelToScreenCoordinates: jest.fn,
           textToScreenCoordinates: jest.fn

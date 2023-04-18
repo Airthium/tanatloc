@@ -64,6 +64,7 @@ const Code = (): JSX.Element => {
    * On window resize
    */
   const onWindowResize = useCallback(() => {
+    /* istanbul ignore next */
     if (!containerRef.current) return
 
     const rect = containerRef.current.getBoundingClientRect()

@@ -99,6 +99,7 @@ describe('components/editor/code/freefem_editor', () => {
   test('ref', () => {
     let count = 0
     const ace = {
+      focus: jest.fn,
       editor: {
         on: (_type: string, callback: Function) => {
           callback({})

@@ -168,7 +168,7 @@ const FreeFEMCode = (): JSX.Element => {
    */
   return (
     <>
-      <Typography.Title level={3}>FreeFEM code</Typography.Title>
+      <Typography.Title level={3}>FreeFEM template</Typography.Title>
       <AceEditor
         //@ts-ignore
         ref={editorRef}

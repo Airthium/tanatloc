@@ -128,7 +128,7 @@ describe('components/editor/code/freefem_editor', () => {
         }
       }
     }
-    mockRef.mockImplementation(() => ({
+    mockRef.mockImplementationOnce(() => ({
       current: ace
     }))
     const { unmount } = render(<FreeFEMCode />)

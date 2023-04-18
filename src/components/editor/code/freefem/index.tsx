@@ -147,7 +147,7 @@ const FreeFEMCode = (): JSX.Element => {
     editor.editor.on('mousemove', onMouseMove)
 
     return () => {
-      // editor.editor.removeAllListeners()
+      editor.editor.removeAllListeners()
     }
   }, [onMouseMove])
 

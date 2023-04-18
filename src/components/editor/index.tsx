@@ -168,14 +168,6 @@ const Editor = () => {
               </Space>
             </div>
           </Layout.Header>
-          <Layout.Header className={style.header}>
-            <div style={{ display: 'flex' }}>
-              <h2 style={{ width: '50%' }}>FREEFEM EDITOR</h2>
-              <h2 style={{ width: '50%', paddingInline: '50px' }}>
-                JSON EDITOR
-              </h2>
-            </div>
-          </Layout.Header>
           <Code />
           <Tour open={tourOpened} onClose={closeTour} steps={steps} />
         </Layout.Content>

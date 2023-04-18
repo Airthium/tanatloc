@@ -1,6 +1,7 @@
 /** @module Components.Editor.Code.FreeFEM */
 
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { Typography } from 'antd'
 import AceEditor from 'react-ace'
 import ReactAce from 'react-ace/lib/ace'
 import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
@@ -146,7 +147,7 @@ const FreeFEMCode = (): JSX.Element => {
     editor.editor.on('mousemove', onMouseMove)
 
     return () => {
-      editor.editor.removeAllListeners()
+      // editor.editor.removeAllListeners()
     }
   }, [onMouseMove])
 
@@ -171,6 +172,7 @@ const FreeFEMCode = (): JSX.Element => {
    */
   return (
     <>
+      <Typography.Title level={3}>FreeFEM code</Typography.Title>
       <AceEditor
         //@ts-ignore
         ref={editorRef}

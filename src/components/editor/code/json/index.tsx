@@ -1,6 +1,7 @@
 /** @module Components.Editor.Code.JSONEditor */
 
 import { useCallback, useContext } from 'react'
+import { Typography } from 'antd'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-json5'
 import 'ace-builds/src-noconflict/theme-one_dark'
@@ -31,18 +32,21 @@ const JSONCode = (): JSX.Element => {
    * Render
    */
   return (
-    <AceEditor
-      width="100%"
-      height="calc(100% - 64px)"
-      fontSize={16}
-      mode="json5"
-      theme="one_dark"
-      name="json_editor"
-      value={model}
-      editorProps={{ $blockScrolling: true }}
-      onChange={onChange}
-      showPrintMargin={false}
-    />
+    <>
+      <Typography.Title level={3}>JSON code</Typography.Title>
+      <AceEditor
+        width="100%"
+        height="calc(100% - 64px)"
+        fontSize={16}
+        mode="json5"
+        theme="one_dark"
+        name="json_editor"
+        value={model}
+        editorProps={{ $blockScrolling: true }}
+        onChange={onChange}
+        showPrintMargin={false}
+      />
+    </>
   )
 }
 

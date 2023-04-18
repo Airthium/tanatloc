@@ -44,8 +44,8 @@ const Code = (): JSX.Element => {
   // State
   const [width, setWidth] = useState<number>(0)
   const [constraints, setConstraints] = useState<{ min: number; max: number }>({
-    min: 250,
-    max: 250
+    min: 50,
+    max: 50
   })
 
   /**
@@ -66,10 +66,11 @@ const Code = (): JSX.Element => {
     if (!containerRef.current) return
 
     const rect = containerRef.current.getBoundingClientRect()
+    console.log(rect.width)
     const middle = rect.width / 2
 
     setWidth(middle)
-    setConstraints({ min: 250, max: rect.width - 250 })
+    setConstraints({ min: 50, max: rect.width - 50 })
   }, [])
 
   // Handle window resize

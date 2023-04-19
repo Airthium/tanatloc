@@ -1,9 +1,6 @@
-/** @module Components.Editor.Code */
-
-import { SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { ResizableBox, ResizeCallbackData } from 'react-resizable'
-
+import SplitPane from 'react-split-pane'
 import style from '../index.module.css'
 
 const FreeFEMCode = dynamic(
@@ -33,73 +30,33 @@ const JSONCode = dynamic(
   { ssr: false }
 )
 
-/**
- * Code
- * @returns Code
- */
 const Code = (): JSX.Element => {
-  // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // State
-  const [width, setWidth] = useState<number>(0)
-  const [constraints, setConstraints] = useState<{ min: number; max: number }>({
-    min: 50,
-    max: 50
-  })
-
-  /**
-   * On resize
-   *
-   */
-  const onResize = useCallback(
-    (_event: SyntheticEvent, { size }: ResizeCallbackData): void =>
-      setWidth(size.width),
-    []
-  )
-
-  /**
-   * On window resize
-   */
   const onWindowResize = useCallback(() => {
-    /* istanbul ignore next */
     if (!containerRef.current) return
-
-    const rect = containerRef.current.getBoundingClientRect()
-    console.log(rect.width)
-    const middle = rect.width / 2
-
-    setWidth(middle)
-    setConstraints({ min: 50, max: rect.width - 50 })
   }, [])
 
-  // Handle window resize
-  useEffect((): (() => void) => {
+  useEffect(() => {
     window.addEventListener('resize', onWindowResize)
-    setTimeout(onWindowResize, 500)
     return () => {
       window.removeEventListener('resize', onWindowResize)
     }
   }, [onWindowResize])
 
-  /**
-   * Render
-   */
   return (
     <div ref={containerRef} className={style.code}>
-      <ResizableBox
-        axis="x"
-        width={width}
-        minConstraints={[constraints.min, 0]}
-        maxConstraints={[constraints.max, 0]}
-        handle={<div className="handler" onDoubleClick={onWindowResize} />}
-        onResize={onResize}
+      <SplitPane
+        split="vertical"
+        minSize={200}
+        maxSize={-200}
+        style={{ position: 'unset' }}
+        size={'50%'}
+        {...({} as any)}
       >
         <FreeFEMCode />
-      </ResizableBox>
-      <div>
         <JSONCode />
-      </div>
+      </SplitPane>
     </div>
   )
 }

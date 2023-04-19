@@ -83,14 +83,18 @@ const FreeFEMCode = (): JSX.Element => {
     )
 
     // Get token position infos
-    const start = editor.editor.session.getWordRange(
-      textCoords.row,
-      textCoords.column
-    ).start
-    const position = editor.editor.renderer.textToScreenCoordinates(
-      start.row,
-      start.column
-    )
+
+    const { left: containerLeft, top: containerTop } =
+      editor.editor.container.getBoundingClientRect()
+      console.log('containerTop', containerTop)
+      const scrollLeft = editor.editor.getSession().getScrollLeft();
+      const scrollTop = editor.editor.getSession().getScrollTop();
+      const position = {
+        left: containerLeft - scrollLeft,
+        top: containerTop - scrollTop,
+      };
+    
+    console.log(position, "première")
 
     // Get token data
     const token = editor.editor.session.getTokenAt(
@@ -115,7 +119,7 @@ const FreeFEMCode = (): JSX.Element => {
           : data['type'][token.value as keyof (typeof data)['type']]
 
       if (currentToken) {
-        setTooltipPosition({ x: position.pageX, y: position.pageY })
+        setTooltipPosition({ x: position.left, y: position.top })
         setTooltipToken({
           ...currentToken,
           name: token.value

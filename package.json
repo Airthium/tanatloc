@@ -42,7 +42,8 @@
   "dependencies": {
     "electron": "24.1.2",
     "electron-serve": "1.1.0",
-    "electron-store": "8.1.0"
+    "electron-store": "8.1.0",
+    "react-split-pane": "^0.1.92"
   },
   "devDependencies": {
     "@airthium/extract-json-from-string": "1.0.8",

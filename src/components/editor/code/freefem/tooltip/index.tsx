@@ -41,14 +41,14 @@ const CustomTooltip = ({ x, y, token }: IProps): JSX.Element | null => {
   // Position
   const position = useMemo(() => {
     const pos: IStyle = {
-      left: x,
+      left: x - 256,
       top: 'unset',
       bottom: 'unset',
       maxWidth: 'unset',
       maxHeight: 'unset'
     }
 
-    if (width) pos.maxWidth = width - x - 50
+    // if (width) pos.maxWidth = width - x - 50
 
     if (height) {
       if (y < height / 2) {

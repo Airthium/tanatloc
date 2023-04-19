@@ -37,38 +37,44 @@
   display: flex;
 }
 
-.code > div:last-of-type {
-  flex: 1 1 auto;
-}
-
-.code :global(.react-resizable) {
-  position: relative;
-  height: 100% !important;
-}
-
-.code :global(.handler) {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
+.code :global(.Resizer) {
+  background: #000;
+  opacity: 0.5;
+  z-index: 1;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
   width: 8px;
-  background-color: gray;
-  cursor: pointer;
+  cursor: col-resize;
 }
 
-.code :global(.handler)::before {
-  position: absolute;
-  top: 0;
-  right: 10px;
-  content: '<';
+
+.split-pane {
+  display: flex;
+  flex: 1;
+  position: unset !important;
+  outline: none;
+  overflow: hidden;
 }
 
-.code :global(.handler)::after {
-  position: absolute;
-  top: 0;
-  right: -10px;
-  content: '>';
+.pane1 {
+  flex: 1;
+  overflow: auto;
 }
+
+.pane2 {
+  flex: 1;
+  overflow: auto;
+}
+
+.resizer {
+  background: #000;
+  opacity: 0.2;
+  z-index: 1;
+  box-sizing: border-box;
+  background-clip: padding-box;
+}
+
 
 .code h3 {
   margin: 0 !important;

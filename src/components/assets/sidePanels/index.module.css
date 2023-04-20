@@ -1,0 +1,25 @@
+.container {
+  display: grid;
+  grid-template-columns: auto 5px auto;
+}
+
+.divider {
+  position: relative;
+  flex: unset !important;
+  cursor: col-resize;
+  background-color: #555;
+}
+
+.divider:hover::after {
+  position: absolute;
+  top: 0;
+  left: -22.5px;
+  width: 50px;
+  height: 100%;
+  background-color: rgb(85, 85, 85, 0.5);
+  content: '< >';
+  font-size: 25px;
+  line-height: 25px;
+  text-align: center;
+  z-index: 10;
+}

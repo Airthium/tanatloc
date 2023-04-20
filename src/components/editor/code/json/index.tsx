@@ -9,6 +9,8 @@ import 'ace-builds/src-noconflict/theme-one_dark'
 import { EditorContext } from '@/context/editor'
 import { setModel } from '@/context/editor/actions'
 
+import style from '../../index.module.css'
+
 /**
  * JSON code
  * @returns JSONCode
@@ -32,7 +34,7 @@ const JSONCode = (): JSX.Element => {
    * Render
    */
   return (
-    <>
+    <div className={style.codeBlock}>
       <Typography.Title level={3}>Model description</Typography.Title>
       <AceEditor
         width="100%"
@@ -46,7 +48,7 @@ const JSONCode = (): JSX.Element => {
         onChange={onChange}
         showPrintMargin={false}
       />
-    </>
+    </div>
   )
 }
 

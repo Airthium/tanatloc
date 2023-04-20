@@ -16,6 +16,8 @@ import allSnippets from './snippets/snippets.json'
 import data from './doc/documentation.json'
 import CustomTooltip from './tooltip'
 
+import style from '../../index.module.css'
+
 /**
  * Token
  */
@@ -83,18 +85,15 @@ const FreeFEMCode = (): JSX.Element => {
     )
 
     // Get token position infos
-
-    const { left: containerLeft, top: containerTop } =
-      editor.editor.container.getBoundingClientRect()
-      console.log('containerTop', containerTop)
-      const scrollLeft = editor.editor.getSession().getScrollLeft();
-      const scrollTop = editor.editor.getSession().getScrollTop();
-      const position = {
-        left: containerLeft - scrollLeft,
-        top: containerTop - scrollTop,
-      };
-    
-    console.log(position, "première")
+    const { left } = editor.editor.container.getBoundingClientRect()
+    const start = editor.editor.session.getWordRange(
+      textCoords.row,
+      textCoords.column
+    ).start
+    const position = editor.editor.renderer.textToScreenCoordinates(
+      start.row,
+      start.column
+    )
 
     // Get token data
     const token = editor.editor.session.getTokenAt(
@@ -119,7 +118,7 @@ const FreeFEMCode = (): JSX.Element => {
           : data['type'][token.value as keyof (typeof data)['type']]
 
       if (currentToken) {
-        setTooltipPosition({ x: position.left, y: position.top })
+        setTooltipPosition({ x: position.pageX + left, y: position.pageY })
         setTooltipToken({
           ...currentToken,
           name: token.value
@@ -171,7 +170,7 @@ const FreeFEMCode = (): JSX.Element => {
    * Render
    */
   return (
-    <>
+    <div className={style.codeBlock}>
       <Typography.Title level={3}>FreeFEM template</Typography.Title>
       <AceEditor
         //@ts-ignore
@@ -193,7 +192,7 @@ const FreeFEMCode = (): JSX.Element => {
         y={tooltipPosition.y}
         token={tooltipToken}
       />
-    </>
+    </div>
   )
 }
 export default FreeFEMCode

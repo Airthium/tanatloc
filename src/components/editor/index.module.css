@@ -34,47 +34,15 @@
 .code {
   width: 100%;
   height: calc(100% - 64px);
+}
+
+.codeBlock {
+  width: 100%;
+  height: 100%;
   display: flex;
+  flex-direction: column;
+  background-color: white;
 }
-
-.code :global(.Resizer) {
-  background: #000;
-  opacity: 0.5;
-  z-index: 1;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 8px;
-  cursor: col-resize;
-}
-
-
-.split-pane {
-  display: flex;
-  flex: 1;
-  position: unset !important;
-  outline: none;
-  overflow: hidden;
-}
-
-.pane1 {
-  flex: 1;
-  overflow: auto;
-}
-
-.pane2 {
-  flex: 1;
-  overflow: auto;
-}
-
-.resizer {
-  background: #000;
-  opacity: 0.2;
-  z-index: 1;
-  box-sizing: border-box;
-  background-clip: padding-box;
-}
-
 
 .code h3 {
   margin: 0 !important;

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import SplitPane from 'react-split-pane'
+
+import SidePanels from '@/components/assets/sidePanels'
+
 import style from '../index.module.css'
 
 const FreeFEMCode = dynamic(
@@ -30,34 +31,20 @@ const JSONCode = dynamic(
   { ssr: false }
 )
 
+/**
+ * Code
+ * @returns Code
+ */
 const Code = (): JSX.Element => {
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  const onWindowResize = useCallback(() => {
-    if (!containerRef.current) return
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('resize', onWindowResize)
-    return () => {
-      window.removeEventListener('resize', onWindowResize)
-    }
-  }, [onWindowResize])
-
+  /**
+   * Render
+   */
   return (
-    <div ref={containerRef} className={style.code}>
-      <SplitPane
-        split="vertical"
-        minSize={200}
-        maxSize={-200}
-        style={{ position: 'unset' }}
-        size={'50%'}
-        {...({} as any)}
-      >
-        <FreeFEMCode />
-        <JSONCode />
-      </SplitPane>
-    </div>
+    <SidePanels
+      className={style.code}
+      leftChild={<FreeFEMCode />}
+      rightChild={<JSONCode />}
+    ></SidePanels>
   )
 }
 

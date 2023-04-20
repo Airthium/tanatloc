@@ -1,3 +1,5 @@
+/** @module Components.Editor.Code */
+
 import dynamic from 'next/dynamic'
 
 import SidePanels from '@/components/assets/sidePanels'

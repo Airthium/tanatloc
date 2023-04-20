@@ -48,7 +48,7 @@ const CustomTooltip = ({ x, y, token }: IProps): JSX.Element | null => {
       maxHeight: 'unset'
     }
 
-    // if (width) pos.maxWidth = width - x - 50
+    if (width) pos.maxWidth = width - x - 50
 
     if (height) {
       if (y < height / 2) {

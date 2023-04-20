@@ -1,3 +1,5 @@
+/** @module Components.Assets.SidePanels */
+
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import style from './index.module.css'
@@ -82,6 +84,7 @@ export const Divider = ({
    */
   return (
     <div
+      role="Divider"
       className={style.divider}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
@@ -111,6 +114,7 @@ const SidePanels = ({
    * On resize
    */
   const onResize = useCallback((): void => {
+    /* istanbul ignore next */
     if (!containerRef.current) return
 
     const rect = containerRef.current.getBoundingClientRect()
@@ -129,18 +133,20 @@ const SidePanels = ({
    */
   const onMove = useCallback(
     (x: number): void => {
+      /* istanbul ignore next */
       if (!containerRef.current) return
+      /* istanbul ignore next */
       if (!containerRect) return
 
       let leftWidth = x - containerRect.left
       let rightWidth = containerRect.width - x + containerRect.left
 
-      if (leftWidth < 50) {
-        leftWidth = 0
-        rightWidth = containerRect.width - 5
-      } else if (rightWidth < 50) {
+      if (rightWidth < 50) {
         rightWidth = 0
         leftWidth = containerRect.width - 5
+      } else if (leftWidth < 50) {
+        leftWidth = 0
+        rightWidth = containerRect.width - 5
       }
 
       setLeftWidth(leftWidth)

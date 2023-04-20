@@ -112,6 +112,9 @@ describe('components/editor/code/freefem_editor', () => {
           pixelToScreenCoordinates: jest.fn,
           textToScreenCoordinates: jest.fn
         },
+        container: {
+          getBoundingClientRect: jest.fn
+        },
         session: {
           getTokenAt: () => {
             count++

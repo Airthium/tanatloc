@@ -1,5 +1,5 @@
 @value variables: "@/styles/variables.css";
-@value colorPrimary from variables;
+@value colorPrimary, textColor from variables;
 
 @value breakpoints: "@/styles/breakpoints.css";
 @value tablet from breakpoints;
@@ -15,6 +15,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   justify-items: center;
+}
+
+.head :global(.item) {
+  display: block;
+}
+
+.head :global(.item) a {
+  color: textColor;
 }
 
 .card {

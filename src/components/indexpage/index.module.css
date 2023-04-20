@@ -88,6 +88,10 @@
   margin-inline-start: 0 !important;
 }
 
+.models :global(.ant-checkbox) {
+  margin-top: 4px;
+}
+
 .models :global(.ant-checkbox-inner) {
   border-color: #fff;
 }

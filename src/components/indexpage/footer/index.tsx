@@ -1,6 +1,7 @@
 /** @module Components.Footer */
 
 import { useCallback, useMemo } from 'react'
+import Link from 'next/link'
 import {
   Button,
   Card,
@@ -35,7 +36,9 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
    * @returns Render
    */
   const renderItem: ListProps<string | JSX.Element>['renderItem'] = useCallback(
-    (item: string | JSX.Element): JSX.Element => <List.Item>{item}</List.Item>,
+    (item: string | JSX.Element): JSX.Element => (
+      <List.Item className="item">{item}</List.Item>
+    ),
     []
   )
 
@@ -86,9 +89,27 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
   // Data
   const thanks = useMemo(
     () => [
-      '- Professor Fréderic Hecht, Dr. Pierre Jolivet, and the FreeFEM’s contributors',
-      '- Professor Christophe Geuzaine, Professor Jean-François Remacle and the Gmsh contributors',
-      '- The Open Cascade development team'
+      <>
+        - Professor Fréderic Hecht, Dr. Pierre Jolivet, and the{' '}
+        <Link href="https://freefem.org/" target="_blank">
+          FreeFEM’s
+        </Link>{' '}
+        contributors
+      </>,
+      <>
+        - Professor Christophe Geuzaine, Professor Jean-François Remacle and the{' '}
+        <Link href="https://gmsh.info/" target="_blank">
+          Gmsh
+        </Link>{' '}
+        contributors
+      </>,
+      <>
+        - The{' '}
+        <Link href="https://dev.opencascade.org/" target="_blank">
+          Open Cascade
+        </Link>{' '}
+        development team
+      </>
     ],
     []
   )

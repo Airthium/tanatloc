@@ -40,14 +40,14 @@ describe('components/assets/sidePanels', () => {
   })
 
   test('divider', () => {
-    // jest.spyOn(React, 'useRef').mockImplementation(() => ({
-    //   current: {
-    //     getBoundingClientRect: () => ({
-    //       left: 0,
-    //       width: 500
-    //     })
-    //   }
-    // }))
+    jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(
+      () =>
+        ({
+          left: 0,
+          width: 500
+        } as DOMRect)
+    )
+
     const { unmount } = render(
       <SidePanels leftChild={leftChild} rightChild={rightChild} />
     )
@@ -55,8 +55,9 @@ describe('components/assets/sidePanels', () => {
     const divider = screen.getByRole('Divider')
     fireEvent.mouseDown(divider)
 
-    fireEvent.mouseMove(window, { clientX: 100 })
-    fireEvent.mouseMove(window, { clientX: -100 })
+    fireEvent.mouseMove(window, { clientX: 25 })
+    fireEvent.mouseMove(window, { clientX: 250 })
+    fireEvent.mouseMove(window, { clientX: 475 })
 
     fireEvent.mouseUp(window)
 

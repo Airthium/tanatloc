@@ -592,6 +592,43 @@ const unarchiveFromFile = async (project: { id: string }, buffer: Buffer) => {
   await unarchiveFromServer(project)
 }
 
+/**
+ * Copy
+ * @param workspace Workspace
+ * @param project Project
+ */
+const copy = async (
+  user: { id: string },
+  workspace: { id: string },
+  project: { id: string }
+): Promise<void /*IProjectWithData*/> => {
+  const data = await get(project.id, [
+    'title',
+    'description',
+    'avatar',
+    'public',
+    'history',
+    'geometries',
+    'simulations',
+    'owners',
+    'users',
+    'groups'
+  ])
+
+  const newProject = await add(user, workspace, {
+    title: data.title + ' (Copy)',
+    description: data.description
+  })
+
+  console.log(newProject)
+
+  // TODO
+  // Copy geometries, simulations (change geometries and meshes paths)
+  // ?
+
+  // return newProject
+}
+
 const Project = {
   add,
   get,
@@ -601,6 +638,7 @@ const Project = {
   archive,
   unarchiveFromServer,
   deleteArchiveFile,
-  unarchiveFromFile
+  unarchiveFromFile,
+  copy
 }
 export default Project

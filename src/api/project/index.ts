@@ -9,6 +9,7 @@ import { archive } from './archive'
 import { unarchiveFromServer } from './unarchiveFromServer'
 import { deleteArchiveFile } from './deleteArchiveFile'
 import { unarchiveFromFile } from './unarchiveFromFile'
+import { copy } from './copy'
 
 const Project = {
   useProjects,
@@ -19,7 +20,8 @@ const Project = {
   archive,
   unarchiveFromServer,
   deleteArchiveFile,
-  unarchiveFromFile
+  unarchiveFromFile,
+  copy
 }
 
 export default Project

@@ -4,9 +4,11 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
+  Button,
   Card,
   Carousel,
   Divider,
+  Dropdown,
   Empty,
   Space,
   Tag,
@@ -28,11 +30,13 @@ import Share from '@/components/assets/share'
 import Edit from '../edit'
 import Delete from '../delete'
 import Archive from '../archive'
+import Copy from '../copy'
 
 import Utils from '@/lib/utils'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
+import { EllipsisOutlined } from '@ant-design/icons'
 
 /**
  * Props
@@ -213,37 +217,15 @@ const ProjectCard = ({
         </Carousel>
       }
       actions={[
-        <Delete
-          key="delete"
+        <Edit
+          key="edit"
           disabled={!project?.owners?.find((o) => o.id === user?.id)}
-          workspace={{
-            id: workspace.id,
-            projects: workspace.projects
-          }}
           project={{
             id: project.id,
-            title: project.title
+            title: project.title,
+            description: project.description
           }}
-          swr={{
-            mutateOneWorkspace: swr.mutateOneWorkspace,
-            delOneProject: swr.delOneProject
-          }}
-        />,
-        <Archive
-          key="archive"
-          disabled={!project?.owners?.find((o) => o.id === user?.id)}
-          workspace={{
-            id: workspace.id
-          }}
-          project={{
-            archived: project.archived,
-            id: project.id,
-            title: project.title
-          }}
-          swr={{
-            mutateOneWorkspace: swr.mutateOneWorkspace,
-            mutateOneProject: swr.mutateOneProject
-          }}
+          swr={{ mutateOneProject: swr.mutateOneProject }}
         />,
         <Share
           key="share"
@@ -260,16 +242,68 @@ const ProjectCard = ({
             buttonDark: true
           }}
         />,
-        <Edit
-          key="edit"
-          disabled={!project?.owners?.find((o) => o.id === user?.id)}
-          project={{
-            id: project.id,
-            title: project.title,
-            description: project.description
+        <Copy
+          key="copy"
+          workspace={{
+            id: workspace.id,
+            projects: workspace.projects
           }}
-          swr={{ mutateOneProject: swr.mutateOneProject }}
-        />
+          project={{ id: project.id }}
+          swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+        />,
+        <Dropdown
+          key="more"
+          menu={{
+            items: [
+              {
+                key: 'archive',
+                label: (
+                  <Archive
+                    key="archive"
+                    disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                    workspace={{
+                      id: workspace.id
+                    }}
+                    project={{
+                      archived: project.archived,
+                      id: project.id,
+                      title: project.title
+                    }}
+                    swr={{
+                      mutateOneWorkspace: swr.mutateOneWorkspace,
+                      mutateOneProject: swr.mutateOneProject
+                    }}
+                  />
+                )
+              },
+              {
+                key: 'delete',
+                label: (
+                  <Delete
+                    disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                    workspace={{
+                      id: workspace.id,
+                      projects: workspace.projects
+                    }}
+                    project={{
+                      id: project.id,
+                      title: project.title
+                    }}
+                    swr={{
+                      mutateOneWorkspace: swr.mutateOneWorkspace,
+                      delOneProject: swr.delOneProject
+                    }}
+                  />
+                )
+              }
+            ]
+          }}
+        >
+          <Button
+            icon={<EllipsisOutlined />}
+            className={globalStyle.noBorder}
+          />
+        </Dropdown>
       ]}
     >
       <div

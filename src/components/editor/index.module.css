@@ -67,3 +67,7 @@
 .tooltip :global(.ant-card-extra) {
   margin-left: 20px;
 }
+
+.ace_editor :global(.pasted_line) {
+  background-color: #ffa !important;
+}

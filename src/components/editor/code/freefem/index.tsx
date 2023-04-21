@@ -3,6 +3,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Typography } from 'antd'
 import AceEditor from 'react-ace'
+import { Range } from 'ace-builds'
 import ReactAce from 'react-ace/lib/ace'
 import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
 
@@ -38,6 +39,10 @@ export interface IPosition {
   y: number
 }
 
+export interface Marker {
+  id: number
+}
+
 /**
  * FreeFEM code
  * @returns FreeFEMCode
@@ -54,6 +59,7 @@ const FreeFEMCode = (): JSX.Element => {
     y: 0
   })
   const [tooltipToken, setTooltipToken] = useState<IToken>()
+  const previousMarkers = useRef<Marker[]>([])
 
   // Data
   const { template, dispatch } = useContext(EditorContext)
@@ -166,6 +172,50 @@ const FreeFEMCode = (): JSX.Element => {
     setCompleters([completer])
   }, [])
 
+  useEffect(() => {
+    const handlePaste = (event: any) => {
+      if (!editorRef.current) return
+      const editor = editorRef.current.editor
+      //Delete old markers
+      previousMarkers.current.forEach((marker) => {
+        console.log(marker.id, "marker")
+        editor.session.removeMarker(marker.id)
+      })
+
+      const clipboardData = event.clipboardData
+      const pastedData = clipboardData.getData('Text')
+      console.log(pastedData)
+      const pastedLines = pastedData.split('\n').length
+      console.log(pastedLines)
+
+      const { row } = editor.getCursorPosition()
+      const newMarkers: Marker[] = []
+      setTimeout(() => {
+        for (let i = 0; i < pastedLines; i++) {
+          const markerId = editor.session.addMarker(
+            new Range(row + i, 0, row + i, Infinity),
+            'pasted_line',
+            'fullLine'
+          )
+          newMarkers.push({ id: markerId })
+        }
+        console.log(newMarkers, 'newMarkers')
+        previousMarkers.current = newMarkers
+      }, 0)
+    }
+
+    const editor = editorRef.current?.editor
+    if (editor) {
+      editor.container.addEventListener('paste', handlePaste)
+    }
+
+    return () => {
+      if (editor) {
+        editor.container.removeEventListener('paste', handlePaste)
+      }
+    }
+  }, [])
+
   /**
    * Render
    */
@@ -175,6 +225,7 @@ const FreeFEMCode = (): JSX.Element => {
       <AceEditor
         //@ts-ignore
         ref={editorRef}
+        className='ace_editor'
         width="100%"
         height="calc(100% - 32px)"
         fontSize={16}

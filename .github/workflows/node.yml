@@ -12,7 +12,7 @@ jobs:
 
       - uses: actions/setup-node@master
         with:
-          node-version: 'lts'
+          node-version: 'latest-v18.x'
 
       - name: Install
         run: yarn install

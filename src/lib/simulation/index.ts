@@ -490,5 +490,31 @@ const archive = async (
   await Tools.removeDirectory(path.join(SIMULATION, simulation.id))
 }
 
-const Simulation = { add, get, getAll, update, del, run, stop, getLog, archive }
+/**
+ * Copy
+ * @param project Project
+ * @param simulation Simulation
+ */
+const copy = async (
+  project: { id: string },
+  simulation: { id: string }
+): Promise<void /*INewSimulation*/> => {
+  // TODO
+  // replace copy in client by this one
+  console.log(project)
+  console.log(simulation)
+}
+
+const Simulation = {
+  add,
+  get,
+  getAll,
+  update,
+  del,
+  run,
+  stop,
+  getLog,
+  archive,
+  copy
+}
 export default Simulation

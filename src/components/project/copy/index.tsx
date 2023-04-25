@@ -4,6 +4,7 @@ import { CopyOutlined } from '@ant-design/icons'
 
 import {
   IFrontMutateWorkspacesItem,
+  IFrontNewProject,
   IFrontProjectsItem,
   IFrontWorkspacesItem
 } from '@/api/index.d'
@@ -21,6 +22,7 @@ export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
   project: Pick<IFrontProjectsItem, 'id'>
   swr: {
+    addOneProject: (project: IFrontNewProject) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 }
@@ -42,12 +44,16 @@ export const _onCopy = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   swr: {
+    addOneProject: (project: IFrontNewProject) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
   }
 ): Promise<void> => {
   try {
     // Copy
     const newProject = await ProjectAPI.copy(workspace, project)
+
+    // Mutate projects
+    swr.addOneProject(newProject)
 
     // Mutate workspaces
     workspace.projects.push(newProject.id)

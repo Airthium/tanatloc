@@ -178,7 +178,7 @@ const FreeFEMCode = (): JSX.Element => {
       const editor = editorRef.current.editor
       //Delete old markers
       previousMarkers.current.forEach((marker) => {
-        console.log(marker.id, "marker")
+        console.log(marker.id, 'marker')
         editor.session.removeMarker(marker.id)
       })
 
@@ -225,7 +225,7 @@ const FreeFEMCode = (): JSX.Element => {
       <AceEditor
         //@ts-ignore
         ref={editorRef}
-        className='ace_editor'
+        className="ace_editor"
         width="100%"
         height="calc(100% - 32px)"
         fontSize={16}

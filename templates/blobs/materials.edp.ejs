@@ -14,13 +14,13 @@ appendLog("Define materials...");
 <%
 	materials.children.forEach(material => {
 		let firstValue = 0
-		let index = 0
 -%>
-// <%- material.label -%><%= locals.geometryIndex ? (' - Geometry' + locals.geometryIndex) : '' %>
+// <%- material.label -%><%= locals.geometryIndex === undefined ? '' : (' - Geometry' + locals.geometryIndex) %>
 func <%= material.name -%><%= locals.geometryIndex ?? '' -%> =
 <%
+	let index = 0
 	materials.values.forEach((value) => {
-		if (locals.geometryIndex && (value.geometryIndex !== locals.geometryIndex)) return
+		if (locals.geometryIndex !== undefined && (value.geometryIndex !== locals.geometryIndex)) return
 		let child = value.material.children.find(child => child.symbol === material.name) || material
 		if (index === 0) {
 			firstValue = child.value ?? material.default

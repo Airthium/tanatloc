@@ -12,7 +12,7 @@ appendLog("Define materials...");
 <% materials.children.forEach(material => { -%>
 <% let firstValue = 0 -%>
 // <%- material.label %> 
-func <%= material.name -%> = 
+func <%= material.name -%><%= geometry?.index ?? '' -%> = 
 <% materials.values.forEach((value, index) => { -%>
 <% let child = value.material.children.find(child => child.symbol === material.name) || material -%>
 <% if (index === 0) { -%>

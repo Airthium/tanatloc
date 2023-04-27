@@ -68,6 +68,7 @@
   margin-left: 20px;
 }
 
-.ace_editor :global(.pasted_line) {
-  background-color: #ffa !important;
+.codeBlock :global(.ace_pasted_line){
+  background-color: rgba(135, 206, 250, 0.3);
+  position: absolute
 }

@@ -148,11 +148,49 @@ const FreeFEMCode = (): JSX.Element => {
     [dispatch]
   )
 
+  /**
+   * handlePaste
+   * Highlights recently pasted lines
+   */
+  const handlePaste = useCallback((event: any): void => {
+    if (!editorRef.current) return
+    const editor = editorRef.current.editor
+    // Delete old markers
+    const { row } = editor.getCursorPosition()
+
+    previousMarkers.current.forEach((marker) => {
+      editor.session.removeMarker(marker.id)
+    })
+
+    const clipboardData = event.clipboardData
+    const pastedData = clipboardData.getData('Text')
+    const pastedLines = pastedData.split('\n').length
+
+    const newMarkers: Marker[] = []
+    setTimeout(() => {
+      for (let i = 0; i < pastedLines; i++) {
+        const markerId = editor.session.addMarker(
+          new Range(
+            row + i - (pastedLines - 1),
+            0,
+            row + i - (pastedLines - 1),
+            Infinity
+          ),
+          'ace_pasted_line',
+          'fullLine'
+        )
+        newMarkers.push({ id: markerId })
+      }
+      previousMarkers.current = newMarkers
+    }, 0)
+  }, [])
+
   // Init
   useEffect(() => {
     if (!editorRef.current) return
 
     const editor = editorRef.current
+    editor.editor.container.classList.add('pasted_line_container')
     editor.editor.on('mousemove', onMouseMove)
   }, [onMouseMove])
 
@@ -173,37 +211,6 @@ const FreeFEMCode = (): JSX.Element => {
   }, [])
 
   useEffect(() => {
-    const handlePaste = (event: any) => {
-      if (!editorRef.current) return
-      const editor = editorRef.current.editor
-      //Delete old markers
-      previousMarkers.current.forEach((marker) => {
-        console.log(marker.id, "marker")
-        editor.session.removeMarker(marker.id)
-      })
-
-      const clipboardData = event.clipboardData
-      const pastedData = clipboardData.getData('Text')
-      console.log(pastedData)
-      const pastedLines = pastedData.split('\n').length
-      console.log(pastedLines)
-
-      const { row } = editor.getCursorPosition()
-      const newMarkers: Marker[] = []
-      setTimeout(() => {
-        for (let i = 0; i < pastedLines; i++) {
-          const markerId = editor.session.addMarker(
-            new Range(row + i, 0, row + i, Infinity),
-            'pasted_line',
-            'fullLine'
-          )
-          newMarkers.push({ id: markerId })
-        }
-        console.log(newMarkers, 'newMarkers')
-        previousMarkers.current = newMarkers
-      }, 0)
-    }
-
     const editor = editorRef.current?.editor
     if (editor) {
       editor.container.addEventListener('paste', handlePaste)
@@ -214,7 +221,7 @@ const FreeFEMCode = (): JSX.Element => {
         editor.container.removeEventListener('paste', handlePaste)
       }
     }
-  }, [])
+  }, [handlePaste])
 
   /**
    * Render
@@ -225,7 +232,7 @@ const FreeFEMCode = (): JSX.Element => {
       <AceEditor
         //@ts-ignore
         ref={editorRef}
-        className='ace_editor'
+        className="ace_editor"
         width="100%"
         height="calc(100% - 32px)"
         fontSize={16}
@@ -237,6 +244,7 @@ const FreeFEMCode = (): JSX.Element => {
         onCursorChange={onCursorChange}
         onChange={onChange}
         showPrintMargin={false}
+        style={style}
       />
       <CustomTooltip
         x={tooltipPosition.x}

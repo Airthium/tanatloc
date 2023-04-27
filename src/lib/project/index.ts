@@ -601,13 +601,10 @@ const copy = async (
   user: { id: string },
   workspace: { id: string },
   project: { id: string }
-): Promise<void /*IProjectWithData*/> => {
+): Promise<INewProject> => {
   const data = await get(project.id, [
     'title',
     'description',
-    'avatar',
-    'public',
-    'history',
     'geometries',
     'simulations',
     'owners',
@@ -620,13 +617,30 @@ const copy = async (
     description: data.description
   })
 
-  console.log(newProject)
+  // Owners, users, groups
+  await update({ id: newProject.id }, [
+    {
+      key: 'owners',
+      value: data.owners
+    },
+    {
+      key: 'users',
+      value: 'users'
+    },
+    {
+      key: 'groups',
+      value: data.groups
+    }
+  ])
 
+  // Geometries
   // TODO
-  // Copy geometries, simulations (change geometries and meshes paths)
-  // ?
 
-  // return newProject
+  // Simulations
+  // TODO
+  // change geometries paths, remove meshes and results
+
+  return newProject
 }
 
 const Project = {

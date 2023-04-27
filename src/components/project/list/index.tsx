@@ -18,6 +18,7 @@ import {
 import {
   IFrontMutateProjectsItem,
   IFrontMutateWorkspacesItem,
+  IFrontNewProject,
   IFrontOrganizationsItem,
   IFrontProjectsItem,
   IFrontUser,
@@ -65,6 +66,7 @@ export interface IProps {
   filter?: string
   sorter?: string
   swr: {
+    addOneProject: (project: IFrontNewProject) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
     delOneProject: (project: IFrontMutateProjectsItem) => void
     mutateOneProject: (project: IFrontMutateProjectsItem) => void
@@ -94,6 +96,7 @@ export interface ICardProps {
     'id' | 'name' | 'owners' | 'users' | 'groups'
   >[]
   swr: {
+    addOneProject: (project: IFrontNewProject) => void
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
     delOneProject: (project: IFrontMutateProjectsItem) => void
     mutateOneProject: (project: IFrontMutateProjectsItem) => void
@@ -249,7 +252,10 @@ const ProjectCard = ({
             projects: workspace.projects
           }}
           project={{ id: project.id }}
-          swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+          swr={{
+            addOneProject: swr.addOneProject,
+            mutateOneWorkspace: swr.mutateOneWorkspace
+          }}
         />,
         <Dropdown
           key="more"

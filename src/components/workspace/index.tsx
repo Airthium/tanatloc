@@ -217,6 +217,7 @@ const Workspace = ({
           filter={filter}
           sorter={sorter}
           swr={{
+            addOneProject,
             mutateOneWorkspace: swr.mutateOneWorkspace,
             delOneProject,
             mutateOneProject,

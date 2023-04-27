@@ -113,6 +113,8 @@ describe('components/editor/code/freefem_editor', () => {
           textToScreenCoordinates: jest.fn
         },
         container: {
+          addEventListener: jest.fn,
+          removeEventListener: jest.fn,
           getBoundingClientRect: jest.fn
         },
         session: {

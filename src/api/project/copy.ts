@@ -1,6 +1,6 @@
 /** @module API.Project.Copy */
 
-import { IFrontProject } from '../index.d'
+import { IFrontNewProject } from '../index.d'
 
 import { call } from '@/api/call'
 
@@ -13,7 +13,7 @@ import { call } from '@/api/call'
 export const copy = async (
   workspace: { id: string },
   project: { id: string }
-): Promise<IFrontProject> => {
+): Promise<IFrontNewProject> => {
   const response = await call('/api/project/' + project.id + '/copy', {
     method: 'POST',
     headers: {

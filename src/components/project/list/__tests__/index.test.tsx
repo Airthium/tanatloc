@@ -51,6 +51,7 @@ describe('component/project/list', () => {
     'id' | 'name' | 'owners' | 'users' | 'groups'
   >[] = [{ id: 'id', name: 'name', owners: [], users: [], groups: [] }]
   const swr = {
+    addOneProject: jest.fn,
     mutateOneWorkspace: jest.fn,
     delOneProject: jest.fn,
     mutateOneProject: jest.fn,

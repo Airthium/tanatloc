@@ -32,12 +32,12 @@ const copy = async (req: Request, res: Response) => {
       // Archive project
       try {
         res.setHeader('Content-Type', 'application/x-tgz')
-        await ProjectLib.copy(
+        const copyProject = await ProjectLib.copy(
           { id: sessionId },
-          { id: req.body.archive },
+          req.body.workspace,
           { id }
         )
-        res.status(200).end()
+        res.status(200).json(copyProject)
       } catch (err: any) {
         throw error(500, err.message)
       }

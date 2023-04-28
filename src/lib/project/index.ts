@@ -15,6 +15,7 @@ import { LIMIT } from '@/config/string'
 
 import {
   AVATAR_RELATIVE,
+  GEOMETRY,
   GEOMETRY_RELATIVE,
   SIMULATION_RELATIVE,
   STORAGE
@@ -625,7 +626,7 @@ const copy = async (
     },
     {
       key: 'users',
-      value: 'users'
+      value: data.users
     },
     {
       key: 'groups',
@@ -634,11 +635,83 @@ const copy = async (
   ])
 
   // Geometries
-  // TODO
+  const geometriesReplace: { old: string; new: string }[] = []
+  for (const geometry of data.geometries) {
+    // Data
+    const geometryData = await Geometry.get(geometry, [
+      'name',
+      'extension',
+      'uploadfilename'
+    ])
+
+    // Read geometry
+    const buffer = await Tools.readFile(
+      path.join(GEOMETRY, geometryData.uploadfilename)
+    )
+
+    // Update uploadfilename
+    geometryData.uploadfilename =
+      'copy_' + newProject.id + '_' + geometryData.uploadfilename
+
+    // Add geometry
+    const newGeometry = await Geometry.add(
+      { id: newProject.id },
+      {
+        name: geometryData.name + '.' + geometryData.extension,
+        uid: geometryData.uploadfilename,
+        buffer: buffer
+      }
+    )
+
+    // Update name
+    await Geometry.update({ id: newGeometry.id }, [
+      {
+        key: 'name',
+        value: geometryData.name
+      }
+    ])
+
+    geometriesReplace.push({ old: geometry, new: newGeometry.id })
+  }
 
   // Simulations
-  // TODO
-  // change geometries paths, remove meshes and results
+  for (const simulation of data.simulations) {
+    const simulationData = await Simulation.get(simulation, ['name', 'scheme'])
+
+    // Update scheme
+    let newValue
+    let newValues
+    const value = simulationData.scheme.configuration.geometry.value
+    if (value) {
+      const replace = geometriesReplace.find((r) => r.old === value)
+      newValue = replace?.new
+    }
+    const values = simulationData.scheme.configuration.geometry.values
+    if (values) {
+      newValues = []
+      values.forEach((value, index) => {
+        const replace = geometriesReplace.find((r) => r.old === value)
+        newValues[index] = replace?.new
+      })
+    }
+    simulationData.scheme.configuration.geometry = {
+      index: simulationData.scheme.configuration.geometry.index,
+      title: simulationData.scheme.configuration.geometry.title,
+      done: simulationData.scheme.configuration.geometry.done,
+      error: simulationData.scheme.configuration.geometry.error,
+      meshable: simulationData.scheme.configuration.geometry.meshable,
+      multiple: simulationData.scheme.configuration.geometry.multiple,
+      n: simulationData.scheme.configuration.geometry.n,
+      value: newValue,
+      values: newValues
+    }
+
+    // Add simulation
+    await Simulation.add(
+      { id: newProject.id },
+      { name: simulationData.name, scheme: simulationData.scheme }
+    )
+  }
 
   return newProject
 }

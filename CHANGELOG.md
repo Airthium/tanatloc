@@ -14,10 +14,14 @@
   - :beetle: Remove @emotion/react
   - :arrow_up: Improve ColorbarHelper
   - :beetle: Fix simulation selector
+  - :arrow_up: Editor improvement
+  - :arrow_up: Copy project
 - Algorithm:
   - :arrow_up: Stokes symmetric
   - :arrow_up: Navier-Stokes time symmetric
   - :arrow_up: Contact
+- Electron:
+  - :arrow_up: Start page update (IPC)
 
 ---
 

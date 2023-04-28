@@ -79,10 +79,7 @@ const writeFile = async (
  * @param options Options
  * @returns File content
  */
-const readFile = async (
-  file: string,
-  options?: any
-): Promise<Buffer | string> => {
+const readFile = async (file: string, options?: any): Promise<Buffer> => {
   return fs.readFile(file, options)
 }
 

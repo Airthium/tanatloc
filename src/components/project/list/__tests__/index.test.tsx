@@ -21,6 +21,8 @@ jest.mock('../../edit', () => () => <div />)
 
 jest.mock('../../delete', () => () => <div />)
 
+jest.mock('../../copy', () => () => <div />)
+
 jest.mock('@/lib/utils', () => ({
   userToAvatar: () => 'user_avatar',
   groupToAvatar: () => 'group_avatar'

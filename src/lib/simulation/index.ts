@@ -468,7 +468,7 @@ const getLog = async (
 
   // Read file
   try {
-    return await (Tools.readFile(filePath) as Promise<Buffer>)
+    return await Tools.readFile(filePath)
   } catch (err) {
     return Buffer.from('Not available yet')
   }

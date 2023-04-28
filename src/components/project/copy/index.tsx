@@ -1,3 +1,5 @@
+/** @module Components.Project.Copy */
+
 import { useCallback } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
@@ -30,7 +32,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   copy: 'Unable to copy project'
 }
 

@@ -6,7 +6,11 @@ import { Button, Form, Input } from 'antd'
 import { IModel } from '@/models/index.d'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
-import { setCursor, setModel } from '@/context/editor/actions'
+import {
+  setTemplateCursor,
+  setModel,
+  setTemplateHighlight
+} from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 import { FormListContainer, FormListItem } from '@/components/assets/form'
@@ -96,7 +100,13 @@ export const _onAdd = (
     cursor,
     dispatch
   )
-  dispatch(setCursor({ row: (cursor?.row || 4) + 0, column: 0 }))
+  dispatch(
+    setTemplateHighlight({
+      begin: cursor?.row || 0,
+      end: (cursor?.row || 0) + 11
+    })
+  )
+  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 11, column: 0 }))
 
   // Model
   let modelJSON: Partial<
@@ -126,6 +136,7 @@ export const _onAdd = (
       ]
     }
   }
+  // TODO cursor position & highlight
   dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
 }
 
@@ -139,7 +150,8 @@ const Save = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
-  const { template, model, cursor, dispatch } = useContext(EditorContext)
+  const { template, model, templateCursor, dispatch } =
+    useContext(EditorContext)
 
   /**
    * Set visible true
@@ -159,12 +171,12 @@ const Save = (): JSX.Element => {
     async (values: ILocalValues): Promise<void> => {
       setLoading(true)
 
-      _onAdd(values, template, model, cursor, dispatch)
+      _onAdd(values, template, model, templateCursor, dispatch)
 
       setLoading(false)
       setVisible(false)
     },
-    [template, model, cursor, dispatch]
+    [template, model, templateCursor, dispatch]
   )
 
   /**

@@ -11,7 +11,10 @@ import {
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
-import { setCursor } from '@/context/editor/actions'
+import {
+  setTemplateCursor,
+  setTemplateHighlight
+} from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
@@ -62,7 +65,13 @@ const unknownFunction = dimension === 2 ? '[${values.unknown1}, ${values.unknown
     cursor,
     dispatch
   )
-  dispatch(setCursor({ row: (cursor?.row || 9) + 0, column: 0 }))
+  dispatch(
+    setTemplateHighlight({
+      begin: cursor?.row || 0,
+      end: (cursor?.row || 0) + 13
+    })
+  )
+  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 13, column: 0 }))
 }
 
 /**
@@ -78,7 +87,7 @@ const FiniteElementFunction = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
-  const { template, cursor, dispatch } = useContext(EditorContext)
+  const { template, templateCursor, dispatch } = useContext(EditorContext)
 
   // Autofocus
   useEffect(() => {
@@ -104,12 +113,12 @@ const FiniteElementFunction = (): JSX.Element => {
     async (values: ILocalValues): Promise<void> => {
       setLoading(true)
 
-      _onAdd(values, template, cursor, dispatch)
+      _onAdd(values, template, templateCursor, dispatch)
 
       setLoading(false)
       setVisible(false)
     },
-    [template, cursor, dispatch]
+    [template, templateCursor, dispatch]
   )
 
   /**

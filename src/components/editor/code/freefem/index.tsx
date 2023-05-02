@@ -10,8 +10,8 @@ import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/theme-one_dark'
 import './mode/mode-freefem-ejs'
 
-import { EditorContext } from '@/context/editor'
-import { setCursor, setTemplate } from '@/context/editor/actions'
+import { EditorContext, IEditorHighlight } from '@/context/editor'
+import { setTemplateCursor, setTemplate } from '@/context/editor/actions'
 
 import allSnippets from './snippets/snippets.json'
 import data from './doc/documentation.json'
@@ -50,6 +50,7 @@ export interface Marker {
 const FreeFEMCode = (): JSX.Element => {
   // Ref
   const editorRef = useRef<ReactAce>()
+  const cursorFromContext = useRef<boolean>()
   const currentToken = useRef<string>()
   const timeoutId = useRef<NodeJS.Timeout>()
 
@@ -59,10 +60,10 @@ const FreeFEMCode = (): JSX.Element => {
     y: 0
   })
   const [tooltipToken, setTooltipToken] = useState<IToken>()
-  const previousMarkers = useRef<Marker[]>([])
 
   // Data
-  const { template, dispatch } = useContext(EditorContext)
+  const { template, templateCursor, templateHighlight, dispatch } =
+    useContext(EditorContext)
 
   /**
    * On change
@@ -138,52 +139,65 @@ const FreeFEMCode = (): JSX.Element => {
    */
   const onCursorChange = useCallback(
     (selection: any): void => {
-      dispatch(
-        setCursor({
-          row: selection.cursor.row,
-          column: selection.cursor.column
-        })
-      )
+      if (!cursorFromContext.current)
+        dispatch(
+          setTemplateCursor({
+            row: selection.cursor.row,
+            column: selection.cursor.column
+          })
+        )
     },
     [dispatch]
   )
 
   /**
-   * handlePaste
-   * Highlights recently pasted lines
+   * Highlight
+   * @param highlight Highlight
    */
-  const handlePaste = useCallback((event: any): void => {
+  const highlight = useCallback(({ begin, end }: IEditorHighlight): void => {
+    /* istanbul ignore next */
     if (!editorRef.current) return
+
     const editor = editorRef.current.editor
-    // Delete old markers
-    const { row } = editor.getCursorPosition()
 
-    previousMarkers.current.forEach((marker) => {
-      editor.session.removeMarker(marker.id)
-    })
+    const markers: Marker[] = []
+    for (let i = begin; i <= end; i++) {
+      const id = editor.session.addMarker(
+        new Range(i, 0, i, Infinity),
+        'ace_pasted_line',
+        'fullLine'
+      )
+      markers.push({ id: id })
+    }
 
-    const clipboardData = event.clipboardData
-    const pastedData = clipboardData.getData('Text')
-    const pastedLines = pastedData.split('\n').length
-
-    const newMarkers: Marker[] = []
     setTimeout(() => {
-      for (let i = 0; i < pastedLines; i++) {
-        const markerId = editor.session.addMarker(
-          new Range(
-            row + i - (pastedLines - 1),
-            0,
-            row + i - (pastedLines - 1),
-            Infinity
-          ),
-          'ace_pasted_line',
-          'fullLine'
-        )
-        newMarkers.push({ id: markerId })
-      }
-      previousMarkers.current = newMarkers
-    }, 0)
+      markers.forEach((marker) => editor.session.removeMarker(marker.id))
+    }, 2_500)
   }, [])
+
+  /**
+   * Handle paste
+   * @param event Event
+   */
+  const handlePaste = useCallback(
+    (event: any): void => {
+      /* istanbul ignore next */
+      if (!editorRef.current) return
+
+      const editor = editorRef.current.editor
+
+      // Row position
+      const { row } = editor.getCursorPosition()
+
+      // Data
+      const clipboardData = event.clipboardData
+      const pastedData = clipboardData.getData('Text')
+      const pastedLines = pastedData.split('\n').length
+
+      highlight({ begin: row - (pastedLines - 1), end: row - 1 })
+    },
+    [highlight]
+  )
 
   // Init
   useEffect(() => {
@@ -210,6 +224,29 @@ const FreeFEMCode = (): JSX.Element => {
     setCompleters([completer])
   }, [])
 
+  // Cursor
+  useEffect(() => {
+    /* istanbul ignore next */
+    if (!editorRef.current) return
+
+    if (!templateCursor) return
+
+    cursorFromContext.current = true
+
+    const editor = editorRef.current.editor
+    editor.moveCursorTo(templateCursor.row, templateCursor.column)
+
+    setTimeout(() => (cursorFromContext.current = false), 500)
+  }, [templateCursor])
+
+  // Highlight
+  useEffect(() => {
+    if (!templateHighlight) return
+
+    highlight(templateHighlight)
+  }, [templateHighlight, highlight])
+
+  // Event
   useEffect(() => {
     const editor = editorRef.current?.editor
     if (editor) {

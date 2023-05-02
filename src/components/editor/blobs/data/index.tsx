@@ -11,7 +11,10 @@ import {
 import { Button, Form, Input, InputRef } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
-import { setCursor } from '@/context/editor/actions'
+import {
+  setTemplateCursor,
+  setTemplateHighlight
+} from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 import { FormListContainer, FormListItem } from '@/components/assets/form'
@@ -50,7 +53,13 @@ export const _onAdd = (
     cursor,
     dispatch
   )
-  dispatch(setCursor({ row: (cursor?.row || 4) + 0, column: 0 }))
+  dispatch(
+    setTemplateHighlight({
+      begin: cursor?.row || 0,
+      end: (cursor?.row || 0) + 8
+    })
+  )
+  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 8, column: 0 }))
 }
 
 /**
@@ -66,7 +75,7 @@ const Data = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
-  const { template, cursor, dispatch } = useContext(EditorContext)
+  const { template, templateCursor, dispatch } = useContext(EditorContext)
 
   // Autofocus
   useEffect(() => {
@@ -91,12 +100,12 @@ const Data = (): JSX.Element => {
     async (values: any): Promise<void> => {
       setLoading(true)
 
-      _onAdd(values, template, cursor, dispatch)
+      _onAdd(values, template, templateCursor, dispatch)
 
       setLoading(false)
       setVisible(false)
     },
-    [template, cursor, dispatch]
+    [template, templateCursor, dispatch]
   )
 
   /**

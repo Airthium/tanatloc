@@ -4,7 +4,10 @@ import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Checkbox, Form } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
-import { setCursor } from '@/context/editor/actions'
+import {
+  setTemplateCursor,
+  setTemplateHighlight
+} from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 
@@ -41,7 +44,13 @@ export const _onAdd = (
     cursor,
     dispatch
   )
-  dispatch(setCursor({ row: (cursor?.row || 5) + 0, column: 0 }))
+  dispatch(
+    setTemplateHighlight({
+      begin: cursor?.row || 0,
+      end: (cursor?.row || 0) + 5
+    })
+  )
+  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 5, column: 0 }))
 }
 
 /**
@@ -54,7 +63,7 @@ const Macros = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
-  const { template, cursor, dispatch } = useContext(EditorContext)
+  const { template, templateCursor, dispatch } = useContext(EditorContext)
 
   // Data
   const options = [
@@ -90,12 +99,12 @@ const Macros = (): JSX.Element => {
     async (values: { macros: string[] }): Promise<void> => {
       setLoading(true)
 
-      _onAdd(values, template, cursor, dispatch)
+      _onAdd(values, template, templateCursor, dispatch)
 
       setLoading(false)
       setVisible(false)
     },
-    [template, cursor, dispatch]
+    [template, templateCursor, dispatch]
   )
 
   /**

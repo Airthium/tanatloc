@@ -1,10 +1,13 @@
 import { actionTypes } from '..'
 import {
-  setCursor,
+  setJsonCursor,
+  setTemplateCursor,
   setModel,
   setModelValid,
   setTemplate,
-  setTemplateValid
+  setTemplateValid,
+  setJsonHighlight,
+  setTemplateHighlight
 } from '../actions'
 
 describe('context/editor/actions', () => {
@@ -18,10 +21,34 @@ describe('context/editor/actions', () => {
     expect(res).toEqual({ type: actionTypes.SETMODEL, value: 'model' })
   })
 
-  test('setCursor', () => {
-    const res = setCursor({ row: 1, column: 2 })
+  test('setJsonHighlight', () => {
+    const res = setJsonHighlight({ begin: 1, end: 2 })
     expect(res).toEqual({
-      type: actionTypes.SETCURSOR,
+      type: actionTypes.SETJSONHIGHLIGHT,
+      value: { begin: 1, end: 2 }
+    })
+  })
+
+  test('setTemplateHighlight', () => {
+    const res = setTemplateHighlight({ begin: 1, end: 2 })
+    expect(res).toEqual({
+      type: actionTypes.SETTEMPLATEHIGHLIGHT,
+      value: { begin: 1, end: 2 }
+    })
+  })
+
+  test('setJsonCursor', () => {
+    const res = setJsonCursor({ row: 1, column: 2 })
+    expect(res).toEqual({
+      type: actionTypes.SETJSONCURSOR,
+      value: { row: 1, column: 2 }
+    })
+  })
+
+  test('setTemplateCursor', () => {
+    const res = setTemplateCursor({ row: 1, column: 2 })
+    expect(res).toEqual({
+      type: actionTypes.SETTEMPLATECURSOR,
       value: { row: 1, column: 2 }
     })
   })

@@ -7,10 +7,18 @@ export interface IEditorCursor {
   column: number
 }
 
+export interface IEditorHighlight {
+  begin: number
+  end: number
+}
+
 export interface IEditorState {
   template: string
   model: string
-  cursor?: IEditorCursor
+  jsonHighlight?: IEditorHighlight
+  templateHighlight?: IEditorHighlight
+  jsonCursor?: IEditorCursor
+  templateCursor?: IEditorCursor
   dispatch: Dispatch<IEditorAction>
   templateValid: boolean
   modelValid: boolean
@@ -18,7 +26,7 @@ export interface IEditorState {
 
 export interface IEditorAction {
   type: string
-  value: boolean | string | IEditorCursor
+  value: boolean | string | IEditorCursor | IEditorHighlight
 }
 
 /**
@@ -38,7 +46,10 @@ export const initialState: IEditorState = {
 export const actionTypes = {
   SETTEMPLATE: 'SETTEMPLATE',
   SETMODEL: 'SETMODEL',
-  SETCURSOR: 'SETCURSOR',
+  SETJSONHIGHLIGHT: 'SETJSONHIGHLIGHT',
+  SETTEMPLATEHIGHLIGHT: 'SETTEMPLATEHIGHLIGHT',
+  SETJSONCURSOR: 'SETJSONCURSOR',
+  SETTEMPLATECURSOR: 'SETTEMPLATECURSOR',
   SETTEMPLATEVALID: 'SETTEMPLATEVALID',
   SETMODELVALID: 'SETMODELVALID'
 }
@@ -66,10 +77,25 @@ export const editorReducer = (
         ...state,
         model: action.value as string
       }
-    case actionTypes.SETCURSOR:
+    case actionTypes.SETJSONHIGHLIGHT:
       return {
         ...state,
-        cursor: action.value as IEditorCursor
+        jsonHighlight: action.value as IEditorHighlight
+      }
+    case actionTypes.SETTEMPLATEHIGHLIGHT:
+      return {
+        ...state,
+        templateHighlight: action.value as IEditorHighlight
+      }
+    case actionTypes.SETJSONCURSOR:
+      return {
+        ...state,
+        jsonCursor: action.value as IEditorCursor
+      }
+    case actionTypes.SETTEMPLATECURSOR:
+      return {
+        ...state,
+        templateCursor: action.value as IEditorCursor
       }
     case actionTypes.SETTEMPLATEVALID:
       return {

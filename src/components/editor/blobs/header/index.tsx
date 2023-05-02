@@ -4,7 +4,10 @@ import { Dispatch, useCallback, useContext } from 'react'
 import { Button } from 'antd'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
-import { setCursor } from '@/context/editor/actions'
+import {
+  setTemplateCursor,
+  setTemplateHighlight
+} from '@/context/editor/actions'
 
 import { addOnCursor } from '..'
 
@@ -30,7 +33,13 @@ export const _onAdd = (
     cursor,
     dispatch
   )
-  dispatch(setCursor({ row: (cursor?.row || 0) + 2, column: 0 }))
+  dispatch(
+    setTemplateHighlight({
+      begin: cursor?.row || 0,
+      end: (cursor?.row || 0) + 2
+    })
+  )
+  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 2, column: 0 }))
 }
 
 /**
@@ -39,14 +48,14 @@ export const _onAdd = (
  */
 const Header = (): JSX.Element => {
   // Context
-  const { template, cursor, dispatch } = useContext(EditorContext)
+  const { template, templateCursor, dispatch } = useContext(EditorContext)
 
   /**
    * On click
    */
   const onClick = useCallback(
-    () => _onAdd(template, cursor, dispatch),
-    [template, cursor, dispatch]
+    () => _onAdd(template, templateCursor, dispatch),
+    [template, templateCursor, dispatch]
   )
 
   /**

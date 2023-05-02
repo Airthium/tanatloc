@@ -96,11 +96,14 @@ describe('components/editor/code/freefem_editor', () => {
     unmount()
   })
 
-  test('ref', () => {
+  test('ace editor', () => {
     let count = 0
     const ace = {
       focus: jest.fn,
       editor: {
+        getCursorPosition: () => ({
+          row: 1
+        }),
         on: (_type: string, callback: Function) => {
           callback({})
           callback({})
@@ -116,7 +119,13 @@ describe('components/editor/code/freefem_editor', () => {
           classList: {
             add: jest.fn
           },
-          addEventListener: jest.fn,
+          addEventListener: (_: any, callback: Function) => {
+            callback({
+              clipboardData: {
+                getData: () => 'text\ntext'
+              }
+            })
+          },
           removeEventListener: jest.fn,
           getBoundingClientRect: jest.fn
         },
@@ -132,7 +141,9 @@ describe('components/editor/code/freefem_editor', () => {
           },
           getWordRange: () => ({
             start: { row: 1, column: 1 }
-          })
+          }),
+          addMarker: () => 'id',
+          removeMarker: jest.fn
         }
       }
     }

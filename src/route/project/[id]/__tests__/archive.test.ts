@@ -30,7 +30,7 @@ jest.mock('@/lib/project', () => ({
   deleteArchiveFile: async () => mockDeleteArchiveFile()
 }))
 
-describe('route/project/[id]', () => {
+describe('route/project/[id]/archive', () => {
   const req = {} as Request
   let resStatus: number
   let resJson: string | object

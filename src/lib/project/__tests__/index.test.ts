@@ -3,6 +3,7 @@ import Project from '../'
 jest.mock('@/config/storage', () => ({
   STORAGE: 'storage',
   AVATAR_RELATIVE: 'avatar',
+  GEOMETRY: 'geometries',
   GEOMETRY_RELATIVE: 'geometries',
   SIMULATION_RELATIVE: 'simulations'
 }))
@@ -48,19 +49,30 @@ jest.mock('../../workspace', () => ({
   update: async () => mockWorkspaceUpdate()
 }))
 
+const mockGeometryAdd = jest.fn()
+const mockGeometryGet = jest.fn()
+const mockGeometryUpdate = jest.fn()
 const mockGeometryArchive = jest.fn()
 jest.mock('../../geometry', () => ({
+  add: async () => mockGeometryAdd(),
+  get: async () => mockGeometryGet(),
+  update: async () => mockGeometryUpdate(),
   archive: async () => mockGeometryArchive()
 }))
 
+const mockSimulationAdd = jest.fn()
+const mockSimulationGet = jest.fn()
 const mockSimulationDel = jest.fn()
 const mockSimulationArchive = jest.fn()
 jest.mock('../../simulation', () => ({
+  add: async () => mockSimulationAdd(),
+  get: async () => mockSimulationGet(),
   del: async () => mockSimulationDel(),
   archive: async () => mockSimulationArchive()
 }))
 
 const mockToolsCreatePath = jest.fn()
+const mockToolsReadFile = jest.fn()
 const mockToolsWriteFile = jest.fn()
 const mockToolsArchive = jest.fn()
 const mockToolsReadStream = jest.fn()
@@ -73,6 +85,7 @@ const mockToolsCopyFile = jest.fn()
 const mockToolsCopyDirectory = jest.fn()
 jest.mock('../../tools', () => ({
   createPath: async () => mockToolsCreatePath(),
+  readFile: async () => mockToolsReadFile(),
   writeFile: async () => mockToolsWriteFile(),
   archive: () => mockToolsArchive(),
   readStream: async () => mockToolsReadStream(),
@@ -105,12 +118,18 @@ describe('lib/project', () => {
 
     mockWorkspaceUpdate.mockReset()
 
+    mockGeometryAdd.mockReset()
+    mockGeometryGet.mockReset()
+    mockGeometryUpdate.mockReset()
     mockGeometryArchive.mockReset()
 
+    mockSimulationAdd.mockReset()
+    mockSimulationGet.mockReset()
     mockSimulationDel.mockReset()
     mockSimulationArchive.mockReset()
 
     mockToolsCreatePath.mockReset()
+    mockToolsReadFile.mockReset()
     mockToolsWriteFile.mockReset()
     mockToolsArchive.mockReset()
     mockToolsReadStream.mockReset()
@@ -399,5 +418,49 @@ describe('lib/project', () => {
       await Project.unarchiveFromFile({ id: 'id' }, Buffer.from('buffer'))
     } catch (err) {}
     expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
+  })
+
+  test('copy', async () => {
+    // Without geometry value/values
+    mockGet.mockImplementation(() => ({
+      geometries: ['id1', 'id2'],
+      simulations: ['id1', 'id2']
+    }))
+    mockAdd.mockImplementation(() => ({}))
+    mockWorkspaceUpdate.mockImplementation(() => jest.fn)
+    mockGeometryGet.mockImplementation(() => ({
+      uploadfilename: 'uploadfilename'
+    }))
+    mockGeometryAdd.mockImplementation(() => ({ id: 'newid' }))
+    mockSimulationGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {}
+        }
+      }
+    }))
+    await Project.copy(
+      { id: 'userid' },
+      { id: 'workspaceid' },
+      { id: 'projectid' }
+    )
+
+    // With geometry value/values
+    mockSimulationGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {
+            value: 'id1',
+            values: ['id1', 'id2']
+          }
+        }
+      }
+    }))
+
+    await Project.copy(
+      { id: 'userid' },
+      { id: 'workspaceid' },
+      { id: 'projectid' }
+    )
   })
 })

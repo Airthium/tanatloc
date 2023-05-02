@@ -53,7 +53,7 @@ export const _onCopy = async (
   }
 ): Promise<void> => {
   try {
-    // TODO do it in backend and copy geometries, meshes and results (?)
+    // TODO do it in backend and copy meshes and results (?)
     // Clear results
     const newScheme = Utils.deepCopy(simulation.scheme)
     newScheme.configuration.run.done = false

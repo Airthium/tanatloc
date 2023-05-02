@@ -10,9 +10,9 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
-const mockAdd = jest.fn()
+const mockCopy = jest.fn()
 jest.mock('@/api/simulation', () => ({
-  add: async () => mockAdd()
+  copy: async () => mockCopy()
 }))
 
 describe('components/project/simulation/copy', () => {
@@ -38,7 +38,7 @@ describe('components/project/simulation/copy', () => {
   }
 
   beforeEach(() => {
-    mockAdd.mockReset()
+    mockCopy.mockReset()
 
     swr.mutateProject.mockReset()
     swr.addOneSimulation.mockReset()
@@ -60,23 +60,23 @@ describe('components/project/simulation/copy', () => {
     const button = screen.getByRole('button')
 
     // Normal
-    mockAdd.mockImplementation(() => ({}))
+    mockCopy.mockImplementation(() => ({}))
     await act(() => fireEvent.click(button))
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockCopy).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
     // Error
-    mockAdd.mockImplementation(() => {
-      throw new Error('add error')
+    mockCopy.mockImplementation(() => {
+      throw new Error('copy error')
     })
     await act(() => fireEvent.click(button))
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockCopy).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.copy,
-        new Error('add error')
+        new Error('copy error')
       )
     )
 

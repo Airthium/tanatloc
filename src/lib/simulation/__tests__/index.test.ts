@@ -526,4 +526,16 @@ describe('lib/simulation', () => {
     expect(mockToolsCopyDirectory).toHaveBeenCalledTimes(1)
     expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
   })
+
+  test('copy', async () => {
+    mockAdd.mockImplementation(() => ({}))
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          run: {}
+        }
+      }
+    }))
+    await Simulation.copy({ id: 'id' })
+  })
 })

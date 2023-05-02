@@ -492,17 +492,24 @@ const archive = async (
 
 /**
  * Copy
- * @param project Project
  * @param simulation Simulation
  */
-const copy = async (
-  project: { id: string },
-  simulation: { id: string }
-): Promise<void /*INewSimulation*/> => {
-  // TODO
-  // replace copy in client by this one
-  console.log(project)
-  console.log(simulation)
+const copy = async (simulation: { id: string }): Promise<INewSimulation> => {
+  // Get data
+  const data = await get(simulation.id, ['name', 'scheme', 'project'])
+
+  // Update configuration
+  data.scheme.configuration.run.done = false
+  data.scheme.configuration.run.error = undefined
+
+  // New simulation
+  const newSimulation = await add(
+    { id: data.project },
+    { name: data.name + ' (Copy)', scheme: data.scheme }
+  )
+
+  // Return
+  return newSimulation
 }
 
 const Simulation = {

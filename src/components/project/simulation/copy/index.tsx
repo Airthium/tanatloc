@@ -13,8 +13,6 @@ import {
 
 import { ErrorNotification } from '@/components/assets/notification'
 
-import Utils from '@/lib/utils'
-
 import SimulationAPI from '@/api/simulation'
 
 import globalStyle from '@/styles/index.module.css'
@@ -24,7 +22,7 @@ import globalStyle from '@/styles/index.module.css'
  */
 export interface IProps {
   project: Pick<IFrontProject, 'id' | 'simulations'>
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>
   swr: {
     mutateProject: (project: IFrontMutateProject) => void
     addOneSimulation: (simulation: IFrontNewSimulation) => void
@@ -46,24 +44,15 @@ export const errors = {
  */
 export const _onCopy = async (
   project: Pick<IFrontProject, 'id' | 'simulations'>,
-  simulation: Pick<IFrontSimulationsItem, 'name' | 'scheme'>,
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
   swr: {
     mutateProject: (project: IFrontMutateProject) => void
     addOneSimulation: (simulation: IFrontNewSimulation) => void
   }
 ): Promise<void> => {
   try {
-    // TODO do it in backend and copy meshes and results (?)
-    // Clear results
-    const newScheme = Utils.deepCopy(simulation.scheme)
-    newScheme.configuration.run.done = false
-    newScheme.configuration.run.error = undefined
-
-    // API
-    const newSimulation = await SimulationAPI.add(
-      { id: project.id },
-      { name: simulation.name + ' (copy)', scheme: newScheme }
-    )
+    // New simulation
+    const newSimulation = await SimulationAPI.copy(simulation)
 
     // Mutate simulations
     swr.addOneSimulation(newSimulation)

@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
 import FreeFEMCode from '..'
+import { EditorContext } from '@/context/editor'
 
 const mockReactAce = jest.fn()
 jest.mock('react-ace', () => (props: any) => mockReactAce(props))
@@ -151,6 +152,62 @@ describe('components/editor/code/freefem_editor', () => {
       current: ace
     }))
     const { unmount } = render(<FreeFEMCode />)
+
+    unmount()
+  })
+
+  test('context', () => {
+    mockRef.mockImplementationOnce(() => ({
+      current: {
+        editor: {
+          container: {
+            addEventListener: jest.fn,
+            removeEventListener: jest.fn,
+            classList: {
+              add: jest.fn
+            }
+          },
+          session: {
+            addMarker: jest.fn,
+            removeMarker: jest.fn
+          },
+          on: jest.fn,
+          moveCursorTo: jest.fn
+        }
+      }
+    }))
+    mockReactAce.mockImplementation((props) => (
+      <div
+        role="ReactAce"
+        onClick={() =>
+          props.onCursorChange({
+            cursor: {
+              row: 1,
+              column: 2
+            }
+          })
+        }
+      />
+    ))
+
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: '',
+          model: '',
+          templateValid: true,
+          modelValid: true,
+          templateHighlight: { begin: 1, end: 10 },
+          templateCursor: { row: 1, column: 0 },
+          dispatch: jest.fn()
+        }}
+      >
+        <FreeFEMCode />
+      </EditorContext.Provider>
+    )
+
+    const editor = screen.getByRole('ReactAce')
+    fireEvent.click(editor)
 
     unmount()
   })

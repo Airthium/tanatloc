@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import style from './index.module.css'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 /**
  * Props
@@ -88,7 +89,17 @@ export const Divider = ({
       className={style.divider}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
-    />
+    >
+      <div className="circle" />
+      <ArrowLeftOutlined
+        className="arrowLeft"
+        style={{ fontSize: 20, fontWeight: 'bold' }}
+      />
+      <ArrowRightOutlined
+        className="arrowRight"
+        style={{ fontSize: 20, fontWeight: 'bold' }}
+      />
+    </div>
   )
 }
 

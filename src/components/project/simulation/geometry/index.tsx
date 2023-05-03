@@ -30,7 +30,9 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -55,7 +57,9 @@ export const _onSelect = async (
   geometryId: string,
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -93,7 +97,7 @@ export const _onSelect = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
 
     // Display
 
@@ -117,7 +121,9 @@ export const _onMultipleSelect = async (
   geometriesIds: string[],
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -155,7 +161,7 @@ export const _onMultipleSelect = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
 
     // Display
 

@@ -23,7 +23,9 @@ import SimulationAPI from '@/api/simulation'
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -37,7 +39,9 @@ export interface IParameterProps {
     children: IModelParameter[]
   }
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -48,7 +52,9 @@ export interface IParameterChildProps {
   pkey: string
   index: number
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -206,7 +212,9 @@ export const _buildCheckbox = (
 export const _onDone = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -244,7 +252,7 @@ export const _onDone = async (
       }
     ])
 
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
@@ -264,7 +272,9 @@ export const _onChange = async (
   index: number,
   value: boolean | string,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -308,7 +318,7 @@ export const _onChange = async (
       }
     ])
 
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
   }

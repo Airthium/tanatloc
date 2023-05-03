@@ -14,8 +14,8 @@ import { fetcher } from '@/api/call'
 export const useUser = (): [
   IFrontUser | undefined,
   {
-    mutateUser: (user: Partial<IFrontMutateUser>) => void
-    clearUser: () => void
+    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
+    clearUser: () => Promise<void>
     errorUser: Error
     loadingUser: boolean
   }
@@ -29,8 +29,8 @@ export const useUser = (): [
    * @param update User
    */
   const localMutate = useCallback(
-    (update: Partial<IFrontMutateUser>): void => {
-      mutate({
+    async (update: Partial<IFrontMutateUser>): Promise<void> => {
+      await mutate({
         user: {
           ...(user as IFrontUser),
           ...update
@@ -40,8 +40,11 @@ export const useUser = (): [
     [user, mutate]
   )
 
-  const clear = useCallback(() => {
-    mutate({ user: undefined })
+  /**
+   * Clear
+   */
+  const clear = useCallback(async (): Promise<void> => {
+    await mutate({ user: undefined })
   }, [mutate])
 
   return [

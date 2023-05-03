@@ -24,8 +24,8 @@ export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
   project: Pick<IFrontProjectsItem, 'id'>
   swr: {
-    addOneProject: (project: IFrontNewProject) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    addOneProject: (project: IFrontNewProject) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 }
 
@@ -46,8 +46,8 @@ export const _onCopy = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   swr: {
-    addOneProject: (project: IFrontNewProject) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    addOneProject: (project: IFrontNewProject) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -55,11 +55,11 @@ export const _onCopy = async (
     const newProject = await ProjectAPI.copy(workspace, project)
 
     // Mutate projects
-    swr.addOneProject(newProject)
+    await swr.addOneProject(newProject)
 
     // Mutate workspaces
     workspace.projects.push(newProject.id)
-    swr.mutateOneWorkspace(workspace)
+    await swr.mutateOneWorkspace(workspace)
   } catch (err: any) {
     ErrorNotification(errors.copy, err)
   }

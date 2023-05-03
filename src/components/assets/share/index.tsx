@@ -44,8 +44,10 @@ export interface IProps {
     'id' | 'name' | 'owners' | 'users' | 'groups'
   >[]
   swr: {
-    mutateOneWorkspace?: (workspace: IFrontMutateWorkspacesItem) => void
-    mutateOneProject?: (project: IFrontMutateProjectsItem) => void
+    mutateOneWorkspace?: (
+      workspace: IFrontMutateWorkspacesItem
+    ) => Promise<void>
+    mutateOneProject?: (project: IFrontMutateProjectsItem) => Promise<void>
   }
   style?: CSSProperties & {
     buttonLight?: boolean
@@ -100,7 +102,7 @@ export const _onShare = async (
       newWorkspace.users = usersSelected.map(
         (user) => ({ id: user } as IFrontWorkspacesItem['users'][0])
       )
-      swr.mutateOneWorkspace!(newWorkspace)
+      await swr.mutateOneWorkspace!(newWorkspace)
     } else {
       // API
       await ProjectAPI.update({ id: project!.id }, [
@@ -121,7 +123,7 @@ export const _onShare = async (
       newProject.users = usersSelected.map(
         (user) => ({ id: user } as IFrontProjectsItem['users'][0])
       )
-      swr.mutateOneProject!(newProject)
+      await swr.mutateOneProject!(newProject)
     }
   } catch (err: any) {
     ErrorNotification(errors.share, err)

@@ -15,7 +15,7 @@ import GroupAPI from '@/api/group'
 export interface IProps {
   group: Pick<IFrontGroupsItem, 'id' | 'name'>
   swr: {
-    delOneGroup: (group: IFrontMutateGroupsItem) => void
+    delOneGroup: (group: IFrontMutateGroupsItem) => Promise<void>
   }
 }
 
@@ -33,14 +33,14 @@ export const errors = {
  */
 export const _onDelete = async (
   group: Pick<IFrontGroupsItem, 'id'>,
-  swr: { delOneGroup: (group: IFrontMutateGroupsItem) => void }
+  swr: { delOneGroup: (group: IFrontMutateGroupsItem) => Promise<void> }
 ): Promise<void> => {
   try {
     // Delete
     await GroupAPI.del({ id: group.id })
 
     // Mutate
-    swr.delOneGroup({ id: group.id })
+    await swr.delOneGroup({ id: group.id })
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

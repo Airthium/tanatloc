@@ -26,7 +26,9 @@ export interface IProps {
   boundaryCondition: IModelBoundaryConditionValue
   oldBoundaryCondition: IModelBoundaryConditionValue
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 
   onError: (desc?: string) => void
@@ -51,7 +53,9 @@ export const _onEdit = async (
   boundaryCondition: IModelBoundaryConditionValue,
   oldBoundaryCondition: IModelBoundaryConditionValue,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -122,7 +126,7 @@ export const _onEdit = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err

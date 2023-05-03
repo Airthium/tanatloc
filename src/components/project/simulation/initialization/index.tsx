@@ -37,7 +37,9 @@ export interface IProps {
   simulations: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -47,7 +49,9 @@ export interface IDirectItemProps {
   index: number
   value: string | undefined
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -68,7 +72,9 @@ export const _onSelectorChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   key: TInitializationKey,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -92,7 +98,7 @@ export const _onSelectorChange = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
@@ -110,7 +116,9 @@ export const _onCouplingChange = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   value: string,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -140,7 +148,7 @@ export const _onCouplingChange = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
@@ -159,7 +167,9 @@ export const _onCouplingResultChange = async (
   value: string,
   option: { file: string },
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   // Update simulation
@@ -186,7 +196,7 @@ export const _onCouplingResultChange = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
@@ -202,7 +212,9 @@ export const _onChange = async (
   index: number,
   value: string,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -226,7 +238,7 @@ export const _onChange = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
   }

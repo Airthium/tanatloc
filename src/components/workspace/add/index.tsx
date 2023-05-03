@@ -18,7 +18,7 @@ import WorkspaceAPI from '@/api/workspace'
  */
 export interface IProps {
   swr: {
-    addOneWorkspace: (workspace: IFrontNewWorkspace) => void
+    addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void>
   }
 }
 
@@ -36,14 +36,14 @@ export const errors = {
  */
 export const _onAdd = async (
   values: Pick<IFrontNewWorkspace, 'name'>,
-  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => void }
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> }
 ): Promise<void> => {
   try {
     // Add
     const workspace = await WorkspaceAPI.add(values)
 
     // Mutate
-    swr.addOneWorkspace(workspace)
+    await swr.addOneWorkspace(workspace)
   } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err

@@ -27,7 +27,9 @@ export interface IProps {
   setResults: (results: IFrontResult[]) => void
   setPostprocessing: (result?: IFrontResult) => void
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 

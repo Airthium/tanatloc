@@ -24,8 +24,8 @@ import ProjectAPI from '@/api/project'
 export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
   swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    addOneProject: (project: IFrontNewProject) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    addOneProject: (project: IFrontNewProject) => Promise<void>
   }
 }
 
@@ -46,8 +46,8 @@ export const _onAdd = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
   values: Pick<IFrontNewProject, 'title' | 'description'>,
   swr: {
-    addOneProject: (project: IFrontNewProject) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    addOneProject: (project: IFrontNewProject) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 ): Promise<IFrontNewProject> => {
   try {
@@ -55,10 +55,10 @@ export const _onAdd = async (
     const project = await ProjectAPI.add({ id: workspace.id }, values)
 
     // Mutate projects
-    swr.addOneProject(project)
+    await swr.addOneProject(project)
 
     // Mutate workspaces
-    swr.mutateOneWorkspace({
+    await swr.mutateOneWorkspace({
       ...workspace,
       projects: [...workspace.projects, project.id]
     })

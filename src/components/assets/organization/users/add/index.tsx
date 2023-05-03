@@ -33,7 +33,9 @@ export interface IProps {
   organization: IOrganizationItem
   dBkey: 'owners' | 'users'
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 }
 
@@ -81,7 +83,9 @@ export const _onFinish = async (
   dBkey: 'owners' | 'users',
   values: { email: string },
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   // Check
@@ -110,7 +114,7 @@ export const _onFinish = async (
         email: values.email
       } as IFrontOrganizationsItem['users'][0]
     ]
-    swr.mutateOneOrganization(newOrganization)
+    await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err

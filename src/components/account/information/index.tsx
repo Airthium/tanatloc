@@ -39,7 +39,7 @@ export interface ILocalValues {
 export interface IProps {
   user: ILocalUser
   swr: {
-    mutateUser: (user: IFrontMutateUser) => void
+    mutateUser: (user: IFrontMutateUser) => Promise<void>
   }
 }
 
@@ -94,7 +94,7 @@ export const _onChange = async (
   user: ILocalUser,
   info: UploadChangeParam<any>,
   swr: {
-    mutateUser: (user: Partial<IFrontUser>) => void
+    mutateUser: (user: Partial<IFrontUser>) => Promise<void>
   }
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') {
@@ -112,7 +112,7 @@ export const _onChange = async (
       })
 
       // Mutate user
-      swr.mutateUser({
+      await swr.mutateUser({
         ...user,
         avatar: Buffer.from(img)
       })
@@ -136,7 +136,7 @@ export const _onFinish = async (
   user: ILocalUser,
   values: ILocalValues,
   swr: {
-    mutateUser: (user: IFrontMutateUser) => void
+    mutateUser: (user: IFrontMutateUser) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -168,7 +168,7 @@ export const _onFinish = async (
     await UserAPI.update(toUpdate)
 
     // Local
-    swr.mutateUser({
+    await swr.mutateUser({
       email: values.email,
       firstname: values.firstname,
       lastname: values.lastname

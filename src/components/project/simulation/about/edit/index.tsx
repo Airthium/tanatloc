@@ -20,7 +20,9 @@ import SimulationAPI from '@/api/simulation'
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -41,7 +43,9 @@ export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   values: { name: string },
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -51,7 +55,7 @@ export const _onEdit = async (
     ])
 
     // Local
-    swr.mutateOneSimulation({
+    await swr.mutateOneSimulation({
       id: simulation.id,
       name: values.name
     })

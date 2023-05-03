@@ -25,10 +25,12 @@ export interface IProps {
   project?: Pick<IFrontProject, 'id' | 'simulations'>
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
   swr: {
-    mutateProject: (project: IFrontMutateProject) => void
-    addOneSimulation: (simulation: IFrontNewSimulation) => void
-    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateProject: (project: IFrontMutateProject) => Promise<void>
+    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 

@@ -19,7 +19,9 @@ import OrganizationAPI from '@/api/organization'
 export interface IProps {
   organization: Pick<IFrontOrganizationsItem, 'id' | 'name'>
   swr: {
-    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    delOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 }
 
@@ -38,7 +40,9 @@ export const errors = {
 export const _onDelete = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'name'>,
   swr: {
-    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    delOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -46,7 +50,7 @@ export const _onDelete = async (
     await OrganizationAPI.del({ id: organization.id })
 
     // Local
-    swr.delOneOrganization({ id: organization.id })
+    await swr.delOneOrganization({ id: organization.id })
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

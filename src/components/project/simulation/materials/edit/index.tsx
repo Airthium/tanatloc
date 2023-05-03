@@ -22,7 +22,9 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   material: IModelMaterialsValue
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
   onError: (desc?: string) => void
   onClose: () => void
@@ -47,7 +49,9 @@ export const _onEdit = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   material: IModelMaterialsValue,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -82,7 +86,7 @@ export const _onEdit = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err

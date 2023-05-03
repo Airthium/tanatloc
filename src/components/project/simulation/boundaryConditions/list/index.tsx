@@ -29,7 +29,9 @@ export interface IProps {
   geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
   onEdit: (type: string, index: number) => void
 }
@@ -41,7 +43,9 @@ export interface IListItemProps {
   index: number
   type: string
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
   _onEdit: (type: string, index: number) => void
 }

@@ -20,9 +20,9 @@ export const useProjects = (
 ): [
   IFrontProjects,
   {
-    addOneProject: (project: IFrontNewProject) => void
-    delOneProject: (project: IFrontMutateProjectsItem) => void
-    mutateOneProject: (project: IFrontMutateProjectsItem) => void
+    addOneProject: (project: IFrontNewProject) => Promise<void>
+    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
     errorProjects: Error
     loadingProjects: boolean
   }
@@ -41,12 +41,12 @@ export const useProjects = (
    * @param project Project
    */
   const addOne = useCallback(
-    (project: IFrontNewProject): void => {
+    async (project: IFrontNewProject): Promise<void> => {
       const newProjects = [
         ...projects,
         { ...project, users: [], geometries: [], simulations: [], groups: [] }
       ] as IFrontProjects
-      mutate({ projects: newProjects })
+      await mutate({ projects: newProjects })
     },
     [projects, mutate]
   )
@@ -56,9 +56,9 @@ export const useProjects = (
    * @param project project
    */
   const delOne = useCallback(
-    (project: IFrontMutateProjectsItem): void => {
+    async (project: IFrontMutateProjectsItem): Promise<void> => {
       const filteredProjects = projects.filter((p) => p.id !== project.id)
-      mutate({ projects: filteredProjects })
+      await mutate({ projects: filteredProjects })
     },
     [projects, mutate]
   )
@@ -68,12 +68,12 @@ export const useProjects = (
    * @param project Project
    */
   const mutateOne = useCallback(
-    (project: IFrontMutateProjectsItem): void => {
+    async (project: IFrontMutateProjectsItem): Promise<void> => {
       const mutatedProjects = projects.map((p) => {
         if (p.id === project.id) p = { ...p, ...project }
         return p
       })
-      mutate({ projects: mutatedProjects })
+      await mutate({ projects: mutatedProjects })
     },
     [projects, mutate]
   )

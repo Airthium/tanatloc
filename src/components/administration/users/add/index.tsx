@@ -20,7 +20,7 @@ import SystemAPI from '@/api/system'
 export interface IProps {
   plugins: IClientPlugin[]
   swr: {
-    addOneUser: (user: IFrontMutateUser) => void
+    addOneUser: (user: IFrontMutateUser) => Promise<void>
   }
 }
 
@@ -50,7 +50,7 @@ export const errors = {
  */
 export const _onAdd = async (
   values: ILocalValues,
-  swr: { addOneUser: (user: IFrontMutateUser) => void }
+  swr: { addOneUser: (user: IFrontMutateUser) => Promise<void> }
 ): Promise<void> => {
   try {
     // API
@@ -88,7 +88,7 @@ export const _onAdd = async (
       lastname: values.firstname,
       superuser: values.superuser
     }
-    swr.addOneUser(newUserWithData)
+    await swr.addOneUser(newUserWithData)
   } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err

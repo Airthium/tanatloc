@@ -36,7 +36,9 @@ export interface IProps {
   organization: IOrganizationItem
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers'
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 }
 
@@ -59,7 +61,9 @@ export const _onDelete = async (
   organization: IOrganizationItem,
   dBkey: 'owners' | 'pendingowners' | 'users' | 'pendingusers',
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -78,7 +82,7 @@ export const _onDelete = async (
     newOrganization[dBkey] = newOrganization[dBkey].filter(
       (u) => u.id !== user.id
     )
-    swr.mutateOneOrganization(newOrganization)
+    await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

@@ -17,9 +17,9 @@ import { fetcher } from '@/api/call'
 export const useUsers = (): [
   IFrontUsers,
   {
-    addOneUser: (user: IFrontNewUser) => void
-    delOneUser: (user: IFrontMutateUsersItem) => void
-    mutateOneUser: (user: IFrontMutateUsersItem) => void
+    addOneUser: (user: IFrontNewUser) => Promise<void>
+    delOneUser: (user: IFrontMutateUsersItem) => Promise<void>
+    mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void>
     errorUsers: Error
     loadingUsers: boolean
   }
@@ -35,12 +35,12 @@ export const useUsers = (): [
    * @param user User
    */
   const addOne = useCallback(
-    (user: IFrontNewUser): void => {
+    async (user: IFrontNewUser): Promise<void> => {
       const newUsers = [
         ...users,
         { ...user, authorizedplugins: [] }
       ] as IFrontUsers
-      mutate({ users: newUsers })
+      await mutate({ users: newUsers })
     },
     [users, mutate]
   )
@@ -50,9 +50,9 @@ export const useUsers = (): [
    * @param user User
    */
   const delOne = useCallback(
-    (user: IFrontMutateUsersItem): void => {
+    async (user: IFrontMutateUsersItem): Promise<void> => {
       const filteredUsers = users.filter((u) => u.id !== user.id)
-      mutate({ users: filteredUsers })
+      await mutate({ users: filteredUsers })
     },
     [users, mutate]
   )
@@ -62,12 +62,12 @@ export const useUsers = (): [
    * @param user User
    */
   const mutateOne = useCallback(
-    (user: IFrontMutateUsersItem): void => {
+    async (user: IFrontMutateUsersItem): Promise<void> => {
       const mutatedUsers = users.map((u) => {
         if (u.id === user.id) u = { ...u, ...user }
         return u
       })
-      mutate({ users: mutatedUsers })
+      await mutate({ users: mutatedUsers })
     },
     [users, mutate]
   )

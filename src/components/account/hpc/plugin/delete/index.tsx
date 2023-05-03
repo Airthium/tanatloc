@@ -16,7 +16,7 @@ import PluginAPI from '@/api/plugin'
 export interface IProps {
   plugin: IClientPlugin
   swr: {
-    delOnePlugin: (plugin: IClientPlugin) => void
+    delOnePlugin: (plugin: IClientPlugin) => Promise<void>
   }
 }
 
@@ -34,14 +34,14 @@ export const errors = {
  */
 export const _onDelete = async (
   plugin: IClientPlugin,
-  swr: { delOnePlugin: (plugin: IClientPlugin) => void }
+  swr: { delOnePlugin: (plugin: IClientPlugin) => Promise<void> }
 ): Promise<void> => {
   try {
     // API
     await PluginAPI.del({ uuid: plugin.uuid })
 
     // Mutate
-    swr.delOnePlugin(plugin)
+    await swr.delOnePlugin(plugin)
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

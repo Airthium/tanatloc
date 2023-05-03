@@ -29,7 +29,7 @@ export interface IProps {
   plugins: IClientPlugin[]
   user: TUserItem
   swr: {
-    mutateOneUser: (user: IFrontMutateUsersItem) => void
+    mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void>
   }
 }
 
@@ -61,7 +61,7 @@ export const errors = {
 export const _onUpdate = async (
   user: TUserItem,
   values: ILocalValues,
-  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => void }
+  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void> }
 ): Promise<void> => {
   try {
     // Update
@@ -87,7 +87,7 @@ export const _onUpdate = async (
       ...user,
       ...values
     }
-    swr.mutateOneUser(newUser as IFrontUsersItem)
+    await swr.mutateOneUser(newUser as IFrontUsersItem)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err

@@ -18,7 +18,7 @@ export interface IProps {
   user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
   index: number
   swr: {
-    mutateUser: (user: Partial<IFrontMutateUser>) => void
+    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
   }
 }
 
@@ -39,7 +39,7 @@ export const _onDelete = async (
   user: Pick<IFrontUser, 'id' | 'models' | 'templates'>,
   index: number,
   swr: {
-    mutateUser: (user: Partial<IFrontMutateUser>) => void
+    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -72,7 +72,7 @@ export const _onDelete = async (
       ...newUser.templates.slice(0, index),
       ...newUser.templates.slice(index + 1)
     ]
-    swr.mutateUser(newUser)
+    await swr.mutateUser(newUser)
   } catch (err: any) {
     ErrorNotification(errors.delete, err)
     throw err

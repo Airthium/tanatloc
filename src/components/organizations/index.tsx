@@ -28,9 +28,13 @@ export interface IProps {
   user: Pick<IFrontUser, 'id'>
   organizations: IFrontOrganizations
   swr: {
-    addOneOrganization: (organization: IFrontNewOrganization) => void
-    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    addOneOrganization: (organization: IFrontNewOrganization) => Promise<void>
+    delOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
     loadingOrganizations: boolean
   }
 }

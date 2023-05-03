@@ -38,7 +38,9 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   material?: IModelMaterialsValue
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
   onClose: () => void
 }

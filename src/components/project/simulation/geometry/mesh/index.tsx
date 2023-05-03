@@ -23,7 +23,9 @@ import globalStyle from '@/styles/index.module.css'
 export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -44,7 +46,9 @@ export const _onMeshGlobalType = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -85,7 +89,7 @@ export const _onMeshGlobalType = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
@@ -104,7 +108,9 @@ export const _onMeshGlobalSize = async (
   type: string,
   value: string,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -146,7 +152,7 @@ export const _onMeshGlobalSize = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err

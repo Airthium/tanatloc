@@ -42,9 +42,9 @@ export interface IProps {
     'id' | 'name' | 'owners' | 'users' | 'groups'
   >[]
   swr: {
-    addOneWorkspace: (workspace: IFrontNewWorkspace) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 }
 
@@ -64,14 +64,14 @@ export const errors = {
 export const _onOk = async (
   router: NextRouter,
   values: Pick<IFrontWorkspacesItem, 'name'>,
-  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => void }
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> }
 ): Promise<void> => {
   try {
     // Add
     const workspace = await WorkspaceAPI.add(values)
 
     // Mutate
-    swr.addOneWorkspace(workspace)
+    await swr.addOneWorkspace(workspace)
 
     router
       .push({

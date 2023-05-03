@@ -308,7 +308,9 @@ export interface IUpdaterProps {
   user?: Pick<IFrontUser, 'authorizedplugins'>
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -322,7 +324,9 @@ export const _onUpdate = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   models: IModel[],
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -346,7 +350,7 @@ export const _onUpdate = async (
     ])
 
     // Mutate
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
   }

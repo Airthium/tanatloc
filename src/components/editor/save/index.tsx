@@ -21,7 +21,7 @@ import Utils from '@/lib/utils'
 export interface IProps {
   user: Pick<IFrontUser, 'id' | 'models'>
   swr: {
-    mutateUser: (user: IFrontMutateUser) => void
+    mutateUser: (user: IFrontMutateUser) => Promise<void>
   }
 }
 
@@ -43,7 +43,7 @@ export const errors = {
 export const _onSave = async (
   user: Pick<IFrontUser, 'id' | 'models'>,
   swr: {
-    mutateUser: (user: IFrontMutateUser) => void
+    mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
   model: string,
   template: string
@@ -89,7 +89,7 @@ export const _onSave = async (
 export const _save = async (
   user: Pick<IFrontUser, 'id' | 'models'>,
   swr: {
-    mutateUser: (user: IFrontMutateUser) => void
+    mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
   model: IModel,
   template: string,
@@ -120,7 +120,7 @@ export const _save = async (
       // Local
       const newUser = Utils.deepCopy(user)
       newUser.models.push(model)
-      swr.mutateUser(newUser)
+      await swr.mutateUser(newUser)
     } catch (err: any) {
       ErrorNotification(errors.save, err)
     }
@@ -151,7 +151,7 @@ export const _save = async (
       // Local
       const newUser = Utils.deepCopy(user)
       newUser.models[index] = model
-      swr.mutateUser(newUser)
+      await swr.mutateUser(newUser)
     } catch (err: any) {
       ErrorNotification(errors.save, err)
     }

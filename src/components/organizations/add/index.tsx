@@ -16,7 +16,7 @@ import OrganizationAPI from '@/api/organization'
  */
 export interface IProps {
   swr: {
-    addOneOrganization: (organization: IFrontNewOrganization) => void
+    addOneOrganization: (organization: IFrontNewOrganization) => Promise<void>
   }
 }
 
@@ -34,7 +34,9 @@ export const errors = {
  */
 export const _onAdd = async (
   values: { name: string },
-  swr: { addOneOrganization: (origanization: IFrontNewOrganization) => void }
+  swr: {
+    addOneOrganization: (origanization: IFrontNewOrganization) => Promise<void>
+  }
 ): Promise<void> => {
   try {
     // API
@@ -42,7 +44,7 @@ export const _onAdd = async (
 
     // Local
     organization.name = values.name
-    swr.addOneOrganization(organization)
+    await swr.addOneOrganization(organization)
   } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err

@@ -17,8 +17,8 @@ export interface IProps {
   plugin: IClientPlugin
   plugins: IClientPlugin[]
   swr: {
-    delOnePlugin: (plugin: IClientPlugin) => void
-    mutateOnePlugin: (plugin: IClientPlugin) => void
+    delOnePlugin: (plugin: IClientPlugin) => Promise<void>
+    mutateOnePlugin: (plugin: IClientPlugin) => Promise<void>
   }
 }
 

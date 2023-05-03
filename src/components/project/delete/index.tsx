@@ -23,8 +23,8 @@ export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
   project: Pick<IFrontProjectsItem, 'id' | 'title'>
   swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    delOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
   }
 }
 
@@ -45,8 +45,8 @@ export const _onDelete = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
   project: Pick<IFrontProjectsItem, 'id' | 'title'>,
   swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    delOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -59,10 +59,10 @@ export const _onDelete = async (
       ...workspace.projects.slice(0, index),
       ...workspace.projects.slice(index + 1)
     ]
-    swr.mutateOneWorkspace(workspace)
+    await swr.mutateOneWorkspace(workspace)
 
     // Mutate projects
-    swr.delOneProject({ id: project.id })
+    await swr.delOneProject({ id: project.id })
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

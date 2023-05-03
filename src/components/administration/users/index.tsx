@@ -46,9 +46,9 @@ export type TUserItem = Pick<
 export interface IProps {
   users: TUserItem[]
   swr: {
-    addOneUser: (user: IFrontNewUser) => void
-    delOneUser: (user: IFrontMutateUsersItem) => void
-    mutateOneUser: (user: IFrontMutateUsersItem) => void
+    addOneUser: (user: IFrontNewUser) => Promise<void>
+    delOneUser: (user: IFrontMutateUsersItem) => Promise<void>
+    mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void>
   }
 }
 

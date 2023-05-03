@@ -49,7 +49,9 @@ export interface IProps {
   setPostprocessing: (result?: IFrontResult) => void
   setVisible: (visible: boolean) => void
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -70,8 +72,10 @@ export const _onCloudServer = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   cloudServer: IClientPlugin,
   swr: {
-    mutateSimulation: (simulation: IFrontMutateSimulation) => void
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateSimulation: (simulation: IFrontMutateSimulation) => Promise<void>
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -95,8 +99,8 @@ export const _onCloudServer = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
-    swr.mutateSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
+    await swr.mutateSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
   }

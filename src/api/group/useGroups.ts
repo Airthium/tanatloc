@@ -20,9 +20,9 @@ export const useGroups = (
 ): [
   IFrontGroups,
   {
-    addOneGroup: (group: IFrontNewGroup) => void
-    delOneGroup: (group: IFrontMutateGroupsItem) => void
-    mutateOneGroup: (group: IFrontMutateGroupsItem) => void
+    addOneGroup: (group: IFrontNewGroup) => Promise<void>
+    delOneGroup: (group: IFrontMutateGroupsItem) => Promise<void>
+    mutateOneGroup: (group: IFrontMutateGroupsItem) => Promise<void>
     errorGroups: Error
     loadingGroups: boolean
   }
@@ -38,9 +38,9 @@ export const useGroups = (
    * @param group Group
    */
   const addOne = useCallback(
-    (group: IFrontNewGroup): void => {
+    async (group: IFrontNewGroup): Promise<void> => {
       const newGroups = [...groups, group] as IFrontGroups
-      mutate({ groups: newGroups })
+      await mutate({ groups: newGroups })
     },
     [groups, mutate]
   )
@@ -50,9 +50,9 @@ export const useGroups = (
    * @param group Group
    */
   const delOne = useCallback(
-    (group: IFrontMutateGroupsItem): void => {
+    async (group: IFrontMutateGroupsItem): Promise<void> => {
       const filteredGroups = groups.filter((g) => g.id !== group.id)
-      mutate({ groups: filteredGroups })
+      await mutate({ groups: filteredGroups })
     },
     [groups, mutate]
   )
@@ -62,12 +62,12 @@ export const useGroups = (
    * @param groups Group
    */
   const mutateOne = useCallback(
-    (group: IFrontMutateGroupsItem): void => {
+    async (group: IFrontMutateGroupsItem): Promise<void> => {
       const mutatedGroups = groups.map((g) => {
         if (g.id === group.id) g = { ...g, ...group }
         return g
       })
-      mutate({ groups: mutatedGroups })
+      await mutate({ groups: mutatedGroups })
     },
     [groups, mutate]
   )

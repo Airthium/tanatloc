@@ -25,8 +25,8 @@ export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id'>
   project: Pick<IFrontProjectsItem, 'id' | 'archived' | 'title'>
   swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    mutateOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
   }
 }
 
@@ -51,8 +51,8 @@ export const _onArchive = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   swr: {
-    mutateOneProject: (project: IFrontMutateProjectsItem) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -68,13 +68,13 @@ export const _onArchive = async (
     link.click()
 
     // Mutate project
-    swr.mutateOneProject({
+    await swr.mutateOneProject({
       ...project,
       archived: true
     })
 
     // Mutate workspace
-    swr.mutateOneWorkspace(workspace)
+    await swr.mutateOneWorkspace(workspace)
   } catch (err: any) {
     ErrorNotification(errors.archive, err)
     throw err
@@ -95,13 +95,13 @@ export const _onUnarchiveServer = async (
   try {
     await ProjectAPI.unarchiveFromServer({ id: project.id })
 
-    swr.mutateOneProject({
+    await swr.mutateOneProject({
       ...project,
       archived: false
     })
 
     // Mutate workspace
-    swr.mutateOneWorkspace(workspace)
+    await swr.mutateOneWorkspace(workspace)
   } catch (err: any) {
     ErrorNotification(errors.unarchiveServer, err)
     throw err
@@ -164,13 +164,13 @@ export const _onUpload = async (
         Buffer.from(archive)
       )
 
-      swr.mutateOneProject({
+      await swr.mutateOneProject({
         ...project,
         archived: false
       })
 
       // Mutate workspace
-      swr.mutateOneWorkspace(workspace)
+      await swr.mutateOneWorkspace(workspace)
     } catch (err: any) {
       ErrorNotification(errors.upload, err)
     }

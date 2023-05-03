@@ -19,7 +19,7 @@ export interface IProps {
   disabled?: boolean
   project: Pick<IFrontProjectsItem, 'id' | 'title' | 'description'>
   swr: {
-    mutateOneProject: (project: IFrontMutateProjectsItem) => void
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
   }
 }
 
@@ -39,7 +39,9 @@ export const errors = {
 export const _onEdit = async (
   project: Pick<IFrontProjectsItem, 'id'>,
   values: Pick<IFrontProjectsItem, 'title' | 'description'>,
-  swr: { mutateOneProject: (project: IFrontMutateProjectsItem) => void }
+  swr: {
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+  }
 ): Promise<void> => {
   try {
     // Edit
@@ -55,7 +57,7 @@ export const _onEdit = async (
     ])
 
     // Mutate projects
-    swr.mutateOneProject(project)
+    await swr.mutateOneProject(project)
   } catch (err: any) {
     ErrorNotification(errors.edit, err)
 

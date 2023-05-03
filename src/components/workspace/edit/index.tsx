@@ -20,7 +20,7 @@ import WorkspaceAPI from '@/api/workspace'
 export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'name'>
   swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 }
 
@@ -40,7 +40,9 @@ export const errors = {
 export const _onEdit = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'name'>,
   values: Pick<IFrontWorkspacesItem, 'name'>,
-  swr: { mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void }
+  swr: {
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+  }
 ): Promise<void> => {
   try {
     // New workspace
@@ -53,7 +55,7 @@ export const _onEdit = async (
     ])
 
     // Mutate
-    swr.mutateOneWorkspace(newWorkspace)
+    await swr.mutateOneWorkspace(newWorkspace)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
 

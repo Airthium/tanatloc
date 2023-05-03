@@ -13,7 +13,7 @@ import { fetcher } from '@/api/call'
 export const useSystem = (): [
   IFrontSystem,
   {
-    mutateSystem: (system: IFrontMutateSystem) => void
+    mutateSystem: (system: IFrontMutateSystem) => Promise<void>
     errorSystem: Error
     loadingSystem: boolean
   }
@@ -29,8 +29,8 @@ export const useSystem = (): [
    * @param update System
    */
   const localMutate = useCallback(
-    (update: IFrontMutateSystem): void => {
-      mutate({
+    async (update: IFrontMutateSystem): Promise<void> => {
+      await mutate({
         system: {
           ...system,
           ...update

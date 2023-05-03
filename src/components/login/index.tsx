@@ -39,7 +39,7 @@ export const _onLogin = async (
     email: string
     password: string
   },
-  mutateUser: (user: Partial<IFrontUser>) => void
+  mutateUser: (user: Partial<IFrontUser>) => Promise<void>
 ): Promise<void> => {
   // Check
   let loggedUser: { ok: boolean; id?: string; isvalidated?: boolean }
@@ -51,7 +51,7 @@ export const _onLogin = async (
 
   if (loggedUser.ok) {
     // Logged
-    mutateUser({ id: loggedUser.id })
+    await mutateUser({ id: loggedUser.id })
     router.push('/dashboard').catch()
   } else {
     // Bad

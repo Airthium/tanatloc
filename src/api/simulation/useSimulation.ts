@@ -17,7 +17,7 @@ export const useSimulation = (
 ): [
   IFrontSimulation,
   {
-    mutateSimulation: (simulation: IFrontMutateSimulation) => void
+    mutateSimulation: (simulation: IFrontMutateSimulation) => Promise<void>
     errorSimulation: Error
     loadingSimulation: boolean
   }
@@ -37,8 +37,8 @@ export const useSimulation = (
    * @param update Simulation
    */
   const localMutate = useCallback(
-    (update: IFrontMutateSimulation): void => {
-      mutate({
+    async (update: IFrontMutateSimulation): Promise<void> => {
+      await mutate({
         simulation: {
           ...simulation,
           ...update

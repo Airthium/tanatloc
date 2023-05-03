@@ -33,7 +33,7 @@ import globalStyle from '@/styles/index.module.css'
 export interface IProps {
   user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
   swr: {
-    mutateUser: (user: Partial<IFrontMutateUser>) => void
+    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
   }
 }
 
@@ -48,7 +48,7 @@ export interface IUserModelProps {
   user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
   index: number
   swr: {
-    mutateUser: (user: Partial<IFrontMutateUser>) => void
+    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
   }
   setLoading: Dispatch<SetStateAction<boolean>>
   setVisible: Dispatch<SetStateAction<boolean>>

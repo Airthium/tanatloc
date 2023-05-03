@@ -23,8 +23,8 @@ import globalStyle from '@/styles/index.module.css'
 export interface IProps {
   user: Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'>
   swr: {
-    mutateUser: (user: IFrontMutateUser) => void
-    clearUser: () => void
+    mutateUser: (user: IFrontMutateUser) => Promise<void>
+    clearUser: () => Promise<void>
   }
 }
 

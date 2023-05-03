@@ -50,7 +50,9 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   boundaryCondition?: IModelBoundaryConditionValue
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
   onClose: () => void
 }

@@ -22,8 +22,8 @@ export interface IProps {
   visible: boolean
   project: Pick<IFrontProject, 'id' | 'geometries'>
   swr: {
-    mutateProject: (project: Partial<IFrontProject>) => void
-    addOneGeometry: (geometry: IFrontNewGeometry) => void
+    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
+    addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
   }
   setVisible: (visible: boolean) => void
 }
@@ -71,8 +71,8 @@ export const _onUpload = async (
   project: Pick<IFrontProject, 'id' | 'geometries'>,
   info: UploadChangeParam<any>,
   swr: {
-    mutateProject: (project: Partial<IFrontProject>) => void
-    addOneGeometry: (geometry: IFrontNewGeometry) => void
+    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
+    addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
   }
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') return true
@@ -91,8 +91,8 @@ export const _onUpload = async (
       )
 
       // Local
-      swr.addOneGeometry(geometry)
-      swr.mutateProject({
+      await swr.addOneGeometry(geometry)
+      await swr.mutateProject({
         id: project.id,
         geometries: [...project.geometries, geometry.id]
       })

@@ -114,8 +114,8 @@ export const _onSelector = async (
   project: IFrontProject,
   scheme: IModel,
   swr: {
-    addOneSimulation: (simulation: IFrontNewSimulation) => void
-    mutateProject: (project: Partial<IFrontProject>) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
+    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -126,8 +126,8 @@ export const _onSelector = async (
     )
 
     // Mutate
-    swr.addOneSimulation(simulation)
-    swr.mutateProject({
+    await swr.addOneSimulation(simulation)
+    await swr.mutateProject({
       id: project.id,
       simulations: [...(project.simulations ?? []), simulation.id]
     })

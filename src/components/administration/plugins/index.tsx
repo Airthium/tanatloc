@@ -33,7 +33,7 @@ export const _onChange = async (
   system: IFrontSystem,
   plugin: IClientPlugin,
   checked: boolean,
-  swr: { mutateSystem: (system: IFrontMutateSystem) => void }
+  swr: { mutateSystem: (system: IFrontMutateSystem) => Promise<void> }
 ): Promise<void> => {
   try {
     // API
@@ -57,7 +57,7 @@ export const _onChange = async (
     }
 
     // Mutate
-    swr.mutateSystem({
+    await swr.mutateSystem({
       defaultplugins
     })
   } catch (err: any) {
@@ -78,7 +78,7 @@ const Plugin = ({
   plugin: IClientPlugin
   system: IFrontSystem
   swr: {
-    mutateSystem: (system: IFrontMutateSystem) => void
+    mutateSystem: (system: IFrontMutateSystem) => Promise<void>
   }
 }): JSX.Element => {
   // State

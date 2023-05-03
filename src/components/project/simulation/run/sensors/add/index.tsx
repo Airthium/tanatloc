@@ -24,7 +24,9 @@ export interface IProps {
   onError: (error?: string) => void
   onClose: () => void
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 
@@ -48,7 +50,9 @@ export const _onAdd = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   sensor: IModelSensor,
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 ) => {
   try {
@@ -76,7 +80,7 @@ export const _onAdd = async (
     ])
 
     // Local
-    swr.mutateOneSimulation(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err

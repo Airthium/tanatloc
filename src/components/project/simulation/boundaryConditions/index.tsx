@@ -31,7 +31,9 @@ export interface IProps {
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
   setVisible: (visible: boolean) => void
 }

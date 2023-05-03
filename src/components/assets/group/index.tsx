@@ -27,9 +27,11 @@ export interface IProps {
   organization: Pick<IFrontOrganizationsItem, 'id' | 'groups'>
   group?: Pick<IFrontGroupsItem, 'id' | 'name' | 'users'>
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
-    addOneGroup?: (group: IFrontNewGroup) => void
-    mutateOneGroup?: (group: IFrontMutateGroupsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
+    addOneGroup?: (group: IFrontNewGroup) => Promise<void>
+    mutateOneGroup?: (group: IFrontMutateGroupsItem) => Promise<void>
   }
 }
 
@@ -54,8 +56,10 @@ export const _onAdd = async (
     users: string[]
   },
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
-    addOneGroup: (group: IFrontNewGroup) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
+    addOneGroup: (group: IFrontNewGroup) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -66,13 +70,13 @@ export const _onAdd = async (
     )
 
     // Local
-    swr.addOneGroup({
+    await swr.addOneGroup({
       ...newGroup,
       name: values.name,
       users: values.users
     })
 
-    swr.mutateOneOrganization({
+    await swr.mutateOneOrganization({
       id: organization.id,
       groups: [
         ...organization.groups,
@@ -100,8 +104,10 @@ export const _onUpdate = async (
     users: string[]
   },
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
-    mutateOneGroup: (group: IFrontMutateGroupsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
+    mutateOneGroup: (group: IFrontMutateGroupsItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -128,13 +134,13 @@ export const _onUpdate = async (
     await GroupAPI.update({ id: group.id }, toUpdate)
 
     // Local
-    swr.mutateOneGroup({
+    await swr.mutateOneGroup({
       ...group,
       ...(values as any)
     })
 
     const groupIndex = organization.groups.findIndex((g) => g.id === group.id)
-    swr.mutateOneOrganization({
+    await swr.mutateOneOrganization({
       id: organization.id,
       groups: [
         ...organization.groups.slice(0, groupIndex),

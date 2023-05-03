@@ -16,7 +16,7 @@ import UserAPI from '@/api/user'
 export interface IProps {
   user: Pick<IFrontUsersItem, 'id' | 'email'>
   swr: {
-    delOneUser: (user: IFrontMutateUsersItem) => void
+    delOneUser: (user: IFrontMutateUsersItem) => Promise<void>
   }
 }
 
@@ -34,14 +34,14 @@ export const errors = {
  */
 export const _onDelete = async (
   user: Pick<IFrontUsersItem, 'id' | 'email'>,
-  swr: { delOneUser: (user: IFrontMutateUsersItem) => void }
+  swr: { delOneUser: (user: IFrontMutateUsersItem) => Promise<void> }
 ): Promise<void> => {
   try {
     // Delete
     await UserAPI.delById(user.id)
 
     // Mutate
-    swr.delOneUser({ id: user.id })
+    await swr.delOneUser({ id: user.id })
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

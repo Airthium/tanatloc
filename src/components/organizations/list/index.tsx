@@ -34,23 +34,23 @@ export interface IProps {
   user: Pick<IFrontUser, 'id'>
   organizations: IFrontOrganizations
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
-    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
+    delOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
     loadingOrganizations: boolean
   }
   setOrganization: (organization: IFrontOrganizationsItem) => void
 }
 
-export const errors = {
-  quit: 'Unable to quit organization',
-  accept: 'Unable to accept invitation',
-  decline: 'Unable to decline invitation'
-}
-
 export interface IManageProps {
   organization: IFrontOrganizationsItem
   swr: {
-    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    delOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
   setOrganization: (organization: IFrontOrganizationsItem) => void
 }
@@ -59,7 +59,9 @@ export interface IQuitProps {
   user: Pick<IFrontUser, 'id'>
   organization: IFrontOrganizationsItem
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 }
 
@@ -67,7 +69,9 @@ export interface IAcceptProps {
   user: Pick<IFrontUser, 'id'>
   organization: IFrontOrganizationsItem
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 }
 
@@ -75,8 +79,19 @@ export interface IDeclineProps {
   user: Pick<IFrontUser, 'id'>
   organization: IFrontOrganizationsItem
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
+}
+
+/**
+ * Errors
+ */
+export const errors = {
+  quit: 'Unable to quit organization',
+  accept: 'Unable to accept invitation',
+  decline: 'Unable to decline invitation'
 }
 
 /**
@@ -89,7 +104,9 @@ export const _onQuit = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'users'>,
   user: Pick<IFrontUser, 'id'>,
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -101,7 +118,7 @@ export const _onQuit = async (
     const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
     newOrganization.users.splice(userIndex, 1)
 
-    swr.mutateOneOrganization(newOrganization)
+    await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
     ErrorNotification(errors.quit, err)
   }
@@ -120,7 +137,9 @@ export const _onAccept = async (
   >,
   user: Pick<IFrontUser, 'id'>,
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -146,7 +165,7 @@ export const _onAccept = async (
       newOrganization.users.push(pendinguser)
     }
 
-    swr.mutateOneOrganization(newOrganization)
+    await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
     ErrorNotification(errors.accept, err)
   }
@@ -164,7 +183,9 @@ export const _onDecline = async (
   >,
   user: Pick<IFrontUser, 'id'>,
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -185,7 +206,7 @@ export const _onDecline = async (
       newOrganization.pendingusers.splice(userIndex, 1)
     }
 
-    swr.mutateOneOrganization(newOrganization)
+    await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
     ErrorNotification(errors.decline, err)
   }
@@ -242,7 +263,7 @@ const QuitButton = ({ user, organization, swr }: IQuitProps): JSX.Element => {
       { id: organization.id, users: organization.users },
       { id: user.id },
       { mutateOneOrganization: swr.mutateOneOrganization }
-    )
+    ).catch()
   }, [user, organization, swr])
 
   /**
@@ -279,7 +300,7 @@ const AcceptButton = ({
       },
       { id: user.id },
       { mutateOneOrganization: swr.mutateOneOrganization }
-    )
+    ).catch()
   }, [user, organization, swr])
 
   /**
@@ -311,7 +332,7 @@ const DeclineButton = ({
       },
       { id: user.id },
       { mutateOneOrganization: swr.mutateOneOrganization }
-    )
+    ).catch()
   }, [user, organization, swr])
 
   /**

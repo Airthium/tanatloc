@@ -17,9 +17,9 @@ import { fetcher } from '@/api/call'
 export const useWorkspaces = (): [
   IFrontWorkspaces,
   {
-    addOneWorkspace: (workspace: IFrontNewWorkspace) => void
-    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void>
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
     errorWorkspaces: Error
     loadingWorkspaces: boolean
   }
@@ -35,9 +35,9 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const addOne = useCallback(
-    (workspace: IFrontNewWorkspace): void => {
+    async (workspace: IFrontNewWorkspace): Promise<void> => {
       const newWorkspaces = [...workspaces, workspace] as IFrontWorkspaces
-      mutate({ workspaces: newWorkspaces })
+      await mutate({ workspaces: newWorkspaces })
     },
     [workspaces, mutate]
   )
@@ -47,9 +47,9 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const delOne = useCallback(
-    (workspace: IFrontMutateWorkspacesItem): void => {
+    async (workspace: IFrontMutateWorkspacesItem): Promise<void> => {
       const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
-      mutate({ workspaces: filteredWorkspaces })
+      await mutate({ workspaces: filteredWorkspaces })
     },
     [workspaces, mutate]
   )
@@ -59,12 +59,12 @@ export const useWorkspaces = (): [
    * @param workspace Workspace
    */
   const mutateOne = useCallback(
-    (workspace: IFrontMutateWorkspacesItem): void => {
+    async (workspace: IFrontMutateWorkspacesItem): Promise<void> => {
       const mutatedWorkspaces = workspaces.map((w) => {
         if (w.id === workspace.id) w = { ...w, ...workspace }
         return w
       })
-      mutate({ workspaces: mutatedWorkspaces })
+      await mutate({ workspaces: mutatedWorkspaces })
     },
     [workspaces, mutate]
   )

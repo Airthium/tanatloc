@@ -33,9 +33,9 @@ export interface IProps {
   project: Pick<IFrontProject, 'id' | 'geometries'>
   geometry?: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
   swr: {
-    mutateProject: (project: Partial<IFrontProject>) => void
-    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
-    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
+    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
+    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
+    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
   }
   close: () => void
   onCleanup: (id: string) => void
@@ -84,7 +84,7 @@ export const _onEdit = async (
   geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>,
   values: { name: string },
   swr: {
-    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
+    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -98,7 +98,7 @@ export const _onEdit = async (
 
     // Local
     geometry.name = values.name
-    swr.mutateOneGeometry(geometry)
+    await swr.mutateOneGeometry(geometry)
   } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
@@ -117,8 +117,8 @@ export const _onDelete = async (
   project: Pick<IFrontProject, 'id' | 'geometries'>,
   close: () => void,
   swr: {
-    mutateProject: (project: Partial<IFrontProject>) => void
-    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
+    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
+    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -129,11 +129,11 @@ export const _onDelete = async (
     const filteredGeometries = project.geometries.filter(
       (g) => g !== geometry.id
     )
-    swr.mutateProject({
+    await swr.mutateProject({
       id: project.id,
       geometries: filteredGeometries
     })
-    swr.delOneGeometry(geometry)
+    await swr.delOneGeometry(geometry)
 
     // Close
     close()

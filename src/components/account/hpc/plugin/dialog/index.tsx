@@ -27,8 +27,8 @@ import PluginAPI from '@/api/plugin'
 export interface IProps {
   plugin: IClientPlugin
   swr: {
-    addOnePlugin?: (plugin: IClientPlugin) => void
-    mutateOnePlugin?: (plugin: IClientPlugin) => void
+    addOnePlugin?: (plugin: IClientPlugin) => Promise<void>
+    mutateOnePlugin?: (plugin: IClientPlugin) => Promise<void>
   }
   edit?: boolean
 }
@@ -165,8 +165,8 @@ export const _onFinish = async (
   edit: boolean,
   values: {},
   swr: {
-    addOnePlugin?: (plugin: IClientPlugin) => void
-    mutateOnePlugin?: (plugin: IClientPlugin) => void
+    addOnePlugin?: (plugin: IClientPlugin) => Promise<void>
+    mutateOnePlugin?: (plugin: IClientPlugin) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -184,7 +184,7 @@ export const _onFinish = async (
       await PluginAPI.update(initialPlugin)
 
       // Mutate
-      swr.mutateOnePlugin?.(initialPlugin)
+      await swr.mutateOnePlugin?.(initialPlugin)
     } else {
       // New plugin
       const newPlugin = Utils.deepCopy(plugin)
@@ -199,7 +199,7 @@ export const _onFinish = async (
       await PluginAPI.add(newPlugin)
 
       // Local
-      swr.addOnePlugin?.(newPlugin)
+      await swr.addOnePlugin?.(newPlugin)
     }
   } catch (err: any) {
     ErrorNotification(errors.update, err)

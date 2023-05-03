@@ -20,9 +20,9 @@ export const useGeometries = (
 ): [
   IFrontGeometries,
   {
-    addOneGeometry: (geometry: IFrontNewGeometry) => void
-    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
-    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => void
+    addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
+    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
+    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
     errorGeometries: Error
     loadingGeometries: boolean
   }
@@ -41,9 +41,9 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const addOne = useCallback(
-    (geometry: IFrontNewGeometry): void => {
+    async (geometry: IFrontNewGeometry): Promise<void> => {
       const newGeometries = [...geometries, geometry] as IFrontGeometries
-      mutate({ geometries: newGeometries })
+      await mutate({ geometries: newGeometries })
     },
     [geometries, mutate]
   )
@@ -53,9 +53,9 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const delOne = useCallback(
-    (geometry: IFrontMutateGeometriesItem): void => {
+    async (geometry: IFrontMutateGeometriesItem): Promise<void> => {
       const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
-      mutate({ geometries: filteredGeometries })
+      await mutate({ geometries: filteredGeometries })
     },
     [geometries, mutate]
   )
@@ -65,12 +65,12 @@ export const useGeometries = (
    * @param geometry Geometry
    */
   const mutateOne = useCallback(
-    (geometry: IFrontMutateGeometriesItem): void => {
+    async (geometry: IFrontMutateGeometriesItem): Promise<void> => {
       const mutatedGeometries = geometries.map((g) => {
         if (g.id === geometry.id) g = { ...g, ...geometry }
         return g
       })
-      mutate({ geometries: mutatedGeometries })
+      await mutate({ geometries: mutatedGeometries })
     },
     [geometries, mutate]
   )

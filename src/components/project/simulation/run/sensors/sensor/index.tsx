@@ -53,7 +53,9 @@ export interface IProps {
   sensor?: IModelSensor & { index: number }
   onClose: () => void
   swr: {
-    mutateOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
   }
 }
 

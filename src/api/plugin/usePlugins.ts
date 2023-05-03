@@ -14,10 +14,9 @@ import { IClientPlugin } from '@/plugins/index.d'
 export const usePlugins = (): [
   IClientPlugin[],
   {
-    mutatePlugins: (data: { plugins: IClientPlugin[] }) => void
-    addOnePlugin: (plugin: IClientPlugin) => void
-    delOnePlugin: (plugin: IClientPlugin) => void
-    mutateOnePlugin: (plugin: IClientPlugin) => void
+    addOnePlugin: (plugin: IClientPlugin) => Promise<void>
+    delOnePlugin: (plugin: IClientPlugin) => Promise<void>
+    mutateOnePlugin: (plugin: IClientPlugin) => Promise<void>
     errorPlugins: Error
     loadingPlugins: boolean
   }
@@ -29,28 +28,28 @@ export const usePlugins = (): [
   const plugins = data?.plugins ?? defaultData
 
   const addOne = useCallback(
-    (plugin: IClientPlugin): void => {
+    async (plugin: IClientPlugin): Promise<void> => {
       const newPlugins = [...plugins, plugin]
-      mutate({ plugins: newPlugins })
+      await mutate({ plugins: newPlugins })
     },
     [plugins, mutate]
   )
 
   const delOne = useCallback(
-    (plugin: IClientPlugin): void => {
+    async (plugin: IClientPlugin): Promise<void> => {
       const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
-      mutate({ plugins: filteredPlugins })
+      await mutate({ plugins: filteredPlugins })
     },
     [plugins, mutate]
   )
 
   const mutateOne = useCallback(
-    (plugin: IClientPlugin): void => {
+    async (plugin: IClientPlugin): Promise<void> => {
       const mutatedPlugin = plugins.map((p) => {
         if (p.key === plugin.key) p = { ...p, ...plugin }
         return p
       })
-      mutate({ plugins: mutatedPlugin })
+      await mutate({ plugins: mutatedPlugin })
     },
     [plugins, mutate]
   )
@@ -58,7 +57,6 @@ export const usePlugins = (): [
   return [
     plugins,
     {
-      mutatePlugins: mutate,
       addOnePlugin: addOne,
       delOnePlugin: delOne,
       mutateOnePlugin: mutateOne,

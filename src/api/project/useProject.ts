@@ -16,7 +16,7 @@ export const useProject = (
 ): [
   IFrontProject,
   {
-    mutateProject: (project: IFrontMutateProject) => void
+    mutateProject: (project: IFrontMutateProject) => Promise<void>
     errorProject: Error
     loadingProject: boolean
   }
@@ -35,12 +35,12 @@ export const useProject = (
    * @param update Project
    */
   const localMutate = useCallback(
-    (update: IFrontMutateProject): void => {
+    async (update: IFrontMutateProject): Promise<void> => {
       const mutatedProject = {
         ...project,
         ...update
       }
-      mutate({ project: mutatedProject })
+      await mutate({ project: mutatedProject })
     },
     [project, mutate]
   )

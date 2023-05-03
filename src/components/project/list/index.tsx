@@ -66,10 +66,10 @@ export interface IProps {
   filter?: string
   sorter?: string
   swr: {
-    addOneProject: (project: IFrontNewProject) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    delOneProject: (project: IFrontMutateProjectsItem) => void
-    mutateOneProject: (project: IFrontMutateProjectsItem) => void
+    addOneProject: (project: IFrontNewProject) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
     loadingProjects: boolean
   }
 }
@@ -96,10 +96,10 @@ export interface ICardProps {
     'id' | 'name' | 'owners' | 'users' | 'groups'
   >[]
   swr: {
-    addOneProject: (project: IFrontNewProject) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    delOneProject: (project: IFrontMutateProjectsItem) => void
-    mutateOneProject: (project: IFrontMutateProjectsItem) => void
+    addOneProject: (project: IFrontNewProject) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
     loadingProjects: boolean
   }
 }

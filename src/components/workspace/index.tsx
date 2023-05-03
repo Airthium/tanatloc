@@ -43,8 +43,8 @@ export interface IProps {
     'id' | 'name' | 'users' | 'owners' | 'groups'
   >[]
   swr: {
-    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 }
 

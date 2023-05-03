@@ -15,7 +15,7 @@ import WorkspaceAPI from '@/api/workspace'
 export interface IProps {
   workspace: Pick<IFrontWorkspacesItem, 'id'>
   swr: {
-    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
   }
 }
 
@@ -33,14 +33,16 @@ export const errors = {
  */
 export const _onDelete = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
-  swr: { delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => void }
+  swr: {
+    delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+  }
 ): Promise<void> => {
   try {
     // Delete
     await WorkspaceAPI.del({ id: workspace.id })
 
     // Mutate
-    swr.delOneWorkspace({ id: workspace.id })
+    await swr.delOneWorkspace({ id: workspace.id })
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

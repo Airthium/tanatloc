@@ -26,7 +26,9 @@ export interface IProps {
     'id' | 'owners' | 'users' | 'groups'
   >
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 }
 

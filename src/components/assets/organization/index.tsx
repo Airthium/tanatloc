@@ -24,7 +24,9 @@ import globalStyle from '@/styles/index.module.css'
 export interface IProps {
   organization: IFrontOrganizationsItem
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
     loadingOrganizations: boolean
   }
   onClose: () => void
@@ -47,7 +49,9 @@ export const _onName = async (
   organization: IFrontOrganizationsItem,
   name: string,
   swr: {
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -60,7 +64,7 @@ export const _onName = async (
     ])
 
     // Local
-    swr.mutateOneOrganization({
+    await swr.mutateOneOrganization({
       ...organization,
       name: name
     })

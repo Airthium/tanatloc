@@ -24,8 +24,8 @@ export interface IProps {
   project: Pick<IFrontProject, 'id' | 'simulations'>
   simulation: Pick<IFrontSimulationsItem, 'id'>
   swr: {
-    mutateProject: (project: IFrontMutateProject) => void
-    addOneSimulation: (simulation: IFrontNewSimulation) => void
+    mutateProject: (project: IFrontMutateProject) => Promise<void>
+    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
   }
 }
 
@@ -46,8 +46,8 @@ export const _onCopy = async (
   project: Pick<IFrontProject, 'id' | 'simulations'>,
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   swr: {
-    mutateProject: (project: IFrontMutateProject) => void
-    addOneSimulation: (simulation: IFrontNewSimulation) => void
+    mutateProject: (project: IFrontMutateProject) => Promise<void>
+    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -55,10 +55,10 @@ export const _onCopy = async (
     const newSimulation = await SimulationAPI.copy(simulation)
 
     // Mutate simulations
-    swr.addOneSimulation(newSimulation)
+    await swr.addOneSimulation(newSimulation)
 
     // Mutate project
-    swr.mutateProject({
+    await swr.mutateProject({
       id: project.id,
       simulations: [...project.simulations, newSimulation.id]
     })

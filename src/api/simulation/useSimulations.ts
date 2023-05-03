@@ -20,12 +20,12 @@ export const useSimulations = (
 ): [
   IFrontSimulations,
   {
-    addOneSimulation: (simulation: IFrontNewSimulation) => void
-    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem,
       revalidate?: boolean
-    ) => void
+    ) => Promise<void>
     errorSimulations: Error
     loadingSimulations: boolean
   }
@@ -44,9 +44,9 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const addOne = useCallback(
-    (simulation: IFrontNewSimulation): void => {
+    async (simulation: IFrontNewSimulation): Promise<void> => {
       const newSimulations = [...simulations, simulation] as IFrontSimulations
-      mutate({ simulations: newSimulations })
+      await mutate({ simulations: newSimulations })
     },
     [simulations, mutate]
   )
@@ -56,11 +56,11 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const delOne = useCallback(
-    (simulation: IFrontMutateSimulationsItem): void => {
+    async (simulation: IFrontMutateSimulationsItem): Promise<void> => {
       const filteredSimulations = simulations.filter(
         (s) => s.id !== simulation.id
       )
-      mutate({ simulations: filteredSimulations })
+      await mutate({ simulations: filteredSimulations })
     },
     [simulations, mutate]
   )
@@ -70,12 +70,15 @@ export const useSimulations = (
    * @param simulation Simulation
    */
   const mutateOne = useCallback(
-    (simulation: IFrontMutateSimulationsItem, revalidate?: boolean): void => {
+    async (
+      simulation: IFrontMutateSimulationsItem,
+      revalidate?: boolean
+    ): Promise<void> => {
       const mutatedSimulations = simulations.map((s) => {
         if (s.id === simulation.id) s = { ...s, ...simulation }
         return s
       })
-      mutate({ simulations: mutatedSimulations }, revalidate)
+      await mutate({ simulations: mutatedSimulations }, revalidate)
     },
     [simulations, mutate]
   )

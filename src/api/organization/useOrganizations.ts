@@ -17,9 +17,13 @@ import { fetcher } from '@/api/call'
 export const useOrganizations = (): [
   IFrontOrganizations,
   {
-    addOneOrganization: (organization: IFrontNewOrganization) => void
-    delOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
-    mutateOneOrganization: (organization: IFrontMutateOrganizationsItem) => void
+    addOneOrganization: (organization: IFrontNewOrganization) => Promise<void>
+    delOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
+    mutateOneOrganization: (
+      organization: IFrontMutateOrganizationsItem
+    ) => Promise<void>
     errorOrganizations: Error
     loadingOrganizations: boolean
   }
@@ -35,7 +39,7 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const addOne = useCallback(
-    (organization: IFrontNewOrganization): void => {
+    async (organization: IFrontNewOrganization): Promise<void> => {
       const newOrganizations = [
         ...organizations,
         {
@@ -46,7 +50,7 @@ export const useOrganizations = (): [
           groups: []
         }
       ] as IFrontOrganizations
-      mutate({ organizations: newOrganizations })
+      await mutate({ organizations: newOrganizations })
     },
     [organizations, mutate]
   )
@@ -56,11 +60,11 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const delOne = useCallback(
-    (organization: IFrontMutateOrganizationsItem): void => {
+    async (organization: IFrontMutateOrganizationsItem): Promise<void> => {
       const filteredOrganizations = organizations.filter(
         (o) => o.id !== organization.id
       )
-      mutate({ organizations: filteredOrganizations })
+      await mutate({ organizations: filteredOrganizations })
     },
     [organizations, mutate]
   )
@@ -70,12 +74,12 @@ export const useOrganizations = (): [
    * @param organization Organization
    */
   const mutateOne = useCallback(
-    (organization: IFrontMutateOrganizationsItem): void => {
+    async (organization: IFrontMutateOrganizationsItem): Promise<void> => {
       const mutatedOrganizations = organizations.map((o) => {
         if (o.id === organization.id) o = { ...o, ...organization }
         return o
       })
-      mutate({ organizations: mutatedOrganizations })
+      await mutate({ organizations: mutatedOrganizations })
     },
     [organizations, mutate]
   )

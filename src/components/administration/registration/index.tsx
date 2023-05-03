@@ -39,14 +39,14 @@ export const errors = {
  */
 export const _onAllowSignup = async (
   system: IFrontSystem,
-  mutateSystem: (system: IFrontMutateSystem) => void
+  mutateSystem: (system: IFrontMutateSystem) => Promise<void>
 ): Promise<void> => {
   try {
     // Update
     await SystemAPI.update([{ key: 'allowsignup', value: !system.allowsignup }])
 
     // Mutate
-    mutateSystem({ allowsignup: !system.allowsignup })
+    await mutateSystem({ allowsignup: !system.allowsignup })
 
     SuccessNotification('Changes saved')
   } catch (err: any) {
@@ -61,14 +61,14 @@ export const _onAllowSignup = async (
  */
 export const _onPasswordFinish = async (
   values: IFrontSystem['password'],
-  mutateSystem: (system: IFrontMutateSystem) => void
+  mutateSystem: (system: IFrontMutateSystem) => Promise<void>
 ): Promise<void> => {
   try {
     // Update
     await SystemAPI.update([{ key: 'password', value: values }])
 
     // Mutate
-    mutateSystem({ password: values })
+    await mutateSystem({ password: values })
 
     SuccessNotification('Changes saved')
   } catch (err: any) {

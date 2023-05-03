@@ -14,7 +14,7 @@ import { logout } from '@/api/logout'
  */
 export interface IProps {
   swr: {
-    clearUser: () => void
+    clearUser: () => Promise<void>
   }
 }
 
@@ -30,7 +30,7 @@ export const errors = {
  * @param swr SWR
  */
 export const _onDelete = async (swr: {
-  clearUser: () => void
+  clearUser: () => Promise<void>
 }): Promise<void> => {
   try {
     // Delete
@@ -40,7 +40,7 @@ export const _onDelete = async (swr: {
     await logout()
 
     // Mutate
-    swr.clearUser()
+    await swr.clearUser()
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

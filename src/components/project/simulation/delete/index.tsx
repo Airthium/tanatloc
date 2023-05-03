@@ -22,8 +22,8 @@ export interface IProps {
   project: Pick<IFrontProject, 'id' | 'simulations'>
   simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
   swr: {
-    mutateProject: (project: IFrontMutateProject) => void
-    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateProject: (project: IFrontMutateProject) => Promise<void>
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
   }
 }
 
@@ -44,8 +44,8 @@ export const _onDelete = async (
   project: Pick<IFrontProject, 'id' | 'simulations'>,
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   swr: {
-    mutateProject: (project: IFrontMutateProject) => void
-    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => void
+    mutateProject: (project: IFrontMutateProject) => Promise<void>
+    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
   }
 ): Promise<void> => {
   try {
@@ -56,13 +56,13 @@ export const _onDelete = async (
     const filteredSimulations = project.simulations.filter(
       (s: string) => s !== simulation.id
     )
-    swr.mutateProject({
+    await swr.mutateProject({
       id: project.id,
       simulations: filteredSimulations
     })
 
     // Mutate simulations
-    swr.delOneSimulation({ id: simulation.id })
+    await swr.delOneSimulation({ id: simulation.id })
   } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err

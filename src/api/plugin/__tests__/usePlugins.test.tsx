@@ -12,19 +12,12 @@ let data: any
 const FunctionalComponent = () => {
   const [
     plugins,
-    {
-      mutatePlugins,
-      addOnePlugin,
-      delOnePlugin,
-      mutateOnePlugin,
-      loadingPlugins
-    }
+    { addOnePlugin, delOnePlugin, mutateOnePlugin, loadingPlugins }
   ] = usePlugins()
 
   data = {
     plugins,
     swr: {
-      mutatePlugins,
       addOnePlugin,
       delOnePlugin,
       mutateOnePlugin,
@@ -46,7 +39,6 @@ describe('api/plugins/usePlugins', () => {
     render(<FunctionalComponent />)
 
     expect(data.plugins).toEqual([{ key: 'key' }, {}])
-    expect(data.swr.mutatePlugins).toBeDefined()
     expect(data.swr.addOnePlugin).toBeDefined()
     expect(data.swr.delOnePlugin).toBeDefined()
     expect(data.swr.mutateOnePlugin).toBeDefined()

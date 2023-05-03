@@ -32,7 +32,7 @@ export const _passwordRecover = async (value: {
       'An email has been send to recover your password',
       'If you entered a valid email'
     )
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.recover, err)
     throw err
   }

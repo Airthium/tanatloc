@@ -80,7 +80,7 @@ const Dialog = ({
       const values = await form.validateFields()
       await onOk(values)
       form.resetFields()
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.onOk, err, false)
     }
   }, [form, onOk])

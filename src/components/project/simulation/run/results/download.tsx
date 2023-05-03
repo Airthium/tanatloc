@@ -49,7 +49,7 @@ const _onDownload = async (
       file.name + '.' + file.fileName.split('.').pop()
     )
     link.click()
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.download, err)
   }
 }

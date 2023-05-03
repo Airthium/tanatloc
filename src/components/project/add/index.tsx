@@ -64,7 +64,7 @@ export const _onAdd = async (
     })
 
     return project
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }

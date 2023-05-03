@@ -45,7 +45,7 @@ export const _onLogin = async (
   let loggedUser: { ok: boolean; id?: string; isvalidated?: boolean }
   try {
     loggedUser = await login(values)
-  } catch (err) {
+  } catch (err: any) {
     throw new APIError({ title: errors.internal, err })
   }
 

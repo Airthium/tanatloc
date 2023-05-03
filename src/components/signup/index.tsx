@@ -47,7 +47,7 @@ export const _onSignup = async (
   let newUser: INewUser
   try {
     newUser = await UserAPI.add(values)
-  } catch (err) {
+  } catch (err: any) {
     throw new APIError({ title: errors.internal, err })
   }
 

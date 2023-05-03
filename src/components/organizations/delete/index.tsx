@@ -47,7 +47,7 @@ export const _onDelete = async (
 
     // Local
     swr.delOneOrganization({ id: organization.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

@@ -201,7 +201,7 @@ export const _onFinish = async (
       // Local
       swr.addOnePlugin?.(newPlugin)
     }
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }

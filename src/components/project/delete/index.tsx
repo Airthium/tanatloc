@@ -63,7 +63,7 @@ export const _onDelete = async (
 
     // Mutate projects
     swr.delOneProject({ id: project.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

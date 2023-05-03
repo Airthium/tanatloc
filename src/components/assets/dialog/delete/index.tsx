@@ -51,7 +51,7 @@ const DeleteDialog = ({
   const internalOnOk = useCallback(async () => {
     try {
       await onOk()
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.onOk, err, false)
     }
   }, [onOk])

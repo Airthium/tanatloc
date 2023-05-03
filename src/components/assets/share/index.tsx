@@ -123,7 +123,7 @@ export const _onShare = async (
       )
       swr.mutateOneProject!(newProject)
     }
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.share, err)
     throw err
   }

@@ -54,7 +54,7 @@ export const _onEdit = async (
 
     // Mutate
     swr.mutateOneWorkspace(newWorkspace)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
 
     throw err

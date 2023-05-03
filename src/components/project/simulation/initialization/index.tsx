@@ -93,7 +93,7 @@ export const _onSelectorChange = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }
@@ -141,7 +141,7 @@ export const _onCouplingChange = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }
@@ -187,7 +187,7 @@ export const _onCouplingResultChange = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }
@@ -227,7 +227,7 @@ export const _onChange = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }

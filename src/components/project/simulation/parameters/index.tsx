@@ -245,7 +245,7 @@ export const _onDone = async (
     ])
 
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }
@@ -309,7 +309,7 @@ export const _onChange = async (
     ])
 
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }

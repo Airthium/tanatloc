@@ -38,7 +38,7 @@ export const _onArchive = async (
     link.href = url
     link.setAttribute('download', simulation.scheme.name + '.zip')
     link.click()
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.archive, err)
   }
 }

@@ -89,7 +89,7 @@ export const _onAdd = async (
       superuser: values.superuser
     }
     swr.addOneUser(newUserWithData)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }

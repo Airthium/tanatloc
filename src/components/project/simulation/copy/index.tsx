@@ -62,7 +62,7 @@ export const _onCopy = async (
       id: project.id,
       simulations: [...project.simulations, newSimulation.id]
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.copy, err)
   }
 }

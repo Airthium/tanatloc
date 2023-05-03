@@ -52,7 +52,7 @@ export const _pluginsList = async (): Promise<JSX.Element[]> => {
         </Card>
       ]
     }
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.plugins, err)
     return [
       <Card key="error" title="Error">

@@ -42,7 +42,7 @@ export const _onDelete = async (
 
     // Mutate
     swr.delOneUser({ id: user.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

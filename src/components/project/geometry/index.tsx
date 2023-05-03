@@ -69,7 +69,7 @@ export const _onDownload = async (
     link.setAttribute('download', geometry.name + '.' + file.extension)
     link.click()
     link.remove()
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.download, err)
   }
 }
@@ -99,7 +99,7 @@ export const _onEdit = async (
     // Local
     geometry.name = values.name
     swr.mutateOneGeometry(geometry)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }
@@ -137,7 +137,7 @@ export const _onDelete = async (
 
     // Close
     close()
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

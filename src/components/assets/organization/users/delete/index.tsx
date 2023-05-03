@@ -79,7 +79,7 @@ export const _onDelete = async (
       (u) => u.id !== user.id
     )
     swr.mutateOneOrganization(newOrganization)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

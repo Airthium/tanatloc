@@ -64,7 +64,7 @@ export const _onName = async (
       ...organization,
       name: name
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.name, err)
   }
 }

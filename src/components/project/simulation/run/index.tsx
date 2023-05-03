@@ -97,7 +97,7 @@ export const _onCloudServer = async (
     // Local
     swr.mutateOneSimulation(newSimulation)
     swr.mutateSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }
@@ -110,7 +110,7 @@ export const _onRun = async (
 ): Promise<void> => {
   try {
     await SimulationAPI.run({ id: simulation.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.run, err)
     throw err
   }
@@ -124,7 +124,7 @@ export const _onStop = async (
 ): Promise<void> => {
   try {
     await SimulationAPI.stop({ id: simulation.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.stop, err)
     throw err
   }

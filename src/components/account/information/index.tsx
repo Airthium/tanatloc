@@ -116,7 +116,7 @@ export const _onChange = async (
         ...user,
         avatar: Buffer.from(img)
       })
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.upload, err)
     }
 
@@ -179,7 +179,7 @@ export const _onFinish = async (
         'Changes saved',
         'A validation email has been send to ' + values.email
       )
-  } catch (err) {
+  } catch (err: any) {
     throw new APIError({ title: errors.update, err })
   }
 }
@@ -193,7 +193,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [uploading, setUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const [formError, setFormError] = useState<APIError | null>()
+  const [formError, setFormError] = useState<APIError>()
 
   // Layout
   const layout = {
@@ -220,7 +220,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
       setLoading(true)
       try {
         await _onFinish(user, values, swr)
-        setFormError(null)
+        setFormError(undefined)
       } catch (err: any) {
         setFormError(err)
       } finally {

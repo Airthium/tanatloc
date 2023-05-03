@@ -79,7 +79,7 @@ export const _onAdd = async (
         newGroup
       ] as IFrontOrganizationsItem['groups']
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }
@@ -142,7 +142,7 @@ export const _onUpdate = async (
         ...organization.groups.slice(groupIndex + 1)
       ]
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }

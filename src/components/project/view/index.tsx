@@ -71,7 +71,7 @@ export const _loadPart = async (
       )
       return { ...part, extra: { glb: result.glb } }
     }
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.part, err)
     throw err
   }

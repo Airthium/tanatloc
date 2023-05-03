@@ -75,7 +75,7 @@ export const _onArchive = async (
 
     // Mutate workspace
     swr.mutateOneWorkspace(workspace)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.archive, err)
     throw err
   }
@@ -102,7 +102,7 @@ export const _onUnarchiveServer = async (
 
     // Mutate workspace
     swr.mutateOneWorkspace(workspace)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.unarchiveServer, err)
     throw err
   }
@@ -117,7 +117,7 @@ export const _onArchiveDelete = async (
 ) => {
   try {
     await ProjectAPI.deleteArchiveFile({ id: project.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.deleteArchive, err)
   }
 }
@@ -171,7 +171,7 @@ export const _onUpload = async (
 
       // Mutate workspace
       swr.mutateOneWorkspace(workspace)
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.upload, err)
     }
 

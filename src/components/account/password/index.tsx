@@ -49,7 +49,7 @@ export const _onFinish = async (
       email: user.email,
       password: values.password
     })
-  } catch (err) {
+  } catch (err: any) {
     throw new APIError({ title: errors.check, err })
   }
 
@@ -66,7 +66,7 @@ export const _onFinish = async (
     ])
 
     SuccessNotification('Your password has been changed successfully')
-  } catch (err) {
+  } catch (err: any) {
     throw new APIError({ title: errors.update, err })
   }
 }
@@ -79,7 +79,7 @@ export const _onFinish = async (
 const Password = ({ user }: IProps): JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
-  const [formError, setFormError] = useState<APIError | null>()
+  const [formError, setFormError] = useState<APIError>()
 
   // Layout
   const layout = {
@@ -99,7 +99,7 @@ const Password = ({ user }: IProps): JSX.Element => {
       setLoading(true)
       try {
         await _onFinish(user, values)
-        setFormError(null)
+        setFormError(undefined)
       } catch (err: any) {
         setFormError(err)
       } finally {

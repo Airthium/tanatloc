@@ -88,7 +88,7 @@ export const _onUpdate = async (
       ...values
     }
     swr.mutateOneUser(newUser as IFrontUsersItem)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }

@@ -44,7 +44,7 @@ export const _onAdd = async (
 
     // Mutate
     swr.addOneWorkspace(workspace)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }

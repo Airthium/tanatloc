@@ -73,7 +73,7 @@ export const _onDelete = async (
       ...newUser.templates.slice(index + 1)
     ]
     swr.mutateUser(newUser)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.delete, err)
     throw err
   }

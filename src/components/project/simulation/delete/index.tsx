@@ -63,7 +63,7 @@ export const _onDelete = async (
 
     // Mutate simulations
     swr.delOneSimulation({ id: simulation.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

@@ -98,7 +98,7 @@ export const _onSelect = async (
     // Display
 
     setGeometries([newGeometry])
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }
@@ -160,7 +160,7 @@ export const _onMultipleSelect = async (
     // Display
 
     setGeometries(newGeometries as IFrontGeometriesItem[])
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }

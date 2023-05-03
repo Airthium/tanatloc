@@ -84,7 +84,7 @@ const _run = async (
 ): Promise<IPostProcessFile[]> => {
   try {
     return await PostprocessingAPI.run(simulation, result, filter, parameters)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.run, err)
     throw err
   }

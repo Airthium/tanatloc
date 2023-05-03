@@ -81,7 +81,7 @@ export const _onTanatlocLoad = async (
     const res = await fetch('/templates/' + templateFile)
     const text = await res.text()
     dispatch(setTemplate(text))
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.load, err)
   }
 }
@@ -101,7 +101,7 @@ export const _onMyLoad = async (
     model.user && delete model.user
     dispatch(setModel(JSON.stringify(model, null, '\t')))
     dispatch(setTemplate(template))
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.load, err)
   }
 }

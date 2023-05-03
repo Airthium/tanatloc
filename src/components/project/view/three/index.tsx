@@ -416,7 +416,7 @@ export const _takeScreenshot = async (
       },
       { id: project.id }
     )
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.snapshot, err)
   }
 }
@@ -447,7 +447,7 @@ export const _downloadScreenshot = (
     a.href = image.replace('image/png', 'image/octet-stream')
     a.download = project.title + '_' + new Date().toLocaleDateString() + '.png'
     a.click()
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.saveScreenshot, err)
   }
 }
@@ -746,7 +746,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
               },
               dispatch
             )
-          } catch (err) {
+          } catch (err: any) {
             ErrorNotification(errors.load, err)
             _computeSceneBoundingSphere(scene.current!)
           }

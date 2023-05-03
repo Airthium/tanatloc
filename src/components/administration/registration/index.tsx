@@ -49,7 +49,7 @@ export const _onAllowSignup = async (
     mutateSystem({ allowsignup: !system.allowsignup })
 
     SuccessNotification('Changes saved')
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }
@@ -71,7 +71,7 @@ export const _onPasswordFinish = async (
     mutateSystem({ password: values })
 
     SuccessNotification('Changes saved')
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }

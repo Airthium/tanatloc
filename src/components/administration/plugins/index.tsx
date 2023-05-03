@@ -60,7 +60,7 @@ export const _onChange = async (
     swr.mutateSystem({
       defaultplugins
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }

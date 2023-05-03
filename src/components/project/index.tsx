@@ -131,7 +131,7 @@ export const _onSelector = async (
       id: project.id,
       simulations: [...(project.simulations ?? []), simulation.id]
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }

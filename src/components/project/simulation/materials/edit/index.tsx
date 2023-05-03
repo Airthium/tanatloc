@@ -83,7 +83,7 @@ export const _onEdit = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }

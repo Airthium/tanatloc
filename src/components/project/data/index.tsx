@@ -329,7 +329,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     setDownloading(true)
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!, '\t')
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.download, err)
     } finally {
       setDownloading(false)
@@ -343,7 +343,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     setDownloading(true)
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!, ',')
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.download, err)
     } finally {
       setDownloading(false)
@@ -357,7 +357,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     setDownloading(true)
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!)
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.download, err)
     } finally {
       setDownloading(false)

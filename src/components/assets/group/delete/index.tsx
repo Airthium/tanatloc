@@ -41,7 +41,7 @@ export const _onDelete = async (
 
     // Mutate
     swr.delOneGroup({ id: group.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

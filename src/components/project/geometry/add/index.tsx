@@ -96,7 +96,7 @@ export const _onUpload = async (
         id: project.id,
         geometries: [...project.geometries, geometry.id]
       })
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.add, err)
       throw err
     }

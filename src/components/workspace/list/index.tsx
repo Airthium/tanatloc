@@ -79,7 +79,7 @@ export const _onOk = async (
         query: { page: 'workspaces', workspaceId: workspace.id }
       })
       .catch()
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }

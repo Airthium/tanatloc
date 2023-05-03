@@ -102,7 +102,7 @@ export const _onQuit = async (
     newOrganization.users.splice(userIndex, 1)
 
     swr.mutateOneOrganization(newOrganization)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.quit, err)
   }
 }
@@ -147,7 +147,7 @@ export const _onAccept = async (
     }
 
     swr.mutateOneOrganization(newOrganization)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.accept, err)
   }
 }
@@ -186,7 +186,7 @@ export const _onDecline = async (
     }
 
     swr.mutateOneOrganization(newOrganization)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.decline, err)
   }
 }
@@ -237,15 +237,13 @@ const QuitButton = ({ user, organization, swr }: IQuitProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = useCallback(
-    () =>
-      _onQuit(
-        { id: organization.id, users: organization.users },
-        { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization }
-      ),
-    [user, organization, swr]
-  )
+  const onClick = useCallback(() => {
+    _onQuit(
+      { id: organization.id, users: organization.users },
+      { id: user.id },
+      { mutateOneOrganization: swr.mutateOneOrganization }
+    )
+  }, [user, organization, swr])
 
   /**
    * Render
@@ -270,21 +268,19 @@ const AcceptButton = ({
   /**
    * On click
    */
-  const onClick = useCallback(
-    async () =>
-      _onAccept(
-        {
-          id: organization.id,
-          owners: organization.owners,
-          pendingowners: organization.pendingowners,
-          users: organization.users,
-          pendingusers: organization.pendingusers
-        },
-        { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization }
-      ),
-    [user, organization, swr]
-  )
+  const onClick = useCallback(async () => {
+    _onAccept(
+      {
+        id: organization.id,
+        owners: organization.owners,
+        pendingowners: organization.pendingowners,
+        users: organization.users,
+        pendingusers: organization.pendingusers
+      },
+      { id: user.id },
+      { mutateOneOrganization: swr.mutateOneOrganization }
+    )
+  }, [user, organization, swr])
 
   /**
    * Render
@@ -306,19 +302,17 @@ const DeclineButton = ({
   organization,
   swr
 }: IDeclineProps): JSX.Element => {
-  const onClick = useCallback(
-    () =>
-      _onDecline(
-        {
-          id: organization.id,
-          pendingowners: organization.pendingowners,
-          pendingusers: organization.pendingusers
-        },
-        { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization }
-      ),
-    [user, organization, swr]
-  )
+  const onClick = useCallback(() => {
+    _onDecline(
+      {
+        id: organization.id,
+        pendingowners: organization.pendingowners,
+        pendingusers: organization.pendingusers
+      },
+      { id: user.id },
+      { mutateOneOrganization: swr.mutateOneOrganization }
+    )
+  }, [user, organization, swr])
 
   /**
    * Render

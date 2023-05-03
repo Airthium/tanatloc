@@ -112,7 +112,7 @@ export const _onAdd = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }

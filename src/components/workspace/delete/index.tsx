@@ -41,7 +41,7 @@ export const _onDelete = async (
 
     // Mutate
     swr.delOneWorkspace({ id: workspace.id })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.del, err)
     throw err
   }

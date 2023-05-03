@@ -123,7 +123,7 @@ const Dashboard = () => {
       await logout()
       clearUser()
       router.push('/').catch()
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.logout, err)
     }
   }, [router, clearUser])

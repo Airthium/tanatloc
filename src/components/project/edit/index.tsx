@@ -56,7 +56,7 @@ export const _onEdit = async (
 
     // Mutate projects
     swr.mutateOneProject(project)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.edit, err)
 
     throw err

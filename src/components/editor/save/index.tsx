@@ -51,7 +51,7 @@ export const _onSave = async (
   let modelJSON: IModel
   try {
     modelJSON = JSON.parse(model)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.json, err)
     return
   }
@@ -76,7 +76,7 @@ export const _onSave = async (
     } else {
       await _save(user, swr, modelJSON, template)
     }
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.check, err)
   }
 }
@@ -121,7 +121,7 @@ export const _save = async (
       const newUser = Utils.deepCopy(user)
       newUser.models.push(model)
       swr.mutateUser(newUser)
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.save, err)
     }
   } else {
@@ -152,7 +152,7 @@ export const _save = async (
       const newUser = Utils.deepCopy(user)
       newUser.models[index] = model
       swr.mutateUser(newUser)
-    } catch (err) {
+    } catch (err: any) {
       ErrorNotification(errors.save, err)
     }
   }

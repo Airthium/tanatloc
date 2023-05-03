@@ -40,7 +40,7 @@ export const _onUpdate = async (plugin: IClientPlugin): Promise<void> => {
 
     // API
     await PluginAPI.update(initialPlugin)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.refresh, err)
   }
 }

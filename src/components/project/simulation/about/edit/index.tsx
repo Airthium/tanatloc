@@ -55,7 +55,7 @@ export const _onEdit = async (
       id: simulation.id,
       name: values.name
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
     throw err
   }

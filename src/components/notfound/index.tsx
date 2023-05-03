@@ -246,7 +246,11 @@ const NotFound = (): JSX.Element => {
   /**
    * Home
    */
-  const home = useCallback(() => router.push('/').catch(), [router])
+  const home = useCallback(async (): Promise<void> => {
+    try {
+      await router.push('/')
+    } catch (err) {}
+  }, [router])
 
   /**
    * Render

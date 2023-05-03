@@ -355,7 +355,8 @@ const DirectItem = ({
    * @param value Value
    */
   const onChange = useCallback(
-    (value: string): Promise<void> => _onChange(simulation, index, value, swr),
+    async (value: string): Promise<void> =>
+      await _onChange(simulation, index, value, swr),
     [simulation, index, swr]
   )
 

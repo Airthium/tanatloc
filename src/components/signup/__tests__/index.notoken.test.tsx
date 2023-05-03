@@ -25,7 +25,7 @@ jest.mock('@/components/assets/input', () => ({
 
 jest.mock('@/components/assets/notification', () => ({
   ErrorNotification: jest.fn,
-  FormError: (props: any) => <div>{props.error?.render || null}</div>
+  FormError: (props: any) => <div>{props.error?.render ?? null}</div>
 }))
 
 jest.mock('@/components/loading', () => () => <div />)

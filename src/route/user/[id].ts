@@ -35,7 +35,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
     if (!superuser.superuser) throw error(403, 'Access denied')
 
     // Id
-    const id = req.query.id || req.params.id // Electron
+    const id = req.query.id ?? req.params.id // Electron
 
     // Check
     if (!id || typeof id !== 'string')

@@ -68,11 +68,11 @@ finiteElementSpace.name = '${values.name}'
   )
   dispatch(
     setTemplateHighlight({
-      begin: cursor?.row || 0,
-      end: (cursor?.row || 0) + 9
+      begin: cursor?.row ?? 0,
+      end: (cursor?.row ?? 0) + 9
     })
   )
-  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 9, column: 0 }))
+  dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 9, column: 0 }))
 
   // Model
   let modelJSON: Partial<
@@ -85,21 +85,21 @@ finiteElementSpace.name = '${values.name}'
   } catch (err) {
     modelJSON = {}
   }
-  const index = Object.keys(modelJSON.configuration || {}).length
+  const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
-    ...(modelJSON.configuration || {}),
+    ...(modelJSON.configuration ?? {}),
     parameters: {
       index: index + 1,
       title: 'Parameters',
-      ...(modelJSON.configuration?.parameters || {}),
+      ...(modelJSON.configuration?.parameters ?? {}),
       finiteElementSpace: {
         advanced: true,
         label: 'Finite element space',
         ...((modelJSON.configuration?.parameters
-          ?.finiteElementSpace as object) || {}),
+          ?.finiteElementSpace as object) ?? {}),
         children: [
           ...((modelJSON.configuration?.parameters?.finiteElementSpace as any)
-            ?.children || []),
+            ?.children ?? []),
           {
             label: 'Finite element space label',
             label2D: 'Finite element space label (2D)',

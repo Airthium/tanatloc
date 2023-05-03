@@ -67,11 +67,11 @@ const unknownFunction = dimension === 2 ? '[${values.unknown1}, ${values.unknown
   )
   dispatch(
     setTemplateHighlight({
-      begin: cursor?.row || 0,
-      end: (cursor?.row || 0) + 13
+      begin: cursor?.row ?? 0,
+      end: (cursor?.row ?? 0) + 13
     })
   )
-  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 13, column: 0 }))
+  dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 13, column: 0 }))
 }
 
 /**

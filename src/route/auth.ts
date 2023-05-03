@@ -105,7 +105,7 @@ const checkWorkspaceAuth = async (
     'users',
     'groups'
   ])
-  if (!workspaceAuth) throw error(status || 400, 'Invalid workspace identifier')
+  if (!workspaceAuth) throw error(status ?? 400, 'Invalid workspace identifier')
 
   if (!(await auth(user, workspaceAuth))) throw error(403, 'Access denied')
 }
@@ -127,7 +127,7 @@ const checkProjectAuth = async (
     'groups',
     'workspace'
   ])
-  if (!projectAuth) throw error(status || 400, 'Invalid project identifier')
+  if (!projectAuth) throw error(status ?? 400, 'Invalid project identifier')
 
   const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
     'owners',
@@ -162,7 +162,7 @@ const checkGeometryAuth = async (
   status?: number
 ): Promise<void> => {
   const geometryAuth = await GeometryLib.get(geometry.id, ['project'])
-  if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifier')
+  if (!geometryAuth) throw error(status ?? 400, 'Invalid geometry identifier')
 
   const projectAuth = await ProjectLib.get(geometryAuth.project, [
     'owners',
@@ -206,7 +206,7 @@ const checkSimulationAuth = async (
 ): Promise<void> => {
   const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
   if (!simulationAuth)
-    throw error(status || 400, 'Invalid simulation identifier')
+    throw error(status ?? 400, 'Invalid simulation identifier')
 
   const projectAuth = await ProjectLib.get(simulationAuth.project, [
     'owners',
@@ -254,7 +254,7 @@ const checkOrganizationAuth = async (
     'groups'
   ])
   if (!organizationAuth)
-    throw error(status || 400, 'Invalid organization identifier')
+    throw error(status ?? 400, 'Invalid organization identifier')
 
   if (!(await auth(user, organizationAuth))) throw error(403, 'Access denied')
 }

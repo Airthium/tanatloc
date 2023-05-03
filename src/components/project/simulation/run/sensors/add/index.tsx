@@ -61,7 +61,7 @@ export const _onAdd = async (
     // Diff
     const diff = {
       ...run,
-      sensors: [...(run.sensors || []), sensor]
+      sensors: [...(run.sensors ?? []), sensor]
     }
 
     // API

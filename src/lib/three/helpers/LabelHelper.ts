@@ -3,7 +3,7 @@
 import { Sprite, SpriteMaterial, Texture, Vector3, WebGLRenderer } from 'three'
 
 export interface ILabelHelper extends Omit<Sprite, 'type'> {
-  type: Sprite['type'] | 'LabelHelper'
+  type: 'LabelHelper'
   dispose: () => void
 }
 
@@ -26,7 +26,7 @@ const LabelHelper = (
 ): ILabelHelper => {
   // Canvas
   const canvas = document.createElement('canvas')
-  canvas.width = parameters?.width || 256
+  canvas.width = parameters?.width ?? 256
   canvas.height = 256
   const context = canvas.getContext('2d') as CanvasRenderingContext2D
   if (parameters?.background) {
@@ -35,7 +35,7 @@ const LabelHelper = (
   }
   context.fillStyle = 'grey'
   context.font = '50px sans-serif'
-  context.textAlign = parameters?.align || 'center'
+  context.textAlign = parameters?.align ?? 'center'
   context.textBaseline = 'middle'
   context.fillText(text, canvas.width / 2, canvas.height / 2)
 

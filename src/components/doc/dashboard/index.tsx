@@ -96,7 +96,7 @@ const Dashboard = (): JSX.Element => {
       </Typography>
 
       <Tabs
-        activeKey={(query.tab as string) || 'workspaces'}
+        activeKey={(query.tab as string) ?? 'workspaces'}
         items={tabs}
         onChange={onChange}
       />

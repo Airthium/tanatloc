@@ -680,7 +680,7 @@ const Project = (): JSX.Element => {
       />
 
       <Tabs
-        activeKey={(query.tab as string) || 'geometry'}
+        activeKey={(query.tab as string) ?? 'geometry'}
         items={tabs}
         onChange={onChange}
       />

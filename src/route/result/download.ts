@@ -24,12 +24,9 @@ export interface IDownloadBody {
  */
 const checkDownloadBody = (body: IDownloadBody): void => {
   if (
-    !body ||
-    !body.simulation ||
-    !body.simulation.id ||
+    !body?.simulation?.id ||
     typeof body.simulation.id !== 'string' ||
-    !body.result ||
-    !body.result.originPath ||
+    !body.result?.originPath ||
     typeof body.result.originPath !== 'string' ||
     !body.result.fileName ||
     typeof body.result.fileName !== 'string'

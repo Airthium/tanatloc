@@ -389,7 +389,7 @@ const Share = ({
       >
         <Typography.Title level={5}>
           {workspace ? 'Workspace: ' : 'Project: '}
-          {workspace?.name || project?.title}
+          {workspace?.name ?? project?.title}
         </Typography.Title>
         {selector}
       </Dialog>

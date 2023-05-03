@@ -36,7 +36,7 @@ export interface ISectionViewHelper {
 }
 
 export interface IController extends Omit<Group, 'type'> {
-  type: Group['type'] | 'SectionViewHelper'
+  type: 'SectionViewHelper'
 }
 
 /**
@@ -122,7 +122,7 @@ const SectionViewHelper = (
   let control: Mesh | null
 
   // Controller
-  const controller: IController = new Group()
+  const controller = new Group() as IController
   controller.type = 'SectionViewHelper'
   controller.visible = false
   scene.add(controller)

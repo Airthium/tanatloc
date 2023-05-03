@@ -46,11 +46,11 @@ export const _onAdd = (
   )
   dispatch(
     setTemplateHighlight({
-      begin: cursor?.row || 0,
-      end: (cursor?.row || 0) + 5
+      begin: cursor?.row ?? 0,
+      end: (cursor?.row ?? 0) + 5
     })
   )
-  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 5, column: 0 }))
+  dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 5, column: 0 }))
 
   // Model
   let modelJSON: Partial<
@@ -63,19 +63,19 @@ export const _onAdd = (
   } catch (err) {
     modelJSON = {}
   }
-  const index = Object.keys(modelJSON.configuration || {}).length
+  const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
-    ...(modelJSON.configuration || {}),
+    ...(modelJSON.configuration ?? {}),
     parameters: {
       index: index + 1,
       title: 'Parameters',
-      ...(modelJSON.configuration?.parameters || {}),
+      ...(modelJSON.configuration?.parameters ?? {}),
       solver: {
         advanced: true,
         label: 'Solver',
-        ...((modelJSON.configuration?.parameters?.solver as object) || {}),
+        ...((modelJSON.configuration?.parameters?.solver as object) ?? {}),
         children: [
-          ...((modelJSON.configuration?.parameters?.solver as any)?.children ||
+          ...((modelJSON.configuration?.parameters?.solver as any)?.children ??
             []),
           {
             label: 'System resolution',

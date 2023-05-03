@@ -73,7 +73,7 @@ export const _build2DFormula = (
 ): JSX.Element => (
   <Formula
     key={key}
-    label={child.label2D || child.label}
+    label={child.label2D ?? child.label}
     defaultValue={(child.value as string) ?? (child.default as string)}
     onValueChange={onValueChange}
     unit={child.unit}
@@ -93,15 +93,15 @@ export const _build2DSelect = (
   onValueChange: (value: string) => void
 ): JSX.Element => (
   <Form layout="vertical" key={key}>
-    <Form.Item label={child.label2D || child.label}>
+    <Form.Item label={child.label2D ?? child.label}>
       <Select
         options={child.options?.map((option) => ({
           label: option.label,
           value: option.value2D ?? option.value
         }))}
         defaultValue={
-          (child.value as string) ||
-          (child.default2D as string) ||
+          (child.value as string) ??
+          (child.default2D as string) ??
           (child.default as string)
         }
         onChange={onValueChange}
@@ -123,7 +123,7 @@ export const _build2DCheckbox = (
   onValueChange: (e: CheckboxChangeEvent) => void
 ) => (
   <Form layout="horizontal" key={key}>
-    <Form.Item label={child.label2D || child.label}>
+    <Form.Item label={child.label2D ?? child.label}>
       <Checkbox
         defaultChecked={child.value as boolean}
         onChange={onValueChange}
@@ -169,7 +169,7 @@ export const _buildSelect = (
     <Form.Item label={child.label}>
       <Select
         options={child.options}
-        defaultValue={(child.value as string) || (child.default as string)}
+        defaultValue={(child.value as string) ?? (child.default as string)}
         onChange={onValueChange}
       />
     </Form.Item>

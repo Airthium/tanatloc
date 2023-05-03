@@ -37,12 +37,9 @@ export interface IDeleteBody {
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body ||
-    !body.organization ||
-    !body.organization.id ||
+    !body?.organization?.id ||
     typeof body.organization.id !== 'string' ||
-    !body.group ||
-    !body.group.name ||
+    !body.group?.name ||
     typeof body.group.name !== 'string' ||
     !body.group.users ||
     !Array.isArray(body.group.users)
@@ -59,9 +56,7 @@ const checkAddBody = (body: IAddBody): void => {
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (
-    !body ||
-    !body.group ||
-    !body.group.id ||
+    !body?.group?.id ||
     typeof body.group.id !== 'string' ||
     !body.data ||
     !Array.isArray(body.data)
@@ -77,7 +72,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
-  if (!body || !body.id || typeof body.id !== 'string')
+  if (!body?.id || typeof body.id !== 'string')
     throw error(400, 'Missing data in your request (body: { id(uuid) })')
 }
 

@@ -19,7 +19,7 @@ const part = async (req: Request, res: Response) => {
     const sessionId = await session(req)
 
     // Id
-    const id = req.query.id || req.params.id // Electron
+    const id = req.query.id ?? req.params.id // Electron
 
     // Check
     if (!id || typeof id !== 'string')

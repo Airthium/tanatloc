@@ -143,7 +143,7 @@ const Material = ({
               label: child.label,
               symbol: child.name,
               value: child.default
-            })) || []
+            })) ?? []
         },
         geometry: geometries[0]?.id
       } as IModelMaterialsValue)
@@ -160,7 +160,7 @@ const Material = ({
         }
       })
       .filter((s) => s)
-    setAlreadySelected((currentAlreadySelected || []) as ISelection[])
+    setAlreadySelected((currentAlreadySelected ?? []) as ISelection[])
   }, [simulation, material, materials])
 
   /**

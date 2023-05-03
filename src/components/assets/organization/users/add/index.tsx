@@ -63,9 +63,9 @@ export const _checkAlreadyAdded = (
     (pu) => pu.email === user.email
   )
 
-  return (inOwners ||
-    inPendingowners ||
-    inUsers ||
+  return (inOwners ??
+    inPendingowners ??
+    inUsers ??
     inPendingusers) as IFrontUsersItem
 }
 
@@ -111,7 +111,7 @@ export const _onFinish = async (
       } as IFrontOrganizationsItem['users'][0]
     ]
     swr.mutateOneOrganization(newOrganization)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.add, err)
     throw err
   }

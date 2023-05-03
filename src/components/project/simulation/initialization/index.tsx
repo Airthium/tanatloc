@@ -644,7 +644,7 @@ const Initialization = ({
             onChange={onChange}
           />
 
-          {initializations[currentKey || 'none']}
+          {initializations[currentKey ?? 'none']}
         </Card>
       </Layout.Content>
     </Layout>

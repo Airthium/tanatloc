@@ -212,7 +212,7 @@ const WorkspacesList = ({
                 children: (
                   <Workspace
                     user={user}
-                    page={page || menuItems.workspaces.key}
+                    page={page ?? menuItems.workspaces.key}
                     workspace={{
                       id: workspace.id,
                       name: workspace.name,

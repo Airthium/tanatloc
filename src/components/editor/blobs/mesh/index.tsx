@@ -59,11 +59,11 @@ mesh.name = '${values.name}'
     )
     dispatch(
       setTemplateHighlight({
-        begin: cursor?.row || 0,
-        end: (cursor?.row || 0) + 9
+        begin: cursor?.row ?? 0,
+        end: (cursor?.row ?? 0) + 9
       })
     )
-    dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 9, column: 0 }))
+    dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 9, column: 0 }))
   }
 
   // Model
@@ -77,16 +77,16 @@ mesh.name = '${values.name}'
   } catch (err) {
     modelJSON = {}
   }
-  const index = Object.keys(modelJSON.configuration || {}).length
+  const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
-    ...(modelJSON.configuration || {}),
+    ...(modelJSON.configuration ?? {}),
     geometry: {
       index: index + 1,
       title: 'Geometry',
       mesh: {
         name: values.name
       },
-      ...(modelJSON.configuration?.geometry || {}),
+      ...(modelJSON.configuration?.geometry ?? {}),
       meshable: true
     }
   }

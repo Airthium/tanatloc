@@ -302,7 +302,7 @@ const arrayUpdater = (
     default:
       throw new Error(
         //@ts-ignore
-        'No method ' + (data.method || 'specified') + ' for array update'
+        'No method ' + (data.method ?? 'specified') + ' for array update'
       )
   }
 }
@@ -346,7 +346,7 @@ const jsonUpdater = (
     default:
       throw new Error(
         //@ts-ignore
-        'No method ' + (data.method || 'specified') + ' for json update'
+        'No method ' + (data.method ?? 'specified') + ' for json update'
       )
   }
 }

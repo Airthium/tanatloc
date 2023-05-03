@@ -292,7 +292,7 @@ const Doc = () => {
         <Layout.Header className={style.menu}>
           <Menu
             mode="horizontal"
-            selectedKeys={[(query.section as string) || 'introduction']}
+            selectedKeys={[(query.section as string) ?? 'introduction']}
             onClick={onMenuClick}
             items={menuItems}
           />

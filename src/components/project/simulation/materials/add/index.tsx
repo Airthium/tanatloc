@@ -63,7 +63,7 @@ export const _onAdd = async (
 
     // Update local
     const materials = newSimulation.scheme.configuration.materials!
-    materials.values = [...(materials.values || []), newMaterial]
+    materials.values = [...(materials.values ?? []), newMaterial]
 
     // Diff
     const diff = {

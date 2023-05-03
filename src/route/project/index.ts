@@ -19,12 +19,9 @@ export interface IAddBody {
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body ||
-    !body.workspace ||
-    !body.workspace.id ||
+    !body?.workspace?.id ||
     typeof body.workspace.id !== 'string' ||
-    !body.project ||
-    !body.project.title ||
+    !body.project?.title ||
     typeof body.project.title !== 'string'
   )
     throw error(

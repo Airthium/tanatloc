@@ -364,10 +364,8 @@ const PartLoader = (
    * Stop selection
    */
   const stopSelection = (): void => {
-    selectionRenderer &&
-      selectionRenderer.domElement.removeEventListener('pointermove', mouseMove)
-    selectionRenderer &&
-      selectionRenderer.domElement.removeEventListener('pointerdown', mouseDown)
+    selectionRenderer?.domElement.removeEventListener('pointermove', mouseMove)
+    selectionRenderer?.domElement.removeEventListener('pointerdown', mouseDown)
 
     unhighlight()
     highlighted = null

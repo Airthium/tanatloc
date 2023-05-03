@@ -68,11 +68,11 @@ export const _onAdd = (
     )
     dispatch(
       setTemplateHighlight({
-        begin: cursor?.row || 0,
-        end: (cursor?.row || 0) + 4
+        begin: cursor?.row ?? 0,
+        end: (cursor?.row ?? 0) + 4
       })
     )
-    dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 4, column: 0 }))
+    dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 4, column: 0 }))
   }
 
   // Model
@@ -86,15 +86,15 @@ export const _onAdd = (
   } catch (err) {
     modelJSON = {}
   }
-  const index = Object.keys(modelJSON.configuration || {}).length
+  const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
-    ...(modelJSON.configuration || {}),
+    ...(modelJSON.configuration ?? {}),
     materials: {
       index: index + 1,
       title: 'Materials',
-      ...(modelJSON.configuration?.materials || {}),
+      ...(modelJSON.configuration?.materials ?? {}),
       children: [
-        ...(modelJSON.configuration?.materials?.children || []),
+        ...(modelJSON.configuration?.materials?.children ?? []),
         ...materials.map((material) => ({
           label: material.label,
           name: material.name,

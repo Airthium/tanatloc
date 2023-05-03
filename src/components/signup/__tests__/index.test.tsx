@@ -118,7 +118,7 @@ describe('components/signup', () => {
   test('onSignup', async () => {
     mockPassword()
     mockFormError.mockImplementation((props) => (
-      <div>{props.error?.render || null}</div>
+      <div>{props.error?.render ?? null}</div>
     ))
     const { unmount } = render(<Signup />)
 

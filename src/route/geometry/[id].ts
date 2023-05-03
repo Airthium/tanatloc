@@ -32,7 +32,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
     const sessionId = await session(req)
 
     // Id
-    const id = req.query.id || req.params.id // Electron uses params
+    const id = req.query.id ?? req.params.id // Electron uses params
 
     // Check
     if (!id || typeof id !== 'string')

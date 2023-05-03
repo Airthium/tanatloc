@@ -129,7 +129,7 @@ export const _onSelector = async (
     swr.addOneSimulation(simulation)
     swr.mutateProject({
       id: project.id,
-      simulations: [...(project.simulations || []), simulation.id]
+      simulations: [...(project.simulations ?? []), simulation.id]
     })
   } catch (err) {
     ErrorNotification(errors.add, err)

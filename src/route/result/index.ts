@@ -25,12 +25,9 @@ export interface ILoadBody {
  */
 const checkLoadBody = (body: ILoadBody): void => {
   if (
-    !body ||
-    !body.simulation ||
-    !body.simulation.id ||
+    !body?.simulation?.id ||
     typeof body.simulation.id !== 'string' ||
-    !body.result ||
-    !body.result.originPath ||
+    !body.result?.originPath ||
     typeof body.result.originPath !== 'string' ||
     !body.result.glb ||
     typeof body.result.glb !== 'string'

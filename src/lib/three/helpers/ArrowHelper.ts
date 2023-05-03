@@ -10,7 +10,7 @@ import {
 } from 'three'
 
 export interface IArrowHelper extends Omit<Group, 'type'> {
-  type: Group['type'] | 'ArrowHelper'
+  type: 'ArrowHelper'
   dispose: () => void
 }
 

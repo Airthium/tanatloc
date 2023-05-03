@@ -203,7 +203,7 @@ const Plugins = (): JSX.Element => {
       <Typography.Title level={3}>Plugins</Typography.Title>
 
       <Tabs
-        activeKey={(query.tab as string) || 'hpc'}
+        activeKey={(query.tab as string) ?? 'hpc'}
         items={tabs}
         onChange={onChange}
       />

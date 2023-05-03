@@ -200,7 +200,7 @@ const NotFound = (): JSX.Element => {
       const timeElapsed = clock.getDelta()
 
       const group = scene.children.filter((child) => child.type === 'Group')[0]
-      group && group.rotateY(0.2 * timeElapsed)
+      group?.rotateY(0.2 * timeElapsed)
 
       renderer.render(scene, camera)
     }

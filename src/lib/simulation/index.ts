@@ -309,7 +309,7 @@ const run = async (
   await copyGeometry(simulation, configuration)
 
   // Check coupling
-  if (configuration.initialization && configuration.initialization.value) {
+  if (configuration.initialization?.value) {
     const type = configuration.initialization.value.type
 
     if (type === 'coupling') {

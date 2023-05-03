@@ -139,7 +139,7 @@ const parametersSummary = (
     stream.write('- ' + subConfiguration.label + ':\n')
     subConfiguration.children.forEach((child) => {
       stream.write(
-        '  - ' + child.label + ': ' + (child.value || child.default) + '\n'
+        '  - ' + child.label + ': ' + (child.value ?? child.default) + '\n'
       )
     })
   })

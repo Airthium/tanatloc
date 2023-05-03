@@ -8,7 +8,7 @@ import { APIError } from '@/api/error'
  * Props
  */
 export interface IProps {
-  error: APIError
+  error?: APIError
 }
 
 /**

@@ -20,8 +20,7 @@ export interface ICheckBody {
  */
 const checkSendBody = (body: ICheckBody): void => {
   if (
-    !body ||
-    !body.type ||
+    !body?.type ||
     typeof body.type !== 'string' ||
     !body.email ||
     typeof body.email !== 'string'

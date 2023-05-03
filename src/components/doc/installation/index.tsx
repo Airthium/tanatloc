@@ -513,7 +513,7 @@ const Installation = (): JSX.Element => {
     <>
       <Typography.Title level={3}>Installation</Typography.Title>
       <Tabs
-        activeKey={(query.tab as string) || 'desktop'}
+        activeKey={(query.tab as string) ?? 'desktop'}
         items={tabs}
         onChange={onChange}
       />

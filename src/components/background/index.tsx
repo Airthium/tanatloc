@@ -59,7 +59,7 @@ const Background = (): JSX.Element => {
     })
     renderer.setClearColor('#ffffff', 0)
     renderer.setSize(width, height)
-    renderer.setPixelRatio(window.devicePixelRatio || 1)
+    renderer.setPixelRatio(window.devicePixelRatio ?? 1)
 
     // Mount
     div.appendChild(renderer.domElement)

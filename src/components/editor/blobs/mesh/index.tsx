@@ -59,8 +59,8 @@ mesh.name = '${values.name}'
     )
     dispatch(
       setTemplateHighlight({
-        begin: cursor?.row ?? 0,
-        end: (cursor?.row ?? 0) + 9
+        begin: (cursor?.row || 0) + 1,
+        end: (cursor?.row || 0) + 9
       })
     )
     dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 9, column: 0 }))

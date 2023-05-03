@@ -46,8 +46,8 @@ export const _onAdd = (
   )
   dispatch(
     setTemplateHighlight({
-      begin: cursor?.row ?? 0,
-      end: (cursor?.row ?? 0) + 5
+      begin: (cursor?.row || 0) + 1,
+      end: (cursor?.row || 0) + 5
     })
   )
   dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 5, column: 0 }))

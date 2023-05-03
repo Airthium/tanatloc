@@ -194,7 +194,7 @@ const FreeFEMCode = (): JSX.Element => {
       const pastedData = clipboardData.getData('Text')
       const pastedLines = pastedData.split('\n').length
 
-      highlight({ begin: row - (pastedLines - 1), end: row - 1 })
+      highlight({ begin: row - (pastedLines - 1), end: row })
     },
     [highlight]
   )

@@ -39,7 +39,7 @@ const Doc = () => {
    * On tanatloc
    */
   const onTanatloc = useCallback(() => {
-    router.push('/')
+    router.push('/').catch()
   }, [router])
 
   /**
@@ -54,77 +54,93 @@ const Doc = () => {
 
       switch (key) {
         case 'installation':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'installation',
-              tab: subKey
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'installation',
+                tab: subKey
+              }
+            })
+            .catch()
           setContent(<Installation />)
           break
         case 'changelog':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'changelog'
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'changelog'
+              }
+            })
+            .catch()
           setContent(<CHANGELOG />)
           break
         case 'workflow':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'workflow'
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'workflow'
+              }
+            })
+            .catch()
           setContent(<Workflow />)
           break
         case 'dashboard':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'dashboard',
-              tab: subKey
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'dashboard',
+                tab: subKey
+              }
+            })
+            .catch()
           setContent(<Dashboard />)
           break
         case 'project':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'project',
-              tab: subKey
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'project',
+                tab: subKey
+              }
+            })
+            .catch()
           setContent(<Project />)
           break
         case 'modelEditor':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'modelEditor',
-              tab: subKey
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'modelEditor',
+                tab: subKey
+              }
+            })
+            .catch()
           setContent(<Editor />)
           break
         case 'plugins':
-          router.push({
-            pathname: '/doc',
-            query: {
-              section: 'plugins',
-              tab: subKey
-            }
-          })
+          router
+            .push({
+              pathname: '/doc',
+              query: {
+                section: 'plugins',
+                tab: subKey
+              }
+            })
+            .catch()
           setContent(<Plugins />)
           break
         default:
-          router.push({
-            pathname: '/doc'
-          })
+          router
+            .push({
+              pathname: '/doc'
+            })
+            .catch()
           setContent(undefined)
           break
       }

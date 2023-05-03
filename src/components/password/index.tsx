@@ -62,7 +62,7 @@ export const _onFinish = async (
       password: values.password
     })
 
-    router.push('/login')
+    router.push('/login').catch()
   } catch (err) {
     throw new APIError({ title: errors.internal, err })
   }

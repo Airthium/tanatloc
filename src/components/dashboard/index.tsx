@@ -122,7 +122,7 @@ const Dashboard = () => {
     try {
       await logout()
       clearUser()
-      router.push('/')
+      router.push('/').catch()
     } catch (err) {
       ErrorNotification(errors.logout, err)
     }
@@ -137,7 +137,7 @@ const Dashboard = () => {
       setCurrentKey(key)
 
       if (key === menuItems.logout.key) onLogout()
-      else if (key === menuItems.editor.key) router.push('/editor')
+      else if (key === menuItems.editor.key) router.push('/editor').catch()
       else {
         router.replace({
           pathname: '/dashboard',

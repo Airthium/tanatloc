@@ -64,13 +64,15 @@ const Dashboard = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'dashboard',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'dashboard',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )

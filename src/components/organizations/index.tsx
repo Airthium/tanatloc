@@ -74,12 +74,14 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
    * On close
    */
   const onClose = useCallback((): void => {
-    router.push({
-      pathname: 'dashboard',
-      query: {
-        page: 'organizations'
-      }
-    })
+    router
+      .push({
+        pathname: 'dashboard',
+        query: {
+          page: 'organizations'
+        }
+      })
+      .catch()
     setOrganization(null)
   }, [router])
 
@@ -89,13 +91,15 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
    */
   const setOrg = useCallback(
     (org: IFrontOrganizationsItem): void => {
-      router.push({
-        pathname: 'dashboard',
-        query: {
-          page: 'organizations',
-          organizationId: org.id
-        }
-      })
+      router
+        .push({
+          pathname: 'dashboard',
+          query: {
+            page: 'organizations',
+            organizationId: org.id
+          }
+        })
+        .catch()
       setOrganization(org)
     },
     [router]

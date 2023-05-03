@@ -73,10 +73,12 @@ export const _onOk = async (
     // Mutate
     swr.addOneWorkspace(workspace)
 
-    router.push({
-      pathname: '/dashboard',
-      query: { page: 'workspaces', workspaceId: workspace.id }
-    })
+    router
+      .push({
+        pathname: '/dashboard',
+        query: { page: 'workspaces', workspaceId: workspace.id }
+      })
+      .catch()
   } catch (err) {
     ErrorNotification(errors.add, err)
     throw err
@@ -132,10 +134,12 @@ const WorkspacesList = ({
    */
   const onChange = useCallback(
     (activeKey: string) => {
-      router.push({
-        pathname: '/dashboard',
-        query: { page: 'workspaces', workspaceId: activeKey }
-      })
+      router
+        .push({
+          pathname: '/dashboard',
+          query: { page: 'workspaces', workspaceId: activeKey }
+        })
+        .catch()
     },
     [router]
   )

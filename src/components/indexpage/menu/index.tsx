@@ -42,7 +42,7 @@ const IndexMenu = () => {
     if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
       scrollToView('getStarted')
     } else {
-      router.push('/signup')
+      router.push('/signup').catch()
     }
   }, [router])
 
@@ -50,7 +50,7 @@ const IndexMenu = () => {
    * To dashboard
    */
   const toDashboard = useCallback((): void => {
-    router.push('/dashboard')
+    router.push('/dashboard').catch()
   }, [router])
 
   /**
@@ -96,7 +96,7 @@ const IndexMenu = () => {
    * To login
    */
   const toLogin = useCallback((): void => {
-    router.push('/login')
+    router.push('/login').catch()
   }, [router])
 
   // Get started button

@@ -52,7 +52,7 @@ export const _onLogin = async (
   if (loggedUser.ok) {
     // Logged
     mutateUser({ id: loggedUser.id })
-    router.push('/dashboard')
+    router.push('/dashboard').catch()
   } else {
     // Bad
     throw new APIError({ title: errors.credentials, type: 'warning' })
@@ -82,7 +82,7 @@ const Login = (): JSX.Element => {
         password: 'password'
       })
         .then(() => {
-          router.push('/dashboard')
+          router.push('/dashboard').catch()
         })
         .catch()
     }
@@ -95,13 +95,13 @@ const Login = (): JSX.Element => {
 
   // Already connected
   useEffect(() => {
-    if (user) router.push('/dashboard')
+    if (user) router.push('/dashboard').catch()
   }, [user, router])
 
   /**
    * Signup
    */
-  const signup = useCallback(() => router.push('/signup'), [router])
+  const signup = useCallback(() => router.push('/signup').catch(), [router])
 
   /**
    * On finish

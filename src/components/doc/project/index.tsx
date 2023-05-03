@@ -637,13 +637,15 @@ const Project = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'project',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'project',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )

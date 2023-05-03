@@ -673,10 +673,12 @@ const Project = (): JSX.Element => {
    */
   const dashboard = useCallback(
     () =>
-      router.push({
-        pathname: '/dashboard',
-        query: { page, workspaceId }
-      }),
+      router
+        .push({
+          pathname: '/dashboard',
+          query: { page, workspaceId }
+        })
+        .catch(),
     [router, page, workspaceId]
   )
 

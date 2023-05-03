@@ -182,13 +182,15 @@ const Plugins = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'plugins',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'plugins',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )

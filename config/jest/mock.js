@@ -49,7 +49,7 @@ class MockClock {
 const traverse = (child, callback) => {
   callback(child)
 
-  const children = child.children || []
+  const children = child.children ?? []
   for (const subChild of children) {
     traverse(subChild, callback)
   }

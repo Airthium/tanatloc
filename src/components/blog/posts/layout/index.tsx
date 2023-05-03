@@ -47,7 +47,7 @@ const PostLayout = ({
    * On go back
    */
   const onGoBack = useCallback(() => {
-    router.push('/blog')
+    router.push('/blog').catch()
   }, [router])
 
   /**

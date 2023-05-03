@@ -254,10 +254,12 @@ const Share = ({
    * Dashboard
    */
   const dashboard = useCallback(() => {
-    router.push({
-      pathname: '/dashboard',
-      query: { page: 'organizations' }
-    })
+    router
+      .push({
+        pathname: '/dashboard',
+        query: { page: 'organizations' }
+      })
+      .catch()
   }, [router])
 
   // Selector

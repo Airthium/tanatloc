@@ -495,7 +495,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   // Mount
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      router.push('/webgl')
+      router.push('/webgl').catch()
       return
     }
 

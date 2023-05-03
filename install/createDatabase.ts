@@ -76,9 +76,9 @@ export const createDatabase = async (): Promise<void> => {
     pool = new pg.Pool({
       host: HOST,
       port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : PORT,
-      user: process.env.DB_ADMIN || ADMIN,
-      database: process.env.DB_ADMIN_DATABASE || ADMIN_DATABASE,
-      password: process.env.DB_ADMIN_PASSWORD || ADMIN_PASSWORD
+      user: process.env.DB_ADMIN ?? ADMIN,
+      database: process.env.DB_ADMIN_DATABASE ?? ADMIN_DATABASE,
+      password: process.env.DB_ADMIN_PASSWORD ?? ADMIN_PASSWORD
     })
     client = await pool.connect()
 
@@ -360,9 +360,9 @@ const fixMissingColumn = async (
         ' ' +
         column.type +
         ' ' +
-        (column.constraint || '') +
+        (column.constraint ?? '') +
         ' ' +
-        (column.default || ''),
+        (column.default ?? ''),
       []
     )
     console.info('    OK')
@@ -384,7 +384,7 @@ const checkType = async (
   configColumn: ColumnConfig
 ): Promise<void> => {
   if (
-    (configColumn.type.includes('[]') && column.data_type === 'ARRAY') ||
+    (configColumn.type.includes('[]') && column.data_type === 'ARRAY') ??
     configColumn.type.toLowerCase() ===
       column.data_type.replace(' without time zone', '').toLowerCase()
   ) {
@@ -435,7 +435,7 @@ const checkConstraint = async (
   configColumn: ColumnConfig
 ): Promise<void> => {
   if (
-    (configColumn.constraint === 'NOT NULL' ||
+    (configColumn.constraint === 'NOT NULL' ??
       configColumn.constraint === 'PRIMARY KEY') &&
     column.is_nullable !== 'NO'
   ) {
@@ -519,9 +519,9 @@ const createTable = async (
               ' ' +
               schema.type +
               ' ' +
-              (schema.constraint || '') +
+              (schema.constraint ?? '') +
               ' ' +
-              (schema.default || '')
+              (schema.default ?? '')
           )
           .join(', ') +
         ') ',
@@ -629,7 +629,7 @@ const createAdmin = async (): Promise<void> => {
   const authorizedPlugins = ['local']
 
   const globalAny: any = global
-  if (!isElectron() || globalAny.electron?.fullBuild) {
+  if (!isElectron() ?? globalAny.electron?.fullBuild) {
     authorizedPlugins.push(...['airthium', 'denso', 'rescale', 'sharetask'])
   }
 

@@ -19,14 +19,14 @@ if (!process.env.STORAGE_PATH)
  * Storage path
  * @description Set by `STORAGE_PATH` environment variable ot `DEFAULT_STORAGE`
  */
-export const STORAGE: string = process.env.STORAGE_PATH || DEFAULT_STORAGE
+export const STORAGE: string = process.env.STORAGE_PATH ?? DEFAULT_STORAGE
 
 /**
  * Avatar relative path
  * @description Set by `AVATAR_RELATIVE_PATH` environment variable ot `avatar`
  */
 export const AVATAR_RELATIVE: string =
-  process.env.AVATAR_RELATIVE_PATH || 'avatar'
+  process.env.AVATAR_RELATIVE_PATH ?? 'avatar'
 
 /**
  * Avatar path
@@ -38,7 +38,7 @@ export const AVATAR: string = path.join(STORAGE, AVATAR_RELATIVE)
  * @description Set by `GEOMETRY_RELATIVE_PATH` environment variable ot `geometry`
  */
 export const GEOMETRY_RELATIVE: string =
-  process.env.GEOMETRY_RELATIVE_PATH || 'geometry'
+  process.env.GEOMETRY_RELATIVE_PATH ?? 'geometry'
 
 /**
  * Geometry path
@@ -50,7 +50,7 @@ export const GEOMETRY: string = path.join(STORAGE, GEOMETRY_RELATIVE)
  * @description Set by `SIMULATION_RELATIVE_PATH` environment variable ot `simulation`
  */
 export const SIMULATION_RELATIVE: string =
-  process.env.SIMULATION_RELATIVE_PATH || 'simulation'
+  process.env.SIMULATION_RELATIVE_PATH ?? 'simulation'
 
 /**
  * Simulation path

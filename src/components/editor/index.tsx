@@ -105,9 +105,11 @@ const Editor = () => {
    * Handle dashboard
    */
   const handleDashboard = useCallback(() => {
-    router.push({
-      pathname: '/dashboard'
-    })
+    router
+      .push({
+        pathname: '/dashboard'
+      })
+      .catch()
   }, [router])
 
   /**

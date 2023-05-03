@@ -23,7 +23,7 @@ const NotAuthorized = (): JSX.Element => {
   /**
    * Home
    */
-  const home = useCallback(() => router.push('/'), [router])
+  const home = useCallback(() => router.push('/').catch(), [router])
 
   /**
    * Render

@@ -493,13 +493,15 @@ const Installation = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'installation',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'installation',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )

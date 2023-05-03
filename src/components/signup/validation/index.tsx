@@ -38,7 +38,7 @@ const Validation = (): JSX.Element => {
           if (res.type === SUBSCRIBE || res.type === REVALIDATE) {
             LinkAPI.process(id)
               .then(() => {
-                router.push('/login')
+                router.push('/login').catch()
               })
               .catch((err) => ErrorNotification(errors.internal, err))
           } else {

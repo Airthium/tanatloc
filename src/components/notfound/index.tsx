@@ -36,7 +36,7 @@ const NotFound = (): JSX.Element => {
 
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      router.push('/webgl')
+      router.push('/webgl').catch()
       return
     }
 
@@ -246,7 +246,7 @@ const NotFound = (): JSX.Element => {
   /**
    * Home
    */
-  const home = useCallback(() => router.push('/'), [router])
+  const home = useCallback(() => router.push('/').catch(), [router])
 
   /**
    * Render

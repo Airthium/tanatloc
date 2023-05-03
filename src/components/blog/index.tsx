@@ -59,10 +59,12 @@ const PostCard = ({
    * On click
    */
   const onClick = useCallback(() => {
-    router.push({
-      pathname: '/blog',
-      query: { post: postKey }
-    })
+    router
+      .push({
+        pathname: '/blog',
+        query: { post: postKey }
+      })
+      .catch()
   }, [router, postKey])
 
   /**
@@ -124,7 +126,7 @@ const Blog = () => {
    * On tanatloc
    */
   const onTanatloc = useCallback(() => {
-    router.push('/')
+    router.push('/').catch()
   }, [router])
 
   /**

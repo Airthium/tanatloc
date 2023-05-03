@@ -34,10 +34,10 @@ export const addOnCursor = (
   dispatch: Dispatch<IEditorAction>
 ): void => {
   if (!cursor) {
-    dispatch(setTemplate((template || '') + text))
+    dispatch(setTemplate((template ?? '') + text))
   } else {
     const row = cursor.row
-    const rows = (template || '').split('\n')
+    const rows = (template ?? '').split('\n')
     const newTemplate = [
       ...rows.slice(0, row + 1),
       ...text.split('\n'),

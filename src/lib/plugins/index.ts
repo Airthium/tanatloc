@@ -63,7 +63,7 @@ export const restartJobs = async (): Promise<void> => {
             try {
               const pluginKey = task.plugin
               const plugin = tanatloc.plugins.find((p) => p.key === pluginKey)
-              if (plugin && plugin.server.lib.monitoring) {
+              if (plugin?.server.lib.monitoring) {
                 const cloudConfiguration =
                   simulation.scheme?.configuration?.run?.cloudServer
                     ?.configuration

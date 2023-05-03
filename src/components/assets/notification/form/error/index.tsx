@@ -8,7 +8,7 @@ import { APIError } from '@/api/error'
  * Props
  */
 export interface IProps {
-  error: APIError | any
+  error?: APIError
 }
 
 /**
@@ -20,7 +20,7 @@ const FormError = ({ error }: IProps): JSX.Element | null => {
   return error ? (
     <Form.Item>
       <Alert
-        message={error.render || error.title}
+        message={error.render ?? error.title}
         type={error.type}
         showIcon
         description={

@@ -15,7 +15,7 @@ const mockReplace = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     query: {},
-    push: () => mockPush(),
+    push: async () => mockPush(),
     replace: () => mockReplace()
   })
 }))

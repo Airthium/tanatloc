@@ -62,8 +62,8 @@ export const _onFinish = async (
       password: values.password
     })
 
-    router.push('/login')
-  } catch (err) {
+    router.push('/login').catch()
+  } catch (err: any) {
     throw new APIError({ title: errors.internal, err })
   }
 }
@@ -77,7 +77,7 @@ const PasswordRecovery = (): JSX.Element => {
   const [checking, setChecking] = useState<boolean>(true)
   const [linkEmail, setLinkEmail] = useState<string>()
   const [loading, setLoading] = useState<boolean>(false)
-  const [formError, setFormError] = useState<APIError | any>()
+  const [formError, setFormError] = useState<APIError>()
 
   // Data
   const router = useRouter()
@@ -110,7 +110,7 @@ const PasswordRecovery = (): JSX.Element => {
       setLoading(true)
       try {
         await _onFinish(router, linkEmail!, id!, values)
-      } catch (err) {
+      } catch (err: any) {
         setFormError(err)
         setLoading(false)
       }

@@ -182,13 +182,15 @@ const Plugins = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'plugins',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'plugins',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )
@@ -201,7 +203,7 @@ const Plugins = (): JSX.Element => {
       <Typography.Title level={3}>Plugins</Typography.Title>
 
       <Tabs
-        activeKey={(query.tab as string) || 'hpc'}
+        activeKey={(query.tab as string) ?? 'hpc'}
         items={tabs}
         onChange={onChange}
       />

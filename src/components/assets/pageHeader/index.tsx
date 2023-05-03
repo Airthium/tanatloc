@@ -36,7 +36,7 @@ const PageHeader = ({
         </div>
       )}
       <div>{children}</div>
-      {footer || <Divider className={style.divider} />}
+      {footer ?? <Divider className={style.divider} />}
     </div>
   )
 }

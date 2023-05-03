@@ -50,7 +50,7 @@ export const _onAdd = (
       end: (cursor?.row || 0) + 5
     })
   )
-  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 5, column: 0 }))
+  dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 5, column: 0 }))
 }
 
 /**

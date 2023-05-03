@@ -76,9 +76,9 @@ export const createDatabase = async (): Promise<void> => {
     pool = new pg.Pool({
       host: HOST,
       port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : PORT,
-      user: process.env.DB_ADMIN || ADMIN,
-      database: process.env.DB_ADMIN_DATABASE || ADMIN_DATABASE,
-      password: process.env.DB_ADMIN_PASSWORD || ADMIN_PASSWORD
+      user: process.env.DB_ADMIN ?? ADMIN,
+      database: process.env.DB_ADMIN_DATABASE ?? ADMIN_DATABASE,
+      password: process.env.DB_ADMIN_PASSWORD ?? ADMIN_PASSWORD
     })
     client = await pool.connect()
 
@@ -360,9 +360,9 @@ const fixMissingColumn = async (
         ' ' +
         column.type +
         ' ' +
-        (column.constraint || '') +
+        (column.constraint ?? '') +
         ' ' +
-        (column.default || ''),
+        (column.default ?? ''),
       []
     )
     console.info('    OK')
@@ -519,9 +519,9 @@ const createTable = async (
               ' ' +
               schema.type +
               ' ' +
-              (schema.constraint || '') +
+              (schema.constraint ?? '') +
               ' ' +
-              (schema.default || '')
+              (schema.default ?? '')
           )
           .join(', ') +
         ') ',

@@ -25,8 +25,7 @@ export interface IProcessBody {
  */
 const checkGetBody = (body: IGetBody): void => {
   if (
-    !body ||
-    !body.id ||
+    !body?.id ||
     typeof body.id !== 'string' ||
     !body.data ||
     !Array.isArray(body.data)
@@ -42,7 +41,7 @@ const checkGetBody = (body: IGetBody): void => {
  * @param body Body
  */
 const checkProcessBody = (body: IProcessBody): void => {
-  if (!body || !body.id || typeof body.id !== 'string')
+  if (!body?.id || typeof body.id !== 'string')
     throw error(
       400,
       'Missing data in your request (body: { id(uuid), data(?object) })'

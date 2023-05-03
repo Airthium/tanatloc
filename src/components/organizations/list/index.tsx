@@ -447,8 +447,8 @@ const List = ({
         dataIndex: 'name',
         key: 'name',
         sorter: (a: { name: string }, b: { name: string }) => {
-          const na = a.name || ''
-          const nb = b.name || ''
+          const na = a.name ?? ''
+          const nb = b.name ?? ''
           return na.localeCompare(nb)
         }
       },

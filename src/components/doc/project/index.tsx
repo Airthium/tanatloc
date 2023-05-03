@@ -637,13 +637,15 @@ const Project = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'project',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'project',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )
@@ -678,7 +680,7 @@ const Project = (): JSX.Element => {
       />
 
       <Tabs
-        activeKey={(query.tab as string) || 'geometry'}
+        activeKey={(query.tab as string) ?? 'geometry'}
         items={tabs}
         onChange={onChange}
       />

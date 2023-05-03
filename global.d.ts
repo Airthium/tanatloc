@@ -20,7 +20,7 @@ declare global {
   }
 }
 
-global.tanatloc = global.tanatloc || {}
-global.electron = global.electron || {
+global.tanatloc = global.tanatloc ?? {}
+global.electron = global.electron ?? {
   fullBuild: false
 }

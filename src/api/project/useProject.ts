@@ -28,7 +28,7 @@ export const useProject = (
     fetcher
   )
   const loading = !data
-  const project = data?.project || defaultData
+  const project = data?.project ?? defaultData
 
   /**
    * Mutate

@@ -17,7 +17,7 @@ export interface ILogBody {
  * @param body Body
  */
 const checkLogBody = (body: ILogBody): void => {
-  if (!body || !body.file || typeof body.file !== 'string')
+  if (!body?.file || typeof body.file !== 'string')
     throw error(400, 'Missing data in your request (body: { file(string) })')
 }
 
@@ -32,7 +32,7 @@ const log = async (req: Request, res: Response): Promise<void> => {
     const sessionId = await session(req)
 
     // Id
-    const id = req.query.id || req.params.id // Electron
+    const id = req.query.id ?? req.params.id // Electron
 
     // Check
     if (!id || typeof id !== 'string')

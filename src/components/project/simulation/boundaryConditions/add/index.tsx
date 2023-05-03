@@ -77,7 +77,7 @@ export const _onAdd = async (
       type
     ] as IModelTypedBoundaryCondition
     TypedBoundaryCondition.values = [
-      ...(TypedBoundaryCondition.values || []),
+      ...(TypedBoundaryCondition.values ?? []),
       newBoundaryCondition
     ]
 

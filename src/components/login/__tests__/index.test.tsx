@@ -5,7 +5,7 @@ import Login, { errors } from '@/components/login'
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: mockPush
+    push: async (route: string) => mockPush(route)
   })
 }))
 

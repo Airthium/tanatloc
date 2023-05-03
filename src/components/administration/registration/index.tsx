@@ -95,7 +95,7 @@ const Registration = (): JSX.Element => {
   useEffect(() => {
     if (!loadingSystem)
       form.setFieldsValue(
-        system?.password || {
+        system?.password ?? {
           min: MIN_SIZE,
           max: MAX_SIZE,
           requireLetter: REQUIRE_LETTER,

@@ -25,7 +25,7 @@ const JSONCode = (): JSX.Element => {
    */
   const onChange = useCallback(
     (newCode?: string): void => {
-      dispatch(setModel(newCode || ''))
+      dispatch(setModel(newCode ?? ''))
     },
     [dispatch]
   )

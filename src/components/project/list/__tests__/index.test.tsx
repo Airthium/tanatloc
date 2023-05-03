@@ -7,7 +7,7 @@ import List from '..'
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: mockPush
+    push: async () => mockPush()
   })
 }))
 

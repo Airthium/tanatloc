@@ -260,8 +260,8 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             style={{ maxWidth: 500 }}
             initialValues={{
               email: user.email,
-              firstname: user.firstname || '',
-              lastname: user.lastname || ''
+              firstname: user.firstname ?? '',
+              lastname: user.lastname ?? ''
             }}
             onFinish={onFinish}
           >

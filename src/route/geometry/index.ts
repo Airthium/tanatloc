@@ -25,12 +25,9 @@ export interface IAddBody {
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body ||
-    !body.project ||
-    !body.project.id ||
+    !body?.project?.id ||
     typeof body.project.id !== 'string' ||
-    !body.geometry ||
-    !body.geometry.name ||
+    !body.geometry?.name ||
     typeof body.geometry.name !== 'string' ||
     !body.geometry.uid ||
     typeof body.geometry.uid !== 'string' ||

@@ -6,7 +6,7 @@ import { IFrontProjectsItem, IFrontWorkspacesItem } from '@/api/index.d'
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: mockPush
+    push: async () => mockPush()
   })
 }))
 

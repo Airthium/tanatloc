@@ -62,8 +62,8 @@ export const _onSignup = async (
       type: 'warning'
     })
 
-  if (TOKEN) router.push('/signup/send')
-  else router.push('/login')
+  if (TOKEN) router.push('/signup/send').catch()
+  else router.push('/login').catch()
 }
 
 /**
@@ -71,7 +71,7 @@ export const _onSignup = async (
  * @param router Router
  */
 export const _onLogin = (router: NextRouter): void => {
-  router.push('/login')
+  router.push('/login').catch()
 }
 
 /**
@@ -96,7 +96,7 @@ const Signup = (): JSX.Element => {
 
   // Already connected
   useEffect(() => {
-    if (user) router.push('/dashboard')
+    if (user) router.push('/dashboard').catch()
   }, [user, router])
 
   /**

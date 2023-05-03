@@ -54,7 +54,7 @@ const createPVD = (
           configuration
         ) as { value?: number; default: number }
 
-        multiplicator = multiplicatorObject.value || multiplicatorObject.default
+        multiplicator = multiplicatorObject.value ?? multiplicatorObject.default
       }
 
       // PVD file

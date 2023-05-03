@@ -22,8 +22,7 @@ export type IUpdateBody = IDataBaseEntry[]
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body ||
-    !body.email ||
+    !body?.email ||
     typeof body.email !== 'string' ||
     !body.password ||
     typeof body.password !== 'string'

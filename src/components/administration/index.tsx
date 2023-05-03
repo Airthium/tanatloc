@@ -110,7 +110,7 @@ const Administration = (): JSX.Element => {
               children: <Plugins />
             }
           ]}
-          defaultActiveKey={tab || 'default'}
+          defaultActiveKey={tab ?? 'default'}
           onChange={onChange}
         />
       </Layout.Content>

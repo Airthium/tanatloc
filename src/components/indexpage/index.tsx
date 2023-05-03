@@ -97,7 +97,7 @@ const Index = (): JSX.Element => {
     if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
       scrollToView('getStarted')
     } else {
-      router.push('/signup')
+      router.push('/signup').catch()
     }
   }, [router])
 
@@ -109,13 +109,13 @@ const Index = (): JSX.Element => {
     (key: string) => {
       switch (key) {
         case 'Windows':
-          router.push(release!.exe)
+          router.push(release!.exe).catch()
           break
         case 'MacOS':
-          router.push(release!.dmg)
+          router.push(release!.dmg).catch()
           break
         case 'Linux':
-          router.push(release!.appImage)
+          router.push(release!.appImage).catch()
           break
       }
     },

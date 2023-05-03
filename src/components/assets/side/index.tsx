@@ -44,21 +44,21 @@ const Side = ({
 
   return (
     <div
-      className={`${style.side} ${sideClassName || ''}`}
+      className={`${style.side} ${sideClassName ?? ''}`}
       style={sideStyle}
       id={id}
     >
-      <div className={`${style.left} ${leftClassName || ''}`} style={leftStyle}>
+      <div className={`${style.left} ${leftClassName ?? ''}`} style={leftStyle}>
         {left}
       </div>
       <div
-        className={`${style.right} ${rightClassName || ''}`}
+        className={`${style.right} ${rightClassName ?? ''}`}
         style={rightStyle}
       >
         {right}
       </div>
       {top && (
-        <div className={`${style.top} ${topClassName || ''}`} style={topStyle}>
+        <div className={`${style.top} ${topClassName ?? ''}`} style={topStyle}>
           {top}
         </div>
       )}

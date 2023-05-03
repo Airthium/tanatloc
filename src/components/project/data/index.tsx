@@ -251,7 +251,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     }))
     tableColumns.unshift({
       align: 'center',
-      title: title || 'Iteration',
+      title: title ?? 'Iteration',
       dataIndex: 'x',
       key: 'x',
       fixed: 'left'

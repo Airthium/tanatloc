@@ -53,7 +53,7 @@ const add = async (
   const userData = await User.get(user.id, ['plugins'])
 
   // Update user
-  userData.plugins = [...(userData.plugins || []), plugin]
+  userData.plugins = [...(userData.plugins ?? []), plugin]
 
   // Update
   await User.update(user, [{ key: 'plugins', value: userData.plugins }])
@@ -68,7 +68,7 @@ const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
   // Get plugins
   const userData = await User.get(user.id, ['plugins'])
 
-  return userData.plugins || []
+  return userData.plugins ?? []
 }
 
 /**

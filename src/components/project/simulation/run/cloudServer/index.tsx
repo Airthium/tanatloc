@@ -169,10 +169,12 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
    * Dashboard
    */
   const dashboard = useCallback(() => {
-    router.push({
-      pathname: '/dashboard',
-      query: { page: 'account', tab: 'hpc' }
-    })
+    router
+      .push({
+        pathname: '/dashboard',
+        query: { page: 'account', tab: 'hpc' }
+      })
+      .catch()
   }, [router])
 
   /**

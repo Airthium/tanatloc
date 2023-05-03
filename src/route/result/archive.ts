@@ -19,12 +19,7 @@ export interface IArchiveBody {
  * @param body Body
  */
 const checkArchiveBody = (body: IArchiveBody): void => {
-  if (
-    !body ||
-    !body.simulation ||
-    !body.simulation.id ||
-    typeof body.simulation.id !== 'string'
-  )
+  if (!body?.simulation?.id || typeof body.simulation.id !== 'string')
     throw error(
       400,
       'Missing data in your request (body: { simulation: { id(uuid) } }'

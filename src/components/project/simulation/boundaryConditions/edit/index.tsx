@@ -87,7 +87,7 @@ export const _onEdit = async (
         type
       ] as IModelTypedBoundaryCondition
       typedBoundaryCondition.values = [
-        ...(typedBoundaryCondition.values || []),
+        ...(typedBoundaryCondition.values ?? []),
         boundaryCondition
       ]
     } else {

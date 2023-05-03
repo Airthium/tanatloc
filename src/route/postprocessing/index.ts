@@ -26,12 +26,9 @@ export interface IBody {
  */
 const checkBody = (body: IBody): void => {
   if (
-    !body ||
-    !body.simulation ||
-    !body.simulation.id ||
+    !body?.simulation?.id ||
     typeof body.simulation.id !== 'string' ||
-    !body.result ||
-    !body.result.fileName ||
+    !body.result?.fileName ||
     typeof body.result.fileName !== 'string' ||
     !body.result.originPath ||
     typeof body.result.originPath !== 'string' ||

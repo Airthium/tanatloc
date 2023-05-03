@@ -32,7 +32,7 @@ const GoBack = ({ children, className, onClick }: IProps): JSX.Element => {
       icon={<ArrowLeftOutlined className={globalStyle.primaryColor} />}
       onClick={onClick}
     >
-      {children || 'Go back'}
+      {children ?? 'Go back'}
     </Button>
   )
 }

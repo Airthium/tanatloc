@@ -313,7 +313,7 @@ const Postprocessing = ({
           { id: simulation!.id },
           result,
           filter!,
-          values.parameters || []
+          values.parameters ?? []
         )
         setCurrent({ filter: filter!, results: newResults })
       } catch (err) {}

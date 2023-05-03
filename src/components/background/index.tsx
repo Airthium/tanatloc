@@ -33,7 +33,7 @@ const Background = (): JSX.Element => {
   // Mount
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      router.push('/webgl')
+      router.push('/webgl').catch()
       return
     }
 
@@ -59,7 +59,7 @@ const Background = (): JSX.Element => {
     })
     renderer.setClearColor('#ffffff', 0)
     renderer.setSize(width, height)
-    renderer.setPixelRatio(window.devicePixelRatio || 1)
+    renderer.setPixelRatio(window.devicePixelRatio ?? 1)
 
     // Mount
     div.appendChild(renderer.domElement)

@@ -30,7 +30,7 @@ export const add = async (
       ' (title, description, public, createdDate, lastAccess, owners, workspace) VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($4), $5, $6) RETURNING id',
     [
       project.title,
-      project.description || '',
+      project.description ?? '',
       false,
       Date.now() / 1000,
       [user.id],
@@ -40,7 +40,7 @@ export const add = async (
 
   const newProject = response.rows[0]
   newProject && (newProject.title = project.title)
-  newProject && (newProject.description = project.description || '')
+  newProject && (newProject.description = project.description ?? '')
   newProject && (newProject.owners = [user.id])
   newProject && (newProject.workspace = workspace.id)
 

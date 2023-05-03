@@ -31,7 +31,7 @@ export const useGroups = (
 
   const { data, error, mutate } = useSWR('/api/groups/' + id, fetcher)
   const loading = !data
-  const groups = data?.groups || defaultData
+  const groups = data?.groups ?? defaultData
 
   /**
    * Add one

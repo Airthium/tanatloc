@@ -113,7 +113,7 @@ const userToAvatar = (user: {
   let abbrev = ''
   if (user.firstname || user.lastname) {
     name = user.firstname ? user.firstname + ' ' : ''
-    name += user.lastname || ''
+    name += user.lastname ?? ''
 
     abbrev = user.firstname ? user.firstname[0] : ''
     abbrev += user.lastname ? user.lastname[0] : ''
@@ -123,7 +123,7 @@ const userToAvatar = (user: {
   }
   return (
     <Tooltip
-      key={user.id || JSON.stringify(user)}
+      key={user.id ?? JSON.stringify(user)}
       title={name + (user.pending ? ' (Invite pending)' : '')}
     >
       <Badge
@@ -132,7 +132,7 @@ const userToAvatar = (user: {
         style={{ backgroundColor: '#ff4d4f', zIndex: 10 }}
       >
         <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
-          {abbrev.toUpperCase() || <Spin />}
+          {abbrev.toUpperCase() ?? <Spin />}
         </Avatar>
       </Badge>
     </Tooltip>
@@ -149,9 +149,9 @@ const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
   let abbrev = ''
   if (name) abbrev = name[0]
   return (
-    <Tooltip key={group.id || JSON.stringify(group)} title={name}>
+    <Tooltip key={group.id ?? JSON.stringify(group)} title={name}>
       <Avatar style={{ backgroundColor: stringToColor(name) }}>
-        {abbrev.toUpperCase() || <Spin />}
+        {abbrev.toUpperCase() ?? <Spin />}
       </Avatar>
     </Tooltip>
   )

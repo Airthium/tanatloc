@@ -69,7 +69,7 @@ export const _getCompleteLog = async (
         </div>
       )
     })
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.log, err)
   }
 }
@@ -146,7 +146,7 @@ const Step = ({
         )}
       </Collapse>
       {parse(
-        step.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
+        step.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ?? ''
       )}
       {parse(
         step.log
@@ -159,7 +159,7 @@ const Step = ({
           .replace(
             /Error:/g,
             '<span style="color: red; font-weight: bold;">Error:</span>'
-          ) || ''
+          ) ?? ''
       )}
     </>
   )
@@ -208,7 +208,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
       </Drawer>
       <Tooltip title="Log">
         <Button
-          disabled={!steps || !steps.length}
+          disabled={!steps?.length}
           icon={<FileTextOutlined />}
           onClick={setVisibleTrue}
         />

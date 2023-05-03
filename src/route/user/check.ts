@@ -18,8 +18,7 @@ export interface ILoginBody {
  */
 const checkLoginBody = (body: ILoginBody): void => {
   if (
-    !body ||
-    !body.email ||
+    !body?.email ||
     typeof body.email !== 'string' ||
     !body.password ||
     typeof body.password !== 'string'

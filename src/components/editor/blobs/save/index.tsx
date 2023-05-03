@@ -106,7 +106,7 @@ export const _onAdd = (
       end: (cursor?.row || 0) + 11
     })
   )
-  dispatch(setTemplateCursor({ row: (cursor?.row || 0) + 11, column: 0 }))
+  dispatch(setTemplateCursor({ row: (cursor?.row ?? 0) + 11, column: 0 }))
 
   // Model
   let modelJSON: Partial<
@@ -119,19 +119,19 @@ export const _onAdd = (
   } catch (err) {
     modelJSON = {}
   }
-  const index = Object.keys(modelJSON.configuration || {}).length
+  const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
-    ...(modelJSON.configuration || {}),
+    ...(modelJSON.configuration ?? {}),
     run: {
       index: index + 1,
       title: 'Run',
       ...(modelJSON.configuration?.run ?? {}),
       //@ts-ignore
       results: [
-        ...(modelJSON.configuration?.run?.results || []),
-        ...(values.scalarResults?.map((result) => ({ name: result.name })) ||
+        ...(modelJSON.configuration?.run?.results ?? []),
+        ...(values.scalarResults?.map((result) => ({ name: result.name })) ??
           []),
-        ...(values.vectorialResults?.map((result) => ({ name: result.name })) ||
+        ...(values.vectorialResults?.map((result) => ({ name: result.name })) ??
           [])
       ]
     }

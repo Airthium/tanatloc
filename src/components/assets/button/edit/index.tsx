@@ -55,7 +55,7 @@ const EditButton = ({
    * Render
    */
   return (
-    <Tooltip title={children || 'Edit'}>
+    <Tooltip title={children ?? 'Edit'}>
       <Button
         className={`${type == 'primary' ? '' : globalStyle.noBackground} ${
           light ? globalStyle.textLight : ''

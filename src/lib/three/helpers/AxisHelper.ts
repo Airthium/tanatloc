@@ -22,7 +22,7 @@ export interface IAxisHelper {
 }
 
 export interface IAxisHelperGroup extends Omit<Group, 'type'> {
-  type: Group['type'] | 'AxisHelper'
+  type: 'AxisHelper'
 }
 
 export interface IAxisHelperPos {

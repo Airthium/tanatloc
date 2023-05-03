@@ -129,14 +129,16 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         setVisible(false)
 
         // Open project
-        router.push({
-          pathname: '/project',
-          query: {
-            page: 'workspaces',
-            workspaceId: workspace.id,
-            projectId: newProject.id
-          }
-        })
+        router
+          .push({
+            pathname: '/project',
+            query: {
+              page: 'workspaces',
+              workspaceId: workspace.id,
+              projectId: newProject.id
+            }
+          })
+          .catch()
       } catch (err) {
         setLoading(false)
         throw err

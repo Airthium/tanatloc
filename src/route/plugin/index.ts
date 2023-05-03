@@ -24,8 +24,7 @@ export interface IDeleteBody {
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body ||
-    !body.key ||
+    !body?.key ||
     typeof body.key !== 'string' ||
     !body.configuration ||
     typeof body.configuration !== 'object'
@@ -50,7 +49,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
-  if (!body || !body.uuid || typeof body.uuid !== 'string')
+  if (!body?.uuid || typeof body.uuid !== 'string')
     throw error(400, 'Missing data in your request (body: { uuid(uuid) } }')
 }
 

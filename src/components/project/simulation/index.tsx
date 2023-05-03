@@ -109,7 +109,7 @@ export const _isInCategories = (
   modelCategory: string | string[],
   categories?: string[]
 ): boolean => {
-  if (!categories || !categories.length) return true
+  if (!categories?.length) return true
 
   if (Array.isArray(modelCategory)) {
     const found = categories.filter((c) => modelCategory.includes(c))
@@ -347,7 +347,7 @@ export const _onUpdate = async (
 
     // Mutate
     swr.mutateOneSimulation(newSimulation)
-  } catch (err) {
+  } catch (err: any) {
     ErrorNotification(errors.update, err)
   }
 }

@@ -129,7 +129,7 @@ export const _onSelector = async (
     swr.addOneSimulation(simulation)
     swr.mutateProject({
       id: project.id,
-      simulations: [...(project.simulations || []), simulation.id]
+      simulations: [...(project.simulations ?? []), simulation.id]
     })
   } catch (err) {
     ErrorNotification(errors.add, err)
@@ -673,10 +673,12 @@ const Project = (): JSX.Element => {
    */
   const dashboard = useCallback(
     () =>
-      router.push({
-        pathname: '/dashboard',
-        query: { page, workspaceId }
-      }),
+      router
+        .push({
+          pathname: '/dashboard',
+          query: { page, workspaceId }
+        })
+        .catch(),
     [router, page, workspaceId]
   )
 

@@ -188,7 +188,7 @@ const computeMeshes = async (
         },
         tasks
       )
-      geometry.meshes = [...(geometry.meshes || []), mesh]
+      geometry.meshes = [...(geometry.meshes ?? []), mesh]
     }
   } else {
     const data = geometry.data
@@ -720,7 +720,7 @@ const processResult = async (
 
     // Add to task
     task.files = [
-      ...(task.files || []),
+      ...(task.files ?? []),
       ...newResults.map((res) => ({
         type: 'result',
         fileName: resFile,
@@ -794,7 +794,7 @@ const processData = async (
 
     // Add to tasks
     task.datas = [
-      ...(task.datas || []),
+      ...(task.datas ?? []),
       { fileName: data, ...JSON.parse(dContent.toString()) }
     ]
     update()

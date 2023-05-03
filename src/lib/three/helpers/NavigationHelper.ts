@@ -381,32 +381,28 @@ const NavigationHelper = (
    * Highlight
    */
   const highlight = (): void => {
-    currentlyHighlighted &&
-      currentlyHighlighted.children &&
-      currentlyHighlighted.children.forEach((object) => {
-        const mesh = object as Mesh<
-          BufferGeometry,
-          MeshBasicMaterial & { previousColor: Color }
-        >
-        if (mesh.material && mesh.material.color) {
-          mesh.material.previousColor = mesh.material.color
-          mesh.material.color = new Color(highlightColor)
-        }
-      })
+    currentlyHighlighted?.children?.forEach((object) => {
+      const mesh = object as Mesh<
+        BufferGeometry,
+        MeshBasicMaterial & { previousColor: Color }
+      >
+      if (mesh.material?.color) {
+        mesh.material.previousColor = mesh.material.color
+        mesh.material.color = new Color(highlightColor)
+      }
+    })
   }
 
   /**
    * Unhighlight
    */
   const unhighlight = (): void => {
-    previouslyHighlighted &&
-      previouslyHighlighted.children &&
-      previouslyHighlighted.children.forEach((object) => {
-        const mesh = object as Mesh<BufferGeometry, MeshBasicMaterial>
-        if (mesh.material && mesh.material.color) {
-          mesh.material.color = new Color(cubeColor)
-        }
-      })
+    previouslyHighlighted?.children?.forEach((object) => {
+      const mesh = object as Mesh<BufferGeometry, MeshBasicMaterial>
+      if (mesh.material?.color) {
+        mesh.material.color = new Color(cubeColor)
+      }
+    })
   }
 
   /**
@@ -420,7 +416,7 @@ const NavigationHelper = (
 
       // Scene
       const center = new Vector3()
-      scene.boundingBox && scene.boundingBox.getCenter(center)
+      scene.boundingBox?.getCenter(center)
 
       // Camera
       const distance = camera.position.distanceTo(controls.target)

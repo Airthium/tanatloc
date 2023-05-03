@@ -4,7 +4,7 @@
  * Authentication secret
  * @description Default value `new Array(33).join('a')`
  */
-export const SECRET: string = process.env.AUTH_SECRET || new Array(33).join('a')
+export const SECRET: string = process.env.AUTH_SECRET ?? new Array(33).join('a')
 
 // Default password configuration
 /**

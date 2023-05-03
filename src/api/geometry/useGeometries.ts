@@ -34,7 +34,7 @@ export const useGeometries = (
     ([url, payload]) => fetcher(url, payload)
   )
   const loading = !data
-  const geometries = data?.geometries || defaultData
+  const geometries = data?.geometries ?? defaultData
 
   /**
    * Add one (useGeometries)

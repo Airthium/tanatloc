@@ -25,9 +25,7 @@ export interface IAddBody {
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body ||
-    !body.file ||
-    !body.file.name ||
+    !body?.file?.name ||
     typeof body.file.name !== 'string' ||
     !body.file.uid ||
     typeof body.file.uid !== 'string' ||

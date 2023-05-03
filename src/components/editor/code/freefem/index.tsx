@@ -71,7 +71,7 @@ const FreeFEMCode = (): JSX.Element => {
    */
   const onChange = useCallback(
     (newCode?: string): void => {
-      dispatch(setTemplate(newCode || ''))
+      dispatch(setTemplate(newCode ?? ''))
     },
     [dispatch]
   )

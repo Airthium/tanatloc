@@ -50,7 +50,7 @@ const AddButton = ({
    * Render
    */
   return (
-    <Tooltip title={children || 'Add'}>
+    <Tooltip title={children ?? 'Add'}>
       <Button
         className={`${fullWidth ? globalStyle.fullWidth : ''} ${
           light ? globalStyle.textLight : ''

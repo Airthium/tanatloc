@@ -28,7 +28,7 @@ export const useUsers = (): [
 
   const { data, error, mutate } = useSWR('/api/users', fetcher)
   const loading = !data
-  const users = data?.users || defaultData
+  const users = data?.users ?? defaultData
 
   /**
    * Add one

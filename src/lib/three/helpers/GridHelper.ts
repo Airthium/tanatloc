@@ -25,7 +25,7 @@ export interface IGridHelper {
 }
 
 export interface IGridHelperGroup extends Omit<Group, 'type'> {
-  type: Group['type'] | 'GridHelper'
+  type: 'GridHelper'
   dispose: () => void
 }
 
@@ -316,13 +316,13 @@ const GridHelper = (
     const verticalVisibilityThreshold = 0.2 * scaleFactor
     const horizontalVisibilityThreshold = 0.3 * scaleFactor
     labelsX.visible =
-      Math.abs(camFwd.y) > verticalVisibilityThreshold ||
+      Math.abs(camFwd.y) > verticalVisibilityThreshold ??
       Math.abs(camFwd.z) > horizontalVisibilityThreshold
     labelsY.visible =
-      Math.abs(camFwd.x) > horizontalVisibilityThreshold ||
+      Math.abs(camFwd.x) > horizontalVisibilityThreshold ??
       Math.abs(camFwd.z) > horizontalVisibilityThreshold
     labelsZ.visible =
-      Math.abs(camFwd.x) > horizontalVisibilityThreshold ||
+      Math.abs(camFwd.x) > horizontalVisibilityThreshold ??
       Math.abs(camFwd.y) > verticalVisibilityThreshold
 
     gridHelper.visible = currentlyVisible

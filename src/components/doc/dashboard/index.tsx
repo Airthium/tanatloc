@@ -64,13 +64,15 @@ const Dashboard = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router.push({
-        pathname: '/doc',
-        query: {
-          section: 'dashboard',
-          tab: key
-        }
-      })
+      router
+        .push({
+          pathname: '/doc',
+          query: {
+            section: 'dashboard',
+            tab: key
+          }
+        })
+        .catch()
     },
     [router]
   )
@@ -94,7 +96,7 @@ const Dashboard = (): JSX.Element => {
       </Typography>
 
       <Tabs
-        activeKey={(query.tab as string) || 'workspaces'}
+        activeKey={(query.tab as string) ?? 'workspaces'}
         items={tabs}
         onChange={onChange}
       />

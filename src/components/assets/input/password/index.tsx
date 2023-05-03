@@ -191,8 +191,8 @@ const PasswordItem = ({
     <Form.Item
       labelCol={labelCol}
       wrapperCol={wrapperCol}
-      name={name || 'password'}
-      label={label || 'Password'}
+      name={name ?? 'password'}
+      label={label ?? 'Password'}
       rules={[
         () => ({
           validator(_, value) {

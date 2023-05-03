@@ -458,7 +458,7 @@ const BoundaryCondition = ({
               }
             >
               <Input
-                value={current?.name || ''}
+                value={current?.name ?? ''}
                 onChange={onName}
                 maxLength={50}
               />

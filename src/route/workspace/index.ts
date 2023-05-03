@@ -30,7 +30,7 @@ export interface IDeleteBody {
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
-  if (!body || !body.name || typeof body.name !== 'string')
+  if (!body?.name || typeof body.name !== 'string')
     throw error(400, 'Missing data in your request (body: { name(string) })')
 }
 
@@ -40,9 +40,7 @@ const checkAddBody = (body: IAddBody): void => {
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (
-    !body ||
-    !body.workspace ||
-    !body.workspace.id ||
+    !body?.workspace?.id ||
     typeof body.workspace.id !== 'string' ||
     !body.data ||
     !Array.isArray(body.data)
@@ -58,7 +56,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
-  if (!body || !body.id || typeof body.id !== 'string')
+  if (!body?.id || typeof body.id !== 'string')
     throw error(400, 'Missing data in your request (body: { id(uuid) })')
 }
 

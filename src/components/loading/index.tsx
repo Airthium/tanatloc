@@ -62,7 +62,7 @@ const Loading = ({ text, status, errors }: IProps): JSX.Element => {
       .map((desc, index) => {
         return {
           index: index,
-          status: 'finish' as 'finish',
+          status: 'finish' as StepProps['status'],
           icon: index === 0 ? <LoadingOutlined /> : undefined,
           title: desc
         }

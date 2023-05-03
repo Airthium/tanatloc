@@ -8,28 +8,28 @@
  * - `postrges` on Unix-like systems and Windows
  */
 export const ADMIN: string =
-  process.env.DB_ADMIN ||
-  (process.platform === 'darwin' ? process.env.USER || 'postgres' : 'postgres')
+  process.env.DB_ADMIN ??
+  (process.platform === 'darwin' ? process.env.USER ?? 'postgres' : 'postgres')
 
 /**
  * Admin database
  * @description Set by `DB_ADMIN_DATABASE` environment variable or `postgres`
  */
 export const ADMIN_DATABASE: string =
-  process.env.DB_ADMIN_DATABASE || 'postgres'
+  process.env.DB_ADMIN_DATABASE ?? 'postgres'
 
 /**
  * Admin password
  * @description Set by `DB_ADMIN_PASSWORD` or empty string
  */
 export const ADMIN_PASSWORD: string =
-  process.env.DB_ADMIN_PASSWORD || 'password'
+  process.env.DB_ADMIN_PASSWORD ?? 'password'
 
 /**
  * User
  * @description Set by `DB_USER` environment variable or `tanatlocuser`
  */
-export const USER: string = process.env.DB_USER || 'tanatlocuser'
+export const USER: string = process.env.DB_USER ?? 'tanatlocuser'
 
 /**
  * Schema
@@ -41,7 +41,7 @@ export const SCHEMA: string = 'TANATLOCSCHEMA'
  * Host
  * @description Set by `DB_HOST` environment variable or `localhost`
  */
-export const HOST: string = process.env.DB_HOST || 'localhost'
+export const HOST: string = process.env.DB_HOST ?? 'localhost'
 
 /**
  * Port
@@ -55,13 +55,13 @@ export const PORT: number = process.env.DB_PORT
  * Database
  * @description Set by `DB_DATABASE` environment variable or `tanatloc2`
  */
-export const DATABASE: string = process.env.DB_DATABASE || 'tanatloc2'
+export const DATABASE: string = process.env.DB_DATABASE ?? 'tanatloc2'
 
 /**
  * Password
  * @description Set by `DB_PASSWORD` environment variable or `tanatloc`
  */
-export const PASSWORD: string = process.env.DB_PASSWORD || 'tanatloc'
+export const PASSWORD: string = process.env.DB_PASSWORD ?? 'tanatloc'
 
 export interface Tables {
   SECURITY: string

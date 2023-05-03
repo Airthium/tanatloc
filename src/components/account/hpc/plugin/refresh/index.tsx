@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin.Refresh */
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { Button } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 
@@ -51,11 +51,18 @@ export const _onUpdate = async (plugin: IClientPlugin): Promise<void> => {
  * @returns Refresh
  */
 const Refresh = ({ plugin }: IProps): JSX.Element => {
+  // State
+  const [loading, setLoading] = useState<boolean>(false)
+
   /**
    * On click
    */
-  const onClick = useCallback(async () => {
-    await _onUpdate(plugin)
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      await _onUpdate(plugin)
+      setLoading(false)
+    })()
   }, [plugin])
 
   /**
@@ -64,6 +71,7 @@ const Refresh = ({ plugin }: IProps): JSX.Element => {
   return (
     <Button
       key="refresh"
+      loading={loading}
       icon={<ReloadOutlined />}
       onClick={onClick}
       className={`${globalStyle.noBackground} ${globalStyle.noBorder}`}

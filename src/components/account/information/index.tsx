@@ -208,24 +208,28 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    * @param info Info
    */
   const onChange = useCallback(
-    async (info: UploadChangeParam<any>): Promise<void> => {
-      const upload = await _onChange(user, info, swr)
-      setUploading(upload)
+    (info: UploadChangeParam<any>): void => {
+      ;(async () => {
+        const upload = await _onChange(user, info, swr)
+        setUploading(upload)
+      })()
     },
     [user, swr]
   )
 
   const onFinish = useCallback(
-    async (values: ILocalValues): Promise<void> => {
-      setLoading(true)
-      try {
-        await _onFinish(user, values, swr)
-        setFormError(undefined)
-      } catch (err: any) {
-        setFormError(err)
-      } finally {
-        setLoading(false)
-      }
+    (values: ILocalValues): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          await _onFinish(user, values, swr)
+          setFormError(undefined)
+        } catch (err: any) {
+          setFormError(err)
+        } finally {
+          setLoading(false)
+        }
+      })()
     },
     [user, swr]
   )

@@ -92,19 +92,18 @@ const Password = ({ user }: IProps): JSX.Element => {
    * @param values Values
    */
   const onFinish = useCallback(
-    async (values: {
-      password: string
-      newPassword: string
-    }): Promise<void> => {
-      setLoading(true)
-      try {
-        await _onFinish(user, values)
-        setFormError(undefined)
-      } catch (err: any) {
-        setFormError(err)
-      } finally {
-        setLoading(false)
-      }
+    (values: { password: string; newPassword: string }): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          await _onFinish(user, values)
+          setFormError(undefined)
+        } catch (err: any) {
+          setFormError(err)
+        } finally {
+          setLoading(false)
+        }
+      })()
     },
     [user]
   )

@@ -77,7 +77,10 @@ const HPC = (): JSX.Element => {
 
   // Plugins list
   useEffect(() => {
-    _pluginsList().then(setList)
+    ;(async () => {
+      const newList = await _pluginsList()
+      setList(newList)
+    })()
   }, [])
 
   /**

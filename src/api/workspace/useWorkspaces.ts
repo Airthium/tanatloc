@@ -28,7 +28,7 @@ export const useWorkspaces = (): [
 
   const { data, error, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
-  const workspaces = data?.workspaces || defaultData
+  const workspaces = data?.workspaces ?? defaultData
 
   /**
    * Add one (useWorkspaces)

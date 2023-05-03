@@ -58,7 +58,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
             } else {
               content = (
                 <Typography.Text>
-                  {configuration[key].value || 'unset'}
+                  {configuration[key].value ?? 'unset'}
                 </Typography.Text>
               )
             }
@@ -103,7 +103,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
             actions={actions}
           >
             <>
-              <Typography.Text>{parse(p.description || '')}</Typography.Text>
+              <Typography.Text>{parse(p.description ?? '')}</Typography.Text>
               {children.length ? (
                 children
               ) : (

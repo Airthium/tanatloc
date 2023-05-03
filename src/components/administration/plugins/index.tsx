@@ -47,7 +47,7 @@ export const _onChange = async (
     ])
 
     // Local
-    const defaultplugins = Utils.deepCopy(system?.defaultplugins || [])
+    const defaultplugins = Utils.deepCopy(system?.defaultplugins ?? [])
     const index: number = defaultplugins.indexOf(plugin.key as string)
     if (checked && index === -1) {
       defaultplugins.push(plugin.key as string)

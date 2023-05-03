@@ -122,7 +122,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
           className={`${globalStyle.noScroll} ${dashboardStyle.inDashboardTabs}`}
           type="card"
           items={tabItems}
-          defaultActiveKey={tab || 'personal'}
+          defaultActiveKey={tab ?? 'personal'}
           onChange={onChange}
         />
       </Layout.Content>

@@ -6,7 +6,7 @@ import { TGeometrySummary } from '@/database/geometry/get'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: jest.fn
+    push: async () => jest.fn()
   })
 }))
 

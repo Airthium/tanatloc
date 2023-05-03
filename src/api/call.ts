@@ -62,7 +62,7 @@ export const call = async (
   // Fetch
   const response = await fetch(base + route, {
     ...param,
-    method: (param && param.method) || 'GET',
+    method: (param && param.method) ?? 'GET',
     headers: {
       ...(param && param.headers),
       'Content-Type': 'application/json'

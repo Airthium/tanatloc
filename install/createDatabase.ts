@@ -384,7 +384,7 @@ const checkType = async (
   configColumn: ColumnConfig
 ): Promise<void> => {
   if (
-    (configColumn.type.includes('[]') && column.data_type === 'ARRAY') ??
+    (configColumn.type.includes('[]') && column.data_type === 'ARRAY') ||
     configColumn.type.toLowerCase() ===
       column.data_type.replace(' without time zone', '').toLowerCase()
   ) {
@@ -435,7 +435,7 @@ const checkConstraint = async (
   configColumn: ColumnConfig
 ): Promise<void> => {
   if (
-    (configColumn.constraint === 'NOT NULL' ??
+    (configColumn.constraint === 'NOT NULL' ||
       configColumn.constraint === 'PRIMARY KEY') &&
     column.is_nullable !== 'NO'
   ) {
@@ -629,7 +629,7 @@ const createAdmin = async (): Promise<void> => {
   const authorizedPlugins = ['local']
 
   const globalAny: any = global
-  if (!isElectron() ?? globalAny.electron?.fullBuild) {
+  if (!isElectron() || globalAny.electron?.fullBuild) {
     authorizedPlugins.push(...['airthium', 'denso', 'rescale', 'sharetask'])
   }
 

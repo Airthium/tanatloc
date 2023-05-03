@@ -28,7 +28,7 @@ export const useOrganizations = (): [
 
   const { data, error, mutate } = useSWR('/api/organizations', fetcher)
   const loading = !data
-  const organizations = data?.organizations || defaultData
+  const organizations = data?.organizations ?? defaultData
 
   /**
    * Add one

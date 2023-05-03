@@ -114,7 +114,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             plugins?.map((plugin) => ({
               key: plugin.key,
               name: plugin.name
-            })) || []
+            })) ?? []
           }
           user={{
             id: record.id,
@@ -142,8 +142,8 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         dataIndex: 'firstname',
         key: 'firstname',
         sorter: (a: { firstname?: string }, b: { firstname?: string }) => {
-          const fa = a.firstname || ''
-          const fb = b.firstname || ''
+          const fa = a.firstname ?? ''
+          const fb = b.firstname ?? ''
           return fa.localeCompare(fb)
         }
       },
@@ -152,8 +152,8 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         dataIndex: 'lastname',
         key: 'lastname',
         sorter: (a: { lastname?: string }, b: { lastname?: string }) => {
-          const la = a.lastname || ''
-          const lb = b.lastname || ''
+          const la = a.lastname ?? ''
+          const lb = b.lastname ?? ''
           return la.localeCompare(lb)
         }
       },
@@ -257,7 +257,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
           plugins?.map((plugin) => ({
             key: plugin.key,
             name: plugin.name
-          })) || []
+          })) ?? []
         }
         swr={{
           addOneUser: swr.addOneUser

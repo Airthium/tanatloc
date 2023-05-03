@@ -26,7 +26,7 @@ export const usePlugins = (): [
 
   const { data, error, mutate } = useSWR('/api/plugin', fetcher)
   const loading = !data
-  const plugins = data?.plugins || defaultData
+  const plugins = data?.plugins ?? defaultData
 
   const addOne = useCallback(
     (plugin: IClientPlugin): void => {

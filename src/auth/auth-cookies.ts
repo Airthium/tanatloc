@@ -60,13 +60,13 @@ const parseCookies = (req: Request): { [key: string]: string } => {
   // For API Routes we don't need to parse the cookies.
   if (isElectron()) {
     const cookie = storage.get('auth-token') as string
-    return parse(cookie?.toString() || '')
+    return parse(cookie?.toString() ?? '')
   } else {
     if (req.cookies) return req.cookies
 
     // For pages we do need to parse the cookies.
     const cookie = req.headers?.cookie
-    return parse(cookie || '')
+    return parse(cookie ?? '')
   }
 }
 

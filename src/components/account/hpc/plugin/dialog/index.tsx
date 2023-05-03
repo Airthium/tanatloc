@@ -63,7 +63,7 @@ export const _inputItem = (
         ref={inputRef}
         id={'input-' + key}
         autoComplete="off"
-        {...(item.props || {})}
+        {...(item.props ?? {})}
       />
     </Form.Item>
   )
@@ -90,7 +90,7 @@ export const _textareaItem = (
       <Input.TextArea
         id={'input-' + key}
         autoComplete="off"
-        {...(item.props || {})}
+        {...(item.props ?? {})}
       />
     </Form.Item>
   )
@@ -118,7 +118,7 @@ export const _passwordItem = (
         id={'input-' + key}
         type="password"
         autoComplete="off"
-        {...(item.props || {})}
+        {...(item.props ?? {})}
       />
     </Form.Item>
   )
@@ -144,7 +144,7 @@ export const _selectItem = (
     >
       <Select id={'select-' + key}>
         {item.options.map((option: string[]) => (
-          <Select.Option key={option} value={option} {...(item.props || {})}>
+          <Select.Option key={option} value={option} {...(item.props ?? {})}>
             {option}
           </Select.Option>
         ))}
@@ -299,7 +299,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         loading={loading}
       >
         <>
-          <Typography.Text>{parse(plugin.description || '')}</Typography.Text>
+          <Typography.Text>{parse(plugin.description ?? '')}</Typography.Text>
           {dialogContent}
         </>
       </Dialog>

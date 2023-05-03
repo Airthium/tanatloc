@@ -22,7 +22,7 @@ export const useSystem = (): [
 
   const { data, error, mutate } = useSWR('/api/system', fetcher)
   const loading = !data
-  const system = data?.system || defaultData
+  const system = data?.system ?? defaultData
 
   /**
    * Mutate

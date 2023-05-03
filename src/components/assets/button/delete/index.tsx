@@ -72,13 +72,13 @@ const DeleteButton = ({
       <DeleteDialog
         visible={visible}
         loading={loading}
-        title={title || 'Delete'}
+        title={title ?? 'Delete'}
         onCancel={setVisibleFalse}
         onOk={onOk}
       >
-        {text || 'Are you sure?'}
+        {text ?? 'Are you sure?'}
       </DeleteDialog>
-      <Tooltip title={children || 'Delete'}>
+      <Tooltip title={children ?? 'Delete'}>
         <Button
           className={`${globalStyle.noBackground} ${
             bordered ? '' : globalStyle.noBorder

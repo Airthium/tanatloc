@@ -7,7 +7,7 @@ const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     query: mockQuery(),
-    push: () => mockPush()
+    push: async () => mockPush()
   })
 }))
 

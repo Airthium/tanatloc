@@ -34,7 +34,7 @@ export const useProjects = (
     ([url, payload]) => fetcher(url, payload)
   )
   const loading = !data
-  const projects = data?.projects || defaultData
+  const projects = data?.projects ?? defaultData
 
   /**
    * Add one (useProjects)

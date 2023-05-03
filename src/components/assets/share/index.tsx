@@ -142,7 +142,7 @@ export const _userTitle = (user: {
   let title = user.email
   if (user.lastname || user.firstname) {
     title = user.lastname ? user.lastname + ' ' : ''
-    title += user.firstname || ''
+    title += user.firstname ?? ''
   }
   return title
 }
@@ -180,13 +180,13 @@ const Share = ({
 
   // Effect
   useEffect(() => {
-    const parent = workspace || project
+    const parent = workspace ?? project
 
     const defaultGroups = parent?.groups.map((g) => g.id)
     const defaultUsers = parent?.users.map((u) => u.id)
 
-    setGroupsSelected(defaultGroups || [])
-    setUsersSelected(defaultUsers || [])
+    setGroupsSelected(defaultGroups ?? [])
+    setUsersSelected(defaultUsers ?? [])
   }, [workspace, project])
 
   useEffect(() => {

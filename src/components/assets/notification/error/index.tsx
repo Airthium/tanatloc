@@ -35,7 +35,7 @@ export const _closeAll = () => {
  */
 const ErrorNotification = (
   title: string,
-  err?: ICallError | any,
+  err?: ICallError,
   display: boolean = true
 ): void => {
   if (err?.message === 'Failed to fetch') {

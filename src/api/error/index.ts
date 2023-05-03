@@ -8,13 +8,13 @@ import { ICallError } from '../index.d'
 export class APIError extends Error {
   title: string
   render?: JSX.Element
-  err?: ICallError | any
+  err?: ICallError
   type?: 'error' | 'success' | 'info' | 'warning'
 
   constructor(params: {
     title: string
     render?: JSX.Element
-    err?: ICallError | any
+    err?: ICallError
     type?: 'error' | 'success' | 'info' | 'warning'
   }) {
     super(params.title)
@@ -23,6 +23,6 @@ export class APIError extends Error {
     this.name = 'APIError'
     this.render = params.render
     this.err = params.err
-    this.type = params.type || 'error'
+    this.type = params.type ?? 'error'
   }
 }

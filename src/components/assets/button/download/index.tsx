@@ -38,7 +38,7 @@ const DownloadButton = ({
    * Render
    */
   return (
-    <Tooltip title={children || 'Download'}>
+    <Tooltip title={children ?? 'Download'}>
       <Button
         className={`${globalStyle.noBackground} ${
           bordered ? '' : globalStyle.noBorder

@@ -27,10 +27,10 @@ export const useSimulation = (
   const { data, error, mutate } = useSWR(
     '/api/simulation' + (id ? '/' + id : ''),
     fetcher,
-    { refreshInterval: refresh || 0 }
+    { refreshInterval: refresh ?? 0 }
   )
   const loading = !data
-  const simulation = data?.simulation || defaultData
+  const simulation = data?.simulation ?? defaultData
 
   /**
    * Mutate

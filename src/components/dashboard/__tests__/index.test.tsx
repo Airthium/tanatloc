@@ -8,7 +8,7 @@ const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     replace: () => mockReplace(),
-    push: () => mockPush(),
+    push: async () => mockPush(),
     query: mockQuery()
   })
 }))
@@ -264,8 +264,8 @@ describe('components/dashboard', () => {
   test('logout error', async () => {
     const { unmount } = render(<Dashboard />)
 
-    mockPush.mockImplementation(() => {
-      throw new Error('push error')
+    mockLogout.mockImplementation(() => {
+      throw new Error('logout error')
     })
 
     const logout = screen.getByRole('img', { name: 'logout' })
@@ -275,7 +275,7 @@ describe('components/dashboard', () => {
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         'Unable to logout',
-        new Error('push error')
+        new Error('logout error')
       )
     )
 

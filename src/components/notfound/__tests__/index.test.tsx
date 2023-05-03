@@ -5,7 +5,7 @@ import NotFound from '@/components/notfound'
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: () => mockRouter()
+    push: async () => mockRouter()
   })
 }))
 

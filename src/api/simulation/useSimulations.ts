@@ -37,7 +37,7 @@ export const useSimulations = (
     ([url, payload]) => fetcher(url, payload)
   )
   const loading = !data
-  const simulations = data?.simulations || defaultData
+  const simulations = data?.simulations ?? defaultData
 
   /**
    * Add one (useSimulations)

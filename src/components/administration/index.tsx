@@ -57,12 +57,18 @@ const Administration = (): JSX.Element => {
     if (errorUsers) ErrorNotification(errors.users, errorUsers)
   }, [errorUsers])
 
+  /**
+   * On change
+   * @param key Key
+   */
   const onChange = useCallback(
-    (key: string) => {
-      router.replace({
-        pathname: '/dashboard',
-        query: { page: 'administration', tab: key }
-      })
+    (key: string): void => {
+      ;(async () => {
+        await router.replace({
+          pathname: '/dashboard',
+          query: { page: 'administration', tab: key }
+        })
+      })()
     },
     [router]
   )

@@ -97,10 +97,12 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string): void => {
-      router.replace({
-        pathname: '/dashboard',
-        query: { page: 'account', tab: key }
-      })
+      ;(async () => {
+        await router.replace({
+          pathname: '/dashboard',
+          query: { page: 'account', tab: key }
+        })
+      })()
     },
     [router]
   )

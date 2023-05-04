@@ -319,7 +319,7 @@ describe('lib/simulation', () => {
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(13)
     expect(mockGet).toHaveBeenCalledTimes(6)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(5)
 

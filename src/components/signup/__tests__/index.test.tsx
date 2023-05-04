@@ -174,8 +174,8 @@ describe('components/signup', () => {
     )
 
     // Log in
-    await waitFor(() => screen.getByText('Log in ?'))
-    const logIn = screen.getByText('Log in ?')
+    await waitFor(() => screen.getByText('Log in?'))
+    const logIn = screen.getByText('Log in?')
     await act(() => fireEvent.click(logIn))
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/login'))

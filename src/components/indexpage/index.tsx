@@ -17,7 +17,6 @@ import {
   Typography
 } from 'antd'
 import { BugOutlined, SettingOutlined } from '@ant-design/icons'
-import { Url } from 'url'
 
 import packageJson from '../../../package.json'
 
@@ -32,9 +31,9 @@ import style from './index.module.css'
 // Local interfaces
 export interface IRelease {
   version: string
-  appImage: Url
-  dmg: Url
-  exe: Url
+  appImage: string
+  dmg: string
+  exe: string
 }
 
 /**
@@ -91,52 +90,65 @@ const Index = (): JSX.Element => {
   }, [])
 
   /**
+   * On router
+   * @param route Route
+   */
+  const onRouter = useCallback(
+    (route: string): void => {
+      ;(async () => {
+        await router.push(route)
+      })()
+    },
+    [router]
+  )
+
+  /**
    * Get started
    */
-  const getStarted = useCallback(() => {
+  const getStarted = useCallback((): void => {
     if (process.env.NEXT_PUBLIC_SERVER_MODE === 'frontpage') {
       scrollToView('getStarted')
     } else {
-      router.push('/signup').catch()
+      onRouter('/signup')
     }
-  }, [router])
+  }, [onRouter])
 
   /**
    * On download
    * @param key Key
    */
   const onDownload = useCallback(
-    (key: string) => {
+    (key: string): void => {
       switch (key) {
         case 'Windows':
-          router.push(release!.exe).catch()
+          onRouter(release!.exe)
           break
         case 'MacOS':
-          router.push(release!.dmg).catch()
+          onRouter(release!.dmg)
           break
         case 'Linux':
-          router.push(release!.appImage).catch()
+          onRouter(release!.appImage)
           break
       }
     },
-    [router, release]
+    [release, onRouter]
   )
 
   /**
    * Set docker open true
    */
-  const setDockerOpenTrue = useCallback(() => setDockerOpen(true), [])
+  const setDockerOpenTrue = useCallback((): void => setDockerOpen(true), [])
 
   /**
    * Set docker open false
    */
-  const setDockerOpenFalse = useCallback(() => setDockerOpen(false), [])
+  const setDockerOpenFalse = useCallback((): void => setDockerOpen(false), [])
 
   /**
    * Set troubleshooting open true
    */
   const setTroubleshootingOpenTrue = useCallback(
-    () => setTroubleshootingOpen(true),
+    (): void => setTroubleshootingOpen(true),
     []
   )
 
@@ -144,14 +156,14 @@ const Index = (): JSX.Element => {
    * Set troubleshooting open false
    */
   const setTroubleshootingOpenFalse = useCallback(
-    () => setTroubleshootingOpen(false),
+    (): void => setTroubleshootingOpen(false),
     []
   )
 
   /**
    * Switch to docker
    */
-  const switchToDocker = useCallback(() => {
+  const switchToDocker = useCallback((): void => {
     setTroubleshootingOpen(false)
     setDockerOpen(true)
   }, [])
@@ -160,19 +172,25 @@ const Index = (): JSX.Element => {
    * On download Windows
    */
   const onDownloadWindows = useCallback(
-    () => onDownload('Windows'),
+    (): void => onDownload('Windows'),
     [onDownload]
   )
 
   /**
    * On download MacOS
    */
-  const onDownloadMacOS = useCallback(() => onDownload('MacOS'), [onDownload])
+  const onDownloadMacOS = useCallback(
+    (): void => onDownload('MacOS'),
+    [onDownload]
+  )
 
   /**
    * On download Linux
    */
-  const onDownloadLinux = useCallback(() => onDownload('Linux'), [onDownload])
+  const onDownloadLinux = useCallback(
+    (): void => onDownload('Linux'),
+    [onDownload]
+  )
 
   /**
    * Render

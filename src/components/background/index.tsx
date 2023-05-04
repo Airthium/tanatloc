@@ -33,7 +33,9 @@ const Background = (): JSX.Element => {
   // Mount
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      router.push('/webgl').catch()
+      ;(async () => {
+        await router.push('/webgl')
+      })()
       return
     }
 
@@ -164,11 +166,11 @@ const Background = (): JSX.Element => {
       div.removeChild(renderer.domElement)
 
       // Clear scene
-      ;(
-        scene.children as Mesh<TetrahedronGeometry, MeshBasicMaterial>[]
-      ).forEach((child) => {
-        child.geometry.dispose()
-        child.material.dispose()
+
+      scene.children.forEach((child) => {
+        const mesh = child as Mesh<TetrahedronGeometry, MeshBasicMaterial>
+        mesh.geometry.dispose()
+        mesh.material.dispose()
         scene.remove(child)
       })
     }

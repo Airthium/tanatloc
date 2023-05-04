@@ -72,10 +72,14 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   const [plugins, setPlugins] = useState<IClientPlugin[]>()
   const [scroll, setScroll] = useState<{ y: number }>()
 
-  // Data
+  /**
+   * Authorized plugins render
+   * @param authorizedplugins Authorized plugins
+   * @returns Render
+   */
   const authorizedpluginsRender = useCallback(
-    (authorizedplugins: string[]) => {
-      authorizedplugins.sort()
+    (authorizedplugins: string[]): JSX.Element => {
+      authorizedplugins.sort((a, b) => a.localeCompare(b))
       const list = authorizedplugins.map((authorizedplugin) => {
         const plugin = plugins?.find((p) => p.key === authorizedplugin)
         if (!plugin) return
@@ -100,14 +104,25 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     [plugins]
   )
 
+  /**
+   * Superuser render
+   * @param superuser Superuser
+   * @returns Render
+   */
   const superuserRender = useCallback(
-    (superuser: boolean) =>
-      superuser && <CheckOutlined className={globalStyle.textGreen} />,
+    (superuser: boolean): JSX.Element | null =>
+      superuser ? <CheckOutlined className={globalStyle.textGreen} /> : null,
     []
   )
 
+  /**
+   * Actions render
+   * @param _ Unused
+   * @param record Record
+   * @returns Render
+   */
   const actionsRender = useCallback(
-    (_: any, record: TUserItem) => (
+    (_: any, record: TUserItem): JSX.Element => (
       <Space>
         <Edit
           plugins={
@@ -135,6 +150,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
     [plugins, swr]
   )
 
+  // Columns
   const columns: TableColumnsType<TUserItem> = useMemo(
     () => [
       {
@@ -234,13 +250,15 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
 
   // Plugins list
   useEffect(() => {
-    PluginsAPI.completeList()
-      .then((list) => {
+    ;(async () => {
+      try {
+        const list = await PluginsAPI.completeList()
+
         setPlugins(list)
-      })
-      .catch((err) => {
+      } catch (err: any) {
         ErrorNotification(errors.plugins, err)
-      })
+      }
+    })()
   }, [])
 
   /**

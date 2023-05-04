@@ -48,12 +48,14 @@ const DeleteDialog = ({
   /**
    * On ok
    */
-  const internalOnOk = useCallback(async () => {
-    try {
-      await onOk()
-    } catch (err: any) {
-      ErrorNotification(errors.onOk, err, false)
-    }
+  const internalOnOk = useCallback((): void => {
+    ;(async () => {
+      try {
+        await onOk()
+      } catch (err: any) {
+        ErrorNotification(errors.onOk, err, false)
+      }
+    })()
   }, [onOk])
 
   /**

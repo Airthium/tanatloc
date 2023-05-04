@@ -63,16 +63,16 @@ const Dashboard = (): JSX.Element => {
    * @param key Key
    */
   const onChange = useCallback(
-    (key: string) => {
-      router
-        .push({
+    (key: string): void => {
+      ;(async () => {
+        await router.push({
           pathname: '/doc',
           query: {
             section: 'dashboard',
             tab: key
           }
         })
-        .catch()
+      })()
     },
     [router]
   )

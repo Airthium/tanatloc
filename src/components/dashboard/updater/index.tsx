@@ -17,11 +17,14 @@ const Updater = (): JSX.Element => {
 
   // Github call
   useEffect(() => {
-    Update.needUpdate()
-      .then((res) => {
-        if (res.needed) setNeedUpdate(res)
-      })
-      .catch(console.error)
+    ;(async () => {
+      try {
+        const update = await Update.needUpdate()
+        if (update.needed) setNeedUpdate(update)
+      } catch (err: any) {
+        console.error(err)
+      }
+    })()
   }, [])
 
   // Visible

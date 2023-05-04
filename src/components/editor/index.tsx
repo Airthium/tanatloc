@@ -84,32 +84,34 @@ const Editor = () => {
 
   // Not logged -> go to login page
   useEffect(() => {
-    if (!loadingUser && !user) router.replace('/')
+    ;(async () => {
+      if (!loadingUser && !user) await router.replace('/')
+    })()
   }, [user, loadingUser, router])
 
   /**
    * Open tour
    */
-  const openTour = useCallback(() => {
+  const openTour = useCallback((): void => {
     setTourOpened(true)
   }, [])
 
   /**
    * Close tour
    */
-  const closeTour = useCallback(() => {
+  const closeTour = useCallback((): void => {
     setTourOpened(false)
   }, [])
 
   /**
    * Handle dashboard
    */
-  const handleDashboard = useCallback(() => {
-    router
-      .push({
+  const handleDashboard = useCallback((): void => {
+    ;(async () => {
+      await router.push({
         pathname: '/dashboard'
       })
-      .catch()
+    })()
   }, [router])
 
   /**

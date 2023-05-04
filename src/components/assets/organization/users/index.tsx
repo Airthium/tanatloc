@@ -56,8 +56,15 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     []
   )
 
+  /**
+   * Owner actions render
+   * @param owner Owner
+   * @returns Render
+   */
   const ownerActionsRender = useCallback(
-    (owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }) => (
+    (
+      owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
+    ): JSX.Element => (
       <Delete
         disabled={organization.owners.length < 2 && !owner.pending}
         user={{
@@ -80,8 +87,15 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     [organization, swr]
   )
 
+  /**
+   * User actions render
+   * @param user User
+   * @returns Render
+   */
   const userActionsRender = useCallback(
-    (user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }) => (
+    (
+      user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
+    ): JSX.Element => (
       <Delete
         user={{
           id: user.id,
@@ -105,6 +119,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     [organization, swr]
   )
 
+  // Columns
   const columns = useMemo(
     () => [
       {
@@ -131,6 +146,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     [avatarRender]
   )
 
+  // Owners columns
   const ownersColumns = useMemo(
     () => [
       ...columns,
@@ -146,6 +162,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     [columns, ownerActionsRender]
   )
 
+  // Users columns
   const usersColumns = useMemo(
     () => [
       ...columns,
@@ -161,6 +178,9 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     [columns, userActionsRender]
   )
 
+  /**
+   * On resize
+   */
   const onResize = useCallback(() => {
     const table = refWrapper.current
     /* istanbul ignore next */

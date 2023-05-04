@@ -182,15 +182,15 @@ const Plugins = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router
-        .push({
+      ;(async () => {
+        await router.push({
           pathname: '/doc',
           query: {
             section: 'plugins',
             tab: key
           }
         })
-        .catch()
+      })()
     },
     [router]
   )

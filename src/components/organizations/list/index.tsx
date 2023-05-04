@@ -258,12 +258,14 @@ const QuitButton = ({ user, organization, swr }: IQuitProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = useCallback(() => {
-    _onQuit(
-      { id: organization.id, users: organization.users },
-      { id: user.id },
-      { mutateOneOrganization: swr.mutateOneOrganization }
-    ).catch()
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      await _onQuit(
+        { id: organization.id, users: organization.users },
+        { id: user.id },
+        { mutateOneOrganization: swr.mutateOneOrganization }
+      )
+    })()
   }, [user, organization, swr])
 
   /**
@@ -289,18 +291,20 @@ const AcceptButton = ({
   /**
    * On click
    */
-  const onClick = useCallback(async () => {
-    _onAccept(
-      {
-        id: organization.id,
-        owners: organization.owners,
-        pendingowners: organization.pendingowners,
-        users: organization.users,
-        pendingusers: organization.pendingusers
-      },
-      { id: user.id },
-      { mutateOneOrganization: swr.mutateOneOrganization }
-    ).catch()
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      await _onAccept(
+        {
+          id: organization.id,
+          owners: organization.owners,
+          pendingowners: organization.pendingowners,
+          users: organization.users,
+          pendingusers: organization.pendingusers
+        },
+        { id: user.id },
+        { mutateOneOrganization: swr.mutateOneOrganization }
+      )
+    })()
   }, [user, organization, swr])
 
   /**
@@ -323,16 +327,18 @@ const DeclineButton = ({
   organization,
   swr
 }: IDeclineProps): JSX.Element => {
-  const onClick = useCallback(() => {
-    _onDecline(
-      {
-        id: organization.id,
-        pendingowners: organization.pendingowners,
-        pendingusers: organization.pendingusers
-      },
-      { id: user.id },
-      { mutateOneOrganization: swr.mutateOneOrganization }
-    ).catch()
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      await _onDecline(
+        {
+          id: organization.id,
+          pendingowners: organization.pendingowners,
+          pendingusers: organization.pendingusers
+        },
+        { id: user.id },
+        { mutateOneOrganization: swr.mutateOneOrganization }
+      )
+    })()
   }, [user, organization, swr])
 
   /**
@@ -368,7 +374,7 @@ const List = ({
    * @returns Render
    */
   const ownersRender = useCallback(
-    (owners: IFrontUsers) => (
+    (owners: IFrontUsers): JSX.Element => (
       <Avatar.Group maxCount={5}>
         {owners?.map((o) => Utils.userToAvatar(o))}
       </Avatar.Group>
@@ -382,7 +388,7 @@ const List = ({
    * @returns Render
    */
   const usersRender = useCallback(
-    (users: IFrontUsers) => (
+    (users: IFrontUsers): JSX.Element => (
       <Avatar.Group maxCount={5}>
         {users?.map((u) => Utils.userToAvatar(u))}
       </Avatar.Group>
@@ -396,7 +402,7 @@ const List = ({
    * @returns Render
    */
   const groupsRender = useCallback(
-    (groups: IFrontGroups) => (
+    (groups: IFrontGroups): JSX.Element => (
       <Avatar.Group maxCount={5}>
         {groups?.map((g) => Utils.groupToAvatar(g))}
       </Avatar.Group>
@@ -410,7 +416,7 @@ const List = ({
    * @returns Render
    */
   const actionsRender = useCallback(
-    (org: IFrontOrganizationsItem) => {
+    (org: IFrontOrganizationsItem): JSX.Element | null => {
       if (org.owners.find((o) => o.id === user.id))
         return (
           <Space wrap>
@@ -449,10 +455,12 @@ const List = ({
             />
           </Space>
         )
+      return null
     },
     [user, swr, setOrganization]
   )
 
+  // Columns
   const columns: TableColumnsType<{
     name: string
   }> = useMemo(

@@ -45,46 +45,49 @@ const Footer = ({ scroll }: IProps): JSX.Element => {
   /**
    * Scroll to features
    */
-  const scrollToFeatures = useCallback(() => scroll('features'), [scroll])
+  const scrollToFeatures = useCallback((): void => scroll('features'), [scroll])
 
   /**
    * Scroll to doc
    */
-  const scrollToDoc = useCallback(
-    () => window.open('/doc', '_blank', 'noopener'),
-    []
-  )
+  const scrollToDoc = useCallback((): void => {
+    window.open('/doc', '_blank', 'noopener')
+  }, [])
 
   /**
    * Scroll to blog
    */
-  const scrollToBlog = useCallback(
-    () => window.open('/blog', '_blank', 'noopener'),
-    []
-  )
+  const scrollToBlog = useCallback((): void => {
+    window.open('/blog', '_blank', 'noopener')
+  }, [])
 
   /**
    * Scroll to developers
    */
-  const scrollToDevelopers = useCallback(
-    () => window.open('https://github.com/Airthium', '_blank', 'noopener'),
-    []
-  )
+  const scrollToDevelopers = useCallback((): void => {
+    window.open('https://github.com/Airthium', '_blank', 'noopener')
+  }, [])
 
   /**
    * Scroll to case study
    */
-  const scrollToCaseStudy = useCallback(() => scroll('caseStudy'), [scroll])
+  const scrollToCaseStudy = useCallback(
+    (): void => scroll('caseStudy'),
+    [scroll]
+  )
 
   /**
    * Scroll to get started
    */
-  const scrollToGetStarted = useCallback(() => scroll('getStarted'), [scroll])
+  const scrollToGetStarted = useCallback(
+    (): void => scroll('getStarted'),
+    [scroll]
+  )
 
   /**
    * Scroll to about us
    */
-  const scrollToAboutUs = useCallback(() => scroll('aboutUs'), [scroll])
+  const scrollToAboutUs = useCallback((): void => scroll('aboutUs'), [scroll])
 
   // Data
   const thanks = useMemo(

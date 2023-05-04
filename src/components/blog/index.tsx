@@ -58,13 +58,13 @@ const PostCard = ({
   /**
    * On click
    */
-  const onClick = useCallback(() => {
-    router
-      .push({
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      await router.push({
         pathname: '/blog',
         query: { post: postKey }
       })
-      .catch()
+    })()
   }, [router, postKey])
 
   /**
@@ -125,8 +125,10 @@ const Blog = () => {
   /**
    * On tanatloc
    */
-  const onTanatloc = useCallback(() => {
-    router.push('/').catch()
+  const onTanatloc = useCallback((): void => {
+    ;(async () => {
+      await router.push('/')
+    })()
   }, [router])
 
   /**
@@ -157,7 +159,7 @@ const Blog = () => {
    * @param props Props
    * @returns Render
    */
-  const tagRender = useCallback((props: CustomTagProps) => {
+  const tagRender = useCallback((props: CustomTagProps): JSX.Element => {
     const { label, value, closable, onClose } = props
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault()
@@ -180,7 +182,7 @@ const Blog = () => {
    * On tags change
    * @param values Values
    */
-  const onTagsChange = useCallback((values: string[]) => {
+  const onTagsChange = useCallback((values: string[]): void => {
     setTags(values)
   }, [])
 

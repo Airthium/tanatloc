@@ -89,10 +89,13 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
    * @param name Name
    */
   const onChange = useCallback(
-    async (name: string) =>
-      _onName(organization, name, {
-        mutateOneOrganization: swr.mutateOneOrganization
-      }),
+    (name: string): void => {
+      ;(async () => {
+        await _onName(organization, name, {
+          mutateOneOrganization: swr.mutateOneOrganization
+        })
+      })()
+    },
     [organization, swr]
   )
 

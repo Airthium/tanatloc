@@ -31,12 +31,12 @@ const WebGLError = (): JSX.Element => {
   /**
    * Back
    */
-  const back = useCallback(() => router.back(), [router])
+  const back = useCallback((): void => router.back(), [router])
 
   /**
    * Chrome Windows
    */
-  const chromeWindows = useCallback(() => {
+  const chromeWindows = useCallback((): void => {
     Modal.info({
       title: 'Google Chrome (Windows)',
       content: <NoManipBrowser />
@@ -46,62 +46,52 @@ const WebGLError = (): JSX.Element => {
   /**
    * Chrome Mac/Linux
    */
-  const chromeMacLinux = useCallback(
-    () =>
-      Modal.info({
-        title: 'Google Chrome (MacOS / Linux)',
-        content: <NoManipBrowser />
-      }),
-    []
-  )
+  const chromeMacLinux = useCallback((): void => {
+    Modal.info({
+      title: 'Google Chrome (MacOS / Linux)',
+      content: <NoManipBrowser />
+    })
+  }, [])
 
   /**
    * Firefox Windows
    */
-  const firefoxWindows = useCallback(
-    () =>
-      Modal.info({
-        title: 'Firefox (Windows)',
-        content: <FirefoxWindows />
-      }),
-    []
-  )
+  const firefoxWindows = useCallback((): void => {
+    Modal.info({
+      title: 'Firefox (Windows)',
+      content: <FirefoxWindows />
+    })
+  }, [])
 
   /**
    * Firefox Mac/Linux
    */
-  const firefoxMacLinux = useCallback(
-    () =>
-      Modal.info({
-        title: 'Firefox (MacOS / Linux)',
-        content: <FirefoxMac />
-      }),
-    []
-  )
+  const firefoxMacLinux = useCallback((): void => {
+    Modal.info({
+      title: 'Firefox (MacOS / Linux)',
+      content: <FirefoxMac />
+    })
+  }, [])
 
   /**
    * Edge windows
    */
-  const edgeWindows = useCallback(
-    () =>
-      Modal.info({
-        title: 'Microsoft Edge (Windows)',
-        content: <NoManipBrowser />
-      }),
-    []
-  )
+  const edgeWindows = useCallback((): void => {
+    Modal.info({
+      title: 'Microsoft Edge (Windows)',
+      content: <NoManipBrowser />
+    })
+  }, [])
 
   /**
    * Safari Mac
    */
-  const safariMac = useCallback(
-    () =>
-      Modal.info({
-        title: 'Safari (MacOS)',
-        content: <SafariMac />
-      }),
-    []
-  )
+  const safariMac = useCallback((): void => {
+    Modal.info({
+      title: 'Safari (MacOS)',
+      content: <SafariMac />
+    })
+  }, [])
 
   /**
    * Render

@@ -73,16 +73,17 @@ const Dialog = ({
   /**
    * On Modal ok
    */
-  const onModalOk = useCallback(async () => {
-    if (!onOk) return
-
-    try {
-      const values = await form.validateFields()
-      await onOk(values)
-      form.resetFields()
-    } catch (err: any) {
-      ErrorNotification(errors.onOk, err, false)
-    }
+  const onModalOk = useCallback((): void => {
+    ;(async () => {
+      if (!onOk) return
+      try {
+        const values = await form.validateFields()
+        await onOk(values)
+        form.resetFields()
+      } catch (err: any) {
+        ErrorNotification(errors.onOk, err, false)
+      }
+    })()
   }, [form, onOk])
 
   /**
@@ -101,7 +102,7 @@ const Dialog = ({
   /**
    * On modal cancel
    */
-  const onModalCancel = useCallback(() => {
+  const onModalCancel = useCallback((): void => {
     form.resetFields()
     onCancel?.()
   }, [form, onCancel])

@@ -260,7 +260,7 @@ const run = async (
       ...configuration.run,
       error: err
     }
-    update(simulation, [
+    await update(simulation, [
       {
         key: 'scheme',
         type: 'json',
@@ -286,7 +286,7 @@ const run = async (
       ...configuration.run,
       error: err
     }
-    update(simulation, [
+    await update(simulation, [
       {
         key: 'scheme',
         type: 'json',
@@ -374,46 +374,45 @@ const run = async (
   })
 
   // Compute
-  plugin.lib
-    .computeSimulation(simulation, simulationData.scheme)
-    .then(() => {
-      configuration.run = {
-        ...configuration.run,
-        done: true
-      }
-      update(simulation, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'run'],
-          value: {
-            ...configuration.run,
-            done: true
-          }
-        }
-      ])
-    })
-    .catch((err: any) => {
-      console.error(err)
+  try {
+    await plugin.lib.computeSimulation(simulation, simulationData.scheme)
 
-      configuration.run = {
-        ...configuration.run,
-        error: err
-      }
-      update(simulation, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'run'],
-          value: {
-            ...configuration.run,
-            error: err
-          }
+    configuration.run = {
+      ...configuration.run,
+      done: true
+    }
+    await update(simulation, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...configuration.run,
+          done: true
         }
-      ])
-    })
+      }
+    ])
+  } catch (err: any) {
+    console.error(err)
+
+    configuration.run = {
+      ...configuration.run,
+      error: err
+    }
+    await update(simulation, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...configuration.run,
+          error: err
+        }
+      }
+    ])
+  }
 }
 
 /**

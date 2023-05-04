@@ -127,7 +127,7 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
    * @param values Values
    */
   const onUpdate = useCallback(
-    async (values: ILocalValues) => {
+    async (values: ILocalValues): Promise<void> => {
       setLoading(true)
       try {
         await _onUpdate(user, values, swr)

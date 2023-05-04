@@ -315,17 +315,17 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * Export CSV (tab)
    */
-  const exportCSVTab = useCallback(() => {
+  const exportCSVTab = useCallback((): void => {
     setDownloading(true)
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!, '\t')
@@ -339,7 +339,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   /**
    * Export CSV comma
    */
-  const exportCSVComma = useCallback(() => {
+  const exportCSVComma = useCallback((): void => {
     setDownloading(true)
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!, ',')
@@ -353,7 +353,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
   /**
    * Export CSV default
    */
-  const exportCSVDefault = useCallback(() => {
+  const exportCSVDefault = useCallback((): void => {
     setDownloading(true)
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!)

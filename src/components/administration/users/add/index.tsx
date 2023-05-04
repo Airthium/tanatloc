@@ -131,7 +131,7 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
    * @param values Values
    */
   const onOk = useCallback(
-    async (values: ILocalValues) => {
+    async (values: ILocalValues): Promise<void> => {
       setLoading(true)
       try {
         await _onAdd(values, swr)

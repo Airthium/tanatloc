@@ -108,19 +108,22 @@ const Registration = (): JSX.Element => {
   /**
    * On Change
    */
-  const onChange = useCallback(
-    () => _onAllowSignup(system, mutateSystem),
-    [system, mutateSystem]
-  )
+  const onChange = useCallback((): void => {
+    ;(async () => {
+      await _onAllowSignup(system, mutateSystem)
+    })()
+  }, [system, mutateSystem])
 
   /**
    * On Finish
    * @param values Values
-   * @returns
    */
   const onFinish = useCallback(
-    async (values: IFrontSystem['password']) =>
-      _onPasswordFinish(values, mutateSystem),
+    (values: IFrontSystem['password']): void => {
+      ;(async () => {
+        await _onPasswordFinish(values, mutateSystem)
+      })()
+    },
     [mutateSystem]
   )
 

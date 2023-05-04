@@ -72,12 +72,12 @@ const Add = ({ swr }: IProps): JSX.Element => {
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * On ok

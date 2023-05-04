@@ -115,7 +115,7 @@ const Delete = ({
    * Set name
    * @param u User
    */
-  const setName = useCallback((u: IUserItem) => {
+  const setName = useCallback((u: IUserItem): string => {
     if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
     else return u.email
   }, [])
@@ -123,7 +123,7 @@ const Delete = ({
   /**
    * On delete
    */
-  const onDelete = useCallback(async () => {
+  const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
       await _onDelete(user, organization, dBkey, swr)

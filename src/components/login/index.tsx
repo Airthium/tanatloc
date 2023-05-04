@@ -52,7 +52,7 @@ export const _onLogin = async (
   if (loggedUser.ok) {
     // Logged
     await mutateUser({ id: loggedUser.id })
-    router.push('/dashboard').catch()
+    await router.push('/dashboard').catch()
   } else {
     // Bad
     throw new APIError({ title: errors.credentials, type: 'warning' })
@@ -76,16 +76,17 @@ const Login = (): JSX.Element => {
 
   // Electron
   useEffect(() => {
-    if (isElectron()) {
-      login({
-        email: 'admin',
-        password: 'password'
-      })
-        .then(() => {
-          router.push('/dashboard').catch()
-        })
-        .catch()
-    }
+    ;(async () => {
+      if (isElectron()) {
+        try {
+          await login({
+            email: 'admin',
+            password: 'password'
+          })
+          await router.push('/dashboard')
+        } catch (err) {}
+      }
+    })()
   }, [router])
 
   // Error
@@ -95,27 +96,35 @@ const Login = (): JSX.Element => {
 
   // Already connected
   useEffect(() => {
-    if (user) router.push('/dashboard').catch()
+    ;(async () => {
+      if (user) await router.push('/dashboard')
+    })()
   }, [user, router])
 
   /**
    * Signup
    */
-  const signup = useCallback(() => router.push('/signup').catch(), [router])
+  const signup = useCallback((): void => {
+    ;(async () => {
+      await router.push('/signup')
+    })()
+  }, [router])
 
   /**
    * On finish
    * @param values Values
    */
   const onFinish = useCallback(
-    async (values: { email: string; password: string }): Promise<void> => {
-      setLoading(true)
-      try {
-        await _onLogin(router, values, mutateUser)
-      } catch (err) {
-        setFormError(err as APIError)
-        setLoading(false)
-      }
+    (values: { email: string; password: string }): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          await _onLogin(router, values, mutateUser)
+        } catch (err) {
+          setFormError(err as APIError)
+          setLoading(false)
+        }
+      })()
     },
     [router, mutateUser]
   )

@@ -36,7 +36,9 @@ const NotFound = (): JSX.Element => {
 
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      router.push('/webgl').catch()
+      ;(async () => {
+        await router.push('/webgl')
+      })()
       return
     }
 
@@ -246,10 +248,10 @@ const NotFound = (): JSX.Element => {
   /**
    * Home
    */
-  const home = useCallback(async (): Promise<void> => {
-    try {
+  const home = useCallback((): void => {
+    ;(async () => {
       await router.push('/')
-    } catch (err) {}
+    })()
   }, [router])
 
   /**

@@ -199,12 +199,12 @@ const Archive = ({
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * On archive
@@ -225,16 +225,18 @@ const Archive = ({
   /**
    * On unarchive (from server)
    */
-  const onUnarchiveServer = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    try {
-      await _onUnarchiveServer(workspace, project, swr)
+  const onUnarchiveServer = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _onUnarchiveServer(workspace, project, swr)
 
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      setLoading(false)
-    }
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+      }
+    })()
   }, [workspace, project, swr])
 
   /**
@@ -242,10 +244,12 @@ const Archive = ({
    * @param info Info
    */
   const onUpload = useCallback(
-    async (info: UploadChangeParam<UploadFile<any>>): Promise<void> => {
-      const load = await _onUpload(workspace, project, info, swr)
-      setLoading(load)
-      setVisible(load)
+    (info: UploadChangeParam<UploadFile<any>>): void => {
+      ;(async () => {
+        const load = await _onUpload(workspace, project, info, swr)
+        setLoading(load)
+        setVisible(load)
+      })()
     },
     [workspace, project, swr]
   )
@@ -254,7 +258,7 @@ const Archive = ({
    * On archive delete
    */
   const onArchiveDelete = useCallback(
-    async () => _onArchiveDelete(project),
+    async (): Promise<void> => _onArchiveDelete(project),
     [project]
   )
 

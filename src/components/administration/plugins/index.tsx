@@ -97,8 +97,11 @@ const Plugin = ({
    * @param e Event
    */
   const onChange = useCallback(
-    async (e: CheckboxChangeEvent) =>
-      _onChange(system, plugin, e.target.checked, swr),
+    (e: CheckboxChangeEvent): void => {
+      ;(async () => {
+        await _onChange(system, plugin, e.target.checked, swr)
+      })()
+    },
     [plugin, system, swr]
   )
 
@@ -125,13 +128,15 @@ const Plugins = () => {
 
   // Plugins list
   useEffect(() => {
-    PluginsAPI.completeList()
-      .then((list) => {
+    ;(async () => {
+      try {
+        const list = await PluginsAPI.completeList()
+
         setPlugins(list)
-      })
-      .catch((err) => {
+      } catch (err: any) {
         ErrorNotification(errors.plugins, err)
-      })
+      }
+    })()
   }, [])
 
   /**
@@ -171,7 +176,7 @@ const Plugins = () => {
   /**
    * On resize
    */
-  const onResize = useCallback(() => {
+  const onResize = useCallback((): void => {
     const table = tableRef.current
     /* istanbul ignore next */
     if (!table) return

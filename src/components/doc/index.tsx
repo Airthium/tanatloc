@@ -39,113 +39,115 @@ const Doc = () => {
    * On tanatloc
    */
   const onTanatloc = useCallback(() => {
-    router.push('/').catch()
+    ;(async () => {
+      await router.push('/')
+    })()
   }, [router])
+
+  /**
+   * On router
+   * @param route Route
+   */
+  const onRouter = useCallback(
+    (route: {
+      pathname: string
+      query?: { section: string; tab?: string }
+    }): void => {
+      ;(async () => {
+        await router.push(route)
+      })()
+    },
+    [router]
+  )
 
   /**
    * On menu click
    * @param param { keyPath }
    */
   const onMenuClick = useCallback(
-    ({ keyPath }: { keyPath: string[] }) => {
+    ({ keyPath }: { keyPath: string[] }): void => {
       let key = keyPath.pop()
       if (key === 'rc-menu-more') key = keyPath.pop()
       const subKey = keyPath.pop()
 
       switch (key) {
         case 'installation':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'installation',
-                tab: subKey
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'installation',
+              tab: subKey
+            }
+          })
           setContent(<Installation />)
           break
         case 'changelog':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'changelog'
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'changelog'
+            }
+          })
           setContent(<CHANGELOG />)
           break
         case 'workflow':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'workflow'
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'workflow'
+            }
+          })
           setContent(<Workflow />)
           break
         case 'dashboard':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'dashboard',
-                tab: subKey
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'dashboard',
+              tab: subKey
+            }
+          })
           setContent(<Dashboard />)
           break
         case 'project':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'project',
-                tab: subKey
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'project',
+              tab: subKey
+            }
+          })
           setContent(<Project />)
           break
         case 'modelEditor':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'modelEditor',
-                tab: subKey
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'modelEditor',
+              tab: subKey
+            }
+          })
           setContent(<Editor />)
           break
         case 'plugins':
-          router
-            .push({
-              pathname: '/doc',
-              query: {
-                section: 'plugins',
-                tab: subKey
-              }
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc',
+            query: {
+              section: 'plugins',
+              tab: subKey
+            }
+          })
           setContent(<Plugins />)
           break
         default:
-          router
-            .push({
-              pathname: '/doc'
-            })
-            .catch()
+          onRouter({
+            pathname: '/doc'
+          })
           setContent(undefined)
           break
       }
     },
-    [router]
+    [onRouter]
   )
 
   // Init

@@ -25,8 +25,8 @@ export interface IProps {
   style?: CSSProperties
   defaultValue?: string | number
   defaultChecked?: boolean
-  onValueChange: (value: string) => void | Promise<void>
-  onCheckedChange?: (value: boolean) => void | Promise<void>
+  onValueChange: (value: string) => void
+  onCheckedChange?: (value: boolean) => void
   unit?: string
 }
 
@@ -86,11 +86,11 @@ const Formula = ({
    * @param event
    */
   const onCheckboxChange = useCallback(
-    async (event: CheckboxChangeEvent): Promise<void> => {
+    (event: CheckboxChangeEvent): void => {
       const currentChecked = event.target.checked
       setInternalChecked(currentChecked)
 
-      await onCheckedChange?.(currentChecked)
+      onCheckedChange?.(currentChecked)
 
       setDisabled(!currentChecked)
     },
@@ -104,8 +104,8 @@ const Formula = ({
   const onValueChangeDelayed = useCallback(
     (value: string): void => {
       if (autoSave) clearTimeout(autoSave)
-      const id = setTimeout(async () => {
-        await onValueChange(value)
+      const id = setTimeout(() => {
+        onValueChange(value)
         setSaving(false)
       }, saveDelay)
       setAutoSave(+id)

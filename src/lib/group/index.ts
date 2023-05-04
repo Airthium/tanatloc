@@ -24,7 +24,7 @@ const add = async (
   const newGroup = await GroupDB.add(organization, group)
 
   // Add group to organization
-  Organization.update(organization, [
+  await Organization.update(organization, [
     {
       key: 'groups',
       type: 'array',

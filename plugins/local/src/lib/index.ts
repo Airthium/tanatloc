@@ -77,12 +77,16 @@ const init = async (
  * @param tasks Tasks
  */
 const updateTasks = (id: string, tasks: ISimulationTask[]): void => {
-  SimulationDB.update({ id }, [
-    {
-      key: 'tasks',
-      value: tasks
-    }
-  ]).catch()
+  ;(async () => {
+    try {
+      await SimulationDB.update({ id }, [
+        {
+          key: 'tasks',
+          value: tasks
+        }
+      ])
+    } catch (err) {}
+  })()
 }
 
 /**
@@ -461,14 +465,16 @@ const computeSimulation = async (
     const code = await Services.freefem(
       simulationPath,
       path.join(runPath, id + '.edp'),
-      async ({ pid, error }) => {
-        simulationTask.status = 'process'
+      ({ pid, error }) => {
+        ;(async ({ pid, error }) => {
+          simulationTask.status = 'process'
 
-        pid && (simulationTask.pid = pid)
+          pid && (simulationTask.pid = pid)
 
-        error && (simulationTask.error += 'Error: ' + error + '\n')
+          error && (simulationTask.error += 'Error: ' + error + '\n')
 
-        if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+          if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+        })({ pid, error })
       },
       freefemPath
     )
@@ -509,8 +515,8 @@ const monitoring = async (
   tasks: ISimulationTask[],
   simulationTask: ISimulationTask
 ): Promise<void> => {
-  checkResults(id, simulationTask)
-  checkDatas(id, simulationTask)
+  await checkResults(id, simulationTask)
+  await checkDatas(id, simulationTask)
 
   const simulationPath = path.join(SIMULATION, id)
   await stopProcess(id, simulationPath, simulationTask, () =>
@@ -633,7 +639,7 @@ const stopProcess = async (
   update: () => void
 ): Promise<void> => {
   if (interval[id]) {
-    clearIntervalAsync(interval[id])
+    await clearIntervalAsync(interval[id])
     delete interval[id]
   }
 
@@ -838,7 +844,7 @@ const processDatas = async (
  */
 const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
   if (interval[id]) {
-    clearIntervalAsync(interval[id])
+    await clearIntervalAsync(interval[id])
     delete interval[id]
   }
 

@@ -95,12 +95,12 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * On key up
@@ -129,16 +129,14 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         setVisible(false)
 
         // Open project
-        router
-          .push({
-            pathname: '/project',
-            query: {
-              page: 'workspaces',
-              workspaceId: workspace.id,
-              projectId: newProject.id
-            }
-          })
-          .catch()
+        await router.push({
+          pathname: '/project',
+          query: {
+            page: 'workspaces',
+            workspaceId: workspace.id,
+            projectId: newProject.id
+          }
+        })
       } catch (err) {
         setLoading(false)
         throw err

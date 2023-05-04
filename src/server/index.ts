@@ -22,18 +22,21 @@ init().catch((err) => {
 })
 
 // Server
-app.prepare().then(() => {
-  createServer((req, res) => {
-    const parsedUrl = parse(req.url!, true)
-    handle(req, res, parsedUrl)
-  }).listen(port)
+app
+  .prepare()
+  .then(() => {
+    createServer((req, res) => {
+      const parsedUrl = parse(req.url!, true)
+      handle(req, res, parsedUrl).catch(console.error)
+    }).listen(port)
 
-  console.info(
-    `> Server listening at http://localhost:${port} as ${
-      dev ? 'development' : process.env.NODE_ENV
-    }`
-  )
-})
+    console.info(
+      `> Server listening at http://localhost:${port} as ${
+        dev ? 'development' : process.env.NODE_ENV
+      }`
+    )
+  })
+  .catch(console.error)
 
 // Clean
 const handleExit = (code: number): void => {

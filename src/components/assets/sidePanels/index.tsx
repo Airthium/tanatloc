@@ -44,7 +44,7 @@ export const Divider = ({
   /**
    * On mouse down
    */
-  const onMouseDown = useCallback(() => {
+  const onMouseDown = useCallback((): void => {
     setActivated(true)
   }, [])
 
@@ -65,7 +65,7 @@ export const Divider = ({
   /**
    * On mouse up
    */
-  const onMouseUp = useCallback(() => {
+  const onMouseUp = useCallback((): void => {
     setActivated(false)
   }, [])
 

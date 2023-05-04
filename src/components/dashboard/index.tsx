@@ -118,11 +118,11 @@ const Dashboard = () => {
   /**
    * On logout
    */
-  const onLogout = useCallback(async () => {
+  const onLogout = useCallback(async (): Promise<void> => {
     try {
       await logout()
-      clearUser()
-      router.push('/').catch()
+      await clearUser()
+      await router.push('/')
     } catch (err: any) {
       ErrorNotification(errors.logout, err)
     }
@@ -133,13 +133,13 @@ const Dashboard = () => {
    * @param key Key
    */
   const onSelect = useCallback(
-    (key: string): void => {
+    async (key: string): Promise<void> => {
       setCurrentKey(key)
 
-      if (key === menuItems.logout.key) onLogout()
-      else if (key === menuItems.editor.key) router.push('/editor').catch()
+      if (key === menuItems.logout.key) await onLogout()
+      else if (key === menuItems.editor.key) await router.push('/editor')
       else {
-        router.replace({
+        await router.replace({
           pathname: '/dashboard',
           query: { page: key }
         })
@@ -154,32 +154,38 @@ const Dashboard = () => {
    */
   const onMenuClick = useCallback(
     ({ keyPath }: { keyPath: string[] }): void => {
-      const key = keyPath.pop()
-      onSelect(key!)
+      ;(async () => {
+        const key = keyPath.pop()
+        await onSelect(key!)
+      })()
     },
     [onSelect]
   )
 
   // Not logged -> go to login page
   useCustomEffect(() => {
-    if (isElectron()) {
-      login({
-        email: 'admin',
-        password: 'password'
-      }).catch()
-    } else if (!loadingUser && !user) router.replace('/')
+    ;(async () => {
+      if (isElectron()) {
+        await login({
+          email: 'admin',
+          password: 'password'
+        })
+      } else if (!loadingUser && !user) await router.replace('/')
+    })()
   }, [user, loadingUser, router])
 
   // Page effect, only on mount
   useCustomEffect(
     () => {
-      const params = new URLSearchParams(window.location.search)
-      const page = params.get('page')
+      ;(async () => {
+        const params = new URLSearchParams(window.location.search)
+        const page = params.get('page')
 
-      if (page) setCurrentKey(page)
-      else {
-        onSelect(menuItems.workspaces.key)
-      }
+        if (page) setCurrentKey(page)
+        else {
+          await onSelect(menuItems.workspaces.key)
+        }
+      })()
     },
     [router],
     [onSelect]
@@ -198,7 +204,6 @@ const Dashboard = () => {
    */
   if (!user || loadingUser || loadingOrganizations || loadingWorkspaces)
     return <Loading />
-
   return (
     <Layout className={style.dashboard}>
       <Updater />

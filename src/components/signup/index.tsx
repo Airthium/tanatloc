@@ -56,14 +56,14 @@ export const _onSignup = async (
       title: errors.alreadyExists,
       render: (
         <>
-          We know you! <a onClick={() => _onLogin(router)}>Log in ?</a>
+          We know you! <a onClick={() => _onLogin(router)}>Log in?</a>
         </>
       ),
       type: 'warning'
     })
 
-  if (TOKEN) router.push('/signup/send').catch()
-  else router.push('/login').catch()
+  if (TOKEN) await router.push('/signup/send').catch()
+  else await router.push('/login').catch()
 }
 
 /**
@@ -71,7 +71,9 @@ export const _onSignup = async (
  * @param router Router
  */
 export const _onLogin = (router: NextRouter): void => {
-  router.push('/login').catch()
+  ;(async () => {
+    await router.push('/login').catch()
+  })()
 }
 
 /**
@@ -96,7 +98,9 @@ const Signup = (): JSX.Element => {
 
   // Already connected
   useEffect(() => {
-    if (user) router.push('/dashboard').catch()
+    ;(async () => {
+      if (user) await router.push('/dashboard')
+    })()
   }, [user, router])
 
   /**
@@ -104,15 +108,17 @@ const Signup = (): JSX.Element => {
    * @param values Values
    */
   const onFinish = useCallback(
-    async (values: { email: string; password: string }): Promise<void> => {
-      setLoading(true)
-      try {
-        await _onSignup(router, values)
-      } catch (err: any) {
-        setFormError(err)
-      } finally {
-        setLoading(false)
-      }
+    (values: { email: string; password: string }): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          await _onSignup(router, values)
+        } catch (err: any) {
+          setFormError(err)
+        } finally {
+          setLoading(false)
+        }
+      })()
     },
     [router]
   )

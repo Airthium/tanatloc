@@ -99,8 +99,14 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
     []
   )
 
+  /**
+   * Actions render
+   * @param _ Unused
+   * @param group Group
+   * @returns Render
+   */
   const actionsRender = useCallback(
-    (_: any, group: IFrontGroupsItem) => (
+    (_: any, group: IFrontGroupsItem): JSX.Element => (
       <Space>
         <Group
           userOptions={userOptions}

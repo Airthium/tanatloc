@@ -120,14 +120,16 @@ const TanatlocModel = ({
   /**
    * On click
    */
-  const onClick = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    try {
-      await _onTanatlocLoad(model, dispatch)
-    } finally {
-      setLoading(false)
-      setVisible(false)
-    }
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _onTanatlocLoad(model, dispatch)
+      } finally {
+        setLoading(false)
+        setVisible(false)
+      }
+    })()
   }, [model, setLoading, setVisible, dispatch])
 
   /**
@@ -164,14 +166,16 @@ const UserModel = ({
   /**
    * On click
    */
-  const onClick = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    try {
-      await _onMyLoad(model, template, dispatch)
-    } finally {
-      setLoading(false)
-      setVisible(false)
-    }
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _onMyLoad(model, template, dispatch)
+      } finally {
+        setLoading(false)
+        setVisible(false)
+      }
+    })()
   }, [model, template, setLoading, setVisible, dispatch])
 
   /**

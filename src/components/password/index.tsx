@@ -62,7 +62,7 @@ export const _onFinish = async (
       password: values.password
     })
 
-    router.push('/login').catch()
+    await router.push('/login').catch()
   } catch (err: any) {
     throw new APIError({ title: errors.internal, err })
   }
@@ -87,18 +87,22 @@ const PasswordRecovery = (): JSX.Element => {
 
   // Check link type
   useEffect(() => {
-    if (id) {
-      LinkAPI.get(id, ['type', 'email'])
-        .then((res) => {
-          if (res.type === PASSWORD_RECOVERY) {
-            setLinkEmail(res.email)
-            setChecking(false)
-          } else {
-            ErrorNotification(errors.wrongLink)
-          }
-        })
-        .catch((err) => ErrorNotification(errors.internal, err))
-    }
+    ;(async () => {
+      if (!id) return
+
+      try {
+        const link = await LinkAPI.get(id, ['type', 'email'])
+
+        if (link.type === PASSWORD_RECOVERY) {
+          setLinkEmail(link.email)
+          setChecking(false)
+        } else {
+          ErrorNotification(errors.wrongLink)
+        }
+      } catch (err: any) {
+        ErrorNotification(errors.internal, err)
+      }
+    })()
   }, [id])
 
   /**
@@ -106,14 +110,16 @@ const PasswordRecovery = (): JSX.Element => {
    * @param values Values
    */
   const onFinish = useCallback(
-    async (values: ILocalValues): Promise<void> => {
-      setLoading(true)
-      try {
-        await _onFinish(router, linkEmail!, id!, values)
-      } catch (err: any) {
-        setFormError(err)
-        setLoading(false)
-      }
+    (values: ILocalValues): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          await _onFinish(router, linkEmail!, id!, values)
+        } catch (err: any) {
+          setFormError(err)
+          setLoading(false)
+        }
+      })()
     },
     [router, linkEmail, id]
   )

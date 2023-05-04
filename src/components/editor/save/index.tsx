@@ -181,10 +181,12 @@ const Save = ({ user, swr }: IProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    await _onSave(user, swr, model, template)
-    setLoading(false)
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      await _onSave(user, swr, model, template)
+      setLoading(false)
+    })()
   }, [user, model, template, swr])
 
   /**

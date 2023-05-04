@@ -257,7 +257,7 @@ const Share = ({
    */
   const dashboard = useCallback((): void => {
     ;(async () => {
-      router.push({
+      await router.push({
         pathname: '/dashboard',
         query: { page: 'organizations' }
       })
@@ -339,17 +339,17 @@ const Share = ({
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * On ok
    */
-  const onOk = useCallback(async () => {
+  const onOk = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
       await _onShare(workspace, project, groupsSelected, usersSelected, swr)

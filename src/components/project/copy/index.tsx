@@ -74,8 +74,10 @@ const Copy = ({ workspace, project, swr }: IProps): JSX.Element => {
   /**
    * On copy
    */
-  const onCopy = useCallback(() => {
-    _onCopy(workspace, project, swr)
+  const onCopy = useCallback((): void => {
+    ;(async () => {
+      await _onCopy(workspace, project, swr)
+    })()
   }, [workspace, project, swr])
 
   /**

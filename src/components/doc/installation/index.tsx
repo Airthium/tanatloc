@@ -65,26 +65,23 @@ const Desktop = (): JSX.Element => {
   /**
    * On download Windows
    */
-  const onDownloadWindows = useCallback(
-    () => window.open(release?.exe),
-    [release]
-  )
+  const onDownloadWindows = useCallback((): void => {
+    window.open(release?.exe)
+  }, [release])
 
   /**
    * On download MacOS
    */
-  const onDownloadMacOS = useCallback(
-    () => window.open(release?.dmg),
-    [release]
-  )
+  const onDownloadMacOS = useCallback((): void => {
+    window.open(release?.dmg)
+  }, [release])
 
   /**
    * On download Linux
    */
-  const onDownloadLinux = useCallback(
-    () => window.open(release?.appImage),
-    [release]
-  )
+  const onDownloadLinux = useCallback((): void => {
+    window.open(release?.appImage)
+  }, [release])
 
   /**
    * Render
@@ -493,15 +490,15 @@ const Installation = (): JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      router
-        .push({
+      ;(async () => {
+        await router.push({
           pathname: '/doc',
           query: {
             section: 'installation',
             tab: key
           }
         })
-        .catch()
+      })()
     },
     [router]
   )

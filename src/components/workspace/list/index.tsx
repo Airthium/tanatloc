@@ -73,7 +73,7 @@ export const _onOk = async (
     // Mutate
     await swr.addOneWorkspace(workspace)
 
-    router
+    await router
       .push({
         pathname: '/dashboard',
         query: { page: 'workspaces', workspaceId: workspace.id }
@@ -117,14 +117,14 @@ const WorkspacesList = ({
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => {
+  const setVisibleTrue = useCallback((): void => {
     setVisible(true)
   }, [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => {
+  const setVisibleFalse = useCallback((): void => {
     setVisible(false)
   }, [])
 
@@ -133,13 +133,13 @@ const WorkspacesList = ({
    * @param activeKey Active key
    */
   const onChange = useCallback(
-    (activeKey: string) => {
-      router
-        .push({
+    (activeKey: string): void => {
+      ;(async () => {
+        await router.push({
           pathname: '/dashboard',
           query: { page: 'workspaces', workspaceId: activeKey }
         })
-        .catch()
+      })()
     },
     [router]
   )
@@ -149,7 +149,7 @@ const WorkspacesList = ({
    * @param values Values
    */
   const onOk = useCallback(
-    async (values: Pick<IFrontWorkspacesItem, 'name'>) => {
+    async (values: Pick<IFrontWorkspacesItem, 'name'>): Promise<void> => {
       setLoading(true)
       try {
         await _onOk(router, values, swr)

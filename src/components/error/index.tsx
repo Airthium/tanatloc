@@ -30,7 +30,7 @@ function ErrorPage({ webStatusCode }: IProps): JSX.Element {
   /**
    * Reload
    */
-  const reload = useCallback(() => router.reload(), [router])
+  const reload = useCallback((): void => router.reload(), [router])
 
   // Render
   let render: JSX.Element

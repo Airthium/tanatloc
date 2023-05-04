@@ -169,7 +169,7 @@ const GeometryElementCard = ({
       label: number
       name: string
       color?: TGeometryColor
-    }) => {
+    }): boolean => {
       // Color filter
       if (
         filter &&
@@ -236,7 +236,7 @@ const GeometryElementCard = ({
    * On mouse enter
    */
   const onMouseEnter = useCallback(
-    () =>
+    (): void =>
       onHighlight({
         uuid: element.uuid,
         label: element.label
@@ -248,7 +248,7 @@ const GeometryElementCard = ({
    * On click
    */
   const onClick = useCallback(
-    () =>
+    (): void =>
       onSelect({
         uuid: element.uuid,
         label: element.label

@@ -105,7 +105,7 @@ const Result = ({
    * On click
    */
   const onClick = useCallback(
-    () =>
+    (): void =>
       setResult(
         postprocessing?.fileName === result.fileName &&
           postprocessing?.name === result.name
@@ -294,30 +294,32 @@ const Postprocessing = ({
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * On finish
    * @param values Values
    */
   const onFinish = useCallback(
-    async (values: { parameters: string[] }): Promise<void> => {
-      setLoading(true)
-      try {
-        const newResults = await _run(
-          { id: simulation!.id },
-          result,
-          filter!,
-          values.parameters ?? []
-        )
-        setCurrent({ filter: filter!, results: newResults })
-      } catch (err) {}
-      setLoading(false)
+    (values: { parameters: string[] }): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          const newResults = await _run(
+            { id: simulation!.id },
+            result,
+            filter!,
+            values.parameters ?? []
+          )
+          setCurrent({ filter: filter!, results: newResults })
+        } catch (err) {}
+        setLoading(false)
+      })()
     },
     [simulation, result, filter]
   )

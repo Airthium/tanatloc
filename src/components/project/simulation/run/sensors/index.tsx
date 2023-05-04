@@ -53,7 +53,7 @@ const Sensors = ({
   /**
    * on add
    */
-  const onAdd = useCallback(() => {
+  const onAdd = useCallback((): void => {
     setResults([])
     setPostprocessing(undefined)
     setSensor(undefined)
@@ -66,7 +66,7 @@ const Sensors = ({
    * @param sensor Sensor
    */
   const onEdit = useCallback(
-    (toEdit: IModelSensor & { index: number }) => {
+    (toEdit: IModelSensor & { index: number }): void => {
       setResults([])
       setPostprocessing(undefined)
       setSensor(toEdit)
@@ -79,7 +79,7 @@ const Sensors = ({
   /**
    * On close
    */
-  const onClose = useCallback(() => {
+  const onClose = useCallback((): void => {
     setSensor(undefined)
     setVisible(true)
     setSensorVisible(false)

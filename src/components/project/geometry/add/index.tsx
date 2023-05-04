@@ -124,14 +124,16 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
    * @param info Info
    */
   const onChange = useCallback(
-    async (info: UploadChangeParam<UploadFile<any>>): Promise<void> => {
-      try {
-        const load = await _onUpload(project, info, swr)
-        setLoading(load)
-        setVisible(load)
-      } catch (err) {
-        setLoading(false)
-      }
+    (info: UploadChangeParam<UploadFile<any>>): void => {
+      ;(async () => {
+        try {
+          const load = await _onUpload(project, info, swr)
+          setLoading(load)
+          setVisible(load)
+        } catch (err) {
+          setLoading(false)
+        }
+      })()
     },
     [project, swr, setVisible]
   )

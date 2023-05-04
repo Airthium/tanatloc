@@ -119,7 +119,7 @@ const archive = async (simulation: { id: string }): Promise<ReadStream> => {
     output.on('close', resolve)
 
     // Finalize
-    zip.finalize()
+    zip.finalize().catch(console.error)
   })
 
   // Read stream

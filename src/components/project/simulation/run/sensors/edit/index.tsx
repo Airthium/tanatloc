@@ -102,38 +102,40 @@ const Edit = ({
   /**
    * On edit
    */
-  const onEdit = useCallback(async () => {
-    setLoading(true)
-    try {
-      // Check
-      if (!sensor.name) {
-        onError(errors.name)
+  const onEdit = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        // Check
+        if (!sensor.name) {
+          onError(errors.name)
+          setLoading(false)
+          return
+        }
+
+        if (!sensor.point) {
+          onError(errors.point)
+          setLoading(false)
+          return
+        }
+
+        if (!sensor.formula) {
+          onError(errors.formula)
+          setLoading(false)
+          return
+        }
+
+        onError()
+
+        await _onEdit(simulation, sensor as IModelSensor, swr)
+
+        // Close
         setLoading(false)
-        return
-      }
-
-      if (!sensor.point) {
-        onError(errors.point)
+        onClose()
+      } catch (err) {
         setLoading(false)
-        return
       }
-
-      if (!sensor.formula) {
-        onError(errors.formula)
-        setLoading(false)
-        return
-      }
-
-      onError()
-
-      await _onEdit(simulation, sensor as IModelSensor, swr)
-
-      // Close
-      setLoading(false)
-      onClose()
-    } catch (err) {
-      setLoading(false)
-    }
+    })()
   }, [simulation, sensor, onError, onClose, swr])
 
   /**

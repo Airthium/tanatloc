@@ -355,8 +355,11 @@ const DirectItem = ({
    * @param value Value
    */
   const onChange = useCallback(
-    async (value: string): Promise<void> =>
-      await _onChange(simulation, index, value, swr),
+    (value: string): void => {
+      ;(async () => {
+        await _onChange(simulation, index, value, swr)
+      })()
+    },
     [simulation, index, swr]
   )
 
@@ -426,10 +429,12 @@ const Initialization = ({
 
   // Results
   useCustomEffect(() => {
-    if (couplingSimulation)
-      _loadResults(simulations, couplingSimulation.id).then((results) =>
+    ;(async () => {
+      if (couplingSimulation) {
+        const results = await _loadResults(simulations, couplingSimulation.id)
         setCouplingResults(results)
-      )
+      }
+    })()
   }, [simulations, couplingSimulation])
 
   // Build selector
@@ -464,15 +469,17 @@ const Initialization = ({
    * @param value Value
    */
   const onCouplingChange = useCallback(
-    async (value: string): Promise<void> => {
-      setLoading(true)
-      try {
-        await _onCouplingChange(simulations, simulation, value, swr)
-        setSimulation(value)
-      } catch (err) {
-      } finally {
-        setLoading(false)
-      }
+    (value: string): void => {
+      ;(async () => {
+        setLoading(true)
+        try {
+          await _onCouplingChange(simulations, simulation, value, swr)
+          setSimulation(value)
+        } catch (err) {
+        } finally {
+          setLoading(false)
+        }
+      })()
     },
     [simulations, simulation, swr, setSimulation]
   )
@@ -483,28 +490,35 @@ const Initialization = ({
    * @param option Option
    */
   const onCouplingResultChange = useCallback(
-    async (
+    (
       value: string,
       option:
         | { label: string; value: string; file: string }
         | { label: string; value: string; file: string }[]
-    ): Promise<void> => {
-      _onCouplingResultChange(
-        simulation,
-        value,
-        option as { label: string; value: string; file: string },
-        swr
-      )
+    ): void => {
+      ;(async () => {
+        await _onCouplingResultChange(
+          simulation,
+          value,
+          option as { label: string; value: string; file: string },
+          swr
+        )
+      })()
     },
     [simulation, swr]
   )
 
-  // Render coupling
+  /**
+   * Render coupling
+   * @param options Options
+   * @param filter Filter
+   * @returns Render
+   */
   const renderCoupling = useCallback(
     (
       options: { label: string; value: string; disabled: boolean }[],
       filter?: any
-    ) => (
+    ): JSX.Element => (
       <>
         <Typography.Text>
           If you use coupling, the selected simulation mesh will be used, at
@@ -553,12 +567,16 @@ const Initialization = ({
     ]
   )
 
-  // Render direct
+  /**
+   * Render direct
+   * @param direct Direct
+   * @returns Render
+   */
   const renderDirect = useCallback(
     (direct: {
       label: string
       children: IModelInitializationDirectChild[]
-    }) => (
+    }): JSX.Element => (
       <Space direction="vertical" className={globalStyle.fullWidth}>
         {direct.children.map((child, index) => {
           if (dimension === 2 && child.only3D) return
@@ -632,11 +650,13 @@ const Initialization = ({
    * @param key Key
    */
   const onChange = useCallback(
-    async (key: TInitializationKey) => {
-      try {
-        await _onSelectorChange(simulation, key, swr)
-        setCurrentKey(key)
-      } catch (err) {}
+    (key: TInitializationKey): void => {
+      ;(async () => {
+        try {
+          await _onSelectorChange(simulation, key, swr)
+          setCurrentKey(key)
+        } catch (err) {}
+      })()
     },
     [simulation, swr]
   )

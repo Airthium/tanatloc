@@ -249,23 +249,27 @@ const Run = ({
   /**
    * On run click
    */
-  const onRunClick = useCallback(async () => {
-    setRunning(true)
-    try {
-      await _onRun(simulation)
-    } catch (err) {
-      setRunning(false)
-    }
+  const onRunClick = useCallback((): void => {
+    ;(async () => {
+      setRunning(true)
+      try {
+        await _onRun(simulation)
+      } catch (err) {
+        setRunning(false)
+      }
+    })()
   }, [simulation])
 
   /**
    * On stop click
    */
-  const onStopClick = useCallback(async () => {
-    try {
-      await _onStop(simulation)
-      setRunning(false)
-    } catch (err) {}
+  const onStopClick = useCallback((): void => {
+    ;(async () => {
+      try {
+        await _onStop(simulation)
+        setRunning(false)
+      } catch (err) {}
+    })()
   }, [simulation])
 
   /**

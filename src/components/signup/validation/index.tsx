@@ -32,21 +32,27 @@ const Validation = (): JSX.Element => {
 
   // Link
   useEffect(() => {
-    if (id) {
-      LinkAPI.get(id, ['type'])
-        .then((res) => {
-          if (res.type === SUBSCRIBE || res.type === REVALIDATE) {
-            LinkAPI.process(id)
-              .then(() => {
-                router.push('/login').catch()
-              })
-              .catch((err) => ErrorNotification(errors.internal, err))
-          } else {
-            ErrorNotification(errors.wrongLink)
+    ;(async () => {
+      if (!id) return
+
+      try {
+        const link = await LinkAPI.get(id, ['type'])
+
+        if (link.type === SUBSCRIBE || link.type === REVALIDATE) {
+          try {
+            await LinkAPI.process(id)
+
+            await router.push('/login').catch()
+          } catch (err: any) {
+            ErrorNotification(errors.internal, err)
           }
-        })
-        .catch((err) => ErrorNotification(errors.internal, err))
-    }
+        } else {
+          ErrorNotification(errors.wrongLink)
+        }
+      } catch (err: any) {
+        ErrorNotification(errors.internal, err)
+      }
+    })()
   }, [id, router])
 
   /**

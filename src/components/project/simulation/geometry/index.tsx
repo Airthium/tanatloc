@@ -203,23 +203,25 @@ const Geometry = ({
 
   // Auto select
   useCustomEffect(() => {
-    if (!multiple && !geometryId && geometries.length) {
-      _onSelect(
-        simulation,
-        loadedGeometries,
-        geometries[0].id,
-        setGeometries,
-        swr
-      )
-    } else if (multiple && !geometriesIds && geometries.length) {
-      _onMultipleSelect(
-        simulation,
-        loadedGeometries,
-        geometries.map((geometry) => geometry.id),
-        setGeometries,
-        swr
-      )
-    }
+    ;(async () => {
+      if (!multiple && !geometryId && geometries.length) {
+        await _onSelect(
+          simulation,
+          loadedGeometries,
+          geometries[0].id,
+          setGeometries,
+          swr
+        )
+      } else if (multiple && !geometriesIds && geometries.length) {
+        await _onMultipleSelect(
+          simulation,
+          loadedGeometries,
+          geometries.map((geometry) => geometry.id),
+          setGeometries,
+          swr
+        )
+      }
+    })()
   }, [multiple, geometryId, geometriesIds, loadedGeometries, geometries, swr])
 
   /**
@@ -228,21 +230,23 @@ const Geometry = ({
    */
   const onChange = useCallback(
     (value: string | string[]): void => {
-      multiple
-        ? _onMultipleSelect(
-            simulation,
-            loadedGeometries,
-            value as string[],
-            setGeometries,
-            swr
-          )
-        : _onSelect(
-            simulation,
-            loadedGeometries,
-            value as string,
-            setGeometries,
-            swr
-          )
+      ;(async () => {
+        multiple
+          ? await _onMultipleSelect(
+              simulation,
+              loadedGeometries,
+              value as string[],
+              setGeometries,
+              swr
+            )
+          : await _onSelect(
+              simulation,
+              loadedGeometries,
+              value as string,
+              setGeometries,
+              swr
+            )
+      })()
     },
     [multiple, loadedGeometries, simulation, setGeometries, swr]
   )

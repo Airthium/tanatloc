@@ -170,7 +170,7 @@ const Material = ({
    * @param currentMaterial Current material
    */
   const onMaterialSelect = useCallback(
-    (currentMaterial: IMaterialDatabase['key']['children'][0]) => {
+    (currentMaterial: IMaterialDatabase['key']['children'][0]): void => {
       setCurrent((prevCurrent) => ({
         ...(prevCurrent as IModelMaterialsValue),
         material: currentMaterial
@@ -186,7 +186,7 @@ const Material = ({
    * @param val Value
    */
   const onMaterialChange = useCallback(
-    (child: IModelMaterialsChild, index: number, val: string) => {
+    (child: IModelMaterialsChild, index: number, val: string): void => {
       setCurrent((prevCurrent) => ({
         ...(prevCurrent as IModelMaterialsValue),
         material: {
@@ -210,7 +210,7 @@ const Material = ({
    * On select
    * @param selected Selected
    */
-  const onSelected = useCallback((selected: ISelect[]) => {
+  const onSelected = useCallback((selected: ISelect[]): void => {
     setCurrent((prevCurrent) => ({
       ...(prevCurrent as IModelMaterialsValue),
       selected: selected
@@ -222,7 +222,7 @@ const Material = ({
    * @param key Key
    */
   const onGeometryChange = useCallback(
-    (key: string) => {
+    (key: string): void => {
       // Active key
       setActiveKey(key)
 
@@ -242,7 +242,7 @@ const Material = ({
   /**
    * On cancel
    */
-  const onCancel = useCallback(() => {
+  const onCancel = useCallback((): void => {
     setCurrent(undefined)
     onClose()
   }, [onClose])

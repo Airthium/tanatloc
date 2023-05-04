@@ -63,7 +63,7 @@ const ListItem = ({
    * Highlight
    * @param sensor Sensor
    */
-  const highlight = useCallback(() => {
+  const highlight = useCallback((): void => {
     dispatch(enable())
     dispatch(setPoint(sensor.point))
   }, [sensor, dispatch])
@@ -71,7 +71,7 @@ const ListItem = ({
   /**
    * Unhighlight
    */
-  const unhighlight = useCallback(() => {
+  const unhighlight = useCallback((): void => {
     dispatch(disable())
   }, [dispatch])
 
@@ -79,7 +79,7 @@ const ListItem = ({
    * On edit
    */
   const onEdit = useCallback(
-    () => _onEdit({ ...sensor, index }),
+    (): void => _onEdit({ ...sensor, index }),
     [sensor, index, _onEdit]
   )
 

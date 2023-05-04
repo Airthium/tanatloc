@@ -73,12 +73,14 @@ const Plugin = ({ plugin, onOk, setVisible }: IPluginProps): JSX.Element => {
    */
   const onSelect = useCallback(
     (diff: IClientPlugin): void => {
-      // Merge
-      merge(plugin, diff)
-      // Ok
-      onOk(plugin)
-      // Close
-      setVisible(false)
+      ;(async () => {
+        // Merge
+        merge(plugin, diff)
+        // Ok
+        await onOk(plugin)
+        // Close
+        setVisible(false)
+      })()
     },
     [plugin, onOk, setVisible]
   )
@@ -146,35 +148,36 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
 
   // Plugins
   useEffect(() => {
-    PluginsAPI.list()
-      .then((list) => {
+    ;(async () => {
+      try {
+        const list = await PluginsAPI.list()
         setPluginsList(list)
-      })
-      .catch((err) => {
+      } catch (err: any) {
         ErrorNotification(errors.pluginsLoad, err)
-      })
+      }
+    })()
   }, [])
 
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * Dashboard
    */
-  const dashboard = useCallback(() => {
-    router
-      .push({
+  const dashboard = useCallback((): void => {
+    ;(async () => {
+      await router.push({
         pathname: '/dashboard',
         query: { page: 'account', tab: 'hpc' }
       })
-      .catch()
+    })()
   }, [router])
 
   /**

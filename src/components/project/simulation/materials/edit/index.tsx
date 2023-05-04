@@ -110,31 +110,33 @@ const Edit = ({
   /**
    * On edit
    */
-  const onEdit = useCallback(async () => {
-    setLoading(true)
-    try {
-      // Check
-      if (!material.material) {
-        onError(errors.material)
+  const onEdit = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        // Check
+        if (!material.material) {
+          onError(errors.material)
+          setLoading(false)
+          return
+        }
+
+        if (!material.selected?.length) {
+          onError(errors.selected)
+          setLoading(false)
+          return
+        }
+        onError()
+
+        await _onEdit(simulation, material, swr)
+
+        // Close
         setLoading(false)
-        return
-      }
-
-      if (!material.selected?.length) {
-        onError(errors.selected)
+        onClose()
+      } catch (err) {
         setLoading(false)
-        return
       }
-      onError()
-
-      await _onEdit(simulation, material, swr)
-
-      // Close
-      setLoading(false)
-      onClose()
-    } catch (err) {
-      setLoading(false)
-    }
+    })()
   }, [simulation, material, swr, onError, onClose])
 
   /**

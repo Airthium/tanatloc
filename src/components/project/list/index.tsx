@@ -125,14 +125,14 @@ const ProjectCard = ({
    * @param project Project
    */
   const openProject = useCallback((): void => {
-    if (project.archived) return
+    ;(async () => {
+      if (project.archived) return
 
-    router
-      .push({
+      await router.push({
         pathname: '/project',
         query: { page: page, workspaceId: workspace.id, projectId: project.id }
       })
-      .catch()
+    })()
   }, [router, workspace, page, project])
 
   // Snapshot

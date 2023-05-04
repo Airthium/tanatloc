@@ -58,21 +58,18 @@ export const errors = {
 /**
  * Plugins list
  * @param user User
- * @param setModels Set models
  */
-export const _pluginsList = (
-  user: Pick<IFrontUser, 'authorizedplugins'>,
-  setModels: (models: IModel[]) => void
-) => {
-  PluginsAPI.list()
-    .then((plugins) => {
-      const allModels = _loadModels(user, Models, plugins)
+export const _pluginsList = async (
+  user: Pick<IFrontUser, 'authorizedplugins'>
+): Promise<IModel[]> => {
+  try {
+    const list = await PluginsAPI.list()
 
-      setModels(allModels)
-    })
-    .catch((err) => {
-      ErrorNotification(errors.plugins, err)
-    })
+    return _loadModels(user, Models, list)
+  } catch (err: any) {
+    ErrorNotification(errors.plugins, err)
+    return []
+  }
 }
 
 /**
@@ -85,7 +82,7 @@ export const _loadModels = (
   user: Pick<IFrontUser, 'authorizedplugins'>,
   models: IModel[],
   plugins: IClientPlugin[]
-) => {
+): IModel[] => {
   let allModels = models
 
   plugins.forEach((plugin) => {
@@ -143,7 +140,12 @@ const Selector = ({
 
   // Models
   useCustomEffect(() => {
-    user && _pluginsList(user, setModels)
+    ;(async () => {
+      if (user) {
+        const newModels = await _pluginsList(user)
+        setModels(newModels)
+      }
+    })()
   }, [user])
 
   // Categories
@@ -185,13 +187,15 @@ const Selector = ({
   /**
    * On modal ok
    */
-  const onModalOk = useCallback(async () => {
-    setLoading(true)
-    if (current)
-      try {
-        await onOk(current)
-      } catch (err) {}
-    setLoading(false)
+  const onModalOk = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      if (current)
+        try {
+          await onOk(current)
+        } catch (err) {}
+      setLoading(false)
+    })()
   }, [current, onOk])
 
   // Menu items (Tanatloc)
@@ -371,7 +375,12 @@ const Updater = ({
 
   // Models
   useCustomEffect(() => {
-    user && _pluginsList(user, setModels)
+    ;(async () => {
+      if (user) {
+        const newModels = await _pluginsList(user)
+        setModels(newModels)
+      }
+    })()
   }, [user])
 
   // Check model update

@@ -55,14 +55,16 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
   /**
    * On download
    */
-  const onDownload = useCallback(async () => {
-    setLoading(true)
-    try {
-      await _onArchive(simulation)
-    } catch (err) {
-    } finally {
-      setLoading(false)
-    }
+  const onDownload = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _onArchive(simulation)
+      } catch (err) {
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [simulation])
 
   /**

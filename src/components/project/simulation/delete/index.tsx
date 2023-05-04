@@ -81,7 +81,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   /**
    * On delete
    */
-  const onDelete = useCallback(async () => {
+  const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
       await _onDelete(project, simulation, swr)

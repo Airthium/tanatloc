@@ -79,13 +79,15 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = useCallback(async () => {
-    setLoading(true)
-    try {
-      await _onCopy(project, simulation, swr)
-    } finally {
-      setLoading(false)
-    }
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _onCopy(project, simulation, swr)
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [project, simulation, swr])
 
   /**

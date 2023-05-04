@@ -168,14 +168,16 @@ const Geometry = ({
   /**
    * On download
    */
-  const onDownload = useCallback(async () => {
-    setDownloading(true)
-    try {
-      await _onDownload(geometry!)
-    } catch (err) {
-    } finally {
-      setDownloading(false)
-    }
+  const onDownload = useCallback((): void => {
+    ;(async () => {
+      setDownloading(true)
+      try {
+        await _onDownload(geometry!)
+      } catch (err) {
+      } finally {
+        setDownloading(false)
+      }
+    })()
   }, [geometry])
 
   /**
@@ -183,7 +185,8 @@ const Geometry = ({
    * @param value Value
    */
   const onEdit = useCallback(
-    async (value: { name: string }) => _onEdit(geometry!, value, swr),
+    async (value: { name: string }): Promise<void> =>
+      _onEdit(geometry!, value, swr),
     [geometry, swr]
   )
 

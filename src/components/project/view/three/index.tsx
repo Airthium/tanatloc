@@ -495,7 +495,9 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   // Mount
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      router.push('/webgl').catch()
+      ;(async () => {
+        await router.push('/webgl')
+      })()
       return
     }
 
@@ -856,7 +858,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
    * Toggle transparent
    * @param checked Checked
    */
-  const toggleTransparent = useCallback((checked: boolean) => {
+  const toggleTransparent = useCallback((checked: boolean): void => {
     setTransparent(checked)
     scene.current!.children.forEach((child) => {
       if (child.type === 'Part') {
@@ -866,7 +868,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
     })
   }, [])
 
-  const toggleDisplayMesh = useCallback((checked: boolean) => {
+  const toggleDisplayMesh = useCallback((checked: boolean): void => {
     setDisplayMesh(checked)
     scene.current!.children.forEach((child) => {
       if (child.type === 'Part') {
@@ -879,7 +881,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   /**
    * Toggle section view
    */
-  const toggleSectionView = useCallback(() => {
+  const toggleSectionView = useCallback((): void => {
     const active = !sectionView
     setSectionView(active)
     active
@@ -890,24 +892,26 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   /**
    * Take screenshot
    */
-  const takeScreenshot = useCallback(async () => {
-    setScreenshot(true)
-    try {
-      await _takeScreenshot(
-        project,
-        scene.current!,
-        camera.current!,
-        renderer.current!
-      )
-    } finally {
-      setScreenshot(false)
-    }
+  const takeScreenshot = useCallback((): void => {
+    ;(async () => {
+      setScreenshot(true)
+      try {
+        await _takeScreenshot(
+          project,
+          scene.current!,
+          camera.current!,
+          renderer.current!
+        )
+      } finally {
+        setScreenshot(false)
+      }
+    })()
   }, [project])
 
   /**
    * Download screenshot
    */
-  const downloadScreenshot = useCallback(() => {
+  const downloadScreenshot = useCallback((): void => {
     setSavingScreenshot(true)
     try {
       _downloadScreenshot(
@@ -926,7 +930,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
    * @param gridHelper Grid helper
    * @param checked Checked
    */
-  const toggleGrid = useCallback((checked: boolean) => {
+  const toggleGrid = useCallback((checked: boolean): void => {
     gridHelper.current?.setVisible(checked)
   }, [])
 
@@ -996,14 +1000,14 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   /**
    * Open custom range
    */
-  const openCustomRange = useCallback(() => {
+  const openCustomRange = useCallback((): void => {
     setCustomRangeOpen(true)
   }, [])
 
   /**
    * Close custom range
    */
-  const closeCustomRange = useCallback(() => {
+  const closeCustomRange = useCallback((): void => {
     setCustomRangeOpen(false)
   }, [])
 
@@ -1023,7 +1027,7 @@ const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
   /**
    * On automatic range
    */
-  const onAutomaticRange = useCallback(() => {
+  const onAutomaticRange = useCallback((): void => {
     colorbarHelper.current?.setAutomaticRange()
     _computeColors(scene.current!, colorbarHelper.current!)
   }, [])

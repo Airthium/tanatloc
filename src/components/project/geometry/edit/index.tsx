@@ -42,7 +42,10 @@ const Edit = ({
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [setVisible])
+  const setVisibleFalse = useCallback(
+    (): void => setVisible(false),
+    [setVisible]
+  )
 
   /**
    * On ok

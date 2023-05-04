@@ -142,7 +142,7 @@ const Sensor = ({
   /**
    * Start selection
    */
-  const startSelection = useCallback(() => {
+  const startSelection = useCallback((): void => {
     if (selectionEnabled) {
       stopSelection()
     } else {
@@ -157,7 +157,7 @@ const Sensor = ({
    * @param key Key
    */
   const onGeometryChange = useCallback(
-    (key: string) => {
+    (key: string): void => {
       // Active key
       setActiveKey(key)
 
@@ -191,7 +191,7 @@ const Sensor = ({
    * On formula
    * @param formula Formula
    */
-  const onFormula = useCallback((newFormula: string) => {
+  const onFormula = useCallback((newFormula: string): void => {
     setCurrent((prev) => ({
       ...(prev as IModelSensor),
       formula: newFormula
@@ -201,7 +201,7 @@ const Sensor = ({
   /**
    * Close
    */
-  const close = useCallback(() => {
+  const close = useCallback((): void => {
     setCurrent(undefined)
     setError(undefined)
     dispatch(setPoint())

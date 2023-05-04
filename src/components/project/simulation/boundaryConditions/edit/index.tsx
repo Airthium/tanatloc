@@ -152,37 +152,39 @@ const Edit = ({
   /**
    * On edit
    */
-  const onEdit = useCallback(async () => {
-    setLoading(true)
-    try {
-      // Check
-      if (!boundaryCondition.name) {
-        onError(errors.name)
+  const onEdit = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        // Check
+        if (!boundaryCondition.name) {
+          onError(errors.name)
+          setLoading(false)
+          return
+        }
+
+        if (!boundaryCondition.type?.key) {
+          onError(errors.type)
+          setLoading(false)
+          return
+        }
+
+        if (!boundaryCondition.selected?.length) {
+          onError(errors.selected)
+          setLoading(false)
+          return
+        }
+        onError()
+
+        await _onEdit(simulation, boundaryCondition, oldBoundaryCondition, swr)
+
+        // Close
         setLoading(false)
-        return
-      }
-
-      if (!boundaryCondition.type?.key) {
-        onError(errors.type)
+        onClose()
+      } catch (err) {
         setLoading(false)
-        return
       }
-
-      if (!boundaryCondition.selected?.length) {
-        onError(errors.selected)
-        setLoading(false)
-        return
-      }
-      onError()
-
-      await _onEdit(simulation, boundaryCondition, oldBoundaryCondition, swr)
-
-      // Close
-      setLoading(false)
-      onClose()
-    } catch (err) {
-      setLoading(false)
-    }
+    })()
   }, [
     simulation,
     boundaryCondition,

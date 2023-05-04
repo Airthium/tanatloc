@@ -88,14 +88,16 @@ const Step = ({
   /**
    * On click
    */
-  const onClick = useCallback(async (): Promise<void> => {
-    setLoading(true)
-    try {
-      await _getCompleteLog(simulation, step)
-    } catch (err) {
-    } finally {
-      setLoading(false)
-    }
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _getCompleteLog(simulation, step)
+      } catch (err) {
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [simulation, step, setLoading])
 
   /**
@@ -178,12 +180,12 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * Render

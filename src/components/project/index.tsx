@@ -671,16 +671,14 @@ const Project = (): JSX.Element => {
   /**
    * Dashboard
    */
-  const dashboard = useCallback(
-    () =>
-      router
-        .push({
-          pathname: '/dashboard',
-          query: { page, workspaceId }
-        })
-        .catch(),
-    [router, page, workspaceId]
-  )
+  const dashboard = useCallback((): void => {
+    ;(async () => {
+      await router.push({
+        pathname: '/dashboard',
+        query: { page, workspaceId }
+      })
+    })()
+  }, [router, page, workspaceId])
 
   /**
    * On menu click
@@ -759,7 +757,9 @@ const Project = (): JSX.Element => {
 
   // Not logged -> go to login page
   useEffect(() => {
-    if (!loadingUser && !user) router.replace('/login')
+    ;(async () => {
+      if (!loadingUser && !user) await router.replace('/login')
+    })()
   }, [user, loadingUser, router])
 
   // Errors

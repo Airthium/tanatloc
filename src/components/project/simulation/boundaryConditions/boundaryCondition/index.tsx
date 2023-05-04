@@ -79,7 +79,7 @@ const BoundaryConditionItem = ({
    * @param value Value
    */
   const onValueChange = useCallback(
-    (value: string) => _onValueChange(index, value),
+    (value: string): void => _onValueChange(index, value),
     [index, _onValueChange]
   )
 
@@ -88,7 +88,7 @@ const BoundaryConditionItem = ({
    * @param checked Checked
    */
   const onCheckedChange = useCallback(
-    (checked: boolean) => _onCheckedChange(index, checked),
+    (checked: boolean): void => _onCheckedChange(index, checked),
     [index, _onCheckedChange]
   )
 
@@ -360,7 +360,7 @@ const BoundaryCondition = ({
    * @param key Key
    */
   const onGeometryChange = useCallback(
-    (key: string) => {
+    (key: string): void => {
       // Active key
       setActiveKey(key)
 
@@ -380,7 +380,7 @@ const BoundaryCondition = ({
   /**
    * On cancel
    */
-  const onCancel = useCallback(() => {
+  const onCancel = useCallback((): void => {
     setCurrent(undefined)
     onClose()
   }, [onClose])

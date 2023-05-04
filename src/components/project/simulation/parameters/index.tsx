@@ -127,7 +127,7 @@ export const _build2DCheckbox = (
   key: string,
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
-) => (
+): JSX.Element => (
   <Form layout="horizontal" key={key}>
     <Form.Item label={child.label2D ?? child.label}>
       <Checkbox
@@ -149,7 +149,7 @@ export const _buildFormula = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
-) => (
+): JSX.Element => (
   <Formula
     key={key}
     label={child.label}
@@ -170,7 +170,7 @@ export const _buildSelect = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
-) => (
+): JSX.Element => (
   <Form layout="vertical" key={key}>
     <Form.Item label={child.label}>
       <Select
@@ -193,7 +193,7 @@ export const _buildCheckbox = (
   key: string,
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
-) => (
+): JSX.Element => (
   <Form layout="horizontal" key={key}>
     <Form.Item label={child.label}>
       <Checkbox
@@ -342,7 +342,11 @@ const ParameterChild = ({
    * @param value Value
    */
   const onChange = useCallback(
-    (value: string) => _onChange(simulation, pkey, index, value, swr),
+    (value: string): void => {
+      ;(async () => {
+        await _onChange(simulation, pkey, index, value, swr)
+      })()
+    },
     [simulation, pkey, index, swr]
   )
 
@@ -351,8 +355,11 @@ const ParameterChild = ({
    * @param e Event
    */
   const onChangeEvent = useCallback(
-    (e: CheckboxChangeEvent) =>
-      _onChange(simulation, pkey, index, e.target.checked, swr),
+    (e: CheckboxChangeEvent): void => {
+      ;(async () => {
+        await _onChange(simulation, pkey, index, e.target.checked, swr)
+      })()
+    },
     [simulation, pkey, index, swr]
   )
 
@@ -438,9 +445,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
 
   // Initial
   useEffect(() => {
-    if (!subScheme?.done) {
-      _onDone(simulation, swr)
-    }
+    ;(async () => {
+      if (!subScheme?.done) await _onDone(simulation, swr)
+    })()
   }, [simulation, subScheme, swr])
 
   // Build parameters

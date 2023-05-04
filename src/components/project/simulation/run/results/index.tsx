@@ -51,7 +51,7 @@ const SingleResult = ({
   /**
    * On click
    */
-  const onClick = useCallback(() => {
+  const onClick = useCallback((): void => {
     const index = results.findIndex(
       (result) => result.fileName === file.fileName && result.name === file.name
     )

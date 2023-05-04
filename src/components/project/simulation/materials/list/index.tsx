@@ -89,7 +89,7 @@ const ListItem = ({
   /**
    * On edit
    */
-  const onEdit = useCallback(() => {
+  const onEdit = useCallback((): void => {
     setEnabled(false)
     _onEdit(index)
     setTimeout(() => setEnabled(true), 500)

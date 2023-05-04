@@ -66,14 +66,16 @@ const Download = ({ simulation, file }: IProps): JSX.Element => {
   /**
    * On click
    */
-  const onClick = useCallback(async () => {
-    setLoading(true)
-    try {
-      await _onDownload(simulation, file)
-    } catch (err) {
-    } finally {
-      setLoading(false)
-    }
+  const onClick = useCallback((): void => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        await _onDownload(simulation, file)
+      } catch (err) {
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [simulation, file])
 
   /**

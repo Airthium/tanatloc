@@ -187,14 +187,16 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
    * @param type Type
    */
   const onChange = useCallback(
-    async (type: string): Promise<void> => {
-      try {
-        await _onMeshGlobalType(simulation, type, swr)
+    (type: string): void => {
+      ;(async () => {
+        try {
+          await _onMeshGlobalType(simulation, type, swr)
 
-        setMeshGlobalType(type)
-        if (type === 'auto') setMeshGlobalValue('normal')
-        else setMeshGlobalValue('1')
-      } catch (err) {}
+          setMeshGlobalType(type)
+          if (type === 'auto') setMeshGlobalValue('normal')
+          else setMeshGlobalValue('1')
+        } catch (err) {}
+      })()
     },
     [simulation, swr]
   )
@@ -204,11 +206,13 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
    * @param value Value
    */
   const onSize = useCallback(
-    async (value: string) => {
-      try {
-        await _onMeshGlobalSize(simulation, meshGlobalType!, value, swr)
-        setMeshGlobalValue(value)
-      } catch (err) {}
+    (value: string): void => {
+      ;(async () => {
+        try {
+          await _onMeshGlobalSize(simulation, meshGlobalType!, value, swr)
+          setMeshGlobalValue(value)
+        } catch (err) {}
+      })()
     },
     [simulation, meshGlobalType, swr]
   )

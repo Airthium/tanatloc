@@ -39,18 +39,18 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
   /**
    * Set visible true
    */
-  const setVisibleTrue = useCallback(() => setVisible(true), [])
+  const setVisibleTrue = useCallback((): void => setVisible(true), [])
 
   /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback(() => setVisible(false), [])
+  const setVisibleFalse = useCallback((): void => setVisible(false), [])
 
   /**
    * On first level menu
    * @param param { key }
    */
-  const onFirstLevel = useCallback(({ key }: { key: string }) => {
+  const onFirstLevel = useCallback(({ key }: { key: string }): void => {
     const subDatabase = materialDatabase[key]
 
     setFirstLevel({
@@ -66,7 +66,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    * @param param { key }
    */
   const onSecondLevel = useCallback(
-    ({ key }: { key: string }) => {
+    ({ key }: { key: string }): void => {
       const subDatabase = materialDatabase[firstLevel!.key]
       const child = subDatabase.children.find((c) => c.key === key)
 
@@ -80,7 +80,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    * On material select
    * @param material Material
    */
-  const onMaterialSelect = useCallback(() => {
+  const onMaterialSelect = useCallback((): void => {
     onSelect(current!)
     setVisible(false)
   }, [current, onSelect])

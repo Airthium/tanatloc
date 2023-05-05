@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontOrganizations } from '@/api/index.d'
 
@@ -91,7 +91,7 @@ describe('components/organizations', () => {
     unmount()
   })
 
-  test('setOrganization', () => {
+  test('setOrganization', async () => {
     mockList.mockImplementation((props) => (
       <div role="List" onClick={() => props.setOrganization({ id: 'id' })} />
     ))
@@ -119,6 +119,8 @@ describe('components/organizations', () => {
 
     const list = screen.getByRole('List')
     fireEvent.click(list)
+
+    await waitFor(() => screen.getByRole('Organization'))
 
     const organization = screen.getByRole('Organization')
     fireEvent.click(organization)

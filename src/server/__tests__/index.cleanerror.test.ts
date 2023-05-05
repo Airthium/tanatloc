@@ -32,7 +32,7 @@ describe('src/server', () => {
     mockNext.mockReset()
     mockNext.mockImplementation(() => ({
       prepare: async () => null,
-      getRequestHandler: jest.fn
+      getRequestHandler: () => async () => jest.fn
     }))
 
     mockInit.mockReset()

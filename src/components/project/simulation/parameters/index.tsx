@@ -80,7 +80,7 @@ export const _build2DFormula = (
   <Formula
     key={key}
     label={child.label2D ?? child.label}
-    defaultValue={(child.value as string) ?? (child.default as string)}
+    defaultValue={(child.value ?? child.default) as string}
     onValueChange={onValueChange}
     unit={child.unit}
   />
@@ -106,9 +106,7 @@ export const _build2DSelect = (
           value: option.value2D ?? option.value
         }))}
         defaultValue={
-          (child.value as string) ??
-          (child.default2D as string) ??
-          (child.default as string)
+          (child.value ?? child.default2D ?? child.default) as string
         }
         onChange={onValueChange}
       />
@@ -153,7 +151,7 @@ export const _buildFormula = (
   <Formula
     key={key}
     label={child.label}
-    defaultValue={(child.value as string) ?? (child.default as string)}
+    defaultValue={(child.value ?? child.default) as string}
     onValueChange={onValueChange}
     unit={child.unit}
   />
@@ -175,7 +173,7 @@ export const _buildSelect = (
     <Form.Item label={child.label}>
       <Select
         options={child.options}
-        defaultValue={(child.value as string) ?? (child.default as string)}
+        defaultValue={(child.value ?? child.default) as string}
         onChange={onValueChange}
       />
     </Form.Item>
@@ -368,22 +366,22 @@ const ParameterChild = ({
    */
   if (dimension === 2) {
     if (child.only3D) return null
-    else if (child.htmlEntity === 'formula') {
+    else if (child.htmlEntity === 'formula')
       return _build2DFormula(pkey + '&' + index, child, onChange)
-    } else if (child.htmlEntity === 'select') {
+    else if (child.htmlEntity === 'select')
       return _build2DSelect(pkey + '&' + index, child, onChange)
-    } else if (child.htmlEntity === 'checkbox') {
+    else if (child.htmlEntity === 'checkbox')
       return _build2DCheckbox(pkey + '&' + index, child, onChangeEvent)
-    }
+
     return null
   } else {
-    if (child.htmlEntity === 'formula') {
+    if (child.htmlEntity === 'formula')
       return _buildFormula(pkey + '&' + index, child, onChange)
-    } else if (child.htmlEntity === 'select') {
+    else if (child.htmlEntity === 'select')
       return _buildSelect(pkey + '&' + index, child, onChange)
-    } else if (child.htmlEntity === 'checkbox') {
+    else if (child.htmlEntity === 'checkbox')
       return _buildCheckbox(pkey + '&' + index, child, onChangeEvent)
-    }
+
     return null
   }
 }

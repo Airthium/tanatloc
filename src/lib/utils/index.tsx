@@ -109,8 +109,8 @@ const userToAvatar = (user: {
   avatar?: Buffer
 }): JSX.Element => {
   const avatar = user.avatar && Buffer.from(user.avatar).toString()
-  let name = ''
-  let abbrev = ''
+  let name
+  let abbrev
   if (user.firstname || user.lastname) {
     name = user.firstname ? user.firstname + ' ' : ''
     name += user.lastname ?? ''
@@ -132,7 +132,7 @@ const userToAvatar = (user: {
         style={{ backgroundColor: '#ff4d4f', zIndex: 10 }}
       >
         <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
-          {abbrev.toUpperCase() ?? <Spin />}
+          {abbrev?.toUpperCase() ?? <Spin />}
         </Avatar>
       </Badge>
     </Tooltip>
@@ -146,12 +146,12 @@ const userToAvatar = (user: {
  */
 const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
   let name = group.name
-  let abbrev = ''
+  let abbrev
   if (name) abbrev = name[0]
   return (
     <Tooltip key={group.id ?? JSON.stringify(group)} title={name}>
       <Avatar style={{ backgroundColor: stringToColor(name) }}>
-        {abbrev.toUpperCase() ?? <Spin />}
+        {abbrev?.toUpperCase() ?? <Spin />}
       </Avatar>
     </Tooltip>
   )

@@ -21,7 +21,12 @@ jest.mock('../delete', () => () => <div />)
 
 describe('components/administration/users', () => {
   const users = [
-    { id: 'id1', email: 'email1', authorizedplugins: ['key'], superuser: true },
+    {
+      id: 'id1',
+      email: 'email1',
+      authorizedplugins: ['key1', 'key2'],
+      superuser: true
+    },
     { id: 'id2', email: 'email2', authorizedplugins: [], superuser: false }
   ]
   const swr = {
@@ -36,7 +41,7 @@ describe('components/administration/users', () => {
     mockList.mockReset()
     mockList.mockImplementation(() => [
       {
-        key: 'key',
+        key: 'key1',
         name: 'name',
         category: 'category'
       }

@@ -12,6 +12,11 @@ describe('lib/utils', () => {
     mockEmail.mockReset()
   })
 
+  test('deepCopy', () => {
+    const copy = Utils.deepCopy({})
+    expect(copy).toEqual({})
+  })
+
   test('stringToColor', () => {
     let color: any
 

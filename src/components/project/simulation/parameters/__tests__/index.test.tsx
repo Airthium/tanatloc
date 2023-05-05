@@ -44,19 +44,19 @@ describe('components/project/simulation/parameters', () => {
             label: 'param1',
             children: [
               {
-                label: 'Formula',
+                label: 'Formula1',
                 htmlEntity: 'formula',
                 default: 0
               },
               {
-                label: 'Formula',
+                label: 'Formula2',
                 htmlEntity: 'formula',
                 value: 1,
                 default: 0
               },
               {
                 only3D: true,
-                label: 'Formula',
+                label: 'Formula3',
                 htmlEntity: 'formula',
                 value: 1,
                 default: 0
@@ -116,8 +116,12 @@ describe('components/project/simulation/parameters', () => {
     mockUpdate.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
+
+    // Open advanced
+    const open = screen.getByRole('button', { name: 'right Advanced' })
+    await act(() => fireEvent.click(open))
 
     unmount()
   })
@@ -138,19 +142,19 @@ describe('components/project/simulation/parameters', () => {
                   label: 'param1',
                   children: [
                     {
-                      label: 'Formula',
+                      label: 'Formula1',
                       htmlEntity: 'formula',
                       default: 0
                     },
                     {
-                      label: 'Formula',
+                      label: 'Formula2',
                       htmlEntity: 'formula',
                       value: 1,
                       default: 0
                     },
                     {
                       only3D: true,
-                      label: 'Formula',
+                      label: 'Formula3',
                       htmlEntity: 'formula',
                       value: 1,
                       default: 0

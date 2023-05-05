@@ -16,10 +16,12 @@ import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import {
   setTemplateCursor,
   setModel,
-  setTemplateHighlight
+  setTemplateHighlight,
+  setJsonHighlight
 } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
+import { getHighlightPositions } from '@/components/utils/jsonPosition'
 
 import { addOnCursor } from '..'
 
@@ -77,6 +79,7 @@ mesh.name = '${values.name}'
   } catch (err) {
     modelJSON = {}
   }
+  const oldModel = JSON.stringify(modelJSON, null, '\t')
   const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
     ...(modelJSON.configuration ?? {}),
@@ -90,7 +93,9 @@ mesh.name = '${values.name}'
       meshable: true
     }
   }
-  // TODO cursor position & highlight
+  const newModel = JSON.stringify(modelJSON, null, '\t')
+  const highlight = getHighlightPositions(oldModel, newModel)
+  highlight && dispatch(setJsonHighlight(highlight))
   dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
 }
 

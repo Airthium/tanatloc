@@ -16,11 +16,13 @@ import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import {
   setTemplateCursor,
   setModel,
-  setTemplateHighlight
+  setTemplateHighlight,
+  setJsonHighlight
 } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
 import { FormListContainer, FormListItem } from '@/components/assets/form'
+import { getHighlightPositions } from '@/components/utils/jsonPosition'
 
 import { addOnCursor } from '..'
 
@@ -85,6 +87,7 @@ finiteElementSpace.name = '${values.name}'
   } catch (err) {
     modelJSON = {}
   }
+  const oldModel = JSON.stringify(modelJSON, null, '\t')
   const index = Object.keys(modelJSON.configuration ?? {}).length
   modelJSON.configuration = {
     ...(modelJSON.configuration ?? {}),
@@ -112,7 +115,9 @@ finiteElementSpace.name = '${values.name}'
       }
     }
   }
-  // TODO cursor position & highlight
+  const newModel = JSON.stringify(modelJSON, null, '\t')
+  const highlight = getHighlightPositions(oldModel, newModel)
+  highlight && dispatch(setJsonHighlight(highlight))
   dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
 }
 

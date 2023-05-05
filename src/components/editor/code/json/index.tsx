@@ -13,6 +13,7 @@ import { setModel } from '@/context/editor/actions'
 
 import style from '../../index.module.css'
 
+// Local interface
 export interface Marker {
   id: number
 }
@@ -44,7 +45,6 @@ const JSONCode = (): JSX.Element => {
    * @param highlight Highlight
    */
   const highlight = useCallback(({ begin, end }: IEditorHighlight): void => {
-    /* istanbul ignore next */
     if (!editorRef.current) return
 
     const editor = editorRef.current.editor

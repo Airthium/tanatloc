@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
-import FreeFEMCode from '..'
 import { EditorContext } from '@/context/editor'
+
+import FreeFEMCode from '..'
 
 const mockReactAce = jest.fn()
 jest.mock('react-ace', () => (props: any) => mockReactAce(props))

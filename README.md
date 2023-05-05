@@ -1,5 +1,10 @@
 ![Node](https://github.com/Airthium/tanatloc/workflows/Node/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Airthium_tanatloc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Airthium_tanatloc&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Airthium_tanatloc&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Airthium_tanatloc&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Airthium_tanatloc&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
+
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=Airthium_tanatloc)](https://sonarcloud.io/summary/new_code?id=Airthium_tanatloc)
 
 # Tanatloc
 

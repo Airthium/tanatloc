@@ -10,7 +10,8 @@ import {
   setTemplateCursor,
   setModel,
   setTemplateHighlight,
-  setJsonHighlight
+  setJsonHighlight,
+  setJsonCursor
 } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
@@ -141,7 +142,8 @@ export const _onAdd = (
   }
   const newModel = JSON.stringify(modelJSON, null, '\t')
   const highlight = getHighlightPositions(oldModel, newModel)
-  highlight && dispatch(setJsonHighlight(highlight))
+  dispatch(setJsonHighlight(highlight))
+  dispatch(setJsonCursor({ row: highlight.end, column: 0 }))
   dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
 }
 

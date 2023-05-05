@@ -9,7 +9,7 @@ import { IEditorHighlight } from '@/context/editor'
 export const getHighlightPositions = (
   oldModel: string,
   newModel: string
-): IEditorHighlight | undefined => {
+): IEditorHighlight => {
   const oldLines = oldModel.split('\n')
   const newLines = newModel.split('\n')
 

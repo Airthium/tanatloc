@@ -3,6 +3,7 @@ import Sentry from './config/sentry.js'
 const basePath = ''
 
 const nextConfig = {
+  transpilePackages: ['swr'],
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
       config.resolve.alias['@sentry/node'] = '@sentry/browser'

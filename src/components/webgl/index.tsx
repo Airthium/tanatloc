@@ -24,7 +24,7 @@ export const errors = {
  * WebGL error
  * @returns WebGLError
  */
-const WebGLError = (): JSX.Element => {
+const WebGLError = (): React.JSX.Element => {
   // Data
   const router = useRouter()
 

@@ -73,7 +73,7 @@ const BoundaryConditionItem = ({
   checked,
   _onValueChange,
   _onCheckedChange
-}: IBoundaryConditionItemProps): JSX.Element => {
+}: IBoundaryConditionItemProps): React.JSX.Element => {
   /**
    * On value change
    * @param value Value
@@ -120,7 +120,7 @@ const BoundaryCondition = ({
   boundaryCondition,
   swr,
   onClose
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   type BCExtended = (IModelTypedBoundaryCondition & { key: string })[]
   // State
   const [alreadySelected, setAlreadySelected] = useState<ISelection[]>([])

@@ -146,7 +146,7 @@ const Run = ({
   setPostprocessing,
   setVisible,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)

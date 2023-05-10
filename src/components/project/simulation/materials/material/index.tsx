@@ -66,7 +66,7 @@ const MaterialsChild = ({
   index,
   value,
   _onMaterialChange
-}: IMaterialsChildProps): JSX.Element => {
+}: IMaterialsChildProps): React.JSX.Element => {
   /**
    * On material change
    * @param val Value
@@ -101,7 +101,7 @@ const Material = ({
   material,
   swr,
   onClose
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [alreadySelected, setAlreadySelected] = useState<ISelection[]>()
   const [current, setCurrent] = useState<IModelMaterialsValue>()

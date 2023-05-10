@@ -22,7 +22,7 @@ export interface Marker {
  * JSON code
  * @returns JSONCode
  */
-const JSONCode = (): JSX.Element => {
+const JSONCode = (): React.JSX.Element => {
   // Ref
   const editorRef = useRef<ReactAce>()
 

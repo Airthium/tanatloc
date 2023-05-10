@@ -20,7 +20,12 @@ export interface IProps {
  * @param props Props
  * @returns Panel
  */
-const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
+const Panel = ({
+  visible,
+  title,
+  children,
+  onClose
+}: IProps): React.JSX.Element => {
   /**
    * Render
    */

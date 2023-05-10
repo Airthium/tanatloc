@@ -12,7 +12,7 @@ import globalStyle from '@/styles/index.module.css'
  * Help
  * @returns Help
  */
-const Help = (): JSX.Element => {
+const Help = (): React.JSX.Element => {
   /**
    * Render
    */

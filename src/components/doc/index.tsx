@@ -29,7 +29,7 @@ const Doc = () => {
   const navRef = useRef<{ section: string; tab: string }>()
 
   // State
-  const [content, setContent] = useState<JSX.Element>()
+  const [content, setContent] = useState<React.JSX.Element>()
 
   // Data
   const router = useRouter()

@@ -57,7 +57,7 @@ const Formula = ({
   onValueChange,
   onCheckedChange,
   unit
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [internalValue, setInternalValue] = useState<string>(
     String(defaultValue ?? 0)

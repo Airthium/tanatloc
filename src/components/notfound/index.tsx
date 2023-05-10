@@ -29,7 +29,7 @@ import style from '@/components/notfound/index.module.css'
  * 404
  * @returns NotFound
  */
-const NotFound = (): JSX.Element => {
+const NotFound = (): React.JSX.Element => {
   // Router
   const router = useRouter()
   const mount = useRef<HTMLDivElement>(null)

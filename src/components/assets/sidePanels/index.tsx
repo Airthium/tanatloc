@@ -10,8 +10,8 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
  */
 export interface IProps {
   className?: string
-  leftChild: JSX.Element
-  rightChild: JSX.Element
+  leftChild: React.JSX.Element
+  rightChild: React.JSX.Element
 }
 
 /**
@@ -37,7 +37,7 @@ export interface IRect {
 export const Divider = ({
   onMove,
   onDoubleClick
-}: IDividerProps): JSX.Element => {
+}: IDividerProps): React.JSX.Element => {
   // State
   const [activated, setActivated] = useState<boolean>(false)
 
@@ -112,7 +112,7 @@ const SidePanels = ({
   className,
   leftChild,
   rightChild
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 

@@ -42,7 +42,7 @@ const DeleteButton = ({
   title,
   children,
   onDelete
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
 

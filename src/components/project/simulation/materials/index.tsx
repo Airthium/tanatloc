@@ -45,7 +45,7 @@ const Materials = ({
   simulation,
   swr,
   setVisible
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [material, setMaterial] = useState<IModelMaterialsValue>()
   const [materialVisible, setMaterialVisible] = useState<boolean>(false)

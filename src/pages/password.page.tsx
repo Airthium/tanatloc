@@ -5,7 +5,7 @@ import PasswordPage from '@/components/password'
 /**
  * Password recovery
  */
-const Password = (): JSX.Element => {
+const Password = (): React.JSX.Element => {
   /**
    * Render
    */

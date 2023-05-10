@@ -44,7 +44,11 @@ export interface IProps {
  * @param props Props
  * @returns Organizations
  */
-const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
+const Organizations = ({
+  user,
+  organizations,
+  swr
+}: IProps): React.JSX.Element => {
   // State
   const [organization, setOrganization] =
     useState<IFrontOrganizationsItem | null>()

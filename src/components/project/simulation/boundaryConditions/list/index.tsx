@@ -63,7 +63,7 @@ const ListItem = ({
   type,
   swr,
   _onEdit
-}: IListItemProps): JSX.Element => {
+}: IListItemProps): React.JSX.Element => {
   // State
   const [enabled, setEnabled] = useState<boolean>(true)
 
@@ -137,7 +137,12 @@ const ListItem = ({
  * @param props Props
  * @returns List
  */
-const List = ({ geometries, simulation, swr, onEdit }: IProps): JSX.Element => {
+const List = ({
+  geometries,
+  simulation,
+  swr,
+  onEdit
+}: IProps): React.JSX.Element => {
   // Data
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,

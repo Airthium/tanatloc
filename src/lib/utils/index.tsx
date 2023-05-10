@@ -107,7 +107,7 @@ const userToAvatar = (user: {
   firstname?: string
   lastname?: string
   avatar?: Buffer
-}): JSX.Element => {
+}): React.JSX.Element => {
   const avatar = user.avatar && Buffer.from(user.avatar).toString()
   let name
   let abbrev
@@ -144,7 +144,10 @@ const userToAvatar = (user: {
  * @param group Group
  * @returns Avatar
  */
-const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
+const groupToAvatar = (group: {
+  id?: string
+  name?: string
+}): React.JSX.Element => {
   let name = group.name
   let abbrev
   if (name) abbrev = name[0]

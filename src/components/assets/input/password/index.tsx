@@ -177,7 +177,7 @@ const PasswordItem = ({
   edit,
   style,
   required
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Data
   const [system] = SystemAPI.useSystem()
 

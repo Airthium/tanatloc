@@ -129,7 +129,7 @@ const Selector = ({
   user,
   onOk,
   onCancel
-}: ISelectorProps): JSX.Element => {
+}: ISelectorProps): React.JSX.Element => {
   // State
   const [current, setCurrent] = useState<IModel>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -369,7 +369,7 @@ const Updater = ({
   user,
   simulation,
   swr
-}: IUpdaterProps): JSX.Element | null => {
+}: IUpdaterProps): React.JSX.Element | null => {
   // State
   const [models, setModels] = useState<IModel[]>([])
 

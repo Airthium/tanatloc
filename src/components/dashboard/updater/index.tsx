@@ -11,7 +11,7 @@ import Update, { IUpdateTrue } from '@/lib/update'
  * Updater
  * @returns Updater
  */
-const Updater = (): JSX.Element => {
+const Updater = (): React.JSX.Element => {
   const [needUpdate, setNeedUpdate] = useState<IUpdateTrue>()
   const [visible, setVisible] = useState<boolean>(false)
 

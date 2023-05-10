@@ -63,7 +63,7 @@ export const _onLogin = async (
  * Login
  * @returns Login
  */
-const Login = (): JSX.Element => {
+const Login = (): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()

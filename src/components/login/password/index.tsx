@@ -42,7 +42,7 @@ export const _passwordRecover = async (value: {
  * Password recover
  * @returns PasswordRecover
  */
-const PasswordRecover = (): JSX.Element => {
+const PasswordRecover = (): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

@@ -11,7 +11,7 @@ import style from '../../index.module.css'
  * Administration
  * @returns Administration
  */
-const Administration = (): JSX.Element => {
+const Administration = (): React.JSX.Element => {
   /**
    * Render
    */

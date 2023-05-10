@@ -163,7 +163,7 @@ export const _save = async (
  * @param props Props
  * @returns Save
  */
-const Save = ({ user, swr }: IProps): JSX.Element => {
+const Save = ({ user, swr }: IProps): React.JSX.Element => {
   // State
   const [disabled, setDisabled] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

@@ -6,7 +6,7 @@ import Carousel from '@/components/assets/carousel'
 
 import style from '../../index.module.css'
 
-const Account = (): JSX.Element => {
+const Account = (): React.JSX.Element => {
   /**
    * Render
    */

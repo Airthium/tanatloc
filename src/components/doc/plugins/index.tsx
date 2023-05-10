@@ -13,7 +13,7 @@ import style from '../index.module.css'
  * HPC
  * @returns HPC
  */
-const HPC = (): JSX.Element => {
+const HPC = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -133,7 +133,7 @@ const HPC = (): JSX.Element => {
  * Model
  * @returns Model
  */
-const Model = (): JSX.Element => {
+const Model = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -171,7 +171,7 @@ const tabs = [
  * Plugins
  * @returns Plugins
  */
-const Plugins = (): JSX.Element => {
+const Plugins = (): React.JSX.Element => {
   // Data
   const router = useRouter()
   const query = router.query

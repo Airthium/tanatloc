@@ -6,7 +6,7 @@ import { Layout, Typography } from 'antd'
  * Firefox Windows
  * @returns FirefoxWindows
  */
-const FirefoxWindows = (): JSX.Element => {
+const FirefoxWindows = (): React.JSX.Element => {
   /**
    * Render
    */

@@ -8,7 +8,7 @@ import style from '../index.module.css'
  * Editor
  * @returns Editor
  */
-const Editor = (): JSX.Element => {
+const Editor = (): React.JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>Model Editor</Typography.Title>

@@ -72,7 +72,7 @@ export const _onCopy = async (
  * @param props Props
  * @returns Copy
  */
-const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
+const Copy = ({ project, simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

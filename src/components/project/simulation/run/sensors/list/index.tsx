@@ -55,7 +55,7 @@ const ListItem = ({
   index,
   _onEdit,
   swr
-}: IListItemProps): JSX.Element => {
+}: IListItemProps): React.JSX.Element => {
   // Data
   const { dispatch } = useContext(SelectContext)
 
@@ -109,7 +109,7 @@ const ListItem = ({
  * @param props Props
  * @returns List
  */
-const List = ({ simulation, onEdit, swr }: IProps): JSX.Element => {
+const List = ({ simulation, onEdit, swr }: IProps): React.JSX.Element => {
   // Data
   const run = useMemo(() => simulation.scheme.configuration.run, [simulation])
 

@@ -8,7 +8,7 @@ import style from '../index.module.css'
  * Signup send
  * @return Send
  */
-const Send = (): JSX.Element => {
+const Send = (): React.JSX.Element => {
   /**
    * Render
    */

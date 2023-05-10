@@ -47,7 +47,7 @@ const SingleResult = ({
   results,
   file,
   setResults
-}: ISingleResultProps): JSX.Element => {
+}: ISingleResultProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -100,7 +100,11 @@ const SingleResult = ({
  * @param props Props
  * @returns Results
  */
-const Results = ({ simulation, results, setResults }: IProps): JSX.Element => {
+const Results = ({
+  simulation,
+  results,
+  setResults
+}: IProps): React.JSX.Element => {
   //State
   const [singleFiles, setSingleFiles] = useState<IFrontResult[]>()
   const [filteredFiles, setFilteredFiles] = useState<IFilteredFiles>()

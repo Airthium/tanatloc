@@ -40,7 +40,7 @@ export interface IRelease {
  * Index
  * @returns Index
  */
-const Index = (): JSX.Element => {
+const Index = (): React.JSX.Element => {
   // State
   const [dockerOpen, setDockerOpen] = useState<boolean>(false)
   const [troubleshootingOpen, setTroubleshootingOpen] = useState<boolean>(false)

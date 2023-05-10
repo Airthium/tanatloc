@@ -76,7 +76,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns Password
  */
-const Password = ({ user }: IProps): JSX.Element => {
+const Password = ({ user }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()

@@ -19,7 +19,7 @@ export interface IRelease {
  * Desktop
  * @returns Desktop
  */
-const Desktop = (): JSX.Element => {
+const Desktop = (): React.JSX.Element => {
   const [release, setRelease] = useState<IRelease>()
   const [releaseError, setReleaseError] = useState<string>('')
 
@@ -130,6 +130,12 @@ const Desktop = (): JSX.Element => {
           computer
         </Typography.Text>
         <Typography.Text className={style.tips}>
+          On Linux, you can activate Docker Desktop autostart using
+          <Typography.Text code>
+            systemctl --user enable docker-desktop.service
+          </Typography.Text>
+        </Typography.Text>
+        <Typography.Text className={style.tips}>
           Docker Desktop must display &apos;Docker Desktop Running&apos;
         </Typography.Text>
       </Typography>
@@ -212,7 +218,7 @@ const Desktop = (): JSX.Element => {
  * Server
  * @returns Server
  */
-const Server = (): JSX.Element => {
+const Server = (): React.JSX.Element => {
   // Set data
   const setColumns = [
     {
@@ -479,7 +485,7 @@ const tabs = [
  * Installation
  * @returns Installation
  */
-const Installation = (): JSX.Element => {
+const Installation = (): React.JSX.Element => {
   // Data
   const router = useRouter()
   const query = router.query

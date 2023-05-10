@@ -5,7 +5,7 @@ import BlogPage from '@/components/blog'
 /**
  * Blog
  */
-const Blog = (): JSX.Element => {
+const Blog = (): React.JSX.Element => {
   /**
    * Render
    */

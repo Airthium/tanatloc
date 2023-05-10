@@ -84,7 +84,7 @@ const Step = ({
   step,
   loading,
   setLoading
-}: IStepProps): JSX.Element => {
+}: IStepProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -172,7 +172,7 @@ const Step = ({
  * @param props Props
  * @returns Log
  */
-const Log = ({ simulation, steps }: IProps): JSX.Element => {
+const Log = ({ simulation, steps }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

@@ -70,7 +70,7 @@ export const _onEdit = async (
  * @param props Props
  * @çeturns Edit
  */
-const Edit = ({ simulation, swr }: IProps): JSX.Element => {
+const Edit = ({ simulation, swr }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

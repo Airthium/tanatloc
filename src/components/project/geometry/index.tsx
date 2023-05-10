@@ -154,7 +154,7 @@ const Geometry = ({
   swr,
   close,
   onCleanup
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [downloading, setDownloading] = useState<boolean>(false)
   const [editVisible, setEditVisible] = useState<boolean>(false)

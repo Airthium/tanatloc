@@ -15,7 +15,7 @@ import '@/styles/fonts.css'
  * Global App component
  * @param props Props
  */
-const App = ({ Component, pageProps }: AppProps): JSX.Element => {
+const App = ({ Component, pageProps }: AppProps): React.JSX.Element => {
   // Redux
 
   /**

@@ -5,7 +5,7 @@ import DocPage from '@/components/doc'
 /**
  * Doc
  */
-const Doc = (): JSX.Element => {
+const Doc = (): React.JSX.Element => {
   /**
    * Render
    */

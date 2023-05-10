@@ -45,7 +45,7 @@ const EditButton = ({
   loading,
   children,
   onEdit
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   let type: 'link' | 'primary' | 'default'
   if (disabled) type = 'link'
   else if (primary) type = 'primary'

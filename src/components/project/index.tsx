@@ -66,7 +66,7 @@ const Data = dynamic(() => import('./data'), { ssr: false })
 export interface IGeometryProps {
   visible: boolean
   geometry: IFrontGeometriesItem
-  panel: JSX.Element | undefined
+  panel: React.JSX.Element | undefined
   add: (geometry: IFrontGeometriesItem) => void
   del: (geometry: IFrontGeometriesItem) => void
   close: () => void
@@ -149,7 +149,7 @@ const GeometryLabel = ({
   add,
   del,
   close
-}: IGeometryProps): JSX.Element => {
+}: IGeometryProps): React.JSX.Element => {
   /**
    * On delete
    * @param e Event
@@ -198,7 +198,9 @@ const GeometryLabel = ({
  * @param props Props
  * @returns SimulationLabel
  */
-const SimulationLabel = ({ simulation }: ISimulationProps): JSX.Element => {
+const SimulationLabel = ({
+  simulation
+}: ISimulationProps): React.JSX.Element => {
   /**
    * Render
    */
@@ -226,7 +228,7 @@ const SimulationLabel = ({ simulation }: ISimulationProps): JSX.Element => {
  * Project
  * @returns Project
  */
-const Project = (): JSX.Element => {
+const Project = (): React.JSX.Element => {
   // Router
   const router = useRouter()
   const {
@@ -253,7 +255,7 @@ const Project = (): JSX.Element => {
     item?: string
   }>()
 
-  const [panel, setPanel] = useState<JSX.Element>()
+  const [panel, setPanel] = useState<React.JSX.Element>()
   const [panelVisible, setPanelVisible] = useState<boolean>(true)
 
   // Data

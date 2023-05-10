@@ -24,7 +24,7 @@ const FormListContainer = ({
   label,
   errors,
   add
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * On add
    */

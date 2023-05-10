@@ -10,7 +10,7 @@ import { Spin } from 'antd'
 /**
  * Head
  */
-const Head = (): JSX.Element => {
+const Head = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -25,7 +25,7 @@ export interface IPropsInline {
  * Inline
  * @param props Props
  */
-const Inline = ({ text }: IPropsInline): JSX.Element => {
+const Inline = ({ text }: IPropsInline): React.JSX.Element => {
   // State
   const [content, setContent] = useState<string>()
 
@@ -107,9 +107,11 @@ export interface IPropsHtml {
  * Html
  * @param props Props
  */
-const Html = ({ html }: IPropsHtml): JSX.Element => {
+const Html = ({ html }: IPropsHtml): React.JSX.Element => {
   // State
-  const [content, setContent] = useState<string | JSX.Element | JSX.Element[]>()
+  const [content, setContent] = useState<
+    string | React.JSX.Element | React.JSX.Element[]
+  >()
   const [loading, setLoading] = useState<boolean>(false)
 
   // Ref

@@ -51,7 +51,7 @@ const PostCard = ({
   description,
   keywords,
   author
-}: IPostCardProps): JSX.Element => {
+}: IPostCardProps): React.JSX.Element => {
   // Data
   const router = useRouter()
 
@@ -105,7 +105,7 @@ const PostCard = ({
  */
 const Blog = () => {
   // State
-  const [PostRender, setPostRender] = useState<JSX.Element>()
+  const [PostRender, setPostRender] = useState<React.JSX.Element>()
   const [sort, setSort] = useState<number>(1)
   const [tags, setTags] = useState<string[]>([])
   const [search, setSearch] = useState<string>()
@@ -159,7 +159,7 @@ const Blog = () => {
    * @param props Props
    * @returns Render
    */
-  const tagRender = useCallback((props: CustomTagProps): JSX.Element => {
+  const tagRender = useCallback((props: CustomTagProps): React.JSX.Element => {
     const { label, value, closable, onClose } = props
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault()

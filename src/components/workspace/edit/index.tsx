@@ -68,7 +68,7 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ workspace, swr }: IProps): JSX.Element => {
+const Edit = ({ workspace, swr }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

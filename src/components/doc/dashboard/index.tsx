@@ -53,7 +53,7 @@ const tabs = [
  * Dashboard
  * @returns Dashboard
  */
-const Dashboard = (): JSX.Element => {
+const Dashboard = (): React.JSX.Element => {
   // Data
   const router = useRouter()
   const query = router.query

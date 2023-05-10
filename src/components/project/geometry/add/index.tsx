@@ -110,7 +110,12 @@ export const _onUpload = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
+const Add = ({
+  visible,
+  project,
+  swr,
+  setVisible
+}: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

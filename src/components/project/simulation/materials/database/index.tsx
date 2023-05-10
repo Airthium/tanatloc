@@ -20,7 +20,7 @@ export interface IProps {
  * @param props Props
  * @return Database
  */
-const DataBase = ({ onSelect }: IProps): JSX.Element => {
+const DataBase = ({ onSelect }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>()
   const [firstLevel, setFirstLevel] = useState<{

@@ -212,7 +212,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns PluginDialog
  */
-const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
+const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

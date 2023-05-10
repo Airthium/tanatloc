@@ -39,7 +39,7 @@ const PostLayout = ({
   author,
   version,
   children
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Data
   const router = useRouter()
 

@@ -116,7 +116,7 @@ const TanatlocModel = ({
   setLoading,
   setVisible,
   dispatch
-}: ITanatlocModelProps): JSX.Element => {
+}: ITanatlocModelProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -158,7 +158,7 @@ const UserModel = ({
   setLoading,
   setVisible,
   dispatch
-}: IUserModelProps): JSX.Element => {
+}: IUserModelProps): React.JSX.Element => {
   // Data
   const model = useMemo(() => user.models[index], [user, index])
   const template = useMemo(() => user.templates[index], [user, index])
@@ -205,7 +205,7 @@ const UserModel = ({
  * @param props Props
  * @returns Load
  */
-const Browser = ({ user, swr }: IProps): JSX.Element => {
+const Browser = ({ user, swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

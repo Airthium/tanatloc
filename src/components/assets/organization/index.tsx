@@ -83,7 +83,11 @@ export const _onName = async (
  * - onClose (Function) On close
  * @returns Organization
  */
-const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
+const Organization = ({
+  organization,
+  swr,
+  onClose
+}: IProps): React.JSX.Element => {
   /**
    * On change
    * @param name Name

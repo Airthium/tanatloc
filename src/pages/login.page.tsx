@@ -5,7 +5,7 @@ import LoginPage from '@/components/login'
 /**
  * Login
  */
-const Login = (): JSX.Element => {
+const Login = (): React.JSX.Element => {
   /**
    * Render
    */

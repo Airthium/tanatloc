@@ -99,7 +99,7 @@ export const _onUpdate = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
+const Edit = ({ plugins, user, swr }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

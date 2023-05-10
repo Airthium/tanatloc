@@ -29,7 +29,7 @@ export interface IProps {
  * @param props Props
  * @returns Carousel
  */
-const Carousel = ({ items }: IProps): JSX.Element => {
+const Carousel = ({ items }: IProps): React.JSX.Element => {
   // Ref
   const carouselRef = useRef<CarouselRef>(null)
 

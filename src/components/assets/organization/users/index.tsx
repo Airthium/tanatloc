@@ -39,7 +39,7 @@ export interface IProps {
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Users
  */
-const Users = ({ organization, swr }: IProps): JSX.Element => {
+const Users = ({ organization, swr }: IProps): React.JSX.Element => {
   // State
   const [scrollAdmin, setScrollAdmin] = useState<{ y: number }>()
   const [scrollUsers, setScrollUsers] = useState<{ y: number }>()
@@ -64,7 +64,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const ownerActionsRender = useCallback(
     (
       owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
-    ): JSX.Element => (
+    ): React.JSX.Element => (
       <Delete
         disabled={organization.owners.length < 2 && !owner.pending}
         user={{
@@ -95,7 +95,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
   const userActionsRender = useCallback(
     (
       user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
-    ): JSX.Element => (
+    ): React.JSX.Element => (
       <Delete
         user={{
           id: user.id,

@@ -19,7 +19,7 @@ import style from './index.module.css'
  * Background
  * @returns Background
  */
-const Background = (): JSX.Element => {
+const Background = (): React.JSX.Element => {
   // Router
   const router = useRouter()
 

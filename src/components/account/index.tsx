@@ -33,7 +33,7 @@ export interface IProps {
  * @param props Props
  * @returns Account
  */
-const Account = ({ user, swr }: IProps): JSX.Element => {
+const Account = ({ user, swr }: IProps): React.JSX.Element => {
   // Data
   const router = useRouter()
   const { tab }: { tab?: string } = router.query

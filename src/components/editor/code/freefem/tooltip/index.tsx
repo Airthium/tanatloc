@@ -31,7 +31,7 @@ export interface IStyle {
  * @param props Props
  * @returns CustomTooltip
  */
-const CustomTooltip = ({ x, y, token }: IProps): JSX.Element | null => {
+const CustomTooltip = ({ x, y, token }: IProps): React.JSX.Element | null => {
   // Width
   const width = document.querySelector('body')?.offsetWidth
 

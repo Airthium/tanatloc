@@ -51,7 +51,7 @@ export const addOnCursor = (
  * Blobs
  * @returns Blobs
  */
-const Blobs = (): JSX.Element => {
+const Blobs = (): React.JSX.Element => {
   /**
    * Render
    */

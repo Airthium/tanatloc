@@ -100,7 +100,7 @@ const Result = ({
   postprocessing,
   result,
   setResult
-}: IResultProps): JSX.Element => {
+}: IResultProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -159,7 +159,7 @@ const Results = ({
   postprocessing,
   results,
   setResult
-}: IResultsProps): JSX.Element => {
+}: IResultsProps): React.JSX.Element => {
   /**
    * Render
    */
@@ -189,7 +189,7 @@ const Postprocessing = ({
   results,
   postprocessing,
   setResult
-}: IProps): JSX.Element | null => {
+}: IProps): React.JSX.Element | null => {
   // State
   const [visible, setVisible] = useState<boolean>()
   const [filter, setFilter] = useState<string>()

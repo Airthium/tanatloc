@@ -9,10 +9,10 @@ import style from './index.module.css'
  */
 export interface IProps {
   className?: string
-  title?: string | JSX.Element
-  footer?: string | JSX.Element
-  extra?: string | JSX.Element
-  children?: JSX.Element | JSX.Element[]
+  title?: string | React.JSX.Element
+  footer?: string | React.JSX.Element
+  extra?: string | React.JSX.Element
+  children?: React.JSX.Element | React.JSX.Element[]
 }
 
 /**
@@ -26,7 +26,7 @@ const PageHeader = ({
   footer,
   extra,
   children
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   return (
     <div className={className}>
       {(title || extra) && (

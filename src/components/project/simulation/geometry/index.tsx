@@ -182,7 +182,7 @@ const Geometry = ({
   simulation,
   setGeometries,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Data
   const multiple = useMemo(
     () => simulation.scheme.configuration.geometry.multiple,

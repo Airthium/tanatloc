@@ -44,7 +44,7 @@ const DeleteDialog = ({
   children,
   onCancel,
   onOk
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * On ok
    */

@@ -27,9 +27,9 @@ export interface IProps {
  * @param props Props
  * @returns List
  */
-const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
+const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
   // State
-  const [list, setList] = useState<Array<JSX.Element>>([])
+  const [list, setList] = useState<Array<React.JSX.Element>>([])
 
   // List
   useEffect(() => {
@@ -43,7 +43,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
           .map((key) => {
             if (key === 'name') return
 
-            let content: JSX.Element
+            let content: React.JSX.Element
             if (configuration[key].type === 'textarea') {
               const code = configuration[key].value
               content = (
@@ -113,7 +113,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
           </Card>
         )
       })
-      .filter((c) => c) as JSX.Element[]
+      .filter((c) => c) as React.JSX.Element[]
 
     setList(pluginsList)
   }, [plugin, plugins, swr])

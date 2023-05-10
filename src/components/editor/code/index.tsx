@@ -37,7 +37,7 @@ const JSONCode = dynamic(
  * Code
  * @returns Code
  */
-const Code = (): JSX.Element => {
+const Code = (): React.JSX.Element => {
   /**
    * Render
    */

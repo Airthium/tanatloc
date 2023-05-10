@@ -39,7 +39,7 @@ export interface IProps {
  * @param props Props
  * @returns About
  */
-const About = ({ project, simulation, swr }: IProps): JSX.Element => {
+const About = ({ project, simulation, swr }: IProps): React.JSX.Element => {
   /**
    * Render
    */

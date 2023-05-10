@@ -48,7 +48,7 @@ export const _onAdd = (
  * Dimension
  * @returns Dimension
  */
-const Dimension = (): JSX.Element => {
+const Dimension = (): React.JSX.Element => {
   // Context
   const { template, templateCursor, dispatch } = useContext(EditorContext)
 

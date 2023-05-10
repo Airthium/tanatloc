@@ -100,7 +100,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ plugins, swr }: IProps): JSX.Element => {
+const Add = ({ plugins, swr }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

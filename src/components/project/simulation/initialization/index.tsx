@@ -349,7 +349,7 @@ const DirectItem = ({
   index,
   value,
   swr
-}: IDirectItemProps): JSX.Element => {
+}: IDirectItemProps): React.JSX.Element => {
   /**
    * On change
    * @param value Value
@@ -384,7 +384,7 @@ const Initialization = ({
   simulations,
   simulation,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [currentKey, setCurrentKey] = useState<TInitializationKey>()
@@ -518,7 +518,7 @@ const Initialization = ({
     (
       options: { label: string; value: string; disabled: boolean }[],
       filter?: any
-    ): JSX.Element => (
+    ): React.JSX.Element => (
       <>
         <Typography.Text>
           If you use coupling, the selected simulation mesh will be used, at
@@ -576,7 +576,7 @@ const Initialization = ({
     (direct: {
       label: string
       children: IModelInitializationDirectChild[]
-    }): JSX.Element => (
+    }): React.JSX.Element => (
       <Space direction="vertical" className={globalStyle.fullWidth}>
         {direct.children.map((child, index) => {
           if (dimension === 2 && child.only3D) return
@@ -599,9 +599,9 @@ const Initialization = ({
   // Build initialization
   const initializations = useMemo(() => {
     const data: {
-      none: JSX.Element
-      coupling?: JSX.Element
-      direct?: JSX.Element
+      none: React.JSX.Element
+      coupling?: React.JSX.Element
+      direct?: React.JSX.Element
     } = { none: <div /> }
 
     // Coupling

@@ -19,7 +19,7 @@ export interface IProps {
  * @param props Props
  * @return Error
  */
-function ErrorPage({ webStatusCode }: IProps): JSX.Element {
+function ErrorPage({ webStatusCode }: IProps): React.JSX.Element {
   // Data
   const router = useRouter()
   const {
@@ -33,7 +33,7 @@ function ErrorPage({ webStatusCode }: IProps): JSX.Element {
   const reload = useCallback((): void => router.reload(), [router])
 
   // Render
-  let render: JSX.Element
+  let render: React.JSX.Element
   if (electronStatusCode) {
     if (electronStatusCode === '100')
       render = (

@@ -25,7 +25,7 @@ export const errors = {
  * Validation
  * @returns Validation
  */
-const Validation = (): JSX.Element => {
+const Validation = (): React.JSX.Element => {
   // Data
   const router = useRouter()
   const { id }: { id?: string } = router.query

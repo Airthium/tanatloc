@@ -22,7 +22,7 @@ export const errors = {
  * Plugins list
  * @returns List
  */
-export const _pluginsList = async (): Promise<JSX.Element[]> => {
+export const _pluginsList = async (): Promise<React.JSX.Element[]> => {
   try {
     const plugins = await PluginsAPI.list()
 
@@ -67,9 +67,9 @@ export const _pluginsList = async (): Promise<JSX.Element[]> => {
  * @param props Props
  * @returns HPC
  */
-const HPC = (): JSX.Element => {
+const HPC = (): React.JSX.Element => {
   // State
-  const [list, setList] = useState<JSX.Element[]>([
+  const [list, setList] = useState<React.JSX.Element[]>([
     <Card key="loading" title="Loading">
       <Spin />
     </Card>

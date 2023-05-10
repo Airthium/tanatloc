@@ -105,7 +105,7 @@ export const _onAdd = (
  * Solver
  * @returns Solver
  */
-const Solver = (): JSX.Element => {
+const Solver = (): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

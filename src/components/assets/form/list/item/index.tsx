@@ -26,7 +26,7 @@ export const FormListItem = ({
   label,
   index,
   remove
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * On remove
    */

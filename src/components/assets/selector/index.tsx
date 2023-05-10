@@ -83,7 +83,10 @@ export interface IGeometryElementCardProps {
  * @param props Props
  * @returns ColorFilter
  */
-const ColorFilter = ({ color, setFilter }: IColorFilterProps): JSX.Element => {
+const ColorFilter = ({
+  color,
+  setFilter
+}: IColorFilterProps): React.JSX.Element => {
   /**
    * On color fitler
    * @param color Color
@@ -115,7 +118,7 @@ const ColorFilter = ({ color, setFilter }: IColorFilterProps): JSX.Element => {
 const ColorFilters = ({
   colors,
   setFilter
-}: IColorFiltersProps): JSX.Element => {
+}: IColorFiltersProps): React.JSX.Element => {
   /**
    * On color fitler clear
    */
@@ -157,7 +160,7 @@ const GeometryElementCard = ({
   filter,
   search,
   context
-}: IGeometryElementCardProps): JSX.Element | null => {
+}: IGeometryElementCardProps): React.JSX.Element | null => {
   /**
    * Display?
    * @param element Element
@@ -314,7 +317,7 @@ const Selector = ({
   geometry,
   alreadySelected,
   updateSelected
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [colors, setColors] = useState<TGeometryColor[]>([])
   const [filter, setFilter] = useState<TGeometryColor>()

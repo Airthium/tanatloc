@@ -18,7 +18,7 @@ export interface IProps {
  * @param props Props
  * @returns Local
  */
-const Local = ({ onSelect }: IProps): JSX.Element => {
+const Local = ({ onSelect }: IProps): React.JSX.Element => {
   /**
    * On click
    */

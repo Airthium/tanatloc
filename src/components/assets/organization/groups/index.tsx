@@ -47,7 +47,7 @@ export const errors = {
  * - organization (Object) Organization `{ id, owners, [users] }`
  * @returns Groups
  */
-const Groups = ({ organization, swr }: IProps): JSX.Element => {
+const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
   // State
   const [userOptions, setUserOptions] = useState<
     { label: string; value: string }[]
@@ -106,7 +106,7 @@ const Groups = ({ organization, swr }: IProps): JSX.Element => {
    * @returns Render
    */
   const actionsRender = useCallback(
-    (_: any, group: IFrontGroupsItem): JSX.Element => (
+    (_: any, group: IFrontGroupsItem): React.JSX.Element => (
       <Space>
         <Group
           userOptions={userOptions}

@@ -5,7 +5,7 @@ import ValidationPage from '@/components/signup/validation'
 /**
  * Signup validation
  */
-const Validation = (): JSX.Element => {
+const Validation = (): React.JSX.Element => {
   /**
    * Render
    */

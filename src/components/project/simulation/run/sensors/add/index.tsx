@@ -98,7 +98,7 @@ const Add = ({
   onError,
   onClose,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>()
 

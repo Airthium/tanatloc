@@ -64,7 +64,7 @@ export const errors = {
  * @param props Props
  * @returns Users
  */
-const Users = ({ users, swr }: IProps): JSX.Element => {
+const Users = ({ users, swr }: IProps): React.JSX.Element => {
   // Ref
   const refTable = useRef<HTMLDivElement>(null)
 
@@ -78,7 +78,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * @returns Render
    */
   const authorizedpluginsRender = useCallback(
-    (authorizedplugins: string[]): JSX.Element => {
+    (authorizedplugins: string[]): React.JSX.Element => {
       authorizedplugins.sort((a, b) => a.localeCompare(b))
       const list = authorizedplugins.map((authorizedplugin) => {
         const plugin = plugins?.find((p) => p.key === authorizedplugin)
@@ -110,7 +110,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * @returns Render
    */
   const superuserRender = useCallback(
-    (superuser: boolean): JSX.Element | null =>
+    (superuser: boolean): React.JSX.Element | null =>
       superuser ? <CheckOutlined className={globalStyle.textGreen} /> : null,
     []
   )
@@ -122,7 +122,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * @returns Render
    */
   const actionsRender = useCallback(
-    (_: any, record: TUserItem): JSX.Element => (
+    (_: any, record: TUserItem): React.JSX.Element => (
       <Space>
         <Edit
           plugins={

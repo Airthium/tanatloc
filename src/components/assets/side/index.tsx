@@ -5,9 +5,9 @@ import { CSSProperties } from 'react'
 import style from './index.module.css'
 
 export interface IProps {
-  left: JSX.Element
-  right: JSX.Element
-  top?: JSX.Element
+  left: React.JSX.Element
+  right: React.JSX.Element
+  top?: React.JSX.Element
   sideStyle?: CSSProperties
   sideClassName?: string
   leftStyle?: CSSProperties
@@ -37,7 +37,7 @@ const Side = ({
   topStyle,
   topClassName,
   id
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * Render
    */

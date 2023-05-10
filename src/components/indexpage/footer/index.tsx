@@ -29,18 +29,19 @@ export interface IProps {
  * Footer
  * @returns Footer
  */
-const Footer = ({ scroll }: IProps): JSX.Element => {
+const Footer = ({ scroll }: IProps): React.JSX.Element => {
   /**
    * Render item
    * @param item Item
    * @returns Render
    */
-  const renderItem: ListProps<string | JSX.Element>['renderItem'] = useCallback(
-    (item: string | JSX.Element): JSX.Element => (
-      <List.Item className="item">{item}</List.Item>
-    ),
-    []
-  )
+  const renderItem: ListProps<string | React.JSX.Element>['renderItem'] =
+    useCallback(
+      (item: string | React.JSX.Element): React.JSX.Element => (
+        <List.Item className="item">{item}</List.Item>
+      ),
+      []
+    )
 
   /**
    * Scroll to features

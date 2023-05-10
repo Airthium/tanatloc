@@ -55,7 +55,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ swr }: IProps): JSX.Element => {
+const Add = ({ swr }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

@@ -16,7 +16,7 @@ export interface IProps {
  * @param props Props
  * @returns FormError
  */
-const FormError = ({ error }: IProps): JSX.Element | null => {
+const FormError = ({ error }: IProps): React.JSX.Element | null => {
   return error ? (
     <Form.Item>
       <Alert

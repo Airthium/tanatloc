@@ -189,7 +189,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns Information
  */
-const Information = ({ user, swr }: IProps): JSX.Element => {
+const Information = ({ user, swr }: IProps): React.JSX.Element => {
   // State
   const [uploading, setUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

@@ -34,7 +34,7 @@ import style from '../index.module.css'
  * Geometry
  * @returns Geometry
  */
-const Geometry = (): JSX.Element => {
+const Geometry = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -91,7 +91,7 @@ const Geometry = (): JSX.Element => {
  * Simulation
  * @returns Simulation
  */
-const Simulation = (): JSX.Element => {
+const Simulation = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -493,7 +493,7 @@ const Simulation = (): JSX.Element => {
  * View
  * @returns View
  */
-const View = (): JSX.Element => {
+const View = (): React.JSX.Element => {
   return (
     <>
       <Typography.Title level={4}>View Tools</Typography.Title>
@@ -626,7 +626,7 @@ const tabs = [
  * Project
  * @returns Project
  */
-const Project = (): JSX.Element => {
+const Project = (): React.JSX.Element => {
   // Data
   const router = useRouter()
   const query = router.query

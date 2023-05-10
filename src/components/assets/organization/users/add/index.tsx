@@ -132,7 +132,12 @@ export const _onFinish = async (
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Add
  */
-const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
+const Add = ({
+  title,
+  organization,
+  dBkey,
+  swr
+}: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

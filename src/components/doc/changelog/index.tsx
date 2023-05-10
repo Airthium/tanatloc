@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
  * Changelog
  * @returns Changelog
  */
-const Changelog = (): JSX.Element => {
+const Changelog = (): React.JSX.Element => {
   // State
   const [content, setContent] = useState<string>()
 

@@ -26,7 +26,7 @@ const Edit = ({
   geometry,
   setVisible,
   onEdit
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

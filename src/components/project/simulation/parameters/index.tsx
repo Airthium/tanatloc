@@ -76,7 +76,7 @@ export const _build2DFormula = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
-): JSX.Element => (
+): React.JSX.Element => (
   <Formula
     key={key}
     label={child.label2D ?? child.label}
@@ -97,7 +97,7 @@ export const _build2DSelect = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
-): JSX.Element => (
+): React.JSX.Element => (
   <Form layout="vertical" key={key}>
     <Form.Item label={child.label2D ?? child.label}>
       <Select
@@ -125,7 +125,7 @@ export const _build2DCheckbox = (
   key: string,
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
-): JSX.Element => (
+): React.JSX.Element => (
   <Form layout="horizontal" key={key}>
     <Form.Item label={child.label2D ?? child.label}>
       <Checkbox
@@ -147,7 +147,7 @@ export const _buildFormula = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
-): JSX.Element => (
+): React.JSX.Element => (
   <Formula
     key={key}
     label={child.label}
@@ -168,7 +168,7 @@ export const _buildSelect = (
   key: string,
   child: IModelParameter,
   onValueChange: (value: string) => void
-): JSX.Element => (
+): React.JSX.Element => (
   <Form layout="vertical" key={key}>
     <Form.Item label={child.label}>
       <Select
@@ -191,7 +191,7 @@ export const _buildCheckbox = (
   key: string,
   child: IModelParameter,
   onValueChange: (e: CheckboxChangeEvent) => void
-): JSX.Element => (
+): React.JSX.Element => (
   <Form layout="horizontal" key={key}>
     <Form.Item label={child.label}>
       <Checkbox
@@ -334,7 +334,7 @@ const ParameterChild = ({
   pkey,
   index,
   swr
-}: IParameterChildProps): JSX.Element | null => {
+}: IParameterChildProps): React.JSX.Element | null => {
   /**
    * On change
    * @param value Value
@@ -397,7 +397,7 @@ const Parameter = ({
   pkey,
   parameter,
   swr
-}: IParameterProps): JSX.Element => {
+}: IParameterProps): React.JSX.Element => {
   // Components
   const components = useMemo(
     () =>
@@ -430,7 +430,7 @@ const Parameter = ({
  * @param props Props
  * @returns Parameters
  */
-const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
+const Parameters = ({ simulation, swr }: IProps): React.JSX.Element => {
   // Data
   const subScheme = useMemo(
     () => simulation?.scheme.configuration.parameters,

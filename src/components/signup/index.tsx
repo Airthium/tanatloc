@@ -80,7 +80,7 @@ export const _onLogin = (router: NextRouter): void => {
  * Signup
  * @returns Signup
  */
-const Signup = (): JSX.Element => {
+const Signup = (): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()

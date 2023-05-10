@@ -19,7 +19,7 @@ import globalStyle from '@/styles/index.module.css'
  * Workspace
  * @returns Workspace
  */
-const Workspace = (): JSX.Element => {
+const Workspace = (): React.JSX.Element => {
   /**
    * Render
    */

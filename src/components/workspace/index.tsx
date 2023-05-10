@@ -67,7 +67,7 @@ const Workspace = ({
   workspace,
   organizations,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [filter, setFilter] = useState<string>()
   const [sorter, setSorter] = useState<string>()

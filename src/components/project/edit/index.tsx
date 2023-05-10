@@ -70,7 +70,7 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
+const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

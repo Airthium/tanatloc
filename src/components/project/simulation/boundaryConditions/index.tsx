@@ -48,7 +48,7 @@ const BoundaryConditions = ({
   geometries,
   swr,
   setVisible
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [boundaryCondition, setBoundaryCondition] =
     useState<IModelBoundaryConditionValue>()

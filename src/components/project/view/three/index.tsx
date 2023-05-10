@@ -457,7 +457,7 @@ export const _downloadScreenshot = (
  * @param props Props
  * @returns ThreeView
  */
-const ThreeView = ({ loading, project, parts }: IProps): JSX.Element => {
+const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
   // Ref
   const mount = useRef<HTMLDivElement>(null)
   const scene = useRef<Scene & { boundingBox: Box3; boundingSphere: Sphere }>()

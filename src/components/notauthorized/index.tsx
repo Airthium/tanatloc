@@ -16,7 +16,7 @@ export const errors = {
  * Not authorized
  * @returns NotAuthorized
  */
-const NotAuthorized = (): JSX.Element => {
+const NotAuthorized = (): React.JSX.Element => {
   // Data
   const router = useRouter()
 

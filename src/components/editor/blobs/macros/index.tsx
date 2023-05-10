@@ -57,7 +57,7 @@ export const _onAdd = (
  * Macros
  * @returns Macros
  */
-const Macros = (): JSX.Element => {
+const Macros = (): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

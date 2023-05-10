@@ -169,7 +169,7 @@ const Group = ({
   organization,
   group,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

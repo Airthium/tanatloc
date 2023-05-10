@@ -108,7 +108,7 @@ const ColumnRender = ({
   index,
   columnSelection,
   setColumnSelection
-}: IColumnRenderProps): JSX.Element => {
+}: IColumnRenderProps): React.JSX.Element => {
   /**
    * On change
    * @param event Event
@@ -147,7 +147,7 @@ const ColumnRender = ({
  * @param props Props
  * @returns Data
  */
-const Data = ({ simulation }: IProps): JSX.Element | null => {
+const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [datas, setDatas] =
@@ -163,7 +163,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
     max: number
     domainMin: number
     domainMax: number
-    lines: JSX.Element[]
+    lines: React.JSX.Element[]
   }>()
   const [downloading, setDownloading] = useState<boolean>(false)
 
@@ -290,7 +290,7 @@ const Data = ({ simulation }: IProps): JSX.Element | null => {
           />
         )
       })
-      .filter((l) => l) as JSX.Element[]
+      .filter((l) => l) as React.JSX.Element[]
 
     // Set data
     const data = datas

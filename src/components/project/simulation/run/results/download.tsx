@@ -59,7 +59,7 @@ const _onDownload = async (
  * @param props Props
  * @returns Download
  */
-const Download = ({ simulation, file }: IProps): JSX.Element => {
+const Download = ({ simulation, file }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

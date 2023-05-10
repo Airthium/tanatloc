@@ -164,7 +164,7 @@ export const _onMeshGlobalSize = async (
  * @param props Props
  * @returns Mesh
  */
-const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
+const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [meshGlobalType, setMeshGlobalType] = useState<string>()
   const [meshGlobalValue, setMeshGlobalValue] = useState<string>()

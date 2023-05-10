@@ -72,7 +72,7 @@ export const _onFinish = async (
  * Password recovery
  * @returns PasswordRecovery
  */
-const PasswordRecovery = (): JSX.Element => {
+const PasswordRecovery = (): React.JSX.Element => {
   // State
   const [checking, setChecking] = useState<boolean>(true)
   const [linkEmail, setLinkEmail] = useState<string>()

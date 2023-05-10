@@ -61,7 +61,7 @@ const Dialog = ({
   children,
   onCancel,
   onOk
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Form
   const [form] = Form.useForm()
 

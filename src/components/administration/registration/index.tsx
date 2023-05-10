@@ -80,7 +80,7 @@ export const _onPasswordFinish = async (
  * Registration
  * @returns Registration
  */
-const Registration = (): JSX.Element => {
+const Registration = (): React.JSX.Element => {
   // Data
   const [form] = Form.useForm()
   const [system, { mutateSystem, errorSystem, loadingSystem }] =

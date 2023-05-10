@@ -12,7 +12,7 @@ import style from '../../index.module.css'
  * Organizations
  * @returns Organizations
  */
-const Organizations = (): JSX.Element => {
+const Organizations = (): React.JSX.Element => {
   /**
    * Render
    */

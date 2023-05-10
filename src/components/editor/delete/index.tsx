@@ -84,7 +84,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ user, index, swr }: IProps): JSX.Element => {
+const Delete = ({ user, index, swr }: IProps): React.JSX.Element => {
   /**
    * On delete
    */

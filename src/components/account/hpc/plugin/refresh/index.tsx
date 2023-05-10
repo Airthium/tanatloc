@@ -50,7 +50,7 @@ export const _onUpdate = async (plugin: IClientPlugin): Promise<void> => {
  * @param props Props
  * @returns Refresh
  */
-const Refresh = ({ plugin }: IProps): JSX.Element => {
+const Refresh = ({ plugin }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

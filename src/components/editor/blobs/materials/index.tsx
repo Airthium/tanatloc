@@ -120,7 +120,7 @@ export const _onAdd = (
  * Materials
  * @returns Materials
  */
-const Materials = (): JSX.Element => {
+const Materials = (): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

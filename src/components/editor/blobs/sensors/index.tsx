@@ -60,7 +60,7 @@ export const _onAdd = (
  * Sensors
  * @returns Sensors
  */
-const Sensors = (): JSX.Element => {
+const Sensors = (): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

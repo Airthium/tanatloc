@@ -155,7 +155,7 @@ const View = ({
   geometries,
   results,
   postprocessing
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)

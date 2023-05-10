@@ -45,7 +45,7 @@ const Sensors = ({
   setResults,
   setPostprocessing,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [sensorVisible, setSensorVisible] = useState<boolean>()
   const [sensor, setSensor] = useState<IModelSensor & { index: number }>()

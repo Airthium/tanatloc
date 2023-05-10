@@ -33,7 +33,7 @@ export const errors = {
  * @param props Props
  * @returns Plugin
  */
-const Plugin = ({ plugin }: IProps): JSX.Element => {
+const Plugin = ({ plugin }: IProps): React.JSX.Element => {
   // Data
   const [
     plugins,

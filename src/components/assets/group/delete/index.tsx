@@ -56,7 +56,7 @@ export const _onDelete = async (
  * - swr (Object) SWR function `{ delOneGroup }`
  * @returns Delete
  */
-const Delete = ({ group, swr }: IProps): JSX.Element => {
+const Delete = ({ group, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

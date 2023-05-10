@@ -8,7 +8,7 @@ import style from '../index.module.css'
  * Workflow
  * @returns Workflow
  */
-const Workflow = (): JSX.Element => {
+const Workflow = (): React.JSX.Element => {
   /**
    * Render
    */

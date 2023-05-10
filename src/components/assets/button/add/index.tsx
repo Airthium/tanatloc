@@ -45,7 +45,7 @@ const AddButton = ({
   loading,
   children,
   onAdd
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * Render
    */

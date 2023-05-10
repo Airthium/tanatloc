@@ -74,7 +74,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
+const Delete = ({ project, simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

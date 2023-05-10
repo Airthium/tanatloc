@@ -168,7 +168,7 @@ const Share = ({
   organizations,
   swr,
   style
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

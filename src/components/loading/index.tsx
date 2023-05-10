@@ -12,7 +12,7 @@ import style from './index.module.css'
  * Simple
  * @returns Loading.Simple
  */
-const Simple = (): JSX.Element => {
+const Simple = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -45,10 +45,10 @@ export interface IProps {
  * Loading
  * @returns Loading
  */
-const Loading = ({ text, status, errors }: IProps): JSX.Element => {
+const Loading = ({ text, status, errors }: IProps): React.JSX.Element => {
   // State
   const [steps, setSteps] = useState<(StepProps & { index: number })[]>([])
-  const [errorMessages, setErrorMessages] = useState<JSX.Element[]>([])
+  const [errorMessages, setErrorMessages] = useState<React.JSX.Element[]>([])
 
   // Status
   useEffect(() => {

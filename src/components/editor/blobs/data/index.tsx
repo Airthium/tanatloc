@@ -66,7 +66,7 @@ export const _onAdd = (
  * Data
  * @returns Data
  */
-const Data = (): JSX.Element => {
+const Data = (): React.JSX.Element => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

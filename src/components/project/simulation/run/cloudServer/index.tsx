@@ -60,7 +60,11 @@ export const errors = {
  * @param props Props
  * @returns Plugin
  */
-const Plugin = ({ plugin, onOk, setVisible }: IPluginProps): JSX.Element => {
+const Plugin = ({
+  plugin,
+  onOk,
+  setVisible
+}: IPluginProps): React.JSX.Element => {
   // Renderer
   const Renderer: ComponentType<{
     data: any
@@ -105,7 +109,7 @@ const Plugins = ({
   plugins,
   onOk,
   setVisible
-}: IPluginsProps): JSX.Element | null => {
+}: IPluginsProps): React.JSX.Element | null => {
   if (!plugins?.length) return null
 
   return (
@@ -132,7 +136,11 @@ const Plugins = ({
  * @param props Props
  * @returns CloudServer
  */
-const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
+const CloudServer = ({
+  disabled,
+  cloudServer,
+  onOk
+}: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [pluginsList, setPluginsList] = useState<IClientPlugin[]>([])

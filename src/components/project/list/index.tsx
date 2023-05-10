@@ -116,7 +116,7 @@ const ProjectCard = ({
   project,
   organizations,
   swr
-}: ICardProps): JSX.Element => {
+}: ICardProps): React.JSX.Element => {
   // Router
   const router = useRouter()
 
@@ -353,7 +353,7 @@ const ProjectList = ({
   filter,
   sorter,
   swr
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 

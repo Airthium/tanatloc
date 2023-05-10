@@ -27,7 +27,7 @@ const CancelButton = ({
   loading,
   children,
   onCancel
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * Render
    */

@@ -33,7 +33,7 @@ const DownloadButton = ({
   bordered,
   children,
   onDownload
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   /**
    * Render
    */

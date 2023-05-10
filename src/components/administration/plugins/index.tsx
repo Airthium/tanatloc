@@ -80,7 +80,7 @@ const Plugin = ({
   swr: {
     mutateSystem: (system: IFrontMutateSystem) => Promise<void>
   }
-}): JSX.Element => {
+}): React.JSX.Element => {
   // State
   const [checked, setChecked] = useState<boolean>()
 
@@ -145,7 +145,7 @@ const Plugins = () => {
    * @returns Render
    */
   const renderPlugin = useCallback(
-    (plugin: IClientPlugin): JSX.Element => (
+    (plugin: IClientPlugin): React.JSX.Element => (
       <Plugin system={system} plugin={plugin} swr={{ mutateSystem }} />
     ),
     [system, mutateSystem]

@@ -44,7 +44,7 @@ export const errors = {
  * Administration
  * @returns Administration
  */
-const Administration = (): JSX.Element => {
+const Administration = (): React.JSX.Element => {
   // Data
   const router = useRouter()
   const { tab }: { tab?: string } = router.query

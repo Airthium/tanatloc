@@ -52,7 +52,7 @@ export const _onDelete = async (swr: {
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ swr }: IProps): JSX.Element => {
+const Delete = ({ swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

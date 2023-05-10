@@ -70,7 +70,7 @@ export const _onCopy = async (
  * @param props Props
  * @returns Copy
  */
-const Copy = ({ workspace, project, swr }: IProps): JSX.Element => {
+const Copy = ({ workspace, project, swr }: IProps): React.JSX.Element => {
   /**
    * On copy
    */

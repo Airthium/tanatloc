@@ -221,7 +221,7 @@ const ManageButton = ({
   organization,
   swr,
   setOrganization
-}: IManageProps): JSX.Element => {
+}: IManageProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -254,7 +254,11 @@ const ManageButton = ({
  * @param props Props
  * @returns QuitButton
  */
-const QuitButton = ({ user, organization, swr }: IQuitProps): JSX.Element => {
+const QuitButton = ({
+  user,
+  organization,
+  swr
+}: IQuitProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -287,7 +291,7 @@ const AcceptButton = ({
   user,
   organization,
   swr
-}: IAcceptProps): JSX.Element => {
+}: IAcceptProps): React.JSX.Element => {
   /**
    * On click
    */
@@ -326,7 +330,7 @@ const DeclineButton = ({
   user,
   organization,
   swr
-}: IDeclineProps): JSX.Element => {
+}: IDeclineProps): React.JSX.Element => {
   const onClick = useCallback((): void => {
     ;(async () => {
       await _onDecline(
@@ -361,7 +365,7 @@ const List = ({
   organizations,
   swr,
   setOrganization
-}: IProps): JSX.Element => {
+}: IProps): React.JSX.Element => {
   // State
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
@@ -374,7 +378,7 @@ const List = ({
    * @returns Render
    */
   const ownersRender = useCallback(
-    (owners: IFrontUsers): JSX.Element => (
+    (owners: IFrontUsers): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
         {owners?.map((o) => Utils.userToAvatar(o))}
       </Avatar.Group>
@@ -388,7 +392,7 @@ const List = ({
    * @returns Render
    */
   const usersRender = useCallback(
-    (users: IFrontUsers): JSX.Element => (
+    (users: IFrontUsers): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
         {users?.map((u) => Utils.userToAvatar(u))}
       </Avatar.Group>
@@ -402,7 +406,7 @@ const List = ({
    * @returns Render
    */
   const groupsRender = useCallback(
-    (groups: IFrontGroups): JSX.Element => (
+    (groups: IFrontGroups): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
         {groups?.map((g) => Utils.groupToAvatar(g))}
       </Avatar.Group>
@@ -416,7 +420,7 @@ const List = ({
    * @returns Render
    */
   const actionsRender = useCallback(
-    (org: IFrontOrganizationsItem): JSX.Element | null => {
+    (org: IFrontOrganizationsItem): React.JSX.Element | null => {
       if (org.owners.find((o) => o.id === user.id))
         return (
           <Space wrap>

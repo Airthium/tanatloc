@@ -1,3 +1,5 @@
+/** @module Components.Utils.JSONPosition */
+
 import { IEditorHighlight } from '@/context/editor'
 
 /**

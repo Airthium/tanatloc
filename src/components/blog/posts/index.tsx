@@ -6,6 +6,7 @@ import LinearElasticity from './3-linearElasticity'
 import ModalAnalysis from './4-modalAnalysis'
 import ThermalDiffusion from './5-thermalDiffusion'
 import ThermalExpansion from './6-thermalExpansion'
+import ContactMechanics from './7-contactMechanics'
 
 const Posts = [
   Poisson,
@@ -13,7 +14,8 @@ const Posts = [
   LinearElasticity,
   ModalAnalysis,
   ThermalDiffusion,
-  ThermalExpansion
+  ThermalExpansion,
+  ContactMechanics
 ]
 
 export default Posts

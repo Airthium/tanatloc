@@ -104,10 +104,10 @@ try {
 <% } -%>
 <% for (const p of componentsPresure){ -%>
         + intN1(Mesh, <%= p.labels -%>)(
-            (<%- p.values[0].value ?? p.values[0].default -%>) * N.x * Uhx
-            + (<%- p.values[1].value ?? p.values[1].default -%>) * N.y * Uhy
+            (<%- p.values[0].value ?? p.values[0].default -%>)  * Uhx
+            + (<%- p.values[1].value ?? p.values[1].default -%>)  * Uhy
 <% if (dimension !== 2){ -%>
-            + (<%- p.values[2].value ?? p.values[2].default -%>) * N.z * Uhz
+            + (<%- p.values[2].value ?? p.values[2].default -%>)  * Uhz
 <% } -%>
         )
 <% } -%>

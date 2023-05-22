@@ -3,12 +3,12 @@
 import { IEditorHighlight } from '@/context/editor'
 
 /**
- * Get highlight positions
+ * Get highlight position
  * @param oldModel Old model
  * @param newModel New model
  * @returns Highlights
  */
-export const getHighlightPositions = (
+export const getHighlightPosition = (
   oldModel: string,
   newModel: string
 ): IEditorHighlight => {

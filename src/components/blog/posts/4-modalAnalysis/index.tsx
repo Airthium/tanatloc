@@ -5,7 +5,7 @@ import { Table, Typography } from 'antd'
 import MathJax from '@/components/assets/mathjax'
 import Carousel from '@/components/assets/carousel'
 
-import PostLayout from '../layout'
+import PostLayout, { Ref } from '../layout'
 
 const key = '2-ModalAnalysis'
 const title = 'Modal Analysis problems'
@@ -17,6 +17,15 @@ const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'
 }
+
+const references = [
+  {
+    code: '1',
+    author: 'Code_Aster',
+    date: '2020',
+    label: 'SDLS109 - Eigen frequencies of a ring cylindrical thick'
+  }
+]
 
 const dataAster = [
   {
@@ -157,6 +166,7 @@ const Post = () => {
       keywords={keywords}
       author={author}
       version={'1.2.6'}
+      references={references}
     >
       <section>
         <Typography.Title level={3}>Theory</Typography.Title>
@@ -221,11 +231,11 @@ const Post = () => {
           ]}
         />
         <p>
-          This validation test can be found in Code_Aster (2020), where for a
+          This validation test can be found in <Ref code="1" />, where for a
           refined mesh the first natural frequencies are presented in the
           following table
         </p>
-        <Table dataSource={dataAster} columns={columns} />
+        <Table pagination={false} dataSource={dataAster} columns={columns} />
         <p>
           Note that the modes <MathJax.Inline text={'0, \\ldots, 5'} />{' '}
           correspond to the rigid body modes and the corresponding frequencies
@@ -260,17 +270,13 @@ const Post = () => {
         />
         <p>
           Our computed frequencies are presented in the following table with the
-          corresponding relative errors compared to Code_Aster (2020).
+          corresponding relative errors compared to <Ref code="1" />.
         </p>
-        <Table dataSource={dataTanatloc} columns={columnsWithErrors} />
-      </section>
-
-      <section>
-        <Typography.Title level={4}>References</Typography.Title>
-        <p>
-          Code_Aster (2020). SDLS109 - Eigen frequencies of a ring cylindrical
-          thick
-        </p>
+        <Table
+          pagination={false}
+          dataSource={dataTanatloc}
+          columns={columnsWithErrors}
+        />
       </section>
     </PostLayout>
   )

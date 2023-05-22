@@ -7,7 +7,11 @@ jest.mock('@/components/assets/mathjax', () => ({
   Formula: () => <div />
 }))
 
-jest.mock('../../layout', () => (props: any) => <div>{props.children}</div>)
+jest.mock('../../layout', () => ({
+  __esModule: true,
+  Ref: () => <div />,
+  default: (props: any) => <div>{props.children}</div>
+}))
 
 describe('components/blog/posts/2-stokes', () => {
   test('render', () => {

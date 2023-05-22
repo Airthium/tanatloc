@@ -22,7 +22,7 @@ import {
 } from '@/context/editor/actions'
 
 import Dialog from '@/components/assets/dialog'
-import { getHighlightPositions } from '@/components/utils/jsonPosition'
+import { getHighlightPosition } from '@/components/utils/jsonPosition'
 
 import { addOnCursor } from '..'
 
@@ -95,7 +95,7 @@ mesh.name = '${values.name}'
     }
   }
   const newModel = JSON.stringify(modelJSON, null, '\t')
-  const highlight = getHighlightPositions(oldModel, newModel)
+  const highlight = getHighlightPosition(oldModel, newModel)
   dispatch(setJsonHighlight(highlight))
   dispatch(setJsonCursor({ row: highlight.end, column: 0 }))
   dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))

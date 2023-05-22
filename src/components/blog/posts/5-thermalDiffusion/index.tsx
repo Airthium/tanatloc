@@ -181,7 +181,7 @@ const Post = () => {
           following table, the values of the computed temperature at this four
           points with the analytical ones.
         </p>
-        <Table dataSource={dataTanatloc} columns={columns} />
+        <Table pagination={false} dataSource={dataTanatloc} columns={columns} />
       </section>
     </PostLayout>
   )

@@ -5,7 +5,7 @@ import { Typography } from 'antd'
 import MathJax from '@/components/assets/mathjax'
 import Carousel from '@/components/assets/carousel'
 
-import PostLayout from '../layout'
+import PostLayout, { Ref } from '../layout'
 
 const key = '1-ContactMechanics'
 const title = 'Contact mechanics problems'
@@ -17,6 +17,16 @@ const author = {
   name: 'Houssam Houssein',
   url: 'https://github.com/houssamh'
 }
+
+const references = [
+  {
+    code: '1',
+    author: 'Reddy, J. N.',
+    date: '2013',
+    label: 'An introduction to continuum mechanics.',
+    journal: 'Cambridge university press.'
+  }
+]
 
 /**
  * Post
@@ -31,6 +41,7 @@ const Post = () => {
       keywords={keywords}
       author={author}
       version={'1.2.6'}
+      references={references}
     >
       <section>
         <Typography.Title level={3}>Theory</Typography.Title>
@@ -61,7 +72,7 @@ const Post = () => {
           <MathJax.Inline text={'\\epsilon'} /> are respectively the stress and
           strain tensor. <MathJax.Inline text={'\\lambda'} /> and{' '}
           <MathJax.Inline text={'\\mu'} /> are the Lamé coefficients. For more
-          details, see Reddy, J. N. (2013)
+          details, see <Ref code="1" />.
         </p>
       </section>
 
@@ -136,14 +147,6 @@ const Post = () => {
             }
           ]}
         />
-      </section>
-
-      <section>
-        <Typography.Title level={4}>References</Typography.Title>
-        <p>
-          Reddy, J. N. (2013). An introduction to continuum mechanics. Cambridge
-          university press.
-        </p>
       </section>
     </PostLayout>
   )

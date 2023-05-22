@@ -13,7 +13,7 @@ jest.mock('../../layout', () => ({
   default: (props: any) => <div>{props.children}</div>
 }))
 
-describe('components/blog/posts/3-linearElasticity', () => {
+describe('components/blog/posts/7-contactMechanics', () => {
   test('render', () => {
     const { unmount } = render(<Post.default />)
 

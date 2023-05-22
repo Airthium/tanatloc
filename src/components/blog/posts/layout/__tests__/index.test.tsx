@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import Layout from '..'
+import { Ref } from '..'
 
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -23,6 +24,21 @@ describe('components/blog/post/layout', () => {
     url: 'url'
   }
   const version = 'version'
+  const references = [
+    {
+      code: '1',
+      date: '2023',
+      author: 'Author',
+      label: 'Label',
+      journal: 'Journal'
+    },
+    {
+      code: '2',
+      date: '2023',
+      author: 'Author',
+      label: 'Label'
+    }
+  ]
 
   beforeEach(() => {
     mockPush.mockReset()
@@ -64,6 +80,30 @@ describe('components/blog/post/layout', () => {
 
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenLastCalledWith('/blog')
+
+    unmount()
+  })
+
+  test('with references', () => {
+    const { unmount } = render(
+      <Layout
+        title={title}
+        date={date}
+        image={image}
+        keywords={keywords}
+        author={author}
+        version={version}
+        references={references}
+      >
+        <div />
+      </Layout>
+    )
+
+    unmount()
+  })
+
+  test('Ref', () => {
+    const { unmount } = render(<Ref code="1" />)
 
     unmount()
   })

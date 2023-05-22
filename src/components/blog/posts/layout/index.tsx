@@ -3,12 +3,22 @@
 import { GoBack } from '@/components/assets/button'
 import { Tag, Typography } from 'antd'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useCallback } from 'react'
 
 import Utils from '@/lib/utils'
 
 import globalStyle from '@/styles/index.module.css'
 import style from '../../index.module.css'
+
+// Local interface
+export interface IReference {
+  code: string
+  author: string
+  date: string
+  label: string
+  journal?: string
+}
 
 /**
  * Props
@@ -24,6 +34,20 @@ export interface IProps {
   }
   version: string
   children: any
+  references?: IReference[]
+}
+
+/**
+ * Ref
+ * @param props Props
+ * @returns Ref
+ */
+export const Ref = ({ code }: { code: string }): React.JSX.Element => {
+  return (
+    <Link href={'#' + code}>
+      <i>[{code}]</i>
+    </Link>
+  )
 }
 
 /**
@@ -38,7 +62,8 @@ const PostLayout = ({
   keywords,
   author,
   version,
-  children
+  children,
+  references
 }: IProps): React.JSX.Element => {
   // Data
   const router = useRouter()
@@ -87,6 +112,24 @@ const PostLayout = ({
       </div>
 
       <div className={style.postContent}>{children}</div>
+
+      {references?.length ? (
+        <section>
+          <Typography.Title level={4}>References</Typography.Title>
+          {references.map((reference) => (
+            <div key={reference.code} id={reference.code}>
+              <i>[{reference.code}]</i> - {reference.author} ({reference.date})
+              - {reference.label}
+              {reference.journal ? (
+                <>
+                  <br />
+                  {reference.journal}
+                </>
+              ) : null}
+            </div>
+          ))}
+        </section>
+      ) : null}
     </div>
   )
 }

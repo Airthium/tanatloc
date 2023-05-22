@@ -20,6 +20,12 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
+jest.mock('@/components/assets/button', () => ({
+  DeleteButton: (props: any) => (
+    <div role="DeleteButton" onClick={props.onDelete} />
+  )
+}))
+
 jest.mock('@/components/assets/mathjax', () => ({
   Html: () => <div />
 }))
@@ -73,6 +79,7 @@ describe('components/project/simulation.Selector', () => {
   const visible = true
   const onOk = jest.fn()
   const onCancel = jest.fn()
+  const onDelete = async () => {}
 
   beforeEach(() => {
     mockList.mockReset()
@@ -130,6 +137,26 @@ describe('components/project/simulation.Selector', () => {
     await waitFor(() => screen.getByText('Name2'))
 
     const button = screen.getByRole('button', { name: 'Close' })
+    fireEvent.click(button)
+
+    unmount()
+  })
+
+  test('onDelete', async () => {
+    const { unmount } = render(
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+        onDelete={onDelete}
+      />
+    )
+
+    const tab = screen.getByRole('tab', { name: 'User algorithm' })
+    await act(() => fireEvent.click(tab))
+
+    const button = screen.getByRole('DeleteButton')
     fireEvent.click(button)
 
     unmount()

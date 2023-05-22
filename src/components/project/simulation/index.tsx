@@ -18,6 +18,7 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
+import { DeleteButton } from '@/components/assets/button'
 
 import Models from '@/models'
 
@@ -36,7 +37,6 @@ import Postprocessing from './postprocessing'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
-import { DeleteButton } from '@/components/assets/button'
 
 /**
  * Selector props
@@ -48,7 +48,7 @@ export interface ISelectorProps {
   okText?: string
   onOk: (model: IModel) => Promise<void>
   onCancel: () => void
-  onDelete: (index: number) => Promise<void>
+  onDelete?: (index: number) => Promise<void>
 }
 
 /**

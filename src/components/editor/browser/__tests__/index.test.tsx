@@ -1,5 +1,4 @@
-import { EditorContext } from '@/context/editor'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Load, { errors } from '..'
 
@@ -9,31 +8,27 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
-const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
+const mockSimulationSelector = jest.fn()
+jest.mock('@/components/project/simulation', () => ({
+  Selector: (props: any) => mockSimulationSelector(props)
+}))
 
-const mockDelete = jest.fn()
-jest.mock('../../delete', () => (props: any) => mockDelete(props))
+const mockUpdate = jest.fn()
+jest.mock('@/api/user', () => ({
+  update: async () => mockUpdate()
+}))
 
-const contextValue = {
-  template: 'template',
-  model: 'model',
-  templateValid: true,
-  modelValid: true,
-  dispatch: () => {
-    throw new Error('dispatch error')
-  }
-}
-
-describe('components/editor/load', () => {
+describe('components/editor/browser', () => {
   const user = { id: 'id', models: [], templates: [] }
   const swr = { mutateUser: jest.fn() }
 
   beforeEach(() => {
     mockErrorNotification.mockReset()
 
-    mockDelete.mockReset()
-    mockDelete.mockImplementation(() => <div />)
+    mockSimulationSelector.mockReset()
+    mockSimulationSelector.mockImplementation(() => <div />)
+
+    mockUpdate.mockReset()
 
     swr.mutateUser.mockReset()
   })
@@ -44,39 +39,72 @@ describe('components/editor/load', () => {
     unmount()
   })
 
-  test('button', () => {
+  test('visible', () => {
     const { unmount } = render(<Load user={user} swr={swr} />)
 
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
+    const open = screen.getByRole('button')
+    fireEvent.click(open)
 
     unmount()
   })
 
-  test('cancel', () => {
-    mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onCancel} />
+  test('onCancel', () => {
+    mockSimulationSelector.mockImplementation((props: any) => (
+      <div role="Selector" onClick={props.onCancel} />
     ))
     const { unmount } = render(<Load user={user} swr={swr} />)
 
-    const dialog = screen.getByRole('Dialog')
-    fireEvent.click(dialog)
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
 
     unmount()
   })
 
-  test('Tanatloc load', async () => {
-    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+  test('onDelete', async () => {
+    mockSimulationSelector.mockImplementation((props: any) => (
+      <div role="Selector" onClick={() => props.onDelete(1)} />
+    ))
     const { unmount } = render(<Load user={user} swr={swr} />)
 
-    const button = screen.getAllByRole('button', { name: 'file-text' })[0]
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
+
+    // Normal
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    fireEvent.click(selector)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(
+      errors.delete,
+      new Error('update error')
+    )
+
+    unmount()
+  })
+
+  test('onOk', async () => {
+    mockSimulationSelector.mockImplementation((props: any) => (
+      <div
+        role="Selector"
+        onClick={() => props.onOk({ user: 'id', algorithm: 'algorithm' })}
+      />
+    ))
+    const { unmount } = render(<Load user={user} swr={swr} />)
+
+    const selector = screen.getByRole('Selector')
 
     // Fetch ok
     //@ts-ignore
     global.fetch = () => ({
       text: () => 'text'
     })
-    await act(() => fireEvent.click(button))
+    fireEvent.click(selector)
 
     // Fetch error
     //@ts-ignore
@@ -85,56 +113,11 @@ describe('components/editor/load', () => {
         throw new Error('fetch error')
       }
     })
-    await act(() => fireEvent.click(button))
-
+    fireEvent.click(selector)
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockErrorNotification).toHaveBeenLastCalledWith(
-        errors.load,
-        new Error('fetch error')
-      )
-    )
-
-    unmount()
-  })
-
-  test('personal load', () => {
-    user.models = [{ name: 'personal model', user: 'id' } as never]
-    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    const { unmount } = render(<Load user={user} swr={swr} />)
-
-    // Switch tab
-    const tab = screen.getByRole('tab', { name: 'My models' })
-    fireEvent.click(tab)
-
-    const button = screen.getAllByRole('button', { name: 'file-text' })[0]
-    fireEvent.click(button)
-
-    unmount()
-  })
-
-  test('personal load, dispatch error', async () => {
-    user.models = [{ name: 'personal model' } as never]
-    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    const { unmount } = render(
-      <EditorContext.Provider value={contextValue}>
-        <Load user={user} swr={swr} />
-      </EditorContext.Provider>
-    )
-
-    // Switch tab
-    const tab = screen.getByRole('tab', { name: 'My models' })
-    await act(() => fireEvent.click(tab))
-
-    const button = screen.getAllByRole('button', { name: 'file-text' })[0]
-    await act(() => fireEvent.click(button))
-
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockErrorNotification).toHaveBeenLastCalledWith(
-        errors.load,
-        new Error('dispatch error')
-      )
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(
+      errors.load,
+      new Error('fetch error')
     )
 
     unmount()

@@ -19,8 +19,6 @@ import UserAPI from '@/api/user'
 
 import Utils from '@/lib/utils'
 
-// import Delete from '../delete'
-
 /**
  * Props
  */
@@ -85,7 +83,6 @@ export const _onDelete = async (
     await swr.mutateUser(newUser)
   } catch (err: any) {
     ErrorNotification(errors.delete, err)
-    throw err
   }
 }
 

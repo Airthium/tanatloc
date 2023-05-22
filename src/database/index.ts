@@ -293,7 +293,7 @@ const arrayUpdater = (
       )
       break
     case 'set':
-      args.push(String(data.index))
+      args.push(String(data.index + 1))
       args.push(data.value)
       queryText.push(
         data.key + '[$' + (args.length - 1) + '] = $' + args.length

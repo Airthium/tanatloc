@@ -36,6 +36,7 @@ import Postprocessing from './postprocessing'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
+import { DeleteButton } from '@/components/assets/button'
 
 /**
  * Selector props
@@ -43,8 +44,11 @@ import style from './index.module.css'
 export interface ISelectorProps {
   visible: boolean
   user?: Pick<IFrontUser, 'authorizedplugins' | 'models'>
+  title?: string
+  okText?: string
   onOk: (model: IModel) => Promise<void>
   onCancel: () => void
+  onDelete: (index: number) => Promise<void>
 }
 
 /**
@@ -127,8 +131,11 @@ export const _isInCategories = (
 const Selector = ({
   visible,
   user,
+  title,
+  okText,
   onOk,
-  onCancel
+  onCancel,
+  onDelete
 }: ISelectorProps): React.JSX.Element => {
   // State
   const [current, setCurrent] = useState<IModel>()
@@ -220,7 +227,10 @@ const Selector = ({
 
     models.forEach((model) => {
       if (_isInCategories(model.category, categories))
-        items.push({ key: model.algorithm, label: model.name })
+        items.push({
+          key: model.algorithm,
+          label: model.name
+        })
     })
 
     return items
@@ -246,13 +256,23 @@ const Selector = ({
       }
     ]
 
-    user?.models.forEach((model) => {
+    user?.models.forEach((model, index) => {
       if (_isInCategories(model.category, categories))
-        items.push({ key: model.algorithm, label: model.name })
+        items.push({
+          key: model.algorithm,
+          label: (
+            <>
+              {onDelete ? (
+                <DeleteButton onDelete={async () => onDelete(index)} />
+              ) : null}
+              {model.name}
+            </>
+          )
+        })
     })
 
     return items
-  }, [user, availableCategories, categories])
+  }, [user, availableCategories, categories, onDelete])
 
   /**
    * Render
@@ -260,8 +280,8 @@ const Selector = ({
   return (
     <Modal
       open={visible}
-      title="Create simulation"
-      okText="Create"
+      title={title ?? 'Create simulation'}
+      okText={okText ?? 'Create'}
       okButtonProps={{ loading: loading }}
       onOk={onModalOk}
       onCancel={onCancel}

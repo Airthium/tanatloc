@@ -1,31 +1,25 @@
 /** @module Components.Editor.Browser */
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useMemo,
-  useState
-} from 'react'
-import { Button, Space, Tabs, Tooltip } from 'antd'
-import { FileSearchOutlined, FileTextOutlined } from '@ant-design/icons'
+import { useCallback, useContext, useState } from 'react'
+import { Button, Tooltip } from 'antd'
+import { FileSearchOutlined } from '@ant-design/icons'
 
 import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 import { IModel } from '@/models/index.d'
 
 import { setModel, setTemplate } from '@/context/editor/actions'
-import { EditorContext, IEditorAction } from '@/context/editor'
+import { EditorContext } from '@/context/editor'
 
-import Models from '@/models'
 import Templates from '@/templates'
 
-import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
+import Simulation from '@/components/project/simulation'
 
-import Delete from '../delete'
+import UserAPI from '@/api/user'
 
-import globalStyle from '@/styles/index.module.css'
+import Utils from '@/lib/utils'
+
+// import Delete from '../delete'
 
 /**
  * Props
@@ -37,178 +31,72 @@ export interface IProps {
   }
 }
 
-export interface ITanatlocModelProps {
-  model: IModel
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setVisible: Dispatch<SetStateAction<boolean>>
-  dispatch: Dispatch<IEditorAction>
-}
-
-export interface IUserModelProps {
-  user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
-  index: number
-  swr: {
-    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
-  }
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setVisible: Dispatch<SetStateAction<boolean>>
-  dispatch: Dispatch<IEditorAction>
-}
-
 /**
  * Errors
  */
 export const errors = {
-  load: 'Unable to load current model'
+  load: 'Unable to load current model',
+  delete: 'Unable to delete model'
 }
 
 /**
- * Load tanatloc model
- * @param key Key
- * @param dispatch Dispatch
+ * On delete
+ * @param user User
+ * @param index Index
+ * @param swr SWR
  */
-export const _onTanatlocLoad = async (
-  model: IModel,
-  dispatch: Dispatch<IEditorAction>
+export const _onDelete = async (
+  user: Pick<IFrontUser, 'id' | 'models' | 'templates'>,
+  index: number,
+  swr: {
+    mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
+  }
 ): Promise<void> => {
   try {
-    // Model
-    dispatch(setModel(JSON.stringify(model, null, '\t')))
+    const model = user.models[index]
+    const template = user.templates[index]
 
-    // Template
-    const modelKey = model.algorithm
-    const templateFile = Templates[modelKey as keyof typeof Templates]
-    const res = await fetch('/templates/' + templateFile)
-    const text = await res.text()
-    dispatch(setTemplate(text))
+    // API
+    await UserAPI.update([
+      {
+        key: 'models',
+        type: 'array',
+        method: 'remove',
+        value: model
+      },
+      {
+        key: 'templates',
+        type: 'array',
+        method: 'remove',
+        value: template
+      }
+    ])
+
+    // Local
+    const newUser = Utils.deepCopy(user)
+    newUser.models = [
+      ...newUser.models.slice(0, index),
+      ...newUser.models.slice(index + 1)
+    ]
+    newUser.templates = [
+      ...newUser.templates.slice(0, index),
+      ...newUser.templates.slice(index + 1)
+    ]
+    await swr.mutateUser(newUser)
   } catch (err: any) {
-    ErrorNotification(errors.load, err)
+    ErrorNotification(errors.delete, err)
+    throw err
   }
 }
 
 /**
- * Load personal model
- * @param model Model
- * @param template Template
- * @param dispatch Dispatch
- */
-export const _onMyLoad = async (
-  model: IModel,
-  template: string,
-  dispatch: Dispatch<IEditorAction>
-): Promise<void> => {
-  try {
-    model.user && delete model.user
-    dispatch(setModel(JSON.stringify(model, null, '\t')))
-    dispatch(setTemplate(template))
-  } catch (err: any) {
-    ErrorNotification(errors.load, err)
-  }
-}
-
-/**
- * Tanatloc model
+ * Browser
  * @param props Props
- * @returns TanatlocModel
- */
-const TanatlocModel = ({
-  model,
-  setLoading,
-  setVisible,
-  dispatch
-}: ITanatlocModelProps): React.JSX.Element => {
-  /**
-   * On click
-   */
-  const onClick = useCallback((): void => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        await _onTanatlocLoad(model, dispatch)
-      } finally {
-        setLoading(false)
-        setVisible(false)
-      }
-    })()
-  }, [model, setLoading, setVisible, dispatch])
-
-  /**
-   * Render
-   */
-  return (
-    <div
-      className={globalStyle.displayFlex}
-      style={{
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}
-    >
-      {model.name}
-      <Tooltip title="Open">
-        <Button onClick={onClick} icon={<FileTextOutlined />} />
-      </Tooltip>
-    </div>
-  )
-}
-
-const UserModel = ({
-  user,
-  index,
-  swr,
-  setLoading,
-  setVisible,
-  dispatch
-}: IUserModelProps): React.JSX.Element => {
-  // Data
-  const model = useMemo(() => user.models[index], [user, index])
-  const template = useMemo(() => user.templates[index], [user, index])
-
-  /**
-   * On click
-   */
-  const onClick = useCallback((): void => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        await _onMyLoad(model, template, dispatch)
-      } finally {
-        setLoading(false)
-        setVisible(false)
-      }
-    })()
-  }, [model, template, setLoading, setVisible, dispatch])
-
-  /**
-   * Render
-   */
-  return (
-    <div
-      className={globalStyle.displayFlex}
-      style={{
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}
-    >
-      {model.name}
-      <div>
-        <Tooltip title="Open">
-          <Button onClick={onClick} icon={<FileTextOutlined />} />
-        </Tooltip>
-        <Delete user={user} index={index} swr={swr} />
-      </div>
-    </div>
-  )
-}
-
-/**
- * Load
- * @param props Props
- * @returns Load
+ * @returns Browser
  */
 const Browser = ({ user, swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false)
 
   // Data
   const { dispatch } = useContext(EditorContext)
@@ -223,72 +111,51 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
    */
   const setVisibleFalse = useCallback(() => setVisible(false), [])
 
-  // Tanatloc models
-  const tanatlocModels = useMemo(
-    () =>
-      Models.map((m) => (
-        <TanatlocModel
-          key={m.algorithm}
-          model={m}
-          setLoading={setLoading}
-          setVisible={setVisible}
-          dispatch={dispatch}
-        />
-      )),
+  /**
+   * On ok
+   * @param model Model
+   */
+  const onOk = useCallback(
+    async (model: IModel): Promise<void> => {
+      try {
+        // Get template
+        const templateFile =
+          Templates[model.algorithm as keyof typeof Templates]
+        const res = await fetch('/templates/' + templateFile)
+        const template = await res.text()
+
+        model.user && delete model.user
+        dispatch(setModel(JSON.stringify(model, null, '\t')))
+        dispatch(setTemplate(template))
+        setVisible(false)
+      } catch (err: any) {
+        ErrorNotification(errors.load, err)
+      }
+    },
     [dispatch]
   )
 
-  // User models
-  const userModels = useMemo(
-    () =>
-      user.models.map((model, index) => (
-        <UserModel
-          key={model.algorithm}
-          user={user}
-          index={index}
-          swr={swr}
-          setLoading={setLoading}
-          setVisible={setVisible}
-          dispatch={dispatch}
-        />
-      )),
-    [user, swr, dispatch]
-  )
+  const onDelete = async (index: number): Promise<void> => {
+    _onDelete(user, index, swr)
+  }
 
   /**
    * Render
    */
   return (
     <>
-      <Dialog
-        title="Models browser"
+      <Simulation.Selector
         visible={visible}
-        loading={loading}
+        user={{
+          ...user,
+          authorizedplugins: []
+        }}
+        title="Choose simulation"
+        okText="Choose"
         onCancel={setVisibleFalse}
-      >
-        <Tabs
-          items={[
-            {
-              key: 'models',
-              label: 'Tanatloc models',
-              children: (
-                <Space direction="vertical" className={globalStyle.fullWidth}>
-                  {tanatlocModels}
-                </Space>
-              )
-            },
-            {
-              key: 'personalModels',
-              label: 'My models',
-              children: (
-                <Space direction="vertical" className={globalStyle.fullWidth}>
-                  {userModels}
-                </Space>
-              )
-            }
-          ]}
-        />
-      </Dialog>
+        onOk={onOk}
+        onDelete={onDelete}
+      />
       <Tooltip title="Browse existing models">
         <Button
           icon={<FileSearchOutlined />}

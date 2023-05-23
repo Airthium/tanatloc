@@ -29,6 +29,7 @@ import Download from '@/components/project/simulation/run/results/download'
 import PostprocessingAPI from '@/api/postprocessing'
 
 import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -331,28 +332,14 @@ const Postprocessing = ({
   if (!postprocess) return null
   if (!options.length) return null
   return (
-    <Layout
-      style={{
-        position: 'absolute',
-        zIndex: 101,
-        right: 25,
-        bottom: 50,
-        backgroundColor: 'rgba(255, 255, 255, 0)'
-      }}
-    >
+    <Layout className={style.postprocessing}>
       <Layout.Content>
         <Tooltip title="Post-processing">
           <Button
             type="primary"
             icon={<RadarChartOutlined />}
             onClick={setVisibleTrue}
-            style={{
-              width: 40,
-              height: 40,
-              border: '1px solid #5E14FA',
-              borderRadius: 20,
-              marginBottom: -20
-            }}
+            className={style.button}
           />
         </Tooltip>
 
@@ -364,7 +351,7 @@ const Postprocessing = ({
           mask={false}
           maskClosable={false}
         >
-          <Form style={{ margin: '24px 0' }}>
+          <Form>
             <Form.Item name="filter" label="Filter">
               <Select
                 placeholder="Select a filter"

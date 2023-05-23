@@ -9254,7 +9254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-cookie@npm:^4.1.1":
+"react-cookie@npm:4.1.1":
   version: 4.1.1
   resolution: "react-cookie@npm:4.1.1"
   dependencies:
@@ -10498,7 +10498,7 @@ __metadata:
     prettier: 2.8.8
     react: 18.2.0
     react-ace: 10.1.0
-    react-cookie: ^4.1.1
+    react-cookie: 4.1.1
     react-dom: 18.2.0
     recharts: 2.6.2
     set-interval-async: 3.0.3

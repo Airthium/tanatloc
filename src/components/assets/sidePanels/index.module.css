@@ -24,7 +24,7 @@
   width: 70px;
   height: 70px;
   border-radius: 35px;
-  background-color: #555;
+  background-color: rgba(85, 85, 85, 0.5);
   z-index: 9;
 }
 

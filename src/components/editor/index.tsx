@@ -51,13 +51,13 @@ const steps: TourProps['steps'] = [
     target: () => document.getElementById('save')!
   },
   {
-    title: '',
+    title: 'Steps',
     description:
       'It checks if you are doing correctly. Keep an eye on these steps to make sure everything is ok.',
     target: () => document.getElementById('steps')!
   },
   {
-    title: '',
+    title: 'Code',
     description:
       'Write your script here. You can find examples of working scripts by clicking the browse button on top of the JSON editor.'
   },

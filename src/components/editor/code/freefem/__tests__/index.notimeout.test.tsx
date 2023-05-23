@@ -28,6 +28,15 @@ jest.mock('react', () => {
 
 jest.mock('../tooltip', () => () => <div />)
 
+let timeoutCount = -1
+Object.defineProperty(global, 'setTimeout', {
+  value: (callback: Function) => {
+    timeoutCount++
+    callback()
+    return timeoutCount
+  }
+})
+
 describe('components/editor/code/freefem_editor', () => {
   beforeEach(() => {
     mockReactAce.mockReset()

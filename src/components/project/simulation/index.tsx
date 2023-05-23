@@ -138,6 +138,7 @@ const Selector = ({
   onDelete
 }: ISelectorProps): React.JSX.Element => {
   // State
+  const [key, setKey] = useState<string>()
   const [current, setCurrent] = useState<IModel>()
   const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<IModel[]>([])
@@ -173,6 +174,7 @@ const Selector = ({
    */
   const onTanatlocSelect = useCallback(
     ({ key }: { key: string }): void => {
+      setKey(key)
       const model = models.find((m) => m.algorithm === key)
       setCurrent(Utils.deepCopy(model!))
     },
@@ -185,6 +187,7 @@ const Selector = ({
    */
   const onUserSelect = useCallback(
     ({ key }: { key: string }): void => {
+      setKey(key)
       const model = user!.models.find((m) => m.algorithm === key)
       setCurrent(Utils.deepCopy(model))
     },
@@ -202,8 +205,19 @@ const Selector = ({
           await onOk(current)
         } catch (err) {}
       setLoading(false)
+      setCurrent(undefined)
+      setKey(undefined)
     })()
   }, [current, onOk])
+
+  /**
+   * On model cancel
+   */
+  const onModalCancel = useCallback((): void => {
+    setCurrent(undefined)
+    setKey(undefined)
+    onCancel()
+  }, [onCancel])
 
   // Menu items (Tanatloc)
   const tanatlocMenuItems = useMemo(() => {
@@ -284,7 +298,7 @@ const Selector = ({
       okText={okText ?? 'Create'}
       okButtonProps={{ loading: loading }}
       onOk={onModalOk}
-      onCancel={onCancel}
+      onCancel={onModalCancel}
       width="80%"
     >
       <Layout className={style.selectorContent}>
@@ -296,9 +310,10 @@ const Selector = ({
                 label: 'Tanatloc algorithm',
                 children: (
                   <Menu
+                    selectedKeys={key ? [key] : undefined}
                     mode="inline"
                     items={tanatlocMenuItems}
-                    onSelect={onTanatlocSelect}
+                    onClick={onTanatlocSelect}
                   />
                 )
               },
@@ -307,10 +322,11 @@ const Selector = ({
                 label: 'User algorithm',
                 children: (
                   <Menu
+                    selectedKeys={key ? [key] : undefined}
                     mode="inline"
                     className={style.selectorMenu}
                     items={userMenuItems}
-                    onSelect={onUserSelect}
+                    onClick={onUserSelect}
                   />
                 )
               }

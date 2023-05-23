@@ -132,9 +132,12 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
     [dispatch]
   )
 
-  const onDelete = async (index: number): Promise<void> => {
-    _onDelete(user, index, swr)
-  }
+  const onDelete = useCallback(
+    async (index: number): Promise<void> => {
+      await _onDelete(user, index, swr)
+    },
+    [user, swr]
+  )
 
   /**
    * Render

@@ -3,8 +3,8 @@
 set -e
 
 # Clean
-echo " + Clean"
-git clean -xdf >node.local.log
+# echo " + Clean"
+# git clean -xdf >node.local.log
 
 # Install
 echo " + Install"

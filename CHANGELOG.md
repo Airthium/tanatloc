@@ -9,7 +9,7 @@
   - :arrow_up: Responsive blog & doc
   - :arrow_up: Blog articles (houssamh)
   - :arrow_up: Multiple results display
-  - :arrow_up: Blog tags
+  - :arrow_up: Blog tags and refs
   - :beetle: Fix blog posts order
   - :beetle: Remove @emotion/react
   - :arrow_up: Improve ColorbarHelper

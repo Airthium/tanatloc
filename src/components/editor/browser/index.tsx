@@ -132,6 +132,10 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
     [dispatch]
   )
 
+  /**
+   * On delete
+   * @param index Index
+   */
   const onDelete = useCallback(
     async (index: number): Promise<void> => {
       await _onDelete(user, index, swr)

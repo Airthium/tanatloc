@@ -1,0 +1,59 @@
+.button {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.notification {
+  margin: 0 !important;
+}
+
+.notification :global(.ant-notification-notice-message) {
+  font-size: 15px !important;
+}
+
+.notification :global(.ant-notification-notice-close) {
+  color: white !important;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.descriptionText {
+  font-size: 13px;
+}
+
+.descriptionCollapse {
+  border: none !important;
+}
+
+.descriptionCollapse :global(.ant-collapse-header) {
+  font-size: 13px;
+  align-items: center !important;
+  padding: 5px !important;
+}
+
+.descriptionCollapse :global(.ant-collapse-item) {
+  border: none !important;
+}
+
+.descriptionCollapse :global(.ant-collapse-content-box) {
+  display: flex;
+  flex-direction: column;
+}
+
+.descriptionForm :global(.ant-form-item) {
+  margin-bottom: 10px !important;
+}
+
+.descriptionForm :global(.ant-form-item-label) label {
+  font-size: 13px !important;
+}
+
+.descriptionForm :global(.ant-btn) {
+  font-size: 13px !important;
+}

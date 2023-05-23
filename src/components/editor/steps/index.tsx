@@ -49,9 +49,6 @@ const StatusSteps = ({ setName }: IProps) => {
           template: {
             status: 'wait',
             err: ''
-          },
-          test: {
-            status: 'wait'
           }
         }))
         dispatch(setTemplateValid(false))
@@ -61,8 +58,7 @@ const StatusSteps = ({ setName }: IProps) => {
       // Check template
       setStatus((prev) => ({
         ...prev,
-        template: { status: 'finish' },
-        test: { status: prev.model?.status === 'finish' ? 'process' : 'wait' }
+        template: { status: 'finish' }
       }))
       dispatch(setTemplateValid(true))
     },
@@ -76,8 +72,7 @@ const StatusSteps = ({ setName }: IProps) => {
       if (!model) {
         setStatus((prev) => ({
           ...prev,
-          model: { status: 'wait' },
-          test: { status: 'wait' }
+          model: { status: 'wait' }
         }))
         dispatch(setModelValid(false))
         return
@@ -98,17 +93,13 @@ const StatusSteps = ({ setName }: IProps) => {
 
         setStatus((prev) => ({
           ...prev,
-          model: { status: 'finish' },
-          test: {
-            status: prev.template?.status === 'finish' ? 'process' : 'wait'
-          }
+          model: { status: 'finish' }
         }))
         dispatch(setModelValid(true))
       } catch (err: any) {
         setStatus((prev) => ({
           ...prev,
-          model: { status: 'error', err: err.message },
-          test: { status: 'wait' }
+          model: { status: 'error', err: err.message }
         }))
         dispatch(setModelValid(false))
       }

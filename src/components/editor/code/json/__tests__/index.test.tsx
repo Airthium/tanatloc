@@ -65,6 +65,18 @@ describe('components/editor/code/json_editor', () => {
     unmount()
   })
 
+  test('onChange, json', () => {
+    mockReactAce.mockImplementation((props) => (
+      <div role="ReactAce" onClick={() => props.onChange('{}')} />
+    ))
+    const { unmount } = render(<JSONEditor />)
+
+    const editor = screen.getByRole('ReactAce')
+    fireEvent.click(editor)
+
+    unmount()
+  })
+
   test('highlight - no ref', () => {
     mockReactAce.mockImplementation(() => <div role="ReactAce" />)
 

@@ -1,0 +1,14 @@
+.postprocessing {
+  position: absolute;
+  z-index: 100;
+  right: 30px;
+  bottom: 50px;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.button {
+  width: 40px !important;
+  height: 40px;
+  border: 1px solid #5e14fa;
+  border-radius: 20px;
+}

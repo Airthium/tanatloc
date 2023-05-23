@@ -6,6 +6,10 @@ jest.mock('@/components/assets/mathjax', () => ({
   Head: () => <></>
 }))
 
+jest.mock('@/components/assets/cookies', () => () => <div />)
+
+jest.mock('@/components/assets/gtag', () => () => <div />)
+
 jest.mock('@/styles/index.css', () => '')
 jest.mock('@/styles/fonts.css', () => '')
 

@@ -7,6 +7,9 @@ import { useCookies } from 'react-cookie'
 
 import style from './index.module.css'
 
+/**
+ * Props
+ */
 export interface ICookieIconProps {
   style?: CSSProperties
 }
@@ -140,9 +143,7 @@ const Cookies = (): React.JSX.Element => {
             Accept all
           </Button>
         </div>
-      ),
-
-      onClose: () => api.destroy()
+      )
     })
   }, [cookies, api, onAll, onClose])
 

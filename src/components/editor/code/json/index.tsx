@@ -5,6 +5,7 @@ import { Typography } from 'antd'
 import AceEditor from 'react-ace'
 import { Range } from 'ace-builds'
 import ReactAce from 'react-ace/lib/ace'
+import JSON5 from 'json5'
 import 'ace-builds/src-noconflict/mode-json5'
 import 'ace-builds/src-noconflict/theme-one_dark'
 
@@ -16,6 +17,11 @@ import style from '../../index.module.css'
 // Local interface
 export interface Marker {
   id: number
+}
+
+export interface JSON5Error extends Error {
+  lineNumber: number
+  columnNumber: number
 }
 
 /**
@@ -35,6 +41,23 @@ const JSONCode = (): React.JSX.Element => {
    */
   const onChange = useCallback(
     (newCode?: string): void => {
+      try {
+        JSON5.parse(newCode ?? '')
+        editorRef.current?.editor.getSession().setAnnotations([])
+      } catch (err) {
+        const json5Error = err as JSON5Error
+        const lineNumber = json5Error.lineNumber - 1
+        const columnNumber = json5Error.columnNumber
+        const annotations = [
+          {
+            row: lineNumber,
+            column: columnNumber,
+            text: json5Error.message,
+            type: 'error'
+          }
+        ]
+        editorRef.current?.editor.getSession().setAnnotations(annotations)
+      }
       dispatch(setModel(newCode ?? ''))
     },
     [dispatch]

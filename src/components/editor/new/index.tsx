@@ -2,7 +2,7 @@
 
 import { Dispatch, useCallback, useContext } from 'react'
 import { FileAddOutlined } from '@ant-design/icons'
-import { Button, Tooltip } from 'antd'
+import { Button, Modal, Tooltip } from 'antd'
 
 import { EditorContext, IEditorAction } from '@/context/editor'
 import { setModel, setTemplate } from '@/context/editor/actions'
@@ -63,7 +63,12 @@ const New = () => {
   /**
    * On click
    */
-  const onClick = useCallback((): void => _onNew(dispatch), [dispatch])
+  const onClick = useCallback((): void => {
+    Modal.confirm({
+      title: 'Your modifications will be lost. Do you want to continue?',
+      onOk: () => _onNew(dispatch)
+    })
+  }, [dispatch])
 
   /**
    * Render

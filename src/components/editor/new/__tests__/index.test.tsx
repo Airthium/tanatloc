@@ -1,6 +1,16 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import New from '..'
 
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Modal: {
+    confirm: (props: any) => {
+      props.onOk()
+      return <div />
+    }
+  }
+}))
+
 describe('component/editor/new', () => {
   test('render', () => {
     const { unmount } = render(<New />)

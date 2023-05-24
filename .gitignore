@@ -25,6 +25,8 @@ dist-install
 /public/three
 /public/mathjax
 /public/templates
+/public/robots.txt
+/public/sitemap*.xml
 
 # production
 /dist

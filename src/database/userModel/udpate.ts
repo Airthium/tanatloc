@@ -1,4 +1,4 @@
-/** @module Database.Geometry.Update */
+/** @module Database.UserModel.Update */
 
 import { IDataBaseEntry } from '../index.d'
 
@@ -8,12 +8,12 @@ import { updater } from '..'
 
 /**
  * Update
- * @param geometry Geometry
+ * @param UserModel User model
  * @param data Data
  */
 export const update = async (
-  geometry: { id: string },
+  UserModel: { id: string },
   data: IDataBaseEntry[]
-) => {
-  await updater(tables.GEOMETRIES, geometry.id, data)
+): Promise<void> => {
+  await updater(tables.MODELS, UserModel.id, data)
 }

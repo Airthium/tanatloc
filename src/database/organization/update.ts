@@ -13,7 +13,7 @@ import { updater } from '..'
  */
 export const update = async (
   organization: { id: string },
-  data: Array<IDataBaseEntry>
+  data: IDataBaseEntry[]
 ): Promise<void> => {
   await updater(tables.ORGANIZATIONS, organization.id, data)
 }

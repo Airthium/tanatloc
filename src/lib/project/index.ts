@@ -356,18 +356,23 @@ const del = async (
   project: { id: string }
 ): Promise<void> => {
   // Get data
-  const data = await get(project.id, ['groups', 'simulations'])
+  const data = await get(project.id, ['groups', 'users', 'simulations'])
 
   // Delete from groups
-
   await Promise.all(
     data.groups.map(async (group) => {
       await deleteFromGroup({ id: group }, project)
     })
   )
 
-  // Delete simulation
+  // Delete from users
+  await Promise.all(
+    data.users.map(async (user) => {
+      await deleteFromUser({ id: user }, project)
+    })
+  )
 
+  // Delete simulation
   await Promise.all(
     data.simulations.map(async (simulation) => {
       await Simulation.del({ id: simulation })

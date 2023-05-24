@@ -16,7 +16,7 @@ import { fetcher } from '@/api/call'
  * @returns Geometries
  */
 export const useGeometries = (
-  ids?: Array<string>
+  ids?: string[]
 ): [
   IFrontGeometries,
   {

@@ -74,6 +74,9 @@ const get = async <T extends TUserGet>(
 
   if (data.includes('plugins')) await setPluginsData(userData)
 
+  if (data.includes('usermodels') && !userData.usermodels)
+    userData.usermodels = [] //TODO
+
   if (data.includes('models') && !userData.models) userData.models = []
 
   if (data.includes('templates') && !userData.templates) userData.templates = []

@@ -7,7 +7,7 @@ import { query } from '..'
 export interface INewOrganization {
   id: string
   name: string
-  owners: Array<string>
+  owners: string[]
 }
 
 /**
@@ -17,7 +17,7 @@ export interface INewOrganization {
  */
 export const add = async (organization: {
   name: string
-  owners: Array<string>
+  owners: string[]
 }): Promise<INewOrganization> => {
   const response = await query(
     'INSERT INTO ' +

@@ -12,7 +12,7 @@ import { IDataBaseEntry } from '../index.d'
  */
 export const update = async (
   project: { id: string },
-  data: Array<IDataBaseEntry>
+  data: IDataBaseEntry[]
 ): Promise<void> => {
   await updater(tables.PROJECTS, project.id, data)
 }

@@ -25,6 +25,8 @@ import { query } from '@/database'
 
 import { initDatabase } from '@/server/init/database'
 
+import update128 from './update/update-1.2.8'
+
 /**
  * Local plugin
  */
@@ -177,6 +179,11 @@ export const createDatabase = async (): Promise<void> => {
     await pool.end()
 
     await createTables()
+
+    // Update
+    await update128()
+
+    console.info('')
   } catch (err) {
     console.error('dB creation failed!')
     console.error(err)
@@ -237,10 +244,12 @@ const createTables = async (): Promise<void> => {
     console.info(' + Link table')
     await createLinkTable()
 
+    // Models
+    console.info(' + Model table')
+    await createModelTable()
+
     // Administrator
     await createAdmin()
-
-    console.info('')
   } catch (err) {
     console.error('dB tables creation failed!')
     console.error(err)
@@ -620,6 +629,13 @@ const createSimulationTable = async (): Promise<void> => {
  */
 const createLinkTable = async (): Promise<void> => {
   await createTable(tables.LINKS)
+}
+
+/**
+ * Create model table
+ */
+const createModelTable = async (): Promise<void> => {
+  await createTable(tables.MODELS)
 }
 
 /**

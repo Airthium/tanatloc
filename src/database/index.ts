@@ -181,7 +181,7 @@ export const query = async (
 export const getter = async (
   db: string,
   id: string,
-  data: Array<string>,
+  data: string[],
   key: string = 'id'
 ): Promise<IDataBaseResponse> => {
   return query(
@@ -199,7 +199,7 @@ export const getter = async (
 export const updater = async (
   db: string,
   id: string | undefined,
-  data: Array<IDataBaseEntry>
+  data: IDataBaseEntry[]
 ): Promise<void> => {
   // Begin / end text
   const queryTextBegin = 'UPDATE ' + db + ' SET '
@@ -246,8 +246,8 @@ export const updater = async (
  */
 const cryptUpdater = (
   data: IDataBaseEntryCrypt,
-  args: Array<string>,
-  queryText: Array<string>
+  args: string[],
+  queryText: string[]
 ): void => {
   args.push(data.value)
   queryText.push(data.key + ' = crypt($' + args.length + ", gen_salt('bf'))")
@@ -261,8 +261,8 @@ const cryptUpdater = (
  */
 const dateUpdater = (
   data: IDataBaseEntryDate,
-  args: Array<string>,
-  queryText: Array<string>
+  args: string[],
+  queryText: string[]
 ): void => {
   args.push(data.value)
   queryText.push(data.key + ' = to_timestamp($' + args.length + ')')
@@ -276,8 +276,8 @@ const dateUpdater = (
  */
 const arrayUpdater = (
   data: IDataBaseEntryArray,
-  args: Array<string>,
-  queryText: Array<string>
+  args: string[],
+  queryText: string[]
 ): void => {
   switch (data.method) {
     case 'append':
@@ -315,8 +315,8 @@ const arrayUpdater = (
  */
 const jsonUpdater = (
   data: IDataBaseEntryJSON,
-  args: Array<string>,
-  queryText: Array<string>
+  args: string[],
+  queryText: string[]
 ) => {
   switch (data.method) {
     case 'set':

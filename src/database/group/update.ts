@@ -11,9 +11,6 @@ import { updater } from '..'
  * @param group Group
  * @param data Data
  */
-export const update = async (
-  group: { id: string },
-  data: Array<IDataBaseEntry>
-) => {
+export const update = async (group: { id: string }, data: IDataBaseEntry[]) => {
   await updater(tables.GROUPS, group.id, data)
 }

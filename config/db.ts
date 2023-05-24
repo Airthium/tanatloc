@@ -75,6 +75,7 @@ export interface Tables {
   SIMULATIONS: string
   AVATARS: string
   LINKS: string
+  MODELS: string
 }
 
 /**
@@ -91,7 +92,8 @@ export const tables: Tables = {
   GEOMETRIES: 'tanatloc_geometries',
   SIMULATIONS: 'tanatloc_simulations',
   AVATARS: 'tanatloc_avatars',
-  LINKS: 'tanatloc_links'
+  LINKS: 'tanatloc_links',
+  MODELS: 'tanatloc_models'
 }
 
 export interface Scheme {
@@ -213,11 +215,15 @@ export const schemas: Scheme = {
       type: 'UUID[]'
     },
     {
-      name: 'models',
+      name: 'usermodels',
+      type: 'UUID[]'
+    },
+    {
+      name: 'models', // TODO remove
       type: 'JSONB[]'
     },
     {
-      name: 'templates',
+      name: 'templates', // TODO remove
       type: 'TEXT[]'
     },
     {
@@ -490,6 +496,37 @@ export const schemas: Scheme = {
     {
       name: 'userid',
       type: 'TEXT'
+    }
+  ],
+  [tables.MODELS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'model',
+      type: 'JSONB',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'template',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'owners',
+      type: 'UUID[]',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'users',
+      type: 'UUID[]'
+    },
+    {
+      name: 'groups',
+      type: 'UUID[]'
     }
   ]
 }

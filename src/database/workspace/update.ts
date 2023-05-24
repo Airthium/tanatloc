@@ -13,7 +13,7 @@ import { updater } from '..'
  */
 export const update = async (
   workspace: { id: string },
-  data: Array<IDataBaseEntry>
+  data: IDataBaseEntry[]
 ): Promise<void> => {
   await updater(tables.WORKSPACES, workspace.id, data)
 }

@@ -29,7 +29,7 @@ export interface IProps {
  */
 const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
   // State
-  const [list, setList] = useState<Array<React.JSX.Element>>([])
+  const [list, setList] = useState<React.JSX.Element[]>([])
 
   // List
   useEffect(() => {

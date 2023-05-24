@@ -19,8 +19,6 @@ jobs:
         run: NEXT_PUBLIC_SERVER_MODE=frontpage yarn prestart
       - name: Export
         run: NEXT_PUBLIC_SERVER_MODE=frontpage yarn export
-      - name: Sitemap
-        run: yarn sitemap
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:

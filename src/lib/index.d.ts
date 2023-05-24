@@ -8,6 +8,7 @@ import { IWorkspace } from '@/database/workspace'
 import { IProject } from '@/database/project'
 import { IOrganization } from '@/database/organization'
 import { ISimulation } from '@/database/simulation'
+import { IUserModel } from '@/database/userModel'
 import { IClientPlugin } from '@/plugins'
 import { IModel } from '@/models'
 
@@ -54,10 +55,11 @@ export interface IGeometryPart {
  * Group
  */
 export interface IGroupGet<T = []>
-  extends Omit<IGroup<T>, 'users' | 'workspaces' | 'projects'> {
+  extends Omit<IGroup<T>, 'users' | 'workspaces' | 'projects' | 'usermodels'> {
   users: 'users'[] extends T ? string[] : never[]
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   projects: 'projects'[] extends T ? string[] : never[]
+  usermodels: 'usermodels'[] extends T ? string[] : never[]
 }
 
 export interface IGroupWithData<T = []> extends Omit<IGroupGet<T>, 'users'> {
@@ -163,6 +165,7 @@ export interface IUserGet<T = []>
     | 'workspaces'
     | 'authorizedplugins'
     | 'plugins'
+    | 'usermodels'
     | 'models'
     | 'templates'
   > {
@@ -171,6 +174,7 @@ export interface IUserGet<T = []>
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   authorizedplugins: 'authorizedplugins'[] extends T ? string[] : never[]
   plugins: 'plugins'[] extends T ? IClientPlugin[] : never[]
+  usermodels: 'usermodels'[] extends T ? string[] : never[]
   models: 'models'[] extends T ? IModel[] : never[]
   templates: 'templates'[] extends T ? string[] : never[]
 }
@@ -212,4 +216,33 @@ export interface IWorkspaceWithData<T = []>
     ? Pick<IGroupWithData<'name'[]>, 'id' | 'name'>[]
     : never[]
   projects: 'projects'[] extends T ? string[] : never[]
+}
+
+/**
+ * UserModel
+ */
+export interface IUserModelGet<T = []>
+  extends Omit<IUserModel<T>, 'owners' | 'groups' | 'users'> {
+  owners: 'owners'[] extends T ? string[] : never[]
+  users: 'users'[] extends T ? string[] : never[]
+  groups: 'groups'[] extends T ? string[] : never[]
+}
+
+export interface IUserModelWithData<T = []>
+  extends Omit<IUserModelGet<T>, 'owners' | 'users' | 'groups'> {
+  owners: 'owners'[] extends T
+    ? Pick<
+        IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>,
+        'id' | 'email' | 'lastname' | 'firstname' | 'avatar'
+      >[]
+    : never[]
+  users: 'users'[] extends T
+    ? Pick<
+        IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>,
+        'id' | 'email' | 'lastname' | 'firstname' | 'avatar'
+      >[]
+    : never[]
+  groups: 'groups'[] extends T
+    ? Pick<IGroupWithData<'name'[]>, 'id' | 'name'>[]
+    : never[]
 }

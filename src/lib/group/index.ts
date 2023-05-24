@@ -55,6 +55,9 @@ const get = async <T extends TGroupGet>(
 
   if (data.includes('projects') && !groupData.projects) groupData.projects = []
 
+  if (data.includes('usermodels') && !groupData.usermodels)
+    groupData.usermodels = []
+
   return groupData as IGroupGet<T>
 }
 

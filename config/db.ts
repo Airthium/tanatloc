@@ -295,6 +295,10 @@ export const schemas: Scheme = {
       type: 'UUID[]'
     },
     {
+      name: 'usermodels',
+      type: 'UUID[]'
+    },
+    {
       name: 'organization',
       type: 'UUID',
       constraint: 'NOT NULL'

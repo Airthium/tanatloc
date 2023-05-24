@@ -192,10 +192,10 @@ const getWithData = async <T extends TProjectGet>(
  * @param group Group
  * @param project Project
  */
-const addToGroup = async (group: { id: string }, project: { id: string }) => {
-  const groupData = await Group.get(group.id, ['projects'])
+const addToGroup = async (group: string, project: { id: string }) => {
+  const groupData = await Group.get(group, ['projects'])
   if (!groupData.projects.includes(project.id))
-    await Group.update({ id: group.id }, [
+    await Group.update({ id: group }, [
       {
         key: 'projects',
         type: 'array',
@@ -210,11 +210,8 @@ const addToGroup = async (group: { id: string }, project: { id: string }) => {
  * @param group Group
  * @param project Project
  */
-const deleteFromGroup = async (
-  group: { id: string },
-  project: { id: string }
-) => {
-  await Group.update({ id: group.id }, [
+const deleteFromGroup = async (group: string, project: { id: string }) => {
+  await Group.update({ id: group }, [
     {
       key: 'projects',
       type: 'array',
@@ -229,10 +226,10 @@ const deleteFromGroup = async (
  * @param user User
  * @param project Project
  */
-const addToUser = async (user: { id: string }, project: { id: string }) => {
-  const userData = await User.get(user.id, ['projects'])
+const addToUser = async (user: string, project: { id: string }) => {
+  const userData = await User.get(user, ['projects'])
   if (!userData.projects.includes(project.id))
-    await User.update({ id: user.id }, [
+    await User.update({ id: user }, [
       {
         key: 'projects',
         type: 'array',
@@ -247,11 +244,8 @@ const addToUser = async (user: { id: string }, project: { id: string }) => {
  * @param user User
  * @param project Project
  */
-const deleteFromUser = async (
-  user: { id: string },
-  project: { id: string }
-) => {
-  await User.update({ id: user.id }, [
+const deleteFromUser = async (user: string, project: { id: string }) => {
+  await User.update({ id: user }, [
     {
       key: 'projects',
       type: 'array',
@@ -278,7 +272,9 @@ const update = async (
   })
 
   // Check groups
-  const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
+  const groupsUpdate: { value: string[] } = data.find(
+    (d) => d.key === 'groups' && !d.type
+  )
   if (groupsUpdate) {
     // Get data
     const projectData = await get(project.id, ['groups'])
@@ -290,30 +286,33 @@ const update = async (
 
     await Promise.all(
       deleted.map(async (group) => {
-        await deleteFromGroup({ id: group }, project)
+        await deleteFromGroup(group, project)
       })
     )
 
     // Added groups
-    const added: string[] = groupsUpdate.value.filter(
-      (g: string) => !projectData.groups.find((gg) => gg === g)
+    const added = groupsUpdate.value.filter(
+      (g) => !projectData.groups.find((gg) => gg === g)
     )
+
     await Promise.all(
       added.map(async (group) => {
-        await addToGroup({ id: group }, project)
+        await addToGroup(group, project)
       })
     )
   }
 
   // Check users
-  const usersUpdate = data.find((d) => d.key === 'users' && !d.type)
+  const usersUpdate: { value: string[] } = data.find(
+    (d) => d.key === 'users' && !d.type
+  )
   if (usersUpdate) {
     // Get data
-    const projectData = await getWithData(project.id, ['users'])
+    const projectData = await get(project.id, ['users'])
 
     // Deleted users
     const deleted = projectData.users.filter(
-      (u) => !usersUpdate.value.includes(u.id)
+      (u) => !usersUpdate.value.includes(u)
     )
 
     await Promise.all(
@@ -323,12 +322,13 @@ const update = async (
     )
 
     // Added users
-    const added: string[] = usersUpdate.value.filter(
-      (user: string) => !projectData.users.find((u) => u.id === user)
+    const added = usersUpdate.value.filter(
+      (u) => !projectData.users.includes(u)
     )
+
     await Promise.all(
       added.map(async (user) => {
-        await addToUser({ id: user }, project)
+        await addToUser(user, project)
       })
     )
   }
@@ -361,14 +361,14 @@ const del = async (
   // Delete from groups
   await Promise.all(
     data.groups.map(async (group) => {
-      await deleteFromGroup({ id: group }, project)
+      await deleteFromGroup(group, project)
     })
   )
 
   // Delete from users
   await Promise.all(
     data.users.map(async (user) => {
-      await deleteFromUser({ id: user }, project)
+      await deleteFromUser(user, project)
     })
   )
 

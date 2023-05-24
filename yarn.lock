@@ -514,6 +514,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@corex/deepmerge@npm:^4.0.43":
+  version: 4.0.43
+  resolution: "@corex/deepmerge@npm:4.0.43"
+  checksum: f0103bfcfb9938ba478868fad522b018b92615ba186b0322c92aa1f57e539b87d4379d88fee3a404264a83bd4b13c384cfb07834377997d6d71cd840a880b4c4
+  languageName: node
+  linkType: hard
+
 "@ctrl/tinycolor@npm:^3.4.0, @ctrl/tinycolor@npm:^3.6.0":
   version: 3.6.0
   resolution: "@ctrl/tinycolor@npm:3.6.0"
@@ -7389,7 +7396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.0, minimist@npm:^1.2.3, minimist@npm:^1.2.6":
+"minimist@npm:^1.2.0, minimist@npm:^1.2.3, minimist@npm:^1.2.6, minimist@npm:^1.2.8":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
@@ -7557,6 +7564,23 @@ __metadata:
   version: 0.6.3
   resolution: "negotiator@npm:0.6.3"
   checksum: b8ffeb1e262eff7968fc90a2b6767b04cfd9842582a9d0ece0af7049537266e7b2506dfb1d107a32f06dd849ab2aea834d5830f7f4d0e5cb7d36e1ae55d021d9
+  languageName: node
+  linkType: hard
+
+"next-sitemap@npm:4.1.3":
+  version: 4.1.3
+  resolution: "next-sitemap@npm:4.1.3"
+  dependencies:
+    "@corex/deepmerge": ^4.0.43
+    fast-glob: ^3.2.12
+    minimist: ^1.2.8
+  peerDependencies:
+    "@next/env": "*"
+    next: "*"
+  bin:
+    next-sitemap: bin/next-sitemap.mjs
+    next-sitemap-cjs: bin/next-sitemap.cjs
+  checksum: de9b292dffdafcaf0a1cd661471f34892aaad37820b613d6776f04a30ab5b1ead21b79890dcfdfb2de72e0f12d052674ffe165692f5b106495759f3d9cf5141e
   languageName: node
   linkType: hard
 
@@ -10489,6 +10513,7 @@ __metadata:
     mailersend: 2.1.1
     mathjax: 3.2.2
     next: 13.4.3
+    next-sitemap: 4.1.3
     node-fetch: 3.3.1
     nodemon: 2.0.22
     passport: 0.6.0

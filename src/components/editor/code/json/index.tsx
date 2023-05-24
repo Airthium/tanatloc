@@ -1,7 +1,7 @@
 /** @module Components.Editor.Code.JSONEditor */
 
-import { useCallback, useContext, useEffect, useRef } from 'react'
-import { Typography } from 'antd'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { Tooltip, Typography } from 'antd'
 import AceEditor from 'react-ace'
 import { Range } from 'ace-builds'
 import ReactAce from 'react-ace/lib/ace'
@@ -11,8 +11,11 @@ import 'ace-builds/src-noconflict/theme-one_dark'
 
 import { EditorContext, IEditorHighlight } from '@/context/editor'
 import { setModel } from '@/context/editor/actions'
+import JSONModel from './model.json'
 
 import style from '../../index.module.css'
+import Ajv from 'ajv'
+import { WarningOutlined } from '@ant-design/icons'
 
 // Local interface
 export interface Marker {
@@ -32,6 +35,9 @@ const JSONCode = (): React.JSX.Element => {
   // Ref
   const editorRef = useRef<ReactAce>()
 
+  // State
+  const [isError, setIsError] = useState<string>('')
+
   // Data
   const { model, jsonHighlight, dispatch } = useContext(EditorContext)
 
@@ -42,10 +48,31 @@ const JSONCode = (): React.JSX.Element => {
   const onChange = useCallback(
     (newCode?: string): void => {
       try {
-        JSON5.parse(newCode ?? '')
-        editorRef.current?.editor.getSession().setAnnotations([])
+        const ajv = new Ajv()
+        const validate = ajv.compile(JSONModel)
+        const valid = validate(JSON5.parse(newCode!))
+        if (!valid) {
+          setIsError(
+            validate.errors?.[0].message +
+              ' in "' +
+              validate.errors?.[0].instancePath +
+              '"' || ''
+          )
+          editorRef.current?.editor.getSession().setAnnotations([
+            {
+              row: 0,
+              column: 1,
+              text: validate.errors?.[0].message || '',
+              type: 'error'
+            }
+          ])
+        } else {
+          editorRef.current?.editor.getSession().setAnnotations([])
+          setIsError('')
+        }
       } catch (err) {
         const json5Error = err as JSON5Error
+        setIsError(json5Error.message)
         const lineNumber = json5Error.lineNumber - 1
         const columnNumber = json5Error.columnNumber
         const annotations = [
@@ -58,6 +85,7 @@ const JSONCode = (): React.JSX.Element => {
         ]
         editorRef.current?.editor.getSession().setAnnotations(annotations)
       }
+
       dispatch(setModel(newCode ?? ''))
     },
     [dispatch]
@@ -99,7 +127,22 @@ const JSONCode = (): React.JSX.Element => {
    */
   return (
     <div className={style.codeBlock}>
-      <Typography.Title level={3}>Model description</Typography.Title>
+      <Typography.Title level={3}>
+        Model description{' '}
+        {isError ? (
+          <Tooltip title={isError}>
+            <WarningOutlined
+              style={{
+                fontSize: '30px',
+                zIndex: '1000',
+                color: 'orange'
+              }}
+            />
+          </Tooltip>
+        ) : (
+          ''
+        )}
+      </Typography.Title>
       <AceEditor
         //@ts-ignore
         ref={editorRef}

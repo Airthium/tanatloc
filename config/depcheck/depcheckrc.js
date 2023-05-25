@@ -20,6 +20,7 @@ const customTypedoc = async (fileName) => {
           newDeps.push('@airthium/typedoc-plugin-airthium')
         }
         if (script.includes('depcheck')) newDeps.push('depcheck')
+        if (script.includes('sitemap')) newDeps.push('next-sitemap')
       })
     }
   } catch (err) {

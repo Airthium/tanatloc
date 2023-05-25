@@ -32,6 +32,11 @@ jest.mock('../../project', () => ({
   update: async () => mockProjectUpdate()
 }))
 
+const mockUserModelUpdate = jest.fn()
+jest.mock('../../userModel', () => ({
+  update: async () => mockUserModelUpdate()
+}))
+
 const mockOrganizationGet = jest.fn()
 const mockOrganizationUpdate = jest.fn()
 jest.mock('../../organization', () => ({
@@ -53,6 +58,8 @@ describe('lib/group', () => {
     mockWorkspaceUpdate.mockReset()
 
     mockProjectUpdate.mockReset()
+
+    mockUserModelUpdate.mockReset()
 
     mockOrganizationGet.mockReset()
     mockOrganizationUpdate.mockReset()
@@ -124,7 +131,12 @@ describe('lib/group', () => {
         users: ['id']
       }
     ])
-    groups = await Group.getAll(['users', 'workspaces', 'projects'])
+    groups = await Group.getAll([
+      'users',
+      'workspaces',
+      'projects',
+      'usermodels'
+    ])
     expect(mockGetAll).toHaveBeenCalledTimes(3)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
     expect(groups).toEqual([
@@ -132,7 +144,8 @@ describe('lib/group', () => {
         name: 'name',
         users: [{ id: 'id', firstname: 'firstname' }],
         workspaces: [],
-        projects: []
+        projects: [],
+        usermodels: []
       }
     ])
 
@@ -142,10 +155,16 @@ describe('lib/group', () => {
         name: 'name',
         users: ['id'],
         workspaces: [],
-        projects: []
+        projects: [],
+        usermodels: []
       }
     ])
-    groups = await Group.getAll(['users', 'workspaces', 'projects'])
+    groups = await Group.getAll([
+      'users',
+      'workspaces',
+      'projects',
+      'usermodels'
+    ])
     expect(mockGetAll).toHaveBeenCalledTimes(4)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(3)
     expect(groups).toEqual([
@@ -153,7 +172,8 @@ describe('lib/group', () => {
         name: 'name',
         users: [{ id: 'id', firstname: 'firstname' }],
         workspaces: [],
-        projects: []
+        projects: [],
+        usermodels: []
       }
     ])
   })
@@ -201,19 +221,22 @@ describe('lib/group', () => {
     expect(mockOrganizationUpdate).toHaveBeenCalledTimes(1)
     expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(0)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockUserModelUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
 
     // With workspaces & projects
     mockGet.mockImplementation(() => ({
       users: ['id'],
       workspaces: ['id'],
-      projects: ['id']
+      projects: ['id'],
+      usermodels: ['id']
     }))
     await Group.del({ id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockOrganizationUpdate).toHaveBeenCalledTimes(2)
     expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUserModelUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(2)
   })
 })

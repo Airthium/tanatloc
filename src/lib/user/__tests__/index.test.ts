@@ -36,6 +36,11 @@ jest.mock('../../workspace', () => ({
   del: async () => mockWorkspaceDel()
 }))
 
+const mockUserModelDel = jest.fn()
+jest.mock('../../userModel', () => ({
+  del: async () => mockUserModelDel()
+}))
+
 const mockEmailSubscribe = jest.fn()
 const mockEmailRevalidate = jest.fn()
 jest.mock('../../email', () => ({
@@ -71,6 +76,8 @@ describe('lib/user', () => {
     mockAvatarDel.mockReset()
 
     mockWorkspaceDel.mockReset()
+
+    mockUserModelDel.mockReset()
 
     mockOrganizationGet.mockReset()
     mockOrganizationUpdate.mockReset()
@@ -231,7 +238,8 @@ describe('lib/user', () => {
       'organizations',
       'workspaces',
       'authorizedplugins',
-      'plugins'
+      'plugins',
+      'usermodels'
     ])
     expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(users2).toEqual([
@@ -240,7 +248,8 @@ describe('lib/user', () => {
         organizations: [],
         workspaces: [],
         authorizedplugins: [],
-        plugins: []
+        plugins: [],
+        usermodels: []
       }
     ])
 
@@ -251,7 +260,8 @@ describe('lib/user', () => {
         organizations: [],
         workspaces: [],
         authorizedplugins: [],
-        plugins: []
+        plugins: [],
+        usermodels: []
       }
     ])
     const users3 = await User.getAll([
@@ -259,7 +269,8 @@ describe('lib/user', () => {
       'organizations',
       'workspaces',
       'authorizedplugins',
-      'plugins'
+      'plugins',
+      'usermodels'
     ])
     expect(mockGetAll).toHaveBeenCalledTimes(3)
     expect(users3).toEqual([
@@ -268,7 +279,8 @@ describe('lib/user', () => {
         organizations: [],
         workspaces: [],
         authorizedplugins: [],
-        plugins: []
+        plugins: [],
+        usermodels: []
       }
     ])
   })
@@ -322,6 +334,7 @@ describe('lib/user', () => {
     mockGet.mockImplementation(() => ({
       organizations: ['id'],
       workspaces: ['id'],
+      usermodels: ['id'],
       avatar: 'id'
     }))
     await User.del({ id: 'id' })

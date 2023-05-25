@@ -16,6 +16,7 @@ import Email from '../email'
 import System from '../system'
 import Group from '../group'
 import Tools from '../tools'
+import UserModel from '../userModel'
 
 /**
  * Add
@@ -194,6 +195,11 @@ const getAll = async <T extends TUserGet>(data: T): Promise<IUser<T>[]> => {
       !user.plugins && (user.plugins = [])
     })
 
+  if (data.includes('usermodels'))
+    users.forEach((user) => {
+      !user.usermodels && (user.usermodels = [])
+    })
+
   return users
 }
 
@@ -251,7 +257,12 @@ const update = async (
  */
 const del = async (user: { id: string }): Promise<void> => {
   // Get data
-  const data = await get(user.id, ['workspaces', 'organizations', 'avatar'])
+  const data = await get(user.id, [
+    'workspaces',
+    'usermodels',
+    'organizations',
+    'avatar'
+  ])
 
   // Delete from organization
   await Promise.all(
@@ -311,6 +322,13 @@ const del = async (user: { id: string }): Promise<void> => {
   await Promise.all(
     data.workspaces.map(async (workspace) => {
       await Workspace.del(user, { id: workspace })
+    })
+  )
+
+  // Delete usermodels
+  await Promise.all(
+    data.usermodels.map(async (usermodel) => {
+      await UserModel.del({ id: usermodel })
     })
   )
 

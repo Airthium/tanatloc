@@ -309,7 +309,11 @@ describe('lib/project', () => {
     expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
 
     // With simulations & groups
-    mockGet.mockImplementation(() => ({ groups: ['id'], simulations: ['id'] }))
+    mockGet.mockImplementation(() => ({
+      groups: ['id'],
+      users: ['id'],
+      simulations: ['id']
+    }))
     await Project.del({ id: 'id' }, { id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDelete).toHaveBeenCalledTimes(2)

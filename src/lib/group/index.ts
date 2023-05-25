@@ -9,6 +9,7 @@ import User from '../user'
 import Workspace from '../workspace'
 import Project from '../project'
 import Organization from '../organization'
+import UserModel from '../userModel'
 
 /**
  * Add
@@ -135,6 +136,11 @@ const getAll = async <T extends TGroupGet>(
       if (!group.projects) group.projects = []
     })
 
+  if (data.includes('usermodels'))
+    groups.forEach((group) => {
+      if (!group.usermodels) group.usermodels = []
+    })
+
   const groupsData = groups.map((group) => {
     const { users, ...groupData } = group
     return { ...groupData, users: [] }
@@ -200,7 +206,8 @@ const del = async (group: { id: string }): Promise<void> => {
     'users',
     'workspaces',
     'projects',
-    'organization'
+    'organization',
+    'usermodels'
   ])
 
   // Delete group from organization
@@ -233,6 +240,21 @@ const del = async (group: { id: string }): Promise<void> => {
     (await Promise.all(
       groupData.projects.map(async (project) => {
         await Project.update({ id: project }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    ))
+
+  // Delete group from usermodels
+  groupData.usermodels &&
+    (await Promise.all(
+      groupData.usermodels.map(async (usermodel) => {
+        await UserModel.update({ id: usermodel }, [
           {
             key: 'groups',
             type: 'array',

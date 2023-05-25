@@ -1,0 +1,266 @@
+{
+  "type": "object",
+  "properties": {
+    "user": { "type": "string" },
+    "category": {
+      "anyOf": [
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      ]
+    },
+    "name": { "type": "string" },
+    "algorithm": { "type": "string" },
+    "code": { "type": "string" },
+    "sequential": { "type": "boolean" },
+    "version": { "type": "string" },
+    "description": { "type": "string" },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "required": ["name", "value"]
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "dimension": { "type": "number" },
+        "geometry": { "$ref": "#/definitions/IModelGeometry" },
+        "materials": { "$ref": "#/definitions/IModelMaterials" },
+        "parameters": { "$ref": "#/definitions/IModelParameters" },
+        "initialization": { "$ref": "#/definitions/IModelInitialization" },
+        "boundaryConditions": {
+          "$ref": "#/definitions/IModelBoundaryConditions"
+        },
+        "run": { "$ref": "#/definitions/IModelRun" }
+      },
+      "required": ["geometry", "parameters", "boundaryConditions", "run"]
+    }
+  },
+  "required": [
+    "category",
+    "name",
+    "algorithm",
+    "code",
+    "version",
+    "description",
+    "configuration"
+  ],
+  "definitions": {
+    "IModelGeometry": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "title": { "type": "string" },
+        "done": { "type": "boolean" },
+        "error": { "type": "string" },
+        "meshable": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "n": { "type": "number" },
+        "dimension": { "type": "number" },
+        "value": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "$ref": "#/definitions/Data" },
+        "datas": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Data" }
+        },
+        "meshParameters": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "value": { "type": "string" }
+          },
+          "required": ["type", "value"]
+        }
+      },
+      "required": ["index", "title", "meshable"]
+    },
+    "IModelMaterials": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "title": { "type": "string" },
+        "done": { "type": "boolean" },
+        "error": { "type": "string" },
+        "meshable": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "n": { "type": "number" },
+        "dimension": { "type": "number" },
+        "value": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "$ref": "#/definitions/Data" },
+        "datas": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Data" }
+        }
+      },
+      "required": [
+        "index",
+        "title",
+        "error",
+        "meshable",
+        "multiple",
+        "n",
+        "dimension",
+        "value"
+      ]
+    },
+    "IModelParameters": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "title": { "type": "string" },
+        "done": { "type": "boolean" },
+        "error": { "type": "string" },
+        "meshable": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "n": { "type": "number" },
+        "dimension": { "type": "number" },
+        "value": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "$ref": "#/definitions/Data" },
+        "datas": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Data" }
+        }
+      },
+      "required": [
+        "index",
+        "title",
+        "error",
+        "meshable",
+        "multiple",
+        "n",
+        "dimension",
+        "value"
+      ]
+    },
+    "IModelInitialization": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "title": { "type": "string" },
+        "done": { "type": "boolean" },
+        "error": { "type": "string" },
+        "meshable": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "n": { "type": "number" },
+        "dimension": { "type": "number" },
+        "value": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "$ref": "#/definitions/Data" },
+        "datas": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Data" }
+        }
+      },
+      "required": [
+        "index",
+        "title",
+        "error",
+        "meshable",
+        "multiple",
+        "n",
+        "dimension",
+        "value"
+      ]
+    },
+    "IModelBoundaryConditions": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "title": { "type": "string" },
+        "done": { "type": "boolean" },
+        "error": { "type": "string" },
+        "meshable": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "n": { "type": "number" },
+        "dimension": { "type": "number" },
+        "value": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "$ref": "#/definitions/Data" },
+        "datas": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Data" }
+        }
+      },
+      "required": [
+        "index",
+        "title",
+        "error",
+        "meshable",
+        "multiple",
+        "n",
+        "dimension",
+        "value"
+      ]
+    },
+    "IModelRun": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "title": { "type": "string" },
+        "done": { "type": "boolean" },
+        "error": { "type": "string" },
+        "meshable": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "n": { "type": "number" },
+        "dimension": { "type": "number" },
+        "value": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data": { "$ref": "#/definitions/Data" },
+        "datas": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Data" }
+        }
+      },
+      "required": [
+        "index",
+        "title",
+        "error",
+        "meshable",
+        "multiple",
+        "n",
+        "dimension",
+        "value"
+      ]
+    },
+    "Data": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "description": { "type": "string" },
+        "required": { "type": "boolean" },
+        "default": { "type": "string" }
+      },
+      "required": ["name", "type", "description", "required"]
+    }
+  }
+}

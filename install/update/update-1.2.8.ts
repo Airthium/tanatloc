@@ -41,6 +41,18 @@ const update = async (): Promise<void> => {
             method: 'append',
             key: 'usermodels',
             value: insert[0].id
+          },
+          {
+            type: 'array',
+            method: 'remove',
+            key: 'models',
+            value: model
+          },
+          {
+            type: 'array',
+            method: 'remove',
+            key: 'templates',
+            value: template
           }
         ])
       }

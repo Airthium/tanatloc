@@ -36,8 +36,10 @@ jest.mock('../../workspace', () => ({
   del: async () => mockWorkspaceDel()
 }))
 
+const mockUserModelGet = jest.fn()
 const mockUserModelDel = jest.fn()
 jest.mock('../../userModel', () => ({
+  get: async () => mockUserModelGet(),
   del: async () => mockUserModelDel()
 }))
 
@@ -77,6 +79,7 @@ describe('lib/user', () => {
 
     mockWorkspaceDel.mockReset()
 
+    mockUserModelGet.mockReset()
     mockUserModelDel.mockReset()
 
     mockOrganizationGet.mockReset()
@@ -193,19 +196,26 @@ describe('lib/user', () => {
     }))
     user = await User.getWithData('id', [])
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(user).toEqual({ id: 'id', email: 'email' })
+    expect(user).toEqual({ id: 'id', email: 'email', usermodels: [] })
 
-    // With avatar
+    // With avatar & usermodels
     mockGet.mockImplementation(() => ({
       id: 'id',
       email: 'email',
-      avatar: 'avatar'
+      avatar: 'avatar',
+      usermodels: ['id']
     }))
     mockAvatarRead.mockImplementation(() => 'avatar')
+    mockUserModelGet.mockImplementation(() => ({}))
     user = await User.getWithData('id', ['email', 'avatar'])
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockAvatarRead).toHaveBeenCalledTimes(1)
-    expect(user).toEqual({ id: 'id', email: 'email', avatar: 'avatar' })
+    expect(user).toEqual({
+      id: 'id',
+      email: 'email',
+      avatar: 'avatar',
+      usermodels: [{}]
+    })
 
     mockAvatarRead.mockImplementation(() => {
       throw new Error('test')
@@ -213,7 +223,12 @@ describe('lib/user', () => {
     user = await User.getWithData('id', ['email', 'avatar'])
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockAvatarRead).toHaveBeenCalledTimes(2)
-    expect(user).toEqual({ id: 'id', email: 'email', avatar: undefined })
+    expect(user).toEqual({
+      id: 'id',
+      email: 'email',
+      avatar: undefined,
+      usermodels: [{}]
+    })
   })
 
   test('getBy', async () => {

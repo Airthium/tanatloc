@@ -13,7 +13,7 @@ const update = async (): Promise<void> => {
   try {
     // Get exiting models and templates by user
     const { rows: users } = await query(
-      'SELECT (id, models, templates) FROM ' + tables.USERS,
+      'SELECT id, models, templates FROM ' + tables.USERS,
       []
     )
 

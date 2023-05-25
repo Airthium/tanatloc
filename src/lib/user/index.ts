@@ -2,7 +2,7 @@
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { TUserGetKey } from '@/database/user/get'
-import { IUserGet, IUserWithData } from '../index.d'
+import { IUserGet, IUserModelGet, IUserWithData } from '../index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { LIMIT } from '@/config/string'
@@ -135,7 +135,7 @@ const getWithData = async <T extends TUserGet>(
 ): Promise<IUserWithData<T>> => {
   const user = await get(id, data)
 
-  const { avatar, ...userData } = user
+  const { avatar, usermodels, ...userData } = user
 
   // Get avatar
   let avatarData
@@ -148,8 +148,31 @@ const getWithData = async <T extends TUserGet>(
     }
   }
 
+  // Get user models
+  const userModels: IUserModelGet<
+    ('model' | 'template' | 'owners' | 'users' | 'groups')[]
+  >[] = []
+  if (usermodels) {
+    await Promise.all(
+      usermodels.map(async (usermodel) => {
+        const usermodelData = await UserModel.get(usermodel, [
+          'model',
+          'template',
+          'owners',
+          'users',
+          'groups'
+        ])
+        userModels.push(usermodelData)
+      })
+    )
+  }
+
   // Return
-  return { ...userData, avatar: avatarData } as IUserWithData<T>
+  return {
+    ...userData,
+    avatar: avatarData,
+    usermodels: userModels
+  } as IUserWithData<T>
 }
 
 /**

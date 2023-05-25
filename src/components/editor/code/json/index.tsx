@@ -56,13 +56,13 @@ const JSONCode = (): React.JSX.Element => {
             validate.errors?.[0].message +
               ' in "' +
               validate.errors?.[0].instancePath +
-              '"' || ''
+              '"'
           )
           editorRef.current?.editor.getSession().setAnnotations([
             {
               row: 0,
               column: 1,
-              text: validate.errors?.[0].message || '',
+              text: validate.errors?.[0].message ?? '',
               type: 'error'
             }
           ])

@@ -179,8 +179,10 @@ export interface IUserGet<T = []>
   templates: 'templates'[] extends T ? string[] : never[]
 }
 
-export interface IUserWithData<T = []> extends Omit<IUserGet<T>, 'avatar'> {
+export interface IUserWithData<T = []>
+  extends Omit<IUserGet<T>, 'avatar' | 'usermodels'> {
   avatar?: 'avatar'[] extends T ? Buffer : never
+  usermodels: 'usermodels'[] extends T ? IUserModel[] : never[]
 }
 
 /**

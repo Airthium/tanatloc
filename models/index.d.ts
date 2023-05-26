@@ -119,6 +119,7 @@ export interface IModelParameters extends IModelCommon {
         advanced?: boolean
         children: IModelParameter[]
       }
+    | undefined
 }
 
 export interface IModelParameter {
@@ -199,6 +200,7 @@ export interface IModelBoundaryConditions extends IModelCommon {
     | string
     | Error
     | IModelTypedBoundaryCondition
+    | undefined
 }
 
 export interface IModelTypedBoundaryCondition {

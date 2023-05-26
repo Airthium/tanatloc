@@ -70,7 +70,12 @@ export const _onSave = async (
           const index = user.usermodels.findIndex(
             (usermodel) => usermodel.model.algorithm === modelJSON.algorithm
           )
-          await _save(user, swr, existing, index)
+          await _save(
+            user,
+            swr,
+            { id: existing.id, model: modelJSON, template },
+            index
+          )
         }
       })
     } else {

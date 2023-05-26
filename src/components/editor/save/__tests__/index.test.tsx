@@ -9,9 +9,11 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
-const mockUserUpdate = jest.fn()
-jest.mock('@/api/user', () => ({
-  update: (content: any) => mockUserUpdate(content)
+const mockUserModelAdd = jest.fn()
+const mockUserModelUpdate = jest.fn()
+jest.mock('@/api/userModel', () => ({
+  add: async (content: any) => mockUserModelAdd(content),
+  update: (content: any) => mockUserModelUpdate(content)
 }))
 
 const mockDeepCopy = jest.fn()
@@ -52,7 +54,8 @@ describe('components/editor/save', () => {
   beforeEach(() => {
     mockErrorNotification.mockReset()
 
-    mockUserUpdate.mockReset()
+    mockUserModelAdd.mockReset()
+    mockUserModelUpdate.mockReset()
 
     mockDeepCopy.mockReset()
 
@@ -91,7 +94,7 @@ describe('components/editor/save', () => {
   test('no model', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     //@ts-ignore
-    user.models = undefined
+    user.usermodels = undefined
     const { unmount } = render(
       <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
@@ -123,17 +126,12 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     await act(() => fireEvent.click(button))
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUserModelAdd).toHaveBeenCalledTimes(1))
     await waitFor(() =>
-      expect(mockUserUpdate).toHaveBeenLastCalledWith([
-        {
-          key: 'models',
-          method: 'append',
-          type: 'array',
-          value: { user: 'id' }
-        },
-        { key: 'templates', method: 'append', type: 'array', value: 'template' }
-      ])
+      expect(mockUserModelAdd).toHaveBeenLastCalledWith({
+        model: {},
+        template: 'template'
+      })
     )
 
     unmount()
@@ -141,7 +139,7 @@ describe('components/editor/save', () => {
 
   test('add new error', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
-    mockUserUpdate.mockImplementation(() => {
+    mockUserModelAdd.mockImplementation(() => {
       throw new Error('update error')
     })
     const { unmount } = render(
@@ -153,18 +151,7 @@ describe('components/editor/save', () => {
     const button = screen.getByRole('button', { name: 'save' })
     await act(() => fireEvent.click(button))
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockUserUpdate).toHaveBeenLastCalledWith([
-        {
-          key: 'models',
-          method: 'append',
-          type: 'array',
-          value: { user: 'id' }
-        },
-        { key: 'templates', method: 'append', type: 'array', value: 'template' }
-      ])
-    )
+    await waitFor(() => expect(mockUserModelAdd).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
@@ -178,7 +165,7 @@ describe('components/editor/save', () => {
 
   test('replace', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
-    user.usermodels = [{ model: { algorithm: 'algorithm' } } as never]
+    user.usermodels = [{ id: 'id', model: { algorithm: 'algorithm' } } as never]
     const { unmount } = render(
       <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
@@ -194,24 +181,11 @@ describe('components/editor/save', () => {
     const cancel = screen.getByRole('button', { name: 'Cancel' })
     await act(() => fireEvent.click(ok))
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUserModelUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
-      expect(mockUserUpdate).toHaveBeenLastCalledWith([
-        {
-          key: 'models',
-          method: 'set',
-          index: 0,
-          type: 'array',
-          value: { algorithm: 'algorithm', user: 'id' }
-        },
-        {
-          key: 'templates',
-          method: 'set',
-          index: 0,
-          type: 'array',
-          value: 'template'
-        }
-      ])
+      expect(mockUserModelUpdate).toHaveBeenLastCalledWith({
+        id: 'id'
+      })
     )
 
     await act(() => fireEvent.click(cancel))
@@ -221,7 +195,7 @@ describe('components/editor/save', () => {
 
   test('replace error', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
-    mockUserUpdate.mockImplementation(() => {
+    mockUserModelUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
     user.usermodels = [{ model: { algorithm: 'algorithm' } } as never]
@@ -240,25 +214,7 @@ describe('components/editor/save', () => {
     const cancel = screen.getByRole('button', { name: 'Cancel' })
     await act(() => fireEvent.click(ok))
 
-    await waitFor(() => expect(mockUserUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(mockUserUpdate).toHaveBeenLastCalledWith([
-        {
-          key: 'models',
-          method: 'set',
-          index: 0,
-          type: 'array',
-          value: { algorithm: 'algorithm', user: 'id' }
-        },
-        {
-          key: 'templates',
-          method: 'set',
-          index: 0,
-          type: 'array',
-          value: 'template'
-        }
-      ])
-    )
+    await waitFor(() => expect(mockUserModelUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(

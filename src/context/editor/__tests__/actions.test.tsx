@@ -7,6 +7,8 @@ import {
   setTemplate,
   setTemplateValid,
   setJsonHighlight,
+  setJsonError,
+  setTemplateError,
   setTemplateHighlight
 } from '../actions'
 
@@ -50,6 +52,46 @@ describe('context/editor/actions', () => {
     expect(res).toEqual({
       type: actionTypes.SETTEMPLATECURSOR,
       value: { row: 1, column: 2 }
+    })
+  })
+
+  test('setJsonError', () => {
+    const res = setJsonError({
+      title: 'title',
+      description: 'description',
+      type: 'error',
+      row: 1,
+      column: 2
+    })
+    expect(res).toEqual({
+      type: actionTypes.SETJSONERROR,
+      value: {
+        title: 'title',
+        description: 'description',
+        type: 'error',
+        row: 1,
+        column: 2
+      }
+    })
+  })
+
+  test('setTemplateError', () => {
+    const res = setTemplateError({
+      title: 'title',
+      description: 'description',
+      type: 'error',
+      row: 1,
+      column: 2
+    })
+    expect(res).toEqual({
+      type: actionTypes.SETTEMPLATEERROR,
+      value: {
+        title: 'title',
+        description: 'description',
+        type: 'error',
+        row: 1,
+        column: 2
+      }
     })
   })
 

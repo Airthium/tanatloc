@@ -14,7 +14,7 @@ jest.mock('is-electron', () => () => mockElectron())
 
 const mockUserGet = jest.fn()
 jest.mock('../../user', () => ({
-  get: async () => mockUserGet()
+  getWithData: async () => mockUserGet()
 }))
 
 const mockReadFile = jest.fn()
@@ -103,8 +103,7 @@ describe('lib/template', () => {
 
     // User
     mockUserGet.mockImplementation(() => ({
-      models: [{ algorithm: 'key' }],
-      templates: ['template']
+      usermodels: [{ model: { algorithm: 'key' }, template: 'template' }]
     }))
     script = await Template.render(
       'key',
@@ -117,8 +116,7 @@ describe('lib/template', () => {
     // Electron
     mockElectron.mockImplementation(() => true)
     mockUserGet.mockImplementation(() => ({
-      models: [{ algorithm: 'key' }],
-      templates: ['template']
+      usermodels: [{ model: { algorithm: 'key' }, template: 'template' }]
     }))
     script = await Template.render(
       'key',

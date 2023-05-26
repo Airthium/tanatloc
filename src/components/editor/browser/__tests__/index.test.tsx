@@ -13,9 +13,9 @@ jest.mock('@/components/project/simulation', () => ({
   Selector: (props: any) => mockSimulationSelector(props)
 }))
 
-const mockUpdate = jest.fn()
-jest.mock('@/api/user', () => ({
-  update: async () => mockUpdate()
+const mockDel = jest.fn()
+jest.mock('@/api/userModel', () => ({
+  del: async () => mockDel()
 }))
 
 describe('components/editor/browser', () => {
@@ -28,7 +28,7 @@ describe('components/editor/browser', () => {
     mockSimulationSelector.mockReset()
     mockSimulationSelector.mockImplementation(() => <div />)
 
-    mockUpdate.mockReset()
+    mockDel.mockReset()
 
     swr.mutateUser.mockReset()
   })
@@ -70,19 +70,19 @@ describe('components/editor/browser', () => {
     fireEvent.click(selector)
 
     // Normal
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
     // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error('update error')
+    mockDel.mockImplementation(() => {
+      throw new Error('del error')
     })
     fireEvent.click(selector)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     expect(mockErrorNotification).toHaveBeenLastCalledWith(
       errors.delete,
-      new Error('update error')
+      new Error('del error')
     )
 
     unmount()

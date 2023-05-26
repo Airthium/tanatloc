@@ -91,6 +91,7 @@ const StatusSteps = ({ setName }: IProps) => {
           }))
           dispatch(setModelValid(true))
           setJsonError()
+          setName(JSON5.parse(model).name)
         } else {
           const errorMessage = validate.errors
             ?.map((error) => {

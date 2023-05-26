@@ -1,66 +1,26 @@
 import { EditorContext } from '@/context/editor'
 import { render } from '@testing-library/react'
 
+const mockValidate = jest.fn()
+jest.mock('ajv', () => {
+  return jest.fn().mockImplementation(() => ({
+    compile: () => () => mockValidate()
+  }))
+})
+
 import Steps from '..'
 
 const mockSetModelValid = jest.fn()
 const mockSetTemplateValid = jest.fn()
 jest.mock('@/context/editor/actions', () => ({
+  setJsonError: () => jest.fn(),
   setModelValid: (valid: boolean) => mockSetModelValid(valid),
   setTemplateValid: (valid: boolean) => mockSetTemplateValid(valid)
 }))
 
-const mockCheckModel = jest.fn()
-jest.mock('../utils', () => ({
-  checkModel: () => mockCheckModel()
-}))
-
-const testModel = {
-  category: 'category',
-  name: 'name',
-  algorithm: 'algorithm',
-  code: 'code',
-  version: 'version',
-  configuration: {
-    geometry: {}
-  }
-}
-
-const contextValue0 = {
+const contextValue = {
   template: 'template',
-  model: '{ test: "test" }',
-  dispatch: jest.fn(),
-  templateValid: false,
-  modelValid: false
-}
-
-const contextValue1 = {
-  template: 'template',
-  model: JSON.stringify(testModel),
-  dispatch: jest.fn(),
-  templateValid: false,
-  modelValid: false
-}
-
-const contextValue2 = {
-  template: 'template',
-  model: JSON.stringify({ ...testModel, name: undefined }),
-  dispatch: jest.fn(),
-  templateValid: false,
-  modelValid: false
-}
-
-const contextValue3 = {
-  template: '',
-  model: JSON.stringify(testModel),
-  dispatch: jest.fn(),
-  templateValid: false,
-  modelValid: false
-}
-
-const contextValue4 = {
-  template: 'template',
-  model: JSON.stringify(testModel),
+  model: '{ test: "test", name: "name" }',
   dispatch: jest.fn(),
   templateValid: false,
   modelValid: false
@@ -72,8 +32,6 @@ describe('components/editor/steps', () => {
   beforeEach(() => {
     mockSetModelValid.mockReset()
     mockSetTemplateValid.mockReset()
-
-    mockCheckModel.mockReset()
 
     setName.mockReset()
   })
@@ -91,7 +49,7 @@ describe('components/editor/steps', () => {
 
   test('JSON5', () => {
     const { unmount } = render(
-      <EditorContext.Provider value={contextValue0}>
+      <EditorContext.Provider value={contextValue}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
@@ -100,8 +58,9 @@ describe('components/editor/steps', () => {
   })
 
   test('with context', () => {
+    mockValidate.mockImplementation(() => true)
     const { unmount } = render(
-      <EditorContext.Provider value={contextValue1}>
+      <EditorContext.Provider value={contextValue}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
@@ -117,12 +76,12 @@ describe('components/editor/steps', () => {
     unmount()
   })
 
-  test('without model name, check error', () => {
-    mockCheckModel.mockImplementation(() => {
-      throw new Error('check error')
+  test('syntax error', () => {
+    mockValidate.mockImplementation(() => {
+      throw new Error('validate error')
     })
     const { unmount } = render(
-      <EditorContext.Provider value={contextValue2}>
+      <EditorContext.Provider value={contextValue}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
@@ -137,34 +96,20 @@ describe('components/editor/steps', () => {
     unmount()
   })
 
-  test('without template', () => {
-    const { rerender, unmount } = render(
-      <EditorContext.Provider value={contextValue3}>
+  test('schema error', () => {
+    mockValidate.mockImplementation(() => {})
+    const { unmount } = render(
+      <EditorContext.Provider value={contextValue}>
         <Steps setName={setName} />
       </EditorContext.Provider>
     )
 
     expect(mockSetTemplateValid).toHaveBeenCalledTimes(1)
-    expect(mockSetTemplateValid).toHaveBeenLastCalledWith(false)
-    expect(mockSetModelValid).toHaveBeenCalledTimes(1)
-    expect(mockSetModelValid).toHaveBeenLastCalledWith(true)
-
-    expect(setName).toHaveBeenCalledTimes(1)
-    expect(setName).toHaveBeenLastCalledWith('name')
-
-    rerender(
-      <EditorContext.Provider value={contextValue4}>
-        <Steps setName={setName} />
-      </EditorContext.Provider>
-    )
-
-    expect(mockSetTemplateValid).toHaveBeenCalledTimes(2)
     expect(mockSetTemplateValid).toHaveBeenLastCalledWith(true)
     expect(mockSetModelValid).toHaveBeenCalledTimes(1)
-    expect(mockSetModelValid).toHaveBeenLastCalledWith(true)
+    expect(mockSetModelValid).toHaveBeenLastCalledWith(false)
 
-    expect(setName).toHaveBeenCalledTimes(1)
-    expect(setName).toHaveBeenLastCalledWith('name')
+    expect(setName).toHaveBeenCalledTimes(0)
 
     unmount()
   })

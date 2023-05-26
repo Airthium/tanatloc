@@ -43,6 +43,18 @@ describe('context/editor', () => {
     })
     expect(newState.templateCursor).toEqual({ row: 1, column: 2 })
 
+    newState = editorReducer(state, {
+      type: 'SETJSONERROR',
+      value: { row: 1, column: 2 }
+    })
+    expect(newState.jsonError).toEqual({ row: 1, column: 2 })
+
+    newState = editorReducer(state, {
+      type: 'SETTEMPLATEERROR',
+      value: { row: 1, column: 2 }
+    })
+    expect(newState.templateError).toEqual({ row: 1, column: 2 })
+
     newState = editorReducer(state, { type: 'SETTEMPLATEVALID', value: true })
     expect(newState.templateValid).toBe(true)
 

@@ -7,14 +7,14 @@ import Ajv from 'ajv'
 
 import { EditorContext } from '@/context/editor'
 import {
-  setModel,
+  // setModel,
   setModelValid,
   setTemplateValid
 } from '@/context/editor/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
-import { checkModel } from './utils'
+// import { checkModel } from './utils'
 
 import JSONModel from './model.json'
 

@@ -2,9 +2,11 @@ import { EditorContext } from '@/context/editor'
 import { render } from '@testing-library/react'
 
 const mockValidate = jest.fn()
+//@ts-ignore
+mockValidate.errors = [{}]
 jest.mock('ajv', () => {
   return jest.fn().mockImplementation(() => ({
-    compile: () => () => mockValidate()
+    compile: () => mockValidate
   }))
 })
 
@@ -97,7 +99,6 @@ describe('components/editor/steps', () => {
   })
 
   test('schema error', () => {
-    mockValidate.mockImplementation(() => {})
     const { unmount } = render(
       <EditorContext.Provider value={contextValue}>
         <Steps setName={setName} />

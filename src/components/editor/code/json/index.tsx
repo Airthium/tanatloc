@@ -32,7 +32,8 @@ const JSONCode = (): React.JSX.Element => {
   const editorRef = useRef<ReactAce>()
 
   // Data
-  const { model, jsonHighlight, dispatch } = useContext(EditorContext)
+  const { model, jsonHighlight, jsonError, dispatch } =
+    useContext(EditorContext)
 
   /**
    * On change
@@ -75,6 +76,24 @@ const JSONCode = (): React.JSX.Element => {
 
     highlight(jsonHighlight)
   }, [jsonHighlight, highlight])
+
+  // Set Annotations
+  useEffect(() => {
+    if (jsonError && editorRef.current) {
+      const editor = editorRef.current.editor
+      editor.session.setAnnotations([
+        {
+          row: jsonError.row ?? 0,
+          column: jsonError.column ?? 0,
+          text: jsonError.description,
+          type: jsonError.type
+        }
+      ])
+    } else if (editorRef.current) {
+      const editor = editorRef.current.editor
+      editor.session.clearAnnotations()
+    }
+  }, [jsonError])
 
   /**
    * Render

@@ -1091,7 +1091,7 @@ const Project = (): React.JSX.Element => {
           <Simulation.Selector
             user={{
               authorizedplugins: user.authorizedplugins,
-              models: user.models
+              usermodels: user.usermodels
             }}
             visible={simulationSelectorVisible}
             onOk={onSelectorOk}

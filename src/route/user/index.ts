@@ -66,8 +66,6 @@ const route = async (req: Request, res: Response): Promise<void> => {
             'superuser',
             'authorizedplugins',
             'plugins',
-            'models',
-            'templates',
             'usermodels'
           ])
           res.status(200).json({ user })

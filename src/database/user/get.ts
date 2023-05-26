@@ -1,7 +1,6 @@
 /** @module Database.User.Get */
 
 import { IClientPlugin } from '@/plugins/index.d'
-import { IModel } from '@/models/index.d'
 
 import { tables } from '@/config/db'
 
@@ -24,8 +23,6 @@ export type TUserGet = (
   | 'authorizedplugins'
   | 'plugins'
   | 'usermodels'
-  | 'models'
-  | 'templates'
 )[]
 export type TUserGetKey = 'id' | 'email'
 
@@ -45,8 +42,6 @@ export type TUserGetWorkspaces = 'workspaces'[]
 export type TUserGetAuthorizedplugins = 'authorizedplugins'[]
 export type TUserGetPlugins = 'plugins'[]
 export type TUserGetUsermodels = 'usermodels'[]
-export type TUserGetModels = 'models'[]
-export type TUserGetTemplates = 'templates'[]
 
 export interface IUser<T = [], Key = 'id'> {
   id:
@@ -69,8 +64,6 @@ export interface IUser<T = [], Key = 'id'> {
   authorizedplugins?: TUserGetAuthorizedplugins extends T ? string[] : never[]
   plugins?: TUserGetPlugins extends T ? IClientPlugin[] : never[]
   usermodels?: TUserGetUsermodels extends T ? string[] : never[]
-  models?: TUserGetModels extends T ? IModel[] : never[]
-  templates?: TUserGetTemplates extends T ? string[] : never[]
 }
 
 /**

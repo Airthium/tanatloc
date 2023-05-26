@@ -13,7 +13,7 @@ export type TUserModelGet = (
 )[]
 
 export type TUserModelGetModel = 'model'[]
-export type TUserModelGetTemplate = 'model'[]
+export type TUserModelGetTemplate = 'template'[]
 export type TUserModelGetOwners = 'owners'[]
 export type TUserModelGetUsers = 'users'[]
 export type TUserModelGetGroups = 'groups'[]

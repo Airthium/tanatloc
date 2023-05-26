@@ -105,11 +105,13 @@ const render = async (
 ): Promise<string> => {
   let script: string = ''
   if (user) {
-    const userData = await User.get(user, ['models', 'templates'])
-    const index = userData.models.findIndex((m) => m.algorithm === key)
+    const userData = await User.getWithData(user, ['usermodels'])
+    const index = userData.usermodels.findIndex(
+      (userModel) => userModel.model.algorithm === key
+    )
     if (index === -1) throw new Error('Unable to find the model!')
 
-    const template = userData.templates[index]
+    const template = userData.usermodels[index].template
     script = ejs.render(
       template,
       {

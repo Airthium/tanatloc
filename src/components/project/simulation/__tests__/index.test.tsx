@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
+import { IModel } from '@/models/index.d'
 
 import Simulation, { errors } from '@/components/project/simulation'
 
@@ -74,7 +75,19 @@ jest.mock('@/models', () => [
 describe('components/project/simulation.Selector', () => {
   const user = {
     authorizedplugins: [],
-    models: [{ algorithm: 'algorithm', name: 'Name User' }]
+    usermodels: [
+      {
+        id: 'id',
+        model: {
+          algorithm: 'algorithm',
+          name: 'Name User'
+        } as IModel,
+        template: '',
+        owners: ['id'],
+        users: [],
+        groups: []
+      }
+    ]
   }
   const visible = true
   const onOk = jest.fn()

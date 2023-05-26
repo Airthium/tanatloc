@@ -166,8 +166,6 @@ export interface IUserGet<T = []>
     | 'authorizedplugins'
     | 'plugins'
     | 'usermodels'
-    | 'models'
-    | 'templates'
   > {
   organizations: 'organizations'[] extends T ? string[] : never[]
   projects: 'projects'[] extends T ? string[] : never[]
@@ -175,14 +173,16 @@ export interface IUserGet<T = []>
   authorizedplugins: 'authorizedplugins'[] extends T ? string[] : never[]
   plugins: 'plugins'[] extends T ? IClientPlugin[] : never[]
   usermodels: 'usermodels'[] extends T ? string[] : never[]
-  models: 'models'[] extends T ? IModel[] : never[]
-  templates: 'templates'[] extends T ? string[] : never[]
 }
 
 export interface IUserWithData<T = []>
   extends Omit<IUserGet<T>, 'avatar' | 'usermodels'> {
   avatar?: 'avatar'[] extends T ? Buffer : never
-  usermodels: 'usermodels'[] extends T ? IUserModel[] : never[]
+  usermodels: 'usermodels'[] extends T
+    ? IUserModel<
+        ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+      >[]
+    : never[]
 }
 
 /**

@@ -157,13 +157,12 @@ const Editor = () => {
                 <Browser
                   user={{
                     id: user.id,
-                    models: user.models,
-                    templates: user.templates
+                    usermodels: user.usermodels
                   }}
                   swr={{ mutateUser }}
                 />
                 <Save
-                  user={{ id: user.id, models: user.models }}
+                  user={{ id: user.id, usermodels: user.usermodels }}
                   swr={{ mutateUser }}
                 />
                 <Tooltip title="Coming soon">

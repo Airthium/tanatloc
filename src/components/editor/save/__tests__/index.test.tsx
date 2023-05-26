@@ -44,7 +44,7 @@ const contextValue2 = {
 }
 
 describe('components/editor/save', () => {
-  const user = { id: 'id', models: [] }
+  const user = { id: 'id', usermodels: [] }
   const swr = {
     mutateUser: jest.fn()
   }
@@ -58,7 +58,7 @@ describe('components/editor/save', () => {
 
     swr.mutateUser.mockReset()
 
-    user.models = []
+    user.usermodels = []
   })
 
   test('render', () => {
@@ -178,7 +178,7 @@ describe('components/editor/save', () => {
 
   test('replace', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
-    user.models = [{ algorithm: 'algorithm' } as never]
+    user.usermodels = [{ model: { algorithm: 'algorithm' } } as never]
     const { unmount } = render(
       <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
@@ -224,7 +224,7 @@ describe('components/editor/save', () => {
     mockUserUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    user.models = [{ algorithm: 'algorithm' } as never]
+    user.usermodels = [{ model: { algorithm: 'algorithm' } } as never]
     const { unmount } = render(
       <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />

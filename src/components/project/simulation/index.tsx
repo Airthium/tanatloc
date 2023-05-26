@@ -43,7 +43,7 @@ import style from './index.module.css'
  */
 export interface ISelectorProps {
   visible: boolean
-  user?: Pick<IFrontUser, 'authorizedplugins' | 'models'>
+  user?: Pick<IFrontUser, 'authorizedplugins' | 'usermodels'>
   title?: string
   okText?: string
   onOk: (model: IModel) => Promise<void>
@@ -188,8 +188,10 @@ const Selector = ({
   const onUserSelect = useCallback(
     ({ key }: { key: string }): void => {
       setKey(key)
-      const model = user!.models.find((m) => m.algorithm === key)
-      setCurrent(Utils.deepCopy(model))
+      const userModel = user!.usermodels.find(
+        (usermodel) => usermodel.model.algorithm === key
+      )!
+      setCurrent(Utils.deepCopy(userModel.model))
     },
     [user]
   )
@@ -270,16 +272,16 @@ const Selector = ({
       }
     ]
 
-    user?.models.forEach((model, index) => {
-      if (_isInCategories(model.category, categories))
+    user?.usermodels.forEach((usermodel, index) => {
+      if (_isInCategories(usermodel.model.category, categories))
         items.push({
-          key: model.algorithm,
+          key: usermodel.model.algorithm,
           label: (
             <>
               {onDelete ? (
                 <DeleteButton onDelete={async () => onDelete(index)} />
               ) : null}
-              {model.name}
+              {usermodel.model.name}
             </>
           )
         })

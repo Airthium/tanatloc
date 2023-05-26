@@ -78,10 +78,6 @@ const get = async <T extends TUserGet>(
   if (data.includes('usermodels') && !userData.usermodels)
     userData.usermodels = []
 
-  if (data.includes('models') && !userData.models) userData.models = []
-
-  if (data.includes('templates') && !userData.templates) userData.templates = []
-
   return userData as IUserGet<T>
 }
 

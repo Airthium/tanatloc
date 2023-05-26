@@ -19,7 +19,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 describe('components/editor/browser', () => {
-  const user = { id: 'id', models: [], templates: [] }
+  const user = { id: 'id', usermodels: [] }
   const swr = { mutateUser: jest.fn() }
 
   beforeEach(() => {

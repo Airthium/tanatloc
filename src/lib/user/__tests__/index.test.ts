@@ -124,9 +124,7 @@ describe('lib/user', () => {
       'projects',
       'workspaces',
       'authorizedplugins',
-      'plugins',
-      'models',
-      'templates'
+      'plugins'
     ])
     expect(user).toEqual({
       id: 'id',
@@ -135,9 +133,7 @@ describe('lib/user', () => {
       projects: [],
       workspaces: [],
       authorizedplugins: [],
-      plugins: [],
-      models: [],
-      templates: []
+      plugins: []
     })
 
     mockGet.mockImplementation(() => ({
@@ -153,9 +149,7 @@ describe('lib/user', () => {
         {
           configuration: { key: { secret: true, value: '{ "json": "test" }' } }
         }
-      ],
-      models: ['{}'],
-      templates: []
+      ]
     }))
     user = await User.get('id', [
       'email',
@@ -163,9 +157,7 @@ describe('lib/user', () => {
       'projects',
       'workspaces',
       'authorizedplugins',
-      'plugins',
-      'models',
-      'templates'
+      'plugins'
     ])
     expect(user).toEqual({
       id: 'id',
@@ -180,9 +172,7 @@ describe('lib/user', () => {
         {
           configuration: { key: { secret: true, value: { json: 'test' } } }
         }
-      ],
-      models: ['{}'],
-      templates: []
+      ]
     })
   })
 

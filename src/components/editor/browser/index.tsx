@@ -15,7 +15,7 @@ import Templates from '@/templates'
 import { ErrorNotification } from '@/components/assets/notification'
 import Simulation from '@/components/project/simulation'
 
-import UserAPI from '@/api/user'
+import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
 
@@ -23,7 +23,7 @@ import Utils from '@/lib/utils'
  * Props
  */
 export interface IProps {
-  user: Pick<IFrontUser, 'id' | 'models' | 'templates'>
+  user: Pick<IFrontUser, 'id' | 'usermodels'>
   swr: {
     mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
   }
@@ -44,41 +44,21 @@ export const errors = {
  * @param swr SWR
  */
 export const _onDelete = async (
-  user: Pick<IFrontUser, 'id' | 'models' | 'templates'>,
+  user: Pick<IFrontUser, 'id' | 'usermodels'>,
   index: number,
   swr: {
     mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
   }
 ): Promise<void> => {
   try {
-    const model = user.models[index]
-    const template = user.templates[index]
-
-    // API
-    await UserAPI.update([
-      {
-        key: 'models',
-        type: 'array',
-        method: 'remove',
-        value: model
-      },
-      {
-        key: 'templates',
-        type: 'array',
-        method: 'remove',
-        value: template
-      }
-    ])
+    const userModel = user.usermodels[index]
+    await UserModelAPI.del(userModel)
 
     // Local
     const newUser = Utils.deepCopy(user)
-    newUser.models = [
-      ...newUser.models.slice(0, index),
-      ...newUser.models.slice(index + 1)
-    ]
-    newUser.templates = [
-      ...newUser.templates.slice(0, index),
-      ...newUser.templates.slice(index + 1)
+    newUser.usermodels = [
+      ...newUser.usermodels.slice(0, index),
+      ...newUser.usermodels.slice(index + 1)
     ]
     await swr.mutateUser(newUser)
   } catch (err: any) {

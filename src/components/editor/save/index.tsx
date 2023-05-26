@@ -5,13 +5,13 @@ import { Button, Modal, Tooltip } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
-import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
+import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
 import { EditorContext } from '@/context/editor'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
-import UserAPI from '@/api/user'
+import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
 
@@ -19,7 +19,7 @@ import Utils from '@/lib/utils'
  * Props
  */
 export interface IProps {
-  user: Pick<IFrontUser, 'id' | 'models'>
+  user: Pick<IFrontUser, 'id' | 'usermodels'>
   swr: {
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   }
@@ -41,7 +41,7 @@ export const errors = {
  * @param template Template
  */
 export const _onSave = async (
-  user: Pick<IFrontUser, 'id' | 'models'>,
+  user: Pick<IFrontUser, 'id' | 'usermodels'>,
   swr: {
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
@@ -58,8 +58,8 @@ export const _onSave = async (
 
   try {
     // Check existing model
-    const existing = user.models.find(
-      (m) => m.algorithm === modelJSON.algorithm
+    const existing = user.usermodels.find(
+      (usermodel) => usermodel.model.algorithm === modelJSON.algorithm
     )
     if (existing) {
       Modal.confirm({
@@ -67,14 +67,14 @@ export const _onSave = async (
           'A model with the same algorithm entry already exists. Do you want to override it?',
         onOk: async () => {
           // Index
-          const index = user.models.findIndex(
-            (m) => m.algorithm === modelJSON.algorithm
+          const index = user.usermodels.findIndex(
+            (usermodel) => usermodel.model.algorithm === modelJSON.algorithm
           )
-          await _save(user, swr, modelJSON, template, index)
+          await _save(user, swr, existing, index)
         }
       })
     } else {
-      await _save(user, swr, modelJSON, template)
+      await _save(user, swr, { id: '0', model: modelJSON, template })
     }
   } catch (err: any) {
     ErrorNotification(errors.check, err)
@@ -87,39 +87,24 @@ export const _onSave = async (
  * @param template Template
  */
 export const _save = async (
-  user: Pick<IFrontUser, 'id' | 'models'>,
+  user: Pick<IFrontUser, 'id' | 'usermodels'>,
   swr: {
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
-  model: IModel,
-  template: string,
+  usermodel: Pick<IFrontUserModel, 'id' | 'model' | 'template'>,
   index?: number
 ): Promise<void> => {
   if (index === undefined) {
     // Add
     try {
-      // API
-      await UserAPI.update([
-        {
-          key: 'models',
-          type: 'array',
-          method: 'append',
-          value: {
-            ...model,
-            user: user.id
-          }
-        },
-        {
-          key: 'templates',
-          type: 'array',
-          method: 'append',
-          value: template
-        }
-      ])
+      const newUserModel = await UserModelAPI.add({
+        model: usermodel.model,
+        template: usermodel.template
+      })
 
       // Local
       const newUser = Utils.deepCopy(user)
-      newUser.models.push(model)
+      newUser.usermodels.push(newUserModel as IFrontUserModel)
       await swr.mutateUser(newUser)
     } catch (err: any) {
       ErrorNotification(errors.save, err)
@@ -127,30 +112,24 @@ export const _save = async (
   } else {
     // Replace
     try {
-      // API
-      await UserAPI.update([
+      await UserModelAPI.update({ id: usermodel.id }, [
         {
-          key: 'models',
-          type: 'array',
-          method: 'set',
-          index: index,
-          value: {
-            ...model,
-            user: user.id
-          }
+          key: 'model',
+          value: usermodel.model
         },
         {
-          key: 'templates',
-          type: 'array',
-          method: 'set',
-          index: index,
-          value: template
+          key: 'template',
+          value: usermodel.template
         }
       ])
 
       // Local
       const newUser = Utils.deepCopy(user)
-      newUser.models[index] = model
+      newUser.usermodels[index] = {
+        ...newUser.usermodels[index],
+        model: usermodel.model,
+        template: usermodel.template
+      }
       await swr.mutateUser(newUser)
     } catch (err: any) {
       ErrorNotification(errors.save, err)

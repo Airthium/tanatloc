@@ -13,7 +13,7 @@ import {
 } from '@/database/simulation'
 import { ISystem } from '@/database/system'
 import { INewUser } from '@/database/user'
-import { IUserModel } from '@/database/userModel'
+import { INewUserModel, IUserModel } from '@/database/userModel'
 import { INewWorkspace } from '@/database/workspace'
 import { IClientPlugin } from '@/plugins/index.d'
 import {
@@ -217,7 +217,12 @@ export interface IFrontUsers extends Array<IFrontUsersItem> {}
 /**
  * User model
  */
-export interface IFrontUserModel extends IUserModel {}
+export interface IFrontUserModel
+  extends IUserModel<
+    ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+  > {}
+
+export interface IFrontNewUserModel extends INewUserModel {}
 
 /**
  * Workspaces

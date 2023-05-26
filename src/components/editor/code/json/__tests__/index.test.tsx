@@ -112,7 +112,8 @@ describe('components/editor/code/json_editor', () => {
         editor: {
           session: {
             addMarker: jest.fn,
-            removeMarker: jest.fn
+            removeMarker: jest.fn,
+            clearAnnotations: jest.fn
           }
         }
       }
@@ -126,6 +127,44 @@ describe('components/editor/code/json_editor', () => {
           templateValid: true,
           modelValid: true,
           jsonHighlight: { begin: 1, end: 10 },
+          dispatch: jest.fn()
+        }}
+      >
+        <JSONEditor />
+      </EditorContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('highlight - ref - jsonError', () => {
+    mockReactAce.mockImplementation(() => <div role="ReactAce" />)
+    mockRef.mockImplementation(() => ({
+      current: {
+        focus: jest.fn,
+        editor: {
+          session: {
+            addMarker: jest.fn,
+            removeMarker: jest.fn,
+            clearAnnotations: jest.fn
+          }
+        }
+      }
+    }))
+
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          template: '',
+          model: '',
+          templateValid: true,
+          modelValid: true,
+          jsonHighlight: { begin: 1, end: 10 },
+          jsonError: {
+            title: 'title',
+            description: 'description',
+            type: 'error'
+          },
           dispatch: jest.fn()
         }}
       >

@@ -84,7 +84,6 @@ const StatusSteps = ({ setName }: IProps) => {
         const ajv = new Ajv({ allowUnionTypes: true })
         const validate = ajv.compile(JSONModel)
         const valid = validate(JSON5.parse(model))
-        console.log(validate)
         if (valid) {
           setStatus((prev) => ({
             ...prev,

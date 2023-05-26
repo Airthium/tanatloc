@@ -79,7 +79,9 @@ const JSONCode = (): React.JSX.Element => {
 
   // Set Annotations
   useEffect(() => {
-    if (jsonError && editorRef.current) {
+    if (!editorRef.current) return
+
+    if (jsonError) {
       const editor = editorRef.current.editor
       editor.session.setAnnotations([
         {
@@ -89,7 +91,7 @@ const JSONCode = (): React.JSX.Element => {
           type: jsonError.type
         }
       ])
-    } else if (editorRef.current) {
+    } else {
       const editor = editorRef.current.editor
       editor.session.clearAnnotations()
     }

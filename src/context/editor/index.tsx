@@ -12,6 +12,14 @@ export interface IEditorHighlight {
   end: number
 }
 
+export interface IEditorError {
+  title: string
+  description: string
+  type: 'error' | 'warning' | 'info'
+  row?: number
+  column?: number
+}
+
 export interface IEditorState {
   template: string
   model: string
@@ -19,14 +27,22 @@ export interface IEditorState {
   templateHighlight?: IEditorHighlight
   jsonCursor?: IEditorCursor
   templateCursor?: IEditorCursor
-  dispatch: Dispatch<IEditorAction>
+  jsonError?: IEditorError
+  templateError?: IEditorError
   templateValid: boolean
   modelValid: boolean
+  dispatch: Dispatch<IEditorAction>
 }
 
 export interface IEditorAction {
   type: string
-  value: boolean | string | IEditorCursor | IEditorHighlight
+  value:
+    | boolean
+    | string
+    | IEditorCursor
+    | IEditorHighlight
+    | IEditorError
+    | undefined
 }
 
 /**
@@ -50,6 +66,8 @@ export const actionTypes = {
   SETTEMPLATEHIGHLIGHT: 'SETTEMPLATEHIGHLIGHT',
   SETJSONCURSOR: 'SETJSONCURSOR',
   SETTEMPLATECURSOR: 'SETTEMPLATECURSOR',
+  SETJSONERROR: 'SETJSONERROR',
+  SETTEMPLATEERROR: 'SETTEMPLATEERROR',
   SETTEMPLATEVALID: 'SETTEMPLATEVALID',
   SETMODELVALID: 'SETMODELVALID'
 }
@@ -96,6 +114,16 @@ export const editorReducer = (
       return {
         ...state,
         templateCursor: action.value as IEditorCursor
+      }
+    case actionTypes.SETJSONERROR:
+      return {
+        ...state,
+        jsonError: action.value as IEditorError
+      }
+    case actionTypes.SETTEMPLATEERROR:
+      return {
+        ...state,
+        templateError: action.value as IEditorError
       }
     case actionTypes.SETTEMPLATEVALID:
       return {

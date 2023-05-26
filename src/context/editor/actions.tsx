@@ -1,6 +1,12 @@
 /** @module Context.Editor.Actions */
 
-import { actionTypes, IEditorAction, IEditorCursor, IEditorHighlight } from '.'
+import {
+  actionTypes,
+  IEditorAction,
+  IEditorCursor,
+  IEditorError,
+  IEditorHighlight
+} from '.'
 
 export const setTemplate = (template: string): IEditorAction => {
   return { type: actionTypes.SETTEMPLATE, value: template }
@@ -28,6 +34,14 @@ export const setJsonCursor = (cursor: IEditorCursor): IEditorAction => {
 
 export const setTemplateCursor = (cursor: IEditorCursor): IEditorAction => {
   return { type: actionTypes.SETTEMPLATECURSOR, value: cursor }
+}
+
+export const setJsonError = (error?: IEditorError): IEditorAction => {
+  return { type: actionTypes.SETJSONERROR, value: error }
+}
+
+export const setTemplateError = (error?: IEditorError): IEditorAction => {
+  return { type: actionTypes.SETTEMPLATEERROR, value: error }
 }
 
 export const setTemplateValid = (valid: boolean): IEditorAction => {

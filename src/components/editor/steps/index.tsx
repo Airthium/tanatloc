@@ -81,7 +81,7 @@ const StatusSteps = ({ setName }: IProps) => {
       }
 
       try {
-        const ajv = new Ajv()
+        const ajv = new Ajv({ allowUnionTypes: true })
         const validate = ajv.compile(JSONModel)
         const valid = validate(JSON5.parse(model))
         if (valid) {
@@ -90,18 +90,18 @@ const StatusSteps = ({ setName }: IProps) => {
             model: { status: 'finish' }
           }))
           dispatch(setModelValid(true))
-          setJsonError()
+          dispatch(setJsonError())
         } else {
           const errorMessage = validate.errors
             ?.map((error) => {
-              return error.message + ' in "' + error.instancePath + '"'
+              return (
+                error.message +
+                ' in "' +
+                (error.instancePath !== '' ? error.instancePath : 'root') +
+                '"'
+              )
             })
             .join(' ')
-          setJsonError({
-            title: 'JSON Schema error',
-            description: errorMessage ?? '',
-            type: 'error'
-          })
           setStatus((prev) => ({
             ...prev,
             model: { status: 'error', err: errorMessage }
@@ -112,13 +112,15 @@ const StatusSteps = ({ setName }: IProps) => {
         const json5Error = err as JSON5Error
         const lineNumber = json5Error.lineNumber - 1
         const columnNumber = json5Error.columnNumber
-        setJsonError({
-          title: 'Syntax error',
-          description: json5Error.message,
-          type: 'error',
-          row: lineNumber,
-          column: columnNumber
-        })
+        dispatch(
+          setJsonError({
+            title: 'Syntax error',
+            description: json5Error.message,
+            type: 'error',
+            row: lineNumber,
+            column: columnNumber
+          })
+        )
         setStatus((prev) => ({
           ...prev,
           model: { status: 'error', err: json5Error.message }

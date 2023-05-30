@@ -22,6 +22,12 @@
   align-items: center;
 }
 
+.autoSave {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .steps {
   width: 206px;
   margin: 25px;

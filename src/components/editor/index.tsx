@@ -13,7 +13,7 @@ import {
   Tour,
   TourProps
 } from 'antd'
-import { ShareAltOutlined } from '@ant-design/icons'
+import { CaretRightOutlined, ShareAltOutlined } from '@ant-design/icons'
 
 import EditorProvider from '@/context/editor'
 
@@ -29,6 +29,7 @@ import New from './new'
 import Browser from './browser'
 import Save from './save'
 import Code from './code'
+import AutoSave from './autoSave'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
@@ -152,7 +153,9 @@ const Editor = () => {
             <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
-                <Button onClick={openTour}>Start guide</Button>
+                <Tooltip title="Start tour">
+                  <Button icon={<CaretRightOutlined />} onClick={openTour} />
+                </Tooltip>
                 <New />
                 <Browser
                   user={{
@@ -168,6 +171,7 @@ const Editor = () => {
                 <Tooltip title="Coming soon">
                   <Button disabled icon={<ShareAltOutlined />} />
                 </Tooltip>
+                <AutoSave />
               </Space>
             </div>
           </Layout.Header>

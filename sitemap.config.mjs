@@ -1,3 +1,4 @@
+//@ts-check
 /** @type {import('next-sitemap').IConfig} */
 const sitemapConfig = {
   siteUrl: 'https://tanatloc.com',

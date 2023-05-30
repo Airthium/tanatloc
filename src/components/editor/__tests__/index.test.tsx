@@ -92,7 +92,7 @@ describe('component/editor', () => {
   test('tour', () => {
     const { unmount } = render(<Editor />)
 
-    const button = screen.getByRole('button', { name: 'Start guide' })
+    const button = screen.getByRole('button', { name: 'caret-right' })
     fireEvent.click(button)
 
     let next: HTMLElement | undefined = screen.getByRole('button', {

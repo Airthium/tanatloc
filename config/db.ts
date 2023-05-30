@@ -219,11 +219,11 @@ export const schemas: Scheme = {
       type: 'UUID[]'
     },
     {
-      name: 'models', // TODO remove
+      name: 'models', // TODOLATER remove
       type: 'JSONB[]'
     },
     {
-      name: 'templates', // TODO remove
+      name: 'templates', // TODOLATER remove
       type: 'TEXT[]'
     },
     {

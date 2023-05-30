@@ -3,7 +3,7 @@
 import { IDataBaseEntry } from '@/database/index.d'
 import { IGroupGet, IGroupWithData, IUserWithData } from '../index.d'
 
-import GroupDB, { INewGroup, TGroupGet } from '@/database/group'
+import GroupDB, { IGroup, INewGroup, TGroupGet } from '@/database/group'
 
 import User from '../user'
 import Workspace from '../workspace'
@@ -38,6 +38,38 @@ const add = async (
 }
 
 /**
+ * Check user
+ * @param data Data
+ */
+const checkUsers = <T extends TGroupGet>(data: IGroup<T>): void => {
+  if (!data.users) data.users = []
+}
+
+/**
+ * Check workspaces
+ * @param data Data
+ */
+const checkWorkspaces = <T extends TGroupGet>(data: IGroup<T>): void => {
+  if (!data.workspaces) data.workspaces = []
+}
+
+/**
+ * Check projects
+ * @param data Data
+ */
+const checkProjects = <T extends TGroupGet>(data: IGroup<T>): void => {
+  if (!data.projects) data.projects = []
+}
+
+/**
+ * Check user models
+ * @param data Data
+ */
+const checkUserModels = <T extends TGroupGet>(data: IGroup<T>): void => {
+  if (!data.usermodels) data.usermodels = []
+}
+
+/**
  * Get
  * @param id Id
  * @param data Data
@@ -49,15 +81,13 @@ const get = async <T extends TGroupGet>(
 ): Promise<IGroupGet<T>> => {
   const groupData = await GroupDB.get(id, data)
 
-  if (data.includes('users') && !groupData.users) groupData.users = []
+  if (data.includes('users')) checkUsers(groupData)
 
-  if (data.includes('workspaces') && !groupData.workspaces)
-    groupData.workspaces = []
+  if (data.includes('workspaces')) checkWorkspaces(groupData)
 
-  if (data.includes('projects') && !groupData.projects) groupData.projects = []
+  if (data.includes('projects')) checkProjects(groupData)
 
-  if (data.includes('usermodels') && !groupData.usermodels)
-    groupData.usermodels = []
+  if (data.includes('usermodels')) checkUserModels(groupData)
 
   return groupData as IGroupGet<T>
 }
@@ -121,25 +151,15 @@ const getAll = async <T extends TGroupGet>(
   // Get groups
   const groups = await GroupDB.getAll(data)
 
-  if (data.includes('users'))
-    groups.forEach((group) => {
-      if (!group.users) group.users = []
-    })
+  if (data.includes('users')) groups.forEach((group) => checkUsers(group))
 
   if (data.includes('workspaces'))
-    groups.forEach((group) => {
-      if (!group.workspaces) group.workspaces = []
-    })
+    groups.forEach((group) => checkWorkspaces(group))
 
-  if (data.includes('projects'))
-    groups.forEach((group) => {
-      if (!group.projects) group.projects = []
-    })
+  if (data.includes('projects')) groups.forEach((group) => checkProjects(group))
 
   if (data.includes('usermodels'))
-    groups.forEach((group) => {
-      if (!group.usermodels) group.usermodels = []
-    })
+    groups.forEach((group) => checkUserModels(group))
 
   const groupsData = groups.map((group) => {
     const { users, ...groupData } = group

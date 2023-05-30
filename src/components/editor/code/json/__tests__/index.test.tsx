@@ -146,6 +146,7 @@ describe('components/editor/code/json_editor', () => {
           session: {
             addMarker: jest.fn,
             removeMarker: jest.fn,
+            setAnnotations: jest.fn,
             clearAnnotations: jest.fn
           }
         }

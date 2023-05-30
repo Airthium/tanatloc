@@ -34,7 +34,7 @@ const AutoSave = (): React.JSX.Element => {
         const id = setInterval(() => {
           sessionStorage.setItem('model', model)
           sessionStorage.setItem('template', template)
-        }, 5_000)
+        }, 60_000)
         return () => clearInterval(id)
       }
     } else setDisabled(true)
@@ -83,7 +83,11 @@ const AutoSave = (): React.JSX.Element => {
           (disabled ? ' (Essential privacy policy must be activated)' : '')
         }
       >
-        <Button icon={<RedoOutlined />} onClick={onReload} />
+        <Button
+          disabled={disabled}
+          icon={<RedoOutlined />}
+          onClick={onReload}
+        />
       </Tooltip>
     </div>
   )

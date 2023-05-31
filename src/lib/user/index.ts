@@ -2,7 +2,13 @@
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { TUserGetKey } from '@/database/user/get'
-import { IUserGet, IUserModelGet, IUserWithData } from '../index.d'
+import {
+  IProjectGet,
+  IUserGet,
+  IUserModelGet,
+  IUserWithData,
+  IWorkspaceGet
+} from '../index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { LIMIT } from '@/config/string'
@@ -12,6 +18,7 @@ import UserDB, { INewUser, IUser, IUserCheck, TUserGet } from '@/database/user'
 import Avatar from '../avatar'
 import Organization from '../organization'
 import Workspace from '../workspace'
+import Project from '../project'
 import Email from '../email'
 import System from '../system'
 import Group from '../group'
@@ -131,7 +138,7 @@ const getWithData = async <T extends TUserGet>(
 ): Promise<IUserWithData<T>> => {
   const user = await get(id, data)
 
-  const { avatar, usermodels, ...userData } = user
+  const { avatar, workspaces, projects, usermodels, ...userData } = user
 
   // Get avatar
   let avatarData
@@ -144,21 +151,55 @@ const getWithData = async <T extends TUserGet>(
     }
   }
 
+  // Get workspaces data
+  const workspacesData: IWorkspaceGet<'name'[]>[] = []
+  if (workspaces) {
+    await Promise.all(
+      workspaces.map(async (workspace) => {
+        try {
+          const workspaceData = await Workspace.get(workspace, ['name'])
+          workspacesData.push(workspaceData)
+        } catch (err) {
+          console.warn(err)
+        }
+      })
+    )
+  }
+
+  // Get projects data
+  const projectsData: IProjectGet<'title'[]>[] = []
+  if (projects) {
+    await Promise.all(
+      projects.map(async (project) => {
+        try {
+          const projectData = await Project.get(project, ['title'])
+          projectsData.push(projectData)
+        } catch (err) {
+          console.warn(err)
+        }
+      })
+    )
+  }
+
   // Get user models
-  const userModels: IUserModelGet<
+  const usermodelsData: IUserModelGet<
     ('model' | 'template' | 'owners' | 'users' | 'groups')[]
   >[] = []
   if (usermodels) {
     await Promise.all(
       usermodels.map(async (usermodel) => {
-        const usermodelData = await UserModel.get(usermodel, [
-          'model',
-          'template',
-          'owners',
-          'users',
-          'groups'
-        ])
-        userModels.push(usermodelData)
+        try {
+          const usermodelData = await UserModel.get(usermodel, [
+            'model',
+            'template',
+            'owners',
+            'users',
+            'groups'
+          ])
+          usermodelsData.push(usermodelData)
+        } catch (err) {
+          console.warn(err)
+        }
       })
     )
   }
@@ -167,7 +208,9 @@ const getWithData = async <T extends TUserGet>(
   return {
     ...userData,
     avatar: avatarData,
-    usermodels: userModels
+    workspaces: workspacesData,
+    projects: projectsData,
+    usermodels: usermodelsData
   } as IUserWithData<T>
 }
 
@@ -347,7 +390,7 @@ const del = async (user: { id: string }): Promise<void> => {
   // Delete usermodels
   await Promise.all(
     data.usermodels.map(async (usermodel) => {
-      await UserModel.del({ id: usermodel })
+      await UserModel.del({ id: user.id }, { id: usermodel })
     })
   )
 

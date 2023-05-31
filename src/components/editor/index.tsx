@@ -13,7 +13,7 @@ import {
   Tour,
   TourProps
 } from 'antd'
-import { CaretRightOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { CaretRightOutlined } from '@ant-design/icons'
 
 import EditorProvider from '@/context/editor'
 
@@ -22,6 +22,7 @@ import { GoBack } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
 import UserAPI from '@/api/user'
+import OrganizationAPI from '@/api/organization'
 
 import StatusSteps from './steps'
 import Blobs from './blobs'
@@ -29,6 +30,7 @@ import New from './new'
 import Browser from './browser'
 import Save from './save'
 import Code from './code'
+import Share from './share'
 import AutoSave from './autoSave'
 
 import globalStyle from '@/styles/index.module.css'
@@ -50,6 +52,17 @@ const steps: TourProps['steps'] = [
     title: 'Save',
     description: 'Save your script so you can access it later.',
     target: () => document.getElementById('save')!
+  },
+  {
+    title: 'Share',
+    description: 'Share your template with groups and users',
+    target: () => document.getElementById('share')!
+  },
+  {
+    title: 'Auto-save',
+    description:
+      'Activate / desactivate automatic save and reload auto-saved code (Essential privacy policy must be activated)',
+    target: () => document.getElementById('autoSave')!
   },
   {
     title: 'Steps',
@@ -74,7 +87,7 @@ const steps: TourProps['steps'] = [
  * Editor
  * @returns Editor
  */
-const Editor = () => {
+const Editor = (): React.JSX.Element => {
   // State
   const [name, setName] = useState<string>()
   const [tourOpened, setTourOpened] = useState<boolean>(false)
@@ -82,6 +95,7 @@ const Editor = () => {
   // Data
   const router = useRouter()
   const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
+  const [organizations] = OrganizationAPI.useOrganizations()
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -168,9 +182,11 @@ const Editor = () => {
                   user={{ id: user.id, usermodels: user.usermodels }}
                   swr={{ mutateUser }}
                 />
-                <Tooltip title="Coming soon">
-                  <Button disabled icon={<ShareAltOutlined />} />
-                </Tooltip>
+                <Share
+                  user={{ usermodels: user.usermodels }}
+                  organizations={organizations}
+                  swr={{ mutateUser }}
+                />
                 <AutoSave />
               </Space>
             </div>

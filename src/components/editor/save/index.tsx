@@ -1,19 +1,20 @@
 /** @module Components.Editor.Save */
 
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { Dispatch, useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Modal, Tooltip } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
 import { IModel } from '@/models/index.d'
 import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
-import { EditorContext } from '@/context/editor'
+import { EditorContext, IEditorAction } from '@/context/editor'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
 import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
+import { setId } from '@/context/editor/actions'
 
 /**
  * Props
@@ -46,7 +47,8 @@ export const _onSave = async (
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
   model: string,
-  template: string
+  template: string,
+  dispatch: Dispatch<IEditorAction>
 ): Promise<void> => {
   let modelJSON: IModel
   try {
@@ -74,12 +76,13 @@ export const _onSave = async (
             user,
             swr,
             { id: existing.id, model: modelJSON, template },
+            dispatch,
             index
           )
         }
       })
     } else {
-      await _save(user, swr, { id: '0', model: modelJSON, template })
+      await _save(user, swr, { id: '0', model: modelJSON, template }, dispatch)
     }
   } catch (err: any) {
     ErrorNotification(errors.check, err)
@@ -97,6 +100,7 @@ export const _save = async (
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
   usermodel: Pick<IFrontUserModel, 'id' | 'model' | 'template'>,
+  dispatch: Dispatch<IEditorAction>,
   index?: number
 ): Promise<void> => {
   if (index === undefined) {
@@ -108,8 +112,13 @@ export const _save = async (
       })
 
       // Local
+      dispatch(setId(newUserModel.id))
       const newUser = Utils.deepCopy(user)
-      newUser.usermodels.push(newUserModel as IFrontUserModel)
+      newUser.usermodels.push({
+        ...newUserModel,
+        groups: [],
+        users: []
+      } as IFrontUserModel)
       await swr.mutateUser(newUser)
     } catch (err: any) {
       ErrorNotification(errors.save, err)
@@ -153,7 +162,7 @@ const Save = ({ user, swr }: IProps): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Data
-  const { model, template, templateValid, modelValid } =
+  const { model, template, templateValid, modelValid, dispatch } =
     useContext(EditorContext)
 
   // Valid
@@ -168,10 +177,10 @@ const Save = ({ user, swr }: IProps): React.JSX.Element => {
   const onClick = useCallback((): void => {
     ;(async () => {
       setLoading(true)
-      await _onSave(user, swr, model, template)
+      await _onSave(user, swr, model, template, dispatch)
       setLoading(false)
     })()
-  }, [user, model, template, swr])
+  }, [user, model, template, swr, dispatch])
 
   /**
    * Render

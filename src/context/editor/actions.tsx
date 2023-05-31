@@ -8,6 +8,10 @@ import {
   IEditorHighlight
 } from '.'
 
+export const setId = (id: string): IEditorAction => {
+  return { type: actionTypes.SETID, value: id }
+}
+
 export const setTemplate = (template: string): IEditorAction => {
   return { type: actionTypes.SETTEMPLATE, value: template }
 }

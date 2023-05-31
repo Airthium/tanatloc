@@ -24,7 +24,8 @@ import {
   IFrontProject,
   IFrontNewSimulation,
   IFrontSimulationsItem,
-  IFrontResult
+  IFrontResult,
+  IFrontUserModel
 } from '@/api/index.d'
 import {
   IModel,
@@ -711,9 +712,9 @@ const Project = (): React.JSX.Element => {
    * @param scheme Scheme
    */
   const onSelectorOk = useCallback(
-    async (scheme: IModel): Promise<void> => {
+    async (userModel: IFrontUserModel): Promise<void> => {
       try {
-        await _onSelector(project, scheme, {
+        await _onSelector(project, userModel.model, {
           addOneSimulation,
           mutateProject
         })
@@ -1090,6 +1091,7 @@ const Project = (): React.JSX.Element => {
 
           <Simulation.Selector
             user={{
+              id: user.id,
               authorizedplugins: user.authorizedplugins,
               usermodels: user.usermodels
             }}

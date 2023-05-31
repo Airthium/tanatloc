@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.Groups */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { Avatar, Space, Table } from 'antd'
+import { Avatar, Space, Table, TableColumnType } from 'antd'
 
 import Group, { Delete } from '@/components/assets/group'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -89,11 +89,57 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
     if (errorGroups) ErrorNotification(errors.groups, errorGroups)
   }, [errorGroups])
 
-  // Columns
+  /**
+   * Users render
+   * @param users Users
+   * @returns Render
+   */
   const usersRender = useCallback(
-    (u: IFrontGroupsItem['users']) => (
+    (users: IFrontGroupsItem['users']): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
-        {u.map((user) => Utils.userToAvatar(user))}
+        {users.map((user) => Utils.userToAvatar(user))}
+      </Avatar.Group>
+    ),
+    []
+  )
+
+  /**
+   * Workspaces render
+   * @param workspaces Workspaces
+   * @returns Render
+   */
+  const workspacesRender = useCallback(
+    (workspaces: IFrontGroupsItem['workspaces']): React.JSX.Element => (
+      <Avatar.Group maxCount={5}>
+        {workspaces.map((workspace) => Utils.workspaceToAvatar(workspace))}
+      </Avatar.Group>
+    ),
+    []
+  )
+
+  /**
+   * Projects render
+   * @param projects Projects
+   * @returns Render
+   */
+  const projectsRender = useCallback(
+    (projects: IFrontGroupsItem['projects']): React.JSX.Element => (
+      <Avatar.Group maxCount={5}>
+        {projects.map((project) => Utils.projectToAvatar(project))}
+      </Avatar.Group>
+    ),
+    []
+  )
+
+  /**
+   * Usermodels render
+   * @param usermodels User model
+   * @returns Render
+   */
+  const usermodelsRender = useCallback(
+    (usermodels: IFrontGroupsItem['usermodels']): React.JSX.Element => (
+      <Avatar.Group maxCount={5}>
+        {usermodels.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
       </Avatar.Group>
     ),
     []
@@ -142,21 +188,52 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
       {
         title: 'Group name',
         dataIndex: 'name',
-        key: 'name'
+        key: 'name',
+        align: 'center' as TableColumnType<any>['align']
       },
       {
         title: 'Users',
         dataIndex: 'users',
         key: 'users',
+        align: 'center' as TableColumnType<any>['align'],
         render: usersRender
+      },
+      {
+        title: 'Workspaces',
+        dataIndex: 'workspaces',
+        key: 'workspaces',
+        align: 'center' as TableColumnType<any>['align'],
+        render: workspacesRender
+      },
+      {
+        title: 'Projects',
+        dataIndex: 'projects',
+        key: 'projects',
+        align: 'center' as TableColumnType<any>['align'],
+        render: projectsRender
+      },
+      {
+        title: 'User models',
+        dataIndex: 'usermodels',
+        key: 'usermodels',
+        align: 'center' as TableColumnType<any>['align'],
+        render: usermodelsRender
       },
       {
         title: 'Actions',
         key: 'actions',
+        align: 'center' as TableColumnType<any>['align'],
+        fixed: 'right' as TableColumnType<any>['fixed'],
         render: actionsRender
       }
     ],
-    [usersRender, actionsRender]
+    [
+      usersRender,
+      workspacesRender,
+      projectsRender,
+      usermodelsRender,
+      actionsRender
+    ]
   )
 
   /**
@@ -209,7 +286,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
         size="small"
         columns={columns}
         dataSource={groups.map((g) => ({ key: g.id, ...g }))}
-        scroll={{ y: scroll?.y }}
+        scroll={{ x: 1200, y: scroll?.y }}
         ref={refTableGroup}
       />
     </Space>

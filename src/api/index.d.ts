@@ -56,7 +56,9 @@ export interface IFrontGeometries extends Array<IFrontGeometriesItem> {}
 export interface IFrontNewGroup extends INewGroup {}
 
 export interface IFrontGroupsItem
-  extends IGroupWithData<('name' | 'users')[]> {}
+  extends IGroupWithData<
+    ('name' | 'users' | 'workspaces' | 'projects' | 'usermodels')[]
+  > {}
 
 export interface IFrontMutateGroupsItem extends Partial<IFrontGroupsItem> {
   id: string

@@ -1,11 +1,12 @@
 /** @module Components.Assets.Organization.Users */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Card, Space, Table, TableColumnType } from 'antd'
+import { Avatar, Card, Space, Table, TableColumnType } from 'antd'
 
 import {
   IFrontOrganizationsItem,
-  IFrontMutateOrganizationsItem
+  IFrontMutateOrganizationsItem,
+  IFrontGroupsItem
 } from '@/api/index.d'
 import Utils from '@/lib/utils'
 
@@ -53,6 +54,48 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
   const avatarRender = useCallback(
     (_: any, user: IFrontOrganizationsItem['users'][0]) =>
       Utils.userToAvatar(user),
+    []
+  )
+
+  /**
+   * Workspaces render
+   * @param workspaces Workspaces
+   * @returns Render
+   */
+  const workspacesRender = useCallback(
+    (workspaces: IFrontGroupsItem['workspaces']): React.JSX.Element => (
+      <Avatar.Group maxCount={5}>
+        {workspaces.map((workspace) => Utils.workspaceToAvatar(workspace))}
+      </Avatar.Group>
+    ),
+    []
+  )
+
+  /**
+   * Projects render
+   * @param projects Projects
+   * @returns Render
+   */
+  const projectsRender = useCallback(
+    (projects: IFrontGroupsItem['projects']): React.JSX.Element => (
+      <Avatar.Group maxCount={5}>
+        {projects.map((project) => Utils.projectToAvatar(project))}
+      </Avatar.Group>
+    ),
+    []
+  )
+
+  /**
+   * Usermodel render
+   * @param usermodels User model
+   * @returns Render
+   */
+  const usermodelsRender = useCallback(
+    (usermodels: IFrontGroupsItem['usermodels']): React.JSX.Element => (
+      <Avatar.Group maxCount={5}>
+        {usermodels.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
+      </Avatar.Group>
+    ),
     []
   )
 
@@ -125,25 +168,50 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
       {
         key: 'avatar',
         dataIndex: 'avatar',
+        align: 'center' as TableColumnType<any>['align'],
         render: avatarRender
       },
       {
         key: 'lastname',
         title: 'Lastname',
-        dataIndex: 'lastname'
+        dataIndex: 'lastname',
+        align: 'center' as TableColumnType<any>['align']
       },
       {
         key: 'firstname',
         title: 'Firstname',
-        dataIndex: 'firstname'
+        dataIndex: 'firstname',
+        align: 'center' as TableColumnType<any>['align']
       },
       {
         key: 'email',
         title: 'Email',
-        dataIndex: 'email'
+        dataIndex: 'email',
+        align: 'center' as TableColumnType<any>['align']
+      },
+      {
+        key: 'workspaces',
+        title: 'Workspaces',
+        dataIndex: 'workspaces',
+        align: 'center' as TableColumnType<any>['align'],
+        render: workspacesRender
+      },
+      {
+        key: 'projects',
+        title: 'Projects',
+        dataIndex: 'projects',
+        align: 'center' as TableColumnType<any>['align'],
+        render: projectsRender
+      },
+      {
+        key: 'usermodels',
+        title: 'User models',
+        dataIndex: 'usermodels',
+        align: 'center' as TableColumnType<any>['align'],
+        render: usermodelsRender
       }
     ],
-    [avatarRender]
+    [avatarRender, workspacesRender, projectsRender, usermodelsRender]
   )
 
   // Owners columns
@@ -155,7 +223,6 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
         title: 'Actions',
         align: 'center' as TableColumnType<any>['align'],
         fixed: 'right' as TableColumnType<any>['fixed'],
-        width: 75,
         render: ownerActionsRender
       }
     ],
@@ -171,7 +238,6 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
         title: 'Actions',
         align: 'center' as TableColumnType<any>['align'],
         fixed: 'right' as TableColumnType<any>['fixed'],
-        width: 75,
         render: userActionsRender
       }
     ],
@@ -267,7 +333,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
                   key: o.id
                 }))
               ]}
-              scroll={{ y: scrollAdmin?.y }}
+              scroll={{ x: 1200, y: scrollAdmin?.y }}
               ref={refTableAdmin}
             />
           </Space>
@@ -308,7 +374,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
                   key: u.id
                 }))
               ]}
-              scroll={{ y: scrollUsers?.y }}
+              scroll={{ x: 1200, y: scrollUsers?.y }}
               ref={refTableUsers}
             />
           </Space>

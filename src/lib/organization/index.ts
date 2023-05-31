@@ -93,7 +93,14 @@ const getUsersData = async (
     users.map(async (user) => {
       const data: TUserGet = ['email']
       if (!partial) {
-        data.push('firstname', 'lastname', 'avatar')
+        data.push(
+          'firstname',
+          'lastname',
+          'avatar',
+          'workspaces',
+          'projects',
+          'usermodels'
+        )
       }
       const ownerData = await User.getWithData(user, data)
 

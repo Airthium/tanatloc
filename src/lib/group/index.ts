@@ -1,7 +1,14 @@
 /** @module Lib.Group */
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IGroupGet, IGroupWithData, IUserWithData } from '../index.d'
+import {
+  IGroupGet,
+  IGroupWithData,
+  IProjectWithData,
+  IUserModelWithData,
+  IUserWithData,
+  IWorkspaceWithData
+} from '../index.d'
 
 import GroupDB, { IGroup, INewGroup, TGroupGet } from '@/database/group'
 
@@ -120,6 +127,65 @@ const getUsersData = async (
 }
 
 /**
+ * Get workspaces data
+ * @param workspaces Workspaces
+ * @returns Workspaces
+ */
+const getWorkspacesData = async (
+  workspaces: string[]
+): Promise<IWorkspaceWithData<'name'[]>[]> => {
+  return Promise.all(
+    workspaces.map(async (workspace) => {
+      const workspaceData = await Workspace.getWithData(workspace, ['name'])
+
+      return {
+        ...workspaceData,
+        id: workspace
+      }
+    })
+  )
+}
+
+/**
+ * Get projects data
+ * @param projects Projects
+ * @returns Projects
+ */
+const getProjectsData = async (
+  projects: string[]
+): Promise<IProjectWithData<'title'[]>[]> => {
+  return Promise.all(
+    projects.map(async (project) => {
+      const projectData = await Project.getWithData(project, ['title'])
+
+      return {
+        ...projectData,
+        id: project
+      }
+    })
+  )
+}
+
+/**
+ * Get usermodels data
+ * @param usermodels User models
+ * @returns Usermodels
+ */
+const getUsermodelsData = async (
+  usermodels: string[]
+): Promise<IUserModelWithData<'model'[]>[]> => {
+  return Promise.all(
+    usermodels.map(async (usermodel) => {
+      const usermodelData = await UserModel.get(usermodel, ['model'])
+      return {
+        ...usermodelData,
+        id: usermodel
+      }
+    })
+  )
+}
+
+/**
  * Get with data
  * @param id Id
  * @param data Data
@@ -131,13 +197,31 @@ const getWithData = async <T extends TGroupGet>(
 ): Promise<IGroupWithData<T>> => {
   const group = await get(id, data)
 
-  const { users, ...groupData } = group
+  const { users, workspaces, projects, usermodels, ...groupData } = group
 
   // Get users
   let usersData
   if (users) usersData = await getUsersData(users)
 
-  return { ...groupData, users: usersData } as IGroupWithData<T>
+  // Get workspaces
+  let workspacesData
+  if (workspaces) workspacesData = await getWorkspacesData(workspaces)
+
+  // Get projects
+  let projectsData
+  if (projects) projectsData = await getProjectsData(projects)
+
+  // Get workspaces
+  let usermodelsData
+  if (usermodels) usermodelsData = await getUsermodelsData(usermodels)
+
+  return {
+    ...groupData,
+    users: usersData,
+    workspaces: workspacesData,
+    projects: projectsData,
+    usermodels: usermodelsData
+  } as IGroupWithData<T>
 }
 
 /**

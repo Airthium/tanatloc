@@ -1,7 +1,7 @@
 /** @module Components.Editor.Steps */
 
 import { useContext, useState } from 'react'
-import { Steps } from 'antd'
+import { Steps, Tooltip } from 'antd'
 import JSON5 from 'json5'
 import Ajv from 'ajv'
 
@@ -26,6 +26,11 @@ export interface IProps {
   setName: (name: string) => void
 }
 
+export interface IStatus {
+  status: 'wait' | 'process' | 'finish' | 'error'
+  err?: string
+}
+
 /**
  * Status steps
  * @returns StatusSteps
@@ -33,10 +38,7 @@ export interface IProps {
 const StatusSteps = ({ setName }: IProps) => {
   //State
   const [status, setStatus] = useState<{
-    [key: string]: {
-      status: 'wait' | 'process' | 'finish' | 'error'
-      err?: string
-    }
+    [key: string]: IStatus
   }>({})
 
   // Context
@@ -130,6 +132,40 @@ const StatusSteps = ({ setName }: IProps) => {
     [setName, dispatch]
   )
 
+  const formatDescription = (
+    statusObj: IStatus,
+    defaultDescription: string
+  ) => {
+    if (!statusObj?.err) return defaultDescription
+
+    const formattedError = statusObj.err
+      .replace(/\./g, ' > ')
+      .replace(/must/g, '\n  - Must')
+      .split('\n')
+      .map((item) => (
+        <>
+          {item}
+          <br />
+        </>
+      ))
+
+    return (
+      <Tooltip title={formattedError}>
+        <span>{formattedError}</span>
+      </Tooltip>
+    )
+  }
+
+  const generateStep = (
+    statusObj: IStatus,
+    title: string,
+    defaultDescription: string
+  ) => ({
+    title,
+    description: formatDescription(statusObj, defaultDescription),
+    status: statusObj?.status ?? 'wait'
+  })
+
   /**
    * Render
    */
@@ -139,16 +175,12 @@ const StatusSteps = ({ setName }: IProps) => {
         className={style.steps}
         direction="vertical"
         items={[
-          {
-            title: 'Check template format',
-            description: status.template?.err ?? 'EJS + FreeFEM',
-            status: status.template?.status ?? 'wait'
-          },
-          {
-            title: 'Check description format',
-            description: status.model?.err?.replace(/\./g, ' > ') ?? 'JSON',
-            status: status.model?.status ?? 'wait'
-          }
+          generateStep(
+            status.template,
+            'Check template format',
+            'EJS + FreeFEM'
+          ),
+          generateStep(status.model, 'Check description format', 'JSON')
         ]}
       />
     </div>

@@ -145,7 +145,7 @@ const StatusSteps = ({ setName }: IProps) => {
       .map((item) => (
         <>
           {item}
-          {item ?? <br />}
+          <br />
         </>
       ))
 

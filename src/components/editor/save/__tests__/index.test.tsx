@@ -55,6 +55,7 @@ describe('components/editor/save', () => {
     mockErrorNotification.mockReset()
 
     mockUserModelAdd.mockReset()
+    mockUserModelAdd.mockImplementation(() => ({}))
     mockUserModelUpdate.mockReset()
 
     mockDeepCopy.mockReset()

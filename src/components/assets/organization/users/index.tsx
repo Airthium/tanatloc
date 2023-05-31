@@ -8,6 +8,7 @@ import {
   IFrontMutateOrganizationsItem,
   IFrontGroupsItem
 } from '@/api/index.d'
+
 import Utils from '@/lib/utils'
 
 import Add from './add'
@@ -63,9 +64,9 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const workspacesRender = useCallback(
-    (workspaces: IFrontGroupsItem['workspaces']): React.JSX.Element => (
+    (workspaces?: IFrontGroupsItem['workspaces']): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
-        {workspaces.map((workspace) => Utils.workspaceToAvatar(workspace))}
+        {workspaces?.map((workspace) => Utils.workspaceToAvatar(workspace))}
       </Avatar.Group>
     ),
     []
@@ -77,9 +78,9 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const projectsRender = useCallback(
-    (projects: IFrontGroupsItem['projects']): React.JSX.Element => (
+    (projects?: IFrontGroupsItem['projects']): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
-        {projects.map((project) => Utils.projectToAvatar(project))}
+        {projects?.map((project) => Utils.projectToAvatar(project))}
       </Avatar.Group>
     ),
     []
@@ -91,9 +92,9 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const usermodelsRender = useCallback(
-    (usermodels: IFrontGroupsItem['usermodels']): React.JSX.Element => (
+    (usermodels?: IFrontGroupsItem['usermodels']): React.JSX.Element => (
       <Avatar.Group maxCount={5}>
-        {usermodels.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
+        {usermodels?.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
       </Avatar.Group>
     ),
     []
@@ -329,6 +330,9 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
                 })),
                 ...organization.pendingowners.map((o) => ({
                   ...o,
+                  workspaces: [],
+                  projects: [],
+                  usermodels: [],
                   pending: true,
                   key: o.id
                 }))
@@ -370,6 +374,9 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
                 })),
                 ...organization.pendingusers.map((u) => ({
                   ...u,
+                  workspaces: [],
+                  projects: [],
+                  usermodels: [],
                   pending: true,
                   key: u.id
                 }))

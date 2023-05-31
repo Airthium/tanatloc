@@ -18,7 +18,10 @@ jest.mock('@/components/assets/notification', () => ({
 
 const mockUserToAvatar = jest.fn()
 jest.mock('@/lib/utils', () => ({
-  userToAvatar: () => mockUserToAvatar()
+  userToAvatar: () => mockUserToAvatar(),
+  workspaceToAvatar: jest.fn,
+  projectToAvatar: jest.fn,
+  usermodelToAvatar: jest.fn
 }))
 
 const mockGroups = jest.fn()
@@ -61,7 +64,10 @@ describe('components/assets/organization/groups', () => {
       {
         id: 'id',
         name: 'name',
-        users: [{}]
+        users: [{}],
+        workspaces: [],
+        projects: [],
+        usermodels: []
       }
     ]
     mockGroups.mockImplementation(() => groups)
@@ -104,6 +110,23 @@ describe('components/assets/organization/groups', () => {
         swr={swr}
       />
     )
+
+    unmount()
+  })
+
+  test('with workspaces, projects & usermodels', () => {
+    const groups = [
+      {
+        id: 'id',
+        name: 'name',
+        users: [{}],
+        workspaces: [{}],
+        projects: [{}],
+        usermodels: [{}]
+      }
+    ]
+    mockGroups.mockImplementation(() => groups)
+    const { unmount } = render(<Groups organization={organization} swr={swr} />)
 
     unmount()
   })

@@ -105,8 +105,25 @@ export interface IOrganizationWithData<T = []>
   > {
   owners: 'owners'[] extends T
     ? Pick<
-        IUserWithData<('email' | 'firstname' | 'lastname' | 'avatar')[]>,
-        'id' | 'email' | 'firstname' | 'lastname' | 'avatar'
+        IUserWithData<
+          (
+            | 'email'
+            | 'firstname'
+            | 'lastname'
+            | 'avatar'
+            | 'workspaces'
+            | 'projects'
+            | 'usermodels'
+          )[]
+        >,
+        | 'id'
+        | 'email'
+        | 'firstname'
+        | 'lastname'
+        | 'avatar'
+        | 'workspaces'
+        | 'projects'
+        | 'usermodels'
       >[]
     : never[]
   pendingowners: 'pendingowners'[] extends T
@@ -114,8 +131,25 @@ export interface IOrganizationWithData<T = []>
     : never[]
   users: 'users'[] extends T
     ? Pick<
-        IUserWithData<('email' | 'firstname' | 'lastname' | 'avatar')[]>,
-        'id' | 'email' | 'firstname' | 'lastname' | 'avatar'
+        IUserWithData<
+          (
+            | 'email'
+            | 'firstname'
+            | 'lastname'
+            | 'avatar'
+            | 'workspaces'
+            | 'projects'
+            | 'usermodels'
+          )[]
+        >,
+        | 'id'
+        | 'email'
+        | 'firstname'
+        | 'lastname'
+        | 'avatar'
+        | 'workspaces'
+        | 'projects'
+        | 'usermodels'
       >[]
     : never[]
   pendingusers: 'pendingusers'[] extends T
@@ -195,9 +229,11 @@ export interface IUserWithData<T = []>
   > {
   avatar?: 'avatar'[] extends T ? Buffer : never
   workspaces: 'workspaces'[] extends T
-    ? IWorkspace<('id' | 'name')[]>[]
+    ? Pick<IWorkspace<('id' | 'name')[]>, 'id' | 'name'>[]
     : never[]
-  projects: 'projects'[] extends T ? IProject<('id' | 'title')[]>[] : never[]
+  projects: 'projects'[] extends T
+    ? Pick<IProject<('id' | 'title')[]>, 'id' | 'title'>[]
+    : never[]
   usermodels: 'usermodels'[] extends T
     ? IUserModel<
         ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]

@@ -8,13 +8,13 @@ import { IModel } from '@/models/index.d'
 import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
 import { EditorContext, IEditorAction } from '@/context/editor'
+import { setId } from '@/context/editor/actions'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
 import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
-import { setId } from '@/context/editor/actions'
 
 /**
  * Props

@@ -1,5 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { IFrontUserModel } from '@/api/index.d'
+
 import Load, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
@@ -19,7 +21,7 @@ jest.mock('@/api/userModel', () => ({
 }))
 
 describe('components/editor/browser', () => {
-  const user = { id: 'id', usermodels: [] }
+  const user = { id: 'id', usermodels: [{} as IFrontUserModel] }
   const swr = { mutateUser: jest.fn() }
 
   beforeEach(() => {
@@ -62,7 +64,7 @@ describe('components/editor/browser', () => {
 
   test('onDelete', async () => {
     mockSimulationSelector.mockImplementation((props: any) => (
-      <div role="Selector" onClick={() => props.onDelete(1)} />
+      <div role="Selector" onClick={() => props.onDelete(0)} />
     ))
     const { unmount } = render(<Load user={user} swr={swr} />)
 
@@ -92,7 +94,7 @@ describe('components/editor/browser', () => {
     mockSimulationSelector.mockImplementation((props: any) => (
       <div
         role="Selector"
-        onClick={() => props.onOk({ user: 'id', algorithm: 'algorithm' })}
+        onClick={() => props.onOk({ model: { algorithm: 'algorithm' } })}
       />
     ))
     const { unmount } = render(<Load user={user} swr={swr} />)
@@ -119,6 +121,23 @@ describe('components/editor/browser', () => {
       errors.load,
       new Error('fetch error')
     )
+
+    unmount()
+  })
+
+  test('onOk - user', async () => {
+    mockSimulationSelector.mockImplementation((props: any) => (
+      <div
+        role="Selector"
+        onClick={() =>
+          props.onOk({ id: 'id', model: { algorithm: 'algorithm' } })
+        }
+      />
+    ))
+    const { unmount } = render(<Load user={user} swr={swr} />)
+
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
 
     unmount()
   })

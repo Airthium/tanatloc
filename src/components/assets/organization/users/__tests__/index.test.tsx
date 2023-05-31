@@ -1,5 +1,7 @@
 import { render } from '@testing-library/react'
 
+import { IFrontUserModel } from '@/api/index.d'
+
 import Users from '..'
 
 jest.mock('../add', () => () => <div />)
@@ -8,13 +10,24 @@ jest.mock('../delete', () => () => <div />)
 
 const mockUserToAvatar = jest.fn()
 jest.mock('@/lib/utils', () => ({
-  userToAvatar: () => mockUserToAvatar()
+  userToAvatar: () => mockUserToAvatar(),
+  workspaceToAvatar: jest.fn(),
+  projectToAvatar: jest.fn(),
+  usermodelToAvatar: jest.fn()
 }))
 
 describe('components/assets/organization/users', () => {
   const organization = {
     id: 'ido',
-    owners: [{ id: 'idu', email: 'email' }],
+    owners: [
+      {
+        id: 'idu',
+        email: 'email',
+        workspaces: [],
+        projects: [],
+        usermodels: []
+      }
+    ],
     pendingowners: [],
     users: [],
     pendingusers: []
@@ -39,7 +52,17 @@ describe('components/assets/organization/users', () => {
       <Users
         organization={{
           ...organization,
-          users: [{ id: 'idu', email: 'email' }]
+          users: [
+            {
+              id: 'idu',
+              email: 'email',
+              workspaces: [{ id: 'id', name: 'name' }],
+              projects: [{ id: 'id', title: 'title' }],
+              usermodels: [
+                { id: 'id', model: { name: 'name' } } as IFrontUserModel
+              ]
+            }
+          ]
         }}
         swr={swr}
       />
@@ -54,7 +77,15 @@ describe('components/assets/organization/users', () => {
         organization={{
           ...organization,
           pendingowners: [{ id: 'idpo', email: 'email' }],
-          users: [{ id: 'ido', email: 'email' }],
+          users: [
+            {
+              id: 'ido',
+              email: 'email',
+              workspaces: [],
+              projects: [],
+              usermodels: []
+            }
+          ],
           pendingusers: [{ id: 'idpu', email: 'email' }]
         }}
         swr={swr}

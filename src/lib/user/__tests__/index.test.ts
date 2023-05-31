@@ -31,9 +31,16 @@ jest.mock('../../organization', () => ({
   update: async () => mockOrganizationUpdate()
 }))
 
+const mockWorkspaceGet = jest.fn()
 const mockWorkspaceDel = jest.fn()
 jest.mock('../../workspace', () => ({
+  get: async () => mockWorkspaceGet(),
   del: async () => mockWorkspaceDel()
+}))
+
+const mockProjectGet = jest.fn()
+jest.mock('../../project', () => ({
+  get: async () => mockProjectGet()
 }))
 
 const mockUserModelGet = jest.fn()
@@ -77,7 +84,10 @@ describe('lib/user', () => {
     mockAvatarRead.mockReset()
     mockAvatarDel.mockReset()
 
+    mockWorkspaceGet.mockReset()
     mockWorkspaceDel.mockReset()
+
+    mockProjectGet.mockReset()
 
     mockUserModelGet.mockReset()
     mockUserModelDel.mockReset()
@@ -186,13 +196,21 @@ describe('lib/user', () => {
     }))
     user = await User.getWithData('id', [])
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(user).toEqual({ id: 'id', email: 'email', usermodels: [] })
+    expect(user).toEqual({
+      id: 'id',
+      email: 'email',
+      projects: [],
+      workspaces: [],
+      usermodels: []
+    })
 
-    // With avatar & usermodels
+    // With avatar, workspaces, projects & usermodels
     mockGet.mockImplementation(() => ({
       id: 'id',
       email: 'email',
       avatar: 'avatar',
+      projects: ['id'],
+      workspaces: ['id'],
       usermodels: ['id']
     }))
     mockAvatarRead.mockImplementation(() => 'avatar')
@@ -204,11 +222,22 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       avatar: 'avatar',
+      projects: [],
+      workspaces: [],
       usermodels: [{}]
     })
 
     mockAvatarRead.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('avatar error')
+    })
+    mockWorkspaceGet.mockImplementation(() => {
+      throw new Error('workspace error')
+    })
+    mockProjectGet.mockImplementation(() => {
+      throw new Error('project error')
+    })
+    mockUserModelGet.mockImplementation(() => {
+      throw new Error('usermodel error')
     })
     user = await User.getWithData('id', ['email', 'avatar'])
     expect(mockGet).toHaveBeenCalledTimes(3)
@@ -217,7 +246,9 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       avatar: undefined,
-      usermodels: [{}]
+      projects: [],
+      workspaces: [],
+      usermodels: []
     })
   })
 

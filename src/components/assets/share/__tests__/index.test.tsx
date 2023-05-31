@@ -1,7 +1,11 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Share, { errors } from '..'
-import { IFrontProjectsItem, IFrontWorkspacesItem } from '@/api/index.d'
+import {
+  IFrontProjectsItem,
+  IFrontUserModel,
+  IFrontWorkspacesItem
+} from '@/api/index.d'
 
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -37,6 +41,11 @@ jest.mock('@/api/workspace', () => ({
   update: async () => mockWorkspaceUpdate()
 }))
 
+const mockUserModelUpdate = jest.fn()
+jest.mock('@/api/userModel', () => ({
+  update: async () => mockUserModelUpdate()
+}))
+
 describe('components/assets/share', () => {
   const project = {
     id: 'id',
@@ -50,6 +59,11 @@ describe('components/assets/share', () => {
     groups: [{ id: 'id' } as IFrontWorkspacesItem['groups'][0]],
     users: [{ id: 'id' } as IFrontWorkspacesItem['users'][0]]
   }
+  const userModel = {
+    model: { name: 'name' },
+    groups: ['id'],
+    users: ['id']
+  } as IFrontUserModel
   const organizations = [
     {
       id: 'id0',
@@ -57,13 +71,19 @@ describe('components/assets/share', () => {
       owners: [
         {
           id: 'ownerid',
-          email: 'owneremail'
+          email: 'owneremail',
+          workspaces: [],
+          projects: [],
+          usermodels: []
         }
       ],
       users: [
         {
           id: 'userid',
-          email: 'useremail'
+          email: 'useremail',
+          workspaces: [],
+          projects: [],
+          usermodels: []
         }
       ],
       groups: [
@@ -87,6 +107,7 @@ describe('components/assets/share', () => {
   ]
   const projectSwr = { mutateOneProject: jest.fn() }
   const workspaceSwr = { mutateOneWorkspace: jest.fn() }
+  const userModelSWR = { mutateUser: jest.fn() }
 
   beforeEach(() => {
     mockPush.mockReset()
@@ -105,9 +126,20 @@ describe('components/assets/share', () => {
     mockProjectUpdate.mockReset()
 
     mockWorkspaceUpdate.mockReset()
+
+    mockUserModelUpdate.mockReset()
   })
 
   test('render', () => {
+    const { unmount } = render(
+      <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />
     )
@@ -136,15 +168,6 @@ describe('components/assets/share', () => {
     unmount()
   })
 
-  test('electron', () => {
-    mockIsElectron.mockImplementation(() => true)
-    const { unmount } = render(
-      <Share project={project} organizations={organizations} swr={projectSwr} />
-    )
-
-    unmount()
-  })
-
   test('render - light, dark, bordered', () => {
     const { unmount } = render(
       <Share
@@ -164,6 +187,18 @@ describe('components/assets/share', () => {
         workspace={workspace}
         organizations={organizations}
         swr={workspaceSwr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('render with usermodel', () => {
+    const { unmount } = render(
+      <Share
+        userModel={userModel}
+        organizations={organizations}
+        swr={userModelSWR}
       />
     )
 
@@ -297,6 +332,51 @@ describe('components/assets/share', () => {
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.share,
         new Error('workspace error')
+      )
+    )
+
+    unmount()
+  })
+
+  test('onShare with userModel', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
+    ))
+    const { unmount } = render(
+      <Share
+        userModel={userModel}
+        organizations={organizations}
+        swr={userModelSWR}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+
+    // Normal
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUserModelUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(userModelSWR.mutateUser).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockUserModelUpdate.mockImplementation(() => {
+      throw new Error('usermodel error')
+    })
+    await act(() => fireEvent.click(dialog))
+    await waitFor(() => expect(mockUserModelUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.share,
+        new Error('usermodel error')
       )
     )
 

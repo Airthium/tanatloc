@@ -684,7 +684,7 @@ describe('components/project', () => {
   test('Selector', async () => {
     mockProject.mockImplementation(() => ({}))
     mockSelector.mockImplementation((props) => (
-      <div role="Selector" onClick={() => props.onOk({})} />
+      <div role="Selector" onClick={() => props.onOk({ model: {} })} />
     ))
     const { unmount } = render(<Project />)
 

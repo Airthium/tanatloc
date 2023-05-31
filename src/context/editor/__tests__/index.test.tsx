@@ -13,6 +13,9 @@ describe('context/editor', () => {
     const state = initialState
     let newState
 
+    newState = editorReducer(state, { type: 'SETID', value: 'id' })
+    expect(newState.id).toBe('id')
+
     newState = editorReducer(state, { type: 'SETTEMPLATE', value: 'template' })
     expect(newState.template).toBe('template')
 

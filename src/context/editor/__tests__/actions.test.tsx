@@ -1,5 +1,6 @@
 import { actionTypes } from '..'
 import {
+  setId,
   setJsonCursor,
   setTemplateCursor,
   setModel,
@@ -13,6 +14,11 @@ import {
 } from '../actions'
 
 describe('context/editor/actions', () => {
+  test('setId', () => {
+    const res = setId('id')
+    expect(res).toEqual({ type: actionTypes.SETID, value: 'id' })
+  })
+
   test('setTemplate', () => {
     const res = setTemplate('template')
     expect(res).toEqual({ type: actionTypes.SETTEMPLATE, value: 'template' })

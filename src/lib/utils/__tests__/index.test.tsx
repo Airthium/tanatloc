@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react'
 
+import { IModel } from '@/models/index.d'
+
 import Utils from '../'
 
 const mockEmail = jest.fn()
@@ -118,6 +120,75 @@ describe('lib/utils', () => {
     {
       const { unmount } = render(res)
       expect(screen.getByText('FL'))
+      unmount()
+    }
+  })
+
+  test('workspaceToAvatar', () => {
+    let res: any
+
+    res = Utils.workspaceToAvatar({})
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+
+    res = Utils.workspaceToAvatar({ id: 'id' })
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+
+    res = Utils.workspaceToAvatar({ id: 'id', name: 'name' })
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+  })
+
+  test('projectToAvatar', () => {
+    let res: any
+
+    res = Utils.projectToAvatar({})
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+
+    res = Utils.projectToAvatar({ id: 'id' })
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+
+    res = Utils.projectToAvatar({ id: 'id', title: 'title' })
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+  })
+
+  test('usermodelToAvatar', () => {
+    let res: any
+
+    res = Utils.usermodelToAvatar({})
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+
+    res = Utils.usermodelToAvatar({ id: 'id' })
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
+
+    res = Utils.usermodelToAvatar({
+      id: 'id',
+      model: { name: 'name' } as IModel
+    })
+    {
+      const { unmount } = render(res)
       unmount()
     }
   })

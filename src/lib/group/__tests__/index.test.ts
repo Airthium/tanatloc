@@ -22,18 +22,24 @@ jest.mock('../../user', () => ({
   update: async () => mockUserUpdate()
 }))
 
+const mockWorkspaceGetWithData = jest.fn()
 const mockWorkspaceUpdate = jest.fn()
 jest.mock('../../workspace', () => ({
+  getWithData: async () => mockWorkspaceGetWithData(),
   update: async () => mockWorkspaceUpdate()
 }))
 
+const mockProjectGetWithData = jest.fn()
 const mockProjectUpdate = jest.fn()
 jest.mock('../../project', () => ({
+  getWithData: async () => mockProjectGetWithData(),
   update: async () => mockProjectUpdate()
 }))
 
+const mockuserModelGet = jest.fn()
 const mockUserModelUpdate = jest.fn()
 jest.mock('../../userModel', () => ({
+  get: async () => mockuserModelGet(),
   update: async () => mockUserModelUpdate()
 }))
 
@@ -55,10 +61,13 @@ describe('lib/group', () => {
     mockUserGetWithData.mockReset()
     mockUserUpdate.mockReset()
 
+    mockWorkspaceGetWithData.mockReset()
     mockWorkspaceUpdate.mockReset()
 
+    mockProjectGetWithData.mockReset()
     mockProjectUpdate.mockReset()
 
+    mockuserModelGet.mockReset()
     mockUserModelUpdate.mockReset()
 
     mockOrganizationGet.mockReset()
@@ -95,6 +104,22 @@ describe('lib/group', () => {
       users: [{ id: 'id', firstname: 'firstname' }]
     })
     expect(mockGet).toHaveBeenCalledTimes(1)
+
+    mockGet.mockImplementation(() => ({
+      id: 'id',
+      users: ['id'],
+      workspaces: ['id'],
+      projects: ['id'],
+      usermodels: ['id']
+    }))
+    const group2 = await Group.getWithData('id', ['users'])
+    expect(group2).toEqual({
+      id: 'id',
+      users: [{ id: 'id', firstname: 'firstname' }],
+      workspaces: [{ id: 'id' }],
+      projects: [{ id: 'id' }],
+      usermodels: [{ id: 'id' }]
+    })
   })
 
   test('getAll', async () => {

@@ -31,6 +31,8 @@ jest.mock('../new', () => () => <div />)
 jest.mock('../browser', () => () => <div />)
 jest.mock('../save', () => () => <div />)
 jest.mock('../code', () => () => <div />)
+jest.mock('../share', () => () => <div />)
+jest.mock('../autoSave', () => () => <div />)
 
 describe('component/editor', () => {
   const loadingUser = jest.fn(() => false)
@@ -48,7 +50,7 @@ describe('component/editor', () => {
 
     mockUseUser.mockReset()
     mockUseUser.mockImplementation(() => [
-      {},
+      { usermodels: [] },
       { loadingUser: loadingUser(), mutateUser }
     ])
     loadingUser.mockReset()

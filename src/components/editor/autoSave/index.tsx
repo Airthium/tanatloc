@@ -62,7 +62,7 @@ const AutoSave = (): React.JSX.Element => {
    * Render
    */
   return (
-    <div className={style.autoSave}>
+    <div id="autoSave" className={style.autoSave}>
       <Tooltip
         title={
           'Auto-save' +
@@ -70,6 +70,7 @@ const AutoSave = (): React.JSX.Element => {
         }
       >
         <Switch
+          size="small"
           disabled={disabled}
           checked={checked}
           checkedChildren="on"
@@ -84,6 +85,7 @@ const AutoSave = (): React.JSX.Element => {
         }
       >
         <Button
+          size="small"
           disabled={disabled}
           icon={<RedoOutlined />}
           onClick={onReload}

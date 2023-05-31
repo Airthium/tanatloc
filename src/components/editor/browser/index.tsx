@@ -4,10 +4,9 @@ import { useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { FileSearchOutlined } from '@ant-design/icons'
 
-import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
-import { IModel } from '@/models/index.d'
+import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
-import { setModel, setTemplate } from '@/context/editor/actions'
+import { setId, setModel, setTemplate } from '@/context/editor/actions'
 import { EditorContext } from '@/context/editor'
 
 import Templates from '@/templates'
@@ -52,7 +51,7 @@ export const _onDelete = async (
 ): Promise<void> => {
   try {
     const userModel = user.usermodels[index]
-    await UserModelAPI.del(userModel)
+    await UserModelAPI.del({ id: userModel.id })
 
     // Local
     const newUser = Utils.deepCopy(user)
@@ -93,17 +92,21 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
    * @param model Model
    */
   const onOk = useCallback(
-    async (model: IModel): Promise<void> => {
+    async (userModel: IFrontUserModel): Promise<void> => {
       try {
-        // Get template
-        const templateFile =
-          Templates[model.algorithm as keyof typeof Templates]
-        const res = await fetch('/templates/' + templateFile)
-        const template = await res.text()
+        // Tanatloc model
+        if (!userModel.id) {
+          // Get template
+          const templateFile =
+            Templates[userModel.model.algorithm as keyof typeof Templates]
+          const res = await fetch('/templates/' + templateFile)
+          const template = await res.text()
+          userModel.template = template
+        }
 
-        model.user && delete model.user
-        dispatch(setModel(JSON.stringify(model, null, '\t')))
-        dispatch(setTemplate(template))
+        dispatch(setId(userModel.id))
+        dispatch(setModel(JSON.stringify(userModel.model, null, '\t')))
+        dispatch(setTemplate(userModel.template))
         setVisible(false)
       } catch (err: any) {
         ErrorNotification(errors.load, err)

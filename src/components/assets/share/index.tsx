@@ -15,9 +15,11 @@ import isElectron from 'is-electron'
 
 import {
   IFrontMutateProjectsItem,
+  IFrontMutateUser,
   IFrontMutateWorkspacesItem,
   IFrontOrganizationsItem,
   IFrontProjectsItem,
+  IFrontUserModel,
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
@@ -29,6 +31,7 @@ import Utils from '@/lib/utils'
 
 import ProjectAPI from '@/api/project'
 import WorkspaceAPI from '@/api/workspace'
+import UserModelAPI from '@/api/userModel'
 
 import globalStyle from '@/styles/index.module.css'
 
@@ -39,11 +42,13 @@ export interface IProps {
   disabled?: boolean
   workspace?: Pick<IFrontWorkspacesItem, 'id' | 'name' | 'users' | 'groups'>
   project?: Pick<IFrontProjectsItem, 'id' | 'title' | 'users' | 'groups'>
+  userModel?: Pick<IFrontUserModel, 'id' | 'model' | 'users' | 'groups'>
   organizations: Pick<
     IFrontOrganizationsItem,
     'id' | 'name' | 'owners' | 'users' | 'groups'
   >[]
   swr: {
+    mutateUser?: (user: IFrontMutateUser) => Promise<void>
     mutateOneWorkspace?: (
       workspace: IFrontMutateWorkspacesItem
     ) => Promise<void>
@@ -74,6 +79,9 @@ export const errors = {
 export const _onShare = async (
   workspace: Pick<IFrontWorkspacesItem, 'id' | 'users' | 'groups'> | undefined,
   project: Pick<IFrontProjectsItem, 'id' | 'users' | 'groups'> | undefined,
+  userModel:
+    | Pick<IFrontUserModel, 'id' | 'model' | 'users' | 'groups'>
+    | undefined,
   groupsSelected: string[],
   usersSelected: string[],
   swr: IProps['swr']
@@ -103,9 +111,9 @@ export const _onShare = async (
         (user) => ({ id: user } as IFrontWorkspacesItem['users'][0])
       )
       await swr.mutateOneWorkspace!(newWorkspace)
-    } else {
+    } else if (project) {
       // API
-      await ProjectAPI.update({ id: project!.id }, [
+      await ProjectAPI.update({ id: project.id }, [
         {
           key: 'groups',
           value: groupsSelected
@@ -116,7 +124,7 @@ export const _onShare = async (
         }
       ])
       // Mutate
-      const newProject = Utils.deepCopy(project!)
+      const newProject = Utils.deepCopy(project)
       newProject.groups = groupsSelected.map(
         (group) => ({ id: group } as IFrontProjectsItem['groups'][0])
       )
@@ -124,6 +132,24 @@ export const _onShare = async (
         (user) => ({ id: user } as IFrontProjectsItem['users'][0])
       )
       await swr.mutateOneProject!(newProject)
+    } else {
+      // API
+      await UserModelAPI.update({ id: userModel!.id }, [
+        {
+          key: 'groups',
+          value: groupsSelected
+        },
+        {
+          key: 'users',
+          value: usersSelected
+        }
+      ])
+
+      // Mutate
+      const newUserModel = Utils.deepCopy(userModel!)
+      newUserModel.groups = groupsSelected
+      newUserModel.users = usersSelected
+      await swr.mutateUser!(newUserModel)
     }
   } catch (err: any) {
     ErrorNotification(errors.share, err)
@@ -165,6 +191,7 @@ const Share = ({
   disabled,
   workspace,
   project,
+  userModel,
   organizations,
   swr,
   style
@@ -182,14 +209,20 @@ const Share = ({
 
   // Effect
   useEffect(() => {
-    const parent = workspace ?? project
+    let defaultGroups
+    let defaultUsers
+    if (workspace ?? project) {
+      const parent = workspace ?? project
 
-    const defaultGroups = parent?.groups.map((g) => g.id)
-    const defaultUsers = parent?.users.map((u) => u.id)
-
+      defaultGroups = parent?.groups.map((g) => g.id)
+      defaultUsers = parent?.users.map((u) => u.id)
+    } else {
+      defaultGroups = userModel?.groups.map((g) => g)
+      defaultUsers = userModel?.users.map((u) => u)
+    }
     setGroupsSelected(defaultGroups ?? [])
     setUsersSelected(defaultUsers ?? [])
-  }, [workspace, project])
+  }, [workspace, project, userModel])
 
   useEffect(() => {
     // Tree data
@@ -264,19 +297,38 @@ const Share = ({
     })()
   }, [router])
 
+  /**
+   * Groups title
+   */
+  const groupsTitle = useMemo(() => {
+    let title = 'Share this '
+    if (workspace) title += 'workspace'
+    else if (project) title += 'project'
+    else title += 'user model'
+    title += ' with organizations groups'
+
+    return title
+  }, [workspace, project])
+
+  /**
+   * Users title
+   */
+  const usersTitle = useMemo(() => {
+    let title = 'Share this '
+    if (workspace) title += 'workspace'
+    else if (project) title += 'project'
+    else title += 'user model'
+    title += ' with organizations users'
+
+    return title
+  }, [workspace, project])
+
   // Selector
   const selector = useMemo(() => {
     if (treeGroupsData.length)
       return (
         <>
-          <Form.Item
-            label={
-              <>
-                Share this {workspace ? 'workspace' : 'project'} with
-                organizations groups
-              </>
-            }
-          >
+          <Form.Item label={<>{groupsTitle}</>}>
             <TreeSelect
               multiple
               treeCheckable
@@ -290,14 +342,7 @@ const Share = ({
               onChange={setGroupsSelected}
             />
           </Form.Item>
-          <Form.Item
-            label={
-              <>
-                Share this {workspace ? 'workspace' : 'project'} with
-                organizations users
-              </>
-            }
-          >
+          <Form.Item label={<>{usersTitle}</>}>
             <TreeSelect
               multiple
               treeCheckable
@@ -328,7 +373,8 @@ const Share = ({
         </>
       )
   }, [
-    workspace,
+    groupsTitle,
+    usersTitle,
     treeGroupsData,
     treeUsersData,
     groupsSelected,
@@ -352,7 +398,14 @@ const Share = ({
   const onOk = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onShare(workspace, project, groupsSelected, usersSelected, swr)
+      await _onShare(
+        workspace,
+        project,
+        userModel,
+        groupsSelected,
+        usersSelected,
+        swr
+      )
 
       // Close
       setLoading(false)
@@ -361,7 +414,37 @@ const Share = ({
       setLoading(false)
       throw err
     }
-  }, [workspace, project, groupsSelected, usersSelected, swr])
+  }, [workspace, project, userModel, groupsSelected, usersSelected, swr])
+
+  /**
+   * Title
+   */
+  const title = useMemo(() => {
+    let title = 'Share '
+    if (workspace) title += 'workspace'
+    else if (project) title += 'project'
+    else title += 'user model'
+
+    return title
+  }, [workspace, project])
+
+  /**
+   * Description
+   */
+  const description = useMemo(() => {
+    let description = ''
+    if (workspace) description += 'Workspace'
+    else if (project) description += 'Project'
+    else description += 'User model'
+
+    description += ': '
+
+    if (workspace) description += workspace.name
+    else if (project) description += project.title
+    else description += userModel?.model.name
+
+    return description
+  }, [workspace, project, userModel])
 
   /**
    * Render
@@ -377,22 +460,19 @@ const Share = ({
           } ${isElectron() ? globalStyle.displayNone : ''}`}
           key="share"
           disabled={disabled}
-          type={disabled ? 'link' : undefined}
+          type={disabled && !style?.buttonBordered ? 'link' : undefined}
           icon={<ShareAltOutlined />}
           onClick={setVisibleTrue}
         />
       </Tooltip>
       <Dialog
-        title={'Share ' + (workspace ? 'workspace' : 'project')}
+        title={title}
         visible={visible}
         onCancel={setVisibleFalse}
         onOk={onOk}
         loading={loading}
       >
-        <Typography.Title level={5}>
-          {workspace ? 'Workspace: ' : 'Project: '}
-          {workspace?.name ?? project?.title}
-        </Typography.Title>
+        <Typography.Title level={5}>{description}</Typography.Title>
         {selector}
       </Dialog>
     </>

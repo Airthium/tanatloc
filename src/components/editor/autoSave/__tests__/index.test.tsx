@@ -40,6 +40,7 @@ describe('components/editor/autoSave', () => {
   })
 
   test('reload', () => {
+    mockUseCookies.mockImplementation(() => [{ accepted: 'true' }])
     const { unmount } = render(<AutoSave />)
 
     const button = screen.getByRole('button')

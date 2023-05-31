@@ -62,12 +62,25 @@ export interface IGroupGet<T = []>
   usermodels: 'usermodels'[] extends T ? string[] : never[]
 }
 
-export interface IGroupWithData<T = []> extends Omit<IGroupGet<T>, 'users'> {
+export interface IGroupWithData<T = []>
+  extends Omit<
+    IGroupGet<T>,
+    'users' | 'workspaces' | 'projects' | 'usermodels'
+  > {
   users: 'users'[] extends T
     ? Pick<
         IUserWithData<('firstname' | 'lastname' | 'email' | 'avatar')[]>,
         'id' | 'firstname' | 'lastname' | 'email' | 'avatar'
       >[]
+    : never[]
+  workspaces: 'workspaces'[] extends T
+    ? Pick<IWorkspaceWithData | 'id' | 'name'>[]
+    : never[]
+  projects: 'projects'[] extends T
+    ? Pick<IProjectWithData, 'id' | 'title'>[]
+    : never[]
+  usermodels: 'usermodels'[] extends T
+    ? Pick<IUserModelWithData, 'id' | 'model'>[]
     : never[]
 }
 
@@ -176,8 +189,15 @@ export interface IUserGet<T = []>
 }
 
 export interface IUserWithData<T = []>
-  extends Omit<IUserGet<T>, 'avatar' | 'usermodels'> {
+  extends Omit<
+    IUserGet<T>,
+    'avatar' | 'workspaces' | 'projects' | 'usermodels'
+  > {
   avatar?: 'avatar'[] extends T ? Buffer : never
+  workspaces: 'workspaces'[] extends T
+    ? IWorkspace<('id' | 'name')[]>[]
+    : never[]
+  projects: 'projects'[] extends T ? IProject<('id' | 'title')[]>[] : never[]
   usermodels: 'usermodels'[] extends T
     ? IUserModel<
         ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]

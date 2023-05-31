@@ -74,6 +74,7 @@ jest.mock('@/models', () => [
 
 describe('components/project/simulation.Selector', () => {
   const user = {
+    id: 'id',
     authorizedplugins: [],
     usermodels: [
       {
@@ -175,13 +176,13 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('no user', () => {
-    const { unmount } = render(
-      <Simulation.Selector visible={visible} onOk={onOk} onCancel={onCancel} />
-    )
+  // test('no user', () => {
+  //   const { unmount } = render(
+  //     <Simulation.Selector visible={visible} onOk={onOk} onCancel={onCancel} />
+  //   )
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
   test('plugins error', async () => {
     mockList.mockImplementation(() => {
@@ -400,13 +401,13 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('no user', () => {
-    const { unmount } = render(
-      <Simulation.Updater simulation={simulation} swr={swr} />
-    )
+  // test('no user', () => {
+  //   const { unmount } = render(
+  //     <Simulation.Updater simulation={simulation} swr={swr} />
+  //   )
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
   test('plugins error', async () => {
     mockList.mockImplementation(() => {

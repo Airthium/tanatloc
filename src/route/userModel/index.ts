@@ -127,8 +127,13 @@ const update = async (req: Request, res: Response): Promise<void> => {
  * Delete
  * @param req Request
  * @param res Response
+ * @param sessionId Session id
  */
-const del = async (req: Request, res: Response): Promise<void> => {
+const del = async (
+  req: Request,
+  res: Response,
+  sessionId: string
+): Promise<void> => {
   // Check
   checkDeleteBody(req.body)
 
@@ -136,7 +141,7 @@ const del = async (req: Request, res: Response): Promise<void> => {
 
   // Delete
   try {
-    await UserModelLib.del(userModel)
+    await UserModelLib.del({ id: sessionId }, userModel)
     res.status(200).end()
   } catch (err: any) {
     throw error(500, err.message)
@@ -161,7 +166,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         await update(req, res)
         break
       case 'DELETE':
-        await del(req, res)
+        await del(req, res, sessionId)
         break
       default:
         // Unauthorized method

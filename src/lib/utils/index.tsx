@@ -3,6 +3,8 @@
 import { Avatar, Badge, Spin, Tooltip } from 'antd'
 import { parseOneAddress } from 'email-addresses'
 
+import { IModel } from '@/models/index.d'
+
 const deepCopy = <T extends {}>(object: T) => {
   return JSON.parse(JSON.stringify(object)) as T
 }
@@ -140,6 +142,69 @@ const userToAvatar = (user: {
 }
 
 /**
+ * Workspace to avatar
+ * @param workspace Workspace
+ * @returns Avatar
+ */
+const workspaceToAvatar = (workspace: {
+  id?: string
+  name?: string
+}): React.JSX.Element => {
+  let name = workspace.name
+  let abbrev
+  if (name) abbrev = name[0]
+  return (
+    <Tooltip key={workspace.id ?? JSON.stringify(workspace)} title={name}>
+      <Avatar style={{ backgroundColor: stringToColor(name) }}>
+        {abbrev?.toUpperCase() ?? <Spin />}
+      </Avatar>
+    </Tooltip>
+  )
+}
+
+/**
+ * Project to avatar
+ * @param project Project
+ * @returns Avatar
+ */
+const projectToAvatar = (project: {
+  id?: string
+  title?: string
+}): React.JSX.Element => {
+  let name = project.title
+  let abbrev
+  if (name) abbrev = name[0]
+  return (
+    <Tooltip key={project.id ?? JSON.stringify(project)} title={name}>
+      <Avatar style={{ backgroundColor: stringToColor(name) }}>
+        {abbrev?.toUpperCase() ?? <Spin />}
+      </Avatar>
+    </Tooltip>
+  )
+}
+
+/**
+ * Usermodel to avatar
+ * @param usermodel User model
+ * @returns Avatar
+ */
+const usermodelToAvatar = (usermodel: {
+  id?: string
+  model?: IModel
+}): React.JSX.Element => {
+  let name = usermodel.model?.name
+  let abbrev
+  if (name) abbrev = name[0]
+  return (
+    <Tooltip key={usermodel.id ?? JSON.stringify(usermodel)} title={name}>
+      <Avatar style={{ backgroundColor: stringToColor(name) }}>
+        {abbrev?.toUpperCase() ?? <Spin />}
+      </Avatar>
+    </Tooltip>
+  )
+}
+
+/**
  * Group to avatar
  * @param group Group
  * @returns Avatar
@@ -195,6 +260,9 @@ const Utils = {
   rgbToHex,
   rgbToRgba,
   userToAvatar,
+  workspaceToAvatar,
+  projectToAvatar,
+  usermodelToAvatar,
   groupToAvatar,
   validateEmail,
   getGitVersion

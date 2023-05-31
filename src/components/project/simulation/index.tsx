@@ -11,7 +11,8 @@ import { IModel } from '@/models/index.d'
 import {
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem,
-  IFrontUser
+  IFrontUser,
+  IFrontUserModel
 } from '@/api/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
@@ -43,10 +44,10 @@ import style from './index.module.css'
  */
 export interface ISelectorProps {
   visible: boolean
-  user?: Pick<IFrontUser, 'authorizedplugins' | 'usermodels'>
+  user: Pick<IFrontUser, 'id' | 'authorizedplugins' | 'usermodels'>
   title?: string
   okText?: string
-  onOk: (model: IModel) => Promise<void>
+  onOk: (userModel: IFrontUserModel) => Promise<void>
   onCancel: () => void
   onDelete?: (index: number) => Promise<void>
 }
@@ -91,7 +92,7 @@ export const _loadModels = (
 
   plugins.forEach((plugin) => {
     if (
-      user?.authorizedplugins?.includes(plugin.key as string) &&
+      user.authorizedplugins?.includes(plugin.key as string) &&
       plugin.category === 'Model'
     )
       allModels = [...allModels, ...plugin.models]
@@ -139,7 +140,7 @@ const Selector = ({
 }: ISelectorProps): React.JSX.Element => {
   // State
   const [key, setKey] = useState<string>()
-  const [current, setCurrent] = useState<IModel>()
+  const [current, setCurrent] = useState<IFrontUserModel>()
   const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<IModel[]>([])
   const [availableCategories, setAvailableCategories] =
@@ -149,10 +150,8 @@ const Selector = ({
   // Models
   useCustomEffect(() => {
     ;(async () => {
-      if (user) {
-        const newModels = await _pluginsList(user)
-        setModels(newModels)
-      }
+      const newModels = await _pluginsList(user)
+      setModels(newModels)
     })()
   }, [user])
 
@@ -176,7 +175,7 @@ const Selector = ({
     ({ key }: { key: string }): void => {
       setKey(key)
       const model = models.find((m) => m.algorithm === key)
-      setCurrent(Utils.deepCopy(model!))
+      setCurrent({ model: model! } as IFrontUserModel)
     },
     [models]
   )
@@ -188,10 +187,10 @@ const Selector = ({
   const onUserSelect = useCallback(
     ({ key }: { key: string }): void => {
       setKey(key)
-      const userModel = user!.usermodels.find(
+      const userModel = user.usermodels.find(
         (usermodel) => usermodel.model.algorithm === key
       )!
-      setCurrent(Utils.deepCopy(userModel.model))
+      setCurrent(Utils.deepCopy(userModel))
     },
     [user]
   )
@@ -272,7 +271,7 @@ const Selector = ({
       }
     ]
 
-    user?.usermodels.forEach((usermodel, index) => {
+    user.usermodels.forEach((usermodel, index) => {
       if (_isInCategories(usermodel.model.category, categories))
         items.push({
           key: usermodel.model.algorithm,
@@ -336,7 +335,7 @@ const Selector = ({
           />
         </Layout.Sider>
         <Layout.Content className={style.selector}>
-          <MathJax.Html html={current?.description} />
+          <MathJax.Html html={current?.model.description} />
         </Layout.Content>
       </Layout>
     </Modal>
@@ -347,7 +346,7 @@ const Selector = ({
  * Updater props
  */
 export interface IUpdaterProps {
-  user?: Pick<IFrontUser, 'authorizedplugins'>
+  user: Pick<IFrontUser, 'authorizedplugins'>
   simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   swr: {
     mutateOneSimulation: (
@@ -414,10 +413,8 @@ const Updater = ({
   // Models
   useCustomEffect(() => {
     ;(async () => {
-      if (user) {
-        const newModels = await _pluginsList(user)
-        setModels(newModels)
-      }
+      const newModels = await _pluginsList(user)
+      setModels(newModels)
     })()
   }, [user])
 

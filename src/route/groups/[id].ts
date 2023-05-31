@@ -31,7 +31,13 @@ const route = async (req: Request, res: Response) => {
 
       try {
         // Get
-        const groups = await GroupLib.getByOrganization(id, ['name', 'users'])
+        const groups = await GroupLib.getByOrganization(id, [
+          'name',
+          'users',
+          'workspaces',
+          'projects',
+          'usermodels'
+        ])
         res.status(200).json({ groups })
       } catch (err: any) {
         throw error(500, err.message)

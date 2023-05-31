@@ -98,7 +98,7 @@ describe('lib/userModel', () => {
 
   test('del', async () => {
     mockGet.mockImplementation(() => ({}))
-    await UserModel.del({ id: 'id' })
+    await UserModel.del({ id: 'id' }, { id: 'id' })
     expect(mockDel).toHaveBeenCalledTimes(1)
 
     // With users and groups
@@ -106,7 +106,7 @@ describe('lib/userModel', () => {
       users: ['id'],
       groups: ['id']
     }))
-    await UserModel.del({ id: 'id' })
+    await UserModel.del({ id: 'id' }, { id: 'id' })
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
     expect(mockGroupUpdate).toHaveBeenCalledTimes(1)

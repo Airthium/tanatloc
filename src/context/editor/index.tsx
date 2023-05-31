@@ -21,6 +21,7 @@ export interface IEditorError {
 }
 
 export interface IEditorState {
+  id?: string
   template: string
   model: string
   jsonHighlight?: IEditorHighlight
@@ -60,6 +61,7 @@ export const initialState: IEditorState = {
  * Actions types
  */
 export const actionTypes = {
+  SETID: 'SETID',
   SETTEMPLATE: 'SETTEMPLATE',
   SETMODEL: 'SETMODEL',
   SETJSONHIGHLIGHT: 'SETJSONHIGHLIGHT',
@@ -88,6 +90,8 @@ export const editorReducer = (
   action: IEditorAction
 ): IEditorState => {
   switch (action.type) {
+    case actionTypes.SETID:
+      return { ...state, id: action.value as string }
     case actionTypes.SETTEMPLATE:
       return { ...state, template: action.value as string }
     case actionTypes.SETMODEL:

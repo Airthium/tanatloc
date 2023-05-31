@@ -204,9 +204,13 @@ const update = async (
 
 /**
  * Delete
+ * @param user User
  * @param userModel User model
  */
-const del = async (userModel: { id: string }): Promise<void> => {
+const del = async (
+  user: { id: string },
+  userModel: { id: string }
+): Promise<void> => {
   // Get data
   const data = await get(userModel.id, ['groups', 'users'])
 
@@ -220,7 +224,18 @@ const del = async (userModel: { id: string }): Promise<void> => {
     data.users.map(async (user) => deleteFromUser(user, userModel))
   )
 
+  // Delete user model
   await UserModelDB.del(userModel)
+
+  // Delete userModel reference in user
+  await User.update(user, [
+    {
+      type: 'array',
+      method: 'remove',
+      key: 'usermodels',
+      value: userModel.id
+    }
+  ])
 }
 
 const UserModel = { add, get, update, del }

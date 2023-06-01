@@ -16,10 +16,6 @@ import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
 
-// TODO for users or groups
-// if (userModel?.owners.includes(user.id)) setDisabled(false)
-//     else setDisabled(true)
-
 /**
  * Props
  */

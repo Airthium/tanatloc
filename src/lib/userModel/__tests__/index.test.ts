@@ -45,14 +45,15 @@ describe('lib/userModel', () => {
   })
 
   test('add', async () => {
-    mockAdd.mockImplementation(() => ({ id: 'id' }))
+    mockAdd.mockImplementation(() => ({ id: 'id', model: {} }))
     const newModel = await UserModel.add(
       { model: {} as IModel, template: '' },
       { id: 'id' }
     )
     expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
-    expect(newModel).toEqual({ id: 'id' })
+    expect(newModel).toEqual({ id: 'id', model: { userModelId: 'id' } })
   })
 
   test('get', async () => {

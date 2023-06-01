@@ -102,6 +102,8 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
           const res = await fetch('/templates/' + templateFile)
           const template = await res.text()
           userModel.template = template
+        } else {
+          delete userModel.model.userModelId
         }
 
         dispatch(setId(userModel.id))

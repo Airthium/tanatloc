@@ -23,7 +23,7 @@ const update = async (): Promise<void> => {
       if (!models?.length || models?.length !== templates?.length) continue
 
       for (let i = 0; i < models.length; ++i) {
-        const model = models[i]
+        const model0 = models[i]
         const template = templates[i]
 
         // Create new MODEL
@@ -31,8 +31,19 @@ const update = async (): Promise<void> => {
           'INSERT INTO ' +
             tables.MODELS +
             ' (model, template, owners) VALUES ($1, $2, $3) RETURNING id',
-          [model, template, [user.id]]
+          [model0, template, [user.id]]
         )
+
+        // Update new MODEL
+        const modelJSON = JSON.parse(JSON.stringify(model0))
+        modelJSON.userModelId = insert[0].id
+        modelJSON.user && delete modelJSON.user
+        await updater(tables.MODELS, insert[0].id, [
+          {
+            key: 'model',
+            value: modelJSON
+          }
+        ])
 
         // Update user
         await updater(tables.USERS, user.id, [
@@ -46,7 +57,7 @@ const update = async (): Promise<void> => {
             type: 'array',
             method: 'remove',
             key: 'models',
-            value: model
+            value: model0
           },
           {
             type: 'array',

@@ -22,6 +22,15 @@ const add = async (
   // Add user model
   const newUserModel = await UserModelDB.add(userModel, user)
 
+  // Update model
+  newUserModel.model.userModelId = newUserModel.id
+  await UserModelDB.update({ id: newUserModel.id }, [
+    {
+      key: 'model',
+      value: newUserModel.model
+    }
+  ])
+
   // Update user
   await User.update(user, [
     {

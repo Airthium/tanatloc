@@ -17,14 +17,14 @@ describe('install/update/1.2.8', () => {
     mockQuery.mockImplementation(() => ({
       rows: [
         {
-          models: [{}, {}],
+          models: [{ user: 'id' }, {}],
           templates: ['t1', 't2']
         }
       ]
     }))
     await update()
     expect(mockQuery).toHaveBeenCalledTimes(3)
-    expect(mockUpdater).toHaveBeenCalledTimes(2)
+    expect(mockUpdater).toHaveBeenCalledTimes(4)
   })
 
   test('length mismatch', async () => {

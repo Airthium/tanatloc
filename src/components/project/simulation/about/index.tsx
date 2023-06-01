@@ -89,7 +89,7 @@ const About = ({ project, simulation, swr }: IProps): React.JSX.Element => {
           ]}
         >
           <Space direction="vertical" className={globalStyle.fullWidth}>
-            {simulation.scheme.user && (
+            {simulation.scheme.userModelId && (
               <Alert message="User algorithm" type="info" showIcon />
             )}
             <Typography.Text>

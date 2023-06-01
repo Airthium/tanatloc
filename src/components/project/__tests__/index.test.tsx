@@ -167,7 +167,7 @@ describe('components/project', () => {
     id: 'ids1',
     name: 'Simulation 1',
     scheme: {
-      user: 'id',
+      userModelId: 'id',
       configuration: {
         dimension: 2,
         geometry: {

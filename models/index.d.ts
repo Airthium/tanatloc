@@ -9,7 +9,7 @@ type TValue = boolean | number | string
  * Model
  */
 export interface IModel {
-  user?: string
+  userModelId?: string
   category: string | string[]
   name: string
   algorithm: string

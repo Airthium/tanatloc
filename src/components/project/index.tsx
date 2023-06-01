@@ -205,7 +205,7 @@ const SimulationLabel = ({
   /**
    * Render
    */
-  if (simulation.scheme.user)
+  if (simulation.scheme.userModelId)
     return (
       <>
         <Tooltip title="User algorithm" placement="right">

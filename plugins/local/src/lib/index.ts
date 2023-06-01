@@ -435,7 +435,7 @@ const computeSimulation = async (
     // Build the simulation script
     await Template.render(
       scheme.algorithm,
-      scheme.user,
+      scheme.userModelId,
       {
         ...configuration,
         run: {

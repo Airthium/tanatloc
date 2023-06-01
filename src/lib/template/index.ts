@@ -4,7 +4,7 @@ import path from 'path'
 import ejs, { AsyncTemplateFunction } from 'ejs'
 import isElectron from 'is-electron'
 
-import User from '../user'
+import UserModel from '../userModel'
 import Tools from '../tools'
 import Plugins from '../plugins'
 
@@ -99,19 +99,16 @@ export const loadTemplates = async (): Promise<ITemplates> => {
  */
 const render = async (
   key: string,
-  user: string | undefined,
+  userModelId: string | undefined,
   parameters: object,
   save?: { location: string; name: string }
 ): Promise<string> => {
   let script: string = ''
-  if (user) {
-    const userData = await User.getWithData(user, ['usermodels'])
-    const index = userData.usermodels.findIndex(
-      (userModel) => userModel.model.algorithm === key
-    )
-    if (index === -1) throw new Error('Unable to find the model!')
+  if (userModelId) {
+    const userModel = await UserModel.getWithData(userModelId, ['template'])
+    if (!userModel?.template) throw new Error('Unable to find the model!')
 
-    const template = userData.usermodels[index].template
+    const template = userModel.template
     script = ejs.render(
       template,
       {

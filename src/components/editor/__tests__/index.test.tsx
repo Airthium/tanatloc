@@ -33,6 +33,7 @@ jest.mock('../save', () => () => <div />)
 jest.mock('../code', () => () => <div />)
 jest.mock('../share', () => () => <div />)
 jest.mock('../autoSave', () => () => <div />)
+jest.mock('../info', () => () => <div />)
 
 describe('component/editor', () => {
   const loadingUser = jest.fn(() => false)

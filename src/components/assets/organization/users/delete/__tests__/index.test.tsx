@@ -20,7 +20,10 @@ jest.mock('@/api/organization', () => ({
 
 describe('componenets/assets/organization/users/delete', () => {
   const disabled = false
-  const user = { id: 'id', email: 'email' }
+  const user = {
+    id: 'id',
+    email: 'email'
+  }
   const organization = {
     id: 'id',
     owners: [],

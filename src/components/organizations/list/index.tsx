@@ -155,14 +155,24 @@ export const _onAccept = async (
 
     if (ownerIndex !== -1) {
       newOrganization.pendingowners.splice(ownerIndex, 1)
-      newOrganization.owners.push(pendingowner)
+      newOrganization.owners.push({
+        ...pendingowner,
+        workspaces: [],
+        projects: [],
+        usermodels: []
+      })
     } else {
       const userIndex = newOrganization.pendingusers.findIndex(
         (u) => u.id === user.id
       )
       const pendinguser = newOrganization.pendingusers[userIndex]
       newOrganization.pendingusers.splice(userIndex, 1)
-      newOrganization.users.push(pendinguser)
+      newOrganization.users.push({
+        ...pendinguser,
+        workspaces: [],
+        projects: [],
+        usermodels: []
+      })
     }
 
     await swr.mutateOneOrganization(newOrganization)

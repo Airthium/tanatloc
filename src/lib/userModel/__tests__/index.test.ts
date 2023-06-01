@@ -14,9 +14,11 @@ jest.mock('@/database/userModel', () => ({
 }))
 
 const mockUserGet = jest.fn()
+const mockUserGetWithData = jest.fn()
 const mockUserUpdate = jest.fn()
 jest.mock('../../user', () => ({
   get: async () => mockUserGet(),
+  getWithData: async () => mockUserGetWithData(),
   update: async () => mockUserUpdate()
 }))
 
@@ -35,6 +37,7 @@ describe('lib/userModel', () => {
     mockDel.mockReset()
 
     mockUserGet.mockReset()
+    mockUserGetWithData.mockReset()
     mockUserUpdate.mockReset()
 
     mockGroupGet.mockReset()
@@ -54,10 +57,10 @@ describe('lib/userModel', () => {
 
   test('get', async () => {
     mockGet.mockImplementation(() => ({}))
-    await UserModel.get('id', ['model', 'template'])
+    await UserModel.getWithData('id', ['model', 'template'])
     expect(mockGet).toHaveBeenCalledTimes(1)
 
-    await UserModel.get('id', [
+    await UserModel.getWithData('id', [
       'model',
       'template',
       'owners',
@@ -68,6 +71,8 @@ describe('lib/userModel', () => {
   })
 
   test('update', async () => {
+    mockUserGet.mockImplementation(() => ({ usermodels: [] }))
+    mockGroupGet.mockImplementation(() => ({ usermodels: [] }))
     await UserModel.update({ id: 'id' }, [
       {
         key: 'key',
@@ -81,29 +86,32 @@ describe('lib/userModel', () => {
     mockUserGet
       .mockImplementationOnce(() => ({ usermodels: [] }))
       .mockImplementationOnce(() => ({ usermodels: ['id'] }))
+      .mockImplementationOnce(() => ({ usermodels: ['id1'] }))
     mockGroupGet
       .mockImplementationOnce(() => ({ usermodels: [] }))
       .mockImplementationOnce(() => ({ usermodels: ['id'] }))
+      .mockImplementationOnce(() => ({ usermodels: ['id1'] }))
     await UserModel.update({ id: 'id' }, [
       {
         key: 'users',
-        value: ['id1', 'id2']
+        value: ['id1', 'id2', 'id3']
       },
       {
         key: 'groups',
-        value: ['id1', 'id2']
+        value: ['id1', 'id2', 'id3']
       }
     ])
   })
 
   test('del', async () => {
-    mockGet.mockImplementation(() => ({}))
+    mockGet.mockImplementation(() => ({ owners: [], users: [], groups: [] }))
     await UserModel.del({ id: 'id' }, { id: 'id' })
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // With users and groups
     mockGet.mockImplementation(() => ({
+      owners: ['id'],
       users: ['id'],
       groups: ['id']
     }))

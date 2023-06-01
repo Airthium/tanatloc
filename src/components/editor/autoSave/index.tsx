@@ -34,7 +34,7 @@ const AutoSave = (): React.JSX.Element => {
         const id = setInterval(() => {
           sessionStorage.setItem('model', model)
           sessionStorage.setItem('template', template)
-        }, 60_000)
+        }, 30_000)
         return () => clearInterval(id)
       }
     } else setDisabled(true)
@@ -53,7 +53,7 @@ const AutoSave = (): React.JSX.Element => {
    */
   const onReload = useCallback((): void => {
     const model = sessionStorage.getItem('model')
-    const template = sessionStorage.getItem('model')
+    const template = sessionStorage.getItem('template')
     dispatch(setModel(model ?? ''))
     dispatch(setTemplate(template ?? ''))
   }, [dispatch])

@@ -61,8 +61,8 @@ describe('components/assets/share', () => {
   }
   const userModel = {
     model: { name: 'name' },
-    groups: ['id'],
-    users: ['id']
+    groups: [{ id: 'id' }],
+    users: [{ id: 'id' }]
   } as IFrontUserModel
   const organizations = [
     {

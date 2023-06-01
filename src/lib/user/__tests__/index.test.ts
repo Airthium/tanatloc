@@ -46,7 +46,7 @@ jest.mock('../../project', () => ({
 const mockUserModelGet = jest.fn()
 const mockUserModelDel = jest.fn()
 jest.mock('../../userModel', () => ({
-  get: async () => mockUserModelGet(),
+  getWithData: async () => mockUserModelGet(),
   del: async () => mockUserModelDel()
 }))
 

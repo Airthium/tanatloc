@@ -32,6 +32,7 @@ import Save from './save'
 import Code from './code'
 import Share from './share'
 import AutoSave from './autoSave'
+import Info from './info'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
@@ -167,6 +168,7 @@ const Editor = (): React.JSX.Element => {
             <div>
               <Typography.Text strong>{name}</Typography.Text>
               <Space>
+                <Info user={{ usermodels: user.usermodels }} />
                 <Tooltip title="Start tour">
                   <Button icon={<CaretRightOutlined />} onClick={openTour} />
                 </Tooltip>
@@ -183,7 +185,7 @@ const Editor = (): React.JSX.Element => {
                   swr={{ mutateUser }}
                 />
                 <Share
-                  user={{ usermodels: user.usermodels }}
+                  user={{ id: user.id, usermodels: user.usermodels }}
                   organizations={organizations}
                   swr={{ mutateUser }}
                 />

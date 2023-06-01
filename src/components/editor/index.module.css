@@ -22,6 +22,28 @@
   align-items: center;
 }
 
+.info {
+  display: flex;
+  align-items: center;
+}
+
+.infoCard {
+  border: none !important;
+  position: relative;
+  margin-left: 20px;
+}
+
+.infoCard :global(.ant-card-head) {
+  position: absolute;
+  top: -15px;
+  left: -30px;
+  border-bottom: none !important;
+}
+
+.infoCard :global(.ant-card-body) {
+  height: 40px;
+}
+
 .autoSave {
   display: flex;
   align-items: center;

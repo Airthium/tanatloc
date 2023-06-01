@@ -166,7 +166,13 @@ describe('components/editor/save', () => {
 
   test('replace', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
-    user.usermodels = [{ id: 'id', model: { algorithm: 'algorithm' } } as never]
+    user.usermodels = [
+      {
+        id: 'id',
+        model: { algorithm: 'algorithm' },
+        owners: [{ id: 'id' }]
+      } as never
+    ]
     const { unmount } = render(
       <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />
@@ -194,12 +200,50 @@ describe('components/editor/save', () => {
     unmount()
   })
 
+  test('add new one', async () => {
+    mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
+    user.usermodels = [
+      {
+        id: 'id',
+        model: { algorithm: 'algorithm' },
+        owners: [{ id: 'id2' }]
+      } as never
+    ]
+    const { unmount } = render(
+      <EditorContext.Provider value={contextValue2}>
+        <Save user={user} swr={swr} />
+      </EditorContext.Provider>
+    )
+
+    const button = screen.getByRole('button', { name: 'save' })
+    await act(() => fireEvent.click(button))
+
+    await waitFor(() => screen.getByRole('button', { name: 'OK' }))
+
+    const ok = screen.getByRole('button', { name: 'OK' })
+    const cancel = screen.getByRole('button', { name: 'Cancel' })
+    await act(() => fireEvent.click(ok))
+
+    await waitFor(() => expect(mockUserModelAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockUserModelAdd).toHaveBeenLastCalledWith({
+        model: { algorithm: 'algorithm' }
+      })
+    )
+
+    await act(() => fireEvent.click(cancel))
+
+    unmount()
+  })
+
   test('replace error', async () => {
     mockDeepCopy.mockImplementation((obj) => JSON.parse(JSON.stringify(obj)))
     mockUserModelUpdate.mockImplementation(() => {
       throw new Error('update error')
     })
-    user.usermodels = [{ model: { algorithm: 'algorithm' } } as never]
+    user.usermodels = [
+      { model: { algorithm: 'algorithm' }, owners: [{ id: 'id' }] } as never
+    ]
     const { unmount } = render(
       <EditorContext.Provider value={contextValue2}>
         <Save user={user} swr={swr} />

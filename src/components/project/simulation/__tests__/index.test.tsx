@@ -84,7 +84,18 @@ describe('components/project/simulation.Selector', () => {
           name: 'Name User'
         } as IModel,
         template: '',
-        owners: ['id'],
+        owners: [{ id: 'id', email: 'email' }],
+        users: [],
+        groups: []
+      },
+      {
+        id: 'id',
+        model: {
+          algorithm: 'algorithm2',
+          name: 'Name User2'
+        } as IModel,
+        template: '',
+        owners: [{ id: 'id1', email: 'email' }],
         users: [],
         groups: []
       }
@@ -170,19 +181,11 @@ describe('components/project/simulation.Selector', () => {
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
     await act(() => fireEvent.click(tab))
 
-    const button = screen.getByRole('DeleteButton')
+    const button = screen.getAllByRole('DeleteButton')[0]
     fireEvent.click(button)
 
     unmount()
   })
-
-  // test('no user', () => {
-  //   const { unmount } = render(
-  //     <Simulation.Selector visible={visible} onOk={onOk} onCancel={onCancel} />
-  //   )
-
-  //   unmount()
-  // })
 
   test('plugins error', async () => {
     mockList.mockImplementation(() => {

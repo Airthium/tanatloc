@@ -79,6 +79,7 @@ export const _onDelete = async (
 
     // Local
     const newOrganization = Utils.deepCopy(organization)
+    //@ts-ignore
     newOrganization[dBkey] = newOrganization[dBkey].filter(
       (u) => u.id !== user.id
     )

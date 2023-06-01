@@ -22,6 +22,7 @@ import {
   IOrganizationWithData,
   IProjectWithData,
   ISimulationGet,
+  IUserModelWithData,
   IUserWithData,
   IWorkspaceWithData
 } from '@/lib/index.d'
@@ -207,6 +208,9 @@ export interface IFrontUsersItem
       | 'email'
       | 'authorizedplugins'
       | 'superuser'
+      | 'workspaces'
+      | 'projects'
+      | 'usermodels'
     )[]
   > {}
 
@@ -220,8 +224,11 @@ export interface IFrontUsers extends Array<IFrontUsersItem> {}
  * User model
  */
 export interface IFrontUserModel
-  extends IUserModel<
-    ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+  extends Pick<
+    IUserModelWithData<
+      ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+    >,
+    'id' | 'model' | 'template' | 'owners' | 'users' | 'groups'
   > {}
 
 export interface IFrontNewUserModel extends INewUserModel {}

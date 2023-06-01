@@ -98,7 +98,7 @@ const StatusSteps = ({ setName }: IProps) => {
           const errorMessage = validate.errors
             ?.map((error) => {
               return (
-                error.message + ' in "' + (error.instancePath ?? 'root') + '"'
+                error.message + ' in "' + (error.instancePath || 'root') + '"'
               )
             })
             .join(' ')
@@ -142,12 +142,7 @@ const StatusSteps = ({ setName }: IProps) => {
       .replace(/\./g, ' > ')
       .replace(/must/g, '\n  - Must')
       .split('\n')
-      .map((item) => (
-        <>
-          {item}
-          <br />
-        </>
-      ))
+      .map((item) => <>{item}</>)
 
     return (
       <Tooltip title={formattedError}>

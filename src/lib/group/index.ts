@@ -176,7 +176,7 @@ const getUsermodelsData = async (
 ): Promise<IUserModelWithData<'model'[]>[]> => {
   return Promise.all(
     usermodels.map(async (usermodel) => {
-      const usermodelData = await UserModel.get(usermodel, ['model'])
+      const usermodelData = await UserModel.getWithData(usermodel, ['model'])
       return {
         ...usermodelData,
         id: usermodel

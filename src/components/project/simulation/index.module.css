@@ -1,3 +1,13 @@
+.userMenu :global(.ant-menu-title-content) {
+  display: flex;
+  align-items: center;
+}
+
+.userMenu :global(.shared) {
+  display: inline-block;
+  margin-left: auto;
+}
+
 .selectorContent {
   height: 70vh !important;
 }

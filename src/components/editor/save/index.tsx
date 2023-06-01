@@ -16,6 +16,10 @@ import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
 
+// TODO for users or groups
+// if (userModel?.owners.includes(user.id)) setDisabled(false)
+//     else setDisabled(true)
+
 /**
  * Props
  */
@@ -38,8 +42,10 @@ export const errors = {
 /**
  * On save
  * @param user User
+ * @param swr SWR
  * @param model Model
  * @param template Template
+ * @param disptach Dispatch
  */
 export const _onSave = async (
   user: Pick<IFrontUser, 'id' | 'usermodels'>,
@@ -60,27 +66,33 @@ export const _onSave = async (
 
   try {
     // Check existing model
-    const existing = user.usermodels.find(
+    const usermodel = user.usermodels.find(
       (usermodel) => usermodel.model.algorithm === modelJSON.algorithm
     )
-    if (existing) {
-      Modal.confirm({
-        title:
-          'A model with the same algorithm entry already exists. Do you want to override it?',
-        onOk: async () => {
-          // Index
-          const index = user.usermodels.findIndex(
-            (usermodel) => usermodel.model.algorithm === modelJSON.algorithm
-          )
-          await _save(
-            user,
-            swr,
-            { id: existing.id, model: modelJSON, template },
-            dispatch,
-            index
-          )
-        }
-      })
+    if (usermodel) {
+      // Check owner
+      if (usermodel.owners.find((owner) => owner.id === user.id)) {
+        Modal.confirm({
+          title:
+            'A model with the same algorithm entry already exists. Do you want to override it?',
+          onOk: async () => {
+            await _save(user, swr, usermodel, dispatch)
+          }
+        })
+      } else {
+        Modal.confirm({
+          title:
+            'You are not the owner of this algoirhtm. Do you want to create a new one in your account?',
+          onOk: async () => {
+            await _save(
+              user,
+              swr,
+              { id: '0', model: usermodel.model, template: usermodel.template },
+              dispatch
+            )
+          }
+        })
+      }
     } else {
       await _save(user, swr, { id: '0', model: modelJSON, template }, dispatch)
     }
@@ -91,8 +103,10 @@ export const _onSave = async (
 
 /**
  * Save
- * @param model Model
- * @param template Template
+ * @param user User
+ * @param swr SWR
+ * @param usermodel User model
+ * @param dispatch Dispatch
  */
 export const _save = async (
   user: Pick<IFrontUser, 'id' | 'usermodels'>,
@@ -100,10 +114,9 @@ export const _save = async (
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
   usermodel: Pick<IFrontUserModel, 'id' | 'model' | 'template'>,
-  dispatch: Dispatch<IEditorAction>,
-  index?: number
+  dispatch: Dispatch<IEditorAction>
 ): Promise<void> => {
-  if (index === undefined) {
+  if (usermodel.id === '0') {
     // Add
     try {
       const newUserModel = await UserModelAPI.add({
@@ -116,6 +129,7 @@ export const _save = async (
       const newUser = Utils.deepCopy(user)
       newUser.usermodels.push({
         ...newUserModel,
+        owners: [user],
         groups: [],
         users: []
       } as IFrontUserModel)
@@ -139,6 +153,7 @@ export const _save = async (
 
       // Local
       const newUser = Utils.deepCopy(user)
+      const index = newUser.usermodels.findIndex((u) => u.id === usermodel.id)
       newUser.usermodels[index] = {
         ...newUser.usermodels[index],
         model: usermodel.model,

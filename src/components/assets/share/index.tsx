@@ -147,8 +147,12 @@ export const _onShare = async (
 
       // Mutate
       const newUserModel = Utils.deepCopy(userModel!)
-      newUserModel.groups = groupsSelected
-      newUserModel.users = usersSelected
+      newUserModel.groups = groupsSelected.map(
+        (group) => ({ id: group } as IFrontUserModel['groups'][0])
+      )
+      newUserModel.users = usersSelected.map(
+        (user) => ({ id: user } as IFrontUserModel['users'][0])
+      )
       await swr.mutateUser!(newUserModel)
     }
   } catch (err: any) {
@@ -209,17 +213,11 @@ const Share = ({
 
   // Effect
   useEffect(() => {
-    let defaultGroups
-    let defaultUsers
-    if (workspace ?? project) {
-      const parent = workspace ?? project
+    const parent = workspace ?? project ?? userModel
 
-      defaultGroups = parent?.groups.map((g) => g.id)
-      defaultUsers = parent?.users.map((u) => u.id)
-    } else {
-      defaultGroups = userModel?.groups.map((g) => g)
-      defaultUsers = userModel?.users.map((u) => u)
-    }
+    const defaultGroups = parent?.groups.map((g: { id: string }) => g.id)
+    const defaultUsers = parent?.users.map((u: { id: string }) => u.id)
+
     setGroupsSelected(defaultGroups ?? [])
     setUsersSelected(defaultUsers ?? [])
   }, [workspace, project, userModel])

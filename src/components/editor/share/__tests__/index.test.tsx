@@ -2,12 +2,14 @@ import { render } from '@testing-library/react'
 
 import { IFrontOrganizationsItem, IFrontUserModel } from '@/api/index.d'
 
+import { EditorContext } from '@/context/editor'
+
 import Share from '..'
 
 jest.mock('@/components/assets/share', () => () => <div />)
 
 describe('components/editor/share', () => {
-  const user = { usermodels: [] }
+  const user = { id: 'id', usermodels: [] }
   const organizations: IFrontOrganizationsItem[] = []
   const mutateUser = async () => {
     jest.fn()
@@ -24,11 +26,55 @@ describe('components/editor/share', () => {
 
   test('id', () => {
     const { unmount } = render(
-      <Share
-        user={{ usermodels: [{ id: 'id' } as IFrontUserModel] }}
-        organizations={organizations}
-        swr={swr}
-      />
+      <EditorContext.Provider
+        value={{
+          id: 'id',
+          template: '',
+          model: '',
+          templateValid: true,
+          modelValid: true,
+          dispatch: jest.fn
+        }}
+      >
+        <Share
+          user={{
+            id: 'id',
+            usermodels: [
+              { id: 'id', owners: [{ id: 'id' }] } as IFrontUserModel
+            ]
+          }}
+          organizations={organizations}
+          swr={swr}
+        />
+      </EditorContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('id1', () => {
+    const { unmount } = render(
+      <EditorContext.Provider
+        value={{
+          id: 'id',
+          template: '',
+          model: '',
+          templateValid: true,
+          modelValid: true,
+          dispatch: jest.fn
+        }}
+      >
+        <Share
+          user={{
+            id: 'id',
+            usermodels: [
+              { id: 'id', owners: [{ id: 'id1' }] } as IFrontUserModel
+            ]
+          }}
+          organizations={organizations}
+          swr={swr}
+        />
+      </EditorContext.Provider>
     )
 
     unmount()

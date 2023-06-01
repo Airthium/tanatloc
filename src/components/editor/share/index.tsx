@@ -17,7 +17,7 @@ import { EditorContext } from '@/context/editor'
  * Props
  */
 export interface IProps {
-  user: Pick<IFrontUser, 'usermodels'>
+  user: Pick<IFrontUser, 'id' | 'usermodels'>
   organizations: Pick<
     IFrontOrganizationsItem,
     'id' | 'name' | 'owners' | 'users' | 'groups'
@@ -38,6 +38,7 @@ const UserModelShare = ({
   swr
 }: IProps): React.JSX.Element => {
   // State
+  const [disabled, setDisabled] = useState<boolean>(true)
   const [current, setCurrent] = useState<IFrontUserModel>()
 
   // Context
@@ -46,6 +47,9 @@ const UserModelShare = ({
   // Current
   useEffect(() => {
     const userModel = user.usermodels.find((u) => u.id === id)
+    if (userModel?.owners.find((owner) => owner.id === user.id))
+      setDisabled(false)
+    else setDisabled(true)
     setCurrent(userModel)
   }, [user, id])
 
@@ -54,7 +58,7 @@ const UserModelShare = ({
    */
   return (
     <Share
-      disabled={!current}
+      disabled={disabled}
       userModel={current}
       organizations={organizations}
       swr={swr}

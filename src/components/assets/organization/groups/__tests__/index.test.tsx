@@ -99,12 +99,27 @@ describe('components/assets/organization/groups', () => {
               id: 'id1',
               email: 'email',
               firstname: 'firstname',
-              lastname: 'lastname'
+              lastname: 'lastname',
+              workspaces: [],
+              projects: [],
+              usermodels: []
             }
           ],
           users: [
-            { id: 'id2', email: 'email' },
-            { id: 'id3', email: 'email' }
+            {
+              id: 'id2',
+              email: 'email',
+              workspaces: [],
+              projects: [],
+              usermodels: []
+            },
+            {
+              id: 'id3',
+              email: 'email',
+              workspaces: [],
+              projects: [],
+              usermodels: []
+            }
           ]
         }}
         swr={swr}

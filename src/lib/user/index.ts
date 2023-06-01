@@ -5,7 +5,7 @@ import { TUserGetKey } from '@/database/user/get'
 import {
   IProjectGet,
   IUserGet,
-  IUserModelGet,
+  IUserModelWithData,
   IUserWithData,
   IWorkspaceGet
 } from '../index.d'
@@ -182,14 +182,14 @@ const getWithData = async <T extends TUserGet>(
   }
 
   // Get user models
-  const usermodelsData: IUserModelGet<
+  const usermodelsData: IUserModelWithData<
     ('model' | 'template' | 'owners' | 'users' | 'groups')[]
   >[] = []
   if (usermodels) {
     await Promise.all(
       usermodels.map(async (usermodel) => {
         try {
-          const usermodelData = await UserModel.get(usermodel, [
+          const usermodelData = await UserModel.getWithData(usermodel, [
             'model',
             'template',
             'owners',

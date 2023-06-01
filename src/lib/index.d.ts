@@ -235,8 +235,11 @@ export interface IUserWithData<T = []>
     ? Pick<IProject<('id' | 'title')[]>, 'id' | 'title'>[]
     : never[]
   usermodels: 'usermodels'[] extends T
-    ? IUserModel<
-        ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+    ? Pick<
+        IUserModelWithData<
+          ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+        >,
+        'id' | 'model' | 'template' | 'owners' | 'users' | 'groups'
       >[]
     : never[]
 }
@@ -280,14 +283,14 @@ export interface IWorkspaceWithData<T = []>
  * UserModel
  */
 export interface IUserModelGet<T = []>
-  extends Omit<IUserModel<T>, 'owners' | 'groups' | 'users'> {
+  extends Omit<IUserModel<T>, 'owners' | 'users' | 'groups'> {
   owners: 'owners'[] extends T ? string[] : never[]
   users: 'users'[] extends T ? string[] : never[]
   groups: 'groups'[] extends T ? string[] : never[]
 }
 
 export interface IUserModelWithData<T = []>
-  extends Omit<IUserModelGet<T>, 'owners' | 'users' | 'groups'> {
+  extends Omit<IUserModel<T>, 'owners' | 'groups' | 'users'> {
   owners: 'owners'[] extends T
     ? Pick<
         IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>,

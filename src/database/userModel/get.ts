@@ -1,8 +1,9 @@
 /** @module Database.UserModel.Get */
 
-import { IModel } from '@/models/index.d'
-import { getter } from '..'
 import { tables } from '@/config/db'
+import { IModel } from '@/models/index.d'
+
+import { getter } from '..'
 
 export type TUserModelGet = (
   | 'model'
@@ -22,9 +23,9 @@ export interface IUserModel<T = []> {
   id: string
   model: TUserModelGetModel extends T ? IModel : never
   template: TUserModelGetTemplate extends T ? string : never
-  owners: TUserModelGetOwners extends T ? string[] : never
-  users: TUserModelGetUsers extends T ? string[] : never
-  groups: TUserModelGetGroups extends T ? string[] : never
+  owners: TUserModelGetOwners extends T ? string[] : never[]
+  users: TUserModelGetUsers extends T ? string[] : never[]
+  groups: TUserModelGetGroups extends T ? string[] : never[]
 }
 
 /**

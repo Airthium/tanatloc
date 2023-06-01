@@ -186,9 +186,10 @@ const Selector = ({
    */
   const onUserSelect = useCallback(
     ({ key }: { key: string }): void => {
-      setKey(key)
+      const algorithm = key.split('&').pop()
+      setKey(algorithm)
       const userModel = user.usermodels.find(
-        (usermodel) => usermodel.model.algorithm === key
+        (usermodel) => usermodel.model.algorithm === algorithm
       )!
       setCurrent(Utils.deepCopy(userModel))
     },
@@ -274,13 +275,18 @@ const Selector = ({
     user.usermodels.forEach((usermodel, index) => {
       if (_isInCategories(usermodel.model.category, categories))
         items.push({
-          key: usermodel.model.algorithm,
+          key: usermodel.id + '&' + usermodel.model.algorithm,
           label: (
             <>
               {onDelete ? (
                 <DeleteButton onDelete={async () => onDelete(index)} />
               ) : null}
               {usermodel.model.name}
+              {usermodel.owners.find((owner) => owner.id === user.id) ? null : (
+                <div className="shared">
+                  {Utils.userToAvatar(usermodel.owners[0])}
+                </div>
+              )}
             </>
           )
         })
@@ -325,7 +331,7 @@ const Selector = ({
                   <Menu
                     selectedKeys={key ? [key] : undefined}
                     mode="inline"
-                    className={style.selectorMenu}
+                    className={style.userMenu}
                     items={userMenuItems}
                     onClick={onUserSelect}
                   />

@@ -60,7 +60,10 @@ const FreeFEMCode = (): React.JSX.Element => {
     y: 0
   })
   const [tooltipToken, setTooltipToken] = useState<IToken>()
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [totalOccurrences, setTotalOccurrences] = useState<number>(0)
+  const [currentOccurrence, setCurrentOccurrence] = useState<number>(0)
+  const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
 
   // Data
   const { template, templateCursor, templateHighlight, dispatch } =
@@ -200,20 +203,74 @@ const FreeFEMCode = (): React.JSX.Element => {
     [highlight]
   )
 
+  // const handleSearch = useCallback(() => {
+  //   /* istanbul ignore next */
+  //   if (!editorRef.current) return
+
+  //   const editor = editorRef.current.editor
+
+  //   editor.find(searchTerm, {
+  //     backwards: false,
+  //     wrap: false,
+  //     caseSensitive: false,
+  //     wholeWord: false,
+  //     regExp: false
+  //   })
+  // }, [searchTerm])
+
   const handleSearch = useCallback(() => {
-    /* istanbul ignore next */
-    if (!editorRef.current) return
+    if (!editorRef.current || !searchTerm) {
+      setTotalOccurrences(0)
+      setCurrentOccurrence(0)
+      return
+    }
 
     const editor = editorRef.current.editor
 
-    editor.find(searchTerm, {
+    let results = editor.findAll(searchTerm, {
       backwards: false,
-      wrap: false,
+      wrap: true,
       caseSensitive: false,
       wholeWord: false,
       regExp: false
-    });
-  }, [searchTerm]);
+    })
+
+    setTotalOccurrences(results)
+
+    if (results > 0) {
+      setCurrentOccurrence(1)
+      editor.find(searchTerm, {
+        backwards: false,
+        wrap: false,
+        caseSensitive: false,
+        wholeWord: false,
+        regExp: false
+      })
+    }
+  }, [searchTerm])
+
+  const handleNext = useCallback(() => {
+    if (
+      !editorRef.current ||
+      !searchTerm ||
+      currentOccurrence >= totalOccurrences
+    )
+      return
+
+    const editor = editorRef.current.editor
+
+    editor.findNext()
+    setCurrentOccurrence(currentOccurrence + 1)
+  }, [searchTerm, currentOccurrence, totalOccurrences])
+
+  const handlePrevious = useCallback(() => {
+    if (!editorRef.current || !searchTerm || currentOccurrence <= 1) return
+
+    const editor = editorRef.current.editor
+
+    editor.findPrevious()
+    setCurrentOccurrence(currentOccurrence - 1)
+  }, [searchTerm, currentOccurrence])
 
   // Init
   useEffect(() => {
@@ -221,6 +278,13 @@ const FreeFEMCode = (): React.JSX.Element => {
 
     const editor = editorRef.current
     editor.editor.container.classList.add('pasted_line_container')
+    editor.editor.commands.addCommand({
+      name: 'showSearch',
+      bindKey: { win: 'Ctrl-F', mac: 'Command-F' },
+      exec: () => {
+        setIsSearchVisible((prev) => !prev)
+      }
+    })
     editor.editor.on('mousemove', onMouseMove)
   }, [onMouseMove])
 
@@ -282,9 +346,56 @@ const FreeFEMCode = (): React.JSX.Element => {
   return (
     <div className={style.codeBlock}>
       <Typography.Title level={3}>FreeFEM template</Typography.Title>
-      <div>
-        <Input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search..." />
-        <Button onClick={handleSearch}>Search</Button>
+      <div style={{ position: 'relative' }}>
+        {isSearchVisible && (
+          <div
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              zIndex: 10,
+              backgroundColor: '#333',
+              padding: '5px',
+              borderRadius: '5px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search..."
+              style={{
+                height: '30px',
+                borderRadius: '5px',
+                backgroundColor: '#ccc',
+                border: 'none'
+              }}
+            />
+            <Button
+              onClick={handleSearch}
+              style={{
+                marginLeft: '5px',
+                backgroundColor: '#ccc',
+                border: 'none'
+              }}
+            >
+              Search
+            </Button>
+
+            <Button onClick={handlePrevious} style={{ marginRight: '5px' }}>
+              Previous
+            </Button>
+            <Button onClick={handleNext} style={{ marginRight: '5px' }}>
+              Next
+            </Button>
+            <Typography.Text
+              style={{ color: 'white', marginRight: '10px', width: '150px' }}
+            >
+              Nb :{currentOccurrence}/{totalOccurrences}
+            </Typography.Text>
+          </div>
+        )}
       </div>
       <AceEditor
         //@ts-ignore

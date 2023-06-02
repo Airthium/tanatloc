@@ -33,7 +33,7 @@ describe('components/editor/share', () => {
   })
 
   test('electron', () => {
-    mockIsElectron.mockImplementation(() => false)
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(
       <Share user={user} organizations={organizations} swr={swr} />
     )

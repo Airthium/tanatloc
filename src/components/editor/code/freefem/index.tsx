@@ -1,7 +1,7 @@
 /** @module Components.Editor.Code.FreeFEM */
 
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { Typography } from 'antd'
+import { Typography, Input, Button } from 'antd'
 import AceEditor from 'react-ace'
 import { Range } from 'ace-builds'
 import ReactAce from 'react-ace/lib/ace'
@@ -60,6 +60,7 @@ const FreeFEMCode = (): React.JSX.Element => {
     y: 0
   })
   const [tooltipToken, setTooltipToken] = useState<IToken>()
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Data
   const { template, templateCursor, templateHighlight, dispatch } =
@@ -199,6 +200,21 @@ const FreeFEMCode = (): React.JSX.Element => {
     [highlight]
   )
 
+  const handleSearch = useCallback(() => {
+    /* istanbul ignore next */
+    if (!editorRef.current) return
+
+    const editor = editorRef.current.editor
+
+    editor.find(searchTerm, {
+      backwards: false,
+      wrap: false,
+      caseSensitive: false,
+      wholeWord: false,
+      regExp: false
+    });
+  }, [searchTerm]);
+
   // Init
   useEffect(() => {
     if (!editorRef.current) return
@@ -266,6 +282,10 @@ const FreeFEMCode = (): React.JSX.Element => {
   return (
     <div className={style.codeBlock}>
       <Typography.Title level={3}>FreeFEM template</Typography.Title>
+      <div>
+        <Input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search..." />
+        <Button onClick={handleSearch}>Search</Button>
+      </div>
       <AceEditor
         //@ts-ignore
         ref={editorRef}

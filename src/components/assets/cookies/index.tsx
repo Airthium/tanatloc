@@ -4,6 +4,7 @@ import { CSSProperties, useCallback, useEffect, useRef } from 'react'
 import { Button, Collapse, Form, Switch, Typography, notification } from 'antd'
 import Icon from '@ant-design/icons'
 import { useCookies } from 'react-cookie'
+import isElectron from 'is-electron'
 
 import style from './index.module.css'
 
@@ -147,9 +148,14 @@ const Cookies = (): React.JSX.Element => {
     })
   }, [cookies, api, onAll, onClose])
 
+  // Electron
+  useEffect(() => {
+    if (isElectron()) onAll()
+  }, [onAll])
+
   // Cookie agreement
   useEffect(() => {
-    if (onlyOne.current === 0 && !cookies.accepted) {
+    if (onlyOne.current === 0 && !cookies.accepted && !isElectron()) {
       onlyOne.current = 1
       openAgreement()
     }

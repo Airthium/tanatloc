@@ -7,6 +7,9 @@ jest.mock('react-cookie', () => ({
   useCookies: () => mockUseCookies()
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 describe('components/assets/cookies', () => {
   const setCookie = jest.fn()
   const removeCookie = jest.fn()
@@ -15,11 +18,21 @@ describe('components/assets/cookies', () => {
     setCookie.mockReset()
     removeCookie.mockReset()
 
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockUseCookies.mockReset()
     mockUseCookies.mockImplementation(() => [{}, setCookie, removeCookie])
   })
 
   test('render', () => {
+    const { unmount } = render(<Cookies />)
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Cookies />)
 
     unmount()

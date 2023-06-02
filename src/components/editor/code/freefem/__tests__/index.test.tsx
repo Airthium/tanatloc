@@ -9,6 +9,7 @@ const mockReactAce = jest.fn()
 jest.mock('react-ace', () => (props: any) => mockReactAce(props))
 
 jest.mock('ace-builds/src-noconflict/theme-one_dark', () => {})
+jest.mock('ace-builds/src-noconflict/ext-searchbox', () => {})
 
 jest.mock('ace-builds/src-noconflict/ext-language_tools', () => ({
   setCompleters: (completers: any[]) => {

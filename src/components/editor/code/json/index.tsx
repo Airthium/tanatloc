@@ -7,6 +7,7 @@ import { Range } from 'ace-builds'
 import ReactAce from 'react-ace/lib/ace'
 import 'ace-builds/src-noconflict/mode-json5'
 import 'ace-builds/src-noconflict/theme-one_dark'
+import 'ace-builds/src-noconflict/ext-searchbox'
 
 import { EditorContext, IEditorHighlight } from '@/context/editor'
 import { setModel } from '@/context/editor/actions'

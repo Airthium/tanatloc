@@ -18,6 +18,7 @@ jest.mock('react-ace', () => (props: any) => mockReactAce(props))
 
 jest.mock('ace-builds/src-noconflict/mode-json5', () => {})
 jest.mock('ace-builds/src-noconflict/theme-one_dark', () => {})
+jest.mock('ace-builds/src-noconflict/ext-searchbox', () => {})
 
 Object.defineProperty(global, 'setTimeout', {
   value: (callback: Function) => {

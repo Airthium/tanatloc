@@ -8,6 +8,9 @@ import Share from '..'
 
 jest.mock('@/components/assets/share', () => () => <div />)
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 describe('components/editor/share', () => {
   const user = { id: 'id', usermodels: [] }
   const organizations: IFrontOrganizationsItem[] = []
@@ -16,7 +19,21 @@ describe('components/editor/share', () => {
   }
   const swr = { mutateUser }
 
+  beforeEach(() => {
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+  })
+
   test('render', () => {
+    const { unmount } = render(
+      <Share user={user} organizations={organizations} swr={swr} />
+    )
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => false)
     const { unmount } = render(
       <Share user={user} organizations={organizations} swr={swr} />
     )

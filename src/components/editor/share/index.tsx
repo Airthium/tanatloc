@@ -1,6 +1,7 @@
 /** @module Components.Editor.Share */
 
 import { useContext, useEffect, useState } from 'react'
+import isElectron from 'is-electron'
 
 import {
   IFrontMutateUser,
@@ -38,11 +39,18 @@ const UserModelShare = ({
   swr
 }: IProps): React.JSX.Element => {
   // State
+  const [visible, setVisible] = useState<boolean>(true)
   const [disabled, setDisabled] = useState<boolean>(true)
   const [current, setCurrent] = useState<IFrontUserModel>()
 
   // Context
   const { id } = useContext(EditorContext)
+
+  // Electron
+  useEffect(() => {
+    if (isElectron()) setVisible(false)
+    else setVisible(true)
+  }, [])
 
   // Current
   useEffect(() => {
@@ -56,6 +64,7 @@ const UserModelShare = ({
   /**
    * Render
    */
+  if (!visible) return <></>
   return (
     <Share
       disabled={disabled}

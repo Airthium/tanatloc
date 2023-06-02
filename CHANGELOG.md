@@ -14,7 +14,7 @@
   - :beetle: Remove @emotion/react
   - :arrow_up: Improve ColorbarHelper
   - :beetle: Fix simulation selector
-  - :arrow_up: Editor improvement
+  - :arrow_up: Editor lots of improvement
   - :arrow_up: Copy project
 - Algorithm:
   - :arrow_up: Stokes symmetric

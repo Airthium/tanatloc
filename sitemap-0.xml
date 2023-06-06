@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://tanatloc.com</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/blog</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/dashboard</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/doc</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/editor</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/error</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/login</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/password</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/project</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/signup</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/signup/send</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/signup/validation</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/start</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://tanatloc.com/webgl</loc><lastmod>2023-06-02T12:32:13.385Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/blog</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/dashboard</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/doc</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/editor</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/error</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/login</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/password</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/project</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/signup</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/signup/send</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/signup/validation</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/start</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://tanatloc.com/webgl</loc><lastmod>2023-06-06T09:12:38.961Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>

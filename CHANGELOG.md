@@ -5,6 +5,8 @@
 - Client:
   - :beetle: Fix editor save
   - :beetle: Updater fix
+- Electron:
+  - :beetle: Hide cookies
 
 ---
 

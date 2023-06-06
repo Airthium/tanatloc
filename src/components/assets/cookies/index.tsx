@@ -150,8 +150,12 @@ const Cookies = (): React.JSX.Element => {
 
   // Electron
   useEffect(() => {
-    if (isElectron()) onAll()
-  }, [onAll])
+    if (isElectron()) {
+      onAll()
+      onlyOne.current = 1
+      api.destroy()
+    }
+  }, [api, onAll])
 
   // Cookie agreement
   useEffect(() => {

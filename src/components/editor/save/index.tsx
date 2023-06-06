@@ -3,6 +3,7 @@
 import { Dispatch, useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Modal, Tooltip } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
+import JSON5 from 'json5'
 
 import { IModel } from '@/models/index.d'
 import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
@@ -54,7 +55,7 @@ export const _onSave = async (
 ): Promise<void> => {
   let modelJSON: IModel
   try {
-    modelJSON = JSON.parse(model)
+    modelJSON = JSON5.parse(model)
   } catch (err: any) {
     ErrorNotification(errors.json, err)
     return

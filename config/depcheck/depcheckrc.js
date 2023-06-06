@@ -90,8 +90,10 @@ const options = {
     'electron-serve', // Mandatory for electron-store
     'rc-select', // Ant type
     'form-data', // For plugins
+    'https-proxy-agent', // For plugins
     'node-fetch', // For plugins
-    'url-join' // For plugins
+    'url-join', // For plugins
+    '@types/url-join'
   ],
   specials: [
     depcheck.special.bin,

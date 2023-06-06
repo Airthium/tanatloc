@@ -9,6 +9,7 @@ import {
   useState
 } from 'react'
 import { Button, Form, Input, InputRef } from 'antd'
+import JSON5 from 'json5'
 
 import { IModel } from '@/models/index.d'
 
@@ -84,7 +85,7 @@ finiteElementSpace.name = '${values.name}'
     }
   >
   try {
-    modelJSON = JSON.parse(model)
+    modelJSON = JSON5.parse(model)
   } catch (err) {
     modelJSON = {}
   }
@@ -120,7 +121,7 @@ finiteElementSpace.name = '${values.name}'
   const highlight = getHighlightPosition(oldModel, newModel)
   dispatch(setJsonHighlight(highlight))
   dispatch(setJsonCursor({ row: highlight.end, column: 0 }))
-  dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
+  dispatch(setModel(JSON5.stringify(modelJSON, null, '\t')))
 }
 
 /**

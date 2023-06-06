@@ -3,6 +3,7 @@
 import { Dispatch, useCallback, useContext } from 'react'
 import { FileAddOutlined } from '@ant-design/icons'
 import { Button, Modal, Tooltip } from 'antd'
+import JSON5 from 'json5'
 
 import { EditorContext, IEditorAction } from '@/context/editor'
 import { setModel, setTemplate } from '@/context/editor/actions'
@@ -35,7 +36,7 @@ export const _onNew = (dispatch: Dispatch<IEditorAction>): void => {
 
   dispatch(
     setModel(
-      JSON.stringify(
+      JSON5.stringify(
         {
           category: 'Category',
           name: 'My new model',

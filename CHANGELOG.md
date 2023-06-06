@@ -1,3 +1,13 @@
+## v1.2.9
+
+- Global:
+  - :arrow_up: Update dependencies
+- Client:
+  - :beetle: Fix editor save
+  - :beetle: Updater fix
+
+---
+
 ## v1.2.8
 
 - Global:

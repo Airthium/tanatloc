@@ -41,6 +41,7 @@ const needUpdate = async (): Promise<IUpdate> => {
   const needed =
     !json.tag_name.includes('alpha') &&
     !json.tag_name.includes('beta') &&
+    currentVersion !== json.tag_name &&
     'v' + currentVersion !== json.tag_name
 
   return {

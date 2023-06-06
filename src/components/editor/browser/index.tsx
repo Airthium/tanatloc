@@ -3,6 +3,7 @@
 import { useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { FileSearchOutlined } from '@ant-design/icons'
+import JSON5 from 'json5'
 
 import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
@@ -107,7 +108,7 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
         }
 
         dispatch(setId(userModel.id))
-        dispatch(setModel(JSON.stringify(userModel.model, null, '\t')))
+        dispatch(setModel(JSON5.stringify(userModel.model, null, '\t')))
         dispatch(setTemplate(userModel.template))
         setVisible(false)
       } catch (err: any) {

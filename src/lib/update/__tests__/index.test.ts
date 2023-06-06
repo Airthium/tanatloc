@@ -24,12 +24,12 @@ describe('lib/update', () => {
     mockIsElectron.mockImplementation(() => true)
     mockFetch.mockImplementation(() => ({
       json: () => ({
-        tag_name: '1.0.0'
+        tag_name: 'v1.0.0'
       })
     }))
     expect(await Update.needUpdate()).toEqual({
       needed: false,
-      res: { tag_name: '1.0.0' }
+      res: { tag_name: 'v1.0.0' }
     })
   })
 

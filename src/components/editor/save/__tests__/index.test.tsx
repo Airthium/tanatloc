@@ -85,7 +85,7 @@ describe('components/editor/save', () => {
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.json,
-        new SyntaxError('Unexpected end of JSON input')
+        new SyntaxError('JSON5: invalid end of input at 1:1')
       )
     )
 

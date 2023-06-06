@@ -2,6 +2,7 @@
 
 import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Checkbox, Form } from 'antd'
+import JSON5 from 'json5'
 
 import { EditorContext, IEditorAction, IEditorCursor } from '@/context/editor'
 import {
@@ -62,7 +63,7 @@ export const _onAdd = (
     }
   >
   try {
-    modelJSON = JSON.parse(model)
+    modelJSON = JSON5.parse(model)
   } catch (err) {
     modelJSON = {}
   }
@@ -98,7 +99,7 @@ export const _onAdd = (
   const highlight = getHighlightPosition(oldModel, newModel)
   dispatch(setJsonHighlight(highlight))
   dispatch(setJsonCursor({ row: highlight.end, column: 0 }))
-  dispatch(setModel(JSON.stringify(modelJSON, null, '\t')))
+  dispatch(setModel(JSON5.stringify(modelJSON, null, '\t')))
 }
 
 /**

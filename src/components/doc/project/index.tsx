@@ -46,12 +46,12 @@ const Geometry = (): React.JSX.Element => {
           The first step when you open a new project is to import a geometry
         </Typography.Text>
         <Typography.Text>
-          Tanatloc supports for now STEP files, for 3D parts, and DXF files, for
+          For now, Tanatloc supports STEP files, for 3D parts, and DXF files, for
           2D parts
         </Typography.Text>
         <Typography.Text>
           The uploader is open by default when there is no geometry in your
-          project, juste drag and drop your file and click an choose a file
+          project, just drag and drop your file and click and choose a file
         </Typography.Text>
         <Typography.Text>
           Here is an example with a cube geometry (
@@ -185,7 +185,7 @@ const Simulation = (): React.JSX.Element => {
           filling the material properties
         </Typography.Text>
         <Typography.Text>Select solids to assign the material</Typography.Text>
-        <Typography.Text>Cick on Add to create the material</Typography.Text>
+        <Typography.Text>Click on Add to create the material</Typography.Text>
       </Typography>
       <Carousel
         items={[
@@ -242,7 +242,7 @@ const Simulation = (): React.JSX.Element => {
         <Typography.Text>Click on the Parameters menu</Typography.Text>
         <Typography.Text>Parameters depends on your simulation</Typography.Text>
         <Typography.Text>
-          There is standard parameters, and advanced parameters
+          There are standard parameters, and advanced parameters
         </Typography.Text>
       </Typography>
       <Carousel
@@ -303,13 +303,13 @@ const Simulation = (): React.JSX.Element => {
       <Typography className={style.text}>
         <Typography.Title level={5}>Run</Typography.Title>
         <Typography.Text>
-          You can add a sensor before run the computation to extract data during
+          You can add a sensor before running the computation to extract data during
           the simulation process using{' '}
           <AddButton onAdd={() => undefined}>Add a sensor</AddButton>
         </Typography.Text>
         <Typography.Text>
           You have to select a computational resource. The local plugin is
-          enable by defaut in the Desktop application. In the web application,
+          enabled by defaut in the Desktop application. In the web application,
           you must select an HPC provider
         </Typography.Text>
         <Typography.Text>
@@ -458,7 +458,7 @@ const Simulation = (): React.JSX.Element => {
       <Typography className={style.text}>
         <Typography.Title level={5}>Post-processing</Typography.Title>
         <Typography.Text>
-          To displat the post-processing tools, click on{' '}
+          To display the post-processing tools, click on{' '}
           <Button type="primary" icon={<RadarChartOutlined />} shape="circle" />
         </Typography.Text>
         <Typography.Text>
@@ -499,7 +499,7 @@ const View = (): React.JSX.Element => {
       <Typography.Title level={4}>View Tools</Typography.Title>
       <Typography className={style.text}>
         <Typography.Text>
-          There is some visualization tools on the right of the project screen
+          There are some visualization tools on the right of the project screen
         </Typography.Text>
         <Typography.Text>
           In the default mode, there is:

@@ -19,7 +19,7 @@ const Administration = (): React.JSX.Element => {
     <>
       <Typography.Title level={4}>Administration</Typography.Title>
       <Typography className={style.text}>
-        Your need to be an administrator to have acces to this part
+        You need to be an administrator to have access to this part
       </Typography>
 
       <Typography className={style.text}>
@@ -28,19 +28,19 @@ const Administration = (): React.JSX.Element => {
           The first tab of Administration is the users management
         </Typography.Text>
         <Typography.Text>
-          You can add an user using{' '}
+          You can add a user using{' '}
           <AddButton onAdd={() => undefined}>New user</AddButton>. You have to
           provide an email and a password, and optionally a first name, a last
           name, some plugins authorization and the administrator status
         </Typography.Text>
         <Typography.Text>
-          You can edit user using{' '}
+          You can edit a user using{' '}
           <EditButton bordered onEdit={() => undefined}>
             Edit
           </EditButton>
         </Typography.Text>
         <Typography.Text>
-          You can delete an user using{' '}
+          You can delete a user using{' '}
           <DeleteButton bordered onDelete={async () => undefined} />
         </Typography.Text>
       </Typography>
@@ -92,7 +92,7 @@ const Administration = (): React.JSX.Element => {
           creation
         </Typography.Text>
         <Typography.Text>
-          If a plugin is checked, it will be available directly when an user is
+          If a plugin is checked, it will be available directly when a user is
           created
         </Typography.Text>
       </Typography>

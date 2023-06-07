@@ -91,7 +91,7 @@ const Desktop = (): React.JSX.Element => {
       <Typography className={style.text}>
         <Typography.Title level={4}>Description</Typography.Title>
         <Typography.Text>
-          The Tanatloc desktop application is build using{' '}
+          The Tanatloc desktop application is built using{' '}
           <a
             href="https://www.electronjs.org/fr/"
             target="_blank"
@@ -125,7 +125,7 @@ const Desktop = (): React.JSX.Element => {
           </a>
         </Typography.Text>
         <Typography.Text>
-          Ensure all is working fine before continue, sometimes Docker Desktop
+          Ensure all is working fine before continuing, sometimes Docker Desktop
           needs to install Linux kernel, WSL2 backend, ... and reboot the
           computer
         </Typography.Text>
@@ -206,7 +206,7 @@ const Desktop = (): React.JSX.Element => {
             target="_blank"
             rel="noreferrer"
           >
-            tanatloc-electron Github release
+            tanatloc-electron Github releases
           </a>
         </Typography.Text>
       </Typography>

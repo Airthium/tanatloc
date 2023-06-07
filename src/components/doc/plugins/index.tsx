@@ -23,8 +23,7 @@ const HPC = (): React.JSX.Element => {
 
       <Typography className={style.text}>
         <Typography.Text>
-          HPC plugins availability depends on your installation. Some plugins
-          are in a pay-feature
+          HPC plugins availability depends on your installation. Some plugins are part of a paid feature
         </Typography.Text>
       </Typography>
 
@@ -71,7 +70,7 @@ const HPC = (): React.JSX.Element => {
             <li>Name: the name of your configuration</li>
             <li>Token: your Rescale API token</li>
             <li>Platform: the Rescale platform you use</li>
-            <li>Default walltime: the default walltime</li>
+            <li>Default wall time: the default wall time</li>
             <li>Organization name [Optional]: the Rescale organization name</li>
             <li>Project id [Optional]: the Rescale project id</li>
             <li>
@@ -103,14 +102,14 @@ const HPC = (): React.JSX.Element => {
           (Japanese)
         </Typography.Text>
         <Typography.Text>
-          YOu have to fill the following informations:
+          You have to fill the following informations:
           <ul>
             <li>Name: the name of your configuration</li>
             <li>Application name: the ShareTask FreeFEM identifier: FREEFEM</li>
             <li>Queue name: the ShareTask queue name</li>
             <li>User name: the ShareTask user name</li>
             <li>
-              ShareTask launch script: The ShareTask launch script, that depend
+              ShareTask launch script: The ShareTask launch script, that depends
               on your cluster architecture
             </li>
           </ul>

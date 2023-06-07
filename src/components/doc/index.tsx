@@ -366,7 +366,7 @@ const Doc = () => {
                 </Typography.Title>
                 <Typography.Text>
                   You can run Tanatloc locally using the Electron app, download
-                  the latest release on the{' '}
+                  the latest release from the{' '}
                   <a
                     href="https://github.com/Airthium/tanatloc-electron"
                     target="_blank"

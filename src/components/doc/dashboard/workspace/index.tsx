@@ -61,7 +61,7 @@ const Workspace = (): React.JSX.Element => {
               workspace&apos;
             </li>
             <li>
-              If you already have workspace, click on the <PlusOutlined />{' '}
+              If you already have a workspace, click on the <PlusOutlined />{' '}
               button in the tab bar
             </li>
           </ul>
@@ -95,7 +95,7 @@ const Workspace = (): React.JSX.Element => {
           using the <Button icon={<ShareAltOutlined />} />
         </Typography.Text>
         <Typography.Text className={style.tips}>
-          You must create an organization with users and groups before share a
+          You must create an organization with users and groups before sharing a
           workspace
         </Typography.Text>
         <Typography.Text>
@@ -103,7 +103,7 @@ const Workspace = (): React.JSX.Element => {
           <DeleteButton bordered onDelete={async () => undefined} />
         </Typography.Text>
         <Typography.Text className={style.warnings}>
-          Delete a workspace will delete all workspace&apos;s projects
+          Deleting a workspace will delete all workspace&apos;s projects
         </Typography.Text>
       </Typography>
       <Carousel
@@ -162,11 +162,11 @@ const Workspace = (): React.JSX.Element => {
           Project edit, share, archive, delete
         </Typography.Title>
         <Typography.Text>
-          You can edit the project&apos;name and description using the{' '}
+          You can edit the project&apos;s name and description using the{' '}
           <EditButton onEdit={() => undefined} />
         </Typography.Text>
         <Typography.Text>
-          You can share the project with organizations groups and memebers using
+          You can share the project with organizations groups and members using
           the{' '}
           <Button
             icon={<ShareAltOutlined />}
@@ -174,7 +174,7 @@ const Workspace = (): React.JSX.Element => {
           />
         </Typography.Text>
         <Typography.Text className={style.tips}>
-          You must create an organization with users and groups before share a
+          You must create an organization with users and groups before sharing a
           project
         </Typography.Text>
         <Typography.Text>
@@ -193,7 +193,7 @@ const Workspace = (): React.JSX.Element => {
           <DeleteButton bordered onDelete={async () => undefined} />
         </Typography.Text>
         <Typography.Text className={style.warnings}>
-          Delete a project will delete all project&apos;s geometries,
+          Deleting a project will delete all project&apos;s geometries,
           simulations and results
         </Typography.Text>
       </Typography>

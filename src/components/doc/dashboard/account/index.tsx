@@ -48,7 +48,7 @@ const Account = (): React.JSX.Element => {
       <Typography className={style.text}>
         <Typography.Text className={style.warnings}>
           Deleting your account is not reversible. If you delete your account,
-          all data will be lose
+          all data will be lost
         </Typography.Text>
       </Typography>
     </>

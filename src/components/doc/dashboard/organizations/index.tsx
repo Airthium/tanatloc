@@ -63,7 +63,7 @@ const Organizations = (): React.JSX.Element => {
           the organization
         </Typography.Text>
         <Typography.Text>
-          You can add an user with{' '}
+          You can add a user with{' '}
           <AddButton onAdd={() => undefined}>New user</AddButton>, and fill the
           email
         </Typography.Text>
@@ -125,7 +125,7 @@ const Organizations = (): React.JSX.Element => {
       <Typography className={style.text}>
         <Typography.Title level={4}>Groups</Typography.Title>
         <Typography.Text>
-          Use the &apos;Group&apos; tab item to go to group
+          Use the &apos;Group&apos; tab item to go to the group
         </Typography.Text>
         <Typography.Text>
           Use <AddButton onAdd={() => undefined}>New group</AddButton> to create

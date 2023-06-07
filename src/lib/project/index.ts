@@ -45,7 +45,7 @@ const add = async (
 ): Promise<INewProject> => {
   // Check title & description
   project.title = project.title.substring(0, LIMIT).trim()
-  project.description = project.description?.substring(0, LIMIT).trim()
+  project.description = project.description?.substring(0, 120).trim()
 
   // Add
   const newProject = await ProjectDB.add(user, workspace, project)
@@ -341,7 +341,7 @@ const update = async (
   // Check description
   const descriptionUpdate = data.find((d) => d.key === 'description')
   if (descriptionUpdate)
-    descriptionUpdate.value = descriptionUpdate.value.substring(0, LIMIT).trim()
+    descriptionUpdate.value = descriptionUpdate.value.substring(0, 120).trim()
 
   await ProjectDB.update(project, data)
 }

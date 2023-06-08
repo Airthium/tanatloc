@@ -10,7 +10,7 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT120, LIMIT50 } from '@/config/string'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -166,8 +166,8 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
           rules={[
             { required: true, message: 'Name is required' },
             {
-              max: LIMIT,
-              message: 'Max ' + LIMIT + ' characters'
+              max: LIMIT50,
+              message: 'Max ' + LIMIT50 + ' characters'
             }
           ]}
         >
@@ -177,7 +177,7 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
           <Input.TextArea
             showCount
             style={{ marginBottom: '20px' }}
-            maxLength={120}
+            maxLength={LIMIT120}
             placeholder="Project's description"
             onKeyUp={onKeyUp}
           />

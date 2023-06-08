@@ -1,3 +1,14 @@
+## v1.2.10
+
+- Global:
+  - :arrow_up: Update dependencies
+- Client:
+  - :beetle: Bug fix
+- Server:
+  - :beetle: Bug fix
+
+---
+
 ## v1.2.9
 
 - Global:

@@ -11,7 +11,7 @@ import {
 } from '../index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import UserDB, { INewUser, IUser, IUserCheck, TUserGet } from '@/database/user'
 
@@ -35,7 +35,7 @@ const add = async (user: {
   password: string
 }): Promise<INewUser> => {
   // Check email
-  user.email = user.email.substring(0, LIMIT).trim()
+  user.email = user.email.substring(0, LIMIT50).trim()
 
   // Add
   const newUser = await UserDB.add(user)
@@ -298,7 +298,7 @@ const update = async (
   // Check email change
   const emailData = data.find((d) => d.key === 'email')
   if (emailData) {
-    emailData.value = emailData.value.substring(0, LIMIT).trim()
+    emailData.value = emailData.value.substring(0, LIMIT50).trim()
 
     // Revalidate email
     const valid = await Email.revalidate(emailData.value, user.id)

@@ -12,7 +12,7 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import { menuItems } from '@/components/dashboard'
 
@@ -193,8 +193,8 @@ const WorkspacesList = ({
                 rules={[
                   { required: true, message: 'Name is required' },
                   {
-                    max: LIMIT,
-                    message: 'Max ' + LIMIT + ' characters'
+                    max: LIMIT50,
+                    message: 'Max ' + LIMIT50 + ' characters'
                   }
                 ]}
               >

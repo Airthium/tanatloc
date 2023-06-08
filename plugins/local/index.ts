@@ -1,6 +1,6 @@
 /** @module Plugins.Local */
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import { IPlugin } from '@/plugins/index.d'
 
@@ -32,7 +32,7 @@ const Local: IPlugin = {
         type: 'input',
         rules: [
           { required: true, message: 'Name is required' },
-          { max: LIMIT, message: 'Max ' + LIMIT + ' characters' }
+          { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
         ]
       },
       gmshPath: {

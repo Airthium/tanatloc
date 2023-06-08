@@ -6,7 +6,7 @@ import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import {
   SuccessNotification,
@@ -272,7 +272,9 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
             <Form.Item
               label="Email"
               name="email"
-              rules={[{ max: LIMIT, message: 'Max ' + LIMIT + ' characters' }]}
+              rules={[
+                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+              ]}
             >
               <Input disabled={isElectron()} />
             </Form.Item>
@@ -280,7 +282,9 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
             <Form.Item
               label="First name"
               name="firstname"
-              rules={[{ max: LIMIT, message: 'Max ' + LIMIT + ' characters' }]}
+              rules={[
+                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+              ]}
             >
               <Input />
             </Form.Item>
@@ -288,7 +292,9 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
             <Form.Item
               label="Last name"
               name="lastname"
-              rules={[{ max: LIMIT, message: 'Max ' + LIMIT + ' characters' }]}
+              rules={[
+                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+              ]}
             >
               <Input />
             </Form.Item>

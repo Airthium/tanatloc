@@ -3,7 +3,7 @@
 import { merge } from 'lodash'
 import { v4 as uuid } from 'uuid'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -27,7 +27,7 @@ const add = async (
   if (plugin.configuration?.name?.value)
     plugin.configuration.name.value = plugin.configuration.name.value.substring(
       0,
-      LIMIT
+      LIMIT50
     )
 
   // Plugin initialization
@@ -84,7 +84,7 @@ const update = async (
   if (plugin.configuration?.name?.value)
     plugin.configuration.name.value = plugin.configuration.name.value.substring(
       0,
-      LIMIT
+      LIMIT50
     )
 
   // Get

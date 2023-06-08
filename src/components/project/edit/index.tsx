@@ -3,7 +3,7 @@
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT120, LIMIT50 } from '@/config/string'
 
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -146,8 +146,8 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
           rules={[
             { required: true, message: 'Name is required' },
             {
-              max: LIMIT,
-              message: 'Max ' + LIMIT + ' characters'
+              max: LIMIT50,
+              message: 'Max ' + LIMIT50 + ' characters'
             }
           ]}
         >
@@ -158,7 +158,7 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
             style={{ marginBottom: '20px' }}
             placeholder="Project's description"
             showCount
-            maxLength={120}
+            maxLength={LIMIT120}
             onKeyUp={onKeyUp}
           />
         </Form.Item>

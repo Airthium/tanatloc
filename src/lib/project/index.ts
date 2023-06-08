@@ -11,7 +11,7 @@ import {
   IUserWithData
 } from '../index.d'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT120, LIMIT50 } from '@/config/string'
 
 import {
   AVATAR_RELATIVE,
@@ -44,8 +44,8 @@ const add = async (
   project: { title: string; description?: string }
 ): Promise<INewProject> => {
   // Check title & description
-  project.title = project.title.substring(0, LIMIT).trim()
-  project.description = project.description?.substring(0, 120).trim()
+  project.title = project.title.substring(0, LIMIT50).trim()
+  project.description = project.description?.substring(0, LIMIT120).trim()
 
   // Add
   const newProject = await ProjectDB.add(user, workspace, project)
@@ -336,12 +336,14 @@ const update = async (
   // Check title
   const titleUpdate = data.find((d) => d.key === 'title')
   if (titleUpdate)
-    titleUpdate.value = titleUpdate.value.substring(0, LIMIT).trim()
+    titleUpdate.value = titleUpdate.value.substring(0, LIMIT50).trim()
 
   // Check description
   const descriptionUpdate = data.find((d) => d.key === 'description')
   if (descriptionUpdate)
-    descriptionUpdate.value = descriptionUpdate.value.substring(0, 120).trim()
+    descriptionUpdate.value = descriptionUpdate.value
+      .substring(0, LIMIT120)
+      .trim()
 
   await ProjectDB.update(project, data)
 }

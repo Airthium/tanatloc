@@ -5,7 +5,7 @@ import { Form, Input, InputRef } from 'antd'
 
 import { IFrontNewWorkspace } from '@/api/index.d'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -119,8 +119,8 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
           rules={[
             { required: true, message: 'Name is required' },
             {
-              max: LIMIT,
-              message: 'Max ' + LIMIT + ' characters'
+              max: LIMIT50,
+              message: 'Max ' + LIMIT50 + ' characters'
             }
           ]}
         >

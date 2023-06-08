@@ -3,7 +3,7 @@
 import { IDataBaseEntry } from '@/database/index.d'
 import { IGroupWithData, IWorkspaceGet, IWorkspaceWithData } from '../index.d'
 
-import { LIMIT } from '@/config/string'
+import { LIMIT50 } from '@/config/string'
 
 import WorkspaceDB, { INewWorkspace, TWorkspaceGet } from '@/database/workspace'
 
@@ -30,7 +30,7 @@ const add = async (
   workspace: { name: string }
 ): Promise<INewWorkspace> => {
   // Check name
-  workspace.name = workspace.name.substring(0, LIMIT).trim()
+  workspace.name = workspace.name.substring(0, LIMIT50).trim()
 
   // Add workspace
   const newWorkspace = await WorkspaceDB.add(user, workspace)
@@ -411,7 +411,7 @@ const update = async (
   // Check name
   const nameUpdate = data.find((d) => d.key === 'name')
   if (nameUpdate) {
-    nameUpdate.value = nameUpdate.value.substring(0, LIMIT).trim()
+    nameUpdate.value = nameUpdate.value.substring(0, LIMIT50).trim()
   }
 
   // Update workspace

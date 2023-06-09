@@ -204,7 +204,10 @@ const Workspace = ({
         onChange={setSorter}
       />
 
-      <Layout.Content className={globalStyle.scroll}>
+      <Layout.Content
+        className={globalStyle.scroll}
+        style={{ height: '50vh' }}
+      >
         <ProjectList
           user={user}
           page={page}

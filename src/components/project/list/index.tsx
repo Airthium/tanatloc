@@ -1,6 +1,6 @@
 /** @module Components.Project.List */
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -354,29 +354,9 @@ const ProjectList = ({
   sorter,
   swr
 }: IProps): React.JSX.Element => {
-  // Ref
-  const containerRef = useRef<HTMLDivElement>(null)
-
   // State
   const [loading, setLoading] = useState<boolean>(true)
   const [list, setList] = useState<IFrontProjectsItem[]>([])
-  const [height, setHeight] = useState<number>(100)
-
-  // Height
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    const div = containerRef.current
-    if (!div) return
-
-    const offsets = div.getBoundingClientRect()
-    const top = offsets.top
-
-    const totalHeight = window.innerHeight
-
-    const newHeight = totalHeight - top
-
-    if (newHeight !== height) setHeight(newHeight)
-  })
 
   // List
   useEffect(() => {
@@ -435,7 +415,7 @@ const ProjectList = ({
       />
     )
   return (
-    <div ref={containerRef} style={{ height: height }}>
+    <div>
       <Space
         style={{ marginBottom: '20px' }}
         wrap={true}

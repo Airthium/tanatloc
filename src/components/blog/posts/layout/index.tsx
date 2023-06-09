@@ -18,6 +18,7 @@ export interface IReference {
   date: string
   label: string
   journal?: string
+  url?: string
 }
 
 /**
@@ -124,6 +125,12 @@ const PostLayout = ({
                 <>
                   <br />
                   {reference.journal}
+                </>
+              ) : null}
+              {reference.url ? (
+                <>
+                  <br />
+                  <Link href={reference.url} target="_blank" />
                 </>
               ) : null}
             </div>

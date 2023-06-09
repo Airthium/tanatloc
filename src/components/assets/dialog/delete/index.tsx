@@ -64,7 +64,13 @@ const DeleteDialog = ({
   return (
     <Modal
       title={
-        <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
+        <Typography.Text ellipsis={{ tooltip: true }}>
+          {title}{' '}
+          <ExclamationCircleTwoTone
+            twoToneColor="#ff4d4f"
+            style={{ marginLeft: '8px' }}
+          />
+        </Typography.Text>
       }
       okText="Delete"
       closable={false}
@@ -76,7 +82,6 @@ const DeleteDialog = ({
       okButtonProps={{ danger: true, loading: loading }}
     >
       <Space align="start">
-        <ExclamationCircleTwoTone twoToneColor="#ff4d4f" />
         <span style={{ wordBreak: 'break-word' }}>{children}</span>
       </Space>
     </Modal>

@@ -129,8 +129,10 @@ const PostLayout = ({
               ) : null}
               {reference.url ? (
                 <>
-                  <br />
-                  <Link href={reference.url} target="_blank" />
+                  {reference.journal ? '. ' : <br />}
+                  <Link href={reference.url} target="_blank">
+                    {reference.url}
+                  </Link>
                 </>
               ) : null}
             </div>

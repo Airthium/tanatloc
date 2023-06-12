@@ -25,7 +25,7 @@ const references = [
     date: '2023',
     label:
       'Regularized frictional contact problems with the interior point method. Japan Journal of Industrial and Applied Mathematics - Springer.',
-    journal: 'https://doi.org/10.1007/s13160-023-00565-y'
+    url: 'https://doi.org/10.1007/s13160-023-00565-y'
   },
   {
     code: '2',
@@ -33,7 +33,7 @@ const references = [
     date: '2022',
     label:
       'A Symmetric Algorithm for Solving Mechanical Contact Problems Using FreeFEM. In: Knoerzer, D., Periaux, J., Tuovinen, T. (eds) Advances in Computational Methods and Technologies in Aeronautics and Industry. Computational Methods in Applied Sciences, vol 57. Springer, Cham.',
-    journal: 'https://doi.org/10.1007/978-3-031-12019-0_17'
+    url: 'https://doi.org/10.1007/978-3-031-12019-0_17'
   },
   {
     code: '3',
@@ -41,7 +41,7 @@ const references = [
     date: '2022',
     label:
       'Finite element modeling of mechanical contact problems for industrial applications. Doctoral dissertation, Sorbonne université.',
-    journal: 'https://theses.hal.science/tel-03699706'
+    url: 'https://theses.hal.science/tel-03699706'
   }
 ]
 
@@ -146,40 +146,33 @@ const Post = () => {
 
       <section>
         <Typography.Title level={3}>
-          Validation test: Compression of an elastic cube
+          Validation test: Compression of two elastic blocks with imposed
+          displacement
         </Typography.Title>
 
         <Typography.Title level={4}>Problem</Typography.Title>
         <p>
-          Consider an elastic cube{' '}
-          <MathJax.Inline
-            text={
-              '[0 \\, m \\, , 1 \\, m]\\times[0 \\, m \\, , 1 \\, m]\\times[0 \\, m \\, , 1 \\, m]'
-            }
-          />{' '}
-          with Young&apos;s modulus <MathJax.Inline text={'E=2.1e11 \\, Pa'} />{' '}
-          and Poisson&apos;s ratio <MathJax.Inline text={'\\nu= 0.3'} />. The
-          plan <MathJax.Inline text={'\\{ z=0 \\}'} /> of the cube is fixed in
-          the direction <MathJax.Inline text={'z'} />, the plan{' '}
-          <MathJax.Inline text={'\\{ x=1 \\}'} /> of the cube is fixed in the
-          direction <MathJax.Inline text={'x'} /> and finally the plan{' '}
-          <MathJax.Inline text={'\\{ y=0 \\}'} /> of the cube is fixed in the
-          direction <MathJax.Inline text={'y'} />.
+          A first elastic rectangular block is posed on a second one (see
+          Figures below). The two blocks have the same properties, a width{' '}
+          <MathJax.Inline text={'L = 0.5 \\, mm'} />, a height{' '}
+          <MathJax.Inline text={'H = 1 \\, mm'} />, a Young&apos;s modulus{' '}
+          <MathJax.Inline text={'E = 210 \\, mPa'} /> , and a Poisson&apos;s
+          ratio <MathJax.Inline text={' \\nu = 0.'} /> The study is done under
+          the plan strain hypothesis (2D).
         </p>
         <p>
-          A surface load{' '}
-          <MathJax.Inline
-            text={'f=(0 \\, Pa \\, ,0 \\, Pa \\, ,-1e8 \\, Pa)'}
-          />{' '}
-          is applied on the plan <MathJax.Inline text={'\\{ z=1 \\}'} /> of the
-          cube.
+          The frictionless case is supposed, and a surface load{' '}
+          <MathJax.Inline text={'f = -10 \\, mPa'} /> is applied on the upper
+          face of the first block. The lower face of the second body is fixed in
+          the direction <MathJax.Inline text={'y'} /> and the left sides of the
+          two blocks are fixed in the direction <MathJax.Inline text={'x'} />.
         </p>
         <p>
           Theoretically all components of the stress tensor are zero except{' '}
-          <MathJax.Inline text={'\\sigma_{zz}'} /> which is equal to{' '}
-          <MathJax.Inline text={'\\sigma_{zz}=-1e8 \\, Pa'} />, so the von Mises
+          <MathJax.Inline text={'\\sigma_{yy}'} /> which is equal to{' '}
+          <MathJax.Inline text={'\\sigma_{zz}=-10 \\, mPa'} />, so the von Mises
           stress is constant and is equal to{' '}
-          <MathJax.Inline text={'\\sigma_{vM}=1e8 \\, Pa'} />.
+          <MathJax.Inline text={'\\sigma_{vM}=10 \\, mPa'} />.
         </p>
       </section>
 
@@ -188,33 +181,30 @@ const Post = () => {
         <p>
           Using Tanatloc, we create our geometry with the corresponding mesh
           (see Figures below) and we use P1 linear finite elements. We can also
-          see in the Figures below that we obtain the theoretical results,
-          independently of the used mesh.
+          see in the Figures below that we obtain the theoretical results.
         </p>
         <Carousel
           items={[
             {
-              key: 'MeshGeometry',
-              src: '/blog/3-linearElasticity/GeoMesh.jpg',
-              caption: 'Geometry and Mesh'
-            },
-            {
-              key: 'linearElastDisp',
-              src: '/blog/3-linearElasticity/validation1_displacementResults.jpg',
-              caption: 'Displacement result'
-            },
-            {
-              key: 'stressZz',
-              src: '/blog/3-linearElasticity/validation1_stressZz.jpg',
-              caption: 'Stress zz'
+              key: 'stressyy',
+              src: '/blog/7-contactMechanics/validation1_stressyy.png',
+              caption: 'Stress yy'
             },
             {
               key: 'linearElastvM',
-              src: '/blog/3-linearElasticity/validation1_vMStress.jpg',
+              src: '/blog/7-contactMechanics/validation1_vMStress.png',
               caption: 'von Mises stress'
             }
           ]}
         />
+      </section>
+
+      <section>
+        <Typography.Title level={4}>Remark</Typography.Title>
+        <p>
+          For a better results, please use the units{' '}
+          <MathJax.Inline text={'mm'} /> and <MathJax.Inline text={'mPa'} />.
+        </p>
       </section>
     </PostLayout>
   )

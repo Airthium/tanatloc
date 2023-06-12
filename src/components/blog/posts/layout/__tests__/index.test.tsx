@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Layout from '..'
-import { Ref } from '..'
+import Layout, { Ref } from '..'
 
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -31,6 +30,21 @@ describe('components/blog/post/layout', () => {
       author: 'Author',
       label: 'Label',
       journal: 'Journal'
+    },
+    {
+      code: '2',
+      date: '2023',
+      author: 'Author',
+      label: 'Label',
+      url: 'URL'
+    },
+    {
+      code: '3',
+      date: '2023',
+      author: 'Author',
+      label: 'Label',
+      url: 'URL',
+      journal: 'journal'
     },
     {
       code: '2',

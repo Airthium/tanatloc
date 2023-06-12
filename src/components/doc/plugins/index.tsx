@@ -23,7 +23,8 @@ const HPC = (): React.JSX.Element => {
 
       <Typography className={style.text}>
         <Typography.Text>
-          HPC plugins availability depends on your installation. Some plugins are part of a paid feature
+          HPC plugins availability depends on your installation. Some plugins
+          are part of a paid feature
         </Typography.Text>
       </Typography>
 

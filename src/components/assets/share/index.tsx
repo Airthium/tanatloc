@@ -457,7 +457,7 @@ const Share = ({
             style?.buttonBordered ? '' : globalStyle.noBorder
           } ${isElectron() ? globalStyle.displayNone : ''}`}
           key="share"
-          id={"share"}
+          id={'share'}
           disabled={disabled}
           type={disabled && !style?.buttonBordered ? 'link' : undefined}
           icon={<ShareAltOutlined />}

@@ -46,8 +46,8 @@ const Geometry = (): React.JSX.Element => {
           The first step when you open a new project is to import a geometry
         </Typography.Text>
         <Typography.Text>
-          For now, Tanatloc supports STEP files, for 3D parts, and DXF files, for
-          2D parts
+          For now, Tanatloc supports STEP files, for 3D parts, and DXF files,
+          for 2D parts
         </Typography.Text>
         <Typography.Text>
           The uploader is open by default when there is no geometry in your
@@ -303,8 +303,8 @@ const Simulation = (): React.JSX.Element => {
       <Typography className={style.text}>
         <Typography.Title level={5}>Run</Typography.Title>
         <Typography.Text>
-          You can add a sensor before running the computation to extract data during
-          the simulation process using{' '}
+          You can add a sensor before running the computation to extract data
+          during the simulation process using{' '}
           <AddButton onAdd={() => undefined}>Add a sensor</AddButton>
         </Typography.Text>
         <Typography.Text>

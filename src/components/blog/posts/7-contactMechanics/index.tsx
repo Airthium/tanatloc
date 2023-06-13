@@ -75,9 +75,13 @@ const Post = () => {
               '\\Gamma^{i} = \\Gamma^{i}_D \\cup \\Gamma^{i}_N \\cup \\Gamma^{i}_C '
             }
           />
-          , let <MathJax.Inline text={'u^{i}'} /> be the displacement field of{' '}
-          <MathJax.Inline text={'\\Omega^{i}'} />. The contact problem between
-          the two bodies <MathJax.Inline text={'\\Omega^{1}'} /> and{' '}
+          , where <MathJax.Inline text={'\\Gamma^{i}_D'} /> is where a
+          displacement is imposed, <MathJax.Inline text={'\\Gamma^{i}_N'} /> is
+          where a load is applied and <MathJax.Inline text={'\\Gamma^{i}_C'} />{' '}
+          is the potential contact area. Let <MathJax.Inline text={'u^{i}'} />{' '}
+          be the displacement field of <MathJax.Inline text={'\\Omega^{i}'} />,
+          the contact problem between the two bodies{' '}
+          <MathJax.Inline text={'\\Omega^{1}'} /> and{' '}
           <MathJax.Inline text={'\\Omega^{2}'} /> is the set of the linear
           elasticity equations
           <MathJax.Formula
@@ -180,8 +184,8 @@ const Post = () => {
         <Typography.Title level={4}>Simulation and Results</Typography.Title>
         <p>
           Using Tanatloc, we create our geometry with the corresponding mesh
-          (see Figures below) and we use P1 linear finite elements. We can also
-          see in the Figures below that we obtain the theoretical results.
+          (see Figures below) and we use P1 linear finite elements. We can see
+          in the Figures below that we obtain the theoretical results.
         </p>
         <Carousel
           items={[
@@ -205,6 +209,67 @@ const Post = () => {
           For a better results, please use the units{' '}
           <MathJax.Inline text={'mm'} /> and <MathJax.Inline text={'mPa'} />.
         </p>
+      </section>
+
+      <section>
+        <Typography.Title level={3}>
+          Validation test: Hertz contact problem
+        </Typography.Title>
+
+        <Typography.Title level={4}>Problem</Typography.Title>
+        <p>
+          This example consider the contact between an elastic cylinder (
+          <MathJax.Inline text={'E_1 = 210 \\, mPa'} />,{' '}
+          <MathJax.Inline text={'\\nu_{1}=0.3'} />) and an elastic block (
+          <MathJax.Inline text={'E_2 = 70 \\, mPa'} />,{' '}
+          <MathJax.Inline text={'\\nu_{2}=0.3'} />
+          ), the cylinder is posed on the block and a force of{' '}
+          <MathJax.Inline text={'P = 7 \\, N/mm'} /> is applied on the top of
+          the cylinder, the block is fixed in the direction{' '}
+          <MathJax.Inline text={'y'} /> at its base. The study is done under the
+          plane strain hypothesis, therefore the cylinder is modeled by a disc
+          of radius <MathJax.Inline text={'R1 = 50 \\, mm'} /> and the block by
+          a square of dimension <MathJax.Inline text={'L = 100 \\, mm'} />.
+        </p>
+        <p>
+          Due to the symmetry of the problem only the half of the problem is
+          modeled, note that the frictionless contact is supposed for this
+          problem.
+        </p>
+        <p>
+          Theoretically the maximum pressure at the contact zone is equal to{' '}
+          <MathJax.Inline text={'p_{max} = 1.6 \\, mPa'} />.
+        </p>
+      </section>
+
+      <section>
+        <Typography.Title level={4}>Simulation and Results</Typography.Title>
+        <p>
+          Using Tanatloc, we create our geometry with the corresponding mesh
+          (see Figures below) and we use P1 linear finite elements. We can see
+          in the Figures below that we obtain the theoretical results,
+          especially in the Figure where <MathJax.Inline text={'\\sigma_y'} />{' '}
+          is presented.
+        </p>
+        <Carousel
+          items={[
+            {
+              key: 'meshHertz',
+              src: '/blog/7-contactMechanics/validation2_mesh.png',
+              caption: 'Mesh quality'
+            },
+            {
+              key: 'stressyHertz',
+              src: '/blog/7-contactMechanics/validation2_stressyy.png',
+              caption: 'Stress yy'
+            },
+            {
+              key: 'linearElastvMHertz',
+              src: '/blog/7-contactMechanics/validation2_vMStress.png',
+              caption: 'von Mises stress'
+            }
+          ]}
+        />
       </section>
     </PostLayout>
   )

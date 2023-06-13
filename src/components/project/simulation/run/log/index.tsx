@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Log */
 
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
 import {
   Button,
   Collapse,
@@ -100,6 +100,32 @@ const Step = ({
     })()
   }, [simulation, step, setLoading])
 
+  // Collapse items
+  const collapseItems = useMemo(() => {
+    const items = []
+    if (step.warning)
+      items.push({
+        key: 'warnings',
+        className: style.warning,
+        label: <Typography.Text type="warning">Warnings</Typography.Text>,
+        children: parse(
+          step.warning.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+        )
+      })
+
+    if (step.error)
+      items.push({
+        key: 'errors',
+        className: style.error,
+        label: <Typography.Text type="danger">Errors</Typography.Text>,
+        children: parse(
+          step.error.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+        )
+      })
+
+    return items
+  }, [step])
+
   /**
    * Render
    */
@@ -125,28 +151,7 @@ const Step = ({
           <br />
         </>
       )}
-      <Collapse ghost>
-        {step.warning && (
-          <Collapse.Panel
-            key="warnings"
-            className={style.warning}
-            header={<Typography.Text type="warning">Warnings</Typography.Text>}
-          >
-            {parse(
-              step.warning.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
-            )}
-          </Collapse.Panel>
-        )}
-        {step.error && (
-          <Collapse.Panel
-            key="errors"
-            className={style.error}
-            header={<Typography.Text type="danger">Errors</Typography.Text>}
-          >
-            {parse(step.error.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
-          </Collapse.Panel>
-        )}
-      </Collapse>
+      <Collapse ghost items={collapseItems} />
       {parse(
         step.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ?? ''
       )}

@@ -60,21 +60,24 @@ const ThermicDiffusion: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '7960',
-          unit: '\\(kg.m^{-3}\\)'
+          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
+          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
         },
         {
           label: 'Thermal conductivity',
           name: 'Lambda',
           htmlEntity: 'formula',
           default: '15',
-          unit: '\\(W.m^{-1}.K^{-1}\\)'
+          units: [{ label: '\\(W.m^{-1}.K^{-1}\\)', multiplicator: 1 }],
+          unit: { label: '\\(W.m^{-1}.K^{-1}\\)', multiplicator: 1 }
         },
         {
           label: 'Heat capacity',
           name: 'Cp',
           htmlEntity: 'formula',
           default: '502',
-          unit: '\\(J.K^{-1}.kg^{-1}\\)'
+          units: [{ label: '\\(J.K^{-1}.kg^{-1}\\)', multiplicator: 1 }],
+          unit: { label: '\\(J.K^{-1}.kg^{-1}\\)', multiplicator: 1 }
         }
       ]
     },
@@ -88,13 +91,15 @@ const ThermicDiffusion: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: '1',
-            unit: '\\(s\\)'
+            units: [{ label: '\\(s\\)', multiplicator: 1 }],
+            unit: { label: '\\(s\\)', multiplicator: 1 }
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: '0.1',
-            unit: '\\(s\\)'
+            units: [{ label: '\\(s\\)', multiplicator: 1 }],
+            unit: { label: '\\(s\\)', multiplicator: 1 }
           }
         ]
       },
@@ -146,7 +151,8 @@ const ThermicDiffusion: IModel = {
             label: 'T',
             htmlEntity: 'formula',
             default: '0',
-            unit: 'K'
+            units: [{ label: 'K', multiplicator: 1 }],
+            unit: { label: 'K', multiplicator: 1 }
           }
         ],
         refineFactor: 2

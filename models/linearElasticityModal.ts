@@ -60,21 +60,24 @@ const LinearElasticityModal: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '8050',
-          unit: '\\(kg.m^{-3}\\)'
+          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
+          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
           default: '1e4',
-          unit: '\\(Pa\\)'
+          units: [{ label: '\\(Pa\\)', multiplicator: 1 }],
+          unit: { label: '\\(Pa\\)', multiplicator: 1 }
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
           default: '0.3',
-          unit: '\\(1\\)'
+          units: [{ label: '\\(1\\)', multiplicator: 1 }],
+          unit: { label: '\\(1\\)', multiplicator: 1 }
         }
       ]
     },
@@ -155,19 +158,31 @@ const LinearElasticityModal: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m\\)'
+            units: [
+              { label: '\\(m\\)', multiplicator: 1 },
+              { label: '\\(mm\\)', multiplicator: 1e-3 }
+            ],
+            unit: { label: '\\(m\\)', multiplicator: 1 }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m\\)'
+            units: [
+              { label: '\\(m\\)', multiplicator: 1 },
+              { label: '\\(mm\\)', multiplicator: 1e-3 }
+            ],
+            unit: { label: '\\(m\\)', multiplicator: 1 }
           },
           {
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m\\)'
+            units: [
+              { label: '\\(m\\)', multiplicator: 1 },
+              { label: '\\(mm\\)', multiplicator: 1e-3 }
+            ],
+            unit: { label: '\\(m\\)', multiplicator: 1 }
           }
         ],
         refineFactor: 2

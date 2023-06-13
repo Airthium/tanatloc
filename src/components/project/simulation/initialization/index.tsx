@@ -370,6 +370,7 @@ const DirectItem = ({
     <Formula
       label={child.label}
       defaultValue={(value ?? child.default).toString()}
+      units={child.units}
       unit={child.unit}
       onValueChange={onChange}
     />

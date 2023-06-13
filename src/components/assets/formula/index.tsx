@@ -1,13 +1,7 @@
 /** @module Components.Assets.Formula */
 
-import {
-  ChangeEvent,
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useState
-} from 'react'
-import { Checkbox, Form, Input, Space } from 'antd'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
@@ -15,6 +9,7 @@ import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import MathJax from '@/components/assets/mathjax'
 
 import globalStyle from '@/styles/index.module.css'
+import style from './index.module.css'
 
 /**
  * Props
@@ -22,12 +17,12 @@ import globalStyle from '@/styles/index.module.css'
 export interface IProps {
   label?: string
   className?: string
-  style?: CSSProperties
   defaultValue?: string | number
   defaultChecked?: boolean
   onValueChange: (value: string) => void
   onCheckedChange?: (value: boolean) => void
-  unit?: string
+  units?: { label: string; multiplicator: number }[]
+  unit?: { label: string; multiplicator: number }
 }
 
 /**
@@ -41,7 +36,6 @@ const saveDelay = 500
  * @description Props list:
  * - label (string) Label
  * - className (string) Class name
- * - style (CSSProperties) Style
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
@@ -51,11 +45,11 @@ const saveDelay = 500
 const Formula = ({
   label,
   className,
-  style,
   defaultValue,
   defaultChecked,
   onValueChange,
   onCheckedChange,
+  units,
   unit
 }: IProps): React.JSX.Element => {
   // State
@@ -133,7 +127,7 @@ const Formula = ({
    */
   return (
     <Space
-      className={`${globalStyle.fullWidth} ${className}`}
+      className={`${globalStyle.fullWidth} ${style.formula} ${className}`}
       style={style}
       align="start"
     >
@@ -153,18 +147,26 @@ const Formula = ({
           }
         >
           <Input
+            className={style.input}
             disabled={disabled}
             value={internalValue}
             onChange={onInputChange}
+            addonBefore={
+              saving ? (
+                <LoadingOutlined spin className={globalStyle.textOrange} />
+              ) : (
+                <CheckCircleOutlined className={globalStyle.textGreen} />
+              )
+            }
             addonAfter={
-              <Space className={globalStyle.fullWidth}>
-                <MathJax.Inline text={unit as string} />
-                {saving ? (
-                  <LoadingOutlined spin className={globalStyle.textOrange} />
-                ) : (
-                  <CheckCircleOutlined className={globalStyle.textGreen} />
-                )}
-              </Space>
+              <Select
+                className={style.select}
+                options={units?.map((unit) => ({
+                  value: unit.label,
+                  label: <MathJax.Inline text={unit?.label} />
+                }))}
+                value={unit?.label}
+              />
             }
           />
         </Form.Item>

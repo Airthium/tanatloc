@@ -421,28 +421,32 @@ const Server = (): React.JSX.Element => {
           <Typography.Text code>tanatloc.sh</Typography.Text> with the following
           options if necessary
         </Typography.Text>
-        <Collapse>
-          <Collapse.Panel
-            key="set"
-            header={<Typography.Text code>./tanatloc.sh set</Typography.Text>}
-          >
-            <Table
-              pagination={false}
-              columns={setColumns}
-              dataSource={setData}
-            />
-          </Collapse.Panel>
-          <Collapse.Panel
-            key="add"
-            header={<Typography.Text code>./tanatloc.sh add</Typography.Text>}
-          >
-            <Table
-              pagination={false}
-              columns={addColumns}
-              dataSource={addData}
-            />
-          </Collapse.Panel>
-        </Collapse>
+        <Collapse
+          items={[
+            {
+              key: 'set',
+              label: <Typography.Text code>./tanatloc.sh set</Typography.Text>,
+              children: (
+                <Table
+                  pagination={false}
+                  columns={setColumns}
+                  dataSource={setData}
+                />
+              )
+            },
+            {
+              key: 'add',
+              label: <Typography.Text code>./tanatloc.sh add</Typography.Text>,
+              children: (
+                <Table
+                  pagination={false}
+                  columns={addColumns}
+                  dataSource={addData}
+                />
+              )
+            }
+          ]}
+        />
         <Typography.Text>
           <strong>Start</strong> Tanatloc
         </Typography.Text>

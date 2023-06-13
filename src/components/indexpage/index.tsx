@@ -210,33 +210,39 @@ const Index = (): React.JSX.Element => {
         <br />
         <List bordered>
           <List.Item>
-            <Collapse>
-              <Collapse.Panel
-                key="access"
-                header='If you have "Docker Desktop - Access denied"'
-              >
-                <Typography>
-                  You must add the{' '}
-                  <Typography.Text code>docker-users</Typography.Text> group to
-                  the current user.
-                </Typography>
-                <Typography>
-                  Run <strong>Computer Management</strong> as an administrator
-                  and navigate to <strong>Local Users and Groups</strong> &gt;{' '}
-                  <strong>Groups</strong> &gt; <strong>docker-users</strong>.
-                  Then, right-click to add user to the group.
-                </Typography>
-                <Typography>Log out and log back in.</Typography>
-                <Typography>You can now start Docker Desktop</Typography>
-                <a
-                  href="https://docs.docker.com/desktop/faqs/windowsfaqs/#why-do-i-see-the-docker-desktop-access-denied-error-message-when-i-try-to-start-docker-desktop"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Source
-                </a>
-              </Collapse.Panel>
-            </Collapse>
+            <Collapse
+              items={[
+                {
+                  key: 'access',
+                  label: 'If you have "Docker Desktop - Access denied"',
+                  children: (
+                    <>
+                      <Typography>
+                        You must add the{' '}
+                        <Typography.Text code>docker-users</Typography.Text>{' '}
+                        group to the current user.
+                      </Typography>
+                      <Typography>
+                        Run <strong>Computer Management</strong> as an
+                        administrator and navigate to{' '}
+                        <strong>Local Users and Groups</strong> &gt;{' '}
+                        <strong>Groups</strong> &gt;{' '}
+                        <strong>docker-users</strong>. Then, right-click to add
+                        user to the group.
+                      </Typography>
+                      <Typography>Log out and log back in.</Typography>
+                      <Typography>You can now start Docker Desktop</Typography>
+                      <Link
+                        href="https://docs.docker.com/desktop/faqs/windowsfaqs/#why-do-i-see-the-docker-desktop-access-denied-error-message-when-i-try-to-start-docker-desktop"
+                        target="_blank"
+                      >
+                        Source
+                      </Link>
+                    </>
+                  )
+                }
+              ]}
+            />
           </List.Item>
           <List.Item>Accept the terms and conditions</List.Item>
           <List.Item>
@@ -273,45 +279,66 @@ const Index = (): React.JSX.Element => {
         bodyStyle={{ marginTop: 16 }}
         onClose={setTroubleshootingOpenFalse}
       >
-        <Collapse>
-          <Collapse.Panel key="appiamge" header="Linux AppImage">
-            <Typography>Allow execution of the AppImage using:</Typography>
-            <Typography.Text code>
-              chmod +x ./Tanatloc-{packageJson.version}.AppImage
-            </Typography.Text>
-            <Typography>
-              Or right-click{' '}
-              <strong>Tanatloc-{packageJson.version}.AppImage</strong> &gt;
-              <strong>Properties</strong> &gt; <strong>Permissions</strong> and
-              check Allow executing file as program
-            </Typography>
-          </Collapse.Panel>
-          <Collapse.Panel
-            key="docker"
-            header='"There is an error with your Docker installation." error'
-          >
-            <Typography>
-              Open Docker Desktop and check all is working fine.
-            </Typography>
-            <Typography>
-              Have a look at the{' '}
-              <Button size="small" onClick={switchToDocker}>
-                Docker Desktop instructions
-              </Button>
-              .
-            </Typography>
-          </Collapse.Panel>
-          <Collapse.Panel
-            key="postgres"
-            header='"There is an error with your PostgreSQL installation." error'
-          >
-            <Typography>Open Docker Desktop &gt; Containers</Typography>
-            <Typography>
-              You should see a container named &quot;tanatloc-postgres&quot;, if
-              not try to restart the Tanatloc app.
-            </Typography>
-          </Collapse.Panel>
-        </Collapse>
+        <Collapse
+          items={[
+            {
+              key: 'appiamge',
+              label: 'Linux AppImage',
+              children: (
+                <>
+                  <Typography>
+                    Allow execution of the AppImage using:
+                  </Typography>
+                  <Typography.Text code>
+                    chmod +x ./Tanatloc-{packageJson.version}.AppImage
+                  </Typography.Text>
+                  <Typography>
+                    Or right-click{' '}
+                    <strong>Tanatloc-{packageJson.version}.AppImage</strong>{' '}
+                    &gt;
+                    <strong>Properties</strong> &gt;{' '}
+                    <strong>Permissions</strong> and check Allow executing file
+                    as program
+                  </Typography>
+                </>
+              )
+            },
+            {
+              key: 'docker',
+              label: '"There is an error with your Docker installation." error',
+              children: (
+                <>
+                  {' '}
+                  <Typography>
+                    Open Docker Desktop and check all is working fine.
+                  </Typography>
+                  <Typography>
+                    Have a look at the{' '}
+                    <Button size="small" onClick={switchToDocker}>
+                      Docker Desktop instructions
+                    </Button>
+                    .
+                  </Typography>
+                </>
+              )
+            },
+            {
+              key: 'postgres',
+              label:
+                '"There is an error with your PostgreSQL installation." error',
+              children: (
+                <>
+                  <Typography>Open Docker Desktop &gt; Containers</Typography>
+                  <Typography>
+                    You should see a container named
+                    &quot;tanatloc-postgres&quot;, if not try to restart the
+                    Tanatloc app.
+                  </Typography>
+                </>
+              )
+            }
+          ]}
+        />
       </Drawer>
       <Menu />
 

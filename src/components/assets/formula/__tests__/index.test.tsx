@@ -19,7 +19,11 @@ describe('components/assets/formula', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Formula onValueChange={onValueChange} unit="unit" />
+      <Formula
+        onValueChange={onValueChange}
+        units={[{ label: 'unit', multiplicator: 1 }]}
+        unit={{ label: 'unit', multiplicator: 1 }}
+      />
     )
 
     unmount()
@@ -31,7 +35,8 @@ describe('components/assets/formula', () => {
         label="test"
         defaultValue="value"
         onValueChange={onValueChange}
-        unit="unit"
+        units={[{ label: 'unit', multiplicator: 1 }]}
+        unit={{ label: 'unit', multiplicator: 1 }}
       />
     )
 

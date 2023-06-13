@@ -97,12 +97,12 @@ const BoundaryConditionItem = ({
    */
   return (
     <Formula
-      style={{ marginBottom: '10px' }}
       label={boundaryCondition.label}
       defaultValue={value}
       defaultChecked={checked}
       onValueChange={onValueChange}
       onCheckedChange={onCheckedChange}
+      units={boundaryCondition.units}
       unit={boundaryCondition.unit}
     />
   )

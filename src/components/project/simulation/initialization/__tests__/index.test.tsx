@@ -168,20 +168,23 @@ describe('components/project/simulation/initialization', () => {
                 htmlEntity: 'formula',
                 default: 0,
                 value: 0,
-                unit: '\\(m.s^{-1}\\)'
+                units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+                unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
               },
               {
                 label: 'Uy',
                 htmlEntity: 'formula',
                 default: 0,
-                unit: '\\(m.s^{-1}\\)'
+                units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+                unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
               },
               {
                 only3D: true,
                 label: 'Uz',
                 htmlEntity: 'formula',
                 default: 0,
-                unit: '\\(m.s^{-1}\\)'
+                units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+                unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
               }
             ]
           },
@@ -837,20 +840,23 @@ describe('components/project/simulation/initialization', () => {
                       htmlEntity: 'formula',
                       default: 0,
                       value: 0,
-                      unit: '\\(m.s^{-1}\\)'
+                      units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+                      unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
                     },
                     {
                       label: 'Uy',
                       htmlEntity: 'formula',
                       default: 0,
-                      unit: '\\(m.s^{-1}\\)'
+                      units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+                      unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
                     },
                     {
                       only3D: true,
                       label: 'Uz',
                       htmlEntity: 'formula',
                       default: 0,
-                      unit: '\\(m.s^{-1}\\)'
+                      units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+                      unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
                     }
                   ]
                 },

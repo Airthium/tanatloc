@@ -67,20 +67,26 @@ const ErrorNotification = (
         <>
           <Typography.Text code>{err.message}</Typography.Text>
           {(err.status || err.info) && (
-            <Collapse>
-              <Collapse.Panel key="information" header="More information">
-                <Space direction="vertical">
-                  {err.status && (
-                    <Typography.Text>Status: {err.status}</Typography.Text>
-                  )}
-                  {err.info?.message && (
-                    <Typography.Text>
-                      Description: {err.info?.message}
-                    </Typography.Text>
-                  )}
-                </Space>
-              </Collapse.Panel>
-            </Collapse>
+            <Collapse
+              items={[
+                {
+                  key: 'information',
+                  label: 'More information',
+                  children: (
+                    <Space direction="vertical">
+                      {err.status && (
+                        <Typography.Text>Status: {err.status}</Typography.Text>
+                      )}
+                      {err.info?.message && (
+                        <Typography.Text>
+                          Description: {err.info?.message}
+                        </Typography.Text>
+                      )}
+                    </Space>
+                  )
+                }
+              ]}
+            />
           )}
         </>
       ),

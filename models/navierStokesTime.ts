@@ -58,14 +58,16 @@ const NavierStokesTime: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '1e3',
-          unit: '\\(kg.m^{-3}\\)'
+          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
+          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
         },
         {
           label: 'Dynamic viscosity',
           name: 'Mu',
           htmlEntity: 'formula',
           default: '1e-3',
-          unit: '\\(Pa.s\\)'
+          units: [{ label: '\\(Pa.s\\)', multiplicator: 1 }],
+          unit: { label: '\\(Pa.s\\)', multiplicator: 1 }
         }
       ]
     },
@@ -79,20 +81,23 @@ const NavierStokesTime: IModel = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(N.m^{-3}\\)'
+            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
+            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(N.m^{-3}\\)'
+            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
+            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
           },
           {
             only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(N.m^{-3}\\)'
+            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
+            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
           }
         ]
       },
@@ -103,13 +108,15 @@ const NavierStokesTime: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: '1',
-            unit: '\\(s\\)'
+            units: [{ label: '\\(s\\)', multiplicator: 1 }],
+            unit: { label: '\\(s\\)', multiplicator: 1 }
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: '0.1',
-            unit: '\\(s\\)'
+            units: [{ label: '\\(s\\)', multiplicator: 1 }],
+            unit: { label: '\\(s\\)', multiplicator: 1 }
           }
         ]
       },
@@ -177,20 +184,23 @@ const NavierStokesTime: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m.s^{-1}\\)'
+            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m.s^{-1}\\)'
+            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m.s^{-1}\\)'
+            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
           }
         ]
       },
@@ -226,20 +236,23 @@ const NavierStokesTime: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m.s^{-1}\\)'
+            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m.s^{-1}\\)'
+            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(m.s^{-1}\\)'
+            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
+            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
           }
         ],
         refineFactor: 2
@@ -251,7 +264,8 @@ const NavierStokesTime: IModel = {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
             default: '0',
-            unit: '\\(N.m^{-2}\\)'
+            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
+            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
           }
         ],
         refineFactor: 2

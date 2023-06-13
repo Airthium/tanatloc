@@ -82,6 +82,7 @@ export const _build2DFormula = (
     label={child.label2D ?? child.label}
     defaultValue={(child.value ?? child.default) as string}
     onValueChange={onValueChange}
+    units={child.units}
     unit={child.unit}
   />
 )
@@ -153,6 +154,7 @@ export const _buildFormula = (
     label={child.label}
     defaultValue={(child.value ?? child.default) as string}
     onValueChange={onValueChange}
+    units={child.units}
     unit={child.unit}
   />
 )
@@ -514,11 +516,15 @@ const Parameters = ({ simulation, swr }: IProps): React.JSX.Element => {
         <Space direction="vertical">
           {parameters}
           {advanced.length ? (
-            <Collapse>
-              <Collapse.Panel key="advanced" header="Advanced">
-                <Space direction="vertical">{advanced}</Space>
-              </Collapse.Panel>
-            </Collapse>
+            <Collapse
+              items={[
+                {
+                  key: 'advanced',
+                  label: 'Advanced',
+                  children: <Space direction="vertical">{advanced}</Space>
+                }
+              ]}
+            />
           ) : null}
         </Space>
       </Layout.Content>

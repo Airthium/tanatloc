@@ -53,8 +53,15 @@ export const _onAdd = (
       const symbol = availableSymbols[material.symbol]
       const label = symbol.label
       const name = symbol.symbol
+      const units = symbol.units
       const unit = symbol.unit
-      return { label, name, default: material.default, unit }
+      return {
+        label,
+        name,
+        default: material.default,
+        units,
+        unit
+      }
     }
   )
 
@@ -105,6 +112,7 @@ export const _onAdd = (
           name: material.name,
           htmlEntity: 'formula',
           default: +material.default,
+          units: material.units,
           unit: material.unit
         }))
       ]

@@ -83,6 +83,7 @@ const MaterialsChild = ({
       key={child.name}
       label={child.name}
       defaultValue={value ?? String(child.default)}
+      units={child.units}
       unit={child.unit}
       onValueChange={onMaterialChange}
     />

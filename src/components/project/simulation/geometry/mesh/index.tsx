@@ -257,7 +257,7 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
             label="Size"
             defaultValue={meshGlobalValue}
             onValueChange={onSize}
-            unit="m"
+            unit={{ label: 'm', multiplicator: 1 }}
           />
         )}
       </Space>

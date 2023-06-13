@@ -87,7 +87,8 @@ export interface IModelMaterialsChild {
   name: string
   htmlEntity: string
   default: number | string
-  unit: string
+  units?: { label: string; multiplicator: number }[]
+  unit?: { label: string; multiplicator: number }
 }
 
 export interface IModelMaterialsValue {
@@ -130,7 +131,8 @@ export interface IModelParameter {
   default: TValue
   default2D?: TValue
   options?: { label: string; value: string; value2D?: string }[]
-  unit?: string
+  units?: { label: string; multiplicator: number }[]
+  unit?: { label: string; multiplicator: number }
   value?: TValue
 }
 
@@ -154,7 +156,8 @@ export interface IModelInitializationDirectChild {
   htmlEntity: string
   options?: { label: string; value: string }[]
   default: TValue
-  unit?: string
+  units?: { label: string; multiplicator: number }[]
+  unit?: { label: string; multiplicator: number }
   value?: TValue
 }
 
@@ -233,7 +236,8 @@ export interface IModelBoundaryCondition {
   htmlEntity: string
   default: TValue
   only3D?: boolean
-  unit?: string
+  units?: { label: string; multiplicator: number }[]
+  unit?: { label: string; multiplicator: number }
 }
 
 /**

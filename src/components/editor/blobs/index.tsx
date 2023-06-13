@@ -57,33 +57,46 @@ const Blobs = (): React.JSX.Element => {
    */
   return (
     <div id="blobs">
-      <Collapse style={{ overflow: 'auto', maxHeight: 'calc(100% - 443px)' }}>
-        <Collapse.Panel key="head" header="Head">
-          <Space direction="vertical" className={globalStyle.fullWidth}>
-            <Header />
-            <Dimension />
-          </Space>
-        </Collapse.Panel>
-
-        <Collapse.Panel key="components" header="Components">
-          <Space direction="vertical" className={globalStyle.fullWidth}>
-            <Mesh />
-            <Materials />
-            <FiniteElementSpace />
-            <FiniteElementFunction />
-            <Macros />
-            <Solver />
-          </Space>
-        </Collapse.Panel>
-
-        <Collapse.Panel key="results" header="Results">
-          <Space direction="vertical" className={globalStyle.fullWidth}>
-            <Save />
-            <Data />
-            <Sensors />
-          </Space>
-        </Collapse.Panel>
-      </Collapse>
+      <Collapse
+        style={{ overflow: 'auto', maxHeight: 'calc(100% - 443px)' }}
+        items={[
+          {
+            key: 'head',
+            label: 'Head',
+            children: (
+              <Space direction="vertical" className={globalStyle.fullWidth}>
+                <Header />
+                <Dimension />
+              </Space>
+            )
+          },
+          {
+            key: 'components',
+            label: 'Components',
+            children: (
+              <Space direction="vertical" className={globalStyle.fullWidth}>
+                <Mesh />
+                <Materials />
+                <FiniteElementSpace />
+                <FiniteElementFunction />
+                <Macros />
+                <Solver />
+              </Space>
+            )
+          },
+          {
+            key: 'results',
+            label: 'Results',
+            children: (
+              <Space direction="vertical" className={globalStyle.fullWidth}>
+                <Save />
+                <Data />
+                <Sensors />
+              </Space>
+            )
+          }
+        ]}
+      />
     </div>
   )
 }

@@ -3,7 +3,8 @@
 export interface IMaterialDatabaseSymbol {
   label: string
   symbol: string
-  unit: string
+  units: { label: string; multiplicator: number }[]
+  unit: { label: string; multiplicator: number }
 }
 
 export interface IMaterialDatabase {
@@ -25,32 +26,38 @@ export const availableSymbols: IMaterialDatabaseSymbol[] = [
   {
     label: 'Density',
     symbol: 'Rho',
-    unit: '\\(kg.m^{-3}\\)'
+    units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
+    unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
   },
   {
     label: "Young's modulus",
     symbol: 'E',
-    unit: '\\(Pa\\)'
+    units: [{ label: '\\(Pa\\)', multiplicator: 1 }],
+    unit: { label: '\\(Pa\\)', multiplicator: 1 }
   },
   {
     label: "Poisson's ratio",
     symbol: 'Nu',
-    unit: '\\(1\\)'
+    units: [{ label: '\\(1\\)', multiplicator: 1 }],
+    unit: { label: '\\(1\\)', multiplicator: 1 }
   },
   {
     label: 'Thermal conductivity',
     symbol: 'Lambda',
-    unit: '\\(W.m^{-1}.K^{-1}\\)'
+    units: [{ label: '\\(W.m^{-1}.K^{-1}\\)', multiplicator: 1 }],
+    unit: { label: '\\(W.m^{-1}.K^{-1}\\)', multiplicator: 1 }
   },
   {
     label: 'Heat capacity',
     symbol: 'Cp',
-    unit: '\\(J.K^{-1}.kg^{-1}\\)'
+    units: [{ label: '\\(J.K^{-1}.kg^{-1}\\)', multiplicator: 1 }],
+    unit: { label: '\\(J.K^{-1}.kg^{-1}\\)', multiplicator: 1 }
   },
   {
     label: 'Dynamic viscosity',
     symbol: 'Mu',
-    unit: '\\(Pa.s\\)'
+    units: [{ label: '\\(Pa.s\\)', multiplicator: 1 }],
+    unit: { label: '\\(Pa.s\\)', multiplicator: 1 }
   }
 ]
 

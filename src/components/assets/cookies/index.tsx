@@ -106,40 +106,48 @@ const Cookies = (): React.JSX.Element => {
             party content may also be provided. Please confirm you are OK with
             this.
           </Typography.Text>
-          <Collapse size="small" className={style.descriptionCollapse}>
-            <Collapse.Panel key="details" header="More details">
-              <Form
-                className={style.descriptionForm}
-                initialValues={{
-                  accepted: cookies.accepted === 'true',
-                  'gpdr-gtag-accept': cookies['gpdr-gtag-accept'] === 'true'
-                }}
-                size="small"
-                colon={false}
-                onFinish={onClose}
-              >
-                <Form.Item
-                  label="Essential"
-                  name="accepted"
-                  valuePropName="checked"
-                >
-                  <Switch size="small" />
-                </Form.Item>
-                <Form.Item
-                  label="Google Analytics"
-                  name="gpdr-gtag-accept"
-                  valuePropName="checked"
-                >
-                  <Switch size="small" />
-                </Form.Item>
-                <Form.Item>
-                  <Button className={style.saveClose} htmlType="submit">
-                    Save & Close
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Collapse.Panel>
-          </Collapse>
+          <Collapse
+            size="small"
+            className={style.descriptionCollapse}
+            items={[
+              {
+                key: 'details',
+                label: 'More details',
+                children: (
+                  <Form
+                    className={style.descriptionForm}
+                    initialValues={{
+                      accepted: cookies.accepted === 'true',
+                      'gpdr-gtag-accept': cookies['gpdr-gtag-accept'] === 'true'
+                    }}
+                    size="small"
+                    colon={false}
+                    onFinish={onClose}
+                  >
+                    <Form.Item
+                      label="Essential"
+                      name="accepted"
+                      valuePropName="checked"
+                    >
+                      <Switch size="small" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Google Analytics"
+                      name="gpdr-gtag-accept"
+                      valuePropName="checked"
+                    >
+                      <Switch size="small" />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button className={style.saveClose} htmlType="submit">
+                        Save & Close
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                )
+              }
+            ]}
+          />
           <Button type="primary" onClick={onAll}>
             Accept all
           </Button>

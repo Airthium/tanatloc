@@ -2,6 +2,7 @@
 
 - Global:
   - :arrow_up: Update dependencies
+  - :arrow_up: Units support
 - Client:
   - :beetle: Bug fix
 - Server:

@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation */
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { Layout, Menu, Modal, Select, Tabs } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
@@ -145,7 +145,8 @@ const Selector = ({
   const [models, setModels] = useState<IModel[]>([])
   const [availableCategories, setAvailableCategories] =
     useState<{ key: string; value: string }[]>()
-  const [categories, setCategories] = useState<string[]>()
+  const [categories, setCategories] = useState<string[]>([])
+  const [activeTab, setActiveTab] = useState('tanatloc')
 
   // Models
   useCustomEffect(() => {
@@ -166,6 +167,18 @@ const Selector = ({
 
     setAvailableCategories(newCategories)
   }, [models])
+
+/**
+   * On Tab Change
+   * @param activeKey Data
+   */
+const onTabChange = useCallback(
+  (activeKey: string): void => {
+    setActiveTab(activeKey)
+    setCategories([])
+  },
+  []
+)
 
   /**
    * On Tanatloc select
@@ -229,6 +242,7 @@ const Selector = ({
         disabled: true,
         label: (
           <Select
+            key={activeTab}
             mode="multiple"
             className={globalStyle.fullWidth}
             options={availableCategories}
@@ -260,6 +274,7 @@ const Selector = ({
         disabled: true,
         label: (
           <Select
+            key={activeTab}
             mode="multiple"
             className={globalStyle.fullWidth}
             options={availableCategories}
@@ -311,6 +326,8 @@ const Selector = ({
       <Layout className={style.selectorContent}>
         <Layout.Sider theme="light" width={300} className={style.selectorSider}>
           <Tabs
+            defaultActiveKey="tanatloc"
+            onChange={onTabChange}
             items={[
               {
                 key: 'tanatloc',

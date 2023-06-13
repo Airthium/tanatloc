@@ -1,6 +1,17 @@
 # *
 User-agent: *
 Allow: /
+Allow: /blog
+Allow: /doc
+Disallow: /dashboard
+Disallow: /editor
+Disallow: /error
+Disallow: /login
+Disallow: /password
+Disallow: /project
+Disallow: /signup
+Disallow: /start
+Disallow: /webgl
 
 # Host
 Host: https://tanatloc.com

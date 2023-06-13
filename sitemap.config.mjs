@@ -4,7 +4,23 @@ const sitemapConfig = {
   siteUrl: 'https://tanatloc.com',
   generateRobotsTxt: true,
   robotsTxtOptions: {
-    policies: [{ userAgent: '*', allow: '/' }]
+    policies: [
+      {
+        userAgent: '*',
+        allow: ['/', '/blog', '/doc'],
+        disallow: [
+          '/dashboard',
+          '/editor',
+          '/error',
+          '/login',
+          '/password',
+          '/project',
+          '/signup',
+          '/start',
+          '/webgl'
+        ]
+      }
+    ]
   }
 }
 

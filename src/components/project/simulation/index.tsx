@@ -145,8 +145,7 @@ const Selector = ({
   const [models, setModels] = useState<IModel[]>([])
   const [availableCategories, setAvailableCategories] =
     useState<{ key: string; value: string }[]>()
-  const [tanatlocCategories, setTanatlocCategories] = useState<string[]>([])
-  const [userCategories, setUserCategories] = useState<string[]>([])
+  const [categories, setTanatlocCategories] = useState<string[]>([])
 
   // Models
   useCustomEffect(() => {
@@ -237,13 +236,14 @@ const Selector = ({
             showArrow={false}
             placeholder="Category filter"
             onChange={setTanatlocCategories}
+            value={categories}
           />
         )
       }
     ]
 
     models.forEach((model) => {
-      if (_isInCategories(model.category, tanatlocCategories))
+      if (_isInCategories(model.category, categories))
         items.push({
           key: model.algorithm,
           label: model.name
@@ -251,7 +251,7 @@ const Selector = ({
     })
 
     return items
-  }, [models, availableCategories, tanatlocCategories])
+  }, [models, availableCategories, categories])
 
   // Menu items (user)
   const userMenuItems = useMemo(() => {
@@ -267,14 +267,15 @@ const Selector = ({
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setUserCategories}
+            onChange={setTanatlocCategories}
+            value={categories}
           />
         )
       }
     ]
 
     user.usermodels.forEach((usermodel, index) => {
-      if (_isInCategories(usermodel.model.category, userCategories))
+      if (_isInCategories(usermodel.model.category, categories))
         items.push({
           key: usermodel.id + '&' + usermodel.model.algorithm,
           label: (
@@ -294,7 +295,7 @@ const Selector = ({
     })
 
     return items
-  }, [user, availableCategories, userCategories, onDelete])
+  }, [user, availableCategories, categories, onDelete])
 
   /**
    * Render

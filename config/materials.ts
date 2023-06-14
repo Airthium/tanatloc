@@ -1,10 +1,12 @@
 /** @module Config.Materials */
 
+import { IUnit } from '@/models/index.d'
+
 export interface IMaterialDatabaseSymbol {
   label: string
   symbol: string
-  units: { label: string; multiplicator: number }[]
-  unit: { label: string; multiplicator: number }
+  units: IUnit[]
+  unit: IUnit
 }
 
 export interface IMaterialDatabase {

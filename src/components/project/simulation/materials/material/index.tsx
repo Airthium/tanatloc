@@ -4,7 +4,11 @@ import { useState, useCallback, useContext, useMemo } from 'react'
 import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
-import { IModelMaterialsChild, IModelMaterialsValue } from '@/models/index.d'
+import {
+  IModelMaterialsChild,
+  IModelMaterialsValue,
+  IUnit
+} from '@/models/index.d'
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem,
@@ -49,11 +53,13 @@ export interface IMaterialsChildProps {
   child: IModelMaterialsChild
   index: number
   value: string | number | undefined
+  unit: IUnit | undefined
   _onMaterialChange: (
     child: IModelMaterialsChild,
     index: number,
     val: string
   ) => void
+  _onUnitChange: (index: number, unit: IUnit) => void
 }
 
 /**
@@ -65,7 +71,9 @@ const MaterialsChild = ({
   child,
   index,
   value,
-  _onMaterialChange
+  unit,
+  _onMaterialChange,
+  _onUnitChange
 }: IMaterialsChildProps): React.JSX.Element => {
   /**
    * On material change
@@ -78,14 +86,29 @@ const MaterialsChild = ({
     [child, index, _onMaterialChange]
   )
 
+  /**
+   * On Unit change
+   * @param unit Unit
+   */
+  const onUnitChange = useCallback(
+    (unit: IUnit): void => {
+      _onUnitChange(index, unit)
+    },
+    [index, _onUnitChange]
+  )
+
+  /**
+   * Render
+   */
   return (
     <Formula
       key={child.name}
       label={child.name}
       defaultValue={value ?? String(child.default)}
       units={child.units}
-      unit={child.unit}
+      unit={unit ?? child.unit}
       onValueChange={onMaterialChange}
+      onUnitChange={onUnitChange}
     />
   )
 }
@@ -195,6 +218,7 @@ const Material = ({
           children: [
             ...prevCurrent!.material.children.slice(0, index),
             {
+              ...prevCurrent!.material.children[index],
               label: child.label,
               symbol: child.name,
               value: val
@@ -206,6 +230,28 @@ const Material = ({
     },
     []
   )
+
+  /**
+   * On unit change
+   * @param index Index
+   * @param unit Unit
+   */
+  const onUnitChange = useCallback((index: number, unit: IUnit): void => {
+    setCurrent((prevCurrent) => ({
+      ...(prevCurrent as IModelMaterialsValue),
+      material: {
+        ...prevCurrent!.material,
+        children: [
+          ...prevCurrent!.material.children.slice(0, index),
+          {
+            ...prevCurrent!.material.children[index],
+            unit: unit
+          },
+          ...prevCurrent!.material.children.slice(index + 1)
+        ]
+      }
+    }))
+  }, [])
 
   /**
    * On select
@@ -318,7 +364,9 @@ const Material = ({
                   child={child}
                   index={index}
                   value={m?.value}
+                  unit={m?.unit}
                   _onMaterialChange={onMaterialChange}
+                  _onUnitChange={onUnitChange}
                 />
               )
             })}

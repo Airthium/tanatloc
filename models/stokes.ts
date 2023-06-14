@@ -57,7 +57,10 @@ const Stokes: IModel = {
           name: 'Mu',
           htmlEntity: 'formula',
           default: '1e-3',
-          units: [{ label: '\\(Pa.s\\)', multiplicator: 1 }],
+          units: [
+            { label: '\\(Pa.s\\)', multiplicator: 1 },
+            { label: '\\(mPa.s\\)', multiplicator: 1e-3 }
+          ],
           unit: { label: '\\(Pa.s\\)', multiplicator: 1 }
         }
       ]

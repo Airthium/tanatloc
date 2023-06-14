@@ -151,7 +151,10 @@ const ThermicDiffusion: IModel = {
             label: 'T',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: 'K', multiplicator: 1 }],
+            units: [
+              { label: 'K', multiplicator: 1 },
+              { label: '°C', adder: -273.15 }
+            ],
             unit: { label: 'K', multiplicator: 1 }
           }
         ],

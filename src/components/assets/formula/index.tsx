@@ -3,8 +3,9 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
+
+import { IUnit } from '@/models/index.d'
 
 import MathJax from '@/components/assets/mathjax'
 
@@ -19,10 +20,11 @@ export interface IProps {
   className?: string
   defaultValue?: string | number
   defaultChecked?: boolean
+  units?: IUnit[]
+  unit?: IUnit
   onValueChange: (value: string) => void
   onCheckedChange?: (value: boolean) => void
-  units?: { label: string; multiplicator: number }[]
-  unit?: { label: string; multiplicator: number }
+  onUnitChange?: (value: IUnit) => void
 }
 
 /**
@@ -47,10 +49,11 @@ const Formula = ({
   className,
   defaultValue,
   defaultChecked,
+  units,
+  unit,
   onValueChange,
   onCheckedChange,
-  units,
-  unit
+  onUnitChange
 }: IProps): React.JSX.Element => {
   // State
   const [internalValue, setInternalValue] = useState<string>(
@@ -122,6 +125,11 @@ const Formula = ({
     [onValueChangeDelayed]
   )
 
+  const onInternalUnitChange = (value: string): void => {
+    const unit = units?.find((u) => u.label === value)!
+    onUnitChange?.(unit)
+  }
+
   /**
    * Render
    */
@@ -159,14 +167,17 @@ const Formula = ({
               )
             }
             addonAfter={
-              <Select
-                className={style.select}
-                options={units?.map((unit) => ({
-                  value: unit.label,
-                  label: <MathJax.Inline text={unit?.label} />
-                }))}
-                value={unit?.label}
-              />
+              unit && units ? (
+                <Select
+                  className={style.select}
+                  options={units.map((unit) => ({
+                    value: unit.label,
+                    label: <MathJax.Inline text={unit.label} />
+                  }))}
+                  onChange={onInternalUnitChange}
+                  value={unit?.label}
+                />
+              ) : null
             }
           />
         </Form.Item>

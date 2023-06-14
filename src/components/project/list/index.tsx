@@ -261,6 +261,7 @@ const ProjectCard = ({
         />,
         <Dropdown
           key="more"
+          trigger={['click']}
           menu={{
             items: [
               {

@@ -145,7 +145,7 @@ const Selector = ({
   const [models, setModels] = useState<IModel[]>([])
   const [availableCategories, setAvailableCategories] =
     useState<{ key: string; value: string }[]>()
-  const [categories, setTanatlocCategories] = useState<string[]>([])
+  const [categories, setCategories] = useState<string[]>([])
 
   // Models
   useCustomEffect(() => {
@@ -235,7 +235,7 @@ const Selector = ({
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setTanatlocCategories}
+            onChange={setCategories}
             value={categories}
           />
         )
@@ -267,7 +267,7 @@ const Selector = ({
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setTanatlocCategories}
+            onChange={setCategories}
             value={categories}
           />
         )

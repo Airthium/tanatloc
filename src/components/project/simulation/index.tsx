@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation */
 
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Layout, Menu, Modal, Select, Tabs } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
@@ -145,8 +145,8 @@ const Selector = ({
   const [models, setModels] = useState<IModel[]>([])
   const [availableCategories, setAvailableCategories] =
     useState<{ key: string; value: string }[]>()
-  const [categories, setCategories] = useState<string[]>([])
-  const [activeTab, setActiveTab] = useState('tanatloc')
+  const [tanatlocCategories, setTanatlocCategories] = useState<string[]>([])
+  const [userCategories, setUserCategories] = useState<string[]>([])
 
   // Models
   useCustomEffect(() => {
@@ -167,18 +167,6 @@ const Selector = ({
 
     setAvailableCategories(newCategories)
   }, [models])
-
-/**
-   * On Tab Change
-   * @param activeKey Data
-   */
-const onTabChange = useCallback(
-  (activeKey: string): void => {
-    setActiveTab(activeKey)
-    setCategories([])
-  },
-  []
-)
 
   /**
    * On Tanatloc select
@@ -242,21 +230,20 @@ const onTabChange = useCallback(
         disabled: true,
         label: (
           <Select
-            key={activeTab}
             mode="multiple"
             className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setCategories}
+            onChange={setTanatlocCategories}
           />
         )
       }
     ]
 
     models.forEach((model) => {
-      if (_isInCategories(model.category, categories))
+      if (_isInCategories(model.category, tanatlocCategories))
         items.push({
           key: model.algorithm,
           label: model.name
@@ -264,7 +251,7 @@ const onTabChange = useCallback(
     })
 
     return items
-  }, [models, availableCategories, categories])
+  }, [models, availableCategories, tanatlocCategories])
 
   // Menu items (user)
   const userMenuItems = useMemo(() => {
@@ -274,21 +261,20 @@ const onTabChange = useCallback(
         disabled: true,
         label: (
           <Select
-            key={activeTab}
             mode="multiple"
             className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
             showArrow={false}
             placeholder="Category filter"
-            onChange={setCategories}
+            onChange={setUserCategories}
           />
         )
       }
     ]
 
     user.usermodels.forEach((usermodel, index) => {
-      if (_isInCategories(usermodel.model.category, categories))
+      if (_isInCategories(usermodel.model.category, userCategories))
         items.push({
           key: usermodel.id + '&' + usermodel.model.algorithm,
           label: (
@@ -308,7 +294,7 @@ const onTabChange = useCallback(
     })
 
     return items
-  }, [user, availableCategories, categories, onDelete])
+  }, [user, availableCategories, userCategories, onDelete])
 
   /**
    * Render
@@ -327,7 +313,6 @@ const onTabChange = useCallback(
         <Layout.Sider theme="light" width={300} className={style.selectorSider}>
           <Tabs
             defaultActiveKey="tanatloc"
-            onChange={onTabChange}
             items={[
               {
                 key: 'tanatloc',

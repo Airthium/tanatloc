@@ -45,8 +45,14 @@ describe('components/project/simulation/run/log', () => {
     mockSimulationLog.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(<Log simulation={simulation} steps={steps} />)
+
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    const tabs = screen.getAllByRole('tab')
+    tabs.forEach((tab) => fireEvent.click(tab))
 
     unmount()
   })

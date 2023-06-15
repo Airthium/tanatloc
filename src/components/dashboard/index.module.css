@@ -16,7 +16,7 @@
   border-right: 0px !important;
 }
 
-.menu .display-none {
+.menu :global(.display-none) {
   display: none !important;
 }
 

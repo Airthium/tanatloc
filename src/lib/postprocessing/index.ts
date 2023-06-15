@@ -30,7 +30,7 @@ const run = async (
   await Tools.copyFile(
     {
       path: isElectron()
-        ? `${process.resourcesPath}/app/server/tanatloc/postprocessing`
+        ? `${process.resourcesPath}/extra/server/tanatloc/postprocessing`
         : './dist/postprocessing',
       file: script
     },

@@ -28,7 +28,7 @@ export const loadTemplates = async (): Promise<ITemplates> => {
       const content = await Tools.readFile(
         path.join(
           isElectron()
-            ? process.resourcesPath + '/app/server/tanatloc'
+            ? process.resourcesPath + '/extra/server/tanatloc'
             : './dist',
           'templates',
           Templates[key as keyof typeof Templates]
@@ -37,7 +37,7 @@ export const loadTemplates = async (): Promise<ITemplates> => {
       const func = ejs.compile(content.toString(), {
         root: path.join(
           isElectron()
-            ? process.resourcesPath + '/app/server/tanatloc'
+            ? process.resourcesPath + '/extra/server/tanatloc'
             : './dist',
           'templates'
         )
@@ -58,7 +58,7 @@ export const loadTemplates = async (): Promise<ITemplates> => {
               const content = await Tools.readFile(
                 path.join(
                   isElectron()
-                    ? process.resourcesPath + '/app/server/tanatloc'
+                    ? process.resourcesPath + '/extra/server/tanatloc'
                     : './',
                   'plugins',
                   plugin.key as string,
@@ -68,7 +68,7 @@ export const loadTemplates = async (): Promise<ITemplates> => {
               const func = ejs.compile(content.toString(), {
                 root: path.join(
                   isElectron()
-                    ? process.resourcesPath + '/app/server/tanatloc'
+                    ? process.resourcesPath + '/extra/server/tanatloc'
                     : './',
                   'templates'
                 )
@@ -118,7 +118,7 @@ const render = async (
       {
         root: path.join(
           isElectron()
-            ? process.resourcesPath + '/app/server/tanatloc'
+            ? process.resourcesPath + '/extra/server/tanatloc'
             : './dist',
           'templates'
         )

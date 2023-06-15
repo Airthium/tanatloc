@@ -17,7 +17,7 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
   // Available directories
   const availables = await Tools.listDirectories(
     isElectron()
-      ? `${process.resourcesPath}/app/server/tanatloc/plugins`
+      ? `${process.resourcesPath}/extra/server/tanatloc/plugins`
       : './dist/plugins'
   )
 

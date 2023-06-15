@@ -21,6 +21,7 @@ import NumberHelper from './NumberHelper'
 export interface IGridHelper {
   dispose: () => void
   setVisible: (visible: boolean) => void
+  setScale: (scale: number) => void
   update: () => void
 }
 
@@ -55,6 +56,8 @@ const GridHelper = (
   let gridOffset: number
   let labelOffset: number
   let gridHelper: IGridHelperGroup
+
+  let scaleFactor: number = 1
 
   /**
    * Get divisions
@@ -142,7 +145,7 @@ const GridHelper = (
     const stepDir = new Vector3().copy(axis).multiplyScalar(step)
     let stepValue = start
     for (let i = 0; i < markingsNb; ++i) {
-      const label = LabelHelper(renderer, NumberHelper(stepValue))
+      const label = LabelHelper(renderer, NumberHelper(stepValue * scaleFactor))
       label.position.copy(pos)
       group.add(label)
       pos.add(stepDir)
@@ -338,6 +341,10 @@ const GridHelper = (
     gridHelper.visible = visible
   }
 
+  const setScale = (scale: number): void => {
+    scaleFactor = scale
+  }
+
   /**
    * Dispose
    */
@@ -358,7 +365,7 @@ const GridHelper = (
     })
   }
 
-  return { dispose, setVisible, update }
+  return { dispose, setVisible, setScale, update }
 }
 
 export { GridHelper }

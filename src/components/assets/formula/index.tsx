@@ -167,16 +167,20 @@ const Formula = ({
               )
             }
             addonAfter={
-              unit && units ? (
-                <Select
-                  className={style.select}
-                  options={units.map((unit) => ({
-                    value: unit.label,
-                    label: <MathJax.Inline text={unit.label} />
-                  }))}
-                  onChange={onInternalUnitChange}
-                  value={unit?.label}
-                />
+              unit ? (
+                units ? (
+                  <Select
+                    className={style.select}
+                    options={units.map((unit) => ({
+                      value: unit.label,
+                      label: <MathJax.Inline text={unit.label} />
+                    }))}
+                    onChange={onInternalUnitChange}
+                    value={unit?.label}
+                  />
+                ) : (
+                  <MathJax.Inline text={unit.label} />
+                )
               ) : null
             }
           />

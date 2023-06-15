@@ -21,6 +21,17 @@
   align-items: center;
 }
 
+.unit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.unit > div {
+  line-height: 20px;
+}
+
 .content {
   width: 100%;
   height: 100%;

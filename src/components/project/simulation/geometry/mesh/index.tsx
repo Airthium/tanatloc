@@ -1,7 +1,9 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { Card, Form, Select, Space } from 'antd'
+
+import { IUnit } from '@/models/index.d'
 
 import {
   IFrontSimulationsItem,
@@ -16,6 +18,7 @@ import Utils from '@/lib/utils'
 import SimulationAPI from '@/api/simulation'
 
 import globalStyle from '@/styles/index.module.css'
+import { UnitContext } from '@/context/unit'
 
 /**
  * Props
@@ -99,13 +102,11 @@ export const _onMeshGlobalType = async (
 /**
  * On mesh global size
  * @param simulation Simulation
- * @param type Type
  * @param value Value
  * @param swr SWR
  */
 export const _onMeshGlobalSize = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  type: string,
   value: string,
   swr: {
     mutateOneSimulation: (
@@ -119,8 +120,70 @@ export const _onMeshGlobalSize = async (
     // Update
     newSimulation.scheme.configuration.geometry.meshParameters = {
       ...newSimulation.scheme.configuration.geometry.meshParameters,
-      type,
+      type: newSimulation.scheme.configuration.geometry.meshParameters?.type!,
       value: value
+    }
+
+    const diff = {
+      ...newSimulation.scheme.configuration.geometry,
+      done: true
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'geometry'],
+        value: diff
+      }
+    ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
+      }
+    ])
+
+    // Local
+    await swr.mutateOneSimulation(newSimulation)
+  } catch (err: any) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * On mesh global unit
+ * @param simulation Simulation
+ * @param unit Unit
+ * @param swr SWR
+ */
+export const _onMeshGlobalUnit = async (
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  unit: IUnit,
+  swr: {
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
+  }
+): Promise<void> => {
+  try {
+    const newSimulation = Utils.deepCopy(simulation)
+
+    // Update
+    newSimulation.scheme.configuration.geometry.meshParameters = {
+      ...newSimulation.scheme.configuration.geometry.meshParameters,
+      type: newSimulation.scheme.configuration.geometry.meshParameters?.type!,
+      value: newSimulation.scheme.configuration.geometry.meshParameters?.value!,
+      unit
     }
 
     const diff = {
@@ -168,6 +231,11 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [meshGlobalType, setMeshGlobalType] = useState<string>()
   const [meshGlobalValue, setMeshGlobalValue] = useState<string>()
+  const [meshGlobalUnit, setMeshGlobalUnit] = useState<IUnit>()
+
+  // TODO test context
+  const { system } = useContext(UnitContext)
+  console.log(system)
 
   // Global
   useEffect(() => {
@@ -176,9 +244,11 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
     if (meshParameters) {
       setMeshGlobalType(meshParameters.type)
       setMeshGlobalValue(meshParameters.value)
+      setMeshGlobalUnit(meshParameters.unit ?? { label: 'm' })
     } else {
       setMeshGlobalType('auto')
       setMeshGlobalValue('normal')
+      setMeshGlobalUnit({ label: 'm' })
     }
   }, [simulation])
 
@@ -209,12 +279,28 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
     (value: string): void => {
       ;(async () => {
         try {
-          await _onMeshGlobalSize(simulation, meshGlobalType!, value, swr)
+          await _onMeshGlobalSize(simulation, value, swr)
           setMeshGlobalValue(value)
         } catch (err) {}
       })()
     },
-    [simulation, meshGlobalType, swr]
+    [simulation, swr]
+  )
+
+  /**
+   * On unit
+   * @param unit Unit
+   */
+  const onUnit = useCallback(
+    (unit: IUnit): void => {
+      ;(async () => {
+        try {
+          await _onMeshGlobalUnit(simulation, unit, swr)
+          setMeshGlobalUnit(unit)
+        } catch (err) {}
+      })()
+    },
+    [simulation, swr]
   )
 
   /**
@@ -256,8 +342,10 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
           <Formula
             label="Size"
             defaultValue={meshGlobalValue}
+            units={[{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }]}
+            unit={meshGlobalUnit}
             onValueChange={onSize}
-            unit={{ label: 'm', multiplicator: 1 }}
+            onUnitChange={onUnit}
           />
         )}
       </Space>

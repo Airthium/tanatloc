@@ -385,7 +385,6 @@ export const _onUnitChange = async (
         }
       }
     ])
-    console.log(newSimulation)
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
     ErrorNotification(errors.update, err)

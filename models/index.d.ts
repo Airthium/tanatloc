@@ -71,6 +71,7 @@ export interface IModelGeometry extends IModelCommon {
   meshParameters?: {
     type: string
     value: string
+    unit?: IUnit
   }
   mesh?: Partial<ISimulationTaskFile>
   meshes?: Partial<ISimulationTaskFile>[]

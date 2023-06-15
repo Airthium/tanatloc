@@ -36,7 +36,8 @@ import {
   TableOutlined,
   BgColorsOutlined,
   ColumnWidthOutlined,
-  ArrowsAltOutlined
+  ArrowsAltOutlined,
+  BlockOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
@@ -61,6 +62,7 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
+import MathJax from '@/components/assets/mathjax'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
@@ -477,6 +479,7 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
   const [screenshot, setScreenshot] = useState<boolean>(false)
   const [savingScreenshot, setSavingScreenshot] = useState<boolean>(false)
   const [customRangeOpen, setCustomRangeOpen] = useState<boolean>(false)
+  const [unit, setUnit] = useState<string>('m')
 
   // Data
   const router = useRouter()
@@ -1033,6 +1036,17 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
   }, [])
 
   /**
+   * On unit
+   * @param param Param
+   */
+  const onUnit = useCallback(({ key }: { key: string }): void => {
+    if (key === 'm') gridHelper.current?.setScale(1)
+    else if (key === 'mm') gridHelper.current?.setScale(1e3)
+
+    setUnit(key)
+  }, [])
+
+  /**
    * Render
    */
   return (
@@ -1055,6 +1069,29 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
         </Form.Item>
       </Dialog>
       <Layout.Header className={style.head}>
+        <Tooltip title="Units" className={style.unit}>
+          {unit ? <MathJax.Inline text={unit} /> : null}
+          <Dropdown
+            menu={{
+              onClick: onUnit,
+              items: [
+                {
+                  key: 'm',
+                  label: <MathJax.Inline text={'m'} />
+                },
+                {
+                  key: 'mm',
+                  label: <MathJax.Inline text={'mm'} />
+                }
+              ]
+            }}
+          >
+            <Button icon={<BlockOutlined />} />
+          </Dropdown>
+        </Tooltip>
+
+        <Divider style={{ margin: 0 }} />
+
         <Tooltip title="Take snapshot" placement="left">
           <Dropdown
             placement="bottom"

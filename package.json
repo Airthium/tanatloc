@@ -46,6 +46,7 @@
     "electron-store": "8.1.0"
   },
   "devDependencies": {
+    "@airthium/deep-object-diff": "1.0.0",
     "@airthium/extract-json-from-string": "1.0.15",
     "@airthium/pg-format": "2.0.20",
     "@airthium/typedoc-plugin-airthium": "1.1.6",
@@ -80,7 +81,6 @@
     "archiver": "5.3.1",
     "babel-jest": "29.5.0",
     "cookie": "0.5.0",
-    "deep-object-diff": "1.1.9",
     "depcheck": "1.4.3",
     "ejs": "3.1.9",
     "email-addresses": "5.0.0",

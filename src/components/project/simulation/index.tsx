@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { Layout, Menu, Modal, Select, Tabs } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { addedDiff, updatedDiff } from 'deep-object-diff'
+import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
 import { merge } from 'lodash'
 
 import { IClientPlugin } from '@/plugins/index.d'
@@ -389,7 +389,7 @@ export const _onUpdate = async (
     const newSimulation = Utils.deepCopy(simulation)
 
     // Merge
-    merge(newSimulation.scheme, currentModel)
+    merge(currentModel, newSimulation.scheme)
 
     // Update simulation
     await SimulationAPI.update({ id: simulation.id }, [
@@ -433,8 +433,12 @@ const Updater = ({
       (m) => m.algorithm === simulation?.scheme?.algorithm
     )
     if (currentModel && simulation?.scheme) {
-      const added = addedDiff(simulation.scheme, currentModel)
-      const updated = updatedDiff(simulation.scheme, currentModel)
+      const added = addedDiff(simulation.scheme, currentModel, {
+        excludedKeys: ['value', 'unit']
+      })
+      const updated = updatedDiff(simulation.scheme, currentModel, {
+        excludedKeys: ['value', 'unit']
+      })
 
       if (Object.keys(added).length || Object.keys(updated).length) {
         Modal.info({

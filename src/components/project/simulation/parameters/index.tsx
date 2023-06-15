@@ -8,7 +8,7 @@ import {
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem
 } from '@/api/index.d'
-import { IModelParameter } from '@/models/index.d'
+import { IModelParameter, IUnit } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -75,13 +75,15 @@ export const errors = {
 export const _build2DFormula = (
   key: string,
   child: IModelParameter,
-  onValueChange: (value: string) => void
+  onValueChange: (value: string) => void,
+  onUnitChange: (unit: IUnit) => void
 ): React.JSX.Element => (
   <Formula
     key={key}
     label={child.label2D ?? child.label}
     defaultValue={(child.value ?? child.default) as string}
     onValueChange={onValueChange}
+    onUnitChange={onUnitChange}
     units={child.units}
     unit={child.unit}
   />
@@ -147,15 +149,17 @@ export const _build2DCheckbox = (
 export const _buildFormula = (
   key: string,
   child: IModelParameter,
-  onValueChange: (value: string) => void
+  onValueChange: (value: string) => void,
+  onUnitChange: (unit: IUnit) => void
 ): React.JSX.Element => (
   <Formula
     key={key}
     label={child.label}
     defaultValue={(child.value ?? child.default) as string}
-    onValueChange={onValueChange}
     units={child.units}
     unit={child.unit}
+    onValueChange={onValueChange}
+    onUnitChange={onUnitChange}
   />
 )
 
@@ -291,8 +295,7 @@ export const _onChange = async (
 
     // Diff
     const diff = {
-      ...parameters,
-      done: true
+      ...parameters
     }
 
     // API
@@ -325,6 +328,71 @@ export const _onChange = async (
 }
 
 /**
+ * On unit change
+ * @param simulation Simulation
+ * @param key Key
+ * @param index Index
+ * @param unit Unit
+ * @param swr SWR
+ */
+export const _onUnitChange = async (
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  key: string,
+  index: number,
+  unit: IUnit,
+  swr: {
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
+  }
+): Promise<void> => {
+  try {
+    const newSimulation = Utils.deepCopy(simulation)
+
+    // Update local
+    const parameters = newSimulation.scheme.configuration.parameters
+    const parameter = parameters[key] as {
+      label: string
+      advanced?: boolean
+      children: IModelParameter[]
+    }
+    parameter.children[index].unit = unit
+
+    // Diff
+    const diff = {
+      ...parameters
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'parameters'],
+        value: diff
+      }
+    ])
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...newSimulation.scheme.configuration.run,
+          done: false
+        }
+      }
+    ])
+    console.log(newSimulation)
+    await swr.mutateOneSimulation(newSimulation)
+  } catch (err: any) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
  * ParameterChild
  * @param props Props
  * @returns ParameterChild
@@ -350,6 +418,12 @@ const ParameterChild = ({
     [simulation, pkey, index, swr]
   )
 
+  const onUnitChange = (unit: IUnit): void => {
+    ;(async () => {
+      await _onUnitChange(simulation, pkey, index, unit, swr)
+    })()
+  }
+
   /**
    * On change (event)
    * @param e Event
@@ -369,7 +443,7 @@ const ParameterChild = ({
   if (dimension === 2) {
     if (child.only3D) return null
     else if (child.htmlEntity === 'formula')
-      return _build2DFormula(pkey + '&' + index, child, onChange)
+      return _build2DFormula(pkey + '&' + index, child, onChange, onUnitChange)
     else if (child.htmlEntity === 'select')
       return _build2DSelect(pkey + '&' + index, child, onChange)
     else if (child.htmlEntity === 'checkbox')
@@ -378,7 +452,7 @@ const ParameterChild = ({
     return null
   } else {
     if (child.htmlEntity === 'formula')
-      return _buildFormula(pkey + '&' + index, child, onChange)
+      return _buildFormula(pkey + '&' + index, child, onChange, onUnitChange)
     else if (child.htmlEntity === 'select')
       return _buildSelect(pkey + '&' + index, child, onChange)
     else if (child.htmlEntity === 'checkbox')

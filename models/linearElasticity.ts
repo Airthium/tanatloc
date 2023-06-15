@@ -104,14 +104,20 @@ const LinearElasticity: IModel = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
+            units: [
+              { label: '\\(N.m^{-3}\\)', multiplicator: 1 },
+              { label: 'N.mm^{-3}', multiplicator: 1e-3 }
+            ],
             unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
+            units: [
+              { label: '\\(N.m^{-3}\\)', multiplicator: 1 },
+              { label: 'N.mm^{-3}', multiplicator: 1e-3 }
+            ],
             unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
           },
           {
@@ -119,7 +125,10 @@ const LinearElasticity: IModel = {
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
+            units: [
+              { label: '\\(N.m^{-3}\\)', multiplicator: 1 },
+              { label: 'N.mm^{-3}', multiplicator: 1e-3 }
+            ],
             unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
           }
         ]

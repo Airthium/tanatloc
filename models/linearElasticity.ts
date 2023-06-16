@@ -112,7 +112,7 @@ const LinearElasticity: IModel = {
             default: '0',
             units: [
               { label: 'N.m^{-3}', multiplicator: 1 },
-              { label: 'N.mm^{-3}', multiplicator: 1e-3 }
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
             ],
             unit: { label: 'N.m^{-3}', multiplicator: 1 }
           },
@@ -122,7 +122,7 @@ const LinearElasticity: IModel = {
             default: '0',
             units: [
               { label: 'N.m^{-3}', multiplicator: 1 },
-              { label: 'N.mm^{-3}', multiplicator: 1e-3 }
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
             ],
             unit: { label: 'N.m^{-3}', multiplicator: 1 }
           },
@@ -133,7 +133,7 @@ const LinearElasticity: IModel = {
             default: '0',
             units: [
               { label: 'N.m^{-3}', multiplicator: 1 },
-              { label: 'N.mm^{-3}', multiplicator: 1e-3 }
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
             ],
             unit: { label: 'N.m^{-3}', multiplicator: 1 }
           }
@@ -226,7 +226,7 @@ const LinearElasticity: IModel = {
             default: '0',
             units: [
               { label: 'm', multiplicator: 1 },
-              { label: 'mm', multiplicator: 1e3 }
+              { label: 'mm', multiplicator: 1e-3 }
             ],
             unit: { label: 'm', multiplicator: 1 }
           },
@@ -236,7 +236,7 @@ const LinearElasticity: IModel = {
             default: '0',
             units: [
               { label: 'm', multiplicator: 1 },
-              { label: 'mm', multiplicator: 1e3 }
+              { label: 'mm', multiplicator: 1e-3 }
             ],
             unit: { label: 'm', multiplicator: 1 }
           },
@@ -247,7 +247,7 @@ const LinearElasticity: IModel = {
             default: '0',
             units: [
               { label: 'm', multiplicator: 1 },
-              { label: 'mm', multiplicator: 1e3 }
+              { label: 'mm', multiplicator: 1e-3 }
             ],
             unit: { label: 'm', multiplicator: 1 }
           }

@@ -41,6 +41,7 @@ export interface IModelCommon {
 
 /**
  * Unit
+ * @description Adder should be used only in field with number only (no formula)
  */
 export interface IUnit {
   label: string
@@ -70,7 +71,7 @@ export interface IModelGeometry extends IModelCommon {
   }[]
   meshParameters?: {
     type: string
-    value: string
+    value: number | string
     unit?: IUnit
   }
   mesh?: Partial<ISimulationTaskFile>

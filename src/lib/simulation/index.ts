@@ -3,7 +3,11 @@
 import path from 'path'
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IModel, IModelTypedBoundaryCondition } from '@/models/index.d'
+import {
+  IModel,
+  IModelParameter,
+  IModelTypedBoundaryCondition
+} from '@/models/index.d'
 import { ISimulationGet } from '../index.d'
 
 import { GEOMETRY, GEOMETRY_RELATIVE, SIMULATION } from '@/config/storage'
@@ -372,6 +376,81 @@ const run = async (
         .join(', ')
     })
   })
+
+  // Check unit
+  {
+    // Mesh parameters
+    const meshParameters = configuration.geometry.meshParameters
+    if (meshParameters) {
+      const unit = meshParameters.unit
+      const value = meshParameters.value
+      if (unit) {
+        meshParameters.value =
+          +value * (unit.multiplicator ?? 1) + (unit.multiplicator ?? 0)
+      }
+    }
+
+    // Materials
+    const materials = configuration.materials
+    materials?.values?.forEach((value) => {
+      value.material.children.forEach((child) => {
+        const unit = child.unit
+        const value = child.value
+        if (unit) {
+          child.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
+        }
+      })
+    })
+
+    // Parameters
+    const parameters = configuration.parameters
+    Object.keys(parameters).forEach((key) => {
+      if (key === 'index' || key === 'title' || key === 'done') return
+
+      const parameter = parameters[key] as {
+        label: string
+        advanced?: boolean
+        children: IModelParameter[]
+      }
+
+      parameter.children.forEach((child) => {
+        const unit = child.unit
+        const value = child.value
+        if (unit && value !== undefined)
+          child.value = +value * (unit?.multiplicator ?? 1) + (unit?.adder ?? 0)
+      })
+    })
+
+    // Initialization
+    const initialization = configuration.initialization
+    const direct = initialization?.direct
+    if (direct) {
+      direct.children.forEach((child) => {
+        const unit = child.unit
+        const value = child.value
+        if (unit && value !== undefined)
+          child.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
+      })
+    }
+
+    // Boundary conditions
+    const boundaryConditions = configuration.boundaryConditions
+    Object.keys(boundaryConditions).forEach((key) => {
+      if (key === 'index' || key === 'title' || key === 'done') return
+
+      const boundaryCondition = boundaryConditions[
+        key
+      ] as IModelTypedBoundaryCondition
+      boundaryCondition.values?.forEach((v) => {
+        v.values?.forEach((val) => {
+          const unit = val.unit
+          const value = val.value
+          if (unit && value !== undefined)
+            val.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
+        })
+      })
+    })
+  }
 
   // Compute
   try {

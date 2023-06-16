@@ -113,6 +113,11 @@ describe('lib/three/helpers/GridHelper', () => {
     grid.update()
   })
 
+  test('setScale', () => {
+    const grid = GridHelper(renderer, scene, camera, controls)
+    grid.setScale(1e3)
+  })
+
   test('dispose', () => {
     const grid = GridHelper(renderer, scene, camera, controls)
     grid.update()

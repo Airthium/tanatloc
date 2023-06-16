@@ -196,7 +196,11 @@ describe('components/project/simulation/parameters', () => {
   test('onChange', async () => {
     let value: number | undefined = 0
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={() => props.onValueChange(value)} />
+      <div
+        role="Formula"
+        onClick={() => props.onValueChange(value)}
+        onMouseMove={() => props.onUnitChange({})}
+      />
     ))
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
@@ -204,7 +208,8 @@ describe('components/project/simulation/parameters', () => {
     // Formula
     const formulas = screen.getAllByRole('Formula')
     await act(() => fireEvent.click(formulas[0]))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await act(() => fireEvent.mouseMove(formulas[0]))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
 
     // Update error
     mockUpdate.mockImplementation(() => {
@@ -212,8 +217,9 @@ describe('components/project/simulation/parameters', () => {
     })
     value = undefined
     await act(() => fireEvent.click(formulas[1]))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.mouseMove(formulas[1]))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
@@ -236,20 +242,24 @@ describe('components/project/simulation/parameters', () => {
     const option2 = options2[1]
     await act(() => fireEvent.click(option2))
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(10))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
     await act(() => fireEvent.click(checkbox))
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(9))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(12))
 
     unmount()
   })
 
   test('2D', async () => {
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={() => props.onValueChange()} />
+      <div
+        role="Formula"
+        onClick={() => props.onValueChange()}
+        onMouseMove={() => props.onUnitChange({})}
+      />
     ))
     simulation.scheme.configuration.dimension = 2
     //@ts-ignore
@@ -260,7 +270,8 @@ describe('components/project/simulation/parameters', () => {
     // Formula
     const formulas = screen.getAllByRole('Formula')
     await act(() => fireEvent.click(formulas[0]))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await act(() => fireEvent.mouseMove(formulas[0]))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
 
     // Open advanced
     const open = screen.getByRole('button', { name: 'right Advanced' })
@@ -274,13 +285,13 @@ describe('components/project/simulation/parameters', () => {
     const option2 = options2[1]
     await act(() => fireEvent.click(option2))
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
     await act(() => fireEvent.click(checkbox))
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(10))
 
     unmount()
   })

@@ -78,7 +78,11 @@ describe('components/project/simulation/geometry/mesh', () => {
 
   test('fill', async () => {
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={props.onValueChange} />
+      <div
+        role="Formula"
+        onClick={props.onValueChange}
+        onMouseMove={props.onUnitChange}
+      />
     ))
     const { unmount } = render(<Mesh simulation={simulation} swr={swr} />)
 
@@ -112,9 +116,10 @@ describe('components/project/simulation/geometry/mesh', () => {
 
     const formula = screen.getByRole('Formula')
     await act(() => fireEvent.click(formula))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
+    await act(() => fireEvent.mouseMove(formula))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
     await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(4)
     )
 
     expect(mockErrorNotification).toHaveBeenCalledTimes(0)
@@ -126,7 +131,11 @@ describe('components/project/simulation/geometry/mesh', () => {
 
   test('fill - error', async () => {
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={() => props.onValueChange(1.1)} />
+      <div
+        role="Formula"
+        onClick={() => props.onValueChange(1.1)}
+        onMouseMove={props.onUnitChange}
+      />
     ))
     const { unmount } = render(<Mesh simulation={simulation} swr={swr} />)
 
@@ -162,9 +171,10 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Formula
     const formula = screen.getByRole('Formula')
     await act(() => fireEvent.click(formula))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
+    await act(() => fireEvent.mouseMove(formula))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
     await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(4)
     )
 
     // Formula error
@@ -172,8 +182,9 @@ describe('components/project/simulation/geometry/mesh', () => {
       throw new Error('update error')
     })
     await act(() => fireEvent.click(formula))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(7))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await act(() => fireEvent.mouseMove(formula))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(10))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,
@@ -184,8 +195,8 @@ describe('components/project/simulation/geometry/mesh', () => {
     // Auto error
     const newAuto = screen.getByText('Automatic')
     await act(() => fireEvent.click(newAuto))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(11))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(3))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.update,

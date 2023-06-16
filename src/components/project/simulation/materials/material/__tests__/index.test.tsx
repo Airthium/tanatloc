@@ -67,6 +67,12 @@ describe('components/project/simulation/materials/material', () => {
               htmlEntity: 'entity',
               unit: 'unit',
               default: 0
+            },
+            {
+              label: 'Test2',
+              name: 'Test2',
+              htmlEntity: 'entity',
+              default: 1
             }
           ]
         }
@@ -166,7 +172,11 @@ describe('components/project/simulation/materials/material', () => {
 
   test('fill', () => {
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={() => props.onValueChange(1)} />
+      <div
+        role="Formula"
+        onClick={() => props.onValueChange(1)}
+        onMouseMove={() => props.onUnitChange({})}
+      />
     ))
     mockSelector.mockImplementation((props) => (
       <div
@@ -205,8 +215,11 @@ describe('components/project/simulation/materials/material', () => {
     )
 
     // Formula
-    const formula = screen.getByRole('Formula')
+    const formula = screen.getAllByRole('Formula')[0]
     fireEvent.click(formula)
+
+    // Unit
+    fireEvent.mouseMove(formula)
 
     // Database
     const database = screen.getByRole('Database')

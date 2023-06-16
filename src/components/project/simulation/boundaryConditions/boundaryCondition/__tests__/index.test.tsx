@@ -241,6 +241,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           props.onValueChange(1)
           props.onCheckedChange(true)
         }}
+        onMouseMove={() => props.onUnitChange({})}
       />
     ))
     mockSelector.mockImplementation((props) => (
@@ -280,6 +281,9 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     // Value
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
+
+    // Unit
+    fireEvent.mouseMove(formula)
 
     // Selector
     const selector = screen.getByRole('Selector')

@@ -7,7 +7,7 @@ import Simulation, { errors } from '@/components/project/simulation'
 
 const mockAddedDiff = jest.fn()
 const mockUpdatedDiff = jest.fn()
-jest.mock('deep-object-diff', () => ({
+jest.mock('@airthium/deep-object-diff', () => ({
   addedDiff: () => mockAddedDiff(),
   updatedDiff: () => mockUpdatedDiff()
 }))

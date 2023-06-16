@@ -27,6 +27,9 @@ jest.mock('@/components/assets/notification', () => ({
 
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
+jest.mock('@/components/assets/mathjax', () => ({
+  Inline: (props: any) => props.text
+}))
 
 jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
   TrackballControls: jest.fn().mockImplementation(() => ({
@@ -74,6 +77,7 @@ jest.mock('@/lib/three/helpers/GridHelper', () => ({
   GridHelper: () => ({
     update: jest.fn(),
     setVisible: jest.fn(),
+    setScale: jest.fn(),
     dispose: jest.fn()
   })
 }))
@@ -460,6 +464,18 @@ describe('components/project/view/three', () => {
     // Buttons
     const buttons = screen.getAllByRole('button')
     buttons.forEach((button) => fireEvent.click(button))
+
+    // Unit
+    const unit = screen.getByRole('button', { name: 'block' })
+    await act(() => fireEvent.mouseEnter(unit))
+
+    await waitFor(() => screen.getByText('mm'))
+    const mm = screen.getByText('mm')
+    await act(() => fireEvent.click(mm))
+
+    await waitFor(() => screen.getByText('m'))
+    const m = screen.getByText('m')
+    await act(() => fireEvent.click(m))
 
     // Avatar
     const snapshot = screen.getByRole('button', {

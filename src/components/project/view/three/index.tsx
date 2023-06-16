@@ -1041,7 +1041,7 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
    */
   const onUnit = useCallback(({ key }: { key: string }): void => {
     if (key === 'm') gridHelper.current?.setScale(1)
-    else if (key === 'mm') gridHelper.current?.setScale(1e3)
+    else gridHelper.current?.setScale(1e3)
 
     setUnit(key)
   }, [])
@@ -1070,7 +1070,7 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
       </Dialog>
       <Layout.Header className={style.head}>
         <Tooltip title="Units" className={style.unit}>
-          {unit ? <MathJax.Inline text={unit} /> : null}
+          {<MathJax.Inline text={unit} />}
           <Dropdown
             menu={{
               onClick: onUnit,

@@ -3,13 +3,14 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Formula from '@/components/assets/formula'
 
 jest.mock('@/components/assets/mathjax', () => ({
-  Inline: () => <div />,
-  Formula: () => <div />,
+  Inline: (props: any) => props.text,
+  Formula: (props: any) => props.text,
   Html: () => <div />
 }))
 
 const onValueChange = jest.fn()
 const onCheckedChange = jest.fn()
+const onUnitChange = jest.fn()
 
 describe('components/assets/formula', () => {
   beforeEach(() => {
@@ -69,6 +70,28 @@ describe('components/assets/formula', () => {
     await act(() => fireEvent.change(input, { target: { value: 'test1' } }))
 
     await waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
+
+    unmount()
+  })
+
+  test('selectChange', async () => {
+    const { unmount } = render(
+      <Formula
+        defaultValue="value"
+        unit={{ label: 'unit1' }}
+        units={[{ label: 'unit1' }, { label: 'unit2' }]}
+        onValueChange={onValueChange}
+        onUnitChange={onUnitChange}
+      />
+    )
+
+    const select = screen.getByRole('combobox')
+    await act(() => fireEvent.mouseDown(select))
+
+    const unit2 = screen.getAllByText('unit2')
+    await act(() => fireEvent.click(unit2[1]))
+
+    await waitFor(() => expect(onUnitChange).toHaveBeenCalledTimes(1))
 
     unmount()
   })

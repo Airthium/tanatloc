@@ -73,24 +73,30 @@ const LinearElasticity: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '8050',
-          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
-          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
+          units: [
+            { label: 'kg.m^{-3}', multiplicator: 1 },
+            { label: 'g.mm^{-3}', multiplicator: 1e6 }
+          ],
+          unit: { label: 'kg.m^{-3}', multiplicator: 1 }
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
           default: '1e9',
-          units: [{ label: '\\(Pa\\)', multiplicator: 1 }],
-          unit: { label: '\\(Pa\\)', multiplicator: 1 }
+          units: [
+            { label: 'Pa', multiplicator: 1 },
+            { label: 'kPa', multiplicator: 1e3 },
+            { label: 'MPa', multiplicator: 1e6 },
+            { label: 'GPa', multiplicator: 1e9 }
+          ],
+          unit: { label: 'Pa', multiplicator: 1 }
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
-          default: '0.4',
-          units: [{ label: '1', multiplicator: 1 }],
-          unit: { label: '1', multiplicator: 1 }
+          default: '0.4'
         }
       ]
     },
@@ -105,20 +111,20 @@ const LinearElasticity: IModel = {
             htmlEntity: 'formula',
             default: '0',
             units: [
-              { label: '\\(N.m^{-3}\\)', multiplicator: 1 },
+              { label: 'N.m^{-3}', multiplicator: 1 },
               { label: 'N.mm^{-3}', multiplicator: 1e-3 }
             ],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            unit: { label: 'N.m^{-3}', multiplicator: 1 }
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: '0',
             units: [
-              { label: '\\(N.m^{-3}\\)', multiplicator: 1 },
+              { label: 'N.m^{-3}', multiplicator: 1 },
               { label: 'N.mm^{-3}', multiplicator: 1e-3 }
             ],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            unit: { label: 'N.m^{-3}', multiplicator: 1 }
           },
           {
             only3D: true,
@@ -126,10 +132,10 @@ const LinearElasticity: IModel = {
             htmlEntity: 'formula',
             default: '0',
             units: [
-              { label: '\\(N.m^{-3}\\)', multiplicator: 1 },
+              { label: 'N.m^{-3}', multiplicator: 1 },
               { label: 'N.mm^{-3}', multiplicator: 1e-3 }
             ],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            unit: { label: 'N.m^{-3}', multiplicator: 1 }
           }
         ]
       },
@@ -141,8 +147,8 @@ const LinearElasticity: IModel = {
             label: 'Standard gravity',
             htmlEntity: 'formula',
             default: '9.81',
-            units: [{ label: '\\(m.s^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(m.s^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'm.s^{-2}', multiplicator: 1 }],
+            unit: { label: 'm.s^{-2}', multiplicator: 1 }
           }
         ]
       },
@@ -218,23 +224,32 @@ const LinearElasticity: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(m\\)', multiplicator: 1 }],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [
+              { label: 'm', multiplicator: 1 },
+              { label: 'mm', multiplicator: 1e3 }
+            ],
+            unit: { label: 'm', multiplicator: 1 }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(m\\)', multiplicator: 1 }],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [
+              { label: 'm', multiplicator: 1 },
+              { label: 'mm', multiplicator: 1e3 }
+            ],
+            unit: { label: 'm', multiplicator: 1 }
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(m\\)', multiplicator: 1 }],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [
+              { label: 'm', multiplicator: 1 },
+              { label: 'mm', multiplicator: 1e3 }
+            ],
+            unit: { label: 'm', multiplicator: 1 }
           }
         ],
         refineFactor: 2
@@ -246,8 +261,8 @@ const LinearElasticity: IModel = {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}', multiplicator: 1 }],
+            unit: { label: 'N.m^{-2}', multiplicator: 1 }
           }
         ],
         refineFactor: 2
@@ -259,22 +274,22 @@ const LinearElasticity: IModel = {
             label: 'x',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}', multiplicator: 1 }],
+            unit: { label: 'N.m^{-2}', multiplicator: 1 }
           },
           {
             label: 'y',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}', multiplicator: 1 }],
+            unit: { label: 'N.m^{-2}', multiplicator: 1 }
           },
           {
             label: 'z',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}', multiplicator: 1 }],
+            unit: { label: 'N.m^{-2}', multiplicator: 1 }
           }
         ]
       }

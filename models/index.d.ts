@@ -239,6 +239,7 @@ export interface IModelBoundaryConditionValue {
   values?: {
     checked?: boolean
     value?: TValue
+    unit?: IUnit
   }[]
 }
 

@@ -1,6 +1,6 @@
 /** @module Components.Assets.Formula */
 
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
@@ -125,10 +125,39 @@ const Formula = ({
     [onValueChangeDelayed]
   )
 
-  const onInternalUnitChange = (value: string): void => {
-    const unit = units?.find((u) => u.label === value)!
-    onUnitChange?.(unit)
-  }
+  /**
+   * On select change
+   * @param value Value
+   */
+  const onSelectChange = useCallback(
+    (value: string): void => {
+      const unit = units?.find((u) => u.label === value)!
+      onUnitChange?.(unit)
+    },
+    [units, onUnitChange]
+  )
+
+  // Addon after
+  const addonAfter = useMemo(() => {
+    if (unit) {
+      if (units && units.length > 1)
+        return (
+          <Select
+            className={style.select}
+            options={units.map((unit) => ({
+              value: unit.label,
+              label: <MathJax.Inline text={unit.label} />
+            }))}
+            onChange={onSelectChange}
+            value={unit?.label}
+          />
+        )
+
+      return <MathJax.Inline text={unit.label} />
+    }
+
+    return null
+  }, [unit, units, onSelectChange])
 
   /**
    * Render
@@ -166,23 +195,7 @@ const Formula = ({
                 <CheckCircleOutlined className={globalStyle.textGreen} />
               )
             }
-            addonAfter={
-              unit ? (
-                units ? (
-                  <Select
-                    className={style.select}
-                    options={units.map((unit) => ({
-                      value: unit.label,
-                      label: <MathJax.Inline text={unit.label} />
-                    }))}
-                    onChange={onInternalUnitChange}
-                    value={unit?.label}
-                  />
-                ) : (
-                  <MathJax.Inline text={unit.label} />
-                )
-              ) : null
-            }
+            addonAfter={addonAfter}
           />
         </Form.Item>
       </Form>

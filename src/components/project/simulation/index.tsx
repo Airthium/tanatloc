@@ -389,7 +389,7 @@ export const _onUpdate = async (
     const newSimulation = Utils.deepCopy(simulation)
 
     // Merge
-    merge(currentModel, newSimulation.scheme)
+    merge(newSimulation.scheme, currentModel)
 
     // Update simulation
     await SimulationAPI.update({ id: simulation.id }, [

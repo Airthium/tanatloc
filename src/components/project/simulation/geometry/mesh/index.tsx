@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, Form, Select, Space } from 'antd'
 
 import { IUnit } from '@/models/index.d'
@@ -18,7 +18,6 @@ import Utils from '@/lib/utils'
 import SimulationAPI from '@/api/simulation'
 
 import globalStyle from '@/styles/index.module.css'
-import { UnitContext } from '@/context/unit'
 
 /**
  * Props
@@ -232,10 +231,6 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
   const [meshGlobalType, setMeshGlobalType] = useState<string>()
   const [meshGlobalValue, setMeshGlobalValue] = useState<string>()
   const [meshGlobalUnit, setMeshGlobalUnit] = useState<IUnit>()
-
-  // TODO test context
-  const { system } = useContext(UnitContext)
-  console.log(system)
 
   // Global
   useEffect(() => {

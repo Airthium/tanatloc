@@ -364,7 +364,7 @@ const Material = ({
                   child={child}
                   index={index}
                   value={m?.value}
-                  unit={m?.unit}
+                  unit={m?.unit ?? child.unit}
                   _onMaterialChange={onMaterialChange}
                   _onUnitChange={onUnitChange}
                 />

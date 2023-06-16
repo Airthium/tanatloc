@@ -18,7 +18,8 @@ import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import {
   IModelBoundaryCondition,
   IModelBoundaryConditionValue,
-  IModelTypedBoundaryCondition
+  IModelTypedBoundaryCondition,
+  IUnit
 } from '@/models/index.d'
 import {
   IFrontSimulationsItem,
@@ -62,8 +63,10 @@ export interface IBoundaryConditionItemProps {
   index: number
   value: string | number | undefined
   checked: boolean | undefined
+  unit: IUnit | undefined
   _onValueChange: (index: number, value: string) => void
   _onCheckedChange: (index: number, checked: boolean) => void
+  _onUnitChange: (index: number, unit: IUnit) => void
 }
 
 const BoundaryConditionItem = ({
@@ -71,8 +74,10 @@ const BoundaryConditionItem = ({
   index,
   value,
   checked,
+  unit,
   _onValueChange,
-  _onCheckedChange
+  _onCheckedChange,
+  _onUnitChange
 }: IBoundaryConditionItemProps): React.JSX.Element => {
   /**
    * On value change
@@ -93,6 +98,15 @@ const BoundaryConditionItem = ({
   )
 
   /**
+   * On unit change
+   * @param unit unit
+   */
+  const onUnitChange = useCallback(
+    (unit: IUnit): void => _onUnitChange(index, unit),
+    [index, _onUnitChange]
+  )
+
+  /**
    * Render
    */
   return (
@@ -102,8 +116,9 @@ const BoundaryConditionItem = ({
       defaultChecked={checked}
       onValueChange={onValueChange}
       onCheckedChange={onCheckedChange}
+      onUnitChange={onUnitChange}
       units={boundaryCondition.units}
-      unit={boundaryCondition.unit}
+      unit={unit}
     />
   )
 }
@@ -285,7 +300,7 @@ const BoundaryCondition = ({
       values: [
         ...prevCurrent!.values!.slice(0, index),
         {
-          checked: prevCurrent!.values![index].checked,
+          ...prevCurrent!.values![index],
           value
         },
         ...prevCurrent!.values!.slice(index + 1)
@@ -305,8 +320,8 @@ const BoundaryCondition = ({
         values: [
           ...prevCurrent!.values!.slice(0, index),
           {
-            checked,
-            value: prevCurrent!.values![index].value
+            ...prevCurrent!.values![index],
+            checked
           },
           ...prevCurrent!.values!.slice(index + 1)
         ]
@@ -314,6 +329,25 @@ const BoundaryCondition = ({
     },
     []
   )
+
+  /**
+   * On unit change
+   * @param index Index
+   * @param unit Unit
+   */
+  const onUnitChange = useCallback((index: number, unit: IUnit): void => {
+    setCurrent((prevCurrent) => ({
+      ...(prevCurrent as IModelBoundaryConditionValue),
+      values: [
+        ...prevCurrent!.values!.slice(0, index),
+        {
+          ...prevCurrent!.values![index],
+          unit
+        },
+        ...prevCurrent!.values!.slice(index + 1)
+      ]
+    }))
+  }, [])
 
   /**
    * On selected
@@ -344,8 +378,10 @@ const BoundaryCondition = ({
                     ? current.values![index].checked
                     : undefined
                 }
+                unit={current.values![index].unit ?? child.unit}
                 _onValueChange={onValueChange}
                 _onCheckedChange={onCheckedChange}
+                _onUnitChange={onUnitChange}
               />
             )
           })}
@@ -353,7 +389,7 @@ const BoundaryCondition = ({
       )
     }
     return null
-  }, [current, dimension, onCheckedChange, onValueChange])
+  }, [current, dimension, onCheckedChange, onValueChange, onUnitChange])
 
   /**
    * On geometry change

@@ -11,7 +11,8 @@ import { clearIntervalAsync } from 'set-interval-async'
 import {
   IModel,
   IModelMeshRefinement,
-  IModelTypedBoundaryCondition
+  IModelTypedBoundaryCondition,
+  IOutput
 } from '@/models/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
@@ -673,14 +674,17 @@ const processOutput = async (
     )
 
     const lines = process.toString().split('\n')
-    const resultLines = lines.filter((l) => l.includes('PROCESS VTU FILE'))
-    const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
+    const JSONLines: IOutput[] = lines
+      .filter((l) => l)
+      .map((line) => JSON.parse(line))
+    const resultOutputs = JSONLines.filter((l) => l.type === 'VTU')
+    const dataOutputs = JSONLines.filter((l) => l.type === 'DATA')
 
     // Results
-    await processResults(id, resultLines, simulationPath, task, update)
+    await processResults(id, resultOutputs, simulationPath, task, update)
 
     // Data
-    await processDatas(id, dataLines, simulationPath, task, update)
+    await processDatas(id, dataOutputs, simulationPath, task, update)
   } catch (err) {}
 }
 
@@ -694,18 +698,18 @@ const processOutput = async (
  */
 const processResult = async (
   id: string,
-  result: string,
+  result: IOutput,
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
 ): Promise<void> => {
   // Already existing result
   if (!results[id]) results[id] = []
-  if (results[id].includes(result)) return
-  results[id].push(result)
+  if (results[id].includes(result.name)) return
+  results[id].push(result.name)
 
   // New result
-  const resFile = result.replace('PROCESS VTU FILE', '').trim()
+  const resFile = result.name
   const partPath = resFile.replace('.vtu', '')
   try {
     // Convert
@@ -732,7 +736,8 @@ const processResult = async (
         fileName: resFile,
         originPath: path.join(runPath, resultPath),
         name: res.name,
-        glb: res.glb
+        glb: res.glb,
+        extra: result.extra
       }))
     ]
     update()
@@ -742,7 +747,7 @@ const processResult = async (
     update()
 
     // Remove line from existing results
-    const index = results[id].findIndex((l) => l === result)
+    const index = results[id].findIndex((l) => l === result.name)
     results[id].splice(index, 1)
   }
 }
@@ -750,22 +755,22 @@ const processResult = async (
 /**
  * Process results
  * @param id Simulation id
- * @param resultLines Result lines
+ * @param resultOutputs Result outputs
  * @param simulationPath Simulation path
  * @param task Task
  * @param update Update task
  */
 const processResults = async (
   id: string,
-  resultLines: string[],
+  resultOutputs: IOutput[],
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
 ): Promise<void> => {
   // Get result
   await Promise.all(
-    resultLines.map(async (line) =>
-      processResult(id, line, simulationPath, task, update)
+    resultOutputs.map(async (output) =>
+      processResult(id, output, simulationPath, task, update)
     )
   )
 }
@@ -780,18 +785,18 @@ const processResults = async (
  */
 const processData = async (
   id: string,
-  data: string,
+  data: IOutput,
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
 ): Promise<void> => {
   // Already existing data
   if (!datas[id]) datas[id] = []
-  if (datas[id].includes(data)) return
-  datas[id].push(data)
+  if (datas[id].includes(data.name)) return
+  datas[id].push(data.name)
 
   // New data
-  const dataFile = data.replace('PROCESS DATA FILE', '').trim()
+  const dataFile = data.name
 
   try {
     // Read file
@@ -801,7 +806,11 @@ const processData = async (
     // Add to tasks
     task.datas = [
       ...(task.datas ?? []),
-      { fileName: data, ...JSON.parse(dContent.toString()) }
+      {
+        fileName: data.name,
+        extra: data.extra,
+        ...JSON.parse(dContent.toString())
+      }
     ]
     update()
   } catch (err: any) {
@@ -809,7 +818,7 @@ const processData = async (
     update()
 
     // Remove line from existing datas
-    const index = datas[id].findIndex((l) => l === data)
+    const index = datas[id].findIndex((l) => l === data.name)
     datas[id].splice(index, 1)
   }
 }
@@ -817,22 +826,22 @@ const processData = async (
 /**
  * Process data
  * @param id Simulation id
- * @param dataLines Data lines
+ * @param dataOutputs Data outputes
  * @param simulationPath Simulation path
  * @param task Task
  * @param update Update task
  */
 const processDatas = async (
   id: string,
-  dataLines: string[],
+  dataOutputs: IOutput[],
   simulationPath: string,
   task: ISimulationTask,
   update: () => void
 ): Promise<void> => {
   // Get data
   await Promise.all(
-    dataLines.map(async (line) =>
-      processData(id, line, simulationPath, task, update)
+    dataOutputs.map(async (output) =>
+      processData(id, output, simulationPath, task, update)
     )
   )
 }

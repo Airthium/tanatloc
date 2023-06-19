@@ -283,30 +283,41 @@ const LinearElasticityTime: IModel = {
       index: 5,
       title: 'Run',
       results: [
-        {
-          name: 'Displacement'
-        },
-        {
-          name: 'vonMises'
-        },
-        {
-          name: 'gamma11'
-        },
-        {
-          name: 'gamma12'
-        },
-        {
-          name: 'gamma13'
-        },
-        {
-          name: 'gamma22'
-        },
-        {
-          name: 'gamma23'
-        },
-        {
-          name: 'gamma33'
-        }
+        [
+          {
+            name: 'Displacement',
+            data: ['Ux', 'Uy', 'Uz'],
+            data2D: ['Ux', 'Uy', '0']
+          },
+          {
+            name: 'vonMises',
+            data: 'Sigma'
+          },
+          {
+            name: 'gamma11',
+            data: 'gamma11'
+          },
+          {
+            name: 'gamma12',
+            data: 'gamma12'
+          },
+          {
+            name: 'gamma13',
+            data: 'gamma13'
+          },
+          {
+            name: 'gamma22',
+            data: 'gamma22'
+          },
+          {
+            name: 'gamma23',
+            data: 'gamma23'
+          },
+          {
+            name: 'gamma33',
+            data: 'gamma33'
+          }
+        ]
       ],
       resultsFilter: {
         name: 'Time',

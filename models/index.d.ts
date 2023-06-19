@@ -6,6 +6,19 @@ import { IClientPlugin } from '@/plugins/index.d'
 type TValue = boolean | number | string
 
 /**
+ * Output
+ */
+export interface IOutput {
+  type: 'VTU' | 'DATA'
+  name: string
+  extra: {
+    name: string
+    units: IUnit[]
+    unit: IUnit
+  }
+}
+
+/**
  * Model
  */
 export interface IModel {
@@ -256,8 +269,16 @@ export interface IModelBoundaryCondition {
 /**
  * Run
  */
+export interface IModelRunResult {
+  name: string
+  data: string | string[]
+  data2D?: string | string[]
+  units?: IUnit[]
+  unit?: IUnit
+}
+
 export interface IModelRun extends IModelCommon {
-  results?: { name: string }[] | { name: string }[][]
+  results?: IModelRunResult[][]
   resultsFilter?: {
     name: string
     prefixPattern: string | RegExp

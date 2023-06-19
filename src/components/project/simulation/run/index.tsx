@@ -160,8 +160,6 @@ const Run = ({
     2000
   )
 
-  console.log(currentSimulation)
-
   const configuration = useMemo(
     () => simulation.scheme.configuration,
     [simulation]

@@ -287,35 +287,86 @@ const LinearElasticityTime: IModel = {
           {
             name: 'Displacement',
             data: ['Ux', 'Uy', 'Uz'],
-            data2D: ['Ux', 'Uy', '0']
+            data2D: ['Ux', 'Uy', '0'],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            unit: { label: 'm' }
           },
           {
             name: 'vonMises',
-            data: 'Sigma'
+            data: 'Sigma',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           },
           {
             name: 'gamma11',
-            data: 'gamma11'
+            data: 'gamma11',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           },
           {
             name: 'gamma12',
-            data: 'gamma12'
+            data: 'gamma12',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           },
           {
             name: 'gamma13',
-            data: 'gamma13'
+            data: 'gamma13',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           },
           {
             name: 'gamma22',
-            data: 'gamma22'
+            data: 'gamma22',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           },
           {
             name: 'gamma23',
-            data: 'gamma23'
+            data: 'gamma23',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           },
           {
             name: 'gamma33',
-            data: 'gamma33'
+            data: 'gamma33',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
           }
         ]
       ],

@@ -9,9 +9,9 @@ type TValue = boolean | number | string
  * Output
  */
 export interface IOutput {
-  type: 'VTU' | 'DATA'
+  type: 'VTU' | 'DATA' | 'COUPLING'
   name: string
-  extra: {
+  extra?: {
     name: string
     units: IUnit[]
     unit: IUnit

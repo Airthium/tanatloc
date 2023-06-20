@@ -165,9 +165,14 @@ const ThermicDiffusion: IModel = {
       index: 5,
       title: 'Run',
       results: [
-        {
-          name: 'T'
-        }
+        [
+          {
+            name: 'T',
+            data: 'T',
+            units: [{ label: 'K' }],
+            unit: { label: 'K' }
+          }
+        ]
       ],
       resultsFilter: {
         name: 'Time',

@@ -98,14 +98,11 @@ try {
     
 <%# Save -%>
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
-    solution: {
-        path: run.resultPath,
-        name: '"Result"',
-        mesh: mesh.name,
-        sol: ['u'],
-        dataName: run.results.map(r => r.name),
-        order: [1]
-    }
+    dimension,
+    path: run.resultPath,
+    name: '"Result"',
+    mesh: mesh.name,
+    results: run.results[0]
 }), 1) -%>
     
     appendLog("End");

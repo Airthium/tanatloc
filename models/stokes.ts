@@ -203,12 +203,26 @@ const Stokes: IModel = {
       index: 6,
       title: 'Run',
       results: [
-        {
-          name: 'Velocity'
-        },
-        {
-          name: 'Presure'
-        }
+        [
+          {
+            name: 'Velocity',
+            data: ['Ux', 'Uy', 'Uz'],
+            data2D: ['Ux', 'Uy', '0'],
+            units: [{ label: 'm.s^-1' }],
+            unit: { label: 'm.s^-1' }
+          },
+          {
+            name: 'Presure',
+            data: 'p',
+            units: [
+              { label: 'Pa' },
+              { label: 'kPa', multiplicator: 1e3 },
+              { label: 'MPa', multiplicator: 1e6 },
+              { label: 'GPa', multiplicator: 1e9 }
+            ],
+            unit: { label: 'Pa' }
+          }
+        ]
       ],
       postprocessing: [
         {

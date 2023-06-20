@@ -120,9 +120,12 @@ const Poisson: IModel = {
       index: 4,
       title: 'Run',
       results: [
-        {
-          name: 'u'
-        }
+        [
+          {
+            name: 'u',
+            data: 'u'
+          }
+        ]
       ]
     }
   }

@@ -106,7 +106,7 @@ export const _onMeshGlobalType = async (
  */
 export const _onMeshGlobalSize = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  value: string,
+  value: string | number,
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
@@ -229,7 +229,7 @@ export const _onMeshGlobalUnit = async (
 const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [meshGlobalType, setMeshGlobalType] = useState<string>()
-  const [meshGlobalValue, setMeshGlobalValue] = useState<string>()
+  const [meshGlobalValue, setMeshGlobalValue] = useState<string | number>()
   const [meshGlobalUnit, setMeshGlobalUnit] = useState<IUnit>()
 
   // Global
@@ -271,7 +271,7 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
    * @param value Value
    */
   const onSize = useCallback(
-    (value: string): void => {
+    (value: string | number): void => {
       ;(async () => {
         try {
           await _onMeshGlobalSize(simulation, value, swr)

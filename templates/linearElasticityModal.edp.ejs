@@ -145,14 +145,11 @@ try {
 }), 2) -%>
         
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
-    solution: {
-        path: run.resultPath,
-        name: '"Result_"+fr',
-        mesh: mesh.name,
-        sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz']],
-        dataName: run.results.map(r => r.name),
-        order: [1]
-    }
+    dimension,
+    path: run.resultPath,
+    name: '"Result_"+fr',
+    mesh: mesh.name,
+    results: run.results[0]
 }), 2) -%>
     }
     

@@ -182,7 +182,7 @@ describe('plugins/local/src/lib', () => {
     } as ISimulationTask)
   })
 
-  test('startProcess', () => {
+  test('startProcess', async () => {
     const update = jest.fn()
     mockSetInterval.mockImplementation((callback) => {
       callback()
@@ -191,7 +191,7 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(() => {
       throw new Error('no file')
     })
-    Local.stopProcess(
+    await Local.stopProcess(
       'id',
       'path',
       { index: 1, label: 'label', status: 'wait' },
@@ -214,13 +214,13 @@ describe('plugins/local/src/lib', () => {
     )
   })
 
-  test('stopProcess', () => {
+  test('stopProcess', async () => {
     const update = jest.fn()
     mockReadFile.mockImplementation(() => {
       throw new Error('no file')
     })
 
-    Local.stopProcess(
+    await Local.stopProcess(
       'id',
       'path',
       { index: 1, label: 'label', status: 'wait' },
@@ -725,9 +725,9 @@ describe('plugins/local/src/lib', () => {
     } as ISimulation<'scheme'[]>['scheme'])
   })
 
-  test('monitoring', () => {
+  test('monitoring', async () => {
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
-    Local.monitoring(
+    await Local.monitoring(
       'id',
       '_',
       [{ index: 1, label: 'label', status: 'wait' }],
@@ -766,7 +766,7 @@ describe('plugins/local/src/lib', () => {
   test('processResult', async () => {
     await Local.processResult(
       'new_id',
-      'result',
+      { type: 'VTU', name: 'result' },
       'path',
       { index: 1, label: 'task', status: 'process' },
       () => undefined
@@ -776,7 +776,7 @@ describe('plugins/local/src/lib', () => {
   test('processData', async () => {
     await Local.processData(
       'new_id',
-      'data',
+      { type: 'DATA', name: 'data' },
       'path',
       { index: 1, label: 'task', status: 'process' },
       () => undefined

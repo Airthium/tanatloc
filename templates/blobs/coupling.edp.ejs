@@ -1,20 +1,33 @@
+<%
+    const getMeshOutput = (name) => {
+        const output = ['"{"']
+        output.push('"\\\"type\\\": \\\"COUPLING\\\", "')
+        output.push('"\\\"name\\\": \\\"\" + ' + name + ' + \".mesh\\\""')
+        output.push('"}"')
+
+        return output.join('\n\t\t<< ')
+    }
+
+    const getDataOutput = (name) => {
+        const output = ['"{"']
+        output.push('"\\\"type\\\": \\\"COUPLING\\\", "')
+        output.push('"\\\"name\\\": \\\"\" + ' + name + ' + \".dat\\\""')
+        output.push('"}"')
+
+        return output.join('\n\t\t<< ')
+    }
+-%>
 // Data for coupling
 appendLog("Save coupling data...");
 
 savemesh(<%- mesh -%>, "<%- path -%>/" + <%- name -%> + ".mesh");
-if (mpirank == 0) {
-    ofstream processOut("process_data.log", append);
-    string saveOutput = "PROCESS COUPLING FILE " + <%- name %> + ".mesh";
-    processOut << saveOutput << endl;
-}
-
 {
     ofstream coupling("<%- path -%>/" + <%- name -%> + ".dat");
     coupling << <%- data.join('[] << ') -%>[];
 }
+
 if (mpirank == 0) {
     ofstream processOut("process_data.log", append);
-    string saveOutput = "PROCESS COUPLING FILE " + <%- name %> + ".dat";
-    processOut << saveOutput << endl;
+    processOut << <%- getMeshOutput(name) -%> << endl;
+    processOut << <%- getDataOutput(name) -%> << endl;
 }
-// End Data for coupling

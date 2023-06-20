@@ -192,9 +192,15 @@ const LinearElasticityModal: IModel = {
       index: 5,
       title: 'Run',
       results: [
-        {
-          name: 'Displacement'
-        }
+        [
+          {
+            name: 'Displacement',
+            data: ['Ux', 'Uy', 'Uz'],
+            data2D: ['Ux', 'Uy', '0'],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            unit: { label: 'm' }
+          }
+        ]
       ],
       resultsFilter: {
         name: 'Mode number',

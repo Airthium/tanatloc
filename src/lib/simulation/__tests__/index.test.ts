@@ -203,6 +203,7 @@ describe('lib/simulation', () => {
           geometry: {
             value: 'id'
           },
+          parameters: {},
           boundaryConditions: {},
           run: {
             cloudServer: {
@@ -233,6 +234,7 @@ describe('lib/simulation', () => {
           geometry: {
             value: 'id'
           },
+          parameters: {},
           initialization: {
             value: {
               type: 'coupling'
@@ -261,6 +263,7 @@ describe('lib/simulation', () => {
           geometry: {
             value: 'id'
           },
+          parameters: {},
           initialization: {
             value: {
               type: 'coupling',
@@ -292,8 +295,17 @@ describe('lib/simulation', () => {
           initialization: {
             value: {
               type: 'default'
+            },
+            direct: {
+              children: [
+                {
+                  value: 1
+                },
+                { value: 1, unit: { label: 'm' } }
+              ]
             }
           },
+          parameters: {},
           boundaryConditions: {},
           run: {
             cloudServer: {
@@ -351,7 +363,22 @@ describe('lib/simulation', () => {
         configuration: {
           dimension: 2,
           geometry: {
-            value: 'id'
+            value: 'id',
+            meshParameters: {
+              value: 1,
+              unit: { label: 'm' }
+            }
+          },
+          parameters: {
+            title: 'title',
+            key: {
+              children: [
+                {
+                  value: 1
+                },
+                { value: 1, unit: { label: 'm' } }
+              ]
+            }
           },
           boundaryConditions: {},
           run: {
@@ -383,12 +410,17 @@ describe('lib/simulation', () => {
       scheme: {
         configuration: {
           geometry: {
-            values: ['id1', 'id2']
+            values: ['id1', 'id2'],
+            meshParameters: { value: 1 }
           },
+          parameters: {},
           materials: {
             values: [
               {
-                geometry: 'id2'
+                geometry: 'id2',
+                material: {
+                  children: [{ value: 1 }, { value: 1, unit: { label: 'm' } }]
+                }
               }
             ]
           },
@@ -398,9 +430,14 @@ describe('lib/simulation', () => {
               values: [
                 {
                   geometry: 'id1',
-                  selected: [{ label: 1 }]
+                  selected: [{ label: 1 }],
+                  values: [{ value: 1 }]
                 },
-                { geometry: 'id2', selected: [] }
+                {
+                  geometry: 'id2',
+                  selected: [],
+                  values: [{ value: 1, unit: { label: 'm' } }]
+                }
               ]
             }
           },
@@ -432,10 +469,14 @@ describe('lib/simulation', () => {
           geometry: {
             values: ['id1', 'id2']
           },
+          parameters: {},
           materials: {
             values: [
               {
-                geometry: 'id2'
+                geometry: 'id2',
+                material: {
+                  children: []
+                }
               }
             ]
           },
@@ -481,7 +522,8 @@ describe('lib/simulation', () => {
             cloudServer: {
               key: 'key'
             }
-          }
+          },
+          parameters: {}
         }
       },
       tasks: [{ status: 'wait' }, null, { status: 'error' }]

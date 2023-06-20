@@ -234,7 +234,9 @@ describe('plugins/local/src/lib', () => {
       callback()
       return 'interval'
     })
-    mockReadFile.mockImplementation(() => 'PROCESS VTU FILE Result.vtu')
+    mockReadFile.mockImplementation(
+      () => '{ "type": "VTU", "name": "Result.vtu" }'
+    )
     Local.startProcess(
       'id',
       'path',
@@ -291,7 +293,9 @@ describe('plugins/local/src/lib', () => {
       callback()
       return 'interval'
     })
-    mockReadFile.mockImplementation(() => 'PROCESS DATA FILE data.dat')
+    mockReadFile.mockImplementation(
+      () => '{ "type": "DATA", "name": "data.dat" }'
+    )
     Local.startProcess(
       'id',
       'path',
@@ -312,7 +316,7 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(() => {
       count++
       if (count === 3) return JSON.stringify({ t: 0, x: 1 })
-      return 'PROCESS DATA FILE data.dat'
+      return '{ "type": "DATA", "name": "data.dat" }'
     })
     await Local.stopProcess(
       'id',
@@ -497,7 +501,9 @@ describe('plugins/local/src/lib', () => {
       callback()
       return 'interval'
     })
-    mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
+    mockReadFile.mockImplementation(
+      () => '{ "type": "DATA", "name": "Result.dat" }'
+    )
 
     // No scheme
     try {
@@ -726,7 +732,9 @@ describe('plugins/local/src/lib', () => {
   })
 
   test('monitoring', async () => {
-    mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
+    mockReadFile.mockImplementation(
+      () => '{ "type": "DATA", "name": "Result.dat" }'
+    )
     await Local.monitoring(
       'id',
       '_',

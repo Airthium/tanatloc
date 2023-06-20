@@ -248,8 +248,6 @@ const Project = (): React.JSX.Element => {
 
   const [results, setResults] = useState<IFrontResult[]>([])
 
-  console.log(results)
-
   const [postprocessing, setPostprocessing] = useState<IFrontResult>()
 
   const [menuKey, setMenuKey] = useState<{

@@ -13,12 +13,15 @@ import {
 } from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
+import { IUnit } from '@/models/index.d'
+
 import { ILabelHelper, LabelHelper } from './LabelHelper'
 import NumberHelper from './NumberHelper'
 
 export interface IColorbarHelper {
   render: () => void
   addLUT: (lut: Lut) => void
+  setUnit: (unit?: IUnit, onlyIfEmpty?: boolean) => void
   setVisible: (visible: boolean) => void
   setColorMap: (key: string) => void
   setRange: (minV: number, maxV: number) => void
@@ -53,6 +56,38 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   colorScene.add(group)
 
   let customRange = false
+  let currentUnit: IUnit | undefined
+  let scaleFactor: number = 1
+
+  /**
+   * Set unit
+   * @param unit Unit
+   * @param onlyIfEmpty Only if empty
+   */
+  const setUnit = (unit?: IUnit, onlyIfEmpty?: boolean): void => {
+    if (onlyIfEmpty && currentUnit) {
+      // currentUnit = currentUnit
+    } else {
+      currentUnit = unit
+    }
+
+    const unitLabelHelper = LabelHelper(
+      renderer,
+      String('Unit: ' + (currentUnit?.label ?? 1)),
+      {
+        background: 'white',
+        position: new Vector3(0, 0.5, 0),
+        width: 512
+      }
+    )
+    unitLabelHelper.scale.x = 0.4
+    unitLabelHelper.scale.y = 2.8
+    unitLabelHelper.renderOrder = 0
+
+    group.add(unitLabelHelper)
+
+    scaleFactor = currentUnit?.multiplicator ?? 1
+  }
 
   /**
    * Set visible
@@ -112,8 +147,8 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * @param lut LUT
    */
   const setLabels = (lut: Lut): void => {
-    let min = NumberHelper(lut.minV)
-    let max = NumberHelper(lut.maxV)
+    let min = NumberHelper(lut.minV * scaleFactor)
+    let max = NumberHelper(lut.maxV * scaleFactor)
 
     const minLabel = LabelHelper(renderer, String(min), {
       background: 'white',
@@ -207,6 +242,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     getMinV,
     getMaxV,
     getColor,
+    setUnit,
     setVisible,
     setColorMap,
     setRange,

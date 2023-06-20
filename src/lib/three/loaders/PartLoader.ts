@@ -23,7 +23,9 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
+import { IUnit } from '@/models/index.d'
 import { IGeometryPart } from '@/lib/index.d'
+
 import { TGeometrySummary } from '@/database/geometry/get'
 
 export interface IPartLoader {
@@ -56,6 +58,11 @@ export type ISelectionType = 'solids' | 'faces' | 'edges' | 'point'
 export interface IPart extends Object3D {
   type: 'Part'
   uuid: string
+  fields?: {
+    name: string
+    units?: IUnit[]
+    unit?: IUnit
+  }[]
   boundingBox: Box3
   children: (IPartObject | IPartMesh)[]
   dispose: () => void

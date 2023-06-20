@@ -26,7 +26,8 @@ export interface TGeometry
   visible?: boolean
 }
 
-export interface TResult extends Pick<IFrontResult, 'glb' | 'originPath'> {}
+export interface TResult
+  extends Pick<IFrontResult, 'name' | 'glb' | 'originPath' | 'extra'> {}
 
 /**
  * Props
@@ -64,12 +65,22 @@ export const _loadPart = async (
       const part = await GeometryAPI.getPart({ id: geometry.id })
       return { ...part, extra: { id: geometry.id } }
     } else {
-      const result = file as Pick<IFrontResult, 'glb' | 'originPath' | 'json'>
+      const result = file as Pick<
+        IFrontResult,
+        'name' | 'glb' | 'originPath' | 'extra'
+      >
       const part = await ResultAPI.load(
         { id: simulation!.id },
         { originPath: result.originPath, glb: result.glb! }
       )
-      return { ...part, extra: { glb: result.glb } }
+      return {
+        ...part,
+        extra: {
+          name: result.name,
+          glb: result.glb,
+          fields: result.extra
+        }
+      }
     }
   } catch (err: any) {
     ErrorNotification(errors.part, err)
@@ -159,6 +170,7 @@ const View = ({
   // State
   const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+
   // Parts
   useCustomEffect(() => {
     ;(async () => {

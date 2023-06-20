@@ -7,7 +7,8 @@ import {
   useEffect,
   Dispatch,
   useCallback,
-  useContext
+  useContext,
+  useMemo
 } from 'react'
 import {
   Button,
@@ -55,6 +56,7 @@ import {
 } from 'three'
 import { v4 } from 'uuid'
 
+import { IUnit } from '@/models/index.d'
 import { IFrontProject } from '@/api/index.d'
 import { IGeometryPart } from '@/lib/index.d'
 
@@ -288,6 +290,8 @@ export const _loadPart = async (
     options.displayMesh,
     helpers.sectionViewHelper.getClippingPlane()
   )
+  mesh.name = part.extra?.name ?? mesh.name
+  mesh.fields = part.extra?.fields
 
   // Scene
   scene.add(mesh)
@@ -319,10 +323,17 @@ const _setColorbarhelper = (
   // Colorbar
   for (const child of scene.children) {
     if (child.type === 'Part' && child.userData.type === 'result') {
-      child.traverse((subChild) => {
+      const part = child as IPart
+      const name = part.name.split(' ').shift()
+      const fields = part.fields
+      const field = fields?.find((field) => field.name === name)
+      part.traverse((subChild) => {
         if (subChild.type === 'Mesh' || subChild.type === 'Line') {
           const mesh = subChild as Mesh
           colorbarHelper.addLUT(mesh.userData.lut)
+          // TODO onlyIfEmpty only if the part is the same as previous one
+          // TODO or directly replace unit in fields ?
+          colorbarHelper.setUnit(field?.unit, true)
           colorbarHelper.setVisible(true)
         }
       })
@@ -992,6 +1003,20 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
   }, [])
 
   /**
+   * Set colorbar unit
+   * @param param Param
+   */
+  const setColorbarUnit = ({ key }: { key: string }): void => {
+    const resultUnit = resultsUnits.find((unit) => unit.key === key)
+    colorbarHelper.current?.setUnit({
+      label: key,
+      multiplicator: resultUnit?.multiplicator,
+      adder: resultUnit?.adder
+    })
+    _computeColors(scene.current!, colorbarHelper.current!)
+  }
+
+  /**
    * On colormap
    * @param props { key }
    */
@@ -1045,6 +1070,29 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
 
     setUnit(key)
   }, [])
+
+  // Results units
+  const resultsUnits = useMemo(() => {
+    const activeResults = parts.filter((part) => part.summary.type === 'result')
+    const units: IUnit[] = activeResults
+      .map((activeResult) => {
+        const fields = activeResult.extra?.fields
+        const name = activeResult.extra?.name?.split(' ').shift()
+
+        const field = fields?.find((field) => field.name === name)
+
+        return field?.units
+      })
+      .filter((u) => u)
+      .flat()
+
+    return units.map((unit) => ({
+      key: unit.label,
+      multiplicator: unit.multiplicator,
+      adder: unit.adder,
+      label: <MathJax.Inline text={unit.label} />
+    }))
+  }, [parts])
 
   /**
    * Render
@@ -1227,7 +1275,7 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
 
         {parts.filter((part) => part.summary.type === 'result').length ? (
           <>
-            <Divider className="no-margin" />
+            <Divider style={{ margin: 0 }} />
 
             <Tooltip title="Display result mesh" placement="left">
               <Switch
@@ -1238,6 +1286,21 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
               />
             </Tooltip>
 
+            <Divider style={{ margin: 0 }} />
+
+            {resultsUnits.length ? (
+              <Tooltip title="Units">
+                <Dropdown
+                  placement="bottom"
+                  menu={{
+                    onClick: setColorbarUnit,
+                    items: resultsUnits
+                  }}
+                >
+                  <Button icon={<BlockOutlined />} />
+                </Dropdown>
+              </Tooltip>
+            ) : null}
             <Tooltip title="Colormap" placement="left">
               <Dropdown
                 placement="bottom"

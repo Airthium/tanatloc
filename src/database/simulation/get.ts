@@ -1,6 +1,6 @@
 /** @module Database.Simulation.Get */
 
-import { IModel } from '@/models/index.d'
+import { IModel, IUnit } from '@/models/index.d'
 
 import { tables } from '@/config/db'
 
@@ -17,6 +17,11 @@ export interface ISimulationTaskFile {
   glb?: string
   json?: string
   number?: number
+  extra?: {
+    name: string
+    units?: IUnit[]
+    unit?: IUnit
+  }[]
 }
 
 export interface ISimulationTask {

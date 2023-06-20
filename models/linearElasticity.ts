@@ -86,9 +86,9 @@ const LinearElasticity: IModel = {
           default: '1e9',
           units: [
             { label: 'Pa' },
-            { label: 'kPa', multiplicator: 1e3 },
-            { label: 'MPa', multiplicator: 1e6 },
-            { label: 'GPa', multiplicator: 1e9 }
+            { label: 'kPa', multiplicator: 1e-3 },
+            { label: 'MPa', multiplicator: 1e-6 },
+            { label: 'GPa', multiplicator: 1e-9 }
           ],
           unit: { label: 'Pa' }
         },
@@ -224,14 +224,14 @@ const LinearElasticity: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
             unit: { label: 'm' }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
             unit: { label: 'm' }
           },
           {
@@ -239,7 +239,7 @@ const LinearElasticity: IModel = {
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
             unit: { label: 'm' }
           }
         ],
@@ -294,7 +294,7 @@ const LinearElasticity: IModel = {
             name: 'Displacement',
             data: ['Ux', 'Uy', 'Uz'],
             data2D: ['Ux', 'Uy', '0'],
-            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
             unit: { label: 'm' }
           },
           {
@@ -302,9 +302,9 @@ const LinearElasticity: IModel = {
             data: 'Sigma',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -313,9 +313,9 @@ const LinearElasticity: IModel = {
             data: 'gamma11',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -324,9 +324,9 @@ const LinearElasticity: IModel = {
             data: 'gamma12',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -335,9 +335,9 @@ const LinearElasticity: IModel = {
             data: 'gamma13',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -346,9 +346,9 @@ const LinearElasticity: IModel = {
             data: 'gamma22',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -357,9 +357,9 @@ const LinearElasticity: IModel = {
             data: 'gamma23',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -368,9 +368,9 @@ const LinearElasticity: IModel = {
             data: 'gamma33',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           }

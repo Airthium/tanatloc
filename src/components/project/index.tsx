@@ -1132,8 +1132,10 @@ const Project = (): React.JSX.Element => {
               needCleanup: geometry.needCleanup
             }))}
             results={results.map((result) => ({
+              name: result.name,
               glb: result.glb,
-              originPath: result.originPath
+              originPath: result.originPath,
+              extra: result.extra
             }))}
             postprocessing={
               postprocessing && {

@@ -11,6 +11,7 @@ import { ISimulation } from '@/database/simulation'
 import { IUserModel } from '@/database/userModel'
 import { IClientPlugin } from '@/plugins'
 import { IModel } from '@/models'
+import { IUnit } from '@/models'
 
 /**
  * Geometry
@@ -46,8 +47,14 @@ export interface IGeometryPart {
   summary: TGeometrySummary
   buffer: Buffer
   extra?: {
+    name?: string
     id?: string
     glb?: string
+    fields?: {
+      name: string
+      units?: IUnit[]
+      unit?: IUnit
+    }[]
   }
 }
 

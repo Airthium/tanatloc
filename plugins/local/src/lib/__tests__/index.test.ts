@@ -774,7 +774,7 @@ describe('plugins/local/src/lib', () => {
   test('processResult', async () => {
     await Local.processResult(
       'new_id',
-      { type: 'VTU', name: 'result' },
+      { type: 'VTU', name: 'result', geometry: 'id' },
       'path',
       { index: 1, label: 'task', status: 'process' },
       () => undefined
@@ -784,7 +784,7 @@ describe('plugins/local/src/lib', () => {
   test('processData', async () => {
     await Local.processData(
       'new_id',
-      { type: 'DATA', name: 'data' },
+      { type: 'DATA', name: 'data', geometry: 'id' },
       'path',
       { index: 1, label: 'task', status: 'process' },
       () => undefined

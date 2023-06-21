@@ -110,6 +110,7 @@ jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
     render: jest.fn(),
     addLUT: jest.fn(),
     setVisible: jest.fn(),
+    setUnit: jest.fn(),
     setColorMap: jest.fn(),
     setRange: jest.fn(),
     setAutomaticRange: jest.fn(),
@@ -289,6 +290,14 @@ describe('components/project/view/three', () => {
       { type: 'AxisHelper' },
       {
         type: 'Part',
+        name: 'sol',
+        fields: [
+          {
+            name: 'sol',
+            units: [{ label: 'Pa' }, { label: 'MPa' }],
+            unit: { label: 'Pa' }
+          }
+        ],
         boundingBox: {
           min: { x: 0, y: 0, z: 0 },
           max: { x: 1, y: 1, z: 1 }
@@ -320,12 +329,13 @@ describe('components/project/view/three', () => {
       },
       {
         type: 'Part',
+        name: 'sol1',
         boundingBox: {
           min: { x: 0, y: 0, z: 0 },
           max: { x: 1, y: 1, z: 1 }
         },
         material: {},
-        userData: {},
+        userData: { type: 'result' },
         traverse,
         dispose: jest.fn(),
         setTransparent: jest.fn(),
@@ -340,6 +350,7 @@ describe('components/project/view/three', () => {
       {
         visible: true,
         type: 'Part',
+        name: 'sol2',
         boundingBox: {
           min: { x: 0, y: 0, z: 0 },
           max: { x: 1, y: 1, z: 1 }
@@ -363,7 +374,25 @@ describe('components/project/view/three', () => {
   test('render', () => {
     const { unmount } = render(
       <SelectContext.Provider value={contextValue1}>
-        <ThreeView loading={loading} project={project} parts={parts} />
+        <ThreeView
+          loading={loading}
+          project={project}
+          parts={[
+            {
+              ...parts[0],
+              extra: {
+                name: 'sol',
+                fields: [
+                  {
+                    name: 'sol',
+                    units: [{ label: 'Pa' }, { label: 'MPa' }],
+                    unit: { label: 'Pa' }
+                  }
+                ]
+              }
+            }
+          ]}
+        />
       </SelectContext.Provider>
     )
 
@@ -411,6 +440,7 @@ describe('components/project/view/three', () => {
     global.MockScene.children = [
       {
         type: 'Part',
+        name: 'sol',
         uuid: 'uuid',
         userData: {},
         stopSelection: jest.fn(),
@@ -453,7 +483,25 @@ describe('components/project/view/three', () => {
     global.MockWebGLRenderer.toDataURL = () => ''
     const { unmount } = render(
       <SelectContext.Provider value={contextValue0}>
-        <ThreeView loading={loading} project={project} parts={parts} />
+        <ThreeView
+          loading={loading}
+          project={project}
+          parts={[
+            {
+              ...parts[0],
+              extra: {
+                name: 'sol',
+                fields: [
+                  {
+                    name: 'sol',
+                    units: [{ label: 'Pa' }, { label: 'MPa' }],
+                    unit: { label: 'Pa' }
+                  }
+                ]
+              }
+            }
+          ]}
+        />
       </SelectContext.Provider>
     )
 
@@ -466,7 +514,7 @@ describe('components/project/view/three', () => {
     buttons.forEach((button) => fireEvent.click(button))
 
     // Unit
-    const unit = screen.getByRole('button', { name: 'block' })
+    const unit = screen.getAllByRole('button', { name: 'block' })[0]
     await act(() => fireEvent.mouseEnter(unit))
 
     await waitFor(() => screen.getByText('mm'))
@@ -545,6 +593,17 @@ describe('components/project/view/three', () => {
     await act(() => fireEvent.click(flip))
 
     // Colormap
+    const unit2 = screen.getAllByRole('button', { name: 'block' })[1]
+    await act(() => fireEvent.mouseEnter(unit2))
+
+    await waitFor(() => screen.getByText('Pa'))
+    const Pa = screen.getByText('Pa')
+    await act(() => fireEvent.click(Pa))
+
+    await waitFor(() => screen.getByText('MPa'))
+    const MPa = screen.getByText('MPa')
+    await act(() => fireEvent.click(MPa))
+
     const colorMap = screen.getByRole('button', { name: 'bg-colors' })
     fireEvent.mouseEnter(colorMap)
 

@@ -64,6 +64,11 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     colorbarHelper.setVisible(true)
   })
 
+  test('setUnit', () => {
+    const colorbarHelper = ColorbarHelper(renderer)
+    colorbarHelper.setUnit()
+  })
+
   test('setColorMap', () => {
     const colorbarHelper = ColorbarHelper(renderer)
     colorbarHelper.setColorMap('rainbow')

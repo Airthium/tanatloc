@@ -3,7 +3,14 @@ import { getFilesNumbers, getMultiplicator } from '../tools'
 describe('@/components/project/simulation/run/results/tools', () => {
   test('getFilesNumbers', () => {
     const filesWithNumbers = getFilesNumbers(
-      [{ fileName: 'Result_0.vtu', type: 'result', originPath: 'originPath' }],
+      [
+        {
+          fileName: 'Result_0.vtu',
+          type: 'result',
+          originPath: 'originPath',
+          geometry: 'id'
+        }
+      ],
       {
         name: 'name',
         pattern: 'Result_%d.vtu',
@@ -16,6 +23,7 @@ describe('@/components/project/simulation/run/results/tools', () => {
         fileName: 'Result_0.vtu',
         type: 'result',
         originPath: 'originPath',
+        geometry: 'id',
         number: 0
       }
     ])

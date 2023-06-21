@@ -12,6 +12,7 @@ export interface ISimulationTaskFile {
   fileName: string
   originPath: string
   type: string
+  geometry?: string
   name?: string
   renderPath?: string
   glb?: string

@@ -55,8 +55,20 @@ const SingleResult = ({
     const index = results.findIndex(
       (result) => result.fileName === file.fileName && result.name === file.name
     )
-    if (index === -1) setResults([...results, file])
-    else setResults([...results.slice(0, index), ...results.slice(index + 1)])
+    // Add
+    if (index === -1) {
+      // Remove all results with the same geometry id
+      const geometry = file.geometry
+      const newResults = results.filter(
+        (result) => result.geometry !== geometry
+      )
+      // Update
+      setResults([...newResults, file])
+    }
+    // Remove
+    else {
+      setResults([...results.slice(0, index), ...results.slice(index + 1)])
+    }
   }, [results, file, setResults])
 
   const visible = useMemo(() => {

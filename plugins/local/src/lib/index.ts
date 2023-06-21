@@ -172,6 +172,7 @@ const computeMeshes = async (
   if (!geometry.meshable) return
 
   const dimension = configuration.dimension
+  const value = configuration.geometry.value
   const meshParameters = configuration.geometry.meshParameters
   const initialization = configuration.initialization
   const boundaryConditions = configuration.boundaryConditions
@@ -184,7 +185,7 @@ const computeMeshes = async (
         simulationPath,
         {
           dimension,
-          geometry: { data, meshParameters },
+          geometry: { value, data, meshParameters },
           initialization,
           boundaryConditions,
           run: {
@@ -202,7 +203,7 @@ const computeMeshes = async (
       simulationPath,
       {
         dimension,
-        geometry: { data, meshParameters },
+        geometry: { value, data, meshParameters },
         initialization,
         boundaryConditions,
         run: {
@@ -228,6 +229,7 @@ const computeMesh = async (
   configuration: {
     dimension: IModel['configuration']['dimension']
     geometry: {
+      value: IModel['configuration']['geometry']['value']
       data: IModel['configuration']['geometry']['data']
       meshParameters: IModel['configuration']['geometry']['meshParameters']
     }
@@ -365,7 +367,8 @@ const computeMesh = async (
       fileName: mshFile,
       originPath: meshPath,
       renderPath: meshPath,
-      glb: three[0].glb
+      glb: three[0].glb,
+      geometry: configuration.geometry.value!
     }
 
     // Task
@@ -737,6 +740,7 @@ const processResult = async (
         originPath: path.join(runPath, resultPath),
         name: res.name,
         glb: res.glb,
+        geometry: result.geometry,
         extra: result.extra
       }))
     ]

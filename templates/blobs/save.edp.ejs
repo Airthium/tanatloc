@@ -54,10 +54,11 @@
 
 		return items.join(',\n')
 	}
-	const getOutput = (name, results) => {
+	const getOutput = (name, geometry, results) => {
 		const output = ['"{"']
 		output.push('"\\\"type\\\": \\\"VTU\\\", "')
 		output.push('"\\\"name\\\": \\\"\" + ' + name + ' + \".vtu\\\", "')
+		output.push('"\\\"geometry\\\": \\\"' + geometry.value + '\\\", "')
 		output.push('"\\\"extra\\\": ["')
 		results.forEach((result, index) => {
 			const extraOutput = JSON.stringify(JSON.stringify({
@@ -107,6 +108,6 @@ if (mpirank == 0) {
 		bin=false);
 
 	ofstream processOut("process_data.log", append);
-	processOut << <%- getOutput(name, results) -%> << endl;
+	processOut << <%- getOutput(name, geometry, results) -%> << endl;
 }
 // End Save

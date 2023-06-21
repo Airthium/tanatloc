@@ -11,6 +11,7 @@ type TValue = boolean | number | string
 export interface IOutput {
   type: 'VTU' | 'DATA' | 'COUPLING'
   name: string
+  geometry?: string
   extra?: {
     name: string
     units: IUnit[]

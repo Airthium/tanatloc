@@ -1005,8 +1005,7 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
    * @param param Param
    */
   const setColorbarUnit = ({ key }: { key: string }): void => {
-    const resultUnit = resultsUnits.find((unit) => unit.key === key)
-    if (!resultUnit) return
+    const resultUnit = resultsUnits.find((unit) => unit.key === key)!
 
     scene.current?.children.forEach((child) => {
       if (child.type === 'Part' && child.userData.type === 'result') {

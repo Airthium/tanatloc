@@ -18,6 +18,7 @@ const LabelHelper = (
   text: string,
   parameters?: {
     background?: string
+    fillStyle?: string
     position?: Vector3
     width?: number
     scale?: number
@@ -33,7 +34,7 @@ const LabelHelper = (
     context.fillStyle = parameters.background
     context.fillRect(0, 0, canvas.width, canvas.height)
   }
-  context.fillStyle = 'grey'
+  context.fillStyle = parameters?.fillStyle ?? 'grey'
   context.font = '50px sans-serif'
   context.textAlign = parameters?.align ?? 'center'
   context.textBaseline = 'middle'

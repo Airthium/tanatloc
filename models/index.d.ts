@@ -15,7 +15,7 @@ export interface IOutput {
     name: string
     units: IUnit[]
     unit: IUnit
-  }
+  }[]
 }
 
 /**

@@ -21,7 +21,7 @@ import NumberHelper from './NumberHelper'
 export interface IColorbarHelper {
   render: () => void
   addLUT: (lut: Lut) => void
-  setUnit: (unit?: IUnit, onlyIfEmpty?: boolean) => void
+  setUnit: (unit?: IUnit) => void
   setVisible: (visible: boolean) => void
   setColorMap: (key: string) => void
   setRange: (minV: number, maxV: number) => void
@@ -56,26 +56,19 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   colorScene.add(group)
 
   let customRange = false
-  let currentUnit: IUnit | undefined
   let scaleFactor: number = 1
 
   /**
    * Set unit
    * @param unit Unit
-   * @param onlyIfEmpty Only if empty
    */
-  const setUnit = (unit?: IUnit, onlyIfEmpty?: boolean): void => {
-    if (onlyIfEmpty && currentUnit) {
-      // currentUnit = currentUnit
-    } else {
-      currentUnit = unit
-    }
-
+  const setUnit = (unit?: IUnit): void => {
     const unitLabelHelper = LabelHelper(
       renderer,
-      String('Unit: ' + (currentUnit?.label ?? 1)),
+      String('Unit: ' + (unit?.label ?? 1)),
       {
         background: 'white',
+        fillStyle: 'black',
         position: new Vector3(0, 0.5, 0),
         width: 512
       }
@@ -86,7 +79,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
     group.add(unitLabelHelper)
 
-    scaleFactor = currentUnit?.multiplicator ?? 1
+    scaleFactor = unit?.multiplicator ?? 1
   }
 
   /**
@@ -152,6 +145,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
     const minLabel = LabelHelper(renderer, String(min), {
       background: 'white',
+      fillStyle: 'black',
       position: new Vector3(-0.62, 0, 0),
       width: 512,
       align: 'right'
@@ -161,6 +155,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     minLabel.renderOrder = 0
     const maxLabel = LabelHelper(renderer, String(max), {
       background: 'white',
+      fillStyle: 'black',
       position: new Vector3(0.62, 0, 0),
       width: 512,
       align: 'left'

@@ -330,10 +330,8 @@ const _setColorbarhelper = (
       part.traverse((subChild) => {
         if (subChild.type === 'Mesh' || subChild.type === 'Line') {
           const mesh = subChild as Mesh
+          colorbarHelper.setUnit(field?.unit)
           colorbarHelper.addLUT(mesh.userData.lut)
-          // TODO onlyIfEmpty only if the part is the same as previous one
-          // TODO or directly replace unit in fields ?
-          colorbarHelper.setUnit(field?.unit, true)
           colorbarHelper.setVisible(true)
         }
       })
@@ -1008,11 +1006,24 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
    */
   const setColorbarUnit = ({ key }: { key: string }): void => {
     const resultUnit = resultsUnits.find((unit) => unit.key === key)
-    colorbarHelper.current?.setUnit({
-      label: key,
-      multiplicator: resultUnit?.multiplicator,
-      adder: resultUnit?.adder
+    if (!resultUnit) return
+
+    scene.current?.children.forEach((child) => {
+      if (child.type === 'Part' && child.userData.type === 'result') {
+        const part = child as IPart
+        const name = part.name.split(' ').shift()
+        const fields = part.fields
+        const field = fields?.find((field) => field.name === name)
+        if (field) {
+          field.unit = {
+            label: key,
+            multiplicator: resultUnit.multiplicator,
+            adder: resultUnit.adder
+          }
+        }
+      }
     })
+
     _computeColors(scene.current!, colorbarHelper.current!)
   }
 
@@ -1086,7 +1097,11 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
       .filter((u) => u)
       .flat()
 
-    return units.map((unit) => ({
+    const uniqueUnits = units.filter(
+      (unit, index) => units.findIndex((u) => u.label === unit.label) === index
+    )
+
+    return uniqueUnits.map((unit) => ({
       key: unit.label,
       multiplicator: unit.multiplicator,
       adder: unit.adder,

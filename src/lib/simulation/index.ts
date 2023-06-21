@@ -215,6 +215,128 @@ const copyGeometry = async (
 }
 
 /**
+ * Check mesh units
+ * @param configuration Configuration
+ */
+const checkMeshUnits = (configuration: IModel['configuration']): void => {
+  const meshParameters = configuration.geometry.meshParameters
+  if (meshParameters) {
+    const unit = meshParameters.unit
+    const value = meshParameters.value
+    if (unit) {
+      meshParameters.value =
+        +value * (unit.multiplicator ?? 1) + (unit.multiplicator ?? 0)
+    }
+  }
+}
+
+/**
+ * Check materials units
+ * @param configuration Configuration
+ */
+const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
+  const materials = configuration.materials
+  materials?.values?.forEach((value) => {
+    value.material.children.forEach((child) => {
+      const unit = child.unit
+      const value = child.value
+      if (unit) {
+        child.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
+      }
+    })
+  })
+}
+
+/**
+ * Check parameters units
+ * @param configuration Configuration
+ */
+const checkParametersUnits = (configuration: IModel['configuration']): void => {
+  const parameters = configuration.parameters
+  Object.keys(parameters).forEach((key) => {
+    if (key === 'index' || key === 'title' || key === 'done') return
+
+    const parameter = parameters[key] as {
+      label: string
+      advanced?: boolean
+      children: IModelParameter[]
+    }
+
+    parameter.children.forEach((child) => {
+      const unit = child.unit
+      const value = child.value
+      if (unit && value !== undefined)
+        child.value = +value * (unit?.multiplicator ?? 1) + (unit?.adder ?? 0)
+    })
+  })
+}
+
+/**
+ * Check initialization units
+ * @param configuration Configuration
+ */
+const checkInitializationUnits = (
+  configuration: IModel['configuration']
+): void => {
+  const initialization = configuration.initialization
+  const direct = initialization?.direct
+  if (direct) {
+    direct.children.forEach((child) => {
+      const unit = child.unit
+      const value = child.value
+      if (unit && value !== undefined)
+        child.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
+    })
+  }
+}
+
+/**
+ * Check boundary conditions units
+ * @param configuration Configuration
+ */
+const checkBoundaryConditionsUnits = (
+  configuration: IModel['configuration']
+): void => {
+  const boundaryConditions = configuration.boundaryConditions
+  Object.keys(boundaryConditions).forEach((key) => {
+    if (key === 'index' || key === 'title' || key === 'done') return
+
+    const boundaryCondition = boundaryConditions[
+      key
+    ] as IModelTypedBoundaryCondition
+    boundaryCondition.values?.forEach((v) => {
+      v.values?.forEach((val) => {
+        const unit = val.unit
+        const value = val.value
+        if (unit && value !== undefined)
+          val.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
+      })
+    })
+  })
+}
+
+/**
+ * Check units
+ * @param configuration Configuration
+ */
+const checkUnits = (configuration: IModel['configuration']): void => {
+  // Mesh parameters
+  checkMeshUnits(configuration)
+
+  // Materials
+  checkMaterialsUnits(configuration)
+
+  // Parameters
+  checkParametersUnits(configuration)
+
+  // Initialization
+  checkInitializationUnits(configuration)
+
+  // Boundary conditions
+  checkBoundaryConditionsUnits(configuration)
+}
+
+/**
  * Run
  * @param user User
  * @param simulation Simulation
@@ -377,80 +499,8 @@ const run = async (
     })
   })
 
-  // Check unit
-  {
-    // Mesh parameters
-    const meshParameters = configuration.geometry.meshParameters
-    if (meshParameters) {
-      const unit = meshParameters.unit
-      const value = meshParameters.value
-      if (unit) {
-        meshParameters.value =
-          +value * (unit.multiplicator ?? 1) + (unit.multiplicator ?? 0)
-      }
-    }
-
-    // Materials
-    const materials = configuration.materials
-    materials?.values?.forEach((value) => {
-      value.material.children.forEach((child) => {
-        const unit = child.unit
-        const value = child.value
-        if (unit) {
-          child.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
-        }
-      })
-    })
-
-    // Parameters
-    const parameters = configuration.parameters
-    Object.keys(parameters).forEach((key) => {
-      if (key === 'index' || key === 'title' || key === 'done') return
-
-      const parameter = parameters[key] as {
-        label: string
-        advanced?: boolean
-        children: IModelParameter[]
-      }
-
-      parameter.children.forEach((child) => {
-        const unit = child.unit
-        const value = child.value
-        if (unit && value !== undefined)
-          child.value = +value * (unit?.multiplicator ?? 1) + (unit?.adder ?? 0)
-      })
-    })
-
-    // Initialization
-    const initialization = configuration.initialization
-    const direct = initialization?.direct
-    if (direct) {
-      direct.children.forEach((child) => {
-        const unit = child.unit
-        const value = child.value
-        if (unit && value !== undefined)
-          child.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
-      })
-    }
-
-    // Boundary conditions
-    const boundaryConditions = configuration.boundaryConditions
-    Object.keys(boundaryConditions).forEach((key) => {
-      if (key === 'index' || key === 'title' || key === 'done') return
-
-      const boundaryCondition = boundaryConditions[
-        key
-      ] as IModelTypedBoundaryCondition
-      boundaryCondition.values?.forEach((v) => {
-        v.values?.forEach((val) => {
-          const unit = val.unit
-          const value = val.value
-          if (unit && value !== undefined)
-            val.value = +value * (unit.multiplicator ?? 1) + (unit.adder ?? 0)
-        })
-      })
-    })
-  }
+  // Check units
+  checkUnits(configuration)
 
   // Compute
   try {

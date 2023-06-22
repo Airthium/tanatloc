@@ -60,24 +60,30 @@ const LinearElasticityModal: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '8050',
-          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
-          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
+          units: [
+            { label: 'kg.m^{-3}' },
+            { label: 'g.mm^{-3}', multiplicator: 1e6 }
+          ],
+          unit: { label: 'kg.m^{-3}' }
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
           default: '1e4',
-          units: [{ label: '\\(Pa\\)', multiplicator: 1 }],
-          unit: { label: '\\(Pa\\)', multiplicator: 1 }
+          units: [
+            { label: 'Pa' },
+            { label: 'kPa', multiplicator: 1e-3 },
+            { label: 'MPa', multiplicator: 1e-6 },
+            { label: 'GPa', multiplicator: 1e-9 }
+          ],
+          unit: { label: 'Pa' }
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
-          default: '0.3',
-          units: [{ label: '\\(1\\)', multiplicator: 1 }],
-          unit: { label: '\\(1\\)', multiplicator: 1 }
+          default: '0.3'
         }
       ]
     },
@@ -158,31 +164,22 @@ const LinearElasticityModal: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: '\\(m\\)', multiplicator: 1 },
-              { label: '\\(mm\\)', multiplicator: 1e-3 }
-            ],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
+            unit: { label: 'm' }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: '\\(m\\)', multiplicator: 1 },
-              { label: '\\(mm\\)', multiplicator: 1e-3 }
-            ],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
+            unit: { label: 'm' }
           },
           {
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: '\\(m\\)', multiplicator: 1 },
-              { label: '\\(mm\\)', multiplicator: 1e-3 }
-            ],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
+            unit: { label: 'm' }
           }
         ],
         refineFactor: 2
@@ -197,7 +194,7 @@ const LinearElasticityModal: IModel = {
             name: 'Displacement',
             data: ['Ux', 'Uy', 'Uz'],
             data2D: ['Ux', 'Uy', '0'],
-            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
             unit: { label: 'm' }
           }
         ]

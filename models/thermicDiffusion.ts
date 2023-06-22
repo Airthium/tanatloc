@@ -60,24 +60,27 @@ const ThermicDiffusion: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '7960',
-          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
-          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
+          units: [
+            { label: 'kg.m^{-3}' },
+            { label: 'g.mm^{-3}', multiplicator: 1e6 }
+          ],
+          unit: { label: 'kg.m^{-3}' }
         },
         {
           label: 'Thermal conductivity',
           name: 'Lambda',
           htmlEntity: 'formula',
           default: '15',
-          units: [{ label: '\\(W.m^{-1}.K^{-1}\\)', multiplicator: 1 }],
-          unit: { label: '\\(W.m^{-1}.K^{-1}\\)', multiplicator: 1 }
+          units: [{ label: 'W.m^{-1}.K^{-1}' }],
+          unit: { label: 'W.m^{-1}.K^{-1}' }
         },
         {
           label: 'Heat capacity',
           name: 'Cp',
           htmlEntity: 'formula',
           default: '502',
-          units: [{ label: '\\(J.K^{-1}.kg^{-1}\\)', multiplicator: 1 }],
-          unit: { label: '\\(J.K^{-1}.kg^{-1}\\)', multiplicator: 1 }
+          units: [{ label: 'J.K^{-1}.kg^{-1}' }],
+          unit: { label: 'J.K^{-1}.kg^{-1}' }
         }
       ]
     },
@@ -91,15 +94,15 @@ const ThermicDiffusion: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: '1',
-            units: [{ label: '\\(s\\)', multiplicator: 1 }],
-            unit: { label: '\\(s\\)', multiplicator: 1 }
+            units: [{ label: 's' }],
+            unit: { label: 's' }
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: '0.1',
-            units: [{ label: '\\(s\\)', multiplicator: 1 }],
-            unit: { label: '\\(s\\)', multiplicator: 1 }
+            units: [{ label: 's' }],
+            unit: { label: 's' }
           }
         ]
       },
@@ -151,11 +154,8 @@ const ThermicDiffusion: IModel = {
             label: 'T',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: 'K', multiplicator: 1 },
-              { label: '°C', adder: -273.15 }
-            ],
-            unit: { label: 'K', multiplicator: 1 }
+            units: [{ label: 'K' }, { label: 'C', adder: -273.15 }],
+            unit: { label: 'K' }
           }
         ],
         refineFactor: 2
@@ -169,7 +169,7 @@ const ThermicDiffusion: IModel = {
           {
             name: 'T',
             data: 'T',
-            units: [{ label: 'K' }],
+            units: [{ label: 'K' }, { label: 'C', adder: -273.15 }],
             unit: { label: 'K' }
           }
         ]

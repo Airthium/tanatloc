@@ -57,11 +57,8 @@ const Stokes: IModel = {
           name: 'Mu',
           htmlEntity: 'formula',
           default: '1e-3',
-          units: [
-            { label: '\\(Pa.s\\)', multiplicator: 1 },
-            { label: '\\(mPa.s\\)', multiplicator: 1e-3 }
-          ],
-          unit: { label: '\\(Pa.s\\)', multiplicator: 1 }
+          units: [{ label: 'Pa.s' }, { label: 'mPa.s', multiplicator: 1e3 }],
+          unit: { label: 'Pa.s' }
         }
       ]
     },
@@ -75,23 +72,32 @@ const Stokes: IModel = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            units: [
+              { label: 'N.m^{-3}' },
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
+            ],
+            unit: { label: 'N.m^{-3}' }
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            units: [
+              { label: 'N.m^{-3}' },
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
+            ],
+            unit: { label: 'N.m^{-3}' }
           },
           {
             only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            units: [
+              { label: 'N.m^{-3}' },
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
+            ],
+            unit: { label: 'N.m^{-3}' }
           }
         ]
       },
@@ -164,23 +170,32 @@ const Stokes: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
-            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
+            units: [
+              { label: 'm.s^{-1}' },
+              { label: 'mm.s^{-1}', multiplicator: 1e3 }
+            ],
+            unit: { label: 'm.s^{-1}' }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
-            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
+            units: [
+              { label: 'm.s^{-1}' },
+              { label: 'mm.s^{-1}', multiplicator: 1e3 }
+            ],
+            unit: { label: 'm.s^{-1}' }
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(m.s^{-1}\\)', multiplicator: 1 }],
-            unit: { label: '\\(m.s^{-1}\\)', multiplicator: 1 }
+            units: [
+              { label: 'm.s^{-1}' },
+              { label: 'mm.s^{-1}', multiplicator: 1e3 }
+            ],
+            unit: { label: 'm.s^{-1}' }
           }
         ],
         refineFactor: 2
@@ -192,8 +207,8 @@ const Stokes: IModel = {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}' }],
+            unit: { label: 'N.m^{-2}' }
           }
         ],
         refineFactor: 2
@@ -208,7 +223,10 @@ const Stokes: IModel = {
             name: 'Velocity',
             data: ['Ux', 'Uy', 'Uz'],
             data2D: ['Ux', 'Uy', '0'],
-            units: [{ label: 'm.s^-1' }],
+            units: [
+              { label: 'm.s^-1' },
+              { label: 'mm.s^{-1}', multiplicator: 1e3 }
+            ],
             unit: { label: 'm.s^-1' }
           },
           {
@@ -216,9 +234,9 @@ const Stokes: IModel = {
             data: 'p',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           }

@@ -59,24 +59,30 @@ const LinearElasticityTime: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: '8050',
-          units: [{ label: '\\(kg.m^{-3}\\)', multiplicator: 1 }],
-          unit: { label: '\\(kg.m^{-3}\\)', multiplicator: 1 }
+          units: [
+            { label: 'kg.m^{-3}' },
+            { label: 'g.mm^{-3}', multiplicator: 1e6 }
+          ],
+          unit: { label: 'kg.m^{-3}' }
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
           default: '1e9',
-          units: [{ label: '\\(Pa\\)', multiplicator: 1 }],
-          unit: { label: '\\(Pa\\)', multiplicator: 1 }
+          units: [
+            { label: 'Pa' },
+            { label: 'kPa', multiplicator: 1e-3 },
+            { label: 'MPa', multiplicator: 1e-6 },
+            { label: 'GPa', multiplicator: 1e-9 }
+          ],
+          unit: { label: 'Pa' }
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
-          default: '0.4',
-          units: [{ label: '\\(1\\)', multiplicator: 1 }],
-          unit: { label: '\\(1\\)', multiplicator: 1 }
+          default: '0.4'
         }
       ]
     },
@@ -90,23 +96,32 @@ const LinearElasticityTime: IModel = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            units: [
+              { label: 'N.m^{-3}' },
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
+            ],
+            unit: { label: 'N.m^{-3}' }
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            units: [
+              { label: 'N.m^{-3}' },
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
+            ],
+            unit: { label: 'N.m^{-3}' }
           },
           {
             only3D: true,
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-3}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-3}\\)', multiplicator: 1 }
+            units: [
+              { label: 'N.m^{-3}' },
+              { label: 'N.mm^{-3}', multiplicator: 1e9 }
+            ],
+            unit: { label: 'N.m^{-3}' }
           }
         ]
       },
@@ -118,8 +133,8 @@ const LinearElasticityTime: IModel = {
             label: 'Standard gravity',
             htmlEntity: 'formula',
             default: '9.81',
-            units: [{ label: '\\(m.s^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(m.s^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'm.s^{-2}' }],
+            unit: { label: 'm.s^{-2}' }
           }
         ]
       },
@@ -130,15 +145,15 @@ const LinearElasticityTime: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: '1',
-            units: [{ label: '\\(s\\)', multiplicator: 1 }],
-            unit: { label: '\\(s\\)', multiplicator: 1 }
+            units: [{ label: 's' }],
+            unit: { label: 's' }
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: '0.1',
-            units: [{ label: '\\(s\\)', multiplicator: 1 }],
-            unit: { label: '\\(s\\)', multiplicator: 1 }
+            units: [{ label: 's' }],
+            unit: { label: 's' }
           }
         ]
       },
@@ -209,32 +224,23 @@ const LinearElasticityTime: IModel = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: '\\(m\\)', multiplicator: 1 },
-              { label: '\\(mm\\)', multiplicator: 1e-3 }
-            ],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
+            unit: { label: 'm' }
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: '\\(m\\)', multiplicator: 1 },
-              { label: '\\(mm\\)', multiplicator: 1e-3 }
-            ],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
+            unit: { label: 'm' }
           },
           {
             only3D: true,
             label: 'Uz',
             htmlEntity: 'formula',
             default: '0',
-            units: [
-              { label: '\\(m\\)', multiplicator: 1 },
-              { label: '\\(mm\\)', multiplicator: 1e-3 }
-            ],
-            unit: { label: '\\(m\\)', multiplicator: 1 }
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
+            unit: { label: 'm' }
           }
         ],
         refineFactor: 2
@@ -246,8 +252,8 @@ const LinearElasticityTime: IModel = {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}' }],
+            unit: { label: 'N.m^{-2}' }
           }
         ],
         refineFactor: 2
@@ -259,22 +265,22 @@ const LinearElasticityTime: IModel = {
             label: 'x',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}' }],
+            unit: { label: 'N.m^{-2}' }
           },
           {
             label: 'y',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}' }],
+            unit: { label: 'N.m^{-2}' }
           },
           {
             label: 'z',
             htmlEntity: 'formula',
             default: '0',
-            units: [{ label: '\\(N.m^{-2}\\)', multiplicator: 1 }],
-            unit: { label: '\\(N.m^{-2}\\)', multiplicator: 1 }
+            units: [{ label: 'N.m^{-2}' }],
+            unit: { label: 'N.m^{-2}' }
           }
         ]
       }
@@ -288,7 +294,7 @@ const LinearElasticityTime: IModel = {
             name: 'Displacement',
             data: ['Ux', 'Uy', 'Uz'],
             data2D: ['Ux', 'Uy', '0'],
-            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e-3 }],
+            units: [{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }],
             unit: { label: 'm' }
           },
           {
@@ -296,9 +302,9 @@ const LinearElasticityTime: IModel = {
             data: 'Sigma',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -307,9 +313,9 @@ const LinearElasticityTime: IModel = {
             data: 'gamma11',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -318,9 +324,9 @@ const LinearElasticityTime: IModel = {
             data: 'gamma12',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -329,9 +335,9 @@ const LinearElasticityTime: IModel = {
             data: 'gamma13',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -340,9 +346,9 @@ const LinearElasticityTime: IModel = {
             data: 'gamma22',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -351,9 +357,9 @@ const LinearElasticityTime: IModel = {
             data: 'gamma23',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           },
@@ -362,9 +368,9 @@ const LinearElasticityTime: IModel = {
             data: 'gamma33',
             units: [
               { label: 'Pa' },
-              { label: 'kPa', multiplicator: 1e3 },
-              { label: 'MPa', multiplicator: 1e6 },
-              { label: 'GPa', multiplicator: 1e9 }
+              { label: 'kPa', multiplicator: 1e-3 },
+              { label: 'MPa', multiplicator: 1e-6 },
+              { label: 'GPa', multiplicator: 1e-9 }
             ],
             unit: { label: 'Pa' }
           }

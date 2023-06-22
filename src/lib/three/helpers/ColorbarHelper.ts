@@ -57,6 +57,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
   let customRange = false
   let scaleFactor: number = 1
+  let addFactor: number = 0
 
   /**
    * Set unit
@@ -80,6 +81,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     group.add(unitLabelHelper)
 
     scaleFactor = unit?.multiplicator ?? 1
+    addFactor = unit?.adder ?? 0
   }
 
   /**
@@ -140,8 +142,8 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
    * @param lut LUT
    */
   const setLabels = (lut: Lut): void => {
-    let min = NumberHelper(lut.minV * scaleFactor)
-    let max = NumberHelper(lut.maxV * scaleFactor)
+    let min = NumberHelper(lut.minV * scaleFactor + addFactor)
+    let max = NumberHelper(lut.maxV * scaleFactor + addFactor)
 
     const minLabel = LabelHelper(renderer, String(min), {
       background: 'white',

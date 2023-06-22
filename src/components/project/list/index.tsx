@@ -1,6 +1,6 @@
 /** @module Components.Project.List */
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -355,9 +355,42 @@ const ProjectList = ({
   sorter,
   swr
 }: IProps): React.JSX.Element => {
+  // Ref
+  const containerRef = useRef<HTMLDivElement>(null)
+
   // State
   const [loading, setLoading] = useState<boolean>(true)
   const [list, setList] = useState<IFrontProjectsItem[]>([])
+  const [height, setHeight] = useState<number>(100)
+
+  /**
+   * On resize
+   */
+  const onResize = useCallback(() => {
+    const div = containerRef.current
+    if (!div) {
+      setTimeout(() => onResize(), 100)
+      return
+    }
+
+    const offsets = div.getBoundingClientRect()
+    const top = offsets.top
+
+    const totalHeight = window.innerHeight
+
+    const newHeight = totalHeight - top
+
+    if (newHeight !== height) setHeight(newHeight)
+  }, [height])
+
+  // Height
+  useEffect((): (() => void) => {
+    window.addEventListener('resize', onResize)
+    onResize()
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [onResize])
 
   // List
   useEffect(() => {
@@ -416,7 +449,7 @@ const ProjectList = ({
       />
     )
   return (
-    <div>
+    <div ref={containerRef} style={{ height: height }}>
       <Space
         style={{ marginBottom: '20px' }}
         wrap={true}

@@ -21,21 +21,21 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
       : './dist/plugins'
   )
 
-  const plugins = await Promise.all(
-    availables.map(async (available) => {
-      try {
-        // Import
-        const plugin = isElectron()
-          ? await require(`../../../plugins/${available}`)
-          : await import(`../../../plugins/${available}`)
-        console.info(` - Plugin ${available} loaded!`)
-        return plugin.default
-      } catch (err) {
-        console.error(` - Plugin ${available} NOT loaded!`)
-        console.error(err)
-      }
-    })
-  )
+  const plugins = []
+  for (const available of availables) {
+    process.stdout.write(' - Plugin ' + available)
+    try {
+      // Import
+      const plugin = isElectron()
+        ? await require(`../../../plugins/${available}`)
+        : await import(`../../../plugins/${available}`)
+      process.stdout.write(' loaded\n')
+      plugins.push(plugin.default)
+    } catch (err) {
+      process.stdout.write(' ERROR\n')
+      console.error(err)
+    }
+  }
 
   return plugins.filter((p) => p)
 }

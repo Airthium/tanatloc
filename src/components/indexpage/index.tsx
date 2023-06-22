@@ -385,54 +385,44 @@ const Index = (): React.JSX.Element => {
             }
             right={
               <>
-                <Checkbox
-                  checked={true}
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                <div>
+                  <Checkbox checked={true} />
                   Linear elasticity
-                </Checkbox>
-                <Checkbox
-                  checked={true}
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox checked={true} />
                   Linear elasticity over time
-                </Checkbox>
-                <Checkbox
-                  checked={true}
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox checked={true} />
                   Poisson
-                </Checkbox>
-                <Checkbox
-                  checked={true}
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox checked={true} />
                   Stokes
-                </Checkbox>
-                <Checkbox
-                  checked={true}
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox checked={true} />
                   Navier-Stokes over time
-                </Checkbox>
-                <Checkbox
-                  checked={true}
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox checked={true} />
                   Thermal diffusion
-                </Checkbox>
-                <Checkbox
-                  checked
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox
+                    checked
+                    style={{ pointerEvents: 'none', fontSize: '20px' }}
+                  />
                   Modal analysis
-                </Checkbox>
-                <Checkbox
-                  checked
-                  style={{ pointerEvents: 'none', fontSize: '20px' }}
-                >
+                </div>
+                <div>
+                  <Checkbox
+                    checked
+                    style={{ pointerEvents: 'none', fontSize: '20px' }}
+                  />
                   ...
-                </Checkbox>
+                </div>
               </>
             }
             sideClassName={globalStyle.backgroundPrimary}

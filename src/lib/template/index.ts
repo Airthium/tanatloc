@@ -16,78 +16,97 @@ export interface ITemplates {
 }
 
 /**
- * Load templates
+ * Load Tanatloc templates
+ * @returns Templates
  */
-export const loadTemplates = async (): Promise<ITemplates> => {
-  console.info('Loading templates...')
-
+const loadTanatlocTemplates = async (): Promise<ITemplates> => {
   const templates: ITemplates = {}
+
   // Base templates
-  await Promise.all(
-    Object.keys(Templates).map(async (key) => {
+  for (const key of Object.keys(Templates)) {
+    process.stdout.write(' - Template ' + key)
+    const content = await Tools.readFile(
+      path.join(
+        isElectron()
+          ? process.resourcesPath + '/extra/server/tanatloc'
+          : './dist',
+        'templates',
+        Templates[key as keyof typeof Templates]
+      )
+    )
+    const func = ejs.compile(content.toString(), {
+      root: path.join(
+        isElectron()
+          ? process.resourcesPath + '/extra/server/tanatloc'
+          : './dist',
+        'templates'
+      )
+    })
+    templates[key] = func as unknown as AsyncTemplateFunction
+    process.stdout.write(' loaded\n')
+  }
+
+  return templates
+}
+
+/**
+ * Load plugins templates
+ * @returns Templates
+ */
+const loadPluginsTemplates = async (): Promise<ITemplates> => {
+  const templates: ITemplates = {}
+
+  const plugins = await Plugins.serverList()
+  for (const plugin of plugins) {
+    if (plugin.category !== 'Model') continue
+
+    for (const template of plugin.templates) {
+      process.stdout.write(
+        ' - Template ' + template.key + '(from ' + plugin.key + ')'
+      )
       const content = await Tools.readFile(
         path.join(
           isElectron()
             ? process.resourcesPath + '/extra/server/tanatloc'
-            : './dist',
-          'templates',
-          Templates[key as keyof typeof Templates]
+            : './',
+          'plugins',
+          plugin.key as string,
+          template.file
         )
       )
       const func = ejs.compile(content.toString(), {
         root: path.join(
           isElectron()
             ? process.resourcesPath + '/extra/server/tanatloc'
-            : './dist',
+            : './',
           'templates'
         )
       })
-      templates[key] = func as unknown as AsyncTemplateFunction
-      console.info(' - Template ' + key + ' loaded')
-    })
-  )
-
-  // Plugin templates
-  const plugins = await Plugins.serverList()
-  await Promise.all(
-    plugins.map(async (plugin) => {
-      if (plugin.category === 'Model')
-        await Promise.all(
-          plugin.templates.map(
-            async (template: { key: string; file: string }) => {
-              const content = await Tools.readFile(
-                path.join(
-                  isElectron()
-                    ? process.resourcesPath + '/extra/server/tanatloc'
-                    : './',
-                  'plugins',
-                  plugin.key as string,
-                  template.file
-                )
-              )
-              const func = ejs.compile(content.toString(), {
-                root: path.join(
-                  isElectron()
-                    ? process.resourcesPath + '/extra/server/tanatloc'
-                    : './',
-                  'templates'
-                )
-              })
-              templates[template.key] = func as unknown as AsyncTemplateFunction
-              console.info(
-                ' - Template ' +
-                  template.key +
-                  ' loaded (from ' +
-                  plugin.key +
-                  ')'
-              )
-            }
-          )
-        )
-    })
-  )
+      templates[template.key] = func as unknown as AsyncTemplateFunction
+      process.stdout.write(' loaded\n')
+    }
+  }
 
   return templates
+}
+
+/**
+ * Load templates
+ * @returns Templates
+ */
+export const loadTemplates = async (): Promise<ITemplates> => {
+  console.info('Loading templates...')
+
+  // Base templates
+  const tanatlocTemplates = await loadTanatlocTemplates()
+
+  // Plugin templates
+  const pluginsTemplates = await loadPluginsTemplates()
+
+  return {
+    ...tanatlocTemplates,
+    ...pluginsTemplates
+  }
 }
 
 /**

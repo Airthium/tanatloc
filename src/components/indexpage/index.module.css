@@ -79,16 +79,17 @@
 .models {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
-  align-items: unset !important;
-  justify-items: stretch;
   grid-gap: 20px;
 }
 
-.models :global(.ant-checkbox-wrapper) {
-  margin-inline-start: 0 !important;
+.models > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 20px;
 }
 
-.models :global(.ant-checkbox) {
+.models > div > label {
   margin-top: 4px;
 }
 
@@ -108,8 +109,6 @@
   break-inside: avoid-column;
   page-break-inside: avoid;
   width: 160px;
-  max-width: 160px;
-  height: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,9 +116,11 @@
 }
 
 .indexPlugins :global(.ant-avatar) {
-  background-color: colorPrimary;
+  background: colorPrimary;
   padding: 5px;
-  line-height: 60px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .indexPlugins :global(.ant-avatar) > img {

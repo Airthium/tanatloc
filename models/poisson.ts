@@ -2,6 +2,8 @@
 
 import { IModel } from './index.d'
 
+import description from './description/poisson'
+
 /**
  * Poisson's equation
  */
@@ -11,30 +13,7 @@ const Poisson: IModel = {
   algorithm: 'poisson',
   code: 'FreeFEM',
   version: '1.0.0',
-  description: `
-  <h3>
-    Poisson's equation
-  </h3>
-  <p>
-  Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
-
-  The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
-
-  The Poisson's equation reads as follow:
-  \\begin{align}
-    \\Delta u &= f &\\text{on }\\Omega\\\\
-    u &= u_D &\\text{on }\\Gamma_D\\\\
-    \\nabla u &= g_N &\\text{on }\\Gamma_N
-  \\end{align}
-  </p>
-  <figure>
-    <img src="/images/Poisson.png" alt="Poisson" />
-    <figcaption>Poisson's equation example on a cube.</figcaption>
-  </figure>
-  <p>
-      See <a target="_blank" href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Wikipedia</a>.
-  </p>
-  `,
+  description,
   configuration: {
     geometry: {
       index: 1,

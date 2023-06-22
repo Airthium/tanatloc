@@ -1,3 +1,5 @@
+/** @module Models.Description.Magnetostatic */
+
 import ReactDOMServer from 'react-dom/server'
 
 // Description

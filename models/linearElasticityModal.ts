@@ -2,6 +2,8 @@
 
 import { IModel } from './index.d'
 
+import description from './description/linearElasticityModal'
+
 /**
  * Linear elasticity Modal analysis
  */
@@ -12,25 +14,7 @@ const LinearElasticityModal: IModel = {
   code: 'FreeFEM',
   sequential: true,
   version: '1.0.0',
-  description: `<h3>
-  Modal analysis
-  </h3>
-  <p>
-  The modal analysis consists in finding the eigenfrequencies and eigenvectors of a structure.<br/>
-  Let \\(K\\) be the rigidity matrix of the structure and \\(M\\) its mass matrix.<br/>
-  The eigenvalue problem reads as follows
-  $$ (K -\\lambda M) x =0 $$
-  where \\(\\lambda\\) is the eigenvalue related to the natural frequency \\(f\\) by the following <br/>
-  $$\\lambda=(2\\pi f)^{2} $$
-  and \\(x\\) the eigenvector for the mode of the frequency \\(f\\).<br/>
-  Moreover the eigenvalue problem can be transformed as follows
-  $$ (A -\\sigma M)^{-1}Mx  = \\nu x$$
-  where
-  $$ \\nu  = \\frac{1}{\\lambda-\\sigma} $$
-  and \\(\\sigma\\) the shift of the method which helps to find eigenvalues near \\(\\sigma\\). By default \\(\\sigma\\) \\(=\\) \\(0\\). <br/>
-  </p>
-  <p>
-  You can see <a target="_blank" href="https://freefem.org">FreeFEM</a>.\n</p> `,
+  description,
   variables: [
     {
       name: 'Displacement (x)',

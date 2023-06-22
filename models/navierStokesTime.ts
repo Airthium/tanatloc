@@ -2,6 +2,8 @@
 
 import { IModel } from './index.d'
 
+import description from './description/navierStokesTime'
+
 /**
  * Navier-Stokes Time-dependant
  */
@@ -11,38 +13,7 @@ const NavierStokesTime: IModel = {
   algorithm: 'navierStokesTime',
   code: 'FreeFEM',
   version: '1.0.0',
-  description: `
-  <h3>
-    Navier-Stokes time-dependant
-  </h3>
-  <p>
-    Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
-
-    The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
-
-    \\(u\\) is the velocity and \\(p\\) the pressure.<br/>
-
-    The Navier-Stokes equations reads as follow:
-
-    $$
-    \\begin{align}
-      \\rho\\frac{\\partial u}{\\partial t} + \\rho(u\\cdot\\nabla)u + \\nabla p - \\mu\\Delta u &= f&\\text{on }\\Omega\\\\
-      u &= u_D&\\text{on }\\Gamma_D\\\\
-      \\mu\\frac{\\partial u}{\\partial n} - pn &= g_N&\\text{on }\\Gamma_N
-    \\end{align}
-    $$
-
-    With \\(\\mu\\) the viscosity and \\(\\rho\\) the density.
-  </p>
-  <figure>
-    <img src="/images/Stokes.png" alt="Stokes" />
-    <figcaption>Navier-Stokes equation example on a pipe.</figcaption>
-  </figure>
-  </p>
-  <p>
-    See <a target="_blank" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Wikipedia</a>.
-  </p>
-  `,
+  description,
   configuration: {
     geometry: {
       index: 1,

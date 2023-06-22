@@ -1,4 +1,4 @@
-/** @module Models.Description.LinearElasticity */
+/** @module Models.Description.LinearElasticityTime */
 
 import ReactDOMServer from 'react-dom/server'
 
@@ -7,7 +7,7 @@ import MathJax from '@/components/assets/mathjax'
 // Description
 const description = (
   <>
-    <h3>Linear elasticity</h3>
+    <h3>Linear elasticity (time dependent)</h3>
 
     <div>
       Let <MathJax.BackInline text={'\\Omega'} /> be a domain of{' '}
@@ -17,7 +17,7 @@ const description = (
 
     <div>
       The domain <MathJax.BackInline text={'\\Omega'} /> is bounded by{' '}
-      <MathJax.BackInline text={'\\Gamma = \\Gamma_D \\cup\\Gamma_N'} />.
+      <MathJax.BackInline text={'\\Gamma = \\Gamma_D \\cup \\Gamma_N'} />.
     </div>
 
     <div>
@@ -29,9 +29,9 @@ const description = (
       <MathJax.BackFormula
         text={`
 \\begin{align}
-  -\\text{div}(\\sigma) &= f &\\text{on}\\Omega\\\\
-  u &= u_D&\\text{on}\\Gamma_D\\\\
-  \\sigma\\cdot n &= u_N&\\text{on}\\Gamma_N
+    \\frac{\\partial^2u}{\\partial t^2}-\\text{div}(\\sigma) &= f &\\text{on }\\Omega\\\\
+    u &= u_D&\\text{on }\\Gamma_D\\\\
+    \\sigma\\cdot n &= u_N&\\text{on }\\Gamma_N
 \\end{align}
 `}
       />

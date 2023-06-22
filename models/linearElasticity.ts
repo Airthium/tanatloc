@@ -2,6 +2,8 @@
 
 import { IModel } from './index.d'
 
+import description from './description/linearElasticity'
+
 /**
  * Linear elasticity
  */
@@ -11,39 +13,7 @@ const LinearElasticity: IModel = {
   algorithm: 'linearElasticity',
   code: 'FreeFEM',
   version: '1.0.0',
-  description: `
-  <h3>
-    Linear elasticity
-  </h3>
-  <p>
-  Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
-
-  The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
-
-    \\(u\\) is the displacement.<br/>
-
-  The linear elasticity equation reads as follow:
-
-  $$
-  \\begin{align}
-    -\\text{div}(\\sigma) &= f &\\text{on }\\Omega\\\\
-    u &= u_D&\\text{on }\\Gamma_D\\\\
-    \\sigma\\cdot n &= u_N&\\text{on }\\Gamma_N
-  \\end{align}
-  $$
-
-  With \\(\\sigma_{ij}(u) = \\lambda\\delta_{ij}\\nabla\\cdot u + 2\\mu\\epsilon_{ij}(u)\\).<br/>
-
-  \\(\\lambda\\) and \\(\\mu\\) are the Lamé coefficients.
-  </p>
-  <figure>
-    <img src="/images/LinearElasticity.png" alt="Linear Elasticity" />
-    <figcaption>Linear elasticity equation example on a beam.</figcaption>
-  </figure>
-  <p>
-    See <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>.
-  </p>
-  `,
+  description,
   variables: [
     {
       name: 'Displacement (x)',

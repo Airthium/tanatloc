@@ -22,6 +22,23 @@ export interface IPropsInline {
 }
 
 /**
+ * Back Inline
+ * @param props Props
+ * @returns Inline
+ */
+const BackInline = ({ text }: IPropsInline): React.JSX.Element => {
+  // Content
+  let content = text ?? ''
+  if (text && !text.includes('\\(') && !text.includes('\\)'))
+    content = '\\(' + text + '\\)'
+
+  /**
+   * Render
+   */
+  return <div style={{ display: 'inline-block' }}>{content}</div>
+}
+
+/**
  * Inline
  * @param props Props
  */
@@ -62,6 +79,22 @@ const Inline = ({ text }: IPropsInline): React.JSX.Element => {
 
 export interface IPropsFormula {
   text?: string
+}
+
+/**
+ * Back Formula
+ * @param props Props
+ * @returns Formula
+ */
+const BackFormula = ({ text }: IPropsFormula): React.JSX.Element => {
+  // Content
+  let content = text ?? ''
+  if (text && !text.includes('$$')) content = '$$' + text + '$$'
+
+  /**
+   * Render
+   */
+  return <div>{content}</div>
 }
 
 /**
@@ -149,5 +182,5 @@ const Html = ({ html }: IPropsHtml): React.JSX.Element => {
   return <div ref={element}>{content}</div>
 }
 
-const MathJax = { Head, Inline, Formula, Html }
+const MathJax = { Head, BackInline, Inline, BackFormula, Formula, Html }
 export default MathJax

@@ -5,7 +5,7 @@
 		output.push('"\\\"names\\\": "')
 		output.push(JSON.stringify(JSON.stringify(dataNames)))
 		output.push('", "')
-		output.push('"\\\"x\\\": " + ' + x + ' + ", "')
+		output.push('"\\\"x\\\": \\\"" + ' + x + ' + "\\\", "')
 		output.push('"\\\"ys\\\": ["')
 		ys.forEach((y, index) => {
 			output.push('"\\\"" + ' + y + ' + "\\\""')

@@ -21,6 +21,26 @@ describe('components/assets/mathjax', () => {
     unmount()
   })
 
+  test('BackInline - empty', () => {
+    const { unmount } = render(<MathJax.BackInline />)
+
+    unmount()
+  })
+
+  test('BackInline - with tags', () => {
+    const { unmount } = render(<MathJax.BackInline text={'\\(test\\)'} />)
+
+    unmount()
+  })
+
+  test('BackInline - without tags', () => {
+    const { unmount } = render(<MathJax.BackInline text={'test'} />)
+
+    screen.getByText('\\(test\\)')
+
+    unmount()
+  })
+
   test('Inline - empty', () => {
     const { unmount } = render(<MathJax.Inline text={''} />)
 
@@ -39,6 +59,28 @@ describe('components/assets/mathjax', () => {
     const { unmount } = render(<MathJax.Inline text={'test'} />)
 
     screen.getByText('\\(test\\)')
+
+    unmount()
+  })
+
+  test('BackFormula - empty', () => {
+    const { unmount } = render(<MathJax.BackFormula />)
+
+    unmount()
+  })
+
+  test('BackFormula - with tags', () => {
+    const { unmount } = render(<MathJax.BackFormula text={'$$test$$'} />)
+
+    screen.getByText('$$test$$')
+
+    unmount()
+  })
+
+  test('BackFormula - without tags', () => {
+    const { unmount } = render(<MathJax.BackFormula text={'test'} />)
+
+    screen.getByText('$$test$$')
 
     unmount()
   })

@@ -42,6 +42,8 @@ type TProject = Pick<
   | 'groups'
 >
 
+jest.useFakeTimers()
+
 describe('component/project/list', () => {
   const user = { id: 'id' }
   const workspace = { id: 'id', projects: [] }
@@ -77,6 +79,8 @@ describe('component/project/list', () => {
         swr={swr}
       />
     )
+
+    jest.advanceTimersByTime(500)
 
     unmount()
   })
@@ -140,6 +144,8 @@ describe('component/project/list', () => {
     const image = screen.getByRole('img', { name: 'Tanatloc' })
     fireEvent.click(image)
     expect(mockPush).toHaveBeenCalledTimes(3)
+
+    fireEvent.resize(window)
 
     unmount()
   })

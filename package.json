@@ -38,7 +38,8 @@
     "sitemap": "next-sitemap --config sitemap.config.mjs",
     "export": "yarn build:client && yarn sitemap &&  next export",
     "start": "NODE_ENV=production NODE_OPTIONS=\"--max_old_space_size=8192\" node --experimental-specifier-resolution=node dist/src/server/index.js",
-    "workflow": ".github/workflows/node.local.sh"
+    "workflow": ".github/workflows/node.local.sh",
+    "modelValidator": "ts-json-schema-generator --path models/index.d.ts --type 'IModel' --tsconfig ./tsconfig.json --no-type-check --out src/components/editor/steps/model.json"
   },
   "dependencies": {
     "electron": "25.2.0",
@@ -119,6 +120,7 @@
     "swr": "2.2.0",
     "tar": "6.1.15",
     "three": "0.153.0",
+    "ts-json-schema-generator": "1.2.0",
     "typedoc": "0.24.8",
     "typescript": "5.1.3",
     "url-join": "5.0.0",

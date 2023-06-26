@@ -167,7 +167,7 @@
         "sequential": {
           "type": "boolean"
         },
-        "user": {
+        "userModelId": {
           "type": "string"
         },
         "variables": {
@@ -205,7 +205,7 @@
       "additionalProperties": false,
       "properties": {
         "default": {
-          "type": ["boolean", "number", "string"]
+          "$ref": "#/definitions/TValue"
         },
         "htmlEntity": {
           "type": "string"
@@ -217,7 +217,13 @@
           "type": "boolean"
         },
         "unit": {
-          "type": "string"
+          "$ref": "#/definitions/IUnit"
+        },
+        "units": {
+          "items": {
+            "$ref": "#/definitions/IUnit"
+          },
+          "type": "array"
         }
       },
       "required": ["label", "htmlEntity", "default"],
@@ -283,8 +289,11 @@
               "checked": {
                 "type": "boolean"
               },
+              "unit": {
+                "$ref": "#/definitions/IUnit"
+              },
               "value": {
-                "type": ["boolean", "number", "string"]
+                "$ref": "#/definitions/TValue"
               }
             },
             "type": "object"
@@ -419,7 +428,32 @@
         "mesh": {
           "additionalProperties": false,
           "properties": {
+            "extra": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "unit": {
+                    "$ref": "#/definitions/IUnit"
+                  },
+                  "units": {
+                    "items": {
+                      "$ref": "#/definitions/IUnit"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": ["name"],
+                "type": "object"
+              },
+              "type": "array"
+            },
             "fileName": {
+              "type": "string"
+            },
+            "geometry": {
               "type": "string"
             },
             "glb": {
@@ -452,8 +486,11 @@
             "type": {
               "type": "string"
             },
+            "unit": {
+              "$ref": "#/definitions/IUnit"
+            },
             "value": {
-              "type": "string"
+              "type": ["number", "string"]
             }
           },
           "required": ["type", "value"],
@@ -466,7 +503,32 @@
           "items": {
             "additionalProperties": false,
             "properties": {
+              "extra": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "unit": {
+                      "$ref": "#/definitions/IUnit"
+                    },
+                    "units": {
+                      "items": {
+                        "$ref": "#/definitions/IUnit"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": ["name"],
+                  "type": "object"
+                },
+                "type": "array"
+              },
               "fileName": {
+                "type": "string"
+              },
+              "geometry": {
                 "type": "string"
               },
               "glb": {
@@ -640,7 +702,7 @@
       "additionalProperties": false,
       "properties": {
         "default": {
-          "type": ["boolean", "number", "string"]
+          "$ref": "#/definitions/TValue"
         },
         "htmlEntity": {
           "type": "string"
@@ -668,10 +730,16 @@
           "type": "array"
         },
         "unit": {
-          "type": "string"
+          "$ref": "#/definitions/IUnit"
+        },
+        "units": {
+          "items": {
+            "$ref": "#/definitions/IUnit"
+          },
+          "type": "array"
         },
         "value": {
-          "type": ["boolean", "number", "string"]
+          "$ref": "#/definitions/TValue"
         }
       },
       "required": ["label", "htmlEntity", "default"],
@@ -777,10 +845,16 @@
           "type": "string"
         },
         "unit": {
-          "type": "string"
+          "$ref": "#/definitions/IUnit"
+        },
+        "units": {
+          "items": {
+            "$ref": "#/definitions/IUnit"
+          },
+          "type": "array"
         }
       },
-      "required": ["label", "name", "htmlEntity", "default", "unit"],
+      "required": ["label", "name", "htmlEntity", "default"],
       "type": "object"
     },
     "IModelMaterialsValue": {
@@ -804,6 +878,9 @@
                   },
                   "symbol": {
                     "type": "string"
+                  },
+                  "unit": {
+                    "$ref": "#/definitions/IUnit"
                   },
                   "value": {
                     "type": ["number", "string"]
@@ -895,7 +972,6 @@
     },
     "IModelRun": {
       "additionalProperties": false,
-      "description": "Run",
       "properties": {
         "cloudServer": {
           "$ref": "#/definitions/IClientPlugin"
@@ -965,37 +1041,13 @@
           "type": "array"
         },
         "results": {
-          "anyOf": [
-            {
-              "items": {
-                "additionalProperties": false,
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  }
-                },
-                "required": ["name"],
-                "type": "object"
-              },
-              "type": "array"
+          "items": {
+            "items": {
+              "$ref": "#/definitions/IModelRunResult"
             },
-            {
-              "items": {
-                "items": {
-                  "additionalProperties": false,
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["name"],
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "type": "array"
-            }
-          ]
+            "type": "array"
+          },
+          "type": "array"
         },
         "resultsFilter": {
           "additionalProperties": false,
@@ -1033,6 +1085,52 @@
         }
       },
       "required": ["index", "title"],
+      "type": "object"
+    },
+    "IModelRunResult": {
+      "additionalProperties": false,
+      "description": "Run",
+      "properties": {
+        "data": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "data2D": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "unit": {
+          "$ref": "#/definitions/IUnit"
+        },
+        "units": {
+          "items": {
+            "$ref": "#/definitions/IUnit"
+          },
+          "type": "array"
+        }
+      },
+      "required": ["name", "data"],
       "type": "object"
     },
     "IModelSensor": {
@@ -1091,6 +1189,26 @@
       },
       "required": ["label"],
       "type": "object"
+    },
+    "IUnit": {
+      "additionalProperties": false,
+      "description": "Adder should be used only in field with number only (no formula)",
+      "properties": {
+        "adder": {
+          "type": "number"
+        },
+        "label": {
+          "type": "string"
+        },
+        "multiplicator": {
+          "type": "number"
+        }
+      },
+      "required": ["label"],
+      "type": "object"
+    },
+    "TValue": {
+      "type": ["boolean", "number", "string"]
     }
   }
 }

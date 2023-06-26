@@ -2330,10 +2330,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:1.23.0, ace-builds@npm:^1.4.14":
-  version: 1.23.0
-  resolution: "ace-builds@npm:1.23.0"
-  checksum: b53747e41ddd3dc694768aff4cd0a6f1d473e795397514eb8a85c99dbbd3a30ebd6083a8ba00eafd440071b372fbb1ea29294c3fee74d493d83c942cefa36974
+"ace-builds@npm:1.21.1":
+  version: 1.21.1
+  resolution: "ace-builds@npm:1.21.1"
+  checksum: 3b9df83a946fc36a3843bbd610f9e00ed349bcd1fcdcb4576835b9e05659c01dfbdc345284361043544b68b7c588e961a7a7e9415c4df7721ceded1d3e581b76
   languageName: node
   linkType: hard
 
@@ -10703,7 +10703,6 @@ __metadata:
     "@types/three": 0.152.1
     "@types/url-join": 4.0.1
     "@types/uuid": 9.0.2
-    ace-builds: 1.23.0
     ajv: 8.12.0
     antd: 5.6.3
     archiver: 5.3.1

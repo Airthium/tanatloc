@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation */
 
 import { useState, useCallback, useMemo } from 'react'
-import { Layout, Menu, Modal, Select, Tabs } from 'antd'
+import { Layout, Menu, Modal, Select, Tabs, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
 import { merge } from 'lodash'
@@ -237,6 +237,7 @@ const Selector = ({
             placeholder="Category filter"
             onChange={setCategories}
             value={categories}
+            style={{ textOverflow: 'ellipsis' }}
           />
         )
       }
@@ -283,7 +284,11 @@ const Selector = ({
               {onDelete ? (
                 <DeleteButton onDelete={async () => onDelete(index)} />
               ) : null}
-              {usermodel.model.name}
+              <Tooltip title={usermodel.model.name}>
+                <Typography.Text ellipsis={true}>
+                  {usermodel.model.name}
+                </Typography.Text>
+              </Tooltip>
               {usermodel.owners.find((owner) => owner.id === user.id) ? null : (
                 <div className="shared">
                   {Utils.userToAvatar(usermodel.owners[0])}

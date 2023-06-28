@@ -6,6 +6,9 @@ import { IModel } from '@/models/index.d'
 
 import { EditorContext } from '@/context/editor'
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 jest.mock('@/lib/utils', () => ({
   userToAvatar: () => <div />,
   groupToAvatar: () => <div />
@@ -38,7 +41,19 @@ describe('components/editor/info', () => {
     ]
   }
 
+  beforeEach(() => {
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+  })
+
   test('render', () => {
+    const { unmount } = render(<Info user={user} />)
+
+    unmount()
+  })
+
+  test('electron', () => {
+    mockIsElectron.mockImplementation(() => true)
     const { unmount } = render(<Info user={user} />)
 
     unmount()

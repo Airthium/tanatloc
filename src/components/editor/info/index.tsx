@@ -2,6 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react'
 import { Avatar, Card } from 'antd'
+import isElectron from 'is-electron'
 
 import { IFrontUser, IFrontUserModel } from '@/api/index.d'
 
@@ -36,6 +37,7 @@ const Info = ({ user }: IProps): React.JSX.Element => {
     setUserModel(userModel)
   }, [user, id])
 
+  if (isElectron()) return <></>
   if (!userModel) return <></>
   return (
     <div className={style.info}>

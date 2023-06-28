@@ -92,7 +92,15 @@ describe('components/project/simulation/run/results', () => {
       <Results
         simulation={{
           ...simulation,
-          tasks: [{ label: 'label', status: 'finish', file: null, files: null }]
+          tasks: [
+            {
+              index: 0,
+              label: 'label',
+              status: 'finish',
+              file: undefined,
+              files: undefined
+            }
+          ]
         }}
         results={results}
         setResults={setResults}

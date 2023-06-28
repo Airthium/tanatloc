@@ -182,12 +182,12 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
     }
 
     // Get datas
-    const tasksDatas: IFrontSimulationTask['datas'] = tasks
+    const tasksDatas = tasks
       .map((task) => task.datas)
       .filter((t) => t)
-      .flatMap((t) => t)
+      .flatMap((t) => t) as IFrontSimulationTask['datas']
 
-    if (!tasksDatas.length || !tasksDatas[0].names) {
+    if (!tasksDatas?.length || !tasksDatas[0].names) {
       setNames(undefined)
       setCamelNames(undefined)
       return

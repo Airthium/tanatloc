@@ -1,7 +1,7 @@
 /** @module Components.Editor.Steps */
 
 import { useContext, useState } from 'react'
-import { Steps, Tooltip } from 'antd'
+import { Steps } from 'antd'
 import JSON5 from 'json5'
 import Ajv from 'ajv'
 
@@ -14,7 +14,6 @@ import {
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
-// TODO model.json changed
 import JSONModel from './model.json'
 
 import style from '../index.module.css'
@@ -145,11 +144,7 @@ const StatusSteps = ({ setName }: IProps) => {
       .split('\n')
       .map((item) => <>{item}</>)
 
-    return (
-      <Tooltip title={formattedError}>
-        <span>{formattedError}</span>
-      </Tooltip>
-    )
+    return <span>{formattedError}</span>
   }
 
   const generateStep = (

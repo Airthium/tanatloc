@@ -125,8 +125,5 @@
     "url-join": "5.0.0",
     "uuid": "9.0.0"
   },
-  "resolutions": {
-    "ace-builds": "1.21.1"
-  },
   "packageManager": "yarn@3.6.0"
 }

@@ -28,10 +28,10 @@ const run = async (req: Request, res: Response): Promise<void> => {
     // Check authorization
     await checkSimulationAuth({ id: sessionId }, { id })
 
-    if (req.method === 'GET') {
+    if (req.method === 'PUT') {
       // Run
       try {
-        await SimulationLib.run({ id: sessionId }, { id })
+        await SimulationLib.run({ id: sessionId }, { id }, req.body.keepMesh)
         res.status(200).end()
       } catch (err: any) {
         throw error(500, err.message)

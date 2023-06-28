@@ -340,10 +340,12 @@ const checkUnits = (configuration: IModel['configuration']): void => {
  * Run
  * @param user User
  * @param simulation Simulation
+ * @param keepMesh Keep mesh
  */
 const run = async (
   user: { id: string },
-  simulation: { id: string }
+  simulation: { id: string },
+  keepMesh?: boolean
 ): Promise<void> => {
   const simulationData = await get(simulation.id, ['scheme'])
 
@@ -504,7 +506,11 @@ const run = async (
 
   // Compute
   try {
-    await plugin.lib.computeSimulation(simulation, simulationData.scheme)
+    await plugin.lib.computeSimulation(
+      simulation,
+      simulationData.scheme,
+      keepMesh
+    )
 
     configuration.run = {
       ...configuration.run,

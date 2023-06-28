@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Run */
 
-import { useCallback, useMemo, useState } from 'react'
-import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Button, Card, Checkbox, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
 import {
@@ -37,6 +37,7 @@ import Log from './log'
 import Results from './results'
 
 import globalStyle from '@/styles/index.module.css'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 /**
  * Props
@@ -108,12 +109,15 @@ export const _onCloudServer = async (
 
 /**
  * On run
+ * @param simulation Simulation
+ * @param keepMesh Keep mesh
  */
 export const _onRun = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  keepMesh?: boolean
 ): Promise<void> => {
   try {
-    await SimulationAPI.run({ id: simulation.id })
+    await SimulationAPI.run({ id: simulation.id }, keepMesh)
   } catch (err: any) {
     ErrorNotification(errors.run, err)
     throw err
@@ -150,6 +154,9 @@ const Run = ({
   // State
   const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)
+
+  const [keepMeshAvailable, setKeepMeshAvailable] = useState<boolean>(false)
+  const [keepMesh, setKeepMesh] = useState<boolean>(false)
 
   const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
   const [percent, setPercent] = useState<number>(0)
@@ -193,6 +200,17 @@ const Run = ({
     setDisabled(!done)
   }, [configuration])
 
+  // Keep mesh
+  useEffect(() => {
+    const geometry = simulation.scheme.configuration.geometry
+    if (geometry.mesh || geometry.meshes) {
+      setKeepMeshAvailable(true)
+    } else {
+      setKeepMeshAvailable(false)
+      setKeepMesh(false)
+    }
+  }, [simulation])
+
   // Running & steps
   useCustomEffect(() => {
     // Running
@@ -212,8 +230,9 @@ const Run = ({
       if (index === currentSimulation.tasks.length - 1) {
         const percents =
           task.log?.match(/[\d\s]{3}%/g) ?? task.log?.match(/[\d\s]*%/g)
-        const percent = percents ? parseFloat(percents.pop()) : undefined
-        if (percent) setPercent(percent)
+        const percent = percents?.pop()
+        const percentNumber = percent ? parseFloat(percent) : 0
+        if (percent) setPercent(percentNumber)
       }
 
       // Steps
@@ -247,18 +266,26 @@ const Run = ({
   )
 
   /**
+   * On keep mesh
+   * @param event Event
+   */
+  const onKeepMesh = useCallback((event: CheckboxChangeEvent): void => {
+    setKeepMesh(event.target.checked)
+  }, [])
+
+  /**
    * On run click
    */
   const onRunClick = useCallback((): void => {
     ;(async () => {
       setRunning(true)
       try {
-        await _onRun(simulation)
+        await _onRun(simulation, keepMesh)
       } catch (err) {
         setRunning(false)
       }
     })()
-  }, [simulation])
+  }, [simulation, keepMesh])
 
   /**
    * On stop click
@@ -310,6 +337,11 @@ const Run = ({
               className={globalStyle.fullWidth}
               size={20}
             >
+              {keepMeshAvailable ? (
+                <Checkbox checked={keepMesh} onChange={onKeepMesh}>
+                  Keep mesh?
+                </Checkbox>
+              ) : null}
               <div
                 className={globalStyle.fullWidth}
                 style={{

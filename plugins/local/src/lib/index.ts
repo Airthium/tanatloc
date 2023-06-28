@@ -28,6 +28,7 @@ import Services from '@/services'
 
 import Tools from '@/lib/tools'
 import Template from '@/lib/template'
+import Simulation from '@/lib/simulation'
 
 // Plugin key
 const key = 'local'
@@ -394,7 +395,8 @@ const computeMesh = async (
  */
 const computeSimulation = async (
   { id }: { id: string },
-  scheme: ISimulation<'scheme'[]>['scheme']
+  scheme: ISimulation<'scheme'[]>['scheme'],
+  keepMesh?: boolean
 ): Promise<void> => {
   // Check
   if (!scheme) throw new Error('Scheme is not defined')
@@ -408,8 +410,14 @@ const computeSimulation = async (
   // Configuration
   const configuration = scheme.configuration
 
+  // Get mesh tasks
+  const simulationData = await Simulation.get(id, ['tasks'])
+  const meshTasks = simulationData.tasks.filter(
+    (task) => task.file?.type === 'mesh'
+  )
+
   // Create tasks
-  const tasks: ISimulationTask[] = []
+  const tasks: ISimulationTask[] = keepMesh ? meshTasks : []
   updateTasks(id, tasks)
 
   // Clean previous simulation
@@ -419,7 +427,11 @@ const computeSimulation = async (
   configuration.dimension ?? (configuration.dimension = 3)
 
   // Meshes
-  await computeMeshes(id, simulationPath, configuration, tasks)
+  if (!keepMesh) {
+    await computeMeshes(id, simulationPath, configuration, tasks)
+    // Save mesh/meshes for reuse
+    await Simulation.update({ id }, [{ key: 'scheme', value: scheme }])
+  }
 
   const simulationTask: ISimulationTask = {
     index: tasks.length,

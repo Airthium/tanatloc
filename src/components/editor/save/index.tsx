@@ -73,7 +73,12 @@ export const _onSave = async (
           title:
             'A model with the same algorithm entry already exists. Do you want to override it?',
           onOk: async () => {
-            await _save(user, swr, usermodel, dispatch)
+            await _save(
+              user,
+              swr,
+              { id: usermodel.id, model: modelJSON, template },
+              dispatch
+            )
           }
         })
       } else {
@@ -84,7 +89,7 @@ export const _onSave = async (
             await _save(
               user,
               swr,
-              { id: '0', model: usermodel.model, template: usermodel.template },
+              { id: '0', model: modelJSON, template },
               dispatch
             )
           }

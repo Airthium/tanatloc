@@ -227,7 +227,8 @@ describe('components/editor/save', () => {
     await waitFor(() => expect(mockUserModelAdd).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockUserModelAdd).toHaveBeenLastCalledWith({
-        model: { algorithm: 'algorithm' }
+        model: { algorithm: 'algorithm' },
+        template: 'template'
       })
     )
 

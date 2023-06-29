@@ -72,7 +72,9 @@ describe('components/project/simulation/run', () => {
       code: 'code',
       version: 'version',
       configuration: {
-        geometry: {},
+        geometry: {
+          done: true
+        },
         parameters: {
           index: 2,
           title: 'Parameters',
@@ -359,6 +361,37 @@ describe('components/project/simulation/run', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
     await waitFor(() => expect(mockMutateSimulation).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('keepMesh', async () => {
+    const { unmount } = render(
+      <Run
+        geometries={geometries}
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              geometry: {
+                ...simulation.scheme.configuration.geometry,
+                mesh: {}
+              }
+            }
+          }
+        }}
+        results={results}
+        setResults={setResults}
+        setPostprocessing={setPostprocessing}
+        setVisible={setVisible}
+        swr={swr}
+      />
+    )
+
+    const checkbox = screen.getByRole('checkbox')
+    fireEvent.click(checkbox)
 
     unmount()
   })

@@ -277,7 +277,6 @@ const Run = ({
    * On run click
    */
   const onRunClick = useCallback((): void => {
-    console.log('ok')
     ;(async () => {
       setRunning(true)
       try {

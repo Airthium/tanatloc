@@ -3,10 +3,13 @@
 - Global:
   - :arrow_up: Update dependencies
   - :arrow_up: Units support
+  - :arrow_up: Keep mesh
 - Client:
   - :beetle: Bug fix
 - Server:
   - :beetle: Bug fix
+- Plugin:
+  - :beetle: Reload configuration at run
 
 ---
 

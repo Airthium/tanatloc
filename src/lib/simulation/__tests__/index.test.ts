@@ -196,6 +196,27 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
 
+    // No cloudServer
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {
+            value: 'id'
+          },
+          parameters: {},
+          boundaryConditions: {},
+          run: {}
+        }
+      }
+    }))
+
+    await Simulation.run({ id: 'id' }, { id: 'id' })
+    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(0)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(0)
+
     // Normal
     mockGet.mockImplementation(() => ({
       scheme: {
@@ -207,13 +228,15 @@ describe('lib/simulation', () => {
           boundaryConditions: {},
           run: {
             cloudServer: {
-              key: 'key'
+              key: 'key',
+              configuration: {}
             }
           }
         }
       }
     }))
     mockUserGet.mockImplementation(() => ({
+      plugins: [{ key: 'key', configuration: {} }],
       authorizedplugins: ['key']
     }))
     mockGeometryGet.mockImplementation(() => ({
@@ -222,8 +245,8 @@ describe('lib/simulation', () => {
 
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(1)
     expect(mockPluginCompute).toHaveBeenCalledTimes(1)
 
@@ -251,8 +274,8 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(4)
-    expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockUpdate).toHaveBeenCalledTimes(4)
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(6)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
     expect(mockPluginCompute).toHaveBeenCalledTimes(2)
 
@@ -282,8 +305,8 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(11)
-    expect(mockGet).toHaveBeenCalledTimes(4)
-    expect(mockUpdate).toHaveBeenCalledTimes(6)
+    expect(mockGet).toHaveBeenCalledTimes(5)
+    expect(mockUpdate).toHaveBeenCalledTimes(8)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(3)
 
@@ -317,8 +340,8 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(12)
-    expect(mockGet).toHaveBeenCalledTimes(5)
-    expect(mockUpdate).toHaveBeenCalledTimes(8)
+    expect(mockGet).toHaveBeenCalledTimes(6)
+    expect(mockUpdate).toHaveBeenCalledTimes(10)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(4)
@@ -330,18 +353,19 @@ describe('lib/simulation', () => {
     })
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(13)
-    expect(mockGet).toHaveBeenCalledTimes(6)
+    expect(mockGet).toHaveBeenCalledTimes(7)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(5)
 
     // Unauthorized
     mockUserGet.mockImplementation(() => ({
+      plugins: [],
       authorizedplugins: []
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(13)
-    expect(mockGet).toHaveBeenCalledTimes(7)
+    expect(mockGet).toHaveBeenCalledTimes(8)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(5)
@@ -350,7 +374,7 @@ describe('lib/simulation', () => {
     mockPluginServerList.mockImplementation(() => [])
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(13)
-    expect(mockGet).toHaveBeenCalledTimes(8)
+    expect(mockGet).toHaveBeenCalledTimes(9)
     expect(mockUpdate).toHaveBeenCalledTimes(6)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(5)
@@ -390,6 +414,7 @@ describe('lib/simulation', () => {
       }
     }))
     mockUserGet.mockImplementation(() => ({
+      plugins: [],
       authorizedplugins: ['key']
     }))
     mockGeometryGet.mockImplementation(() => ({
@@ -450,6 +475,7 @@ describe('lib/simulation', () => {
       }
     }))
     mockUserGet.mockImplementation(() => ({
+      plugins: [],
       authorizedplugins: ['key']
     }))
     mockGeometryGet.mockImplementation(() => ({
@@ -501,6 +527,7 @@ describe('lib/simulation', () => {
       }
     }))
     mockUserGet.mockImplementation(() => ({
+      plugins: [],
       authorizedplugins: ['key']
     }))
     mockGeometryGet.mockImplementation(() => ({

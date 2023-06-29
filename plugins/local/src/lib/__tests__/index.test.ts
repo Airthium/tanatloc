@@ -64,6 +64,12 @@ const mockRender = jest.fn()
 jest.mock('@/lib/template', () => ({
   render: async () => mockRender()
 }))
+const mockSimulationGet = jest.fn()
+const mockSimulationUpdate = jest.fn()
+jest.mock('@/lib/simulation', () => ({
+  get: async () => mockSimulationGet(),
+  update: async () => mockSimulationUpdate()
+}))
 
 describe('plugins/local/src/lib', () => {
   beforeEach(() => {
@@ -81,6 +87,9 @@ describe('plugins/local/src/lib', () => {
     mockRemoveDirectory.mockReset()
 
     mockRender.mockReset()
+
+    mockSimulationGet.mockReset()
+    mockSimulationUpdate.mockReset()
 
     mockGmsh.mockReset()
     mockFreefem.mockReset()
@@ -504,6 +513,9 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(
       () => '{ "type": "DATA", "name": "Result.dat" }'
     )
+    mockSimulationGet.mockImplementation(() => ({
+      tasks: [{ type: 'mesh' }]
+    }))
 
     // No scheme
     try {
@@ -515,10 +527,14 @@ describe('plugins/local/src/lib', () => {
     } catch (err) {}
 
     // Empty
-    await Local.computeSimulation({ id: 'id' }, {
-      algorithm: 'algorithm',
-      configuration: { geometry: {}, run: {} }
-    } as ISimulation<'scheme'[]>['scheme'])
+    await Local.computeSimulation(
+      { id: 'id' },
+      {
+        algorithm: 'algorithm',
+        configuration: { geometry: {}, run: {} }
+      } as ISimulation<'scheme'[]>['scheme'],
+      true
+    )
 
     // Simulation error
     mockFreefem.mockImplementation((_, __, callback) => {
@@ -712,6 +728,9 @@ describe('plugins/local/src/lib', () => {
     mockFreefem.mockImplementation(() => {
       return 0
     })
+    mockSimulationGet.mockImplementation(() => ({
+      tasks: []
+    }))
     jest
       .spyOn(Local, 'startProcess')
       .mockImplementationOnce(

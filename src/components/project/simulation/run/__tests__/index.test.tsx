@@ -72,6 +72,7 @@ describe('components/project/simulation/run', () => {
       code: 'code',
       version: 'version',
       configuration: {
+        geometry: {},
         parameters: {
           index: 2,
           title: 'Parameters',

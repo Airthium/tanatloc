@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Card, Checkbox, Layout, Space, Spin, Steps } from 'antd'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
 import {
@@ -37,7 +38,6 @@ import Log from './log'
 import Results from './results'
 
 import globalStyle from '@/styles/index.module.css'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 /**
  * Props
@@ -202,8 +202,8 @@ const Run = ({
 
   // Keep mesh
   useEffect(() => {
-    const geometry = simulation.scheme.configuration.geometry
-    if (geometry.mesh || geometry.meshes) {
+    const geometry = simulation.scheme.configuration?.geometry
+    if (geometry?.mesh || geometry?.meshes) {
       setKeepMeshAvailable(true)
     } else {
       setKeepMeshAvailable(false)
@@ -277,6 +277,7 @@ const Run = ({
    * On run click
    */
   const onRunClick = useCallback((): void => {
+    console.log('ok')
     ;(async () => {
       setRunning(true)
       try {

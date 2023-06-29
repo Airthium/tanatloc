@@ -25,7 +25,7 @@ jest.mock('@/lib/simulation', () => ({
 }))
 
 describe('route/simulation/[id]/run', () => {
-  const req = {} as Request
+  const req = { body: { keepMesh: true } } as Request
   let resStatus: number
   let resJson: string | object
   const res = {} as Response
@@ -120,12 +120,12 @@ describe('route/simulation/[id]/run', () => {
     })
   })
 
-  test('GET', async () => {
+  test('PUT', async () => {
     // Normal
     await run(
       {
         ...req,
-        method: 'GET',
+        method: 'PUT',
         query: {},
         params: { id: 'id' } as Request['params']
       } as Request,
@@ -145,7 +145,7 @@ describe('route/simulation/[id]/run', () => {
     await run(
       {
         ...req,
-        method: 'GET',
+        method: 'PUT',
         query: {},
         params: { id: 'id' } as Request['params']
       } as Request,

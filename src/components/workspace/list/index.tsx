@@ -27,6 +27,7 @@ import Workspace from '..'
 
 import dashboardStyle from '@/components/dashboard/index.module.css'
 import globalStyle from '@/styles/index.module.css'
+import AddExample from '../example'
 
 /**
  * Props
@@ -201,6 +202,7 @@ const WorkspacesList = ({
                 <Input ref={inputRef} placeholder="Workspace's name" />
               </Form.Item>
             </Dialog>
+            <AddExample/>
             <Tabs
               type="editable-card"
               className={`${globalStyle.noScroll} ${dashboardStyle.inDashboardTabs}`}
@@ -234,6 +236,8 @@ const WorkspacesList = ({
               onChange={onChange}
               onEdit={setVisibleTrue}
             />
+            
+            
           </>
         ) : (
           <>

@@ -1,16 +1,28 @@
 /** @module Components.Administration.User.Delete */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -61,7 +73,8 @@ export const errors = {
 export const _onUpdate = async (
   user: TUserItem,
   values: ILocalValues,
-  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void> }
+  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Update
@@ -89,7 +102,7 @@ export const _onUpdate = async (
     }
     await swr.mutateOneUser(newUser as IFrontUsersItem)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -106,6 +119,9 @@ const Edit = ({ plugins, user, swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Autofocus
   useEffect(() => {
@@ -130,7 +146,7 @@ const Edit = ({ plugins, user, swr }: IProps): React.JSX.Element => {
     async (values: ILocalValues): Promise<void> => {
       setLoading(true)
       try {
-        await _onUpdate(user, values, swr)
+        await _onUpdate(user, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -140,7 +156,7 @@ const Edit = ({ plugins, user, swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [user, swr]
+    [user, swr, dispatch]
   )
 
   /**

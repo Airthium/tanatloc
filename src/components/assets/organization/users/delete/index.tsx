@@ -1,10 +1,15 @@
 /** @module Components.Assets.Organization.User.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -64,7 +69,8 @@ export const _onDelete = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -85,7 +91,7 @@ export const _onDelete = async (
     )
     await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -112,6 +118,9 @@ const Delete = ({
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * Set name
    * @param u User
@@ -127,11 +136,11 @@ const Delete = ({
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(user, organization, dBkey, swr)
+      await _onDelete(user, organization, dBkey, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [user, organization, dBkey, swr])
+  }, [user, organization, dBkey, swr, dispatch])
 
   /**
    * Render

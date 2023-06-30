@@ -1,11 +1,23 @@
 /** @module Components.Assets.Organization.User.Add */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
+
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -86,12 +98,13 @@ export const _onFinish = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   // Check
   const exists = _checkAlreadyAdded(values, organization)
   if (exists) {
-    ErrorNotification(errors.existing)
+    dispatch(addError({ title: errors.existing }))
     throw new Error(errors.existing)
   }
 
@@ -116,7 +129,7 @@ export const _onFinish = async (
     ]
     await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -145,6 +158,9 @@ const Add = ({
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Autofocus
   useEffect(() => {
     /* istanbul ignore next */
@@ -169,7 +185,7 @@ const Add = ({
     async (values: { email: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _onFinish(organization, dBkey, values, swr)
+        await _onFinish(organization, dBkey, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -179,7 +195,7 @@ const Add = ({
         throw err
       }
     },
-    [organization, dBkey, swr]
+    [organization, dBkey, swr, dispatch]
   )
 
   /**

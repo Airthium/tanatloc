@@ -1,12 +1,13 @@
 /** @module Components.Signup.Validation */
 
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
 import { SUBSCRIBE, REVALIDATE } from '@/config/email'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import LinkAPI from '@/api/link'
 
@@ -26,6 +27,9 @@ export const errors = {
  * @returns Validation
  */
 const Validation = (): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const router = useRouter()
   const { id }: { id?: string } = router.query
@@ -44,16 +48,16 @@ const Validation = (): React.JSX.Element => {
 
             await router.push('/login').catch()
           } catch (err: any) {
-            ErrorNotification(errors.internal, err)
+            dispatch(addError({ title: errors.internal, err }))
           }
         } else {
-          ErrorNotification(errors.wrongLink)
+          dispatch(addError({ title: errors.wrongLink }))
         }
       } catch (err: any) {
-        ErrorNotification(errors.internal, err)
+        dispatch(addError({ title: errors.internal, err }))
       }
     })()
-  }, [id, router])
+  }, [id, router, dispatch])
 
   /**
    * Render

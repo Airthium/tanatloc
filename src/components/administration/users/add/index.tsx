@@ -1,15 +1,27 @@
 /** @module Components.Administration.User.Add */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IFrontMutateUser } from '@/api/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
@@ -50,7 +62,8 @@ export const errors = {
  */
 export const _onAdd = async (
   values: ILocalValues,
-  swr: { addOneUser: (user: IFrontMutateUser) => Promise<void> }
+  swr: { addOneUser: (user: IFrontMutateUser) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -90,7 +103,7 @@ export const _onAdd = async (
     }
     await swr.addOneUser(newUserWithData)
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -107,6 +120,9 @@ const Add = ({ plugins, swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [system] = SystemAPI.useSystem()
@@ -134,7 +150,7 @@ const Add = ({ plugins, swr }: IProps): React.JSX.Element => {
     async (values: ILocalValues): Promise<void> => {
       setLoading(true)
       try {
-        await _onAdd(values, swr)
+        await _onAdd(values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -144,7 +160,7 @@ const Add = ({ plugins, swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [swr]
+    [swr, dispatch]
   )
 
   /**

@@ -1,12 +1,15 @@
 /** @module Components.Login */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 import isElectron from 'is-electron'
 
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Loading from '@/components/loading'
-import { ErrorNotification, FormError } from '@/components/assets/notification'
+import { FormError } from '@/components/assets/notification'
 
 import { IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
@@ -68,6 +71,9 @@ const Login = (): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
 
@@ -91,8 +97,8 @@ const Login = (): React.JSX.Element => {
 
   // Error
   useEffect(() => {
-    if (errorUser) ErrorNotification(errors.user, errorUser)
-  }, [errorUser])
+    if (errorUser) dispatch(addError({ title: errors.user, err: errorUser }))
+  }, [errorUser, dispatch])
 
   // Already connected
   useEffect(() => {

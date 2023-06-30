@@ -1,6 +1,6 @@
 /** @module Components.Administration.Registration */
 
-import { useCallback, useEffect } from 'react'
+import { Dispatch, useCallback, useContext, useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -14,11 +14,13 @@ import {
   REQUIRE_SYMBOL
 } from '@/config/auth'
 
-import Loading from '@/components/loading'
 import {
-  SuccessNotification,
-  ErrorNotification
-} from '@/components/assets/notification'
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError, addSuccess } from '@/context/notification/actions'
+
+import Loading from '@/components/loading'
 
 import SystemAPI from '@/api/system'
 
@@ -39,7 +41,8 @@ export const errors = {
  */
 export const _onAllowSignup = async (
   system: IFrontSystem,
-  mutateSystem: (system: IFrontMutateSystem) => Promise<void>
+  mutateSystem: (system: IFrontMutateSystem) => Promise<void>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Update
@@ -48,9 +51,9 @@ export const _onAllowSignup = async (
     // Mutate
     await mutateSystem({ allowsignup: !system.allowsignup })
 
-    SuccessNotification('Changes saved')
+    dispatch(addSuccess({ title: 'Changes saved' }))
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -61,7 +64,8 @@ export const _onAllowSignup = async (
  */
 export const _onPasswordFinish = async (
   values: IFrontSystem['password'],
-  mutateSystem: (system: IFrontMutateSystem) => Promise<void>
+  mutateSystem: (system: IFrontMutateSystem) => Promise<void>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Update
@@ -70,9 +74,9 @@ export const _onPasswordFinish = async (
     // Mutate
     await mutateSystem({ password: values })
 
-    SuccessNotification('Changes saved')
+    dispatch(addSuccess({ title: 'Changes saved' }))
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -81,6 +85,9 @@ export const _onPasswordFinish = async (
  * @returns Registration
  */
 const Registration = (): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const [form] = Form.useForm()
   const [system, { mutateSystem, errorSystem, loadingSystem }] =
@@ -88,8 +95,9 @@ const Registration = (): React.JSX.Element => {
 
   // System error
   useEffect(() => {
-    if (errorSystem) ErrorNotification(errors.system, errorSystem)
-  }, [errorSystem])
+    if (errorSystem)
+      dispatch(addError({ title: errors.system, err: errorSystem }))
+  }, [errorSystem, dispatch])
 
   // Update field value
   useEffect(() => {
@@ -110,9 +118,9 @@ const Registration = (): React.JSX.Element => {
    */
   const onChange = useCallback((): void => {
     ;(async () => {
-      await _onAllowSignup(system, mutateSystem)
+      await _onAllowSignup(system, mutateSystem, dispatch)
     })()
-  }, [system, mutateSystem])
+  }, [system, mutateSystem, dispatch])
 
   /**
    * On Finish
@@ -121,10 +129,10 @@ const Registration = (): React.JSX.Element => {
   const onFinish = useCallback(
     (values: IFrontSystem['password']): void => {
       ;(async () => {
-        await _onPasswordFinish(values, mutateSystem)
+        await _onPasswordFinish(values, mutateSystem, dispatch)
       })()
     },
-    [mutateSystem]
+    [mutateSystem, dispatch]
   )
 
   /**

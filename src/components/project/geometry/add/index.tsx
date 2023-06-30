@@ -1,14 +1,19 @@
 /** @module Components.Project.Geometry.Add */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Space, Typography, Upload, UploadFile } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 
 import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
 
@@ -73,7 +78,8 @@ export const _onUpload = async (
   swr: {
     mutateProject: (project: Partial<IFrontProject>) => Promise<void>
     addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') return true
   if (info.file.status === 'done') {
@@ -97,7 +103,7 @@ export const _onUpload = async (
         geometries: [...project.geometries, geometry.id]
       })
     } catch (err: any) {
-      ErrorNotification(errors.add, err)
+      dispatch(addError({ title: errors.add, err }))
       throw err
     }
   }
@@ -119,6 +125,9 @@ const Add = ({
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * Set visible false
    */
@@ -132,7 +141,7 @@ const Add = ({
     (info: UploadChangeParam<UploadFile<any>>): void => {
       ;(async () => {
         try {
-          const load = await _onUpload(project, info, swr)
+          const load = await _onUpload(project, info, swr, dispatch)
           setLoading(load)
           setVisible(load)
         } catch (err) {
@@ -140,7 +149,7 @@ const Add = ({
         }
       })()
     },
-    [project, swr, setVisible]
+    [project, swr, setVisible, dispatch]
   )
 
   /**

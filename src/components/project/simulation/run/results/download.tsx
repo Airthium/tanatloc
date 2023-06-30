@@ -1,12 +1,16 @@
 /** @module Components.Project.Simulation.Run.Results.Download */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import ResultAPI from '@/api/result'
 
@@ -32,7 +36,8 @@ export const errors = {
  */
 const _onDownload = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
-  file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>
+  file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const content = await ResultAPI.download(
@@ -50,7 +55,7 @@ const _onDownload = async (
     )
     link.click()
   } catch (err: any) {
-    ErrorNotification(errors.download, err)
+    dispatch(addError({ title: errors.download, err }))
   }
 }
 
@@ -63,6 +68,9 @@ const Download = ({ simulation, file }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On click
    */
@@ -70,13 +78,13 @@ const Download = ({ simulation, file }: IProps): React.JSX.Element => {
     ;(async () => {
       setLoading(true)
       try {
-        await _onDownload(simulation, file)
+        await _onDownload(simulation, file, dispatch)
       } catch (err) {
       } finally {
         setLoading(false)
       }
     })()
-  }, [simulation, file])
+  }, [simulation, file, dispatch])
 
   /**
    * Render

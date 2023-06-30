@@ -1,6 +1,12 @@
 /** @module Components.Workspace */
 
-import { useState, useEffect, ChangeEvent, useCallback } from 'react'
+import {
+  useState,
+  useEffect,
+  ChangeEvent,
+  useCallback,
+  useContext
+} from 'react'
 import { Avatar, Input, Layout, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 
@@ -11,8 +17,10 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import PageHeader from '@/components/assets/pageHeader'
-import { ErrorNotification } from '@/components/assets/notification'
 import Share from '@/components/assets/share'
 
 import ProjectAdd from '@/components/project/add'
@@ -72,6 +80,9 @@ const Workspace = ({
   const [filter, setFilter] = useState<string>()
   const [sorter, setSorter] = useState<string>()
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const [
     projects,
@@ -86,8 +97,9 @@ const Workspace = ({
 
   // Projects error
   useEffect(() => {
-    if (errorProjects) ErrorNotification(errors.projects, errorProjects)
-  }, [errorProjects])
+    if (errorProjects)
+      dispatch(addError({ title: errors.projects, err: errorProjects }))
+  }, [errorProjects, dispatch])
 
   /**
    * On change

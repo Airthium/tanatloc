@@ -1,7 +1,7 @@
 /** @module Components.Dashboard */
 
 import { useRouter } from 'next/router'
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Layout, Menu, Typography } from 'antd'
 import {
   AppstoreOutlined,
@@ -16,9 +16,10 @@ import isElectron from 'is-electron'
 
 import packageJson from '../../../package.json'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Loading from '@/components/loading'
 import WorkspacesList from '@/components/workspace/list'
@@ -88,6 +89,9 @@ const Dashboard = () => {
   // State
   const [currentKey, setCurrentKey] = useState<string>()
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const [user, { mutateUser, clearUser, errorUser, loadingUser }] =
     UserAPI.useUser()
@@ -124,9 +128,9 @@ const Dashboard = () => {
       await clearUser()
       await router.push('/')
     } catch (err: any) {
-      ErrorNotification(errors.logout, err)
+      dispatch(addError({ title: errors.logout, err }))
     }
-  }, [router, clearUser])
+  }, [router, clearUser, dispatch])
 
   /**
    * On select
@@ -193,10 +197,13 @@ const Dashboard = () => {
 
   // Error
   useCustomEffect(() => {
-    if (errorUser) ErrorNotification(errors.user, errorUser)
+    if (errorUser) dispatch(addError({ title: errors.user, err: errorUser }))
     if (errorOrganizations)
-      ErrorNotification(errors.organizations, errorOrganizations)
-    if (errorWorkspaces) ErrorNotification(errors.workspaces, errorWorkspaces)
+      dispatch(
+        addError({ title: errors.organizations, err: errorOrganizations })
+      )
+    if (errorWorkspaces)
+      dispatch(addError({ title: errors.workspaces, err: errorWorkspaces }))
   }, [errorUser, errorOrganizations, errorWorkspaces])
 
   /**

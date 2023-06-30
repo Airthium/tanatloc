@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Add */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import {
@@ -12,7 +12,12 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -57,7 +62,8 @@ export const _onAdd = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New boundary condition
@@ -117,7 +123,7 @@ export const _onAdd = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -136,6 +142,9 @@ const Add = ({
 }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   /**
    * On add
@@ -164,7 +173,7 @@ const Add = ({
         }
         onError()
 
-        await _onAdd(simulation, boundaryCondition, swr)
+        await _onAdd(simulation, boundaryCondition, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -173,7 +182,7 @@ const Add = ({
         setLoading(false)
       }
     })()
-  }, [simulation, boundaryCondition, swr, onError, onClose])
+  }, [simulation, boundaryCondition, swr, onError, onClose, dispatch])
 
   /**
    * Render

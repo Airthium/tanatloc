@@ -1,12 +1,17 @@
 /** @module Components.Administration.User.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -31,10 +36,12 @@ export const errors = {
  * On delete
  * @param user User
  * @param swr Swr
+ * @param dispatch Dispatch
  */
 export const _onDelete = async (
   user: Pick<IFrontUsersItem, 'id' | 'email'>,
-  swr: { delOneUser: (user: IFrontMutateUsersItem) => Promise<void> }
+  swr: { delOneUser: (user: IFrontMutateUsersItem) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Delete
@@ -43,7 +50,7 @@ export const _onDelete = async (
     // Mutate
     await swr.delOneUser({ id: user.id })
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -57,17 +64,20 @@ const Delete = ({ user, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(user, swr)
+      await _onDelete(user, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [user, swr])
+  }, [user, swr, dispatch])
 
   /**
    * Render

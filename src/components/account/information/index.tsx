@@ -1,6 +1,6 @@
 /** @module Components.Account.Information */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
@@ -9,10 +9,12 @@ import isElectron from 'is-electron'
 import { LIMIT50 } from '@/config/string'
 
 import {
-  SuccessNotification,
-  ErrorNotification,
-  FormError
-} from '@/components/assets/notification'
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError, addSuccess } from '@/context/notification/actions'
+
+import { FormError } from '@/components/assets/notification'
 
 import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
@@ -57,15 +59,18 @@ export const errors = {
  * Before upload
  * @param file File
  */
-export const _beforeUpload = (file: {
-  type: string
-  size: number
-}): boolean => {
+export const _beforeUpload = (
+  file: {
+    type: string
+    size: number
+  },
+  dispatch: Dispatch<INotificationAction>
+): boolean => {
   const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
-  if (!goodFormat) ErrorNotification(errors.badFormat)
+  if (!goodFormat) dispatch(addError({ title: errors.badFormat }))
 
   const goodSize = file.size / 1024 / 1024 < 1
-  if (!goodSize) ErrorNotification(errors.badSize)
+  if (!goodSize) dispatch(addError({ title: errors.badSize }))
 
   return goodFormat && goodSize
 }
@@ -93,6 +98,7 @@ export const _getBase64 = async (file: Blob): Promise<any> => {
 export const _onChange = async (
   user: ILocalUser,
   info: UploadChangeParam<any>,
+  dispatch: Dispatch<INotificationAction>,
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => Promise<void>
   }
@@ -117,7 +123,7 @@ export const _onChange = async (
         avatar: Buffer.from(img)
       })
     } catch (err: any) {
-      ErrorNotification(errors.upload, err)
+      dispatch(addError({ title: errors.upload, err: err }))
     }
 
     return false
@@ -135,6 +141,7 @@ export const _onChange = async (
 export const _onFinish = async (
   user: ILocalUser,
   values: ILocalValues,
+  dispatch: Dispatch<INotificationAction>,
   swr: {
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   }
@@ -175,9 +182,11 @@ export const _onFinish = async (
     })
 
     if (toUpdate.find((u) => u.key === 'email'))
-      SuccessNotification(
-        'Changes saved',
-        'A validation email has been send to ' + values.email
+      dispatch(
+        addSuccess({
+          title: 'Changes saved',
+          description: 'A validation email has been send to ' + values.email
+        })
       )
   } catch (err: any) {
     throw new APIError({ title: errors.update, err })
@@ -195,6 +204,9 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Layout
   const layout = {
     labelCol: { span: 4 }
@@ -204,17 +216,30 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
   }
 
   /**
+   * Before upload
+   * @param file File
+   * @returns True
+   * @returns False
+   */
+  const beforeUpload = useCallback(
+    (file: { type: string; size: number }): boolean => {
+      return _beforeUpload(file, dispatch)
+    },
+    [dispatch]
+  )
+
+  /**
    * On Change
    * @param info Info
    */
   const onChange = useCallback(
     (info: UploadChangeParam<any>): void => {
       ;(async () => {
-        const upload = await _onChange(user, info, swr)
+        const upload = await _onChange(user, info, dispatch, swr)
         setUploading(upload)
       })()
     },
-    [user, swr]
+    [user, swr, dispatch]
   )
 
   const onFinish = useCallback(
@@ -222,7 +247,7 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
       ;(async () => {
         setLoading(true)
         try {
-          await _onFinish(user, values, swr)
+          await _onFinish(user, values, dispatch, swr)
           setFormError(undefined)
         } catch (err: any) {
           setFormError(err)
@@ -231,83 +256,85 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
         }
       })()
     },
-    [user, swr]
+    [user, swr, dispatch]
   )
 
   /**
    * Render
    */
   return (
-    <Card title="Contact Details">
-      <Space direction="horizontal" className={style.information}>
-        <div className={style.avatar}>
-          <Avatar
-            size={128}
-            src={user.avatar && Buffer.from(user.avatar).toString()}
-            icon={<UserOutlined />}
-          />
-          <Upload
-            action={'/api/noop'}
-            accept={'.jpg,.png'}
-            showUploadList={false}
-            beforeUpload={_beforeUpload}
-            onChange={onChange}
-          >
-            <Button loading={uploading} icon={<UploadOutlined />}>
-              Upload new
-            </Button>
-          </Upload>
-        </div>
-        <div className={style.form}>
-          <Form
-            {...layout}
-            style={{ maxWidth: 500 }}
-            initialValues={{
-              email: user.email,
-              firstname: user.firstname ?? '',
-              lastname: user.lastname ?? ''
-            }}
-            onFinish={onFinish}
-          >
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
-              ]}
+    <>
+      <Card title="Contact Details">
+        <Space direction="horizontal" className={style.information}>
+          <div className={style.avatar}>
+            <Avatar
+              size={128}
+              src={user.avatar && Buffer.from(user.avatar).toString()}
+              icon={<UserOutlined />}
+            />
+            <Upload
+              action={'/api/noop'}
+              accept={'.jpg,.png'}
+              showUploadList={false}
+              beforeUpload={beforeUpload}
+              onChange={onChange}
             >
-              <Input disabled={isElectron()} />
-            </Form.Item>
-
-            <Form.Item
-              label="First name"
-              name="firstname"
-              rules={[
-                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Last name"
-              name="lastname"
-              rules={[
-                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <FormError error={formError} />
-            <Form.Item {...buttonLayout}>
-              <Button loading={loading} type="primary" htmlType="submit">
-                Save changes
+              <Button loading={uploading} icon={<UploadOutlined />}>
+                Upload new
               </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </Space>
-    </Card>
+            </Upload>
+          </div>
+          <div className={style.form}>
+            <Form
+              {...layout}
+              style={{ maxWidth: 500 }}
+              initialValues={{
+                email: user.email,
+                firstname: user.firstname ?? '',
+                lastname: user.lastname ?? ''
+              }}
+              onFinish={onFinish}
+            >
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                  { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+                ]}
+              >
+                <Input disabled={isElectron()} />
+              </Form.Item>
+
+              <Form.Item
+                label="First name"
+                name="firstname"
+                rules={[
+                  { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                label="Last name"
+                name="lastname"
+                rules={[
+                  { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <FormError error={formError} />
+              <Form.Item {...buttonLayout}>
+                <Button loading={loading} type="primary" htmlType="submit">
+                  Save changes
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        </Space>
+      </Card>
+    </>
   )
 }
 

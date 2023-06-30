@@ -1,15 +1,27 @@
 /** @module Components.Workspace.Add */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { IFrontNewWorkspace } from '@/api/index.d'
 
 import { LIMIT50 } from '@/config/string'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -36,7 +48,8 @@ export const errors = {
  */
 export const _onAdd = async (
   values: Pick<IFrontNewWorkspace, 'name'>,
-  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> }
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Add
@@ -45,7 +58,7 @@ export const _onAdd = async (
     // Mutate
     await swr.addOneWorkspace(workspace)
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -62,6 +75,9 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
   // Sate
   const [loading, setLoading] = useState<boolean>(false)
   const [visible, setVisible] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Autofocus
   useEffect(() => {
@@ -87,7 +103,7 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
     async (values: Pick<IFrontNewWorkspace, 'name'>): Promise<void> => {
       setLoading(true)
       try {
-        await _onAdd(values, swr)
+        await _onAdd(values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -97,7 +113,7 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [swr]
+    [swr, dispatch]
   )
 
   /**

@@ -1,13 +1,22 @@
 /** @module Components.Login.Password */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
-import Dialog from '@/components/assets/dialog'
 import {
-  SuccessNotification,
-  ErrorNotification
-} from '@/components/assets/notification'
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError, addSuccess } from '@/context/notification/actions'
+
+import Dialog from '@/components/assets/dialog'
 
 import EmailAPI from '@/api/email'
 
@@ -22,18 +31,23 @@ export const errors = {
  * Password recover
  * @param value Value
  */
-export const _passwordRecover = async (value: {
-  email: string
-}): Promise<void> => {
+export const _passwordRecover = async (
+  value: {
+    email: string
+  },
+  dispatch: Dispatch<INotificationAction>
+): Promise<void> => {
   try {
     await EmailAPI.recover(value.email)
 
-    SuccessNotification(
-      'An email has been send to recover your password',
-      'If you entered a valid email'
+    dispatch(
+      addSuccess({
+        title: 'An email has been send to recover your password',
+        description: 'If you entered a valid email'
+      })
     )
   } catch (err: any) {
-    ErrorNotification(errors.recover, err)
+    dispatch(addError({ title: errors.recover, err }))
     throw err
   }
 }
@@ -49,6 +63,9 @@ const PasswordRecover = (): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Autofocus
   useEffect(() => {
@@ -70,19 +87,22 @@ const PasswordRecover = (): React.JSX.Element => {
    * On ok
    * @param values Values
    */
-  const onOk = useCallback(async (values: { email: string }): Promise<void> => {
-    setLoading(true)
-    try {
-      await _passwordRecover(values)
+  const onOk = useCallback(
+    async (values: { email: string }): Promise<void> => {
+      setLoading(true)
+      try {
+        await _passwordRecover(values, dispatch)
 
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      setLoading(false)
-      throw err
-    }
-  }, [])
+        // Close
+        setLoading(false)
+        setVisible(false)
+      } catch (err) {
+        setLoading(false)
+        throw err
+      }
+    },
+    [dispatch]
+  )
 
   /**
    * Render

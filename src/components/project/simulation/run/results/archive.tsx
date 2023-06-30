@@ -1,11 +1,16 @@
 /** @module Components.Project.Simulation.Run.Results.Archive */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DownloadButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import ResultAPI from '@/api/result'
 
@@ -27,7 +32,8 @@ export const errors = {
  * On archive
  */
 export const _onArchive = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     const archive = await ResultAPI.archive({ id: simulation.id })
@@ -39,7 +45,7 @@ export const _onArchive = async (
     link.setAttribute('download', simulation.scheme.name + '.zip')
     link.click()
   } catch (err: any) {
-    ErrorNotification(errors.archive, err)
+    dispatch(addError({ title: errors.archive, err }))
   }
 }
 
@@ -52,6 +58,9 @@ const Archive = ({ simulation }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On download
    */
@@ -59,13 +68,13 @@ const Archive = ({ simulation }: IProps): React.JSX.Element => {
     ;(async () => {
       setLoading(true)
       try {
-        await _onArchive(simulation)
+        await _onArchive(simulation, dispatch)
       } catch (err) {
       } finally {
         setLoading(false)
       }
     })()
-  }, [simulation])
+  }, [simulation, dispatch])
 
   /**
    * Render

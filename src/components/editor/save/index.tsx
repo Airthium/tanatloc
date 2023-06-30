@@ -10,8 +10,11 @@ import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
 import { EditorContext, IEditorAction } from '@/context/editor'
 import { setId } from '@/context/editor/actions'
-
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import UserModelAPI from '@/api/userModel'
 
@@ -42,7 +45,8 @@ export const errors = {
  * @param swr SWR
  * @param model Model
  * @param template Template
- * @param disptach Dispatch
+ * @param editorDisptach Dispatch
+ * @param notificationDispatch Dispatch
  */
 export const _onSave = async (
   user: Pick<IFrontUser, 'id' | 'usermodels'>,
@@ -51,13 +55,14 @@ export const _onSave = async (
   },
   model: string,
   template: string,
-  dispatch: Dispatch<IEditorAction>
+  editorDispatch: Dispatch<IEditorAction>,
+  notificationDispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   let modelJSON: IModel
   try {
     modelJSON = JSON5.parse(model)
   } catch (err: any) {
-    ErrorNotification(errors.json, err)
+    notificationDispatch(addError({ title: errors.json, err }))
     return
   }
 
@@ -77,7 +82,8 @@ export const _onSave = async (
               user,
               swr,
               { id: usermodel.id, model: modelJSON, template },
-              dispatch
+              editorDispatch,
+              notificationDispatch
             )
           }
         })
@@ -90,16 +96,23 @@ export const _onSave = async (
               user,
               swr,
               { id: '0', model: modelJSON, template },
-              dispatch
+              editorDispatch,
+              notificationDispatch
             )
           }
         })
       }
     } else {
-      await _save(user, swr, { id: '0', model: modelJSON, template }, dispatch)
+      await _save(
+        user,
+        swr,
+        { id: '0', model: modelJSON, template },
+        editorDispatch,
+        notificationDispatch
+      )
     }
   } catch (err: any) {
-    ErrorNotification(errors.check, err)
+    notificationDispatch(addError({ title: errors.check, err }))
   }
 }
 
@@ -116,7 +129,8 @@ export const _save = async (
     mutateUser: (user: IFrontMutateUser) => Promise<void>
   },
   usermodel: Pick<IFrontUserModel, 'id' | 'model' | 'template'>,
-  dispatch: Dispatch<IEditorAction>
+  editorDispatch: Dispatch<IEditorAction>,
+  notificationDispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   // Add user
   if (usermodel.id === '0') {
@@ -128,7 +142,7 @@ export const _save = async (
       })
 
       // Local
-      dispatch(setId(newUserModel.id))
+      editorDispatch(setId(newUserModel.id))
       const newUser = Utils.deepCopy(user)
       newUser.usermodels.push({
         ...newUserModel,
@@ -138,7 +152,7 @@ export const _save = async (
       } as IFrontUserModel)
       await swr.mutateUser(newUser)
     } catch (err: any) {
-      ErrorNotification(errors.save, err)
+      notificationDispatch(addError({ title: errors.save, err }))
     }
   } else {
     // Replace
@@ -164,7 +178,7 @@ export const _save = async (
       }
       await swr.mutateUser(newUser)
     } catch (err: any) {
-      ErrorNotification(errors.save, err)
+      notificationDispatch(addError({ title: errors.save, err }))
     }
   }
 }
@@ -180,8 +194,14 @@ const Save = ({ user, swr }: IProps): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Data
-  const { model, template, templateValid, modelValid, dispatch } =
-    useContext(EditorContext)
+  const {
+    model,
+    template,
+    templateValid,
+    modelValid,
+    dispatch: editorDispatch
+  } = useContext(EditorContext)
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
 
   // Valid
   useEffect(() => {
@@ -195,10 +215,17 @@ const Save = ({ user, swr }: IProps): React.JSX.Element => {
   const onClick = useCallback((): void => {
     ;(async () => {
       setLoading(true)
-      await _onSave(user, swr, model, template, dispatch)
+      await _onSave(
+        user,
+        swr,
+        model,
+        template,
+        editorDispatch,
+        notificationDispatch
+      )
       setLoading(false)
     })()
-  }, [user, model, template, swr, dispatch])
+  }, [user, model, template, swr, editorDispatch, notificationDispatch])
 
   /**
    * Render

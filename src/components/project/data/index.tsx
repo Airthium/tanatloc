@@ -5,7 +5,8 @@ import {
   useEffect,
   useCallback,
   Dispatch,
-  SetStateAction
+  SetStateAction,
+  useContext
 } from 'react'
 import {
   Button,
@@ -34,7 +35,8 @@ import { camelCase } from 'lodash'
 
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
 
@@ -166,6 +168,9 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
     lines: React.JSX.Element[]
   }>()
   const [downloading, setDownloading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -330,11 +335,11 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!, '\t')
     } catch (err: any) {
-      ErrorNotification(errors.download, err)
+      dispatch(addError({ title: errors.download, err }))
     } finally {
       setDownloading(false)
     }
-  }, [simulation, datas, names, camelNames])
+  }, [simulation, datas, names, camelNames, dispatch])
 
   /**
    * Export CSV comma
@@ -344,11 +349,11 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!, ',')
     } catch (err: any) {
-      ErrorNotification(errors.download, err)
+      dispatch(addError({ title: errors.download, err }))
     } finally {
       setDownloading(false)
     }
-  }, [simulation, datas, names, camelNames])
+  }, [simulation, datas, names, camelNames, dispatch])
 
   /**
    * Export CSV default
@@ -358,11 +363,11 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
     try {
       _exportCSV(simulation!, datas!, names!, camelNames!)
     } catch (err: any) {
-      ErrorNotification(errors.download, err)
+      dispatch(addError({ title: errors.download, err }))
     } finally {
       setDownloading(false)
     }
-  }, [simulation, datas, names, camelNames])
+  }, [simulation, datas, names, camelNames, dispatch])
 
   /**
    * Format

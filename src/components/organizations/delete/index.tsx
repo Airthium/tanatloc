@@ -1,6 +1,6 @@
 /** @module Components.Organizations.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import {
@@ -8,8 +8,13 @@ import {
   IFrontOrganizationsItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
@@ -43,7 +48,8 @@ export const _onDelete = async (
     delOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -52,7 +58,7 @@ export const _onDelete = async (
     // Local
     await swr.delOneOrganization({ id: organization.id })
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -66,17 +72,20 @@ const Delete = ({ organization, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(organization, swr)
+      await _onDelete(organization, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [organization, swr])
+  }, [organization, swr, dispatch])
 
   /**
    * Render

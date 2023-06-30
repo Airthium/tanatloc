@@ -2,7 +2,15 @@
 
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  MouseEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
@@ -36,13 +44,18 @@ import {
   IModelParameters
 } from '@/models/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'
 
 import { GoBack } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import SelectProvider from '@/context/select'
 
@@ -117,7 +130,8 @@ export const _onSelector = async (
   swr: {
     addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
     mutateProject: (project: Partial<IFrontProject>) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Add
@@ -133,7 +147,7 @@ export const _onSelector = async (
       simulations: [...(project.simulations ?? []), simulation.id]
     })
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -258,6 +272,9 @@ const Project = (): React.JSX.Element => {
 
   const [panel, setPanel] = useState<React.JSX.Element>()
   const [panelVisible, setPanelVisible] = useState<boolean>(true)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -714,16 +731,21 @@ const Project = (): React.JSX.Element => {
   const onSelectorOk = useCallback(
     async (userModel: IFrontUserModel): Promise<void> => {
       try {
-        await _onSelector(project, userModel.model, {
-          addOneSimulation,
-          mutateProject
-        })
+        await _onSelector(
+          project,
+          userModel.model,
+          {
+            addOneSimulation,
+            mutateProject
+          },
+          dispatch
+        )
 
         // Close selector
         setSimulationSelectorVisible(false)
       } catch (err) {}
     },
-    [project, addOneSimulation, mutateProject]
+    [project, addOneSimulation, mutateProject, dispatch]
   )
 
   /**
@@ -767,12 +789,14 @@ const Project = (): React.JSX.Element => {
 
   // Errors
   useEffect(() => {
-    if (errorUser) ErrorNotification(errors.user, errorUser)
-    if (errorProject) ErrorNotification(errors.project, errorProject)
+    if (errorUser) dispatch(addError({ title: errors.user, err: errorUser }))
+    if (errorProject)
+      dispatch(addError({ title: errors.project, err: errorProject }))
     if (errorSimulations)
-      ErrorNotification(errors.simulations, errorSimulations)
-    if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
-  }, [errorUser, errorProject, errorSimulations, errorGeometries])
+      dispatch(addError({ title: errors.simulations, err: errorSimulations }))
+    if (errorGeometries)
+      dispatch(addError({ title: errors.geometries, err: errorGeometries }))
+  }, [errorUser, errorProject, errorSimulations, errorGeometries, dispatch])
 
   // Auto open geometry add
   useCustomEffect(() => {

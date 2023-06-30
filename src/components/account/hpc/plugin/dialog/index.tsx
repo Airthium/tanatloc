@@ -6,16 +6,23 @@ import {
   useRef,
   RefObject,
   useCallback,
-  useMemo
+  useMemo,
+  Dispatch,
+  useContext
 } from 'react'
 import { Form, Input, InputRef, Select, Typography } from 'antd'
 import parse from 'html-react-parser'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -167,7 +174,8 @@ export const _onFinish = async (
   swr: {
     addOnePlugin?: (plugin: IClientPlugin) => Promise<void>
     mutateOnePlugin?: (plugin: IClientPlugin) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     if (edit) {
@@ -202,7 +210,7 @@ export const _onFinish = async (
       await swr.addOnePlugin?.(newPlugin)
     }
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -220,6 +228,9 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [initialValues, setInitialValues] = useState<{}>({})
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Initial values
   useEffect(() => {
@@ -258,7 +269,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
     async (values: {}): Promise<void> => {
       setLoading(true)
       try {
-        await _onFinish(plugin, !!edit, values, swr)
+        await _onFinish(plugin, !!edit, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -268,7 +279,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [plugin, swr, edit]
+    [plugin, swr, edit, dispatch]
   )
 
   const dialogContent = useMemo(

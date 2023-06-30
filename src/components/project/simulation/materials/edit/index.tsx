@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Materials.Edit */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 
 import { IModelMaterialsValue } from '@/models/index.d'
 import {
@@ -8,7 +8,12 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -52,7 +57,8 @@ export const _onEdit = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -88,7 +94,7 @@ export const _onEdit = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -106,6 +112,9 @@ const Edit = ({
 }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   /**
    * On edit
@@ -128,7 +137,7 @@ const Edit = ({
         }
         onError()
 
-        await _onEdit(simulation, material, swr)
+        await _onEdit(simulation, material, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -137,7 +146,7 @@ const Edit = ({
         setLoading(false)
       }
     })()
-  }, [simulation, material, swr, onError, onClose])
+  }, [simulation, material, swr, onError, onClose, dispatch])
 
   /**
    * Render

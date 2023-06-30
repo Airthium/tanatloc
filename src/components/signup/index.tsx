@@ -1,15 +1,18 @@
 /** @module Components.Signup */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
 import { TOKEN } from '@/config/email'
 
 import { INewUser } from '@/database/user/index'
 
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { PasswordItem } from '@/components/assets/input'
-import { ErrorNotification, FormError } from '@/components/assets/notification'
+import { FormError } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 
@@ -85,6 +88,9 @@ const Signup = (): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const router = useRouter()
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -92,9 +98,10 @@ const Signup = (): React.JSX.Element => {
 
   // Errors
   useEffect(() => {
-    if (errorUser) ErrorNotification(errors.user, errorUser)
-    if (errorSystem) ErrorNotification(errors.system, errorSystem)
-  }, [errorUser, errorSystem])
+    if (errorUser) dispatch(addError({ title: errors.user, err: errorUser }))
+    if (errorSystem)
+      dispatch(addError({ title: errors.system, err: errorSystem }))
+  }, [errorUser, errorSystem, dispatch])
 
   // Already connected
   useEffect(() => {

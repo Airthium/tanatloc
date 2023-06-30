@@ -1,6 +1,6 @@
 /** @module Components.Project.Copy */
 
-import { useCallback } from 'react'
+import { Dispatch, useCallback, useContext } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
@@ -11,7 +11,11 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import ProjectAPI from '@/api/project'
 
@@ -48,7 +52,8 @@ export const _onCopy = async (
   swr: {
     addOneProject: (project: IFrontNewProject) => Promise<void>
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Copy
@@ -61,7 +66,7 @@ export const _onCopy = async (
     workspace.projects.push(newProject.id)
     await swr.mutateOneWorkspace(workspace)
   } catch (err: any) {
-    ErrorNotification(errors.copy, err)
+    dispatch(addError({ title: errors.copy, err }))
   }
 }
 
@@ -71,14 +76,17 @@ export const _onCopy = async (
  * @returns Copy
  */
 const Copy = ({ workspace, project, swr }: IProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On copy
    */
   const onCopy = useCallback((): void => {
     ;(async () => {
-      await _onCopy(workspace, project, swr)
+      await _onCopy(workspace, project, swr, dispatch)
     })()
-  }, [workspace, project, swr])
+  }, [workspace, project, swr, dispatch])
 
   /**
    * Render

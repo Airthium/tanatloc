@@ -1,6 +1,6 @@
 /** @module Components.Editor.Browser */
 
-import { useCallback, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { FileSearchOutlined } from '@ant-design/icons'
 import JSON5 from 'json5'
@@ -9,10 +9,14 @@ import { IFrontMutateUser, IFrontUser, IFrontUserModel } from '@/api/index.d'
 
 import { setId, setModel, setTemplate } from '@/context/editor/actions'
 import { EditorContext } from '@/context/editor'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import Templates from '@/templates'
 
-import { ErrorNotification } from '@/components/assets/notification'
 import Simulation from '@/components/project/simulation'
 
 import UserModelAPI from '@/api/userModel'
@@ -48,7 +52,8 @@ export const _onDelete = async (
   index: number,
   swr: {
     mutateUser: (user: Partial<IFrontMutateUser>) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const userModel = user.usermodels[index]
@@ -62,7 +67,7 @@ export const _onDelete = async (
     ]
     await swr.mutateUser(newUser)
   } catch (err: any) {
-    ErrorNotification(errors.delete, err)
+    dispatch(addError({ title: errors.delete, err }))
   }
 }
 
@@ -76,7 +81,8 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
   const [visible, setVisible] = useState<boolean>(false)
 
   // Data
-  const { dispatch } = useContext(EditorContext)
+  const { dispatch: editorDispatch } = useContext(EditorContext)
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
 
   /**
    * Set visible true
@@ -107,15 +113,15 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
           delete userModel.model.userModelId
         }
 
-        dispatch(setId(userModel.id))
-        dispatch(setModel(JSON5.stringify(userModel.model, null, '\t')))
-        dispatch(setTemplate(userModel.template))
+        editorDispatch(setId(userModel.id))
+        editorDispatch(setModel(JSON5.stringify(userModel.model, null, '\t')))
+        editorDispatch(setTemplate(userModel.template))
         setVisible(false)
       } catch (err: any) {
-        ErrorNotification(errors.load, err)
+        notificationDispatch(addError({ title: errors.load, err }))
       }
     },
-    [dispatch]
+    [editorDispatch, notificationDispatch]
   )
 
   /**
@@ -124,9 +130,9 @@ const Browser = ({ user, swr }: IProps): React.JSX.Element => {
    */
   const onDelete = useCallback(
     async (index: number): Promise<void> => {
-      await _onDelete(user, index, swr)
+      await _onDelete(user, index, swr, notificationDispatch)
     },
-    [user, swr]
+    [user, swr, notificationDispatch]
   )
 
   /**

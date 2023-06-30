@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import {
@@ -9,6 +9,12 @@ import {
   IFrontProject
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Loading from '@/components/loading'
 
 import {
@@ -16,7 +22,6 @@ import {
   DownloadButton,
   EditButton
 } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
 import GeometryAPI from '@/api/geometry'
@@ -55,7 +60,8 @@ export const errors = {
  * @param geometry Geometry
  */
 export const _onDownload = async (
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>
+  geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const file = await GeometryAPI.download({ id: geometry.id })
@@ -70,7 +76,7 @@ export const _onDownload = async (
     link.click()
     link.remove()
   } catch (err: any) {
-    ErrorNotification(errors.download, err)
+    dispatch(addError({ title: errors.download, err }))
   }
 }
 
@@ -85,7 +91,8 @@ export const _onEdit = async (
   values: { name: string },
   swr: {
     mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -100,7 +107,7 @@ export const _onEdit = async (
     geometry.name = values.name
     await swr.mutateOneGeometry(geometry)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -119,7 +126,8 @@ export const _onDelete = async (
   swr: {
     mutateProject: (project: Partial<IFrontProject>) => Promise<void>
     delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -138,7 +146,7 @@ export const _onDelete = async (
     // Close
     close()
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -160,6 +168,9 @@ const Geometry = ({
   const [editVisible, setEditVisible] = useState<boolean>(false)
   const [deleting, setDeleting] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * Set edit visible true
    */
@@ -172,13 +183,13 @@ const Geometry = ({
     ;(async () => {
       setDownloading(true)
       try {
-        await _onDownload(geometry!)
+        await _onDownload(geometry!, dispatch)
       } catch (err) {
       } finally {
         setDownloading(false)
       }
     })()
-  }, [geometry])
+  }, [geometry, dispatch])
 
   /**
    * On edit
@@ -186,8 +197,8 @@ const Geometry = ({
    */
   const onEdit = useCallback(
     async (value: { name: string }): Promise<void> =>
-      _onEdit(geometry!, value, swr),
-    [geometry, swr]
+      _onEdit(geometry!, value, swr, dispatch),
+    [geometry, swr, dispatch]
   )
 
   /**
@@ -196,12 +207,12 @@ const Geometry = ({
   const onDelete = useCallback(async () => {
     setDeleting(true)
     try {
-      await _onDelete(geometry!, project, close, swr)
+      await _onDelete(geometry!, project, close, swr, dispatch)
       onCleanup(geometry!.id)
     } finally {
       setDeleting(false)
     }
-  }, [project, geometry, swr, close, onCleanup])
+  }, [project, geometry, swr, close, onCleanup, dispatch])
 
   /**
    * Render

@@ -1,12 +1,16 @@
 /** @module Components.Account.HPC.Plugin.Refresh */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
 
@@ -32,7 +36,10 @@ export const errors = {
  * On update
  * @param plugin Plugin
  */
-export const _onUpdate = async (plugin: IClientPlugin): Promise<void> => {
+export const _onUpdate = async (
+  plugin: IClientPlugin,
+  dispatch: Dispatch<INotificationAction>
+): Promise<void> => {
   try {
     // Local
     const initialPlugin = Utils.deepCopy(plugin)
@@ -41,7 +48,7 @@ export const _onUpdate = async (plugin: IClientPlugin): Promise<void> => {
     // API
     await PluginAPI.update(initialPlugin)
   } catch (err: any) {
-    ErrorNotification(errors.refresh, err)
+    dispatch(addError({ title: errors.refresh, err }))
   }
 }
 
@@ -54,16 +61,19 @@ const Refresh = ({ plugin }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On click
    */
   const onClick = useCallback((): void => {
     ;(async () => {
       setLoading(true)
-      await _onUpdate(plugin)
+      await _onUpdate(plugin, dispatch)
       setLoading(false)
     })()
-  }, [plugin])
+  }, [plugin, dispatch])
 
   /**
    * Render

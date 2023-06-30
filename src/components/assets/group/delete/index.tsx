@@ -1,10 +1,15 @@
 /** @module Components.Assets.Group.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import { IFrontGroupsItem, IFrontMutateGroupsItem } from '@/api/index.d'
 import GroupAPI from '@/api/group'
@@ -33,7 +38,8 @@ export const errors = {
  */
 export const _onDelete = async (
   group: Pick<IFrontGroupsItem, 'id'>,
-  swr: { delOneGroup: (group: IFrontMutateGroupsItem) => Promise<void> }
+  swr: { delOneGroup: (group: IFrontMutateGroupsItem) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Delete
@@ -42,7 +48,7 @@ export const _onDelete = async (
     // Mutate
     await swr.delOneGroup({ id: group.id })
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -60,17 +66,20 @@ const Delete = ({ group, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async () => {
     setLoading(true)
     try {
-      await _onDelete(group, swr)
+      await _onDelete(group, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [group, swr])
+  }, [group, swr, dispatch])
 
   /**
    * Render

@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.About.Edit */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import {
@@ -8,8 +15,13 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
 
 import SimulationAPI from '@/api/simulation'
@@ -46,7 +58,8 @@ export const _onEdit = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -60,7 +73,7 @@ export const _onEdit = async (
       name: values.name
     })
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -78,6 +91,9 @@ const Edit = ({ simulation, swr }: IProps): React.JSX.Element => {
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Autofocus
   useEffect(() => {
     /* istanbul ignore next */
@@ -92,7 +108,7 @@ const Edit = ({ simulation, swr }: IProps): React.JSX.Element => {
     async (values: { name: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _onEdit(simulation, values, swr)
+        await _onEdit(simulation, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -102,7 +118,7 @@ const Edit = ({ simulation, swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [simulation, swr]
+    [simulation, swr, dispatch]
   )
 
   /**

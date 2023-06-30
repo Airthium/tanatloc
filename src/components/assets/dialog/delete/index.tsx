@@ -1,10 +1,11 @@
 /** @module Components.Assets.Dialog.Delete */
 
-import { useCallback } from 'react'
+import { useCallback, useContext } from 'react'
 import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 /**
  * Props
@@ -45,6 +46,9 @@ const DeleteDialog = ({
   onCancel,
   onOk
 }: IProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On ok
    */
@@ -53,10 +57,10 @@ const DeleteDialog = ({
       try {
         await onOk()
       } catch (err: any) {
-        ErrorNotification(errors.onOk, err, false)
+        dispatch(addError({ title: errors.onOk, err, display: false }))
       }
     })()
-  }, [onOk])
+  }, [onOk, dispatch])
 
   /**
    * Render

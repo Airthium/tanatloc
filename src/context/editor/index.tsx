@@ -151,10 +151,16 @@ export interface IProps {
   children: ReactNode
 }
 
+/**
+ * EditorProvider
+ * @param props Props
+ * @returns EditorProvider
+ */
 const EditorProvider = ({ children }: IProps) => {
   // Reducer
   const [editorState, editorDispatch] = useReducer(editorReducer, initialState)
 
+  // Value
   const contextValue = useMemo(
     () => ({ ...editorState, dispatch: editorDispatch }),
     [editorState]

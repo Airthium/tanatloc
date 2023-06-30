@@ -1,13 +1,26 @@
 /** @module Components.Project.Edit */
 
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  KeyboardEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT120, LIMIT50 } from '@/config/string'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import { IFrontMutateProjectsItem, IFrontProjectsItem } from '@/api/index.d'
 import ProjectAPI from '@/api/project'
@@ -41,7 +54,8 @@ export const _onEdit = async (
   values: Pick<IFrontProjectsItem, 'title' | 'description'>,
   swr: {
     mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Edit
@@ -59,7 +73,7 @@ export const _onEdit = async (
     // Mutate projects
     await swr.mutateOneProject(project)
   } catch (err: any) {
-    ErrorNotification(errors.edit, err)
+    dispatch(addError({ title: errors.edit, err }))
 
     throw err
   }
@@ -77,6 +91,9 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Autofocus
   useEffect(() => {
@@ -104,7 +121,7 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
     ): Promise<void> => {
       setLoading(true)
       try {
-        await _onEdit(project, values, swr)
+        await _onEdit(project, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -114,7 +131,7 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [project, swr]
+    [project, swr, dispatch]
   )
 
   const onKeyUp = useCallback(

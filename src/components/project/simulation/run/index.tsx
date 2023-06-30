@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.Run */
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { Button, Card, Checkbox, Layout, Space, Spin, Steps } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
@@ -24,9 +31,13 @@ import {
   IFrontGeometriesItem
 } from '@/api/index.d'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Utils from '@/lib/utils'
 
@@ -77,7 +88,8 @@ export const _onCloudServer = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -103,7 +115,7 @@ export const _onCloudServer = async (
     await swr.mutateOneSimulation(newSimulation)
     await swr.mutateSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -114,12 +126,13 @@ export const _onCloudServer = async (
  */
 export const _onRun = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
+  dispatch: Dispatch<INotificationAction>,
   keepMesh?: boolean
 ): Promise<void> => {
   try {
     await SimulationAPI.run({ id: simulation.id }, keepMesh)
   } catch (err: any) {
-    ErrorNotification(errors.run, err)
+    dispatch(addError({ title: errors.run, err }))
     throw err
   }
 }
@@ -128,12 +141,13 @@ export const _onRun = async (
  * On stop
  */
 export const _onStop = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     await SimulationAPI.stop({ id: simulation.id })
   } catch (err: any) {
-    ErrorNotification(errors.stop, err)
+    dispatch(addError({ title: errors.stop, err }))
     throw err
   }
 }
@@ -160,6 +174,9 @@ const Run = ({
 
   const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
   const [percent, setPercent] = useState<number>(0)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -258,11 +275,16 @@ const Run = ({
    */
   const onOk = useCallback(
     async (cloudServer: IClientPlugin): Promise<void> =>
-      _onCloudServer(simulation, cloudServer, {
-        ...swr,
-        mutateSimulation
-      }),
-    [simulation, swr, mutateSimulation]
+      _onCloudServer(
+        simulation,
+        cloudServer,
+        {
+          ...swr,
+          mutateSimulation
+        },
+        dispatch
+      ),
+    [simulation, swr, mutateSimulation, dispatch]
   )
 
   /**
@@ -280,12 +302,12 @@ const Run = ({
     ;(async () => {
       setRunning(true)
       try {
-        await _onRun(simulation, keepMesh)
+        await _onRun(simulation, dispatch, keepMesh)
       } catch (err) {
         setRunning(false)
       }
     })()
-  }, [simulation, keepMesh])
+  }, [simulation, keepMesh, dispatch])
 
   /**
    * On stop click
@@ -293,11 +315,11 @@ const Run = ({
   const onStopClick = useCallback((): void => {
     ;(async () => {
       try {
-        await _onStop(simulation)
+        await _onStop(simulation, dispatch)
         setRunning(false)
       } catch (err) {}
     })()
-  }, [simulation])
+  }, [simulation, dispatch])
 
   /**
    * Render

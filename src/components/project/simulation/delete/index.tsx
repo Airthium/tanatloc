@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import {
@@ -10,8 +10,13 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -46,7 +51,8 @@ export const _onDelete = async (
   swr: {
     mutateProject: (project: IFrontMutateProject) => Promise<void>
     delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -64,7 +70,7 @@ export const _onDelete = async (
     // Mutate simulations
     await swr.delOneSimulation({ id: simulation.id })
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -78,17 +84,20 @@ const Delete = ({ project, simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(project, simulation, swr)
+      await _onDelete(project, simulation, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [project, simulation, swr])
+  }, [project, simulation, swr, dispatch])
 
   /**
    * Render

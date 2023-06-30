@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation */
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, Dispatch, useContext } from 'react'
 import { Layout, Menu, Modal, Select, Tabs, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
@@ -15,9 +15,14 @@ import {
   IFrontUserModel
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
-import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 import { DeleteButton } from '@/components/assets/button'
 
@@ -65,14 +70,15 @@ export const errors = {
  * @param user User
  */
 export const _pluginsList = async (
-  user: Pick<IFrontUser, 'authorizedplugins'>
+  user: Pick<IFrontUser, 'authorizedplugins'>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<IModel[]> => {
   try {
     const list = await PluginsAPI.list()
 
     return _loadModels(user, Models, list)
   } catch (err: any) {
-    ErrorNotification(errors.plugins, err)
+    dispatch(addError({ title: errors.plugins, err }))
     return []
   }
 }
@@ -147,13 +153,20 @@ const Selector = ({
     useState<{ key: string; value: string }[]>()
   const [categories, setCategories] = useState<string[]>([])
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Models
-  useCustomEffect(() => {
-    ;(async () => {
-      const newModels = await _pluginsList(user)
-      setModels(newModels)
-    })()
-  }, [user])
+  useCustomEffect(
+    () => {
+      ;(async () => {
+        const newModels = await _pluginsList(user, dispatch)
+        setModels(newModels)
+      })()
+    },
+    [user],
+    [dispatch]
+  )
 
   // Categories
   useCustomEffect(() => {
@@ -382,7 +395,8 @@ export const _onUpdate = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Current model
@@ -407,7 +421,7 @@ export const _onUpdate = async (
     // Mutate
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -424,13 +438,20 @@ const Updater = ({
   // State
   const [models, setModels] = useState<IModel[]>([])
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Models
-  useCustomEffect(() => {
-    ;(async () => {
-      const newModels = await _pluginsList(user)
-      setModels(newModels)
-    })()
-  }, [user])
+  useCustomEffect(
+    () => {
+      ;(async () => {
+        const newModels = await _pluginsList(user, dispatch)
+        setModels(newModels)
+      })()
+    },
+    [user],
+    [dispatch]
+  )
 
   // Check model update
   useCustomEffect(() => {
@@ -452,7 +473,9 @@ const Updater = ({
           closable: false,
           okButtonProps: { hidden: true }
         })
-        _onUpdate(simulation, models, swr).finally(() => Modal.destroyAll())
+        _onUpdate(simulation, models, swr, dispatch).finally(() =>
+          Modal.destroyAll()
+        )
       }
     }
   }, [simulation, models, swr])

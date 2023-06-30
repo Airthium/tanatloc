@@ -6,8 +6,16 @@ import Local from '..'
 const mockAccess = jest.fn()
 jest.mock('fs', () => ({
   promises: {
-    access: async () => mockAccess()
+    access: async () => mockAccess(),
+    constants: {
+      X_OK: ''
+    }
   }
+}))
+
+const mockExecSync = jest.fn()
+jest.mock('child_process', () => ({
+  execSync: () => mockExecSync()
 }))
 
 const mockSetInterval = jest.fn()
@@ -75,6 +83,8 @@ describe('plugins/local/src/lib', () => {
   beforeEach(() => {
     mockAccess.mockReset()
 
+    mockExecSync.mockReset()
+
     mockSetInterval.mockReset()
 
     mockUpdate.mockReset()
@@ -112,7 +122,24 @@ describe('plugins/local/src/lib', () => {
     // Empty
     await Local.init({ freefemPath: {}, gmshPath: {} })
 
-    // Error
+    // Exec error
+    mockExecSync.mockImplementation(() => {
+      throw new Error('execSync error')
+    })
+    try {
+      await Local.init({
+        freefemPath: {},
+        gmshPath: { value: 'path' }
+      })
+    } catch (err) {}
+    try {
+      await Local.init({
+        freefemPath: { value: 'path' },
+        gmshPath: {}
+      })
+    } catch (err) {}
+
+    // Access error
     mockAccess.mockImplementation(() => {
       throw new Error('access error')
     })

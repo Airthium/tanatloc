@@ -2,6 +2,7 @@
 
 import path from 'path'
 import { promises as fs } from 'fs'
+import { execSync } from 'child_process'
 import {
   setIntervalAsync,
   SetIntervalAsyncTimer
@@ -58,8 +59,15 @@ const init = async (
   if (configuration.freefemPath.value) {
     try {
       await fs.access(configuration.freefemPath.value, fs.constants.X_OK)
-    } catch (err) {
+    } catch (_err) {
       throw new Error('No access to FreeFEM executable')
+    }
+    try {
+      execSync(configuration.freefemPath.value + ' --version')
+    } catch (err: any) {
+      throw new Error(
+        'FreeFEM executable does not work properly (' + err.message + ')'
+      )
     }
   }
 
@@ -67,8 +75,15 @@ const init = async (
   if (configuration.gmshPath.value) {
     try {
       await fs.access(configuration.gmshPath.value, fs.constants.X_OK)
-    } catch (err) {
+    } catch (_err) {
       throw new Error('No access to GMSH executable')
+    }
+    try {
+      execSync(configuration.gmshPath.value + ' --version')
+    } catch (err: any) {
+      throw new Error(
+        'Gmsh executable does not work properly (' + err.mesage + ')'
+      )
     }
   }
 }

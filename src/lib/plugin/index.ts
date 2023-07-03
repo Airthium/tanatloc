@@ -60,6 +60,20 @@ const add = async (
 }
 
 /**
+ * Extra
+ * @param plugin Plugin
+ */
+const extra = async (
+  plugin: IClientPlugin & { extra: string }
+): Promise<void> => {
+  const plugins = await Plugins.serverList()
+  const lib = plugins.find((l) => l.key === plugin.key)?.lib
+  if (lib) {
+    await lib.extra?.(plugin.configuration)
+  }
+}
+
+/**
  * Get by user
  * @param user User
  * @returns Plugins
@@ -155,5 +169,5 @@ const del = async (
   await User.update(user, [{ key: 'plugins', value: userData.plugins }])
 }
 
-const Plugin = { add, getByUser, update, del }
+const Plugin = { add, extra, getByUser, update, del }
 export default Plugin

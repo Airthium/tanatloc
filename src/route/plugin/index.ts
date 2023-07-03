@@ -76,7 +76,13 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(403, 'Access denied')
 
         try {
-          await PluginLib.add({ id: sessionId }, body)
+          if (body.extra) {
+            // Extra
+            await PluginLib.extra(body)
+          } else {
+            // Add
+            await PluginLib.add({ id: sessionId }, body)
+          }
           res.status(200).end()
         } catch (err: any) {
           throw error(500, err.message)

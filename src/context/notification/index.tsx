@@ -76,8 +76,8 @@ export const notificationReducer = (
         return {
           ...state,
           success: [
-            ...(state.success?.slice(0, index) ?? []),
-            ...(state.success?.slice(index + 1) ?? [])
+            ...state.success!.slice(0, index),
+            ...state.success!.slice(index + 1)
           ]
         }
       return state
@@ -89,8 +89,8 @@ export const notificationReducer = (
         return {
           ...state,
           errors: [
-            ...(state.errors?.slice(0, index) ?? []),
-            ...(state.errors?.slice(index + 1) ?? [])
+            ...state.errors!.slice(0, index),
+            ...state.errors!.slice(index + 1)
           ]
         }
       return state

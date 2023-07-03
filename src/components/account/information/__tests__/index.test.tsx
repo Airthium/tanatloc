@@ -11,9 +11,9 @@ jest.mock('is-electron', () => () => mockIsElectron())
 const mockSuccessNotification = jest.fn()
 const mockErrorNotification = jest.fn()
 const mockFormError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  SuccessNotification: () => mockSuccessNotification(),
-  ErrorNotification: (title: string, err: Error) =>
+jest.mock('@/context/notification/actions', () => ({
+  addSuccess: () => mockSuccessNotification(),
+  addError: ({ title, err }: { title: string; err: Error }) =>
     mockErrorNotification(title, err),
   FormError: () => mockFormError()
 }))

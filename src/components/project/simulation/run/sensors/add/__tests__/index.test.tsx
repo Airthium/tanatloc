@@ -10,9 +10,9 @@ jest.mock('@/components/assets/button', () => ({
 }))
 
 const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (text: string, err: Error) =>
-    mockErrorNotification(text, err)
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('@/lib/utils', () => ({

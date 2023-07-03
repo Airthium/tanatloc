@@ -5,8 +5,8 @@ import { IFrontOrganizationsItem, IFrontWorkspacesItem } from '@/api/index.d'
 import Workspace from '..'
 
 const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: () => mockErrorNotification()
+jest.mock('@/context/notification/actions', () => ({
+  addError: () => mockErrorNotification()
 }))
 
 jest.mock('@/components/assets/share', () => () => <div />)

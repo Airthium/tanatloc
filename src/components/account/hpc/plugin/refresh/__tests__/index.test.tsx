@@ -5,8 +5,8 @@ import { IClientPlugin } from '@/plugins/index.d'
 import Refresh, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, err: Error) =>
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
     mockErrorNotification(title, err)
 }))
 

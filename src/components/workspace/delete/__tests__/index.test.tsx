@@ -2,6 +2,12 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete, { errors } from '..'
 
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: jest.fn
+  })
+}))
+
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   DeleteButton: (props: any) => mockDeleteButton(props)

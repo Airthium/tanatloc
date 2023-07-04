@@ -1,6 +1,7 @@
 /** @module Components.Workspace.Delete */
 
 import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 
@@ -67,6 +68,9 @@ const Delete = ({ workspace, swr }: IProps): React.JSX.Element => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
+  // Data
+  const router = useRouter()
+
   /**
    * On delete
    */
@@ -74,10 +78,14 @@ const Delete = ({ workspace, swr }: IProps): React.JSX.Element => {
     setLoading(true)
     try {
       await _onDelete(workspace, swr, dispatch)
+      router.push({
+        pathname: '/dashboard',
+        query: { page: 'workspaces' }
+      })
     } finally {
       setLoading(false)
     }
-  }, [workspace, swr, dispatch])
+  }, [router, workspace, swr, dispatch])
 
   /**
    * Render

@@ -27,9 +27,10 @@ jest.mock('@/api/workspace', () => ({
 
 jest.mock('../..', () => () => <div />)
 jest.mock('../../add', () => () => <div />)
+jest.mock('../../sample', () => () => <div />)
 
 describe('components/workspace/list', () => {
-  const user = { id: 'id' }
+  const user = { id: 'id', plugins: [] }
   const workspaces = [
     { id: 'id', name: 'name', projects: [], owners: [], users: [], groups: [] },
     {
@@ -103,8 +104,11 @@ describe('components/workspace/list', () => {
       />
     )
 
-    const tab = screen.getByRole('tab', { name: 'otherworkspace' })
-    fireEvent.click(tab)
+    const tab1 = screen.getByRole('img', { name: 'experiment' })
+    fireEvent.click(tab1)
+
+    const tab2 = screen.getByRole('tab', { name: 'otherworkspace' })
+    fireEvent.click(tab2)
 
     unmount()
   })
@@ -129,7 +133,7 @@ describe('components/workspace/list', () => {
       />
     )
 
-    const add = screen.getAllByRole('button', { name: 'Add tab' })
+    const add = screen.getAllByRole('img', { name: 'plus' })
     fireEvent.click(add[0])
 
     const dialog = screen.getByRole('Dialog')
@@ -171,7 +175,7 @@ describe('components/workspace/list', () => {
       />
     )
 
-    const add = screen.getAllByRole('button', { name: 'Add tab' })
+    const add = screen.getAllByRole('img', { name: 'plus' })
     fireEvent.click(add[0])
 
     const dialog = screen.getByRole('Dialog')

@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Dispatch, useContext } from 'react'
 import { Card, Form, Select, Space } from 'antd'
 
 import { IUnit } from '@/models/index.d'
@@ -10,7 +10,12 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Formula from '@/components/assets/formula'
 
 import Utils from '@/lib/utils'
@@ -51,7 +56,8 @@ export const _onMeshGlobalType = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -93,7 +99,7 @@ export const _onMeshGlobalType = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -111,7 +117,8 @@ export const _onMeshGlobalSize = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -154,7 +161,7 @@ export const _onMeshGlobalSize = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -172,7 +179,8 @@ export const _onMeshGlobalUnit = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -216,7 +224,7 @@ export const _onMeshGlobalUnit = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -231,6 +239,9 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
   const [meshGlobalType, setMeshGlobalType] = useState<string>()
   const [meshGlobalValue, setMeshGlobalValue] = useState<string | number>()
   const [meshGlobalUnit, setMeshGlobalUnit] = useState<IUnit>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Global
   useEffect(() => {
@@ -255,7 +266,7 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
     (type: string): void => {
       ;(async () => {
         try {
-          await _onMeshGlobalType(simulation, type, swr)
+          await _onMeshGlobalType(simulation, type, swr, dispatch)
 
           setMeshGlobalType(type)
           if (type === 'auto') setMeshGlobalValue('normal')
@@ -263,7 +274,7 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
         } catch (err) {}
       })()
     },
-    [simulation, swr]
+    [simulation, swr, dispatch]
   )
 
   /**
@@ -274,12 +285,12 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
     (value: string | number): void => {
       ;(async () => {
         try {
-          await _onMeshGlobalSize(simulation, value, swr)
+          await _onMeshGlobalSize(simulation, value, swr, dispatch)
           setMeshGlobalValue(value)
         } catch (err) {}
       })()
     },
-    [simulation, swr]
+    [simulation, swr, dispatch]
   )
 
   /**
@@ -290,12 +301,12 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
     (unit: IUnit): void => {
       ;(async () => {
         try {
-          await _onMeshGlobalUnit(simulation, unit, swr)
+          await _onMeshGlobalUnit(simulation, unit, swr, dispatch)
           setMeshGlobalUnit(unit)
         } catch (err) {}
       })()
     },
-    [simulation, swr]
+    [simulation, swr, dispatch]
   )
 
   /**

@@ -60,10 +60,23 @@ import { IUnit } from '@/models/index.d'
 import { IFrontProject } from '@/api/index.d'
 import { IGeometryPart } from '@/lib/index.d'
 
+import { ISelectAction, SelectContext } from '@/context/select'
+import {
+  highlight,
+  select,
+  unhighlight,
+  unselect,
+  setPoint
+} from '@/context/select/actions'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -87,15 +100,6 @@ import {
 import { IPointHelper, PointHelper } from '@/lib/three/helpers/PointHelper'
 
 import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
-
-import { ISelectAction, SelectContext } from '@/context/select'
-import {
-  highlight,
-  select,
-  unhighlight,
-  unselect,
-  setPoint
-} from '@/context/select/actions'
 
 import AvatarAPI from '@/api/avatar'
 
@@ -387,7 +391,8 @@ export const _takeScreenshot = async (
   project: IProps['project'],
   scene: Scene,
   camera: PerspectiveCamera,
-  renderer: WebGLRenderer
+  renderer: WebGLRenderer,
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     const initialWidth = renderer.domElement.width
@@ -428,7 +433,7 @@ export const _takeScreenshot = async (
       { id: project.id }
     )
   } catch (err: any) {
-    ErrorNotification(errors.snapshot, err)
+    dispatch(addError({ title: errors.snapshot, err }))
   }
 }
 
@@ -443,7 +448,8 @@ export const _downloadScreenshot = (
   project: IProps['project'],
   scene: Scene,
   camera: PerspectiveCamera,
-  renderer: WebGLRenderer
+  renderer: WebGLRenderer,
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     const initialWidth = renderer.domElement.width
@@ -459,7 +465,7 @@ export const _downloadScreenshot = (
     a.download = project.title + '_' + new Date().toLocaleDateString() + '.png'
     a.click()
   } catch (err: any) {
-    ErrorNotification(errors.saveScreenshot, err)
+    dispatch(addError({ title: errors.saveScreenshot, err }))
   }
 }
 
@@ -490,9 +496,6 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
   const [customRangeOpen, setCustomRangeOpen] = useState<boolean>(false)
   const [unit, setUnit] = useState<string>('m')
 
-  // Data
-  const router = useRouter()
-
   // Context
   const {
     enabled: selectEnabled,
@@ -503,6 +506,10 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
     type: selectType,
     dispatch
   } = useContext(SelectContext)
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
+
+  // Data
+  const router = useRouter()
 
   // Mount
   useEffect(() => {
@@ -761,7 +768,7 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
               dispatch
             )
           } catch (err: any) {
-            ErrorNotification(errors.load, err)
+            notificationDispatch(addError({ title: errors.load, err }))
             _computeSceneBoundingSphere(scene.current!)
           }
         })
@@ -912,13 +919,14 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
           project,
           scene.current!,
           camera.current!,
-          renderer.current!
+          renderer.current!,
+          notificationDispatch
         )
       } finally {
         setScreenshot(false)
       }
     })()
-  }, [project])
+  }, [project, notificationDispatch])
 
   /**
    * Download screenshot
@@ -930,12 +938,13 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
         project,
         scene.current!,
         camera.current!,
-        renderer.current!
+        renderer.current!,
+        notificationDispatch
       )
     } finally {
       setSavingScreenshot(false)
     }
-  }, [project])
+  }, [project, notificationDispatch])
 
   /**
    * Toggle grid

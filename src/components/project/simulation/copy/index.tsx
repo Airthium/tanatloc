@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Copy */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
@@ -11,7 +11,11 @@ import {
   IFrontNewSimulation
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -48,7 +52,8 @@ export const _onCopy = async (
   swr: {
     mutateProject: (project: IFrontMutateProject) => Promise<void>
     addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -63,7 +68,7 @@ export const _onCopy = async (
       simulations: [...project.simulations, newSimulation.id]
     })
   } catch (err: any) {
-    ErrorNotification(errors.copy, err)
+    dispatch(addError({ title: errors.copy, err }))
   }
 }
 
@@ -76,6 +81,9 @@ const Copy = ({ project, simulation, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On click
    */
@@ -83,12 +91,12 @@ const Copy = ({ project, simulation, swr }: IProps): React.JSX.Element => {
     ;(async () => {
       setLoading(true)
       try {
-        await _onCopy(project, simulation, swr)
+        await _onCopy(project, simulation, swr, dispatch)
       } finally {
         setLoading(false)
       }
     })()
-  }, [project, simulation, swr])
+  }, [project, simulation, swr, dispatch])
 
   /**
    * Render

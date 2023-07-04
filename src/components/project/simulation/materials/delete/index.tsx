@@ -8,8 +8,13 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import { ISelectAction, SelectContext } from '@/context/select'
 import { unselect } from '@/context/select/actions'
@@ -44,12 +49,13 @@ export const errors = {
 export const _onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
-  dispatch: Dispatch<ISelectAction>,
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  selectDispatch: Dispatch<ISelectAction>,
+  notificationDispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -61,7 +67,7 @@ export const _onDelete = async (
 
     // (unselect)
     material.selected.forEach((s) => {
-      dispatch(unselect(s))
+      selectDispatch(unselect(s))
     })
 
     // Remove value
@@ -90,7 +96,7 @@ export const _onDelete = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    notificationDispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -104,8 +110,11 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
+
   // Data
-  const { dispatch } = useContext(SelectContext)
+  const { dispatch: selectDispatch } = useContext(SelectContext)
   const materials = useMemo(
     () => simulation.scheme.configuration.materials!,
     [simulation]
@@ -118,11 +127,17 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(simulation, index, dispatch, swr)
+      await _onDelete(
+        simulation,
+        index,
+        swr,
+        selectDispatch,
+        notificationDispatch
+      )
     } finally {
       setLoading(false)
     }
-  }, [simulation, index, swr, dispatch])
+  }, [simulation, index, swr, selectDispatch, notificationDispatch])
 
   /**
    * Render

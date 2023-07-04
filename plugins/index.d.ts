@@ -47,7 +47,8 @@ export interface IPlugin {
       ) => Promise<{ data: IClientPlugin['data'] } | void>
       computeSimulation: (
         { id }: { id: string },
-        scheme: ISimulation['scheme']
+        scheme: ISimulation['scheme'],
+        keepMesh?: boolean
       ) => Promise<void>
       monitoring: (
         id: string,

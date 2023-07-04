@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization */
 
-import { useCallback } from 'react'
+import { Dispatch, useCallback, useContext } from 'react'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -9,7 +9,11 @@ import {
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import OrganizationAPI from '@/api/organization'
 
@@ -52,7 +56,8 @@ export const _onName = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -69,7 +74,7 @@ export const _onName = async (
       name: name
     })
   } catch (err: any) {
-    ErrorNotification(errors.name, err)
+    dispatch(addError({ title: errors.name, err }))
   }
 }
 
@@ -88,6 +93,9 @@ const Organization = ({
   swr,
   onClose
 }: IProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On change
    * @param name Name
@@ -95,12 +103,17 @@ const Organization = ({
   const onChange = useCallback(
     (name: string): void => {
       ;(async () => {
-        await _onName(organization, name, {
-          mutateOneOrganization: swr.mutateOneOrganization
-        })
+        await _onName(
+          organization,
+          name,
+          {
+            mutateOneOrganization: swr.mutateOneOrganization
+          },
+          dispatch
+        )
       })()
     },
-    [organization, swr]
+    [organization, swr, dispatch]
   )
 
   /**

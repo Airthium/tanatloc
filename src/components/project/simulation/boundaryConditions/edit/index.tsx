@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Edit */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 
 import {
   IModelBoundaryConditionValue,
@@ -11,7 +11,12 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -56,7 +61,8 @@ export const _onEdit = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -128,7 +134,7 @@ export const _onEdit = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -148,6 +154,9 @@ const Edit = ({
 }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   /**
    * On edit
@@ -176,7 +185,13 @@ const Edit = ({
         }
         onError()
 
-        await _onEdit(simulation, boundaryCondition, oldBoundaryCondition, swr)
+        await _onEdit(
+          simulation,
+          boundaryCondition,
+          oldBoundaryCondition,
+          swr,
+          dispatch
+        )
 
         // Close
         setLoading(false)
@@ -191,7 +206,8 @@ const Edit = ({
     oldBoundaryCondition,
     swr,
     onError,
-    onClose
+    onClose,
+    dispatch
   ])
 
   /**

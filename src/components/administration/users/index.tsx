@@ -1,6 +1,13 @@
 /** @module Components.Administration.Users */
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useContext
+} from 'react'
 import {
   Badge,
   Table,
@@ -20,9 +27,10 @@ import {
 } from '@/api/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import PluginsAPI from '@/api/plugins'
 
@@ -71,6 +79,9 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
   // State
   const [plugins, setPlugins] = useState<IClientPlugin[]>()
   const [scroll, setScroll] = useState<{ y: number }>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   /**
    * Authorized plugins render
@@ -256,10 +267,10 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
 
         setPlugins(list)
       } catch (err: any) {
-        ErrorNotification(errors.plugins, err)
+        dispatch(addError({ title: errors.plugins, err }))
       }
     })()
-  }, [])
+  }, [dispatch])
 
   /**
    * Render

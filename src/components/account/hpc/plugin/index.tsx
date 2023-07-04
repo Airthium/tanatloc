@@ -1,11 +1,12 @@
 /** @module Components.Account.HPC.Plugin */
 
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { Space, Spin } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import PluginAPI from '@/api/plugin'
 
@@ -46,10 +47,13 @@ const Plugin = ({ plugin }: IProps): React.JSX.Element => {
     }
   ] = PluginAPI.usePlugins()
 
+  const { dispatch } = useContext(NotificationContext)
+
   // Plugins errors
   useEffect(() => {
-    if (errorPlugins) ErrorNotification(errors.plugins, errorPlugins)
-  }, [errorPlugins])
+    if (errorPlugins)
+      dispatch(addError({ title: errors.plugins, err: errorPlugins }))
+  }, [errorPlugins, dispatch])
 
   /**
    * Render

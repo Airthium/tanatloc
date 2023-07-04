@@ -7,7 +7,8 @@ import {
   ComponentType,
   useCallback,
   Dispatch,
-  SetStateAction
+  SetStateAction,
+  useContext
 } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
@@ -17,8 +18,10 @@ import { merge } from 'lodash'
 import { IClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { LinkButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
@@ -145,14 +148,18 @@ const CloudServer = ({
   const [visible, setVisible] = useState<boolean>(false)
   const [pluginsList, setPluginsList] = useState<IClientPlugin[]>([])
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const router = useRouter()
   const [plugins, { errorPlugins }] = PluginAPI.usePlugins()
 
   // Plugins errors
   useEffect(() => {
-    if (errorPlugins) ErrorNotification(errors.plugins, errorPlugins)
-  }, [errorPlugins])
+    if (errorPlugins)
+      dispatch(addError({ title: errors.plugins, err: errorPlugins }))
+  }, [errorPlugins, dispatch])
 
   // Plugins
   useEffect(() => {
@@ -161,10 +168,10 @@ const CloudServer = ({
         const list = await PluginsAPI.list()
         setPluginsList(list)
       } catch (err: any) {
-        ErrorNotification(errors.pluginsLoad, err)
+        dispatch(addError({ title: errors.pluginsLoad, err }))
       }
     })()
-  }, [])
+  }, [dispatch])
 
   /**
    * Set visible true

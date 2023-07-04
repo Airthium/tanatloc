@@ -1,7 +1,7 @@
 /** @module Components.Assets.Cookies */
 
 import { CSSProperties, useCallback, useEffect, useRef } from 'react'
-import { Button, Collapse, Form, Switch, Typography, notification } from 'antd'
+import { App, Button, Collapse, Form, Switch, Typography } from 'antd'
 import Icon from '@ant-design/icons'
 import { useCookies } from 'react-cookie'
 import isElectron from 'is-electron'
@@ -53,7 +53,7 @@ const Cookies = (): React.JSX.Element => {
   ])
 
   // Notification
-  const [api, contextHolder] = notification.useNotification()
+  const { notification } = App.useApp()
 
   /**
    * On all
@@ -61,8 +61,8 @@ const Cookies = (): React.JSX.Element => {
   const onAll = useCallback(() => {
     setCookie('accepted', true, { maxAge: 3600 * 24 * 30 })
     setCookie('gpdr-gtag-accept', true, { maxAge: 3600 * 24 * 30 })
-    api.destroy()
-  }, [api, setCookie])
+    notification.destroy()
+  }, [notification, setCookie])
 
   /**
    * On close
@@ -79,17 +79,17 @@ const Cookies = (): React.JSX.Element => {
         removeCookie('accepted')
         removeCookie('gpdr-gtag-accept')
       }
-      api.destroy()
+      notification.destroy()
     },
-    [api, setCookie, removeCookie]
+    [notification, setCookie, removeCookie]
   )
 
   /**
    * Open agreement
    */
   const openAgreement = useCallback(() => {
-    api.destroy()
-    api.open({
+    notification.destroy()
+    notification.open({
       className: style.notification,
       placement: 'bottomRight',
       duration: 0,
@@ -154,16 +154,16 @@ const Cookies = (): React.JSX.Element => {
         </div>
       )
     })
-  }, [cookies, api, onAll, onClose])
+  }, [cookies, notification, onAll, onClose])
 
   // Electron
   useEffect(() => {
     if (isElectron()) {
       onAll()
       onlyOne.current = 1
-      api.destroy()
+      notification.destroy()
     }
-  }, [api, onAll])
+  }, [notification, onAll])
 
   // Cookie agreement
   useEffect(() => {
@@ -178,7 +178,6 @@ const Cookies = (): React.JSX.Element => {
    */
   return (
     <>
-      {contextHolder}
       <Button
         type="primary"
         icon={<CookieIcon style={{ fill: 'white' }} />}
@@ -189,4 +188,20 @@ const Cookies = (): React.JSX.Element => {
   )
 }
 
-export default Cookies
+/**
+ * WrappedCookies
+ * @description Wrapped inside ant-design App component
+ * @returns WrappedCookies
+ */
+const WrappedCookies = () => {
+  /**
+   * Render
+   */
+  return (
+    <App>
+      <Cookies />
+    </App>
+  )
+}
+
+export default WrappedCookies

@@ -1,7 +1,15 @@
 /** @module Components.Project.Add */
 
 import { useRouter } from 'next/router'
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  KeyboardEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import {
@@ -12,9 +20,14 @@ import {
 
 import { LIMIT120, LIMIT50 } from '@/config/string'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
@@ -48,7 +61,8 @@ export const _onAdd = async (
   swr: {
     addOneProject: (project: IFrontNewProject) => Promise<void>
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<IFrontNewProject> => {
   try {
     // Add
@@ -65,7 +79,7 @@ export const _onAdd = async (
 
     return project
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -82,6 +96,9 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const router = useRouter()
@@ -122,7 +139,7 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
     ): Promise<void> => {
       setLoading(true)
       try {
-        const newProject = await _onAdd(workspace, values, swr)
+        const newProject = await _onAdd(workspace, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -142,7 +159,7 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [router, workspace, swr]
+    [router, workspace, swr, dispatch]
   )
 
   /**

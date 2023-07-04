@@ -1,7 +1,15 @@
 /** @module Components.Project.Simulation.Run */
 
-import { useCallback, useMemo, useState } from 'react'
-import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
+import { Button, Card, Checkbox, Layout, Space, Spin, Steps } from 'antd'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
 import {
@@ -23,9 +31,13 @@ import {
   IFrontGeometriesItem
 } from '@/api/index.d'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Utils from '@/lib/utils'
 
@@ -76,7 +88,8 @@ export const _onCloudServer = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -102,20 +115,24 @@ export const _onCloudServer = async (
     await swr.mutateOneSimulation(newSimulation)
     await swr.mutateSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
 /**
  * On run
+ * @param simulation Simulation
+ * @param keepMesh Keep mesh
  */
 export const _onRun = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  dispatch: Dispatch<INotificationAction>,
+  keepMesh?: boolean
 ): Promise<void> => {
   try {
-    await SimulationAPI.run({ id: simulation.id })
+    await SimulationAPI.run({ id: simulation.id }, keepMesh)
   } catch (err: any) {
-    ErrorNotification(errors.run, err)
+    dispatch(addError({ title: errors.run, err }))
     throw err
   }
 }
@@ -124,12 +141,13 @@ export const _onRun = async (
  * On stop
  */
 export const _onStop = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>
+  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     await SimulationAPI.stop({ id: simulation.id })
   } catch (err: any) {
-    ErrorNotification(errors.stop, err)
+    dispatch(addError({ title: errors.stop, err }))
     throw err
   }
 }
@@ -151,8 +169,14 @@ const Run = ({
   const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)
 
+  const [keepMeshAvailable, setKeepMeshAvailable] = useState<boolean>(false)
+  const [keepMesh, setKeepMesh] = useState<boolean>(false)
+
   const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
   const [percent, setPercent] = useState<number>(0)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -193,6 +217,17 @@ const Run = ({
     setDisabled(!done)
   }, [configuration])
 
+  // Keep mesh
+  useEffect(() => {
+    const geometry = simulation.scheme.configuration?.geometry
+    if (geometry?.mesh || geometry?.meshes) {
+      setKeepMeshAvailable(true)
+    } else {
+      setKeepMeshAvailable(false)
+      setKeepMesh(false)
+    }
+  }, [simulation])
+
   // Running & steps
   useCustomEffect(() => {
     // Running
@@ -212,8 +247,9 @@ const Run = ({
       if (index === currentSimulation.tasks.length - 1) {
         const percents =
           task.log?.match(/[\d\s]{3}%/g) ?? task.log?.match(/[\d\s]*%/g)
-        const percent = percents ? parseFloat(percents.pop()) : undefined
-        if (percent) setPercent(percent)
+        const percent = percents?.pop()
+        const percentNumber = percent ? parseFloat(percent) : 0
+        if (percent) setPercent(percentNumber)
       }
 
       // Steps
@@ -239,12 +275,25 @@ const Run = ({
    */
   const onOk = useCallback(
     async (cloudServer: IClientPlugin): Promise<void> =>
-      _onCloudServer(simulation, cloudServer, {
-        ...swr,
-        mutateSimulation
-      }),
-    [simulation, swr, mutateSimulation]
+      _onCloudServer(
+        simulation,
+        cloudServer,
+        {
+          ...swr,
+          mutateSimulation
+        },
+        dispatch
+      ),
+    [simulation, swr, mutateSimulation, dispatch]
   )
+
+  /**
+   * On keep mesh
+   * @param event Event
+   */
+  const onKeepMesh = useCallback((event: CheckboxChangeEvent): void => {
+    setKeepMesh(event.target.checked)
+  }, [])
 
   /**
    * On run click
@@ -253,12 +302,12 @@ const Run = ({
     ;(async () => {
       setRunning(true)
       try {
-        await _onRun(simulation)
+        await _onRun(simulation, dispatch, keepMesh)
       } catch (err) {
         setRunning(false)
       }
     })()
-  }, [simulation])
+  }, [simulation, keepMesh, dispatch])
 
   /**
    * On stop click
@@ -266,11 +315,11 @@ const Run = ({
   const onStopClick = useCallback((): void => {
     ;(async () => {
       try {
-        await _onStop(simulation)
+        await _onStop(simulation, dispatch)
         setRunning(false)
       } catch (err) {}
     })()
-  }, [simulation])
+  }, [simulation, dispatch])
 
   /**
    * Render
@@ -310,6 +359,11 @@ const Run = ({
               className={globalStyle.fullWidth}
               size={20}
             >
+              {keepMeshAvailable ? (
+                <Checkbox checked={keepMesh} onChange={onKeepMesh}>
+                  Keep mesh?
+                </Checkbox>
+              ) : null}
               <div
                 className={globalStyle.fullWidth}
                 style={{

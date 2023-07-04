@@ -1,18 +1,42 @@
 /** @module Components.Administration.Plugins */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { Checkbox, Table, TableColumnsType } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
 
 import PluginsAPI from '@/api/plugins'
 import SystemAPI from '@/api/system'
+
+/**
+ * Props
+ */
+export interface IPluginProps {
+  plugin: IClientPlugin
+  system: IFrontSystem
+  swr: {
+    mutateSystem: (system: IFrontMutateSystem) => Promise<void>
+  }
+  dispatch: Dispatch<INotificationAction>
+}
 
 /**
  * Errors
@@ -33,7 +57,8 @@ export const _onChange = async (
   system: IFrontSystem,
   plugin: IClientPlugin,
   checked: boolean,
-  swr: { mutateSystem: (system: IFrontMutateSystem) => Promise<void> }
+  swr: { mutateSystem: (system: IFrontMutateSystem) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -61,7 +86,7 @@ export const _onChange = async (
       defaultplugins
     })
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -73,14 +98,9 @@ export const _onChange = async (
 const Plugin = ({
   plugin,
   system,
-  swr
-}: {
-  plugin: IClientPlugin
-  system: IFrontSystem
-  swr: {
-    mutateSystem: (system: IFrontMutateSystem) => Promise<void>
-  }
-}): React.JSX.Element => {
+  swr,
+  dispatch
+}: IPluginProps): React.JSX.Element => {
   // State
   const [checked, setChecked] = useState<boolean>()
 
@@ -99,10 +119,10 @@ const Plugin = ({
   const onChange = useCallback(
     (e: CheckboxChangeEvent): void => {
       ;(async () => {
-        await _onChange(system, plugin, e.target.checked, swr)
+        await _onChange(system, plugin, e.target.checked, swr, dispatch)
       })()
     },
-    [plugin, system, swr]
+    [plugin, system, swr, dispatch]
   )
 
   /**
@@ -119,6 +139,9 @@ const Plugins = () => {
   // Ref
   const tableRef = useRef<HTMLDivElement>(null)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // State
   const [plugins, setPlugins] = useState<IClientPlugin[]>()
   const [scroll, setScroll] = useState<{ y: number } | null>()
@@ -134,10 +157,10 @@ const Plugins = () => {
 
         setPlugins(list)
       } catch (err: any) {
-        ErrorNotification(errors.plugins, err)
+        dispatch(addError({ title: errors.plugins, err }))
       }
     })()
-  }, [])
+  }, [dispatch])
 
   /**
    * Render plugin
@@ -146,9 +169,14 @@ const Plugins = () => {
    */
   const renderPlugin = useCallback(
     (plugin: IClientPlugin): React.JSX.Element => (
-      <Plugin system={system} plugin={plugin} swr={{ mutateSystem }} />
+      <Plugin
+        system={system}
+        plugin={plugin}
+        swr={{ mutateSystem }}
+        dispatch={dispatch}
+      />
     ),
-    [system, mutateSystem]
+    [system, mutateSystem, dispatch]
   )
 
   // Columns

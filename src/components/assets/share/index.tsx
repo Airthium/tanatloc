@@ -1,7 +1,15 @@
 /** @module Components.Assets.Share */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect, CSSProperties, useMemo, useCallback } from 'react'
+import {
+  useState,
+  useEffect,
+  CSSProperties,
+  useMemo,
+  useCallback,
+  Dispatch,
+  useContext
+} from 'react'
 import {
   Button,
   Form,
@@ -23,9 +31,14 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { LinkButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -84,7 +97,8 @@ export const _onShare = async (
     | undefined,
   groupsSelected: string[],
   usersSelected: string[],
-  swr: IProps['swr']
+  swr: IProps['swr'],
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     if (workspace) {
@@ -156,7 +170,7 @@ export const _onShare = async (
       await swr.mutateUser!(newUserModel)
     }
   } catch (err: any) {
-    ErrorNotification(errors.share, err)
+    dispatch(addError({ title: errors.share, err }))
     throw err
   }
 }
@@ -207,6 +221,9 @@ const Share = ({
   const [treeUsersData, setTreeUsersData] = useState<TreeDataNode[]>([])
   const [groupsSelected, setGroupsSelected] = useState<string[]>([])
   const [usersSelected, setUsersSelected] = useState<string[]>([])
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const router = useRouter()
@@ -402,7 +419,8 @@ const Share = ({
         userModel,
         groupsSelected,
         usersSelected,
-        swr
+        swr,
+        dispatch
       )
 
       // Close
@@ -412,7 +430,15 @@ const Share = ({
       setLoading(false)
       throw err
     }
-  }, [workspace, project, userModel, groupsSelected, usersSelected, swr])
+  }, [
+    workspace,
+    project,
+    userModel,
+    groupsSelected,
+    usersSelected,
+    swr,
+    dispatch
+  ])
 
   /**
    * Title

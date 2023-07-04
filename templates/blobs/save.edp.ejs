@@ -19,6 +19,7 @@
 
 			if (Array.isArray(data)) {
 				data.forEach((d, index) => {
+					if (d === '0') return
 					line += 'PV ' + d + d + ' = ' + d + ';'
 					if (index < data.length -1 ) line += '\n\t'
 				})
@@ -41,7 +42,10 @@
 			if (Array.isArray(data)) {
 				item += '['
 				data.forEach((d, index) => {
-					item += d + d
+					if (d === '0')
+						item += d
+					else
+						item += d + d
 					if (index < data.length -1 ) item += ','
 					else item += ']'
 				})

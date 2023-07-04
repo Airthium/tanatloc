@@ -1,13 +1,25 @@
 /** @module Components.Workspace.Edit */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT50 } from '@/config/string'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -42,7 +54,8 @@ export const _onEdit = async (
   values: Pick<IFrontWorkspacesItem, 'name'>,
   swr: {
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New workspace
@@ -57,7 +70,7 @@ export const _onEdit = async (
     // Mutate
     await swr.mutateOneWorkspace(newWorkspace)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
 
     throw err
   }
@@ -75,6 +88,9 @@ const Edit = ({ workspace, swr }: IProps): React.JSX.Element => {
   // Sate
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Autofocus
   useEffect(() => {
@@ -100,7 +116,7 @@ const Edit = ({ workspace, swr }: IProps): React.JSX.Element => {
     async (values: Pick<IFrontWorkspacesItem, 'name'>): Promise<void> => {
       setLoading(true)
       try {
-        await _onEdit(workspace, values, swr)
+        await _onEdit(workspace, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -110,7 +126,7 @@ const Edit = ({ workspace, swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [workspace, swr]
+    [workspace, swr, dispatch]
   )
 
   /**

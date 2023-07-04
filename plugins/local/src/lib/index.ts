@@ -2,6 +2,7 @@
 
 import path from 'path'
 import { promises as fs } from 'fs'
+import { execSync } from 'child_process'
 import {
   setIntervalAsync,
   SetIntervalAsyncTimer
@@ -28,6 +29,7 @@ import Services from '@/services'
 
 import Tools from '@/lib/tools'
 import Template from '@/lib/template'
+import Simulation from '@/lib/simulation'
 
 // Plugin key
 const key = 'local'
@@ -57,8 +59,15 @@ const init = async (
   if (configuration.freefemPath.value) {
     try {
       await fs.access(configuration.freefemPath.value, fs.constants.X_OK)
-    } catch (err) {
+    } catch (_err) {
       throw new Error('No access to FreeFEM executable')
+    }
+    try {
+      execSync(configuration.freefemPath.value + ' --version')
+    } catch (err: any) {
+      throw new Error(
+        'FreeFEM executable does not work properly (' + err.message + ')'
+      )
     }
   }
 
@@ -66,8 +75,15 @@ const init = async (
   if (configuration.gmshPath.value) {
     try {
       await fs.access(configuration.gmshPath.value, fs.constants.X_OK)
-    } catch (err) {
+    } catch (_err) {
       throw new Error('No access to GMSH executable')
+    }
+    try {
+      execSync(configuration.gmshPath.value + ' --version')
+    } catch (err: any) {
+      throw new Error(
+        'Gmsh executable does not work properly (' + err.mesage + ')'
+      )
     }
   }
 }
@@ -394,7 +410,8 @@ const computeMesh = async (
  */
 const computeSimulation = async (
   { id }: { id: string },
-  scheme: ISimulation<'scheme'[]>['scheme']
+  scheme: ISimulation<'scheme'[]>['scheme'],
+  keepMesh?: boolean
 ): Promise<void> => {
   // Check
   if (!scheme) throw new Error('Scheme is not defined')
@@ -408,8 +425,14 @@ const computeSimulation = async (
   // Configuration
   const configuration = scheme.configuration
 
+  // Get mesh tasks
+  const simulationData = await Simulation.get(id, ['tasks'])
+  const meshTasks = simulationData.tasks.filter(
+    (task) => task.file?.type === 'mesh'
+  )
+
   // Create tasks
-  const tasks: ISimulationTask[] = []
+  const tasks: ISimulationTask[] = keepMesh ? meshTasks : []
   updateTasks(id, tasks)
 
   // Clean previous simulation
@@ -419,7 +442,11 @@ const computeSimulation = async (
   configuration.dimension ?? (configuration.dimension = 3)
 
   // Meshes
-  await computeMeshes(id, simulationPath, configuration, tasks)
+  if (!keepMesh) {
+    await computeMeshes(id, simulationPath, configuration, tasks)
+    // Save mesh/meshes for reuse
+    await Simulation.update({ id }, [{ key: 'scheme', value: scheme }])
+  }
 
   const simulationTask: ISimulationTask = {
     index: tasks.length,

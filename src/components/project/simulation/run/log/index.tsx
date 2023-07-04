@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.Run.Log */
 
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from 'react'
 import {
   Button,
   Collapse,
@@ -15,7 +22,11 @@ import parse from 'html-react-parser'
 
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -50,7 +61,8 @@ export const errors = {
  */
 export const _getCompleteLog = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
-  step: IFrontSimulationTask
+  step: IFrontSimulationTask,
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog!)
@@ -70,7 +82,7 @@ export const _getCompleteLog = async (
       )
     })
   } catch (err: any) {
-    ErrorNotification(errors.log, err)
+    dispatch(addError({ title: errors.log, err }))
   }
 }
 
@@ -85,6 +97,9 @@ const Step = ({
   loading,
   setLoading
 }: IStepProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On click
    */
@@ -92,13 +107,13 @@ const Step = ({
     ;(async () => {
       setLoading(true)
       try {
-        await _getCompleteLog(simulation, step)
+        await _getCompleteLog(simulation, step, dispatch)
       } catch (err) {
       } finally {
         setLoading(false)
       }
     })()
-  }, [simulation, step, setLoading])
+  }, [simulation, step, setLoading, dispatch])
 
   // Collapse items
   const collapseItems = useMemo(() => {

@@ -1,10 +1,12 @@
 /** @module Components.Administration */
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Layout, Tabs, Typography } from 'antd'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import PageHeader from '@/components/assets/pageHeader'
 
 import UserAPI from '@/api/user'
@@ -45,6 +47,9 @@ export const errors = {
  * @returns Administration
  */
 const Administration = (): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const router = useRouter()
   const { tab }: { tab?: string } = router.query
@@ -54,8 +59,8 @@ const Administration = (): React.JSX.Element => {
 
   // Users error
   useEffect(() => {
-    if (errorUsers) ErrorNotification(errors.users, errorUsers)
-  }, [errorUsers])
+    if (errorUsers) dispatch(addError({ title: errors.users, err: errorUsers }))
+  }, [errorUsers, dispatch])
 
   /**
    * On change

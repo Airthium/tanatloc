@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Initialization */
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, Dispatch, useContext } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { IModelInitializationDirectChild } from '@/models/index.d'
@@ -10,10 +10,15 @@ import {
   IFrontSimulationTask
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
 import Formula from '@/components/assets/formula'
-import { ErrorNotification } from '@/components/assets/notification'
 import {
   getFilesNumbers,
   getMultiplicator
@@ -53,6 +58,7 @@ export interface IDirectItemProps {
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
   }
+  dispatch: Dispatch<INotificationAction>
 }
 
 /**
@@ -75,7 +81,8 @@ export const _onSelectorChange = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -100,7 +107,7 @@ export const _onSelectorChange = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -119,7 +126,8 @@ export const _onCouplingChange = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Check results
@@ -150,7 +158,7 @@ export const _onCouplingChange = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -170,7 +178,8 @@ export const _onCouplingResultChange = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   // Update simulation
   try {
@@ -198,7 +207,7 @@ export const _onCouplingResultChange = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -215,7 +224,8 @@ export const _onChange = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -240,7 +250,7 @@ export const _onChange = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -348,7 +358,8 @@ const DirectItem = ({
   child,
   index,
   value,
-  swr
+  swr,
+  dispatch
 }: IDirectItemProps): React.JSX.Element => {
   /**
    * On change
@@ -357,10 +368,10 @@ const DirectItem = ({
   const onChange = useCallback(
     (value: string): void => {
       ;(async () => {
-        await _onChange(simulation, index, value, swr)
+        await _onChange(simulation, index, value, swr, dispatch)
       })()
     },
-    [simulation, index, swr]
+    [simulation, index, swr, dispatch]
   )
 
   /**
@@ -393,6 +404,9 @@ const Initialization = ({
     useState<Pick<IFrontSimulationsItem, 'id' | 'scheme'>>()
   const [couplingResults, setCouplingResults] =
     useState<{ label: string; value: string; file: string }[]>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const subScheme = useMemo(
@@ -474,7 +488,7 @@ const Initialization = ({
       ;(async () => {
         setLoading(true)
         try {
-          await _onCouplingChange(simulations, simulation, value, swr)
+          await _onCouplingChange(simulations, simulation, value, swr, dispatch)
           setSimulation(value)
         } catch (err) {
         } finally {
@@ -482,7 +496,7 @@ const Initialization = ({
         }
       })()
     },
-    [simulations, simulation, swr, setSimulation]
+    [simulations, simulation, swr, setSimulation, dispatch]
   )
 
   /**
@@ -502,11 +516,12 @@ const Initialization = ({
           simulation,
           value,
           option as { label: string; value: string; file: string },
-          swr
+          swr,
+          dispatch
         )
       })()
     },
-    [simulation, swr]
+    [simulation, swr, dispatch]
   )
 
   /**
@@ -589,12 +604,13 @@ const Initialization = ({
               index={index}
               value={initializationValue?.values?.[index]}
               swr={swr}
+              dispatch={dispatch}
             />
           )
         })}
       </Space>
     ),
-    [initializationValue, dimension, simulation, swr]
+    [initializationValue, dimension, simulation, swr, dispatch]
   )
 
   // Build initialization
@@ -654,12 +670,12 @@ const Initialization = ({
     (key: TInitializationKey): void => {
       ;(async () => {
         try {
-          await _onSelectorChange(simulation, key, swr)
+          await _onSelectorChange(simulation, key, swr, dispatch)
           setCurrentKey(key)
         } catch (err) {}
       })()
     },
-    [simulation, swr]
+    [simulation, swr, dispatch]
   )
 
   /**

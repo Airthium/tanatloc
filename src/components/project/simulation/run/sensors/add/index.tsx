@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Add */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 
 import {
   IFrontMutateSimulationsItem,
@@ -8,8 +8,13 @@ import {
 } from '@/api/index.d'
 import { IModelSensor } from '@/models/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -53,7 +58,8 @@ export const _onAdd = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     // New simulation
@@ -82,7 +88,7 @@ export const _onAdd = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -101,6 +107,9 @@ const Add = ({
 }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   /**
    * On add
@@ -130,7 +139,7 @@ const Add = ({
 
         onError()
 
-        await _onAdd(simulation, sensor as IModelSensor, swr)
+        await _onAdd(simulation, sensor as IModelSensor, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -139,7 +148,7 @@ const Add = ({
         setLoading(false)
       }
     })()
-  }, [simulation, sensor, onError, onClose, swr])
+  }, [simulation, sensor, onError, onClose, swr, dispatch])
 
   /**
    * Render

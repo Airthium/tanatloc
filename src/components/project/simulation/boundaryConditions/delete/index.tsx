@@ -11,9 +11,13 @@ import {
 
 import { ISelectAction, SelectContext } from '@/context/select'
 import { unselect } from '@/context/select/actions'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -52,12 +56,13 @@ export const _onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   type: string,
   index: number,
-  dispatch: Dispatch<ISelectAction>,
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  editorDispatch: Dispatch<ISelectAction>,
+  notificationDispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -73,7 +78,7 @@ export const _onDelete = async (
 
     // (unselect)
     boundaryCondition.selected.forEach((s) => {
-      dispatch(unselect(s))
+      editorDispatch(unselect(s))
     })
 
     typedBoundaryCondition.values = [
@@ -109,7 +114,7 @@ export const _onDelete = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    notificationDispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -128,8 +133,11 @@ const Delete = ({
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch: editorDispatch } = useContext(SelectContext)
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
+
   // Data
-  const { dispatch } = useContext(SelectContext)
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,
     [simulation]
@@ -149,11 +157,18 @@ const Delete = ({
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(simulation, type, index, dispatch, swr)
+      await _onDelete(
+        simulation,
+        type,
+        index,
+        swr,
+        editorDispatch,
+        notificationDispatch
+      )
     } finally {
       setLoading(false)
     }
-  }, [simulation, type, index, swr, dispatch])
+  }, [simulation, type, index, swr, editorDispatch, notificationDispatch])
 
   /**
    * Render

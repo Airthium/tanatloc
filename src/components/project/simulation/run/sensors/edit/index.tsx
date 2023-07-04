@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Edit */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 
 import {
   IFrontMutateSimulationsItem,
@@ -8,8 +8,13 @@ import {
 } from '@/api/index.d'
 import { IModelSensor } from '@/models/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { EditButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -53,7 +58,8 @@ export const _onEdit = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     // New simulation
@@ -79,7 +85,7 @@ export const _onEdit = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -98,6 +104,9 @@ const Edit = ({
 }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   /**
    * On edit
@@ -127,7 +136,7 @@ const Edit = ({
 
         onError()
 
-        await _onEdit(simulation, sensor as IModelSensor, swr)
+        await _onEdit(simulation, sensor as IModelSensor, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -136,7 +145,7 @@ const Edit = ({
         setLoading(false)
       }
     })()
-  }, [simulation, sensor, onError, onClose, swr])
+  }, [simulation, sensor, onError, onClose, swr, dispatch])
 
   /**
    * Render

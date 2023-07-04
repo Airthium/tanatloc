@@ -1,10 +1,19 @@
 /** @module Components.Assets.Organization.Groups */
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+  useContext
+} from 'react'
 import { Avatar, Space, Table, TableColumnType } from 'antd'
 
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Group, { Delete } from '@/components/assets/group'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -48,6 +57,9 @@ export const errors = {
  * @returns Groups
  */
 const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
+  // Ref
+  const refTableGroup = useRef<HTMLDivElement>(null)
+
   // State
   const [userOptions, setUserOptions] = useState<
     { label: string; value: string }[]
@@ -55,8 +67,8 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
 
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
-  // Ref
-  const refTableGroup = useRef<HTMLDivElement>(null)
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [
@@ -86,8 +98,9 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
 
   // Groups error
   useEffect(() => {
-    if (errorGroups) ErrorNotification(errors.groups, errorGroups)
-  }, [errorGroups])
+    if (errorGroups)
+      dispatch(addError({ title: errors.groups, err: errorGroups }))
+  }, [errorGroups, dispatch])
 
   /**
    * Users render

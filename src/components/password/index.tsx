@@ -1,6 +1,6 @@
 /** @module Components.Password */
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
   Button,
@@ -15,8 +15,11 @@ import {
 
 import { PASSWORD_RECOVERY } from '@/config/email'
 
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { PasswordItem } from '@/components/assets/input'
-import { ErrorNotification, FormError } from '@/components/assets/notification'
+import { FormError } from '@/components/assets/notification'
 
 import { APIError } from '@/api/error'
 import LinkAPI from '@/api/link'
@@ -79,6 +82,9 @@ const PasswordRecovery = (): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const router = useRouter()
 
@@ -97,13 +103,13 @@ const PasswordRecovery = (): React.JSX.Element => {
           setLinkEmail(link.email)
           setChecking(false)
         } else {
-          ErrorNotification(errors.wrongLink)
+          dispatch(addError({ title: errors.wrongLink }))
         }
       } catch (err: any) {
-        ErrorNotification(errors.internal, err)
+        dispatch(addError({ title: errors.internal, err }))
       }
     })()
-  }, [id])
+  }, [id, dispatch])
 
   /**
    * On finish

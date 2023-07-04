@@ -1,11 +1,16 @@
 /** @module Components.Workspace.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 
 import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -35,7 +40,8 @@ export const _onDelete = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   swr: {
     delOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Delete
@@ -44,7 +50,7 @@ export const _onDelete = async (
     // Mutate
     await swr.delOneWorkspace({ id: workspace.id })
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -58,17 +64,20 @@ const Delete = ({ workspace, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(workspace, swr)
+      await _onDelete(workspace, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [workspace, swr])
+  }, [workspace, swr, dispatch])
 
   /**
    * Render

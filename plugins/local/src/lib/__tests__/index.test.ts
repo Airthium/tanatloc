@@ -6,8 +6,16 @@ import Local from '..'
 const mockAccess = jest.fn()
 jest.mock('fs', () => ({
   promises: {
-    access: async () => mockAccess()
+    access: async () => mockAccess(),
+    constants: {
+      X_OK: ''
+    }
   }
+}))
+
+const mockExecSync = jest.fn()
+jest.mock('child_process', () => ({
+  execSync: () => mockExecSync()
 }))
 
 const mockSetInterval = jest.fn()
@@ -64,10 +72,18 @@ const mockRender = jest.fn()
 jest.mock('@/lib/template', () => ({
   render: async () => mockRender()
 }))
+const mockSimulationGet = jest.fn()
+const mockSimulationUpdate = jest.fn()
+jest.mock('@/lib/simulation', () => ({
+  get: async () => mockSimulationGet(),
+  update: async () => mockSimulationUpdate()
+}))
 
 describe('plugins/local/src/lib', () => {
   beforeEach(() => {
     mockAccess.mockReset()
+
+    mockExecSync.mockReset()
 
     mockSetInterval.mockReset()
 
@@ -81,6 +97,9 @@ describe('plugins/local/src/lib', () => {
     mockRemoveDirectory.mockReset()
 
     mockRender.mockReset()
+
+    mockSimulationGet.mockReset()
+    mockSimulationUpdate.mockReset()
 
     mockGmsh.mockReset()
     mockFreefem.mockReset()
@@ -103,7 +122,24 @@ describe('plugins/local/src/lib', () => {
     // Empty
     await Local.init({ freefemPath: {}, gmshPath: {} })
 
-    // Error
+    // Exec error
+    mockExecSync.mockImplementation(() => {
+      throw new Error('execSync error')
+    })
+    try {
+      await Local.init({
+        freefemPath: {},
+        gmshPath: { value: 'path' }
+      })
+    } catch (err) {}
+    try {
+      await Local.init({
+        freefemPath: { value: 'path' },
+        gmshPath: {}
+      })
+    } catch (err) {}
+
+    // Access error
     mockAccess.mockImplementation(() => {
       throw new Error('access error')
     })
@@ -504,6 +540,9 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(
       () => '{ "type": "DATA", "name": "Result.dat" }'
     )
+    mockSimulationGet.mockImplementation(() => ({
+      tasks: [{ type: 'mesh' }]
+    }))
 
     // No scheme
     try {
@@ -515,10 +554,14 @@ describe('plugins/local/src/lib', () => {
     } catch (err) {}
 
     // Empty
-    await Local.computeSimulation({ id: 'id' }, {
-      algorithm: 'algorithm',
-      configuration: { geometry: {}, run: {} }
-    } as ISimulation<'scheme'[]>['scheme'])
+    await Local.computeSimulation(
+      { id: 'id' },
+      {
+        algorithm: 'algorithm',
+        configuration: { geometry: {}, run: {} }
+      } as ISimulation<'scheme'[]>['scheme'],
+      true
+    )
 
     // Simulation error
     mockFreefem.mockImplementation((_, __, callback) => {
@@ -712,6 +755,9 @@ describe('plugins/local/src/lib', () => {
     mockFreefem.mockImplementation(() => {
       return 0
     })
+    mockSimulationGet.mockImplementation(() => ({
+      tasks: []
+    }))
     jest
       .spyOn(Local, 'startProcess')
       .mockImplementationOnce(

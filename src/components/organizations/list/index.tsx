@@ -1,6 +1,14 @@
 /** @module Components.Organizations.List */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { Avatar, Button, Space, Table, TableColumnsType } from 'antd'
 import {
   CheckCircleOutlined,
@@ -19,7 +27,11 @@ import {
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
 
@@ -63,6 +75,7 @@ export interface IQuitProps {
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
   }
+  dispatch: Dispatch<INotificationAction>
 }
 
 export interface IAcceptProps {
@@ -73,6 +86,7 @@ export interface IAcceptProps {
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
   }
+  dispatch: Dispatch<INotificationAction>
 }
 
 export interface IDeclineProps {
@@ -83,6 +97,7 @@ export interface IDeclineProps {
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
   }
+  dispatch: Dispatch<INotificationAction>
 }
 
 /**
@@ -107,7 +122,8 @@ export const _onQuit = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -120,7 +136,7 @@ export const _onQuit = async (
 
     await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
-    ErrorNotification(errors.quit, err)
+    dispatch(addError({ title: errors.quit, err }))
   }
 }
 
@@ -140,7 +156,8 @@ export const _onAccept = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -177,7 +194,7 @@ export const _onAccept = async (
 
     await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
-    ErrorNotification(errors.accept, err)
+    dispatch(addError({ title: errors.accept, err }))
   }
 }
 
@@ -196,7 +213,8 @@ export const _onDecline = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -218,7 +236,12 @@ export const _onDecline = async (
 
     await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
-    ErrorNotification(errors.decline, err)
+    dispatch(
+      addError({
+        title: errors.decline,
+        err
+      })
+    )
   }
 }
 
@@ -267,7 +290,8 @@ const ManageButton = ({
 const QuitButton = ({
   user,
   organization,
-  swr
+  swr,
+  dispatch
 }: IQuitProps): React.JSX.Element => {
   /**
    * On click
@@ -277,10 +301,11 @@ const QuitButton = ({
       await _onQuit(
         { id: organization.id, users: organization.users },
         { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization }
+        { mutateOneOrganization: swr.mutateOneOrganization },
+        dispatch
       )
     })()
-  }, [user, organization, swr])
+  }, [user, organization, swr, dispatch])
 
   /**
    * Render
@@ -300,7 +325,8 @@ const QuitButton = ({
 const AcceptButton = ({
   user,
   organization,
-  swr
+  swr,
+  dispatch
 }: IAcceptProps): React.JSX.Element => {
   /**
    * On click
@@ -316,10 +342,11 @@ const AcceptButton = ({
           pendingusers: organization.pendingusers
         },
         { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization }
+        { mutateOneOrganization: swr.mutateOneOrganization },
+        dispatch
       )
     })()
-  }, [user, organization, swr])
+  }, [user, organization, swr, dispatch])
 
   /**
    * Render
@@ -339,7 +366,8 @@ const AcceptButton = ({
 const DeclineButton = ({
   user,
   organization,
-  swr
+  swr,
+  dispatch
 }: IDeclineProps): React.JSX.Element => {
   const onClick = useCallback((): void => {
     ;(async () => {
@@ -350,10 +378,11 @@ const DeclineButton = ({
           pendingusers: organization.pendingusers
         },
         { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization }
+        { mutateOneOrganization: swr.mutateOneOrganization },
+        dispatch
       )
     })()
-  }, [user, organization, swr])
+  }, [user, organization, swr, dispatch])
 
   /**
    * Render
@@ -378,6 +407,9 @@ const List = ({
 }: IProps): React.JSX.Element => {
   // State
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Ref
   const refTableOrga = useRef<HTMLDivElement>(null)
@@ -448,6 +480,7 @@ const List = ({
               user={user}
               organization={org}
               swr={{ mutateOneOrganization: swr.mutateOneOrganization }}
+              dispatch={dispatch}
             />
           </Space>
         )
@@ -461,17 +494,19 @@ const List = ({
               user={user}
               organization={org}
               swr={{ mutateOneOrganization: swr.mutateOneOrganization }}
+              dispatch={dispatch}
             />
             <DeclineButton
               user={user}
               organization={org}
               swr={{ mutateOneOrganization: swr.mutateOneOrganization }}
+              dispatch={dispatch}
             />
           </Space>
         )
       return null
     },
-    [user, swr, setOrganization]
+    [user, swr, setOrganization, dispatch]
   )
 
   // Columns

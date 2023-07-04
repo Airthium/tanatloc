@@ -1,17 +1,19 @@
 /** @module Components.Account.Password */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
-import {
-  SuccessNotification,
-  FormError
-} from '@/components/assets/notification'
+import { FormError } from '@/components/assets/notification'
 
 import { IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addSuccess } from '@/context/notification/actions'
 
 /**
  * Props
@@ -40,7 +42,8 @@ export const _onFinish = async (
   values: {
     password: string
     newPassword: string
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   let current: { valid: boolean }
   try {
@@ -65,7 +68,9 @@ export const _onFinish = async (
       }
     ])
 
-    SuccessNotification('Your password has been changed successfully')
+    dispatch(
+      addSuccess({ title: 'Your password has been changed successfully' })
+    )
   } catch (err: any) {
     throw new APIError({ title: errors.update, err })
   }
@@ -80,6 +85,9 @@ const Password = ({ user }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Layout
   const layout = {
@@ -96,7 +104,7 @@ const Password = ({ user }: IProps): React.JSX.Element => {
       ;(async () => {
         setLoading(true)
         try {
-          await _onFinish(user, values)
+          await _onFinish(user, values, dispatch)
           setFormError(undefined)
         } catch (err: any) {
           setFormError(err)
@@ -105,7 +113,7 @@ const Password = ({ user }: IProps): React.JSX.Element => {
         }
       })()
     },
-    [user]
+    [user, dispatch]
   )
 
   /**

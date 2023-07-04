@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Parameters */
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { Dispatch, useCallback, useContext, useEffect, useMemo } from 'react'
 import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
@@ -10,8 +10,13 @@ import {
 } from '@/api/index.d'
 import { IModelParameter, IUnit } from '@/models/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Formula from '@/components/assets/formula'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -219,7 +224,8 @@ export const _onDone = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -258,7 +264,7 @@ export const _onDone = async (
 
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -279,7 +285,8 @@ export const _onChange = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -323,7 +330,7 @@ export const _onChange = async (
 
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -344,7 +351,8 @@ export const _onUnitChange = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -387,7 +395,7 @@ export const _onUnitChange = async (
     ])
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -404,6 +412,9 @@ const ParameterChild = ({
   index,
   swr
 }: IParameterChildProps): React.JSX.Element | null => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On change
    * @param value Value
@@ -411,17 +422,24 @@ const ParameterChild = ({
   const onChange = useCallback(
     (value: string): void => {
       ;(async () => {
-        await _onChange(simulation, pkey, index, value, swr)
+        await _onChange(simulation, pkey, index, value, swr, dispatch)
       })()
     },
-    [simulation, pkey, index, swr]
+    [simulation, pkey, index, swr, dispatch]
   )
 
-  const onUnitChange = (unit: IUnit): void => {
-    ;(async () => {
-      await _onUnitChange(simulation, pkey, index, unit, swr)
-    })()
-  }
+  /**
+   * On unit change
+   * @param unit Unit
+   */
+  const onUnitChange = useCallback(
+    (unit: IUnit): void => {
+      ;(async () => {
+        await _onUnitChange(simulation, pkey, index, unit, swr, dispatch)
+      })()
+    },
+    [simulation, pkey, index, swr, dispatch]
+  )
 
   /**
    * On change (event)
@@ -430,10 +448,17 @@ const ParameterChild = ({
   const onChangeEvent = useCallback(
     (e: CheckboxChangeEvent): void => {
       ;(async () => {
-        await _onChange(simulation, pkey, index, e.target.checked, swr)
+        await _onChange(
+          simulation,
+          pkey,
+          index,
+          e.target.checked,
+          swr,
+          dispatch
+        )
       })()
     },
-    [simulation, pkey, index, swr]
+    [simulation, pkey, index, swr, dispatch]
   )
 
   /**
@@ -506,6 +531,9 @@ const Parameter = ({
  * @returns Parameters
  */
 const Parameters = ({ simulation, swr }: IProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const subScheme = useMemo(
     () => simulation?.scheme.configuration.parameters,
@@ -519,9 +547,9 @@ const Parameters = ({ simulation, swr }: IProps): React.JSX.Element => {
   // Initial
   useEffect(() => {
     ;(async () => {
-      if (!subScheme?.done) await _onDone(simulation, swr)
+      if (!subScheme?.done) await _onDone(simulation, swr, dispatch)
     })()
-  }, [simulation, subScheme, swr])
+  }, [simulation, subScheme, swr, dispatch])
 
   // Build parameters
   const parameters = useMemo(

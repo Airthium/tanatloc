@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.Postprocesssing */
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import {
   Button,
   Card,
@@ -23,7 +30,12 @@ import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 
 import PostprocessingList from '@/postprocessing'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Download from '@/components/project/simulation/run/results/download'
 
 import PostprocessingAPI from '@/api/postprocessing'
@@ -81,12 +93,13 @@ const _run = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   result: Pick<IFrontResult, 'fileName' | 'originPath'>,
   filter: string,
-  parameters: string[]
+  parameters: string[],
+  dispatch: Dispatch<INotificationAction>
 ): Promise<IPostProcessFile[]> => {
   try {
     return await PostprocessingAPI.run(simulation, result, filter, parameters)
   } catch (err: any) {
-    ErrorNotification(errors.run, err)
+    dispatch(addError({ title: errors.run, err }))
     throw err
   }
 }
@@ -199,6 +212,9 @@ const Postprocessing = ({
     filter: string
     results: IPostProcessFile[]
   }>()
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Update visible
   useEffect(() => {
@@ -315,14 +331,15 @@ const Postprocessing = ({
             { id: simulation!.id },
             result,
             filter!,
-            values.parameters ?? []
+            values.parameters ?? [],
+            dispatch
           )
           setCurrent({ filter: filter!, results: newResults })
         } catch (err) {}
         setLoading(false)
       })()
     },
-    [simulation, result, filter]
+    [simulation, result, filter, dispatch]
   )
 
   /**

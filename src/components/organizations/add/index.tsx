@@ -1,13 +1,25 @@
 /** @module Components.Organizations.Add */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { IFrontNewOrganization } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
@@ -36,7 +48,8 @@ export const _onAdd = async (
   values: { name: string },
   swr: {
     addOneOrganization: (origanization: IFrontNewOrganization) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -46,7 +59,7 @@ export const _onAdd = async (
     organization.name = values.name
     await swr.addOneOrganization(organization)
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -63,6 +76,9 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Autofocus
   useEffect(() => {
@@ -88,7 +104,7 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
     async (values: { name: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _onAdd(values, swr)
+        await _onAdd(values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -98,7 +114,7 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
         throw err
       }
     },
-    [swr]
+    [swr, dispatch]
   )
 
   /**

@@ -1,7 +1,14 @@
 /** @module Components.Workspace.List */
 
 import { NextRouter, useRouter } from 'next/router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Empty, Form, Input, InputRef, Layout, Tabs, Typography } from 'antd'
 
 import {
@@ -14,10 +21,15 @@ import {
 
 import { LIMIT50 } from '@/config/string'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { menuItems } from '@/components/dashboard'
 
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 import PageHeader from '@/components/assets/pageHeader'
 
 import WorkspaceAPI from '@/api/workspace'
@@ -65,7 +77,8 @@ export const errors = {
 export const _onOk = async (
   router: NextRouter,
   values: Pick<IFrontWorkspacesItem, 'name'>,
-  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> }
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Add
@@ -81,7 +94,7 @@ export const _onOk = async (
       })
       .catch()
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -103,6 +116,9 @@ const WorkspacesList = ({
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
   // Router
   const router = useRouter()
@@ -153,7 +169,7 @@ const WorkspacesList = ({
     async (values: Pick<IFrontWorkspacesItem, 'name'>): Promise<void> => {
       setLoading(true)
       try {
-        await _onOk(router, values, swr)
+        await _onOk(router, values, swr, dispatch)
 
         // Close
         setLoading(false)
@@ -163,7 +179,7 @@ const WorkspacesList = ({
         throw err
       }
     },
-    [router, swr]
+    [router, swr, dispatch]
   )
 
   /**

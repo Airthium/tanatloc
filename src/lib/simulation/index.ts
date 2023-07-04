@@ -133,6 +133,38 @@ const del = async (simulation: { id: string }): Promise<void> => {
 }
 
 /**
+ * Return error
+ * @param simulation Simulation
+ * @param configuration Configuration
+ * @param message Message
+ */
+const returnError = async (
+  simulation: { id: string },
+  configuration: IModel['configuration'],
+  message: string
+): Promise<void> => {
+  const err = new Error(message)
+  console.error(err)
+
+  configuration.run = {
+    ...configuration.run,
+    error: err
+  }
+  await update(simulation, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: {
+        ...configuration.run,
+        error: err
+      }
+    }
+  ])
+}
+
+/**
  * Copy geometry(ies)
  * @param simulation Simulation
  * @param configuration Configuration
@@ -337,13 +369,57 @@ const checkUnits = (configuration: IModel['configuration']): void => {
 }
 
 /**
+ * Check cloud server
+ * @param user User
+ * @param simulation Simulation
+ * @param configuration Configuration
+ * @returns
+ */
+const checkCloudServer = async (
+  user: { id: string },
+  simulation: { id: string },
+  configuration: IModel['configuration']
+) => {
+  const cloudServer = configuration.run.cloudServer
+  if (!cloudServer) {
+    returnError(simulation, configuration, 'Cloud server unavailable')
+    return
+  }
+
+  // Find plugin
+  const serverPlugins = await Plugins.serverList()
+  const serverPlugin = serverPlugins.find((p) => p.key === cloudServer.key)
+
+  // Check plugin
+  if (!serverPlugin) {
+    returnError(simulation, configuration, 'Unavailable plugin')
+    return
+  }
+
+  // Update plugin configuration
+  const userData = await User.get(user.id, ['authorizedplugins', 'plugins'])
+  const userPlugin = userData.plugins.find((p) => p.key === cloudServer.key)
+  if (userPlugin) cloudServer.configuration = userPlugin.configuration
+
+  // Check authorized
+  if (!userData.authorizedplugins?.includes(serverPlugin.key as string)) {
+    returnError(simulation, configuration, 'Unauthorized')
+    return
+  }
+
+  return serverPlugin
+}
+
+/**
  * Run
  * @param user User
  * @param simulation Simulation
+ * @param keepMesh Keep mesh
  */
 const run = async (
   user: { id: string },
-  simulation: { id: string }
+  simulation: { id: string },
+  keepMesh?: boolean
 ): Promise<void> => {
   const simulationData = await get(simulation.id, ['scheme'])
 
@@ -371,62 +447,9 @@ const run = async (
     }
   ])
 
-  // Find plugin
-  const plugins = await Plugins.serverList()
-  const plugin = plugins.find(
-    (p) => p.key === configuration.run?.cloudServer?.key
-  )
-
-  // Check plugin
-  if (!plugin) {
-    const err = new Error('Unavailable plugin')
-    console.error(err)
-
-    configuration.run = {
-      ...configuration.run,
-      error: err
-    }
-    await update(simulation, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...configuration.run,
-          error: err
-        }
-      }
-    ])
-
-    return
-  }
-
-  // Check authorized
-  const userData = await User.get(user.id, ['authorizedplugins'])
-  if (!userData.authorizedplugins?.includes(plugin.key as string)) {
-    const err = new Error('Unauthorized')
-    console.error(err)
-
-    configuration.run = {
-      ...configuration.run,
-      error: err
-    }
-    await update(simulation, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...configuration.run,
-          error: err
-        }
-      }
-    ])
-
-    return
-  }
+  // Cloud server
+  const serverPlugin = await checkCloudServer(user, simulation, configuration)
+  if (!serverPlugin) return
 
   // Create run path
   await Tools.createPath(path.join(SIMULATION, simulation.id, 'run'))
@@ -499,12 +522,16 @@ const run = async (
     })
   })
 
-  // Check units
+  // Units
   checkUnits(configuration)
 
   // Compute
   try {
-    await plugin.lib.computeSimulation(simulation, simulationData.scheme)
+    await serverPlugin.lib.computeSimulation(
+      simulation,
+      simulationData.scheme,
+      keepMesh
+    )
 
     configuration.run = {
       ...configuration.run,
@@ -523,24 +550,7 @@ const run = async (
       }
     ])
   } catch (err: any) {
-    console.error(err)
-
-    configuration.run = {
-      ...configuration.run,
-      error: err
-    }
-    await update(simulation, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...configuration.run,
-          error: err
-        }
-      }
-    ])
+    returnError(simulation, configuration, err.message)
   }
 }
 

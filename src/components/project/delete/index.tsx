@@ -1,6 +1,6 @@
 /** @module Components.Project.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Alert, Typography } from 'antd'
 
 import {
@@ -10,8 +10,13 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
@@ -47,7 +52,8 @@ export const _onDelete = async (
   swr: {
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
     delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Delete
@@ -64,7 +70,7 @@ export const _onDelete = async (
     // Mutate projects
     await swr.delOneProject({ id: project.id })
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -83,17 +89,20 @@ const Delete = ({
   // Sate
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(workspace, project, swr)
+      await _onDelete(workspace, project, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [workspace, project, swr])
+  }, [workspace, project, swr, dispatch])
 
   /**
    * Render

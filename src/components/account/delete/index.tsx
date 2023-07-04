@@ -1,10 +1,15 @@
 /** @module Components.Account.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Card } from 'antd'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import { logout } from '@/api/logout'
@@ -29,9 +34,12 @@ export const errors = {
  * Handle delete
  * @param swr SWR
  */
-export const _onDelete = async (swr: {
-  clearUser: () => Promise<void>
-}): Promise<void> => {
+export const _onDelete = async (
+  swr: {
+    clearUser: () => Promise<void>
+  },
+  dispatch: Dispatch<INotificationAction>
+): Promise<void> => {
   try {
     // Delete
     await UserAPI.del()
@@ -42,7 +50,7 @@ export const _onDelete = async (swr: {
     // Mutate
     await swr.clearUser()
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -56,17 +64,20 @@ const Delete = ({ swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(swr)
+      await _onDelete(swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [swr])
+  }, [swr, dispatch])
 
   /**
    * Render

@@ -1,6 +1,12 @@
 /** @module Components.Project.Simulation.Geometry */
 
-import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo
+} from 'react'
 import { Card, Select, Typography } from 'antd'
 
 import {
@@ -11,7 +17,11 @@ import {
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
 
@@ -60,7 +70,8 @@ export const _onSelect = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -103,7 +114,7 @@ export const _onSelect = async (
 
     setGeometries([newGeometry])
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -124,7 +135,8 @@ export const _onMultipleSelect = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -167,7 +179,7 @@ export const _onMultipleSelect = async (
 
     setGeometries(newGeometries as IFrontGeometriesItem[])
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
   }
 }
 
@@ -183,6 +195,9 @@ const Geometry = ({
   setGeometries,
   swr
 }: IProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Data
   const multiple = useMemo(
     () => simulation.scheme.configuration.geometry.multiple,
@@ -202,27 +217,33 @@ const Geometry = ({
   )
 
   // Auto select
-  useCustomEffect(() => {
-    ;(async () => {
-      if (!multiple && !geometryId && geometries.length) {
-        await _onSelect(
-          simulation,
-          loadedGeometries,
-          geometries[0].id,
-          setGeometries,
-          swr
-        )
-      } else if (multiple && !geometriesIds && geometries.length) {
-        await _onMultipleSelect(
-          simulation,
-          loadedGeometries,
-          geometries.map((geometry) => geometry.id),
-          setGeometries,
-          swr
-        )
-      }
-    })()
-  }, [multiple, geometryId, geometriesIds, loadedGeometries, geometries, swr])
+  useCustomEffect(
+    () => {
+      ;(async () => {
+        if (!multiple && !geometryId && geometries.length) {
+          await _onSelect(
+            simulation,
+            loadedGeometries,
+            geometries[0].id,
+            setGeometries,
+            swr,
+            dispatch
+          )
+        } else if (multiple && !geometriesIds && geometries.length) {
+          await _onMultipleSelect(
+            simulation,
+            loadedGeometries,
+            geometries.map((geometry) => geometry.id),
+            setGeometries,
+            swr,
+            dispatch
+          )
+        }
+      })()
+    },
+    [multiple, geometryId, geometriesIds, loadedGeometries, geometries, swr],
+    [dispatch]
+  )
 
   /**
    * On change
@@ -237,18 +258,20 @@ const Geometry = ({
               loadedGeometries,
               value as string[],
               setGeometries,
-              swr
+              swr,
+              dispatch
             )
           : await _onSelect(
               simulation,
               loadedGeometries,
               value as string,
               setGeometries,
-              swr
+              swr,
+              dispatch
             )
       })()
     },
-    [multiple, loadedGeometries, simulation, setGeometries, swr]
+    [multiple, loadedGeometries, simulation, setGeometries, swr, dispatch]
   )
 
   // List

@@ -1,6 +1,13 @@
 /** @module Components.Assets.Group */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Form, Input, InputRef, Select } from 'antd'
 
 import {
@@ -11,9 +18,14 @@ import {
   IFrontMutateGroupsItem
 } from '@/api/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
 
@@ -60,7 +72,8 @@ export const _onAdd = async (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
     addOneGroup: (group: IFrontNewGroup) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -84,7 +97,7 @@ export const _onAdd = async (
       ] as IFrontOrganizationsItem['groups']
     })
   } catch (err: any) {
-    ErrorNotification(errors.add, err)
+    dispatch(addError({ title: errors.add, err }))
     throw err
   }
 }
@@ -108,7 +121,8 @@ export const _onUpdate = async (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
     mutateOneGroup: (group: IFrontMutateGroupsItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // Check update
@@ -149,7 +163,7 @@ export const _onUpdate = async (
       ]
     })
   } catch (err: any) {
-    ErrorNotification(errors.update, err)
+    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -177,6 +191,9 @@ const Group = ({
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Autofocus
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus()
@@ -201,15 +218,26 @@ const Group = ({
       setLoading(true)
       try {
         if (group) {
-          await _onUpdate(organization, group, values, {
-            mutateOneOrganization: swr.mutateOneOrganization,
-            mutateOneGroup: swr.mutateOneGroup!
-          })
+          await _onUpdate(
+            organization,
+            group,
+            values,
+            {
+              mutateOneOrganization: swr.mutateOneOrganization,
+              mutateOneGroup: swr.mutateOneGroup!
+            },
+            dispatch
+          )
         } else {
-          await _onAdd(organization, values, {
-            mutateOneOrganization: swr.mutateOneOrganization,
-            addOneGroup: swr.addOneGroup!
-          })
+          await _onAdd(
+            organization,
+            values,
+            {
+              mutateOneOrganization: swr.mutateOneOrganization,
+              addOneGroup: swr.addOneGroup!
+            },
+            dispatch
+          )
         }
 
         // Close
@@ -220,7 +248,7 @@ const Group = ({
         throw err
       }
     },
-    [organization, group, swr]
+    [organization, group, swr, dispatch]
   )
 
   /**

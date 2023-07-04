@@ -10,9 +10,13 @@ import {
 
 import { ISelectAction, SelectContext } from '@/context/select'
 import { setPoint } from '@/context/select/actions'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -48,12 +52,13 @@ export const errors = {
 export const _onDelete = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
-  dispatch: Dispatch<ISelectAction>,
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  }
+  },
+  selectDispatch: Dispatch<ISelectAction>,
+  notificationDispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // New simulation
@@ -63,7 +68,7 @@ export const _onDelete = async (
     const run = newSimulation.scheme.configuration.run
 
     // Unselect
-    dispatch(setPoint())
+    selectDispatch(setPoint())
 
     // Remove value
     run.sensors = [
@@ -85,7 +90,7 @@ export const _onDelete = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    ErrorNotification(errors.udpate, err)
+    notificationDispatch(addError({ title: errors.udpate, err }))
     throw err
   }
 }
@@ -99,8 +104,11 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>()
 
+  // Context
+  const { dispatch: selectDispatch } = useContext(SelectContext)
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
+
   // Data
-  const { dispatch } = useContext(SelectContext)
   const run = useMemo(() => simulation.scheme.configuration.run, [simulation])
   const sensor = useMemo(() => run.sensors![index], [index, run])
 
@@ -110,11 +118,17 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(simulation, index, dispatch, swr)
+      await _onDelete(
+        simulation,
+        index,
+        swr,
+        selectDispatch,
+        notificationDispatch
+      )
     } finally {
       setLoading(false)
     }
-  }, [simulation, index, dispatch, swr])
+  }, [simulation, index, swr, selectDispatch, notificationDispatch])
 
   /**
    * Render

@@ -1,9 +1,13 @@
 /** @module Components.Account.HPC */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, useContext } from 'react'
 import { Card, Space, Spin } from 'antd'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import PluginsAPI from '@/api/plugins'
 
@@ -22,7 +26,9 @@ export const errors = {
  * Plugins list
  * @returns List
  */
-export const _pluginsList = async (): Promise<React.JSX.Element[]> => {
+export const _pluginsList = async (
+  dispatch: Dispatch<INotificationAction>
+): Promise<React.JSX.Element[]> => {
   try {
     const plugins = await PluginsAPI.list()
 
@@ -53,7 +59,12 @@ export const _pluginsList = async (): Promise<React.JSX.Element[]> => {
       ]
     }
   } catch (err: any) {
-    ErrorNotification(errors.plugins, err)
+    dispatch(
+      addError({
+        title: errors.plugins,
+        err
+      })
+    )
     return [
       <Card key="error" title="Error">
         Something led to an error. Please try again later.
@@ -75,13 +86,16 @@ const HPC = (): React.JSX.Element => {
     </Card>
   ])
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Plugins list
   useEffect(() => {
     ;(async () => {
-      const newList = await _pluginsList()
+      const newList = await _pluginsList(dispatch)
       setList(newList)
     })()
-  }, [])
+  }, [dispatch])
 
   /**
    * Render

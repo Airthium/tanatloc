@@ -1,13 +1,18 @@
 /** @module Components.Project.Archive */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Form, Tooltip, Typography, Upload, UploadFile } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 import { UploadChangeParam } from 'antd/lib/upload'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import Dialog from '@/components/assets/dialog'
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import {
   IFrontMutateProjectsItem,
@@ -53,7 +58,8 @@ export const _onArchive = async (
   swr: {
     mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  }
+  },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -76,7 +82,7 @@ export const _onArchive = async (
     // Mutate workspace
     await swr.mutateOneWorkspace(workspace)
   } catch (err: any) {
-    ErrorNotification(errors.archive, err)
+    dispatch(addError({ title: errors.archive, err }))
     throw err
   }
 }
@@ -90,7 +96,8 @@ export const _onArchive = async (
 export const _onUnarchiveServer = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   project: Pick<IFrontProjectsItem, 'id'>,
-  swr: IProps['swr']
+  swr: IProps['swr'],
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     await ProjectAPI.unarchiveFromServer({ id: project.id })
@@ -103,7 +110,7 @@ export const _onUnarchiveServer = async (
     // Mutate workspace
     await swr.mutateOneWorkspace(workspace)
   } catch (err: any) {
-    ErrorNotification(errors.unarchiveServer, err)
+    dispatch(addError({ title: errors.unarchiveServer, err }))
     throw err
   }
 }
@@ -113,12 +120,13 @@ export const _onUnarchiveServer = async (
  * @param project Project
  */
 export const _onArchiveDelete = async (
-  project: Pick<IFrontProjectsItem, 'id'>
+  project: Pick<IFrontProjectsItem, 'id'>,
+  dispatch: Dispatch<INotificationAction>
 ) => {
   try {
     await ProjectAPI.deleteArchiveFile({ id: project.id })
   } catch (err: any) {
-    ErrorNotification(errors.deleteArchive, err)
+    dispatch(addError({ title: errors.deleteArchive, err }))
   }
 }
 
@@ -147,7 +155,8 @@ export const _onUpload = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
   project: Pick<IFrontProjectsItem, 'id'>,
   info: UploadChangeParam<any>,
-  swr: IProps['swr']
+  swr: IProps['swr'],
+  dispatch: Dispatch<INotificationAction>
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') {
     return true
@@ -172,7 +181,7 @@ export const _onUpload = async (
       // Mutate workspace
       await swr.mutateOneWorkspace(workspace)
     } catch (err: any) {
-      ErrorNotification(errors.upload, err)
+      dispatch(addError({ title: errors.upload, err }))
     }
 
     return false
@@ -196,6 +205,9 @@ const Archive = ({
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * Set visible true
    */
@@ -212,7 +224,7 @@ const Archive = ({
   const onArchive = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onArchive(workspace, project, swr)
+      await _onArchive(workspace, project, swr, dispatch)
       // Close
       setLoading(false)
       setVisible(false)
@@ -220,7 +232,7 @@ const Archive = ({
       setLoading(false)
       throw err
     }
-  }, [workspace, project, swr])
+  }, [workspace, project, swr, dispatch])
 
   /**
    * On unarchive (from server)
@@ -229,7 +241,7 @@ const Archive = ({
     ;(async () => {
       setLoading(true)
       try {
-        await _onUnarchiveServer(workspace, project, swr)
+        await _onUnarchiveServer(workspace, project, swr, dispatch)
 
         setLoading(false)
         setVisible(false)
@@ -237,7 +249,7 @@ const Archive = ({
         setLoading(false)
       }
     })()
-  }, [workspace, project, swr])
+  }, [workspace, project, swr, dispatch])
 
   /**
    * On upload
@@ -246,20 +258,20 @@ const Archive = ({
   const onUpload = useCallback(
     (info: UploadChangeParam<UploadFile<any>>): void => {
       ;(async () => {
-        const load = await _onUpload(workspace, project, info, swr)
+        const load = await _onUpload(workspace, project, info, swr, dispatch)
         setLoading(load)
         setVisible(load)
       })()
     },
-    [workspace, project, swr]
+    [workspace, project, swr, dispatch]
   )
 
   /**
    * On archive delete
    */
   const onArchiveDelete = useCallback(
-    async (): Promise<void> => _onArchiveDelete(project),
-    [project]
+    async (): Promise<void> => _onArchiveDelete(project, dispatch),
+    [project, dispatch]
   )
 
   /**

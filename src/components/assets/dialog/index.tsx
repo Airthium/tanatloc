@@ -1,9 +1,10 @@
 /** @module Components.Assets.Dialog */
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { Form, Modal, ModalProps, Typography } from 'antd'
 
-import { ErrorNotification } from '@/components/assets/notification'
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import DeleteDialog from './delete'
 
@@ -62,6 +63,9 @@ const Dialog = ({
   onCancel,
   onOk
 }: IProps): React.JSX.Element => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   // Form
   const [form] = Form.useForm()
 
@@ -81,10 +85,10 @@ const Dialog = ({
         await onOk(values)
         form.resetFields()
       } catch (err: any) {
-        ErrorNotification(errors.onOk, err, false)
+        dispatch(addError({ title: errors.onOk, err, display: false }))
       }
     })()
-  }, [form, onOk])
+  }, [form, onOk, dispatch])
 
   /**
    * On key up

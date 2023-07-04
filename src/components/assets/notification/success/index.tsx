@@ -1,19 +1,41 @@
 /** @module Components.Assets.Notification.Success */
 
-import { notification } from 'antd'
+import { useContext } from 'react'
+import { App } from 'antd'
+
+import { NotificationContext } from '@/context/notification'
+import { removeSuccess } from '@/context/notification/actions'
+
+import useCustomEffect from '@/components/utils/useCustomEffect'
 
 /**
  * Success notification
- * @param title Title
- * @param subTitle Sub title
  * @returns SuccessNotification
  */
-const SuccessNotification = (title: string, subTitle?: string): void => {
-  notification.success({
-    message: title,
-    description: subTitle,
-    duration: 10
-  })
+const SuccessNotification = (): null => {
+  // Context
+  const { success, dispatch } = useContext(NotificationContext)
+
+  // Notification
+  const { notification } = App.useApp()
+
+  // Notifications
+  useCustomEffect(
+    () => {
+      success?.forEach((success) => {
+        notification.success({
+          message: success.title,
+          description: success.description,
+          duration: 10
+        })
+        dispatch(removeSuccess(success))
+      })
+    },
+    [notification, success],
+    [dispatch]
+  )
+
+  return null
 }
 
 export default SuccessNotification

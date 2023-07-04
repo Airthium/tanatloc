@@ -1,12 +1,17 @@
 /** @module Components.Account.HPC.Plugin.Delete */
 
-import { useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IClientPlugin } from '@/plugins/index.d'
 
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
+import { addError } from '@/context/notification/actions'
+
 import { DeleteButton } from '@/components/assets/button'
-import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 
@@ -34,7 +39,8 @@ export const errors = {
  */
 export const _onDelete = async (
   plugin: IClientPlugin,
-  swr: { delOnePlugin: (plugin: IClientPlugin) => Promise<void> }
+  swr: { delOnePlugin: (plugin: IClientPlugin) => Promise<void> },
+  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     // API
@@ -43,7 +49,7 @@ export const _onDelete = async (
     // Mutate
     await swr.delOnePlugin(plugin)
   } catch (err: any) {
-    ErrorNotification(errors.del, err)
+    dispatch(addError({ title: errors.del, err }))
     throw err
   }
 }
@@ -57,17 +63,20 @@ const Delete = ({ plugin, swr }: IProps): React.JSX.Element => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Context
+  const { dispatch } = useContext(NotificationContext)
+
   /**
    * On delete
    */
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(plugin, swr)
+      await _onDelete(plugin, swr, dispatch)
     } finally {
       setLoading(false)
     }
-  }, [plugin, swr])
+  }, [plugin, swr, dispatch])
 
   /**
    * Render

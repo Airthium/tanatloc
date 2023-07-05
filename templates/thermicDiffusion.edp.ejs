@@ -19,8 +19,8 @@ try {
     
     // Variables
     real t = 0.;
-    real Time = <%= parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
-    real dt = <%= parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
+    real Time = <%- parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
+    real dt = <%- parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
     
 <%# Material -%>
 <%- helpers.indent(include('/blobs/materials.edp.ejs', {
@@ -75,7 +75,7 @@ try {
         )
 <% for (const t of temperature){ -%>
         + on(<%= t.labels -%>,
-            Td = <%= t.values[0].value ?? t.values[0].default -%>
+            Td = <%- t.values[0].value ?? t.values[0].default -%>
         )
 <% } -%>
         ;

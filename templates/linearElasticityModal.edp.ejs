@@ -59,7 +59,7 @@ try {
     const displacement = boundaryConditions.displacement.values ?? []
 -%>
     // Problem
-    real sigma = <%= parameters.modalparameters.children[0].value ?? parameters.modalparameters.children[0].default -%>;
+    real sigma = <%- parameters.modalparameters.children[0].value ?? parameters.modalparameters.children[0].default -%>;
     
     // Rigidity matrix
     appendLog("Rigidity matrix...");
@@ -102,7 +102,7 @@ try {
     appendLog("Solve the problem...");
     matrix OP = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver, factorize = 1);
     matrix MASS = massmatrix(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver, factorize = 1);
-    int nev = <%= parameters.modalparameters.children[1].value ?? parameters.modalparameters.children[1].default -%>; // Eigenvectors number
+    int nev = <%- parameters.modalparameters.children[1].value ?? parameters.modalparameters.children[1].default -%>; // Eigenvectors number
     real[int] ev(nev); // to store the nev eigenvalue
     real[int] freq(nev); // to store the nev frequency
     int ndof = Ux[].n;

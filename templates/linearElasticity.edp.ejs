@@ -52,7 +52,7 @@ try {
     // Variables
     real Mu = E / (2. * (1. + Nu));
     real Lambda = E * Nu / ((1. + Nu) * (1. - 2. * Nu));
-    real g = <%= parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
+    real g = <%- parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
     
 <%# Problem -%>
 <%
@@ -166,7 +166,7 @@ try {
     Hh h = hTriangle;
     real minh = h[].min;
     real maxh = h[].max;
-    int nLoops = <%= parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
+    int nLoops = <%- parameters.meshAdaptation.children[1].value ?? parameters.meshAdaptation.children[1].default -%>;
     for (int i = 0; i < nLoops; ++i) {
         int percent = 20. + 80 * i / nLoops;
         appendLog("[" + percent + "%]");

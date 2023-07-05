@@ -65,7 +65,7 @@ try {
         )
 <% for (const n of neumann){ -%>
         - intN1(Mesh, <%= n.labels -%>) {
-            (<%= n.values[0].value ?? n.values[0].default -%>) * uh
+            (<%- n.values[0].value ?? n.values[0].default -%>) * uh
         }
 <% } -%>
 <% for (const d of dirichlet){ -%>

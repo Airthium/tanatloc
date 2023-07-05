@@ -63,7 +63,7 @@ try{
     appendLog("Define the problem...");
 
     real Nu = 1. / Mu;
-    real penaltyFactor = <%= penaltyFactor -%>; 
+    real penaltyFactor = <%- penaltyFactor -%>; 
     varf vLaplacian (<%= unknownFunction -%>, <%= testFunction -%>)
         = intN(Mesh) (
             Nu * Curl(A)' * Curl(Ah)
@@ -87,12 +87,12 @@ try{
         <% for (const d of dirichletProd){ -%>
         +   intN1(Mesh, <%= d.labels -%>) ( penaltyFactor *
         <% if (dimension === 2) { -%>
-            [ 0 <% if (d.values[0].checked){ -%> + <%= d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
-            0 <% if (d.values[1].checked){ -%> + <%= d.values[1].value ?? d.values[1].default -%> <% } -%>  ]'* ProdNormal(Ah)
+            [ 0 <% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
+            0 <% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%> <% } -%>  ]'* ProdNormal(Ah)
         <% } else { -%>
-            [0 <% if (d.values[0].checked){ -%> + <%= d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
-            0 <% if (d.values[1].checked){ -%> + <%= d.values[1].value ?? d.values[1].default -%> <% } -%>  , 
-            0 <% if (d.values[2].checked){ -%> + <%= d.values[2].value ?? d.values[2].default -%> <% } -%>  ]' * ProdNormal(Ah)
+            [0 <% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
+            0 <% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%> <% } -%>  , 
+            0 <% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%> <% } -%>  ]' * ProdNormal(Ah)
         <% } -%>
         )
  <% } -%>

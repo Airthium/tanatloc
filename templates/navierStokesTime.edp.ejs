@@ -23,8 +23,8 @@ try {
     
     // Variables
     real t = 0.;
-    real T = <%= parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
-    real dt = <%= parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
+    real T = <%- parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
+    real dt = <%- parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
     
 <%# Materials -%>
 <%- helpers.indent(include('/blobs/materials.edp.ejs', {
@@ -171,27 +171,27 @@ try {
 <% } else if (initialization.value.type === 'direct' && initialization.value.values){ -%>
 <% if (dimension === 2){ -%>
     [<%= feFunction -%>] = [
-<%= initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
-<%= initialization.value.values[1] ?? initialization.direct.children[1].default -%>
+<%- initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
+<%- initialization.value.values[1] ?? initialization.direct.children[1].default -%>
         0];
 <% } else { -%>
     [<%= feFunction -%>] = [
-<%= initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
-<%= initialization.value.values[1] ?? initialization.direct.children[1].default -%>,
-<%= initialization.value.values[2] ?? initialization.direct.children[2].default -%>,
+<%- initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
+<%- initialization.value.values[1] ?? initialization.direct.children[1].default -%>,
+<%- initialization.value.values[2] ?? initialization.direct.children[2].default -%>,
         0];
 <% } -%>
 <% } else { -%>
 <% if (dimension === 2){ -%>
     [<%= feFunction -%>] = [
-<%= initialization.direct.children[0].default -%>,
-<%= initialization.direct.children[1].default -%>,
-<%= initialization.direct.children[2].default -%>,
+<%- initialization.direct.children[0].default -%>,
+<%- initialization.direct.children[1].default -%>,
+<%- initialization.direct.children[2].default -%>,
         0];
 <% } else { -%>
     [<%= feFunction -%>] = [
-<%= initialization.direct.children[0].default -%>,
-<%= initialization.direct.children[1].default -%>
+<%- initialization.direct.children[0].default -%>,
+<%- initialization.direct.children[1].default -%>
         0];
 <% } -%>
 <% } -%>

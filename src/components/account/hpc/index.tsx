@@ -96,6 +96,7 @@ const HPC = (): React.JSX.Element => {
    */
   const onResize = useCallback(() => {
     const div = containerRef.current
+    /* istanbul ignore next */
     if (!div) {
       setTimeout(() => onResize(), 100)
       return

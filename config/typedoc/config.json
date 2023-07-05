@@ -8,6 +8,7 @@
     "../../.yarn/**",
     "../../config/depcheck/**",
     "../../config/jest/**",
+    "../../config/sitemap/**",
     "../../coverage/**",
     "../../dist/**",
     "../../dist-install/**",
@@ -16,7 +17,6 @@
     "../../public/**",
     "../../*.d.ts",
     "../../next.config.mjs",
-    "../../sitemap.config.mjs",
     "**/__tests__/**"
   ],
   "entryPointStrategy": "expand",

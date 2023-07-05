@@ -62,14 +62,13 @@ const add = async (
 /**
  * Extra
  * @param plugin Plugin
+ * @param extra Extra action
  */
-const extra = async (
-  plugin: IClientPlugin & { extra: string }
-): Promise<void> => {
+const extra = async (plugin: IClientPlugin, extra: string): Promise<void> => {
   const plugins = await Plugins.serverList()
   const lib = plugins.find((l) => l.key === plugin.key)?.lib
   if (lib) {
-    await lib.extra?.(plugin.configuration)
+    await lib.extra?.(plugin.configuration, extra)
   }
 }
 

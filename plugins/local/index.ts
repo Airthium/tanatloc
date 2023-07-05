@@ -46,13 +46,6 @@ const Local: IPlugin = {
         tooltip: 'Fill this input to use a local version of FreeFEM'
       }
     },
-    extra: {
-      reloadResults: {
-        type: 'button',
-        label: 'Reload results',
-        action: 'reload'
-      }
-    },
     inUseConfiguration: {}
   },
   server: {

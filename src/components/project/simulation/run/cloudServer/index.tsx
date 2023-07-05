@@ -8,17 +8,21 @@ import {
   useCallback,
   Dispatch,
   SetStateAction,
-  useContext
+  useContext,
+  useMemo
 } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Card, Modal, Space, Typography } from 'antd'
-import { CloudServerOutlined } from '@ant-design/icons'
+import { Button, Card, Modal, Space, Tooltip, Typography } from 'antd'
+import { CloudDownloadOutlined, CloudServerOutlined } from '@ant-design/icons'
 import { merge } from 'lodash'
 
 import { IClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
-import { NotificationContext } from '@/context/notification'
+import {
+  INotificationAction,
+  NotificationContext
+} from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { LinkButton } from '@/components/assets/button'
@@ -55,7 +59,25 @@ export interface IPluginsProps {
  */
 export const errors = {
   plugins: 'Plugins error',
-  pluginsLoad: 'Unable to load plugins'
+  pluginsLoad: 'Unable to load plugins',
+  extra: 'Unable to execute extra action'
+}
+
+/**
+ * On extra
+ * @param action Action
+ * @param dispatch Dispatch
+ */
+export const _onExtra = async (
+  plugin: IClientPlugin,
+  action: string,
+  dispatch: Dispatch<INotificationAction>
+): Promise<void> => {
+  try {
+    await PluginAPI.extra(plugin, action)
+  } catch (err: any) {
+    dispatch(addError({ title: errors.extra, err }))
+  }
 }
 
 /**
@@ -196,6 +218,45 @@ const CloudServer = ({
   }, [router])
 
   /**
+   * On extra
+   * @param action Action
+   */
+  const onExtra = useCallback(
+    (action: string): void => {
+      ;(async () => {
+        await _onExtra(cloudServer!, action, dispatch)
+      })()
+    },
+    [cloudServer, dispatch]
+  )
+
+  // Extras
+  const extras = useMemo(() => {
+    const extra = cloudServer?.extra
+    if (!extra) return <></>
+
+    const extras = Object.keys(extra).map((key) => {
+      const e = extra[key]
+      const icon =
+        e.icon === 'cloud-download' ? <CloudDownloadOutlined /> : null
+      if (e.type === 'button')
+        return (
+          <Tooltip key={e.action} title={e.label}>
+            <Button icon={icon} onClick={() => onExtra(e.action)} />
+          </Tooltip>
+        )
+    })
+
+    return (
+      <div>
+        Custom plugin actions:
+        <br />
+        {extras}
+      </div>
+    )
+  }, [cloudServer?.extra, onExtra])
+
+  /**
    * Render
    */
   return (
@@ -261,6 +322,7 @@ const CloudServer = ({
         >
           {cloudServer ? 'Modify the resource' : 'Select a resource'}
         </Button>
+        {extras}
       </Space>
     </Card>
   )

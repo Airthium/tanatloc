@@ -25,8 +25,10 @@ jest.mock('@/context/notification/actions', () => ({
 
 const mockPlugins = jest.fn()
 const mockErrorPlugins = jest.fn()
+const mockPluginExtra = jest.fn()
 jest.mock('@/api/plugin', () => ({
-  usePlugins: () => [mockPlugins(), { errorPlugins: mockErrorPlugins() }]
+  usePlugins: () => [mockPlugins(), { errorPlugins: mockErrorPlugins() }],
+  extra: async () => mockPluginExtra()
 }))
 
 const mockList = jest.fn()
@@ -78,6 +80,7 @@ describe('components/project/simulation/run/cloudServer', () => {
       }
     ])
     mockErrorPlugins.mockReset()
+    mockPluginExtra.mockReset()
 
     mockList.mockReset()
     mockList.mockImplementation(() => [
@@ -93,6 +96,47 @@ describe('components/project/simulation/run/cloudServer', () => {
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
+
+    unmount()
+  })
+
+  test('with extra', async () => {
+    const { unmount } = render(
+      <CloudServer
+        cloudServer={{
+          ...cloudServer,
+          extra: {
+            test: {
+              type: 'button',
+              label: 'Test',
+              action: 'action',
+              icon: 'cloud-download'
+            },
+            test2: {
+              type: 'other',
+              label: 'Test',
+              action: 'action',
+              icon: 'icon'
+            }
+          }
+        }}
+        onOk={onOk}
+      />
+    )
+
+    const extra = screen.getByRole('button', { name: 'cloud-download' })
+
+    // Normal
+    fireEvent.click(extra)
+    await waitFor(() => expect(mockPluginExtra).toHaveBeenCalledTimes(1))
+
+    // Erorr
+    mockPluginExtra.mockImplementation(() => {
+      throw new Error('plugin extra error')
+    })
+    fireEvent.click(extra)
+    await waitFor(() => expect(mockPluginExtra).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })

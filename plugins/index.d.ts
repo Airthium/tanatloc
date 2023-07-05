@@ -35,6 +35,7 @@ export interface IPlugin {
         type: 'button'
         label: string
         action: string
+        icon: string
       }
     }
     data?: {

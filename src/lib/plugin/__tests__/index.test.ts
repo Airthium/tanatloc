@@ -72,6 +72,14 @@ describe('lib/plugin', () => {
     )
   })
 
+  test('extra', async () => {
+    // Normal
+    await Plugin.extra({ key: 'key' }, 'reload')
+
+    // Not found
+    await Plugin.extra({ key: 'otherkey' }, 'reload')
+  })
+
   test('getByUser', async () => {
     let plugins
 

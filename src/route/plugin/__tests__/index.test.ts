@@ -23,11 +23,13 @@ const mockAdd = jest.fn()
 const mockGetByUser = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
+const mockExtra = jest.fn()
 jest.mock('@/lib/plugin', () => ({
   add: async () => mockAdd(),
   getByUser: async () => mockGetByUser(),
   update: async () => mockUpdate(),
-  del: async () => mockDel()
+  del: async () => mockDel(),
+  extra: async () => mockExtra()
 }))
 
 describe('route/plugin', () => {
@@ -63,6 +65,7 @@ describe('route/plugin', () => {
     mockGetByUser.mockImplementation(() => [])
     mockUpdate.mockReset()
     mockDel.mockReset()
+    mockExtra.mockReset()
 
     resStatus = 0
     resJson = ''
@@ -125,8 +128,10 @@ describe('route/plugin', () => {
         ...req,
         method: 'POST',
         body: {
-          key: 'key',
-          configuration: {}
+          plugin: {
+            key: 'key',
+            configuration: {}
+          }
         }
       } as Request,
       res
@@ -151,8 +156,10 @@ describe('route/plugin', () => {
         ...req,
         method: 'POST',
         body: {
-          key: 'key',
-          configuration: {}
+          plugin: {
+            key: 'key',
+            configuration: {}
+          }
         }
       } as Request,
       res
@@ -167,6 +174,32 @@ describe('route/plugin', () => {
     expect(resStatus).toBe(200)
     expect(resJson).toBe('end')
 
+    // Extra
+    await plugin(
+      {
+        ...req,
+        method: 'POST',
+        body: {
+          plugin: {
+            key: 'key',
+            configuration: {}
+          },
+          extra: 'action'
+        }
+      } as Request,
+      res
+    )
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockExtra).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
+
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('Add error')
@@ -176,14 +209,16 @@ describe('route/plugin', () => {
         ...req,
         method: 'POST',
         body: {
-          key: 'key',
-          configuration: {}
+          plugin: {
+            key: 'key',
+            configuration: {}
+          }
         }
       } as Request,
       res
     )
-    expect(mockSession).toHaveBeenCalledTimes(4)
-    expect(mockUserGet).toHaveBeenCalledTimes(3)
+    expect(mockSession).toHaveBeenCalledTimes(5)
+    expect(mockUserGet).toHaveBeenCalledTimes(4)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

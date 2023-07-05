@@ -80,7 +80,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
         try {
           if (body.extra) {
             // Extra
-            await PluginLib.extra(body.plugin)
+            await PluginLib.extra(body.plugin, body.extra)
           } else {
             // Add
             await PluginLib.add({ id: sessionId }, body.plugin)

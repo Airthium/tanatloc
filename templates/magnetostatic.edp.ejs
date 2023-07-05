@@ -70,7 +70,6 @@ try{
 <% if (dimension !== 2) { -%>
             + penaltyFactor * Div(A) * Div(Ah)
 <% } -%>
-            //+ penaltyFactor * ProdNormal(A)' * ProdNormal(Ah)
         )
 <% for (const d of dirichlet){ -%>
         + intN1(Mesh, <%= d.labels -%>)(penaltyFactor * ProdNormal(A)' * ProdNormal(Ah))

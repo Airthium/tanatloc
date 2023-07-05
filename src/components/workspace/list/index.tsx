@@ -9,7 +9,17 @@ import {
   useRef,
   useState
 } from 'react'
-import { Empty, Form, Input, InputRef, Layout, Tabs, Typography } from 'antd'
+import {
+  Empty,
+  Form,
+  Input,
+  InputRef,
+  Layout,
+  Tabs,
+  Tooltip,
+  Typography
+} from 'antd'
+import { ExperimentOutlined, PlusOutlined } from '@ant-design/icons'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -36,15 +46,17 @@ import WorkspaceAPI from '@/api/workspace'
 
 import Add from '../add'
 import Workspace from '..'
+import SampleWorkspace from '../sample'
 
 import dashboardStyle from '@/components/dashboard/index.module.css'
 import globalStyle from '@/styles/index.module.css'
+import style from '../index.module.css'
 
 /**
  * Props
  */
 export interface IProps {
-  user: Pick<IFrontUser, 'id'>
+  user: Pick<IFrontUser, 'id' | 'plugins'>
   workspaces: Pick<
     IFrontWorkspacesItem,
     'id' | 'name' | 'projects' | 'owners' | 'users' | 'groups'
@@ -115,6 +127,7 @@ const WorkspacesList = ({
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [sampleVisible, setSampleVisible] = useState<boolean>(false)
 
   // Context
   const { dispatch } = useContext(NotificationContext)
@@ -131,13 +144,6 @@ const WorkspacesList = ({
   })
 
   /**
-   * Set visible true
-   */
-  const setVisibleTrue = useCallback((): void => {
-    setVisible(true)
-  }, [])
-
-  /**
    * Set visible false
    */
   const setVisibleFalse = useCallback((): void => {
@@ -151,10 +157,13 @@ const WorkspacesList = ({
   const onChange = useCallback(
     (activeKey: string): void => {
       ;(async () => {
-        await router.push({
-          pathname: '/dashboard',
-          query: { page: 'workspaces', workspaceId: activeKey }
-        })
+        if (activeKey === 'add') setVisible(true)
+        else if (activeKey === 'sample') setSampleVisible(true)
+        else
+          await router.push({
+            pathname: '/dashboard',
+            query: { page: 'workspaces', workspaceId: activeKey }
+          })
       })()
     },
     [router]
@@ -217,38 +226,66 @@ const WorkspacesList = ({
                 <Input ref={inputRef} placeholder="Workspace's name" />
               </Form.Item>
             </Dialog>
+            <SampleWorkspace
+              visible={sampleVisible}
+              setVisible={setSampleVisible}
+              user={user}
+              swr={{
+                addOneWorkspace: swr.addOneWorkspace
+              }}
+            />
             <Tabs
               type="editable-card"
-              className={`${globalStyle.noScroll} ${dashboardStyle.inDashboardTabs}`}
-              items={workspaces.map((workspace) => ({
-                key: workspace.id,
-                label: workspace.name,
-                css: globalStyle.noScroll,
-                closable: false,
-                children: (
-                  <Workspace
-                    user={user}
-                    page={page ?? menuItems.workspaces.key}
-                    workspace={{
-                      id: workspace.id,
-                      name: workspace.name,
-                      projects: workspace.projects,
-                      owners: workspace.owners,
-                      users: workspace.users,
-                      groups: workspace.groups
-                    }}
-                    organizations={organizations}
-                    swr={{
-                      delOneWorkspace: swr.delOneWorkspace,
-                      mutateOneWorkspace: swr.mutateOneWorkspace
-                    }}
-                  />
-                )
-              }))}
+              hideAdd={true}
+              className={`${globalStyle.noScroll} ${dashboardStyle.inDashboardTabs} ${style.tabs}`}
+              items={[
+                ...workspaces.map((workspace) => ({
+                  key: workspace.id,
+                  label: workspace.name,
+                  css: globalStyle.noScroll,
+                  closable: false,
+                  children: (
+                    <Workspace
+                      user={user}
+                      page={page ?? menuItems.workspaces.key}
+                      workspace={{
+                        id: workspace.id,
+                        name: workspace.name,
+                        projects: workspace.projects,
+                        owners: workspace.owners,
+                        users: workspace.users,
+                        groups: workspace.groups
+                      }}
+                      organizations={organizations}
+                      swr={{
+                        delOneWorkspace: swr.delOneWorkspace,
+                        mutateOneWorkspace: swr.mutateOneWorkspace
+                      }}
+                    />
+                  )
+                })),
+                {
+                  key: 'add',
+                  label: (
+                    <Tooltip title="New workspace">
+                      <PlusOutlined />
+                    </Tooltip>
+                  ),
+                  closable: false
+                },
+                {
+                  key: 'sample',
+                  label: (
+                    <Tooltip title="Sample workspace">
+                      <ExperimentOutlined />
+                    </Tooltip>
+                  ),
+                  closable: false
+                }
+              ]}
               defaultActiveKey={'1'}
               activeKey={workspaceId}
               onChange={onChange}
-              onEdit={setVisibleTrue}
             />
           </>
         ) : (

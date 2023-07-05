@@ -1,0 +1,5 @@
+<% if (dimension === 2) { -%>
+macro ProdNormal(A) [ - A#z * N.y , A#z * N.x ] //
+<% } else { -%>
+macro ProdNormal(A) [ A#y * N.z - A#z * N.y , A#z * N.x - A#x * N.z, A#x * N.y - A#y * N.x ] //
+<% } -%>

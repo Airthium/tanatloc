@@ -284,7 +284,7 @@ const Dashboard = () => {
       <Layout.Content className={globalStyle.noScroll}>
         {currentKey === menuItems.workspaces.key && (
           <WorkspacesList
-            user={{ id: user.id }}
+            user={{ id: user.id, plugins: user.plugins }}
             workspaces={workspaces}
             organizations={organizations}
             swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}

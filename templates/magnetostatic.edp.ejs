@@ -46,34 +46,33 @@ try{
 <%# Macro -%>
 <%- helpers.indent(include('/blobs/macro.edp.ejs', {
     dimension,
-    type: ['curl', 'vectorialDivergence']
+    type: ['curl', 'vectorialDivergence', 'vectorProctuctNormal']
 }), 1) -%>
 
 <%# Problem -%>
 <%
     const dirichlet = boundaryConditions.dirichlet.values ?? []
     const current = parameters.current.children
+    const penalty = parameters.penalty.children
     const currentValueX = current[0].value ?? current[0].default
     const currentValueY = current[1].value ?? current[1].default
     const currentValueZ = current[2].value ?? current[2].default
+    const penaltyFactor = penalty[0].value ?? penalty[0].default
 -%>
     // Problem
     appendLog("Define the problem...");
 
     real Nu = 1. / Mu;
+    real penaltyFactor = <%= penaltyFactor -%>; 
     varf vLaplacian (<%= unknownFunction -%>, <%= testFunction -%>)
         = intN(Mesh) (
             Nu * Curl(A)' * Curl(Ah)
 <% if (dimension !== 2) { -%>
-            + (1. / Mu) * Div(A) * Div(Ah)
+            + penaltyFactor * Div(A) * Div(Ah)
 <% } -%>
         )
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>
-<% if (dimension !== 2 && d.values[0].checked){ -%>, Ax = 0 <% } -%>
-<% if (dimension !== 2 && d.values[1].checked){ -%>, Ay = 0 <% } -%>
-<% if (d.values[2].checked){ -%>, Az = 0 <% } -%>
-        )
+        + intN1(Mesh, <%= d.labels -%>)(penaltyFactor * ProdNormal(A)' * ProdNormal(Ah))
 <% } -%>
         ;
     
@@ -86,10 +85,15 @@ try{
 <% } -%>
         )
         <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>
- <% if (dimension !== 2 && d.values[0].checked){ -%>, Ax = <%= d.values[0].value ?? d.values[0].default -%> <% } -%>
- <% if (dimension !== 2 && d.values[1].checked){ -%>, Ay = <%= d.values[1].value ?? d.values[1].default -%> <% } -%>
- <% if (d.values[2].checked){ -%>, Az = <%= d.values[2].value ?? d.values[2].default -%> <% } -%>
+        + penaltyFactor * intN1(Mesh, <%= d.labels -%>) (
+        <% if (dimension === 2) { -%>
+            [ 0 <% if (d.values[0].checked){ -%> + <%= d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
+            0 <% if (d.values[1].checked){ -%> + <%= d.values[1].value ?? d.values[1].default -%> <% } -%>  ]'* ProdNormal(Ah)
+        <% } else { -%>
+            [0 <% if (d.values[0].checked){ -%> + <%= d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
+            0 <% if (d.values[1].checked){ -%> + <%= d.values[1].value ?? d.values[1].default -%> <% } -%>  , 
+            0 <% if (d.values[2].checked){ -%> + <%= d.values[2].value ?? d.values[2].default -%> <% } -%>  ]' * ProdNormal(Ah)
+        <% } -%>
         )
  <% } -%>
         ;

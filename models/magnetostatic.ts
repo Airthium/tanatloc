@@ -57,9 +57,19 @@ const Magnetostatic: IModel = {
           }
         ]
       },
+      penalty: {
+        label: 'Penalisation',
+        children: [
+          {
+            label: 'Penalty factor',
+            htmlEntity: 'formula',
+            default: '1e6'
+          }
+        ]
+      },
       finiteElementSpace: {
         advanced: true,
-        label: 'Finite element space',
+        label: 'Finite element space H(curl)',
         children: [
           {
             label: '[Ux, Uy, Uz]',
@@ -68,16 +78,16 @@ const Magnetostatic: IModel = {
             options: [
               {
                 label: 'P1',
-                value: 'P1, P1, P1',
+                value: ' ',
                 value2D: 'P1, P1'
               },
               {
-                label: 'P2',
-                value: 'P2, P2, P2',
-                value2D: 'P2, P2'
+                label: 'Nedelec',
+                value: 'Edge03d, Edge03d, Edge03d',
+                value2D: 'RT0Ortho, RT0Ortho'
               }
             ],
-            default: 'P1, P1, P1',
+            default: 'Edge03d, Edge03d, Edge03d',
             default2D: 'P1, P1'
           }
         ]
@@ -119,6 +129,27 @@ const Magnetostatic: IModel = {
           },
           {
             label: 'Az',
+            htmlEntity: 'formula',
+            default: 0
+          }
+        ]
+      },
+      dirichletProd: {
+        label: 'A x n = Ad',
+        children: [
+          {
+            label: 'Adx ',
+            htmlEntity: 'formula',
+            default: 0
+          },
+          {
+            label: 'Ady',
+            htmlEntity: 'formula',
+            default: 0
+          },
+          {
+            only3D: true,
+            label: 'Adz',
             htmlEntity: 'formula',
             default: 0
           }

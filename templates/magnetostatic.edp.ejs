@@ -35,8 +35,8 @@ try{
 
 <%# Finite element function -%>
 <%
-    const unknownFunction = dimension === 2 ? '[Az]' : '[Ax, Ay, Az]'
-    const testFunction = dimension === 2 ? '[Ahz]' : '[Ahx, Ahy, Ahz]'
+    const unknownFunction = dimension === 2 ? 'Az' : '[Ax, Ay, Az]'
+    const testFunction = dimension === 2 ? 'Ahz' : '[Ahx, Ahy, Ahz]'
 -%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
     finiteElementSpace,
@@ -51,7 +51,7 @@ try{
 
 <%# Problem -%>
 <%
-    const dirichlet = boundaryConditions.dirichlet.values ?? []
+    const dirichletProd = boundaryConditions.dirichletProd.values ?? []
     const current = parameters.current.children
     const penalty = parameters.penalty.children
     const currentValueX = current[0].value ?? current[0].default
@@ -71,7 +71,7 @@ try{
             + penaltyFactor * Div(A) * Div(Ah)
 <% } -%>
         )
-<% for (const d of dirichlet){ -%>
+<% for (const d of dirichletProd){ -%>
         + intN1(Mesh, <%= d.labels -%>)(penaltyFactor * ProdNormal(A)' * ProdNormal(Ah))
 <% } -%>
         ;
@@ -84,8 +84,8 @@ try{
             [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%= testFunction -%>
 <% } -%>
         )
-        <% for (const d of dirichlet){ -%>
-        + penaltyFactor * intN1(Mesh, <%= d.labels -%>) (
+        <% for (const d of dirichletProd){ -%>
+        +   intN1(Mesh, <%= d.labels -%>) ( penaltyFactor *
         <% if (dimension === 2) { -%>
             [ 0 <% if (d.values[0].checked){ -%> + <%= d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
             0 <% if (d.values[1].checked){ -%> + <%= d.values[1].value ?? d.values[1].default -%> <% } -%>  ]'* ProdNormal(Ah)
@@ -122,7 +122,7 @@ try{
     B = sqrt(Bx^2 + By^2);
 
     // Magnetic field
-    Ah H, Hx, Hy;
+    FE H, Hx, Hy;
     Hx = Nu * Bx;
     Hy = Nu * By;
     H = sqrt(Hx^2 + Hy^2);

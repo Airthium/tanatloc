@@ -79,16 +79,16 @@ const Magnetostatic: IModel = {
               {
                 label: 'P1',
                 value: ' ',
-                value2D: 'P1, P1'
+                value2D: 'P1'
               },
               {
                 label: 'Nedelec',
                 value: 'Edge03d, Edge03d, Edge03d',
-                value2D: 'RT0Ortho, RT0Ortho'
+                value2D: 'RT0Ortho'
               }
             ],
             default: 'Edge03d, Edge03d, Edge03d',
-            default2D: 'P1, P1'
+            default2D: 'P1'
           }
         ]
       },
@@ -174,7 +174,7 @@ const Magnetostatic: IModel = {
           {
             name: 'MagneticField',
             data: ['Hx', 'Hy', 'Hz'],
-            data2D: 'Hz'
+            data2D: 'H'
           }
         ]
       ],

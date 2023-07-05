@@ -35,7 +35,7 @@
     "build:server:postprocessing": "swc postprocessing --out-dir dist/postprocessing --copy-files",
     "build:server:templates": "swc templates --out-dir dist/templates --copy-files",
     "build:client": "NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) next build",
-    "sitemap": "next-sitemap --config sitemap.config.mjs",
+    "sitemap": "next-sitemap --config config/sitemap/sitemap.config.mjs",
     "export": "yarn build:client && yarn sitemap &&  next export",
     "start": "NODE_ENV=production NODE_OPTIONS=\"--max_old_space_size=8192\" node --experimental-specifier-resolution=node dist/src/server/index.js",
     "workflow": ".github/workflows/node.local.sh",

@@ -3,6 +3,18 @@
 const sitemapConfig = {
   siteUrl: 'https://tanatloc.com',
   generateRobotsTxt: true,
+  exclude: [
+    '/dashboard',
+    '/editor',
+    '/error',
+    '/login',
+    '/password',
+    '/project',
+    '/signup',
+    '/signup/send',
+    '/signup/validation',
+    '/start',
+    '/webgl'],
   robotsTxtOptions: {
     policies: [
       {

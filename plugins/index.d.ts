@@ -87,6 +87,6 @@ export interface IClientPlugin extends Omit<IPlugin, 'client' | 'server'> {
   needReInit?: IPlugin['client']['needReInit']
   configuration?: IPlugin['client']['configuration']
   data?: IPlugin['client']['data']
-  extra: IPlugin['client']['extra']
+  extra?: IPlugin['client']['extra']
   inUseConfiguration?: IPlugin['client']['inUseConfiguration']
 }

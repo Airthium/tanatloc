@@ -10,7 +10,9 @@ import { error } from '../error'
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
-export type IAddBody = IClientPlugin
+export interface IAddBody {
+  plugin: IClientPlugin
+}
 
 export type IUpdateBody = object
 
@@ -24,10 +26,10 @@ export interface IDeleteBody {
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
-    !body?.key ||
-    typeof body.key !== 'string' ||
-    !body.configuration ||
-    typeof body.configuration !== 'object'
+    !body?.plugin ||
+    typeof body.plugin.key !== 'string' ||
+    !body.plugin.configuration ||
+    typeof body.plugin.configuration !== 'object'
   )
     throw error(
       400,
@@ -72,16 +74,16 @@ const route = async (req: Request, res: Response): Promise<void> => {
 
         // Check authorization
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
-        if (!user.authorizedplugins?.includes(body.key))
+        if (!user.authorizedplugins?.includes(body.plugin.key))
           throw error(403, 'Access denied')
 
         try {
           if (body.extra) {
             // Extra
-            await PluginLib.extra(body)
+            await PluginLib.extra(body.plugin)
           } else {
             // Add
-            await PluginLib.add({ id: sessionId }, body)
+            await PluginLib.add({ id: sessionId }, body.plugin)
           }
           res.status(200).end()
         } catch (err: any) {

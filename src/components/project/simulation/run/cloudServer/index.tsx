@@ -123,7 +123,7 @@ const Plugins = ({
 
         return (
           <Plugin
-            key={plugin.key}
+            key={plugin.uuid}
             plugin={plugin}
             onOk={onOk}
             setVisible={setVisible}

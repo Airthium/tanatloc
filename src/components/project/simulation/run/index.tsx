@@ -193,6 +193,9 @@ const Run = ({
     [currentSimulation]
   )
 
+  console.log(configuration.run.cloudServer?.extra)
+  // TODO
+
   // Check tasks
   useCustomEffect(() => {
     if (!configuration) {

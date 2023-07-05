@@ -72,22 +72,17 @@ const Magnetostatic: IModel = {
         label: 'Finite element space H(curl)',
         children: [
           {
-            label: '[Ux, Uy, Uz]',
-            label2D: '[Ux, Uy]',
+            label: '[Ax, Ay, Az]',
+            label2D: '[Az]',
             htmlEntity: 'select',
             options: [
               {
-                label: 'P1',
-                value: ' ',
+                label: 'P1(2D) & Nedelec(3D)',
+                value: 'Edge03d',
                 value2D: 'P1'
-              },
-              {
-                label: 'Nedelec',
-                value: 'Edge03d, Edge03d, Edge03d',
-                value2D: 'RT0Ortho'
               }
             ],
-            default: 'Edge03d, Edge03d, Edge03d',
+            default: 'Edge03d',
             default2D: 'P1'
           }
         ]

@@ -62,15 +62,16 @@ const Plugin = ({ plugin }: IProps): React.JSX.Element => {
   return (
     <Space direction="vertical" className={globalStyle.fullWidth}>
       <PluginDialog
-        plugin={{
-          uuid: plugin.uuid,
-          key: plugin.key,
-          name: plugin.name,
-          description: plugin.description,
-          haveInit: plugin.haveInit,
-          configuration: plugin.configuration,
-          inUseConfiguration: plugin.inUseConfiguration
-        }}
+        plugin={plugin}
+        // {
+        //   uuid: plugin.uuid,
+        //   key: plugin.key,
+        //   name: plugin.name,
+        //   description: plugin.description,
+        //   haveInit: plugin.haveInit,
+        //   configuration: plugin.configuration,
+        //   inUseConfiguration: plugin.inUseConfiguration
+        // }}
         swr={{ addOnePlugin }}
       />
       <List

@@ -1,6 +1,13 @@
 /** @module Components.Account.HPC */
 
-import { useState, useEffect, Dispatch, useContext } from 'react'
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  useContext,
+  useRef,
+  useCallback
+} from 'react'
 import { Card, Space, Spin } from 'antd'
 
 import {
@@ -38,16 +45,7 @@ export const _pluginsList = async (
       return HPCPlugins.map((plugin) => {
         return (
           <Card key={plugin.key} title={plugin.name}>
-            <Plugin
-              plugin={{
-                key: plugin.key,
-                name: plugin.name,
-                description: plugin.description,
-                haveInit: plugin.haveInit,
-                configuration: plugin.configuration,
-                inUseConfiguration: plugin.inUseConfiguration
-              }}
-            />
+            <Plugin plugin={plugin} />
           </Card>
         )
       })
@@ -79,15 +77,39 @@ export const _pluginsList = async (
  * @returns HPC
  */
 const HPC = (): React.JSX.Element => {
+  // Ref
+  const containerRef = useRef<HTMLDivElement>(null)
+
   // State
   const [list, setList] = useState<React.JSX.Element[]>([
     <Card key="loading" title="Loading">
       <Spin />
     </Card>
   ])
+  const [height, setHeight] = useState<number>(100)
 
   // Context
   const { dispatch } = useContext(NotificationContext)
+
+  /**
+   * On resize
+   */
+  const onResize = useCallback(() => {
+    const div = containerRef.current
+    if (!div) {
+      setTimeout(() => onResize(), 100)
+      return
+    }
+
+    const offsets = div.getBoundingClientRect()
+    const top = offsets.top
+
+    const totalHeight = window.innerHeight
+
+    const newHeight = totalHeight - top
+
+    if (newHeight !== height) setHeight(newHeight)
+  }, [height])
 
   // Plugins list
   useEffect(() => {
@@ -97,14 +119,25 @@ const HPC = (): React.JSX.Element => {
     })()
   }, [dispatch])
 
+  // Height
+  useEffect(() => {
+    window.addEventListener('resize', onResize)
+    onResize()
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [onResize])
+
   /**
    * Render
    */
   return (
     <Space
+      ref={containerRef}
       direction="vertical"
       className={`${globalStyle.fullWidth} ${globalStyle.scroll}`}
       size={20}
+      style={{ height: height - 20 }}
     >
       {list}
     </Space>

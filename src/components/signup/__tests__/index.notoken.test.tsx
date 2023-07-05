@@ -23,7 +23,7 @@ jest.mock('@/components/assets/input', () => ({
   PasswordItem: (props: any) => mockPasswordItem(props)
 }))
 
-jest.mock('@/components/assets/notification', () => ({
+jest.mock('@/context/notification/actions', () => ({
   ErrorNotification: jest.fn,
   FormError: (props: any) => <div>{props.error?.render ?? null}</div>
 }))

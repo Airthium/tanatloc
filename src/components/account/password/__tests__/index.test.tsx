@@ -11,8 +11,8 @@ jest.mock('@/components/assets/input', () => ({
 
 const mockSuccessNotification = jest.fn()
 const mockFormError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  SuccessNotification: () => mockSuccessNotification(),
+jest.mock('@/context/notification/actions', () => ({
+  addSuccess: () => mockSuccessNotification(),
   FormError: () => mockFormError()
 }))
 

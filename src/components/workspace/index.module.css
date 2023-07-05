@@ -21,3 +21,7 @@
 .tabs :global(.ant-tabs-nav::before) {
   border-bottom: none;
 }
+
+.tabs :global(.anticon) {
+  margin: 0 !important;
+}

@@ -3,8 +3,8 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import DeleteDialog, { errors } from '@/components/assets/dialog/delete'
 
 const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, err: Error) =>
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
     mockErrorNotification(title, err)
 }))
 

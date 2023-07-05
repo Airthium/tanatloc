@@ -26,8 +26,8 @@ const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
 const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, err: Error) =>
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
     mockErrorNotification(title, err)
 }))
 

@@ -3,8 +3,8 @@ import { render } from '@testing-library/react'
 import Plugin, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, err: Error) =>
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
     mockErrorNotification(title, err)
 }))
 

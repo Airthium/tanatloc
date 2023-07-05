@@ -13,12 +13,14 @@ jest.mock('@/components/assets/input', () => ({
   PasswordItem: (props: any) => mockPasswordItem(props)
 }))
 
-const mockErrorNotification = jest.fn()
 const mockFormError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, description: string) =>
-    mockErrorNotification(title, description),
   FormError: () => mockFormError()
+}))
+const mockErrorNotification = jest.fn()
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockAPIError = jest.fn()

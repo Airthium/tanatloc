@@ -5,8 +5,8 @@ import { ISimulationTaskFile } from '@/database/simulation/index'
 import View, { errors } from '@/components/project/view'
 
 const mockErroNotification = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: (title: string, err: Error) =>
+jest.mock('@/context/notification/actions', () => ({
+  addError: ({ title, err }: { title: string; err: Error }) =>
     mockErroNotification(title, err)
 }))
 

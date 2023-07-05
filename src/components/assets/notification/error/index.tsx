@@ -32,7 +32,6 @@ const ErrorNotification = (): null => {
   const onClose = useCallback(
     (key: string): void => {
       const index = opened.findIndex((open) => open === key)
-      if (index === -1) return
       setOpened([...opened.slice(0, index), ...opened.slice(index + 1)])
     },
     [opened]
@@ -123,14 +122,10 @@ const ErrorNotification = (): null => {
     () => {
       const key = 'close_all'
       if (opened.length > 1 && !opened.includes(key)) {
-        notification.info({
+        notification.warning({
           key,
           message: 'Close all error notifications',
-          description: (
-            <Button type="primary" onClick={closeAll}>
-              Close all
-            </Button>
-          ),
+          description: <Button onClick={closeAll}>Close all</Button>,
           duration: 0,
           placement: 'top'
         })

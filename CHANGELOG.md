@@ -6,10 +6,14 @@
   - :arrow_up: Keep mesh
 - Client:
   - :beetle: Bug fix
+  - :arrow_up: Sample workspace
 - Server:
   - :beetle: Bug fix
 - Plugin:
   - :beetle: Reload configuration at run
+  - :arrow_up: Rescale reload results
+- Models:
+  - :arrow_up: Add magnetostatic
 
 ---
 

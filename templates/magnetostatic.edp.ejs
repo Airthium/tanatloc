@@ -1,0 +1,160 @@
+try{
+<%# Headers -%>
+<%- helpers.indent(include('/blobs/headers.edp.ejs'), 1) -%>
+    
+<%# Dimension -%>
+<%- helpers.indent(include('/blobs/dimensioning.edp.ejs', {
+    dimension
+}), 1) -%>
+    
+<%# Mesh -%>
+<%
+    const mesh = geometry.mesh
+    mesh.name = 'Mesh'
+-%>
+<%- helpers.indent(include('/blobs/mesh.edp.ejs', {
+    dimension,
+    mesh
+}), 1) -%>
+
+<%# Material -%>
+<%- helpers.indent(include('/blobs/materials.edp.ejs', {
+    materials
+}), 1) -%>
+    
+<%# Finite element space -%>
+<%
+    const finiteElementSpace = parameters.finiteElementSpace.children[0]
+    finiteElementSpace.name = 'FE'
+-%>
+<%- helpers.indent(include('/blobs/fespace.edp.ejs', {
+    mesh,
+    dimension,
+    finiteElementSpace
+}), 1) -%>
+
+<%# Finite element function -%>
+<%
+    const unknownFunction = dimension === 2 ? 'Az' : '[Ax, Ay, Az]'
+    const testFunction = dimension === 2 ? 'Ahz' : '[Ahx, Ahy, Ahz]'
+-%>
+<%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
+    finiteElementSpace,
+    finiteElementFunction: dimension === 2 ? ['Az'] : ['Ax', 'Ay', 'Az']
+}), 1) -%>
+
+<%# Macro -%>
+<%- helpers.indent(include('/blobs/macro.edp.ejs', {
+    dimension,
+    type: ['curl', 'vectorialDivergence', 'vectorProctuctNormal']
+}), 1) -%>
+
+<%# Problem -%>
+<%
+    const dirichletProd = boundaryConditions.dirichletProd.values ?? []
+    const current = parameters.current.children
+    const penalty = parameters.penalty.children
+    const currentValueX = current[0].value ?? current[0].default
+    const currentValueY = current[1].value ?? current[1].default
+    const currentValueZ = current[2].value ?? current[2].default
+    const penaltyFactor = penalty[0].value ?? penalty[0].default
+-%>
+    // Problem
+    appendLog("Define the problem...");
+
+    real Nu = 1. / Mu;
+    real penaltyFactor = <%- penaltyFactor -%>; 
+    varf vLaplacian (<%= unknownFunction -%>, <%= testFunction -%>)
+        = intN(Mesh) (
+            Nu * Curl(A)' * Curl(Ah)
+<% if (dimension !== 2) { -%>
+            + penaltyFactor * Div(A) * Div(Ah)
+<% } -%>
+        )
+<% for (const d of dirichletProd){ -%>
+        + intN1(Mesh, <%= d.labels -%>)(penaltyFactor * ProdNormal(A)' * ProdNormal(Ah))
+<% } -%>
+        ;
+    
+    varf vLaplacianRHS (<%= unknownFunction -%>, <%= testFunction -%>)
+        = intN(Mesh) (
+<% if (dimension === 2) { -%>
+            <%- currentValueZ -%> * <%- testFunction -%>
+<% } else { -%>
+            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%= testFunction -%>
+<% } -%>
+        )
+        <% for (const d of dirichletProd){ -%>
+        +   intN1(Mesh, <%= d.labels -%>) ( penaltyFactor *
+        <% if (dimension === 2) { -%>
+            [ 0 <% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
+            0 <% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%> <% } -%>  ]'* ProdNormal(Ah)
+        <% } else { -%>
+            [0 <% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
+            0 <% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%> <% } -%>  , 
+            0 <% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%> <% } -%>  ]' * ProdNormal(Ah)
+        <% } -%>
+        )
+ <% } -%>
+        ;
+    
+<%# Solver -%>
+<%
+    const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default
+-%>
+<%- helpers.indent(include('/blobs/solver.edp.ejs', {
+    solver
+}), 1) -%>
+
+<%# Solve -%>
+    // Solve
+    appendLog("Solve the problem...");
+
+    matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
+    real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
+    Az[] = Laplacian^-1 * LaplacianRHS;
+
+<% if (dimension === 2) { -%>
+    // Magnetic induction
+    FE B, Bx, By;
+    Bx = dy(Az);
+    By = -dx(Az);
+    B = sqrt(Bx^2 + By^2);
+
+    // Magnetic field
+    FE H, Hx, Hy;
+    Hx = Nu * Bx;
+    Hy = Nu * By;
+    H = sqrt(Hx^2 + Hy^2);
+<% } else { -%>
+    // Magnetic induction
+    FE [Bx, By, Bz];
+    [Bx, By, Bz] = Curl(A);
+
+    // Magnetic field
+    FE [Hx, Hy, Hz];
+    [Hx, Hy, Hz] = Nu * [Bx, By, Bz];
+<% } -%>
+
+<%# Sensors -%>
+<%- helpers.indent(include('/blobs/sensors.edp.ejs', {
+    path: run.dataPath,
+    x: 0,
+    sensors: run.sensors
+}), 1) -%>
+    
+<%# Save -%>
+<%- helpers.indent(include('/blobs/save.edp.ejs', {
+    dimension,
+    path: run.resultPath,
+    name: '"Result"',
+    mesh: mesh.name,
+    geometry,
+    results: run.results[0]
+}), 1) -%>
+    
+    appendLog("End");
+} catch (...) {
+    appendError("An internal error occurs");
+    exit(- 1);
+}

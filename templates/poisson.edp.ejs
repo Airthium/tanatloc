@@ -65,7 +65,7 @@ try {
         )
 <% for (const n of neumann){ -%>
         - intN1(Mesh, <%= n.labels -%>) {
-            (<%= n.values[0].value ?? n.values[0].default -%>) * uh
+            (<%- n.values[0].value ?? n.values[0].default -%>) * uh
         }
 <% } -%>
 <% for (const d of dirichlet){ -%>
@@ -98,14 +98,12 @@ try {
     
 <%# Save -%>
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
-    solution: {
-        path: run.resultPath,
-        name: '"Result"',
-        mesh: mesh.name,
-        sol: ['u'],
-        dataName: run.results.map(r => r.name),
-        order: [1]
-    }
+    dimension,
+    path: run.resultPath,
+    name: '"Result"',
+    mesh: mesh.name,
+    geometry,
+    results: run.results[0]
 }), 1) -%>
     
     appendLog("End");

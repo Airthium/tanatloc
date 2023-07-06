@@ -9,7 +9,8 @@ const Templates = {
   linearElasticityModal: 'linearElasticityModal.edp.ejs',
   stokes: 'stokes.edp.ejs',
   navierStokesTime: 'navierStokesTime.edp.ejs',
-  thermicDiffusion: 'thermicDiffusion.edp.ejs'
+  thermicDiffusion: 'thermicDiffusion.edp.ejs',
+  magnetostatic: 'magnetostatic.edp.ejs'
 }
 
 export default Templates

@@ -65,12 +65,12 @@ try {
     
     // Variables
     real t = 0.;
-    real T = <%= parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
-    real dt = <%= parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
+    real T = <%- parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
+    real dt = <%- parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
     
     real Mu = E / (2. * (1. + Nu));
     real Lambda = E * Nu / ((1. + Nu) * (1. - 2. * Nu));
-    real g = <%= parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
+    real g = <%- parameters.gravity.children[0].value ?? parameters.gravity.children[0].default -%>;
     
 <%# Problem -%>
 <%
@@ -221,14 +221,12 @@ try {
 }), 2) -%>
         
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
-    solution: {
-        path: run.resultPath,
-        name: '"Result_"+timeIter',
-        mesh: mesh.name,
-        sol: [dimension === 2 ? ['Ux', 'Uy', '0'] : ['Ux', 'Uy', 'Uz'], 'Sigma', 'gamma11', 'gamma12', 'gamma13', 'gamma22', 'gamma23', 'gamma33'],
-        dataName: run.results.map(r => r.name),
-        order: [1, 1, 1, 1, 1, 1, 1, 1]
-    }
+    dimension,
+    path: run.resultPath,
+    name: '"Result_" + timeIter',
+    mesh: mesh.name,
+    geometry,
+    results: run.results[0]
 }), 2) -%>
 <% if (parameters.meshAdaptation.children[0].value){ -%>
         

@@ -1,31 +1,37 @@
+<%
+	const getData = (title, dataNames, x, ys) => {
+		const output = ['"{"']
+		output.push('"\\\"title\\\": \\\"' + title + '\\\", "')
+		output.push('"\\\"names\\\": "')
+		output.push(JSON.stringify(JSON.stringify(dataNames)))
+		output.push('", "')
+		output.push('"\\\"x\\\": \\\"" + ' + x + ' + "\\\", "')
+		output.push('"\\\"ys\\\": ["')
+		ys.forEach((y, index) => {
+			output.push('"\\\"" + ' + y + ' + "\\\""')
+			if (index !== ys.length -1)
+				output.push('", "')
+		})
+		output.push('"]"')
+		output.push('"}"')
+		
+		return output.join('\n\t\t<< ')
+	}
+	const getOutput = (fileName) => {
+		const output = ['"{"']
+		output.push('"\\\"type\\\": \\\"DATA\\\", "')
+		output.push('"\\\"name\\\": \\\"\" + ' + fileName + ' + \".dat\\\""')
+		output.push('"}"')
+		
+		return output.join('\n\t\t<< ')
+	}
+-%>
 // Data
 if (mpirank == 0) {
 	ofstream data("<%= path %>/" + <%- fileName %> + ".dat");
-	data << "{" << endl;
-	data << "  \"title\": \"" << "<%= title -%>" << "\"," << endl;
-	data << "  \"names\": [" << endl;
-<% dataNames.forEach((dataName, index) => { -%>
-<% if (index < dataNames.length - 1) { -%>
-	data << "    \"<%= dataName %>\"," << endl;
-<% } else { -%>
-	data << "    \"<%= dataName %>\"" << endl;
-<% } -%>
-<% }) -%>
-	data << "  ]," << endl;
-	data << "  \"x\": \"" << <%= x %> << "\"," << endl;
-	data << "  \"ys\": [" << endl;
-<% ys.forEach((y, index) => { -%>
-<% if (index < ys.length - 1) { -%>
-	data << "    " << <%= y %> << "," << endl;
-<% } else { -%>
-	data << "    " << <%= y %> << endl;
-<% } -%>
-<% }) -%>
-	data << "  ]" << endl;
-	data << " }" << endl;
+	data << <%- getData(title, dataNames, x, ys) -%> << endl;
 	
 	ofstream processOut("process_data.log", append);
-	string saveOutput = "PROCESS DATA FILE " + <%- fileName %> + ".dat";
-	processOut << saveOutput << endl;
+	processOut << <%- getOutput(fileName) -%> << endl;
 }
 // End Data

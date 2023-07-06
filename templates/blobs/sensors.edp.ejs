@@ -1,40 +1,53 @@
+<%
+	const setSensors = (sensors) => {
+		const lines = sensors.map((sensor, index) => {
+			const x = 'x = ' + sensor.point.x + ';'
+			const y = 'y = ' + sensor.point.y + ';'
+			const z = 'z = ' + sensor.point.z + ';'
+			const value = 'real sensor' + index + ' = ' + sensor.formula + ';'
+			return '\t' + x + '\n' +
+				'\t' + y + '\n' +
+				'\t' + z + '\n' +
+				'\t' + value + '\n'
+		})
+		return lines.join('\n')
+	}
+	const getSensors = (sensors, x) => {
+		const output = ['"{"']
+		output.push(('"\\\"names\\\": "'))
+		output.push(JSON.stringify(JSON.stringify(sensors.map(sensor => sensor.name))))
+		output.push('", "')
+		output.push('"\\\"x\\\": \\\"" + ' + x + ' + "\\\", "')
+		output.push('"\\\"ys\\\": ["')
+		sensors.forEach((_sensor, index) => {
+			output.push('"\\\"" + sensor' + index + ' + "\\\""')
+			if (index !== sensors.length - 1)
+				output.push('", "')
+		})
+		output.push('"]"')
+		output.push('"}"')
+
+		return output.join('\n\t\t\t<< ')
+	}
+	const getOutput = (x) => {
+		const output = ['"{"']
+		output.push('"\\\"type\\\": \\\"DATA\\\", "')
+		output.push('"\\\"name\\\": \\\"sensors_" + ' + x + ' + ".dat\\\""')
+		output.push('"}"')
+		return output.join('\n\t\t\t<< ')
+	}
+-%>
 // Sensors
 {
 <% if (sensors) { -%>
-<% sensors.forEach((sensor, index) => { -%>
-	x = <%= sensor.point.x -%>;
-	y = <%= sensor.point.y -%>;
-	z = <%= sensor.point.z -%>;
-	real sensor<%= index -%> = <%= sensor.formula -%>;
-<% }) -%>
+<%= setSensors(sensors) -%>
 
 	if (mpirank == 0) {
 		ofstream data("<%= path %>/sensors_" + <%= x -%> + ".dat");
-		data << "{" << endl;
-		data << "  \"names\": [" << endl;
-<% sensors.forEach((sensor, index) =>  { -%>
-<% if (index < sensors.length - 1) { -%>
-		data << "    \"<%= sensor.name -%>\"," << endl;
-<% } else { -%>
-		data << "    \"<%= sensor.name -%>\"" << endl;
-<% } -%>
-<% }) -%>
-		data << "  ]," << endl;
-		data << "  \"x\": \"" << <%= x %> << "\"," << endl;
-		data << "  \"ys\": [" << endl;
-<% sensors.forEach((_, index) =>  { -%>
-<% if (index < sensors.length - 1) { -%>
-		data << "    " << sensor<%= index -%> << "," << endl;
-<% } else { -%>
-		data << "    " << sensor<%= index -%> << endl;
-<% } -%>
-<% }) -%>
-		data << "  ]" << endl;
-		data << " }" << endl;
+		data << <%- getSensors(sensors, x) -%> << endl;
 
 		ofstream processOut("process_data.log", append);
-		string saveOutput = "PROCESS DATA FILE " + "sensors_" + <%= x -%> + ".dat";
-		processOut << saveOutput << endl;
+		processOut << <%- getOutput(x) -%> << endl;
 	}
 <% } else { -%>
 	// No sensors

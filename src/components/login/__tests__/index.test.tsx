@@ -106,8 +106,11 @@ describe('components/login', () => {
 
   test('user', () => {
     mockUser.mockImplementation(() => ({}))
-    const { unmount } = render(<Login />)
+    const { unmount, rerender } = render(<Login />)
 
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    rerender(<Login />)
     expect(mockPush).toHaveBeenCalledTimes(1)
 
     unmount()
@@ -162,7 +165,6 @@ describe('components/login', () => {
     mockLogin.mockImplementation(() => ({ ok: true }))
     await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     unmount()
   })

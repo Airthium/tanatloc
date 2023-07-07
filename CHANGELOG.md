@@ -1,3 +1,10 @@
+## v1.2.11
+
+- Client:
+  - :beetle: Next router errors
+
+---
+
 ## v1.2.10
 
 - Global:

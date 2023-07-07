@@ -78,7 +78,7 @@ const Delete = ({ workspace, swr }: IProps): React.JSX.Element => {
     setLoading(true)
     try {
       await _onDelete(workspace, swr, dispatch)
-      router.push({
+      await router.push({
         pathname: '/dashboard',
         query: { page: 'workspaces' }
       })

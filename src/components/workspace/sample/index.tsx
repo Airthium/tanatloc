@@ -300,7 +300,7 @@ const SampleWorkspace = ({
       setVisibleFalse()
 
       // Router
-      router.push({
+      await router.push({
         pathname: '/dashboard',
         query: { page: 'workspaces', workspaceId: workspace.id }
       })

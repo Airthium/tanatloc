@@ -1,7 +1,7 @@
 /** @module Components.Login */
 
-import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useRouter } from 'next/router'
+import { useState, useEffect, useCallback, useContext, useRef } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 import isElectron from 'is-electron'
 
@@ -32,12 +32,10 @@ export const errors = {
 
 /**
  * Handle login
- * @param router Router
  * @param values
  * @param mutateUser Mutate user
  */
 export const _onLogin = async (
-  router: NextRouter,
   values: {
     email: string
     password: string
@@ -55,7 +53,6 @@ export const _onLogin = async (
   if (loggedUser.ok) {
     // Logged
     await mutateUser({ id: loggedUser.id })
-    await router.push('/dashboard').catch()
   } else {
     // Bad
     throw new APIError({ title: errors.credentials, type: 'warning' })
@@ -67,6 +64,9 @@ export const _onLogin = async (
  * @returns Login
  */
 const Login = (): React.JSX.Element => {
+  // Ref
+  const justOne = useRef<number>(0)
+
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
@@ -100,12 +100,24 @@ const Login = (): React.JSX.Element => {
     if (errorUser) dispatch(addError({ title: errors.user, err: errorUser }))
   }, [errorUser, dispatch])
 
+  /**
+   * Dashboard
+   */
+  const dashboard = useCallback(() => {
+    ;(async () => {
+      await router.push('/dashboard')
+    })()
+  }, [router])
+
   // Already connected
   useEffect(() => {
-    ;(async () => {
-      if (user) await router.push('/dashboard')
-    })()
-  }, [user, router])
+    if (user) {
+      if (justOne.current) return
+
+      justOne.current++
+      dashboard()
+    }
+  }, [user, dashboard])
 
   /**
    * Signup
@@ -125,14 +137,14 @@ const Login = (): React.JSX.Element => {
       ;(async () => {
         setLoading(true)
         try {
-          await _onLogin(router, values, mutateUser)
+          await _onLogin(values, mutateUser)
         } catch (err) {
           setFormError(err as APIError)
           setLoading(false)
         }
       })()
     },
-    [router, mutateUser]
+    [mutateUser]
   )
 
   /**

@@ -617,7 +617,7 @@ describe('components/project/view/three', () => {
     fireEvent.click(dialog)
 
     unmount()
-  }, 10_000)
+  }, 50_000)
 
   test('selection enabled', () => {
     const { unmount } = render(

@@ -14,7 +14,7 @@ import Sentry from '@/lib/sentry'
  * @param req Request
  * @param res Response
  */
-const authenticate = (
+const authenticate = async (
   method: string,
   req: Request,
   res: Response

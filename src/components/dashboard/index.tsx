@@ -126,11 +126,10 @@ const Dashboard = () => {
     try {
       await logout()
       await clearUser()
-      await router.push('/')
     } catch (err: any) {
       dispatch(addError({ title: errors.logout, err }))
     }
-  }, [router, clearUser, dispatch])
+  }, [clearUser, dispatch])
 
   /**
    * On select
@@ -174,7 +173,9 @@ const Dashboard = () => {
           email: 'admin',
           password: 'password'
         })
-      } else if (!loadingUser && !user) await router.replace('/')
+      } else if (!loadingUser && !user) {
+        await router.replace('/')
+      }
     })()
   }, [user, loadingUser, router])
 

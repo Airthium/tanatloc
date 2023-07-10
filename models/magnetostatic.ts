@@ -77,12 +77,17 @@ const Magnetostatic: IModel = {
             htmlEntity: 'select',
             options: [
               {
+                label: 'P1 (2D & 3D)',
+                value: 'P1, P1, P1',
+                value2D: 'P1'
+              },
+              {
                 label: 'P1(2D) & Nedelec(3D)',
                 value: 'Edge03d',
                 value2D: 'P1'
               }
             ],
-            default: 'Edge03d',
+            default: 'P1, P1, P1',
             default2D: 'P1'
           }
         ]
@@ -107,28 +112,6 @@ const Magnetostatic: IModel = {
     boundaryConditions: {
       index: 4,
       title: 'Boundary conditions',
-      dirichlet: {
-        label: 'Dirichlet',
-        children: [
-          {
-            only3D: true,
-            label: 'Ax',
-            htmlEntity: 'formula',
-            default: 0
-          },
-          {
-            only3D: true,
-            label: 'Ay',
-            htmlEntity: 'formula',
-            default: 0
-          },
-          {
-            label: 'Az',
-            htmlEntity: 'formula',
-            default: 0
-          }
-        ]
-      },
       dirichletProd: {
         label: 'A x n = Ad',
         children: [

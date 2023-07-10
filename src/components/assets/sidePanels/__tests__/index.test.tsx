@@ -45,7 +45,7 @@ describe('components/assets/sidePanels', () => {
         ({
           left: 0,
           width: 500
-        } as DOMRect)
+        }) as DOMRect
     )
 
     const { unmount } = render(

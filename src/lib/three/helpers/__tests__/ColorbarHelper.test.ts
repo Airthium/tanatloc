@@ -19,7 +19,7 @@ jest.mock('three/examples/jsm/math/Lut', () => ({
 describe('lib/three/helpers/ColorbarHelper', () => {
   const renderer = {} as WebGLRenderer
   renderer.domElement = {
-    getBoundingClientRect: () => ({} as DOMRect)
+    getBoundingClientRect: () => ({}) as DOMRect
   } as WebGLRenderer['domElement']
   renderer.setViewport = jest.fn
   renderer.render = jest.fn

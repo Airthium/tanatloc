@@ -13,7 +13,7 @@ describe('components/editor/code/freefem/tooltip', () => {
     jest
       .spyOn(document, 'querySelector')
       .mockImplementation(
-        () => ({ offsetWidth: 10, offsetHeight: 10 } as unknown as Element)
+        () => ({ offsetWidth: 10, offsetHeight: 10 }) as unknown as Element
       )
 
     const { rerender, unmount } = render(<CustomTooltip x={4} y={4} />)

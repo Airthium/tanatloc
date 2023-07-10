@@ -119,10 +119,10 @@ export const _onShare = async (
         (group) =>
           ({
             id: group
-          } as IFrontWorkspacesItem['groups'][0])
+          }) as IFrontWorkspacesItem['groups'][0]
       )
       newWorkspace.users = usersSelected.map(
-        (user) => ({ id: user } as IFrontWorkspacesItem['users'][0])
+        (user) => ({ id: user }) as IFrontWorkspacesItem['users'][0]
       )
       await swr.mutateOneWorkspace!(newWorkspace)
     } else if (project) {
@@ -140,10 +140,10 @@ export const _onShare = async (
       // Mutate
       const newProject = Utils.deepCopy(project)
       newProject.groups = groupsSelected.map(
-        (group) => ({ id: group } as IFrontProjectsItem['groups'][0])
+        (group) => ({ id: group }) as IFrontProjectsItem['groups'][0]
       )
       newProject.users = usersSelected.map(
-        (user) => ({ id: user } as IFrontProjectsItem['users'][0])
+        (user) => ({ id: user }) as IFrontProjectsItem['users'][0]
       )
       await swr.mutateOneProject!(newProject)
     } else {
@@ -162,10 +162,10 @@ export const _onShare = async (
       // Mutate
       const newUserModel = Utils.deepCopy(userModel!)
       newUserModel.groups = groupsSelected.map(
-        (group) => ({ id: group } as IFrontUserModel['groups'][0])
+        (group) => ({ id: group }) as IFrontUserModel['groups'][0]
       )
       newUserModel.users = usersSelected.map(
-        (user) => ({ id: user } as IFrontUserModel['users'][0])
+        (user) => ({ id: user }) as IFrontUserModel['users'][0]
       )
       await swr.mutateUser!(newUserModel)
     }

@@ -77,14 +77,14 @@ const Magnetostatic: IModel = {
             htmlEntity: 'select',
             options: [
               {
-                label: 'P1 (2D & 3D)',
+                label: 'P1',
                 value: 'P1, P1, P1',
                 value2D: 'P1'
               },
               {
-                label: 'P1(2D) & Nedelec(3D)',
-                value: 'Edge03d',
-                value2D: 'P1'
+                label: 'P2',
+                value: 'P2, P2, P2',
+                value2D: 'P2'
               }
             ],
             default: 'P1, P1, P1',

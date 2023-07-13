@@ -50,7 +50,7 @@ const description = (
       given by
       <MathJax.BackFormula
         text={`
-          H = \\mu B
+          H = \\frac{1}{\\mu} B
         `}
       />
     </div>

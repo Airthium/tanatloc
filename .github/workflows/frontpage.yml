@@ -20,7 +20,7 @@ jobs:
       - name: Export
         run: NEXT_PUBLIC_SERVER_MODE=frontpage yarn export
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: out

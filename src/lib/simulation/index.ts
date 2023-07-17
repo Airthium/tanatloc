@@ -257,7 +257,7 @@ const checkMeshUnits = (configuration: IModel['configuration']): void => {
     const value = meshParameters.value
     if (unit) {
       meshParameters.value =
-        +value / (unit.multiplicator ?? 1) - (unit.adder ?? 0)
+        value + '/ ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
     }
   }
 }
@@ -273,7 +273,8 @@ const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
       const unit = child.unit
       const value = child.value
       if (unit) {
-        child.value = +value / (unit.multiplicator ?? 1) - (unit.adder ?? 0)
+        child.value =
+          value + ' / ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
       }
     })
   })
@@ -298,7 +299,8 @@ const checkParametersUnits = (configuration: IModel['configuration']): void => {
       const unit = child.unit
       const value = child.value
       if (unit && value !== undefined)
-        child.value = +value / (unit?.multiplicator ?? 1) - (unit?.adder ?? 0)
+        child.value =
+          value + ' / ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
     })
   })
 }
@@ -317,7 +319,8 @@ const checkInitializationUnits = (
       const unit = child.unit
       const value = child.value
       if (unit && value !== undefined)
-        child.value = +value / (unit.multiplicator ?? 1) - (unit.adder ?? 0)
+        child.value =
+          value + ' / ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
     })
   }
 }
@@ -341,7 +344,12 @@ const checkBoundaryConditionsUnits = (
         const unit = val.unit
         const value = val.value
         if (unit && value !== undefined)
-          val.value = +value / (unit.multiplicator ?? 1) - (unit.adder ?? 0)
+          val.value =
+            value +
+            ' / ' +
+            (unit.multiplicator ?? 1) +
+            ' - ' +
+            (unit.adder ?? 0)
       })
     })
   })

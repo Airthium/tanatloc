@@ -2,6 +2,10 @@
 
 - Client:
   - :beetle: Next router errors
+  - :beetle: threeJS WebGLRenderer fix
+- Plugin:
+  - :beetle: Reload configuration fix
+  - :arrow_up: Complete magnetostatic
 
 ---
 

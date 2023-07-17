@@ -398,7 +398,7 @@ const checkCloudServer = async (
 
   // Update plugin configuration
   const userData = await User.get(user.id, ['authorizedplugins', 'plugins'])
-  const userPlugin = userData.plugins.find((p) => p.key === cloudServer.key)
+  const userPlugin = userData.plugins.find((p) => p.uuid === cloudServer.uuid)
   if (userPlugin) cloudServer.configuration = userPlugin.configuration
 
   // Check authorized

@@ -54,7 +54,11 @@ const NotFound = (): React.JSX.Element => {
     let height = div.clientHeight
 
     // Renderer
-    const renderer = new WebGLRenderer({ antialias: true, alpha: true })
+    const renderer = new WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    })
     renderer.setClearColor(0x000000, 0)
     renderer.setSize(width, height)
     div.appendChild(renderer.domElement)

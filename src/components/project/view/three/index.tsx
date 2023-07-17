@@ -551,7 +551,8 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
     // Renderer
     renderer.current = new WebGLRenderer({
       antialias: true,
-      alpha: true
+      alpha: true,
+      powerPreference: 'high-performance'
     })
     renderer.current.setClearColor('#ffffff')
     renderer.current.setSize(width, height)

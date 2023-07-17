@@ -57,7 +57,7 @@ const Background = (): React.JSX.Element => {
     const renderer = new WebGLRenderer({
       antialias: true,
       alpha: true,
-      powerPreference: 'low-power'
+      powerPreference: 'high-performance'
     })
     renderer.setClearColor('#ffffff', 0)
     renderer.setSize(width, height)

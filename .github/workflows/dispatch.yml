@@ -31,12 +31,11 @@ jobs:
 
       - name: Create release
         continue-on-error: true
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.package.outputs.version }}
-          release_name: v${{ steps.package.outputs.version }}
           body: |
             | [Docker build](https://github.com/Airthium/tanatloc-docker/releases/tag/v${{ steps.package.outputs.version }}) | [Electron build](https://github.com/Airthium/tanatloc-electron/releases/tag/v${{ steps.package.outputs.version }}) |
             | -- | -- |

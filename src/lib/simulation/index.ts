@@ -274,7 +274,12 @@ const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
       const value = child.value
       if (unit) {
         child.value =
-          value + ' / ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
+          '(' +
+          value +
+          ') / ' +
+          (unit.multiplicator ?? 1) +
+          ' - ' +
+          (unit.adder ?? 0)
       }
     })
   })
@@ -300,7 +305,12 @@ const checkParametersUnits = (configuration: IModel['configuration']): void => {
       const value = child.value
       if (unit && value !== undefined)
         child.value =
-          value + ' / ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
+          '(' +
+          value +
+          ') / ' +
+          (unit.multiplicator ?? 1) +
+          ' - ' +
+          (unit.adder ?? 0)
     })
   })
 }
@@ -320,7 +330,12 @@ const checkInitializationUnits = (
       const value = child.value
       if (unit && value !== undefined)
         child.value =
-          value + ' / ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
+          '(' +
+          value +
+          ') / ' +
+          (unit.multiplicator ?? 1) +
+          ' - ' +
+          (unit.adder ?? 0)
     })
   }
 }
@@ -345,8 +360,9 @@ const checkBoundaryConditionsUnits = (
         const value = val.value
         if (unit && value !== undefined)
           val.value =
+            '(' +
             value +
-            ' / ' +
+            ') / ' +
             (unit.multiplicator ?? 1) +
             ' - ' +
             (unit.adder ?? 0)

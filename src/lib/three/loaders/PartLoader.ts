@@ -119,11 +119,11 @@ const loadResult = (object: IPart, clippingPlane: Plane): void => {
       const mesh = child as IPartMesh
       const data = mesh.geometry.getAttribute('data') as BufferAttribute
       if (data) {
-        let min = (data.array as number[]).reduce(
+        let min = (data.array as unknown as number[]).reduce(
           (m, currentValue) => Math.min(m, currentValue),
           data.array[0]
         )
-        let max = (data.array as number[]).reduce(
+        let max = (data.array as unknown as number[]).reduce(
           (m, currentValue) => Math.max(m, currentValue),
           data.array[0]
         )

@@ -254,11 +254,12 @@ const checkMeshUnits = (configuration: IModel['configuration']): void => {
   const meshParameters = configuration.geometry.meshParameters
   if (meshParameters) {
     const unit = meshParameters.unit
-    const value = meshParameters.value
-    if (unit) {
+    if (unit?.multiplicator)
       meshParameters.value =
-        value + '/ ' + (unit.multiplicator ?? 1) + ' - ' + (unit.adder ?? 0)
-    }
+        '(' + meshParameters.value + ') / ' + (unit.multiplicator ?? 1)
+    if (unit?.adder)
+      meshParameters.value =
+        '(' + meshParameters.value + ') - ' + (unit.adder ?? 0)
   }
 }
 
@@ -271,16 +272,10 @@ const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
   materials?.values?.forEach((value) => {
     value.material.children.forEach((child) => {
       const unit = child.unit
-      const value = child.value
-      if (unit) {
-        child.value =
-          '(' +
-          value +
-          ') / ' +
-          (unit.multiplicator ?? 1) +
-          ' - ' +
-          (unit.adder ?? 0)
-      }
+      if (unit?.multiplicator)
+        child.value = '(' + child.value + ') / ' + (unit.multiplicator ?? 1)
+      if (unit?.adder)
+        child.value = '(' + child.value + ') - ' + (unit.adder ?? 0)
     })
   })
 }
@@ -302,15 +297,12 @@ const checkParametersUnits = (configuration: IModel['configuration']): void => {
 
     parameter.children.forEach((child) => {
       const unit = child.unit
-      const value = child.value
-      if (unit && value !== undefined)
-        child.value =
-          '(' +
-          value +
-          ') / ' +
-          (unit.multiplicator ?? 1) +
-          ' - ' +
-          (unit.adder ?? 0)
+      if (child.value !== undefined) {
+        if (unit?.multiplicator)
+          child.value = '(' + child.value + ') / ' + (unit.multiplicator ?? 1)
+        if (unit?.adder)
+          child.value = '(' + child.value + ') - ' + (unit.adder ?? 0)
+      }
     })
   })
 }
@@ -327,15 +319,12 @@ const checkInitializationUnits = (
   if (direct) {
     direct.children.forEach((child) => {
       const unit = child.unit
-      const value = child.value
-      if (unit && value !== undefined)
-        child.value =
-          '(' +
-          value +
-          ') / ' +
-          (unit.multiplicator ?? 1) +
-          ' - ' +
-          (unit.adder ?? 0)
+      if (child.value !== undefined) {
+        if (unit?.multiplicator)
+          child.value = '(' + child.value + ') / ' + (unit.multiplicator ?? 1)
+        if (unit?.adder)
+          child.value = '(' + child.value + ') - ' + (unit.adder ?? 0)
+      }
     })
   }
 }
@@ -357,15 +346,12 @@ const checkBoundaryConditionsUnits = (
     boundaryCondition.values?.forEach((v) => {
       v.values?.forEach((val) => {
         const unit = val.unit
-        const value = val.value
-        if (unit && value !== undefined)
-          val.value =
-            '(' +
-            value +
-            ') / ' +
-            (unit.multiplicator ?? 1) +
-            ' - ' +
-            (unit.adder ?? 0)
+        if (val.value !== undefined) {
+          if (unit?.multiplicator)
+            val.value = '(' + val.value + ') / ' + (unit.multiplicator ?? 1)
+          if (unit?.adder)
+            val.value = '(' + val.value + ') - ' + (unit.adder ?? 0)
+        }
       })
     })
   })

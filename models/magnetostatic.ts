@@ -28,7 +28,9 @@ const Magnetostatic: IModel = {
           label: 'Magnetic permeability',
           name: 'Mu',
           htmlEntity: 'formula',
-          default: '4*pi*1e-7'
+          default: '4*pi*1e-7',
+          units: [{ label: 'H.m^{-1}' }],
+          unit: { label: 'H.m^{-1}' }
         }
       ]
     },
@@ -42,18 +44,24 @@ const Magnetostatic: IModel = {
             only3D: true,
             label: 'Current (x)',
             htmlEntity: 'formula',
-            default: '0'
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
           },
           {
             only3D: true,
             label: 'Current (y)',
             htmlEntity: 'formula',
-            default: '0'
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
           },
           {
             label: 'Current (z)',
             htmlEntity: 'formula',
-            default: '0'
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
           }
         ]
       },

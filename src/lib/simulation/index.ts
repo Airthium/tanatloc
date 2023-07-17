@@ -256,10 +256,9 @@ const checkMeshUnits = (configuration: IModel['configuration']): void => {
     const unit = meshParameters.unit
     if (unit?.multiplicator)
       meshParameters.value =
-        '(' + meshParameters.value + ') / ' + (unit.multiplicator ?? 1)
+        '(' + meshParameters.value + ') / ' + unit.multiplicator
     if (unit?.adder)
-      meshParameters.value =
-        '(' + meshParameters.value + ') - ' + (unit.adder ?? 0)
+      meshParameters.value = '(' + meshParameters.value + ') - ' + unit.adder
   }
 }
 
@@ -273,9 +272,8 @@ const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
     value.material.children.forEach((child) => {
       const unit = child.unit
       if (unit?.multiplicator)
-        child.value = '(' + child.value + ') / ' + (unit.multiplicator ?? 1)
-      if (unit?.adder)
-        child.value = '(' + child.value + ') - ' + (unit.adder ?? 0)
+        child.value = '(' + child.value + ') / ' + unit.multiplicator
+      if (unit?.adder) child.value = '(' + child.value + ') - ' + unit.adder
     })
   })
 }
@@ -299,9 +297,8 @@ const checkParametersUnits = (configuration: IModel['configuration']): void => {
       const unit = child.unit
       if (child.value !== undefined) {
         if (unit?.multiplicator)
-          child.value = '(' + child.value + ') / ' + (unit.multiplicator ?? 1)
-        if (unit?.adder)
-          child.value = '(' + child.value + ') - ' + (unit.adder ?? 0)
+          child.value = '(' + child.value + ') / ' + unit.multiplicator
+        if (unit?.adder) child.value = '(' + child.value + ') - ' + unit.adder
       }
     })
   })
@@ -321,9 +318,8 @@ const checkInitializationUnits = (
       const unit = child.unit
       if (child.value !== undefined) {
         if (unit?.multiplicator)
-          child.value = '(' + child.value + ') / ' + (unit.multiplicator ?? 1)
-        if (unit?.adder)
-          child.value = '(' + child.value + ') - ' + (unit.adder ?? 0)
+          child.value = '(' + child.value + ') / ' + unit.multiplicator
+        if (unit?.adder) child.value = '(' + child.value + ') - ' + unit.adder
       }
     })
   }
@@ -348,9 +344,8 @@ const checkBoundaryConditionsUnits = (
         const unit = val.unit
         if (val.value !== undefined) {
           if (unit?.multiplicator)
-            val.value = '(' + val.value + ') / ' + (unit.multiplicator ?? 1)
-          if (unit?.adder)
-            val.value = '(' + val.value + ') - ' + (unit.adder ?? 0)
+            val.value = '(' + val.value + ') / ' + unit.multiplicator
+          if (unit?.adder) val.value = '(' + val.value + ') - ' + unit.adder
         }
       })
     })

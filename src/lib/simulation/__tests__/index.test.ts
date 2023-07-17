@@ -226,6 +226,11 @@ describe('lib/simulation', () => {
           },
           parameters: {},
           boundaryConditions: {},
+          initialization: {
+            direct: {
+              children: [{}]
+            }
+          },
           run: {
             cloudServer: {
               key: 'key',
@@ -324,7 +329,8 @@ describe('lib/simulation', () => {
                 {
                   value: 1
                 },
-                { value: 1, unit: { label: 'm' } }
+                { value: 1, unit: { label: 'm' } },
+                { value: 1, unit: { label: 'm', multiplicator: 1, adder: 1 } }
               ]
             }
           },
@@ -397,10 +403,12 @@ describe('lib/simulation', () => {
             title: 'title',
             key: {
               children: [
+                {},
                 {
                   value: 1
                 },
-                { value: 1, unit: { label: 'm' } }
+                { value: 1, unit: { label: 'm' } },
+                { value: 1, unit: { label: 'm', multiplicator: 1, adder: 1 } }
               ]
             }
           },
@@ -436,7 +444,10 @@ describe('lib/simulation', () => {
         configuration: {
           geometry: {
             values: ['id1', 'id2'],
-            meshParameters: { value: 1 }
+            meshParameters: {
+              value: 1,
+              unit: { label: 'm', multiplicator: 1, adder: 1 }
+            }
           },
           parameters: {},
           materials: {
@@ -444,7 +455,14 @@ describe('lib/simulation', () => {
               {
                 geometry: 'id2',
                 material: {
-                  children: [{ value: 1 }, { value: 1, unit: { label: 'm' } }]
+                  children: [
+                    { value: 1 },
+                    { value: 1, unit: { label: 'm' } },
+                    {
+                      value: 1,
+                      unit: { label: 'm', multiplicator: 1, adder: 1 }
+                    }
+                  ]
                 }
               }
             ]
@@ -461,7 +479,14 @@ describe('lib/simulation', () => {
                 {
                   geometry: 'id2',
                   selected: [],
-                  values: [{ value: 1, unit: { label: 'm' } }]
+                  values: [
+                    {},
+                    { value: 1, unit: { label: 'm' } },
+                    {
+                      value: 1,
+                      unit: { label: 'm', multiplicator: 1, adder: 1 }
+                    }
+                  ]
                 }
               ]
             }

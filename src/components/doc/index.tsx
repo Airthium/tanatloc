@@ -300,9 +300,7 @@ const Doc = () => {
           />
         </Layout.Header>
         <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
-          {content ? (
-            content
-          ) : (
+          {content ?? (
             <>
               <div
                 className={globalStyle.logo}

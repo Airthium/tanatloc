@@ -1,3 +1,11 @@
+## v1.2.12
+
+- Client:
+  - :arrow_up: Complex formula
+  - :beetle: Do not close dialog using Shift+Enter
+
+---
+
 ## v1.2.11
 
 - Client:

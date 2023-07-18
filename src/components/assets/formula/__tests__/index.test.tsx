@@ -8,6 +8,8 @@ jest.mock('@/components/assets/mathjax', () => ({
   Html: () => <div />
 }))
 
+jest.mock('../large', () => () => <div role="Large" />)
+
 const onValueChange = jest.fn()
 const onCheckedChange = jest.fn()
 const onUnitChange = jest.fn()
@@ -69,7 +71,7 @@ describe('components/assets/formula', () => {
     await act(() => fireEvent.change(input, { target: { value: 'test' } }))
     await act(() => fireEvent.change(input, { target: { value: 'test1' } }))
 
-    await waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
+    await waitFor(() => screen.getByRole('Large'))
 
     unmount()
   })

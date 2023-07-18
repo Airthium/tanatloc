@@ -3,11 +3,13 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
 
 import { IUnit } from '@/models/index.d'
 
 import MathJax from '@/components/assets/mathjax'
+
+import Large from './large'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
@@ -192,7 +194,13 @@ const Formula = ({
               saving ? (
                 <LoadingOutlined spin className={globalStyle.textOrange} />
               ) : (
-                <CheckCircleOutlined className={globalStyle.textGreen} />
+                <Large
+                  initialValue={internalValue}
+                  unit={unit}
+                  units={units}
+                  onChange={onInputChange}
+                  onUnitChange={onUnitChange}
+                />
               )
             }
             addonAfter={addonAfter}

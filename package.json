@@ -50,6 +50,7 @@
     "@airthium/deep-object-diff": "1.0.1",
     "@airthium/extract-json-from-string": "1.0.20",
     "@airthium/pg-format": "2.0.25",
+    "@airthium/tanatloc-formula-validator": "1.0.1",
     "@airthium/typedoc-plugin-airthium": "1.1.9",
     "@ant-design/icons": "5.1.4",
     "@babel/core": "7.22.9",

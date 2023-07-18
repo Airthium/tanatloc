@@ -1,6 +1,12 @@
 /** @module Components.Assets.Dialog */
 
-import { useCallback, useContext, useEffect } from 'react'
+import {
+  KeyboardEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
 import { Form, Modal, ModalProps, Typography } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
@@ -63,6 +69,9 @@ const Dialog = ({
   onCancel,
   onOk
 }: IProps): React.JSX.Element => {
+  // State
+  const [shift, setShift] = useState<boolean>(false)
+
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -91,17 +100,29 @@ const Dialog = ({
   }, [form, onOk, dispatch])
 
   /**
-   * On key up
+   * On key down
    * @param event Event
    */
-  const onKeyUp = useCallback(
-    (event: { keyCode: number }): void => {
-      if (event.keyCode === 13) {
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLFormElement>): void => {
+      if (event.key === 'Shift') {
+        setShift(true)
+      }
+      if (event.key === 'Enter' && !shift) {
+        event.stopPropagation()
         onModalOk()
       }
     },
-    [onModalOk]
+    [shift, onModalOk]
   )
+
+  /**
+   * On key up
+   * @param event Event
+   */
+  const onKeyUp = useCallback((event: KeyboardEvent<HTMLFormElement>): void => {
+    if (event.key === 'Shift') setShift(false)
+  }, [])
 
   /**
    * On modal cancel
@@ -141,6 +162,7 @@ const Dialog = ({
         form={form}
         layout="vertical"
         initialValues={initialValues}
+        onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
       >
         {children}

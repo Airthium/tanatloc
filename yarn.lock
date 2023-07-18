@@ -33,6 +33,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@airthium/tanatloc-formula-validator@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@airthium/tanatloc-formula-validator@npm:1.0.1"
+  checksum: 3dbf5071e8e292628b7cd3e6674f82def9f1e62d608915f894061c73c09c39e40df56f89443e65f202ce1f8ae5ccc0fef8891f4a56c4c91d93c8a14e1a2ad2ef
+  languageName: node
+  linkType: hard
+
 "@airthium/typedoc-plugin-airthium@npm:1.1.9":
   version: 1.1.9
   resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.9"
@@ -10703,6 +10710,7 @@ __metadata:
     "@airthium/deep-object-diff": 1.0.1
     "@airthium/extract-json-from-string": 1.0.20
     "@airthium/pg-format": 2.0.25
+    "@airthium/tanatloc-formula-validator": 1.0.1
     "@airthium/typedoc-plugin-airthium": 1.1.9
     "@ant-design/icons": 5.1.4
     "@babel/core": 7.22.9

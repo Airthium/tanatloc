@@ -32,6 +32,19 @@ describe('components/assets/formula', () => {
     unmount()
   })
 
+  test('noLarge', () => {
+    const { unmount } = render(
+      <Formula
+        noLarge
+        onValueChange={onValueChange}
+        units={[{ label: 'unit', multiplicator: 1 }]}
+        unit={{ label: 'unit', multiplicator: 1 }}
+      />
+    )
+
+    unmount()
+  })
+
   test('render with label', () => {
     const { unmount } = render(
       <Formula
@@ -58,6 +71,20 @@ describe('components/assets/formula', () => {
 
     const checkbox = screen.getByRole('checkbox')
     fireEvent.click(checkbox)
+
+    unmount()
+  })
+
+  test('input change', async () => {
+    const { unmount } = render(
+      <Formula defaultValue="value" onValueChange={onValueChange} />
+    )
+
+    const input = screen.getByRole('textbox')
+    await act(() => fireEvent.change(input, { target: { value: 'test' } }))
+    await act(() => fireEvent.change(input, { target: { value: 'test1' } }))
+
+    await waitFor(() => screen.getByRole('Large'))
 
     unmount()
   })

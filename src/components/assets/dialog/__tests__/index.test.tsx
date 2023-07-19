@@ -125,7 +125,7 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  test('onKeyUp', () => {
+  test('onKeyDown & onKeyUp', () => {
     const { unmount } = render(
       <Dialog
         title="title"
@@ -141,8 +141,12 @@ describe('components/assets/dialog', () => {
 
     const input = screen.getByRole('textbox')
 
-    fireEvent.keyUp(input, { key: 'Enter', keyCode: 1 })
-    fireEvent.keyUp(input, { key: 'Enter', keyCode: 13 })
+    fireEvent.keyDown(input, { key: 'Shift' })
+    fireEvent.keyUp(input, { key: 'Shift' })
+    fireEvent.keyUp(input, { key: 'Other' })
+
+    fireEvent.keyDown(input, { key: 'Other' })
+    fireEvent.keyDown(input, { key: 'Enter' })
 
     unmount()
   })
@@ -162,7 +166,7 @@ describe('components/assets/dialog', () => {
 
     const input = screen.getByRole('textbox')
 
-    fireEvent.keyUp(input, { key: 'Enter', keyCode: 13 })
+    fireEvent.keyDown(input, { key: 'Enter' })
 
     unmount()
   })

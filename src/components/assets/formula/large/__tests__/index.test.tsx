@@ -16,6 +16,10 @@ jest.mock('@/components/assets/mathjax', () => ({
 
 describe('components/assets/formula/large', () => {
   const initialValue = '0'
+  const additionalKeywords = [
+    { label: 'Ux', value: 'Ux' },
+    { label: 'Uz', value: 'Uz', only3D: true }
+  ]
   const units = [{ label: 'm' }, { label: 'mm' }]
   const unit = { label: 'm' }
   const onChange = jest.fn()
@@ -33,6 +37,19 @@ describe('components/assets/formula/large', () => {
   test('render', () => {
     const { unmount } = render(
       <Large initialValue={initialValue} onChange={onChange} />
+    )
+
+    unmount()
+  })
+
+  test('additional keywords', () => {
+    const { unmount } = render(
+      <Large
+        dimension={2}
+        initialValue={initialValue}
+        additionalKeywords={additionalKeywords}
+        onChange={onChange}
+      />
     )
 
     unmount()
@@ -70,6 +87,26 @@ describe('components/assets/formula/large', () => {
     })
     const { unmount } = render(
       <Large initialValue={initialValue} onChange={onChange} />
+    )
+
+    const textArea = screen.getByRole('textbox')
+    fireEvent.change(textArea, { target: { value: '2.*x' } })
+
+    unmount()
+  })
+
+  test('on value change, with additional keywords', () => {
+    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+    mockParse.mockImplementation(() => {
+      throw new Error('parse error')
+    })
+    const { unmount } = render(
+      <Large
+        dimension={2}
+        initialValue={initialValue}
+        additionalKeywords={additionalKeywords}
+        onChange={onChange}
+      />
     )
 
     const textArea = screen.getByRole('textbox')

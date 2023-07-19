@@ -1,3 +1,5 @@
+/** @module Components.Assets.Formula.Large */
+
 import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import {
   Collapse,
@@ -57,27 +59,15 @@ const Large = ({
       {
         title: 'Label',
         dataIndex: 'label',
-        key: 'label',
-        render: (text, record) =>
-          dimension === 2 && record?.only3D ? (
-            <span style={{ color: '#d4d4d4' }}>{text}</span>
-          ) : (
-            text
-          )
+        key: 'label'
       },
       {
         title: 'Keyword',
         dataIndex: 'value',
-        key: 'value',
-        render: (text, record) =>
-          dimension === 2 && record?.only3D ? (
-            <span style={{ color: '#d4d4d4' }}>{text}</span>
-          ) : (
-            text
-          )
+        key: 'value'
       }
     ],
-    [dimension]
+    []
   )
 
   /**
@@ -190,10 +180,12 @@ const Large = ({
                       <Table
                         pagination={false}
                         columns={columns}
-                        dataSource={additionalKeywords.map((a) => ({
-                          key: a.label,
-                          ...a
-                        }))}
+                        dataSource={additionalKeywords
+                          .map((a) => ({
+                            key: a.label,
+                            ...a
+                          }))
+                          .filter((a) => !(dimension === 2 && a.only3D))}
                       />
                     </>
                   )

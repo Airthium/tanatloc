@@ -2,6 +2,7 @@
 
 import {
   KeyboardEvent,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -26,7 +27,7 @@ export interface IProps {
   okButtonText?: string
   cancelButtonProps?: ModalProps['cancelButtonProps']
   cancelButtonText?: string
-  children: string | React.ReactElement | React.ReactElement[]
+  children: ReactNode | ReactNode[]
   onCancel?: () => void
   onOk?: (values: any) => Promise<void>
 }

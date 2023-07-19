@@ -14,6 +14,12 @@ const Poisson: IModel = {
   code: 'FreeFEM',
   version: '1.0.0',
   description,
+  variables: [
+    {
+      label: 'u',
+      value: 'u'
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,

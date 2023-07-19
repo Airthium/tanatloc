@@ -3,9 +3,9 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { LoadingOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
-import { IUnit } from '@/models/index.d'
+import { IModelVariable, IUnit } from '@/models/index.d'
 
 import MathJax from '@/components/assets/mathjax'
 
@@ -19,9 +19,12 @@ import style from './index.module.css'
  */
 export interface IProps {
   label?: string
+  noLarge?: boolean
   className?: string
+  dimension?: number
   defaultValue?: string | number
   defaultChecked?: boolean
+  additionalKeywords?: IModelVariable[]
   units?: IUnit[]
   unit?: IUnit
   onValueChange: (value: string) => void
@@ -48,9 +51,12 @@ const saveDelay = 500
  */
 const Formula = ({
   label,
+  noLarge,
   className,
+  dimension,
   defaultValue,
   defaultChecked,
+  additionalKeywords,
   units,
   unit,
   onValueChange,
@@ -161,6 +167,40 @@ const Formula = ({
     return null
   }, [unit, units, onSelectChange])
 
+  // Loading
+  const loading = useMemo(
+    () => <LoadingOutlined spin className={globalStyle.textOrange} />,
+    []
+  )
+
+  // Ok
+  const ok = useMemo(
+    () =>
+      noLarge ? (
+        <CheckCircleOutlined className={globalStyle.textGreen} />
+      ) : (
+        <Large
+          dimension={dimension}
+          initialValue={internalValue}
+          additionalKeywords={additionalKeywords}
+          unit={unit}
+          units={units}
+          onChange={onInputChange}
+          onUnitChange={onUnitChange}
+        />
+      ),
+    [
+      noLarge,
+      dimension,
+      internalValue,
+      additionalKeywords,
+      unit,
+      units,
+      onInputChange,
+      onUnitChange
+    ]
+  )
+
   /**
    * Render
    */
@@ -190,19 +230,7 @@ const Formula = ({
             disabled={disabled}
             value={internalValue}
             onChange={onInputChange}
-            addonBefore={
-              saving ? (
-                <LoadingOutlined spin className={globalStyle.textOrange} />
-              ) : (
-                <Large
-                  initialValue={internalValue}
-                  unit={unit}
-                  units={units}
-                  onChange={onInputChange}
-                  onUnitChange={onUnitChange}
-                />
-              )
-            }
+            addonBefore={saving ? loading : ok}
             addonAfter={addonAfter}
           />
         </Form.Item>

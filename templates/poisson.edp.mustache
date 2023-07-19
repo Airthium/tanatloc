@@ -1,0 +1,12 @@
+try{
+{{! Headers }}
+{{> blobs.headers }}
+
+{{! Dimension }}
+{{> blobs.dimension}}
+
+    appendLog("End");
+} catch(...) {
+    appendError("An internal error occurs");
+    exit(- 1);
+}

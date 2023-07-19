@@ -31,7 +31,7 @@ export interface IModel {
   sequential?: boolean
   version: string
   description: string
-  variables?: { name: string; value: string }[]
+  variables?: IModelVariable[]
   configuration: {
     dimension?: number
     geometry: IModelGeometry
@@ -41,6 +41,12 @@ export interface IModel {
     boundaryConditions: IModelBoundaryConditions
     run: IModelRun
   }
+}
+
+export interface IModelVariable {
+  label: string
+  value: string
+  only3D?: boolean
 }
 
 /**

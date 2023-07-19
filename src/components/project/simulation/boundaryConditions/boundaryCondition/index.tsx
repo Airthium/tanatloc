@@ -19,6 +19,7 @@ import {
   IModelBoundaryCondition,
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition,
+  IModelVariable,
   IUnit
 } from '@/models/index.d'
 import {
@@ -59,6 +60,8 @@ export interface IProps {
 }
 
 export interface IBoundaryConditionItemProps {
+  dimension?: number
+  variables?: IModelVariable[]
   boundaryCondition: IModelBoundaryCondition
   index: number
   value: string | number | undefined
@@ -70,6 +73,8 @@ export interface IBoundaryConditionItemProps {
 }
 
 const BoundaryConditionItem = ({
+  dimension,
+  variables,
   boundaryCondition,
   index,
   value,
@@ -112,8 +117,10 @@ const BoundaryConditionItem = ({
   return (
     <Formula
       label={boundaryCondition.label}
+      dimension={dimension}
       defaultValue={value}
       defaultChecked={checked}
+      additionalKeywords={variables}
       onValueChange={onValueChange}
       onCheckedChange={onCheckedChange}
       onUnitChange={onUnitChange}
@@ -149,6 +156,7 @@ const BoundaryCondition = ({
   const { dispatch } = useContext(SelectContext)
 
   // Data
+  const variables = useMemo(() => simulation.scheme.variables, [simulation])
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,
     [simulation]
@@ -370,6 +378,8 @@ const BoundaryCondition = ({
             return (
               <BoundaryConditionItem
                 key={child.label}
+                dimension={dimension}
+                variables={variables}
                 boundaryCondition={child}
                 index={index}
                 value={String(current.values![index].value)}
@@ -389,7 +399,14 @@ const BoundaryCondition = ({
       )
     }
     return null
-  }, [current, dimension, onCheckedChange, onValueChange, onUnitChange])
+  }, [
+    current,
+    dimension,
+    variables,
+    onCheckedChange,
+    onValueChange,
+    onUnitChange
+  ])
 
   /**
    * On geometry change

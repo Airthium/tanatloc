@@ -16,16 +16,17 @@ const LinearElasticity: IModel = {
   description,
   variables: [
     {
-      name: 'Displacement (x)',
+      label: 'Displacement (x)',
       value: 'Ux'
     },
     {
-      name: 'Displacement (y)',
+      label: 'Displacement (y)',
       value: 'Uy'
     },
     {
-      name: 'Displacement (z)',
-      value: 'Uz'
+      label: 'Displacement (z)',
+      value: 'Uz',
+      only3D: true
     }
   ],
   configuration: {

@@ -8,7 +8,7 @@ import {
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem
 } from '@/api/index.d'
-import { IModelParameter, IUnit } from '@/models/index.d'
+import { IModelParameter, IModelVariable, IUnit } from '@/models/index.d'
 
 import {
   INotificationAction,
@@ -79,14 +79,17 @@ export const errors = {
  */
 export const _build2DFormula = (
   key: string,
+  variables: IModelVariable[] | undefined,
   child: IModelParameter,
   onValueChange: (value: string) => void,
   onUnitChange: (unit: IUnit) => void
 ): React.JSX.Element => (
   <Formula
     key={key}
+    dimension={2}
     label={child.label2D ?? child.label}
     defaultValue={(child.value ?? child.default) as string}
+    additionalKeywords={variables}
     onValueChange={onValueChange}
     onUnitChange={onUnitChange}
     units={child.units}
@@ -153,14 +156,17 @@ export const _build2DCheckbox = (
  */
 export const _buildFormula = (
   key: string,
+  variables: IModelVariable[] | undefined,
   child: IModelParameter,
   onValueChange: (value: string) => void,
   onUnitChange: (unit: IUnit) => void
 ): React.JSX.Element => (
   <Formula
     key={key}
+    dimension={3}
     label={child.label}
     defaultValue={(child.value ?? child.default) as string}
+    additionalKeywords={variables}
     units={child.units}
     unit={child.unit}
     onValueChange={onValueChange}
@@ -415,6 +421,9 @@ const ParameterChild = ({
   // Context
   const { dispatch } = useContext(NotificationContext)
 
+  // Data
+  const variables = useMemo(() => simulation.scheme.variables, [simulation])
+
   /**
    * On change
    * @param value Value
@@ -467,7 +476,13 @@ const ParameterChild = ({
   if (dimension === 2) {
     if (child.only3D) return null
     else if (child.htmlEntity === 'formula')
-      return _build2DFormula(pkey + '&' + index, child, onChange, onUnitChange)
+      return _build2DFormula(
+        pkey + '&' + index,
+        variables,
+        child,
+        onChange,
+        onUnitChange
+      )
     else if (child.htmlEntity === 'select')
       return _build2DSelect(pkey + '&' + index, child, onChange)
     else if (child.htmlEntity === 'checkbox')
@@ -476,7 +491,13 @@ const ParameterChild = ({
     return null
   } else {
     if (child.htmlEntity === 'formula')
-      return _buildFormula(pkey + '&' + index, child, onChange, onUnitChange)
+      return _buildFormula(
+        pkey + '&' + index,
+        variables,
+        child,
+        onChange,
+        onUnitChange
+      )
     else if (child.htmlEntity === 'select')
       return _buildSelect(pkey + '&' + index, child, onChange)
     else if (child.htmlEntity === 'checkbox')

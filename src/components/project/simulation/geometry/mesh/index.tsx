@@ -347,6 +347,7 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
         {meshGlobalType === 'manual' && (
           <Formula
             label="Size"
+            noLarge
             defaultValue={meshGlobalValue}
             units={[{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }]}
             unit={meshGlobalUnit}

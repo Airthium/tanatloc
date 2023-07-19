@@ -468,6 +468,7 @@ const computeSimulation = async (
       scheme.algorithm,
       scheme.userModelId,
       {
+        variables: scheme.variables,
         ...configuration,
         run: {
           ...configuration.run,

@@ -7,6 +7,7 @@ import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import {
   IModelMaterialsChild,
   IModelMaterialsValue,
+  IModelVariable,
   IUnit
 } from '@/models/index.d'
 import {
@@ -50,6 +51,8 @@ export interface IProps {
 }
 
 export interface IMaterialsChildProps {
+  dimension?: number
+  variables?: IModelVariable[]
   child: IModelMaterialsChild
   index: number
   value: string | number | undefined
@@ -68,6 +71,8 @@ export interface IMaterialsChildProps {
  * @returns MaterialsChild
  */
 const MaterialsChild = ({
+  dimension,
+  variables,
   child,
   index,
   value,
@@ -103,8 +108,10 @@ const MaterialsChild = ({
   return (
     <Formula
       key={child.name}
+      dimension={dimension}
       label={child.name}
       defaultValue={value ?? String(child.default)}
+      additionalKeywords={variables}
       units={child.units}
       unit={unit ?? child.unit}
       onValueChange={onMaterialChange}
@@ -136,6 +143,11 @@ const Material = ({
   const { dispatch } = useContext(SelectContext)
 
   // Data
+  const dimension = useMemo(
+    () => simulation.scheme.configuration.dimension,
+    [simulation]
+  )
+  const variables = useMemo(() => simulation.scheme.variables, [simulation])
   const materials = useMemo(
     () => simulation.scheme.configuration.materials,
     [simulation]
@@ -361,6 +373,8 @@ const Material = ({
               return (
                 <MaterialsChild
                   key={child.name}
+                  dimension={dimension}
+                  variables={variables}
                   child={child}
                   index={index}
                   value={m?.value}

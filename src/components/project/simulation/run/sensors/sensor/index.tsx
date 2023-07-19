@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensor */
 
-import { ChangeEvent, useCallback, useContext, useState } from 'react'
+import { ChangeEvent, useCallback, useContext, useMemo, useState } from 'react'
 import {
   Button,
   Card,
@@ -79,6 +79,13 @@ const Sensor = ({
   const [error, setError] = useState<string>()
 
   // Data
+  const dimension = useMemo(
+    () => simulation.scheme.configuration.dimension,
+    [simulation]
+  )
+  const variables = useMemo(() => simulation.scheme.variables, [simulation])
+
+  // Context
   const { point, dispatch } = useContext(SelectContext)
 
   // Init
@@ -317,16 +324,19 @@ const Sensor = ({
             </Space>
             <Formula
               label="X"
+              noLarge
               defaultValue={current?.point?.x}
               onValueChange={onPositionX}
             />
             <Formula
               label="Y"
+              noLarge
               defaultValue={current?.point?.y}
               onValueChange={onPositionY}
             />
             <Formula
               label="Z"
+              noLarge
               defaultValue={current?.point?.z}
               onValueChange={onPositionZ}
             />
@@ -335,7 +345,9 @@ const Sensor = ({
         <Card size="small" className={globalStyle.noBorderBottom}>
           <Formula
             label="Formula"
+            dimension={dimension}
             defaultValue={current?.formula}
+            additionalKeywords={variables}
             onValueChange={onFormula}
           />
         </Card>

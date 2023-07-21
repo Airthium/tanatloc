@@ -445,7 +445,26 @@ const computeSimulation = async (
   if (!keepMesh) {
     await computeMeshes(id, simulationPath, configuration, tasks)
     // Save mesh/meshes for reuse
-    await Simulation.update({ id }, [{ key: 'scheme', value: scheme }])
+    scheme.configuration.geometry.mesh &&
+      (await Simulation.update({ id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'set',
+          path: ['configuration', 'geometry', 'mesh'],
+          value: scheme.configuration.geometry.mesh
+        }
+      ]))
+    scheme.configuration.geometry.meshes &&
+      (await Simulation.update({ id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'set',
+          path: ['configuration', 'geometry', 'meshes'],
+          value: scheme.configuration.geometry.meshes
+        }
+      ]))
   }
 
   const simulationTask: ISimulationTask = {

@@ -28,10 +28,10 @@
 -%>
 // Data
 if (mpirank == 0) {
-	ofstream data("<%= path %>/" + <%- fileName %> + ".dat");
-	data << <%- getData(title, dataNames, x, ys) -%> << endl;
+	ofstream data("<%- locals.path %>/" + <%- locals.fileName %> + ".dat");
+	data << <%- getData(locals.title, locals.dataNames, locals.x, locals.ys) -%> << endl;
 	
 	ofstream processOut("process_data.log", append);
-	processOut << <%- getOutput(fileName) -%> << endl;
+	processOut << <%- getOutput(locals.fileName) -%> << endl;
 }
 // End Data

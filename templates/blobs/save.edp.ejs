@@ -6,9 +6,11 @@
 		})
 		return dataNames.join(' ')
 	}
+
 	const getOrder = (results) => {
 		return results.map(() => 1).join(', ')
 	}
+
 	const setPVData = (results, dimension) => {
 		const lines = results.map(result => {
 			let line = '\t'
@@ -31,6 +33,7 @@
 		})
 		return lines.join('\n')
 	}
+
 	const getPVData = () => {
 		const items = results.map(result => {
 			let item = '\t\t'
@@ -58,6 +61,7 @@
 
 		return items.join(',\n')
 	}
+	
 	const getOutput = (name, geometry, results) => {
 		const output = ['"{"']
 		output.push('"\\\"type\\\": \\\"VTU\\\", "')
@@ -98,20 +102,20 @@ appendLog("Save result...");
 
 load "iovtk"
 if (mpirank == 0) {
-	fespace PV(<%= mesh -%>, P1);
-<%= setPVData(results, dimension) %>
-	string dataName = "<%= getDataname(results) -%>";
-	int[int] order = [<%= getOrder(results) -%>];
+	fespace PV(<%- locals.mesh -%>, P1);
+<%- setPVData(locals.results, locals.dimension) %>
+	string dataName = "<%- getDataname(locals.results) -%>";
+	int[int] order = [<%- getOrder(locals.results) -%>];
 
 	savevtk(
-		"<%= path -%>/" + <%- name -%> + ".vtu",
-		<%= mesh -%>,
-<%= getPVData(results, dimension) -%>,
+		"<%- locals.path -%>/" + <%- locals.name -%> + ".vtu",
+		<%- locals.mesh -%>,
+<%- getPVData(locals.results, locals.dimension) -%>,
 		dataname=dataName,
 		order=order,
 		bin=false);
 
 	ofstream processOut("process_data.log", append);
-	processOut << <%- getOutput(name, geometry, results) -%> << endl;
+	processOut << <%- getOutput(locals.name, locals.geometry, locals.results) -%> << endl;
 }
 // End Save

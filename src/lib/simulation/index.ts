@@ -247,6 +247,17 @@ const copyGeometry = async (
 }
 
 /**
+ * To float (FreeFEM)
+ * @param num Number
+ * @returns Float
+ */
+const toFloat = (num: number): string => {
+  const numString = num.toString()
+  if (numString.includes('.')) return numString
+  else return numString + '.'
+}
+
+/**
  * Check mesh units
  * @param configuration Configuration
  */
@@ -256,7 +267,7 @@ const checkMeshUnits = (configuration: IModel['configuration']): void => {
     const unit = meshParameters.unit
     if (unit?.multiplicator)
       meshParameters.value =
-        '(' + meshParameters.value + ') / ' + unit.multiplicator
+        '(' + meshParameters.value + ') / ' + toFloat(unit.multiplicator)
     if (unit?.adder)
       meshParameters.value = '(' + meshParameters.value + ') - ' + unit.adder
   }
@@ -272,7 +283,7 @@ const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
     value.material.children.forEach((child) => {
       const unit = child.unit
       if (unit?.multiplicator)
-        child.value = '(' + child.value + ') / ' + unit.multiplicator
+        child.value = '(' + child.value + ') / ' + toFloat(unit.multiplicator)
       if (unit?.adder) child.value = '(' + child.value + ') - ' + unit.adder
     })
   })
@@ -297,7 +308,7 @@ const checkParametersUnits = (configuration: IModel['configuration']): void => {
       const unit = child.unit
       if (child.value !== undefined) {
         if (unit?.multiplicator)
-          child.value = '(' + child.value + ') / ' + unit.multiplicator
+          child.value = '(' + child.value + ') / ' + toFloat(unit.multiplicator)
         if (unit?.adder) child.value = '(' + child.value + ') - ' + unit.adder
       }
     })
@@ -318,7 +329,7 @@ const checkInitializationUnits = (
       const unit = child.unit
       if (child.value !== undefined) {
         if (unit?.multiplicator)
-          child.value = '(' + child.value + ') / ' + unit.multiplicator
+          child.value = '(' + child.value + ') / ' + toFloat(unit.multiplicator)
         if (unit?.adder) child.value = '(' + child.value + ') - ' + unit.adder
       }
     })

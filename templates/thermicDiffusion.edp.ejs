@@ -49,6 +49,8 @@ try {
     dimension,
     type: ['scalarGradient']
 }), 1) -%>
+
+    appendPercent(10);
     
 <%# Problem -%>
 <%
@@ -97,8 +99,8 @@ try {
     int nbIter = Time / dt;
     for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
         // Update
-        int percent = 100 * t / Time;
-        appendLog("[" + percent + "%]");
+        int percent = 10 + 90 * t / Time;
+        appendPercent(percent);
         t += dt;
         appendLog("Time: " + t);
         
@@ -123,8 +125,8 @@ try {
     results: run.results[0]
 }), 2) -%>
     }
-    appendLog("[100%]");
     
+    appendPercent(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");

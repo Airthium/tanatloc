@@ -1,7 +1,7 @@
 // Macro
 appendLog("Define macros...");
 
-<% for (const macro of type) { -%>
-<%- include(`./macro_${macro}.edp.ejs`) -%>
+<% for (const macro of locals.type) { -%>
+<%- include(`./macro_${macro}.edp.ejs`, {dimension: locals.dimension}) -%>
 <% } -%>
 // End Macro

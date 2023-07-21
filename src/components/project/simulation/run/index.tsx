@@ -245,11 +245,15 @@ const Run = ({
       if (!task) return
 
       if (index === currentSimulation.tasks.length - 1) {
-        const percents =
-          task.log?.match(/[\d\s]{3}%/g) ?? task.log?.match(/[\d\s]*%/g)
+        const lines = task.log?.split('\n') ?? []
+        const percents = lines
+          .filter((line) => line.startsWith('PERCENT:'))
+          .filter((l) => l)
         const percent = percents?.pop()
-        const percentNumber = percent ? parseFloat(percent) : 0
-        if (percent) setPercent(percentNumber)
+        const percentNumber = percent
+          ? parseFloat(percent.replace('PERCENT: ', '').replace('%', ''))
+          : 0
+        if (percentNumber) setPercent(percentNumber)
       }
 
       // Steps

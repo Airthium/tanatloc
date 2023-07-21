@@ -1,18 +1,18 @@
 // Solver
 <% if (
-	solver.value === "UMFPACK"
-	|| solver.value === "CG"
-	|| solver.value === "Cholesky"
-	|| solver.value === "Crout"
-	|| solver.value === "GMRES"
-	|| solver.value === "LU"
-	|| solver.value === "sparsesolver") { -%>
-func solver = <%= solver.value -%>;
-<% } else if (solver.value === "MUMPS") { -%>
-load "<%= solver.value -%>"
+	locals.solver.value === "UMFPACK"
+	|| locals.solver.value === "CG"
+	|| locals.solver.value === "Cholesky"
+	|| locals.solver.value === "Crout"
+	|| locals.solver.value === "GMRES"
+	|| locals.solver.value === "LU"
+	|| locals.solver.value === "sparsesolver") { -%>
+func solver = <%- locals.solver.value -%>;
+<% } else if (locals.solver.value === "MUMPS") { -%>
+load "<%- locals.solver.value -%>"
 func solver = sparsesolver;
-<% } else if (solver.value === "Crout") { -%>
-func solver = "<%= solver.value -%>";
+<% } else if (locals.solver.value === "Crout") { -%>
+func solver = "<%- locals.solver.value -%>";
 <%# Default solver -%>
 <% } else { -%>
 load "MUMPS"

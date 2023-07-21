@@ -49,6 +49,8 @@ try{
     type: ['curl', 'vectorialDivergence', 'vectorProctuctNormal']
 }), 1) -%>
 
+    appendPercent(10);
+
 <%# Problem -%>
 <%
     const dirichletProd = boundaryConditions.dirichletProd.values ?? []
@@ -64,7 +66,7 @@ try{
 
     real Nu = 1. / Mu;
     real penaltyFactor = <%- penaltyFactor -%>; 
-    varf vLaplacian (<%= unknownFunction -%>, <%= testFunction -%>)
+    varf vLaplacian (<%- unknownFunction -%>, <%- testFunction -%>)
         = intN(Mesh) (
             Nu * Curl(A)' * Curl(Ah)
 <% if (dimension !== 2) { -%>
@@ -72,30 +74,35 @@ try{
 <% } -%>
         )
 <% for (const d of dirichletProd){ -%>
-        + intN1(Mesh, <%= d.labels -%>)(penaltyFactor * ProdNormal(A)' * ProdNormal(Ah))
+        + intN1(Mesh, <%- d.labels -%>) (
+            penaltyFactor * ProdNormal(A)' * ProdNormal(Ah)
+        )
 <% } -%>
         ;
     
-    varf vLaplacianRHS (<%= unknownFunction -%>, <%= testFunction -%>)
+    varf vLaplacianRHS (<%- unknownFunction -%>, <%- testFunction -%>)
         = intN(Mesh) (
 <% if (dimension === 2) { -%>
             <%- currentValueZ -%> * <%- testFunction -%>
 <% } else { -%>
-            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%= testFunction -%>
+            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction -%>
 <% } -%>
         )
-        <% for (const d of dirichletProd){ -%>
-        +   intN1(Mesh, <%= d.labels -%>) ( penaltyFactor *
-        <% if (dimension === 2) { -%>
-            [ 0 <% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
-            0 <% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%> <% } -%>  ]'* ProdNormal(Ah)
-        <% } else { -%>
-            [0 <% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%> <% } -%>  , 
-            0 <% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%> <% } -%>  , 
-            0 <% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%> <% } -%>  ]' * ProdNormal(Ah)
-        <% } -%>
+<% for (const d of dirichletProd){ -%>
+        + intN1(Mesh, <%- d.labels -%>) (
+            penaltyFactor *
+<% if (dimension === 2) { -%>
+                [
+                    0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
+                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>]'* ProdNormal(Ah)
+<% } else { -%>
+                [
+                    0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
+                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
+                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } -%>]' * ProdNormal(Ah)
+<% } -%>
         )
- <% } -%>
+<% } -%>
         ;
     
 <%# Solver -%>
@@ -110,8 +117,8 @@ try{
     // Solve
     appendLog("Solve the problem...");
 
-    matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
-    real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
+    matrix Laplacian = vLaplacian(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
+    real[int] LaplacianRHS = vLaplacianRHS(0, <%- finiteElementSpace.name -%>);
     Az[] = Laplacian^-1 * LaplacianRHS;
 
 <% if (dimension === 2) { -%>
@@ -153,6 +160,7 @@ try{
     results: run.results[0]
 }), 1) -%>
     
+    appendPercent(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");

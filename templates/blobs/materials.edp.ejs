@@ -2,9 +2,9 @@
 appendLog("Define materials...");
 
 <%
-	materials.values = materials.values.filter(value => {
+	locals.materials.values = locals.materials.values.filter(value => {
 		if (value.material.key === 'fundation') {
-			meshes[value.geometryIndex].tag = 'fundation'
+			locals.meshes[value.geometryIndex].tag = 'fundation'
 			return false
 		}
 		return true
@@ -12,14 +12,14 @@ appendLog("Define materials...");
 -%>
 
 <%
-	materials.children.forEach(material => {
+	locals.materials.children.forEach(material => {
 		let firstValue = 0
 -%>
-// <%- material.label -%><%= locals.geometryIndex === undefined ? '' : (' - Geometry' + locals.geometryIndex) %>
-func <%= material.name -%><%= locals.geometryIndex ?? '' -%> =
+// <%- material.label -%><%- locals.geometryIndex === undefined ? '' : (' - Geometry' + locals.geometryIndex) %>
+func <%- material.name -%><%- locals.geometryIndex ?? '' -%> =
 <%
 	let index = 0
-	materials.values.forEach((value) => {
+	locals.materials.values.forEach((value) => {
 		if (locals.geometryIndex !== undefined && (value.geometryIndex !== locals.geometryIndex)) return
 		let child = value.material.children.find(child => child.symbol === material.name) || material
 		if (index === 0) {
@@ -33,7 +33,7 @@ func <%= material.name -%><%= locals.geometryIndex ?? '' -%> =
 <%
 			value.selected.forEach(select => {
 -%>
-		* (region == <%= select.label -%>)
+		* (region == <%- select.label -%>)
 <%
 			})
 		}

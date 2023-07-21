@@ -76,7 +76,9 @@ try {
     dimension,
     type: ['vectorialGradient', 'vectorialDivergence']
 }), 1) -%>
-    
+
+    appendPercent(10);
+
 <%# Problem -%>
 <%
     const symmetric = parameters.symmetric.children[0].value ?? parameters.symmetric.children[0].default
@@ -206,8 +208,8 @@ try {
     int nbIter = T / dt;
     for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
         // Update
-        int percent = 100 * t / T;
-        appendLog("[" + percent + "%]");
+        int percent = 10 + 90 * t / T;
+        appendPercent(percent);
         t += dt;
         appendLog("Time: " + t);
         
@@ -251,11 +253,10 @@ try {
     results: run.results[0]
 }), 2) -%>
     }
-    appendLog("[100%]");
     
+    appendLog(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");
     exit(- 1);
 }
-

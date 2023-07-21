@@ -39,6 +39,8 @@ try {
     dimension,
     type: ['scalarGradient']
 }), 1) -%>
+
+    appendPercent(10);
     
 <%# Problem -%>
 <%
@@ -55,21 +57,21 @@ try {
             grad(u)' * grad(uh)
         )
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>, u = 0)
+        + on(<%- d.labels -%>, u = 0)
 <% } -%>
         ;
     
     varf vLaplacianRHS(u, uh)
         = intN(Mesh)(
-            (<%= rhsValue -%>) * uh
+            (<%- rhsValue -%>) * uh
         )
 <% for (const n of neumann){ -%>
-        - intN1(Mesh, <%= n.labels -%>) {
+        - intN1(Mesh, <%- n.labels -%>)(
             (<%- n.values[0].value ?? n.values[0].default -%>) * uh
-        }
+        )
 <% } -%>
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>, u = <%- d.values[0].value ?? d.values[0].default -%>)
+        + on(<%- d.labels -%>, u = <%- d.values[0].value ?? d.values[0].default -%>)
 <% } -%>
         ;
     
@@ -85,8 +87,8 @@ try {
     // Solve
     appendLog("Solve the problem...");
     
-    matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
-    real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
+    matrix Laplacian = vLaplacian(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
+    real[int] LaplacianRHS = vLaplacianRHS(0, <%- finiteElementSpace.name -%>);
     u[] = Laplacian^-1 * LaplacianRHS;
     
 <%# Sensors -%>
@@ -106,9 +108,9 @@ try {
     results: run.results[0]
 }), 1) -%>
     
+    appendPercent(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");
     exit(- 1);
 }
-

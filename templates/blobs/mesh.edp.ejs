@@ -2,7 +2,7 @@
 appendLog("Read mesh...");
 
 <%- include('./gmshMesh.edp.ejs', {
-	dimension,
-	mesh
+	dimension: locals.dimension,
+	mesh: locals.mesh
 }); -%>
 // End Mesh

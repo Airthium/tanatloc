@@ -168,12 +168,21 @@ const Step = ({
       )}
       <Collapse ghost items={collapseItems} />
       {parse(
-        step.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') ?? ''
+        step.pluginLog
+          ?.replace(/\n\n/g, '\n')
+          .replace(/\n/g, '<br />')
+          .replace(
+            /Warning:/g,
+            '<span style="color: orange; font-weight: bold;">Info: </span>'
+          )
+          .replace(
+            /Error:/g,
+            '<span style="color: red; font-weight: bold;">Error:</span>'
+          ) ?? ''
       )}
       {parse(
         step.log
-          ?.replace(/\n\n/g, '\n')
-          .replace(/\n/g, '<br />')
+          ?.replace(/^PERCENT.*\n?/gm, '')
           .replace(
             /Info\s*:/g,
             '<span style="color: blue; font-weight: bold;">Info: </span>'
@@ -181,7 +190,9 @@ const Step = ({
           .replace(
             /Error:/g,
             '<span style="color: red; font-weight: bold;">Error:</span>'
-          ) ?? ''
+          )
+          .replace(/\n\n/g, '\n')
+          .replace(/\n/g, '<br />') ?? ''
       )}
     </>
   )

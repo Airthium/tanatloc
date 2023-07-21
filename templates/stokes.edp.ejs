@@ -67,6 +67,8 @@ try {
     dimension,
     type: ['vectorialGradient', 'vectorialDivergence']
 }), 1) -%>
+
+    appendPercent(10);
     
 <%# Problem -%>
 <%
@@ -186,6 +188,7 @@ try {
     results: run.results[0]
 }), 1) -%>
     
+    appendPercent(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");

@@ -355,7 +355,7 @@ const checkBoundaryConditionsUnits = (
         const unit = val.unit
         if (val.value !== undefined) {
           if (unit?.multiplicator)
-            val.value = '(' + val.value + ') / ' + unit.multiplicator
+            val.value = '(' + val.value + ') / ' + toFloat(unit.multiplicator)
           if (unit?.adder) val.value = '(' + val.value + ') - ' + unit.adder
         }
       })

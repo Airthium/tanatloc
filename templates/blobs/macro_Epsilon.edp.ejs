@@ -1,0 +1,12 @@
+real tanatlocInternalEpsilonSqrt2 = sqrt(2.);
+<% if (locals.dimension === 2) { -%>
+macro Epsilon(U) [
+	dx(U[0]), dy(U[1]),
+	(dy(U[0]) + dx(U[1])) / tanatlocInternalEpsilonSqrt2] //
+<% } else { -%>
+macro Epsilon(U) [
+	dx(U[0]), dy(U[1]), dz(U[2]),
+	(dz(U[1]) + dy(U[2])) / tanatlocInternalEpsilonSqrt2,
+	(dz(U[0]) + dx(U[2])) / tanatlocInternalEpsilonSqrt2,
+	(dy(U[0]) + dx(U[1])) / tanatlocInternalEpsilonSqrt2] //
+<% } -%>

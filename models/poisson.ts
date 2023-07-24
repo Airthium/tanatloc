@@ -16,6 +16,10 @@ const Poisson: IModel = {
   description,
   variables: [
     {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
       label: 'u',
       value: 'u'
     }

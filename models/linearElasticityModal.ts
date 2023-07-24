@@ -17,6 +17,10 @@ const LinearElasticityModal: IModel = {
   description,
   variables: [
     {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
       label: 'Displacement (x)',
       value: 'Ux'
     },

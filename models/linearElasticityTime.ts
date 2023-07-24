@@ -14,6 +14,25 @@ const LinearElasticityTime: IModel = {
   code: 'FreeFEM',
   version: '1.0.0',
   description,
+  variables: [
+    {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
+      label: 'Displacement (x)',
+      value: 'Ux'
+    },
+    {
+      label: 'Displacement (y)',
+      value: 'Uy'
+    },
+    {
+      label: 'Displacement (z)',
+      value: 'Uz',
+      only3D: true
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,

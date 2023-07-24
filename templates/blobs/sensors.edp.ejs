@@ -40,8 +40,8 @@
 	}
 -%>
 // Sensors
-{
 <% if (locals.sensors) { -%>
+{
 <%- setSensors(locals.sensors) -%>
 
 	if (mpirank == 0) {
@@ -51,9 +51,6 @@
 		ofstream processOut("process_data.log", append);
 		processOut << <%- getOutput(locals.x) -%> << endl;
 	}
-<% } else { -%>
-	// No sensors
-	;
-<% } -%>
 }
+<% } -%>
 // End Sensors

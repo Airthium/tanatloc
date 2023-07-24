@@ -1,8 +1,12 @@
 ## v1.2.12
 
+- Template:
+  - :arrow_up: Review and optimization
 - Client:
   - :arrow_up: Complex formula
   - :beetle: Do not close dialog using Shift+Enter
+- Global:
+  - :beetle: Unit conversion bugfix
 
 ---
 

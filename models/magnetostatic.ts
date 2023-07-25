@@ -14,6 +14,26 @@ const Magnetostatic: IModel = {
   code: 'FreeFEM',
   version: '1.0.0',
   description,
+  variables: [
+    {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
+      only3D: true,
+      label: 'Magnetic vector potential (x)',
+      value: 'Ax'
+    },
+    {
+      only3D: true,
+      label: 'Magnetic vector potential (y)',
+      value: 'Ay'
+    },
+    {
+      label: 'Magnetic vector potential (z)',
+      value: 'Az'
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,

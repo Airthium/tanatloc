@@ -14,6 +14,29 @@ const Stokes: IModel = {
   code: 'FreeFEM',
   version: '1.0.0',
   description,
+  variables: [
+    {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
+      label: 'Displacement (x)',
+      value: 'Ux'
+    },
+    {
+      label: 'Displacement (y)',
+      value: 'Uy'
+    },
+    {
+      label: 'Displacement (z)',
+      value: 'Uz',
+      only3D: true
+    },
+    {
+      label: 'Pressure',
+      value: 'p'
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,
@@ -202,7 +225,7 @@ const Stokes: IModel = {
             unit: { label: 'm.s^-1' }
           },
           {
-            name: 'Presure',
+            name: 'Pressure',
             data: 'p',
             units: [
               { label: 'Pa' },

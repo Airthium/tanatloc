@@ -14,6 +14,28 @@ const ThermicDiffusion: IModel = {
   code: 'FreeFEM',
   version: '1.0.0',
   description,
+  variables: [
+    {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
+      label: 'Temperature',
+      value: 'Temp'
+    },
+    {
+      label: 'Time',
+      value: 't'
+    },
+    {
+      label: 'Total time',
+      value: 'T'
+    },
+    {
+      label: 'Time step',
+      value: 'dt'
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,
@@ -137,7 +159,7 @@ const ThermicDiffusion: IModel = {
         [
           {
             name: 'T',
-            data: 'T',
+            data: 'Temp',
             units: [{ label: 'K' }, { label: 'C', adder: -273.15 }],
             unit: { label: 'K' }
           }

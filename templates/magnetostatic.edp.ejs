@@ -10,7 +10,7 @@ try{
 <%# Mesh -%>
 <%
     const mesh = geometry.mesh
-    mesh.name = 'Mesh'
+    mesh.name = variables[0].value
 -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
     dimension,
@@ -35,18 +35,33 @@ try{
 
 <%# Finite element function -%>
 <%
-    const unknownFunction = dimension === 2 ? 'Az' : '[Ax, Ay, Az]'
-    const testFunction = dimension === 2 ? 'Ahz' : '[Ahx, Ahy, Ahz]'
+    const unknownFunctionX = variables[1].value
+    const unknownFunctionY = variables[2].value
+    const unknownFunctionZ = variables[3].value
+    const unknownFunction =
+        dimension === 2
+            ? '[' + unknownFunctionZ + ']'
+            : '[' + unknownFunctionX + ', ' + unknownFunctionY + ', ' + unknownFunctionZ + ']'
+    const testFunctionX = unknownFunctionX + 'h'
+    const testFunctionY = unknownFunctionY + 'h'
+    const testFunctionZ = unknownFunctionZ + 'h'
+    const testFunction =
+        dimension === 2
+            ? '[' + testFunctionZ + ']'
+            : '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionZ + ']'
 -%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
     finiteElementSpace,
-    finiteElementFunction: dimension === 2 ? ['Az'] : ['Ax', 'Ay', 'Az']
+    finiteElementFunction:
+        dimension === 2
+            ? [unknownFunctionZ]
+            : [unknownFunctionX, unknownFunctionY, unknownFunctionZ]
 }), 1) -%>
 
 <%# Macro -%>
 <%- helpers.indent(include('/blobs/macro.edp.ejs', {
     dimension,
-    type: ['curl', 'vectorialDivergence', 'vectorProctuctNormal']
+    type: ['Curl', 'Divergence', 'DotNormal']
 }), 1) -%>
 
     appendPercent(10);
@@ -67,39 +82,41 @@ try{
     real Nu = 1. / Mu;
     real penaltyFactor = <%- penaltyFactor -%>; 
     varf vLaplacian (<%- unknownFunction -%>, <%- testFunction -%>)
-        = intN(Mesh) (
-            Nu * Curl(A)' * Curl(Ah)
+        = intN(<%- mesh.name -%>) (
+            Nu * Curl(<%- unknownFunction -%>)' * Curl(<%- testFunction -%>)
 <% if (dimension !== 2) { -%>
-            + penaltyFactor * Div(A) * Div(Ah)
+            + penaltyFactor * Div(<%- unknownFunction -%>) * Div(<%- testFunction -%>)
 <% } -%>
         )
 <% for (const d of dirichletProd){ -%>
-        + intN1(Mesh, <%- d.labels -%>) (
-            penaltyFactor * ProdNormal(A)' * ProdNormal(Ah)
+        + intN1(<%- mesh.name -%>, <%- d.labels -%>) (
+            penaltyFactor * DotNormal(<%- unknownFunction -%>)' * DotNormal(<%- testFunction -%>)
         )
 <% } -%>
         ;
     
     varf vLaplacianRHS (<%- unknownFunction -%>, <%- testFunction -%>)
-        = intN(Mesh) (
+        = intN(<%- mesh.name -%>) (
 <% if (dimension === 2) { -%>
-            <%- currentValueZ -%> * <%- testFunction -%>
+            <%- currentValueZ -%> * <%- testFunction %>
 <% } else { -%>
-            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction -%>
+            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction %>
 <% } -%>
         )
 <% for (const d of dirichletProd){ -%>
-        + intN1(Mesh, <%- d.labels -%>) (
+        + intN1(<%- mesh.name -%>, <%- d.labels -%>) (
             penaltyFactor *
 <% if (dimension === 2) { -%>
                 [
                     0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
-                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>]'* ProdNormal(Ah)
+                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } %>
+                ]'* DotNormal(<%- testFunction -%>)
 <% } else { -%>
                 [
                     0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
                     0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
-                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } -%>]' * ProdNormal(Ah)
+                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
+                ]' * DotNormal(<%- testFunction -%>)
 <% } -%>
         )
 <% } -%>
@@ -119,13 +136,13 @@ try{
 
     matrix Laplacian = vLaplacian(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
     real[int] LaplacianRHS = vLaplacianRHS(0, <%- finiteElementSpace.name -%>);
-    Az[] = Laplacian^-1 * LaplacianRHS;
+    <%- unknownFunctionZ -%>[] = Laplacian^-1 * LaplacianRHS;
 
 <% if (dimension === 2) { -%>
     // Magnetic induction
     FE B, Bx, By;
-    Bx = dy(Az);
-    By = -dx(Az);
+    Bx = dy(<%- unknownFunctionZ -%>);
+    By = -dx(<%- unknownFunctionZ -%>);
     B = sqrt(Bx^2 + By^2);
 
     // Magnetic field
@@ -136,7 +153,7 @@ try{
 <% } else { -%>
     // Magnetic induction
     FE [Bx, By, Bz];
-    [Bx, By, Bz] = Curl(A);
+    [Bx, By, Bz] = Curl(<%- unknownFunction -%>);
 
     // Magnetic field
     FE [Hx, Hy, Hz];

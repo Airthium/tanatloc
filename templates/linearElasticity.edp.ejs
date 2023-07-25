@@ -49,6 +49,13 @@ try {
         dimension === 2
             ? '[' + testFunctionX + ',' + testFunctionY + ']'
             : '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionZ + ']'
+    const freeFunctionX = unknownFunctionX + 'f'
+    const freeFunctionY = unknownFunctionY + 'f'
+    const freeFunctionZ = unknownFunctionZ + 'f'
+    const freeFunction =
+        dimension === 2
+            ? '[' + freeFunctionX + ',' + freeFunctionY + ']'
+            : '[' + freeFunctionX + ', ' + freeFunctionY + ', ' + freeFunctionZ + ']'
 -%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
     finiteElementSpace,
@@ -102,7 +109,7 @@ try {
 <% } -%>
         ;
     
-    varf vLinearElasticityRHS(<%- unknownFunction -%>, <%- testFunction -%>)
+    varf vLinearElasticityRHS(<%- freeFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
 <% if (dimension === 2){ -%>
             Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%- testFunction %>
@@ -126,12 +133,12 @@ try {
 <% } -%>
 <% for (const d of displacement){ -%>
         + on(<%- d.labels -%>
-<% if (d.values[0].checked){ -%>, <%- unknownFunctionX -%> = <%- d.values[0].value ?? d.values[0].default -%><% } -%>
-<% if (d.values[1].checked){ -%>, <%- unknownFunctionY -%> = <%- d.values[1].value ?? d.values[1].default -%><% } -%>
-<% if (dimension !== 2 && d.values[2].checked){ -%>, <%- unknownFunctionZ -%> = <%- d.values[2].value ?? d.values[2].default -%><% } -%>)
+<% if (d.values[0].checked){ -%>, <%- freeFunctionX -%> = <%- d.values[0].value ?? d.values[0].default -%><% } -%>
+<% if (d.values[1].checked){ -%>, <%- freeFunctionY -%> = <%- d.values[1].value ?? d.values[1].default -%><% } -%>
+<% if (dimension !== 2 && d.values[2].checked){ -%>, <%- freeFunctionZ -%> = <%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 <% } -%>
 <% for (const f of fixed){ -%>
-        + on(<%- f.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
+        + on(<%- f.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     

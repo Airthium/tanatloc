@@ -31,6 +31,18 @@ const LinearElasticityTime: IModel = {
       label: 'Displacement (z)',
       value: 'Uz',
       only3D: true
+    },
+    {
+      label: 'Time',
+      value: 't'
+    },
+    {
+      label: 'Total time',
+      value: 'T'
+    },
+    {
+      label: 'Time step',
+      value: 'dt'
     }
   ],
   configuration: {

@@ -32,6 +32,7 @@ try {
 <%
     const unknownFunction = variables[1].value
     const testFunction = unknownFunction + 'h'
+    const freeFunction = unknownFunction + 'f'
 -%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
     finiteElementSpace,
@@ -65,7 +66,7 @@ try {
 <% } -%>
         ;
     
-    varf vLaplacianRHS(<%- unknownFunction -%>, <%- testFunction -%>)
+    varf vLaplacianRHS(<%- freeFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
             (<%- rhsValue -%>) * <%- testFunction %>
         )
@@ -75,7 +76,7 @@ try {
         )
 <% } -%>
 <% for (const d of dirichlet){ -%>
-        + on(<%- d.labels -%>, <%- unknownFunction -%> = <%- d.values[0].value ?? d.values[0].default -%>)
+        + on(<%- d.labels -%>, <%- freeFunction -%> = <%- d.values[0].value ?? d.values[0].default -%>)
 <% } -%>
         ;
     

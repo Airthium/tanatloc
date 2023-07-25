@@ -14,6 +14,41 @@ const NavierStokesTime: IModel = {
   code: 'FreeFEM',
   version: '1.0.0',
   description,
+  variables: [
+    {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
+    {
+      label: 'Displacement (x)',
+      value: 'Ux'
+    },
+    {
+      label: 'Displacement (y)',
+      value: 'Uy'
+    },
+    {
+      label: 'Displacement (z)',
+      value: 'Uz',
+      only3D: true
+    },
+    {
+      label: 'Pressure',
+      value: 'p'
+    },
+    {
+      label: 'Time',
+      value: 't'
+    },
+    {
+      label: 'Total time',
+      value: 'T'
+    },
+    {
+      label: 'Time step',
+      value: 'dt'
+    }
+  ],
   configuration: {
     geometry: {
       index: 1,

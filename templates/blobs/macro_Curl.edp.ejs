@@ -1,0 +1,5 @@
+<% if (locals.dimension === 2) { -%>
+macro Curl(A) [dy(A[0]), -dx(A[0])] //
+<% } else { -%>
+macro Curl(A) [dy(A[2]) - dz(A[1]), dz(A[0]) - dx(A[2]), dx(A[1]) - dy(A[0])] //
+<% } -%>

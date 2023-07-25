@@ -330,7 +330,10 @@ describe('lib/simulation', () => {
                   value: 1
                 },
                 { value: 1, unit: { label: 'm' } },
-                { value: 1, unit: { label: 'm', multiplicator: 1, adder: 1 } }
+                {
+                  value: 1,
+                  unit: { label: 'm', multiplicator: '1.', adder: 1 }
+                }
               ]
             }
           },

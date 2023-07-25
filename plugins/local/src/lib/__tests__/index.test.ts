@@ -580,6 +580,7 @@ describe('plugins/local/src/lib', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
+
     //With mesh
     mockFreefem.mockImplementation((_, __, callback) => {
       callback({ pid: 'pid' })
@@ -603,6 +604,57 @@ describe('plugins/local/src/lib', () => {
             title: 'Geometry',
             meshable: true,
             data: { name: 'name', path: 'path', file: 'file' },
+            meshParameters: {
+              type: 'auto',
+              value: 'normal'
+            },
+            mesh: {}
+          },
+          boundaryConditions: {
+            index: 0,
+            title: 'Boundary conditions',
+            key1: {
+              label: 'key1'
+            },
+            key2: {
+              label: 'key2',
+              values: [
+                {
+                  uuid: 'uuid',
+                  name: 'name',
+                  type: {
+                    key: 'key',
+                    label: 'label'
+                  },
+                  geometry: 'id',
+                  selected: [{ uuid: 'uuid', label: 1 }]
+                }
+              ],
+              refineFactor: 5
+            }
+          },
+          run: {
+            index: 0,
+            title: 'Run'
+          }
+        }
+      }
+    )
+
+    //With meshes
+    mockConvert.mockImplementation(() => [{}])
+    await Local.computeSimulation(
+      { id: 'id' },
+      {
+        algorithm: 'algorithm',
+        //@ts-ignore
+        configuration: {
+          geometry: {
+            index: 1,
+            title: 'Geometry',
+            meshable: true,
+            datas: [{ name: 'name', path: 'path', file: 'file' }],
+            multiple: true,
             meshParameters: {
               type: 'auto',
               value: 'normal'

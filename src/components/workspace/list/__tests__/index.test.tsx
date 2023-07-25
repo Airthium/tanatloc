@@ -91,6 +91,9 @@ describe('components/workspace/list', () => {
       />
     )
 
+    const plus = screen.getByRole('img', { name: 'plus-circle' })
+    fireEvent.click(plus)
+
     unmount()
   })
 

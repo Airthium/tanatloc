@@ -10,6 +10,7 @@ import {
   useState
 } from 'react'
 import {
+  Button,
   Empty,
   Form,
   Input,
@@ -19,7 +20,11 @@ import {
   Tooltip,
   Typography
 } from 'antd'
-import { ExperimentOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  ExperimentOutlined,
+  PlusCircleOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 
 import {
   IFrontMutateWorkspacesItem,
@@ -151,6 +156,13 @@ const WorkspacesList = ({
   }, [])
 
   /**
+   * Set sample visible true
+   */
+  const setSampleVisibleTrue = useCallback((): void => {
+    setSampleVisible(true)
+  }, [])
+
+  /**
    * On change
    * @param activeKey Active key
    */
@@ -203,6 +215,14 @@ const WorkspacesList = ({
         }
       />
       <Layout.Content className={globalStyle.noScroll}>
+        <SampleWorkspace
+          visible={sampleVisible}
+          setVisible={setSampleVisible}
+          user={user}
+          swr={{
+            addOneWorkspace: swr.addOneWorkspace
+          }}
+        />
         {workspaces.length ? (
           <>
             <Dialog
@@ -226,14 +246,6 @@ const WorkspacesList = ({
                 <Input ref={inputRef} placeholder="Workspace's name" />
               </Form.Item>
             </Dialog>
-            <SampleWorkspace
-              visible={sampleVisible}
-              setVisible={setSampleVisible}
-              user={user}
-              swr={{
-                addOneWorkspace: swr.addOneWorkspace
-              }}
-            />
             <Tabs
               type="editable-card"
               hideAdd={true}
@@ -291,6 +303,7 @@ const WorkspacesList = ({
         ) : (
           <>
             <Empty
+              className={style.empty}
               image="images/empty.svg"
               description={'No workspace for now. Get started !'}
             >
@@ -299,6 +312,13 @@ const WorkspacesList = ({
                   addOneWorkspace: swr.addOneWorkspace
                 }}
               />
+              <Button
+                type="primary"
+                icon={<PlusCircleOutlined />}
+                onClick={setSampleVisibleTrue}
+              >
+                Create a sample workspace
+              </Button>
             </Empty>
           </>
         )}

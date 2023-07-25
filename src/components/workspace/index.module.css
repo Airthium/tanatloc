@@ -1,3 +1,10 @@
+.empty :global(.ant-empty-footer) {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .search > *:last-child {
   margin-left: auto !important;
 }

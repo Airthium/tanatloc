@@ -14,6 +14,7 @@ import {
   Tag,
   Typography
 } from 'antd'
+import { EllipsisOutlined } from '@ant-design/icons'
 
 import {
   IFrontMutateProjectsItem,
@@ -37,7 +38,6 @@ import Utils from '@/lib/utils'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
-import { EllipsisOutlined } from '@ant-design/icons'
 
 /**
  * Props

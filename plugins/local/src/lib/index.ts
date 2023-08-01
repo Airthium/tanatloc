@@ -188,14 +188,16 @@ const computeMeshes = async (
   if (!geometry.meshable) return
 
   const dimension = configuration.dimension
-  const value = configuration.geometry.value
   const meshParameters = configuration.geometry.meshParameters
   const initialization = configuration.initialization
   const boundaryConditions = configuration.boundaryConditions
   const cloudServer = configuration.run.cloudServer
 
   if (geometry.multiple) {
-    for (const data of geometry.datas!) {
+    geometry.meshes = []
+    for (let i = 0; i < geometry.values!.length; ++i) {
+      const value = geometry.values![i]
+      const data = geometry.datas![i]
       const mesh = await computeMesh(
         id,
         simulationPath,
@@ -210,9 +212,10 @@ const computeMeshes = async (
         },
         tasks
       )
-      geometry.meshes = [...(geometry.meshes ?? []), mesh]
+      geometry.meshes = [...geometry.meshes, mesh]
     }
   } else {
+    const value = geometry.value
     const data = geometry.data
     const mesh = await computeMesh(
       id,

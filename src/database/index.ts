@@ -320,17 +320,31 @@ const jsonUpdater = (
 ) => {
   switch (data.method) {
     case 'set':
-      args.push(data.value)
-      queryText.push(
-        data.key +
-          ' = jsonb_set(' +
+      if (Array.isArray(data.value)) {
+        args.push(data.value)
+        queryText.push(
           data.key +
-          ", '{" +
-          data.path.join(',') +
-          "}', $" +
-          args.length +
-          ')'
-      )
+            ' = jsonb_set(' +
+            data.key +
+            ", '{" +
+            data.path.join(',') +
+            "}', array_to_json(ARRAY[$" +
+            args.length +
+            '])::jsonb)'
+        )
+      } else {
+        args.push(data.value)
+        queryText.push(
+          data.key +
+            ' = jsonb_set(' +
+            data.key +
+            ", '{" +
+            data.path.join(',') +
+            "}', $" +
+            args.length +
+            ')'
+        )
+      }
       break
     case 'erase':
       queryText.push(

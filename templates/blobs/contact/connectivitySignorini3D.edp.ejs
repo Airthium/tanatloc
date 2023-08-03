@@ -22,10 +22,10 @@ func int connectivity(mesh3 &ThFu, mesh3 &Th,
     for (int ni = 0; ni < Th1.nbe; ni++) {
         // Loop on the boundary elements of the body 1
         int tetr = Th1.be(ni).Element; // Tetrahedron number
-        int dof1x = Wh1(tetr, 0); // x dof of the first node
-        int dof2x = Wh1(tetr, 1); // x dof of the second node
-        int dof3x = Wh1(tetr, 2); // x dof of the third node
-        int dof4x = Wh1(tetr, 3); // x dof of the fourth node
+        int dof1x = WhD(tetr, 0); // x dof of the first node
+        int dof2x = WhD(tetr, 1); // x dof of the second node
+        int dof3x = WhD(tetr, 2); // x dof of the third node
+        int dof4x = WhD(tetr, 3); // x dof of the fourth node
         // //
         bool dofin1 = false; // First vertice in the contact area 1?
         bool dofin2 = false; // Second vertice in the contact area 1?
@@ -169,10 +169,10 @@ func int connectivity(mesh3 &ThFu, mesh3 &Th,
     for (int ni = 0; ni < Th2.nbe; ni++) {
         // Loop on the boundary elements of the body 2
         int tetr = Th2.be(ni).Element; // Tetrahedron number
-        int dof1x = Wh2(tetr, 0); // x dof of the first node
-        int dof2x = Wh2(tetr, 1); // x dof of the second node
-        int dof3x = Wh2(tetr, 2); // x dof of the third node
-        int dof4x = Wh2(tetr, 3); // x dof of the fourth node
+        int dof1x = WhF(tetr, 0); // x dof of the first node
+        int dof2x = WhF(tetr, 1); // x dof of the second node
+        int dof3x = WhF(tetr, 2); // x dof of the third node
+        int dof4x = WhF(tetr, 3); // x dof of the fourth node
         
         real[int] v1 = [Th2.be(ni)[0].x, Th2.be(ni)[0].y, Th2.be(ni)[0].z]; // Coord of the first vertex of the bound_ele ni
         real[int] v2 = [Th2.be(ni)[1].x, Th2.be(ni)[1].y, Th2.be(ni)[1].z]; // Coord of the second vertex of the bound_ele ni

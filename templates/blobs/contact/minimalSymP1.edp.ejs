@@ -2,41 +2,37 @@
 // ABC is the array of the current coordinates of the second contact area nodes
 // Projection of a point (xp,yp) to the segments of the second body
 
-<% if (dimension !== 2){ -%>
+<% if (locals.dimension !== 2){ -%>
 // vector product functions
-func real[int] vecprod(real[int] &v1, real[int] &v2) {
+func real[int] vectorProduct(real[int] &v1, real[int] &v2) {
     // Vector product
-    real[int] vecp(3);
-    vecp[0] = v1[1] * v2[2] - v1[2] * v2[1];
-    vecp[1] = v1[2] * v2[0] - v1[0] * v2[2];
-    vecp[2] = v1[0] * v2[1] - v1[1] * v2[0];
-    return vecp;
+    real[int] product(3);
+    product[0] = v1[1] * v2[2] - v1[2] * v2[1];
+    product[1] = v1[2] * v2[0] - v1[0] * v2[2];
+    product[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    return product;
 }
 
-func real[int] vecpro(real[int] &v1, real[int] &v2) {
+func real[int] vectorProductNormalized(real[int] &v1, real[int] &v2) {
     // Normalized Vector product
-    real[int] vecp(3);
-    vecp[0] = v1[1] * v2[2] - v1[2] * v2[1];
-    vecp[1] = v1[2] * v2[0] - v1[0] * v2[2];
-    vecp[2] = v1[0] * v2[1] - v1[1] * v2[0];
-    vecp = vecp / ((vecp[0]^2 + vecp[1]^2 + vecp[2]^2)^0.5); // normalized
-    return vecp;
+    real[int] product(3);
+    product[0] = v1[1] * v2[2] - v1[2] * v2[1];
+    product[1] = v1[2] * v2[0] - v1[0] * v2[2];
+    product[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    product = product / ((product[0]^2 + product[1]^2 + product[2]^2)^0.5); // normalized
+    return product;
 }
 <% } -%>
 
+<%# TODO review with Houssam -%>
 func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &segdof2) {
-    
     meshN Th2 = ThFu;
     int dimensio = xxx.n / <%- dimension -%>; // points number to be projected
     real[int] etab((<%- dimension -%> - 1) * dimensio); // eta parameters of the projected points of the ip points
     int nu; // The border segment number
     R3 ph;
     
-<% if (dimension==2){ -%>
-    meshL Lh = extract(Th2); // The border of Th2
-<% } else { -%>
-    meshS Lh = extract(Th2); // The border of Th2
-<% } -%>
+    meshN1 Lh = extract(Th2); // The border of Th2
     
     for (int i = 0; i < dimensio; i++) {
         // Loop on the integration points
@@ -97,13 +93,13 @@ func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi
         PC = [xC - xproj, yC - yproj, zC - zproj];
         PB = [xB - xproj, yB - yproj, zB - zproj];
         
-        provec = vecprod(AB, AC); // Vectorial product in order to compute the area of a triangle
+        provec = vectorProduct(AB, AC); // Vectorial product in order to compute the area of a triangle
         SABC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
         
-        provec = vecprod(PA, PC); // Vectorial product in order to compute the area of a triangle
+        provec = vectorProduct(PA, PC); // Vectorial product in order to compute the area of a triangle
         SPAC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
         
-        provec = vecprod(PA, PB); // Vectorial product in order to compute the area of a triangle
+        provec = vectorProduct(PA, PB); // Vectorial product in order to compute the area of a triangle
         SPAB = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
         
         etab[2 * i] = SPAC / SABC; // First parameter (surface of triangle PAC / surface of triangle ABC)
@@ -113,4 +109,3 @@ func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi
     }
     return etab;
 }
-

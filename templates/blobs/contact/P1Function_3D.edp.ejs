@@ -1,0 +1,72 @@
+// P1 functions on reference triangle
+// Ac = [x0, x1, x2] in order to construct the P1 functions
+// x0 is the first vertices of the triangle, x1 the second, x3 the third
+// t1 \in [0, 1]
+// t2 \in [0, 1]
+// Ac of dimension 3*3
+// x(t) = x0*phi1(t) + x1*phi2(t) + x3*phi3, phi1, phi2, phi3 are the P1 shape functions on the triangle
+
+func real[int] P1Function(real[int] &Ac, real &tt1, real &tt2) {
+    real resX, resY, resZ;
+    real[int] res(3);
+    real phi1 = 1 - tt1 - tt2;
+    real phi2 = tt1;
+    real phi3 = tt2;
+    
+    resX = phi1 * Ac[0] + phi2 * Ac[3] + phi3 * Ac[6];
+    resY = phi1 * Ac[1] + phi2 * Ac[4] + phi3 * Ac[7];
+    resZ = phi1 * Ac[2] + phi2 * Ac[5] + phi3 * Ac[8];
+    
+    res[0] = resX; // The abscissa
+    res[1] = resY; // The ordinate
+    res[2] = resZ; // The Height
+    
+    return res;
+}
+
+// Derivative
+func real[int] dP1FunctionX(real[int] &Ac, real &tt1, real &tt2) {
+    real resX, resY, resZ;
+    real[int] res(3);
+    real dPhi1 = - 1.;
+    real dPhi2 = 1.;
+    real dPhi3 = 0.;
+    
+    resX = dPhi1 * Ac[0] + dPhi2 * Ac[3] + dPhi3 * Ac[6];
+    resY = dPhi1 * Ac[1] + dPhi2 * Ac[4] + dPhi3 * Ac[7];
+    resZ = dPhi1 * Ac[2] + dPhi2 * Ac[5] + dPhi3 * Ac[8];
+    
+    res[0] = resX; // The abscissa
+    res[1] = resY; // The ordinate
+    res[2] = resZ; // The Height
+    
+    return res;
+}
+
+func real[int] dP1FunctionY(real[int] &Ac, real &tt1, real &tt2) {
+    real resX, resY, resZ;
+    real[int] res(3);
+    real dPhi1 = - 1.;
+    real dPhi2 = 0.;
+    real dPhi3 = 1.;
+    
+    resX = dPhi1 * Ac[0] + dPhi2 * Ac[3] + dPhi3 * Ac[6];
+    resY = dPhi1 * Ac[1] + dPhi2 * Ac[4] + dPhi3 * Ac[7];
+    resZ = dPhi1 * Ac[2] + dPhi2 * Ac[5] + dPhi3 * Ac[8];
+    
+    res[0] = resX; // The abscissa
+    res[1] = resY; // The ordinate
+    res[2] = resZ; // The Height
+    
+    return res;
+}
+
+// Second Derivative is zero
+func real[int] ddP1Function(real[int] &Ac, real &tt1, real &tt2) {
+    real[int] res(3);
+    res[0] = 0.; // The abscissa
+    res[1] = 0.; // The ordinate
+    res[2] = 0.; // The Height
+    
+    return res;
+}

@@ -4,6 +4,8 @@ import isElectron from 'is-electron'
 import isDocker from 'is-docker'
 import { execSync } from 'child_process'
 
+import packageJson from '../package.json' assert { type: 'json' }
+
 import { createDatabase } from './createDatabase'
 import { createPaths } from './createPaths'
 import { copyAssets } from './copyAssets'
@@ -39,10 +41,24 @@ export const initDockers = async (params?: {
  * Main
  */
 const main = async (params?: IParams): Promise<void> => {
-  console.info('/__   \\__ _ _ __   __ _| |_| | ___   ___ ')
-  console.info("  / /\\/ _` | '_ \\ / _` | __| |/ _ \\ / __|")
-  console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')
-  console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
+  console.info('')
+  console.info(
+    '████████  █████  ███    ██  █████  ████████ ██       ██████   ██████'
+  )
+  console.info(
+    '   ██    ██   ██ ████   ██ ██   ██    ██    ██      ██    ██ ██     '
+  )
+  console.info(
+    '   ██    ███████ ██ ██  ██ ███████    ██    ██      ██    ██ ██     '
+  )
+  console.info(
+    '   ██    ██   ██ ██  ██ ██ ██   ██    ██    ██      ██    ██ ██     '
+  )
+  console.info(
+    '   ██    ██   ██ ██   ████ ██   ██    ██    ███████  ██████   ██████'
+  )
+  console.info('   version:', packageJson.version)
+  console.info('')
 
   await params?.addStatus('Starting installation')
 

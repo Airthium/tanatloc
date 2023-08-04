@@ -2,6 +2,9 @@
   "exclude": ["__tests__", "config/jest", "config/depcheck"],
   "minify": true,
   "jsc": {
+    "experimental": {
+      "keepImportAssertions": true
+    },
     "parser": {
       "syntax": "typescript",
       "tsx": true,

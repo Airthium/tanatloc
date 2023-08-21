@@ -12,6 +12,7 @@
 		})
 		return lines.join('\n')
 	}
+
 	const getSensors = (sensors, x) => {
 		const output = ['"{"']
 		output.push(('"\\\"names\\\": "'))
@@ -29,6 +30,7 @@
 
 		return output.join('\n\t\t\t<< ')
 	}
+
 	const getOutput = (x) => {
 		const output = ['"{"']
 		output.push('"\\\"type\\\": \\\"DATA\\\", "')
@@ -38,20 +40,17 @@
 	}
 -%>
 // Sensors
+<% if (locals.sensors) { -%>
 {
-<% if (sensors) { -%>
-<%= setSensors(sensors) -%>
+<%- setSensors(locals.sensors) -%>
 
 	if (mpirank == 0) {
-		ofstream data("<%= path %>/sensors_" + <%= x -%> + ".dat");
-		data << <%- getSensors(sensors, x) -%> << endl;
+		ofstream data("<%- locals.path %>/sensors_" + <%- locals.x -%> + ".dat");
+		data << <%- getSensors(locals.sensors, locals.x) -%> << endl;
 
 		ofstream processOut("process_data.log", append);
-		processOut << <%- getOutput(x) -%> << endl;
+		processOut << <%- getOutput(locals.x) -%> << endl;
 	}
-<% } else { -%>
-	// No sensors
-	;
-<% } -%>
 }
+<% } -%>
 // End Sensors

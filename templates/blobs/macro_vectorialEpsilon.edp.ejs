@@ -1,5 +1,5 @@
 real sqrt2 = sqrt(2.);
-<% if (dimension === 2) { -%>
+<% if (locals.dimension === 2) { -%>
 macro Epsilon(U) [
 	dx(U#x), dy(U#y),
 	(dy(U#x)+dx(U#y))/sqrt2] //

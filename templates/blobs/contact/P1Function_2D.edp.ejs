@@ -1,0 +1,47 @@
+// P1 functions on [0, 1]
+// Ac = [x0, x1] in order to construct the P1 functions
+// x0 is the first point of the segement, x1 the second point of the segment
+// t \in [0,1]
+// Ac of dimension 4
+// x(t) = x0*phi1(t) + x1*phi2(t), phi1, phi2 are the P1 shape functions on the segement
+
+func real[int] P1Function(real[int] &Ac, real &tt) {
+    real resX, resY;
+    real[int] res(2);
+    real phi1 = 1 - tt;
+    real phi2 = tt;
+    
+    resX = phi1 * Ac[0] + phi2 * Ac[2];
+    resY = phi1 * Ac[1] + phi2 * Ac[3];
+    
+    res[0] = resX; // The abscissa
+    res[1] = resY; // The ordinate
+    
+    return res;
+}
+
+// Derivative
+func real[int] dP1Function(real[int] &Ac, real &tt) {
+    real resX, resY;
+    real[int] res(2);
+    
+    real dPhi1 = - 1.;
+    real dPhi2 = 1.;
+    
+    resX = dPhi1 * Ac[0] + dPhi2 * Ac[2];
+    resY = dPhi1 * Ac[1] + dPhi2 * Ac[3];
+    
+    res[0] = resX; // The abscissa
+    res[1] = resY; // The ordinate
+    
+    return res;
+}
+
+// Second Derivative
+func real[int] ddP1Function(real[int] &Ac, real &tt) {
+    real[int] res(2);
+    res[0] = 0; // The abscissa
+    res[1] = 0; // The ordinate
+    
+    return res;
+}

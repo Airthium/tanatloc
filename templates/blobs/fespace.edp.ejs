@@ -1,6 +1,16 @@
 // Fespaces
 appendLog("Define finie element space...");
 
-<% const FESpace = finiteElementSpace.value || (dimension === 2 ? (finiteElementSpace.default2D ?? finiteElementSpace.default) : finiteElementSpace.default); -%>
-fespace <%= finiteElementSpace.name -%>(<%= mesh.name -%>, [<%= FESpace.split(',') -%>]);
+<%
+    const FESpace = locals.finiteElementSpace.value
+        || (
+            locals.dimension === 2
+                ? (
+                    locals.finiteElementSpace.default2D
+                    ??
+                    locals.finiteElementSpace.default
+                ) : locals.finiteElementSpace.default
+            )
+-%>
+fespace <%- locals.finiteElementSpace.name -%>(<%- locals.mesh.name -%>, [<%- FESpace.split(',') -%>]);
 // End Fespaces

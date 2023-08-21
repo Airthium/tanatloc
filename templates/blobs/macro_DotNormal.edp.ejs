@@ -1,0 +1,5 @@
+<% if (locals.dimension === 2) { -%>
+macro DotNormal(A) [ - A[0] * N.y , A[0] * N.x ] //
+<% } else { -%>
+macro DotNormal(A) [ A[1] * N.z - A[2] * N.y , A[2] * N.x - A[0] * N.z, A[0] * N.y - A[1] * N.x ] //
+<% } -%>

@@ -10,7 +10,7 @@ try {
 <%# Mesh -%>
 <%
     const mesh = geometry.mesh
-    mesh.name = 'Mesh'
+    mesh.name = variables[0].value
 -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
     dimension,
@@ -35,38 +35,56 @@ try {
     
 <%# Finite element function -%>
 <%
-    let feFunction = ['Ux', 'Uy', 'Uz', 'p']
+    const unknownFunctionX = variables[1].value
+    const unknownFunctionY = variables[2].value
+    const unknownFunctionZ = variables[3].value
+    const unknownFunctionP = variables[4].value
+    const unknownFunction =
+        dimension === 2
+            ? '[' + unknownFunctionX + ', ' + unknownFunctionY + ', ' + unknownFunctionP + ']'
+            : '[' + unknownFunctionX + ', ' + unknownFunctionY + ', ' + unknownFunctionZ + ', ' + unknownFunctionP + ']'
+    const testFunctionX = unknownFunctionX + 'h'
+    const testFunctionY = unknownFunctionY + 'h'
+    const testFunctionZ = unknownFunctionZ + 'h'
+    const testFunctionP = unknownFunctionP + 'h'
+    const testFunction =
+        dimension === 2
+            ? '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionP + ']'
+            : '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionZ + ', ' + testFunctionP + ']'
+    const freeFunctionX = unknownFunctionX + 'f'
+    const freeFunctionY = unknownFunctionY + 'f'
+    const freeFunctionZ = unknownFunctionZ + 'f'
+    const freeFunctionP = unknownFunctionP + 'f'
+    const freeFunction =
+        dimension === 2
+            ? '[' + freeFunctionX + ',' + freeFunctionY + ', ' + freeFunctionP + ']'
+            : '[' + freeFunctionX + ', ' + freeFunctionY + ', ' + freeFunctionZ + ', ' + freeFunctionP + ']'
     
-    let unknownFunction = '[Ux, Uy, Uz, p]'
-    let testFunction = '[Uhx, Uhy, Uhz, ph]'
-    let freeFunction = '[mUx, mUy, mUz, mp]'
-    
-    let U = '[Ux, Uy, Uz]'
-    let Uh = '[Uhx, Uhy, Uhz]'
-    let N = '[N.x, N.y, N.z]'
-    
-    if (dimension === 2){
-        feFunction = ['Ux', 'Uy', 'p']
-        
-        unknownFunction = '[Ux, Uy, p]'
-        testFunction = '[Uhx, Uhy, ph]'
-        freeFunction = '[mUx, mUy, mp]'
-        
-        U = '[Ux, Uy]'
-        Uh = '[Uhx, Uhy]'
-        N = '[N.x, N.y]'
-    }
+    const U =
+        dimension === 2
+            ? '[' + unknownFunctionX + ', ' + unknownFunctionY + ']'
+            : '[' + unknownFunctionX + ', ' + unknownFunctionY + ', ' + unknownFunctionZ + ']'
+    const Uh =
+        dimension === 2
+            ? '[' + testFunctionX + ', ' + testFunctionY + ']'
+            : '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionZ + ']'
+    const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 -%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
     finiteElementSpace,
-    finiteElementFunction: feFunction
+    finiteElementFunction:
+        dimension === 2
+            ? [unknownFunctionX, unknownFunctionY, unknownFunctionP]
+            : [unknownFunctionX, unknownFunctionY, unknownFunctionZ, unknownFunctionP]
 }), 1) -%>
     
 <%# Macro -%>
 <%- helpers.indent(include('/blobs/macro.edp.ejs', {
     dimension,
-    type: ['vectorialGradient', 'vectorialDivergence']
+    type: ['Gradient', 'Divergence']
 }), 1) -%>
+
+    appendPercent(10);
     
 <%# Problem -%>
 <%
@@ -84,36 +102,35 @@ try {
     appendLog("Define the problem...");
     
     varf vStokes(<%= unknownFunction -%>, <%= testFunction -%>)
-        = intN(Mesh)(
+        = intN(<%- mesh.name -%>)(
 <% if (symmetric){ -%>
             (Mu / 4.) * (
-                (grad(Ux) + grad(Ux)')' * grad(Uhx)
-                + (grad(Uy) + grad(Uy)')' * grad(Uhy)
+                  (grad(<%- unknownFunctionX -%>) + grad(<%- unknownFunctionX -%>)')' * (grad(<%- testFunctionX -%>) + grad(<%- testFunctionX -%>)')
+                + (grad(<%- unknownFunctionY -%>) + grad(<%- unknownFunctionY -%>)')' * (grad(<%- testFunctionY -%>) + grad(<%- testFunctionY -%>)')
 <% if (dimension !== 2){ -%>
-                + (grad(Uz) + grad(Uz)')' * (grad(Uhz) + grad(Uhz)')
+                + (grad(<%- unknownFunctionZ -%>) + grad(<%- unknownFunctionZ -%>)')' * (grad(<%- testFunctionZ -%>) + grad(<%- testFunctionZ -%>)')
 <% } -%>
             )
 <% } else { -%>
-            Mu * (Grad(U) : Grad(Uh))
+            Mu * (Grad(<%- U -%>) : Grad(<%- Uh -%>))
 <% } -%>
-            - p * Div(Uh)
-            - Div(U) * ph
-            - 1.e-9 * p * ph
+            - <%- unknownFunctionP -%> * Div(<%- Uh -%>)
+            - Div(<%- U -%>) * <%- testFunctionP %>
+            - 1.e-9 * <%- unknownFunctionP -%> * <%- testFunctionP %>
         )
 <% for (const d of dirichlet){ -%>
         + on(<%= d.labels -%>
-<% if (d.values[0].checked){ -%>, Ux = 0 <% } -%>
-<% if (d.values[1].checked){ -%>, Uy = 0 <% } -%>
-<% if (dimension !== 2 && d.values[2].checked){ -%>, Uz = 0 <% } -%>
-        )
+<% if (d.values[0].checked){ -%>, <%- unknownFunctionX -%> = 0<% } -%>
+<% if (d.values[1].checked){ -%>, <%- unknownFunctionY -%> = 0<% } -%>
+<% if (dimension !== 2 && d.values[2].checked){ -%>, <%- unknownFunctionZ -%> = 0<% } %>)
 <% } -%>
 <% for (const w of wall){ -%>
-        + on(<%= w.labels -%>, Ux = 0, Uy = 0 <% if (dimension !== 2){ -%>, Uz = 0 <% } -%>)
+        + on(<%= w.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
     varf vStokesRHS(<%= freeFunction -%>, <%= testFunction -%>)
-        = intN(Mesh)(
+        = intN(<%- mesh.name -%>)(
 <% if (dimension === 2){ -%>
             [<%- rhsX -%>, <%- rhsY -%>]' * <%= Uh%>
 <% } else { -%>
@@ -121,19 +138,18 @@ try {
 <% } -%>
         )
 <% for (const n of neumann){ -%>
-        - intN1(Mesh, <%= n.labels -%>)(
-            (<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= Uh -%>
+        - intN1(<%- mesh.name -%>, <%= n.labels -%>)(
+            (<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= Uh %>
         )
 <% } -%>
 <% for (const d of dirichlet){ -%>
         + on(<%= d.labels -%>
-<% if (d.values[0].checked){ -%>, mUx = <%- d.values[0].value ?? d.values[0].default -%> <% } -%>
-<% if (d.values[1].checked){ -%>, mUy = <%- d.values[1].value ?? d.values[1].default -%> <% } -%>
-<% if (dimension !== 2 && d.values[2].checked){ -%>, mUz = <%- d.values[2].value ?? d.values[2].default -%> <% } -%>
-        )
+<% if (d.values[0].checked){ -%>, <%- freeFunctionX -%> = <%- d.values[0].value ?? d.values[0].default -%><% } -%>
+<% if (d.values[1].checked){ -%>, <%- freeFunctionY -%> = <%- d.values[1].value ?? d.values[1].default -%><% } -%>
+<% if (dimension !== 2 && d.values[2].checked){ -%>, <%- freeFunctionZ -%> = <%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 <% } -%>
 <% for (const w of wall){ -%>
-        + on(<%= w.labels -%>, mUx = 0, mUy = 0 <% if (dimension !== 2){ -%>, mUz = 0 <% } -%>)
+        + on(<%= w.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
@@ -148,12 +164,12 @@ try {
     real[int] StokesRHS = vStokesRHS(0, <%= finiteElementSpace.name -%>);
     
     // Solve
-    Ux[] = Stokes^-1 * StokesRHS;
+    <%- unknownFunctionX -%>[] = Stokes^-1 * StokesRHS;
     
 <%# Save -%>
     // Save data
-    real netFlow = intN1(Mesh)(<%= U -%>' * <%= N -%>);
-    real div = intN(Mesh)(Div(U)) / intN(Mesh)(1);
+    real netFlow = intN1(<%- mesh.name -%>)(<%= U -%>' * <%= N -%>);
+    real div = intN(<%- mesh.name -%>)(Div(<%- U -%>)) / intN(<%- mesh.name -%>)(1);
 <%- helpers.indent(include('/blobs/data.edp.ejs', {
     title: '',
     path: run.dataPath,
@@ -174,7 +190,9 @@ try {
     path: run.couplingPath,
     mesh: mesh.name,
     name: '"Result_"',
-    data: dimension === 2 ? ['Ux', 'Uy'] : ['Ux', 'Uy', 'Uz']
+    data: dimension === 2
+        ? [unknownFunctionX, unknownFunctionY]
+        : [unknownFunctionX, unknownFunctionY, unknownFunctionZ]
 }), 1) -%>
     
 <%- helpers.indent(include('/blobs/save.edp.ejs', {
@@ -186,6 +204,7 @@ try {
     results: run.results[0]
 }), 1) -%>
     
+    appendPercent(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");

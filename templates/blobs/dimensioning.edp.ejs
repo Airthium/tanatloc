@@ -1,7 +1,7 @@
 // Dimension macros
-appendLog("Dimension: <%= dimension -%>");
+appendLog("Dimension: <%- locals.dimension -%>");
 
-<% if (dimension === 2)  { -%>
+<% if (locals.dimension === 2)  { -%>
 macro meshN()mesh//
 macro meshN1()meshL//
 macro intN()int2d//

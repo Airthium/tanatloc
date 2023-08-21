@@ -10,7 +10,7 @@ try {
 <%# Mesh -%>
 <%
     const mesh = geometry.mesh
-    mesh.name = 'Mesh'
+    mesh.name = variables[0].value
 -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
     dimension,
@@ -29,9 +29,14 @@ try {
 }), 1) -%>
     
 <%# Finite element function -%>
+<%
+    const unknownFunction = variables[1].value
+    const testFunction = unknownFunction + 'h'
+    const freeFunction = unknownFunction + 'f'
+-%>
 <%- helpers.indent(include('/blobs/fespaceFunction.edp.ejs', {
     finiteElementSpace,
-    finiteElementFunction: ['u']
+    finiteElementFunction: [unknownFunction]
 }), 1) -%>
     
 <%# Macro -%>
@@ -39,6 +44,8 @@ try {
     dimension,
     type: ['scalarGradient']
 }), 1) -%>
+
+    appendPercent(10);
     
 <%# Problem -%>
 <%
@@ -50,26 +57,26 @@ try {
     // Problem
     appendLog("Define the problem...");
     
-    varf vLaplacian(u, uh)
-        = intN(Mesh)(
-            grad(u)' * grad(uh)
+    varf vLaplacian(<%- unknownFunction -%>, <%- testFunction -%>)
+        = intN(<%- mesh.name -%>)(
+            grad(<%- unknownFunction -%>)' * grad(<%- testFunction -%>)
         )
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>, u = 0)
+        + on(<%- d.labels -%>, <%- unknownFunction -%> = 0)
 <% } -%>
         ;
     
-    varf vLaplacianRHS(u, uh)
-        = intN(Mesh)(
-            (<%= rhsValue -%>) * uh
+    varf vLaplacianRHS(<%- freeFunction -%>, <%- testFunction -%>)
+        = intN(<%- mesh.name -%>)(
+            (<%- rhsValue -%>) * <%- testFunction %>
         )
 <% for (const n of neumann){ -%>
-        - intN1(Mesh, <%= n.labels -%>) {
-            (<%- n.values[0].value ?? n.values[0].default -%>) * uh
-        }
+        - intN1(<%- mesh.name -%>, <%- n.labels -%>)(
+            (<%- n.values[0].value ?? n.values[0].default -%>) * <%- testFunction %>
+        )
 <% } -%>
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>, u = <%- d.values[0].value ?? d.values[0].default -%>)
+        + on(<%- d.labels -%>, <%- freeFunction -%> = <%- d.values[0].value ?? d.values[0].default -%>)
 <% } -%>
         ;
     
@@ -85,9 +92,9 @@ try {
     // Solve
     appendLog("Solve the problem...");
     
-    matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
-    real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
-    u[] = Laplacian^-1 * LaplacianRHS;
+    matrix Laplacian = vLaplacian(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
+    real[int] LaplacianRHS = vLaplacianRHS(0, <%- finiteElementSpace.name -%>);
+    <%- unknownFunction -%>[] = Laplacian^-1 * LaplacianRHS;
     
 <%# Sensors -%>
 <%- helpers.indent(include('/blobs/sensors.edp.ejs', {
@@ -106,9 +113,9 @@ try {
     results: run.results[0]
 }), 1) -%>
     
+    appendPercent(100);
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");
     exit(- 1);
 }
-

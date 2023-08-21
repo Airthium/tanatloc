@@ -20,14 +20,14 @@
 // Data for coupling
 appendLog("Save coupling data...");
 
-savemesh(<%- mesh -%>, "<%- path -%>/" + <%- name -%> + ".mesh");
+savemesh(<%- locals.mesh -%>, "<%- locals.path -%>/" + <%- locals.name -%> + ".mesh");
 {
-    ofstream coupling("<%- path -%>/" + <%- name -%> + ".dat");
-    coupling << <%- data.join('[] << ') -%>[];
+    ofstream coupling("<%- locals.path -%>/" + <%- locals.name -%> + ".dat");
+    coupling << <%- locals.data.join('[] << ') -%>[];
 }
 
 if (mpirank == 0) {
     ofstream processOut("process_data.log", append);
-    processOut << <%- getMeshOutput(name) -%> << endl;
-    processOut << <%- getDataOutput(name) -%> << endl;
+    processOut << <%- getMeshOutput(locals.name) -%> << endl;
+    processOut << <%- getDataOutput(locals.name) -%> << endl;
 }

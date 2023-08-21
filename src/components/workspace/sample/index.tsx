@@ -4,6 +4,7 @@ import React, { Dispatch, useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { List } from 'antd'
 import { ArrowRightOutlined } from '@ant-design/icons'
+import { v4 as uuid } from 'uuid'
 
 import {
   IFrontNewGeometry,
@@ -126,7 +127,7 @@ export const _onGeometryAdd = async (
       { id: project.id },
       {
         name: 'cube.stp',
-        uid: 'fa429ac2-1731-11ee-be56-0242ac120002',
+        uid: uuid(),
         buffer: Buffer.from(buffer)
       }
     )
@@ -224,7 +225,6 @@ export const _onSimulationAdd = async (
     // Run
     const localPlugin = user.plugins.find((plugin) => plugin.key === 'local')
     scheme.configuration.run.cloudServer = localPlugin
-    scheme.configuration.run.done = true
 
     // API
     const simulation = await SimulationAPI.add(

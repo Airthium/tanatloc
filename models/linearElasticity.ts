@@ -220,7 +220,7 @@ const LinearElasticity: IModel = {
         ],
         refineFactor: 2
       },
-      presure: {
+      pressure: {
         label: 'Surface force (normal)',
         children: [
           {

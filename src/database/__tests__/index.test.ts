@@ -129,7 +129,14 @@ describe('database', () => {
         path: ['first', 'second'],
         value: ''
       },
-      { key: 'key8', type: 'date', value: 123 }
+      { key: 'key8', type: 'date', value: 123 },
+      {
+        key: 'key9',
+        type: 'json',
+        method: 'set',
+        path: ['first', 'second'],
+        value: ['array']
+      }
     ])
 
     await updater('db', undefined, [{ key: 'key', value: '' }])

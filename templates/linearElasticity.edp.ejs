@@ -79,7 +79,7 @@ try {
 <%
     const fixed = boundaryConditions.fixed.values ?? []
     const displacement = boundaryConditions.displacement.values ?? []
-    const normalPresure = boundaryConditions.presure.values ?? []
+    const normalPresure = boundaryConditions.pressure.values ?? []
     const componentsPresure = boundaryConditions.componentsPresure.values ?? []
     const rhs = parameters.rightHandSide.children
     const rhsX = rhs[0].value ?? rhs[0].default

@@ -454,7 +454,8 @@ describe('plugins/local/src/lib', () => {
               path: 'path',
               file: 'file'
             }
-          ]
+          ],
+          values: ['1']
         },
         run: {}
       } as IModel['configuration'],
@@ -654,6 +655,7 @@ describe('plugins/local/src/lib', () => {
             title: 'Geometry',
             meshable: true,
             datas: [{ name: 'name', path: 'path', file: 'file' }],
+            values: ['1'],
             multiple: true,
             meshParameters: {
               type: 'auto',

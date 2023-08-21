@@ -5,7 +5,7 @@
 // 3- Segment dof segdof (2 dof because 2 vertices and corresponds to x dof)
 // 4- Connectivity matrix Conorm: for each general dof => the segment ID (1,...,Th.nbe) connected to the dof
 // 5- Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
-
+<%# TODO review with Houssam -%>
 func int connectivity(int &nC1, int &nC2, int[int, int] &Conne1, int[int, int] &Conne2, int[int] &Connevec1, int[int] &Connevec2, int[int] &segdof1, int[int] &segdof2, int[int] &vertdof1, int[int] &vertdof2, real[int] &DofsOnCont1, real[int] &DofsOnCont2, int[int] &IDni1, int[int] &IDni2, int[int] &segid1, int[int] &segid2, int[int, int] &Conorm1, int[int, int] &Conorm2, int[int] &Conormvec1, int[int] &Conormvec2) {
     
     int nsegment1 = nC1 - 1;
@@ -280,4 +280,3 @@ func int connectivity(int &nC1, int &nC2, int[int, int] &Conne1, int[int, int] &
     }
     return 0;
 }
-

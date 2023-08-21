@@ -1,6 +1,6 @@
 /** @module Components.Assets.Mathjax */
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import parse from 'html-react-parser'
 

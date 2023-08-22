@@ -1,3 +1,5 @@
+/** @type {import('jest').Config} */
+
 const jestConfig = {
   rootDir: '../..',
   setupFiles: [
@@ -21,7 +23,12 @@ const jestConfig = {
   testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/dist-install/'],
   modulePathIgnorePatterns: ['<rootDir>/.yarn', '<rootDir>/tests'],
   transform: {
-    '^.+\\.(t|j)sx?$': ['babel-jest', { presets: ['next/babel'] }],
+    '^.+\\.(t|j)sx?$': [
+      'babel-jest',
+      {
+        presets: ['next/babel']
+      }
+    ],
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [

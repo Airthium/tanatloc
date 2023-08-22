@@ -27,7 +27,11 @@ init()
         createServer((req, res) => {
           try {
             const parsedUrl = parse(req.url!, true)
-            handle(req, res, parsedUrl).catch(console.error)
+            handle(req, res, parsedUrl).catch((err) => {
+              console.error(err)
+              res.statusCode = 500
+              res.end('Internal server error')
+            })
           } catch (err) {
             console.error(err)
             res.statusCode = 500

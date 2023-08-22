@@ -21,18 +21,26 @@ describe('src/server', () => {
   beforeEach(() => {
     mockCreateServer.mockReset()
     mockCreateServer.mockImplementation((callback) => {
-      callback({}, {})
+      callback({}, { end: jest.fn() })
+      callback({}, { end: jest.fn() })
       return {
         listen: jest.fn()
       }
     })
 
     mockParse.mockReset()
+    mockParse
+      .mockImplementationOnce(() => 'url')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
 
     mockNext.mockReset()
     mockNext.mockImplementation(() => ({
       prepare: async () => null,
-      getRequestHandler: () => async () => jest.fn
+      getRequestHandler: () => async () => {
+        throw new Error()
+      }
     }))
 
     mockInit.mockReset()

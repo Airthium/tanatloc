@@ -3,7 +3,7 @@
 // Projection of a point (xp,yp) to the segments of the second body
 
 <% if (locals.dimension !== 2){ -%>
-// vector product functions
+// vector product
 func real[int] vectorProduct(real[int] &v1, real[int] &v2) {
     // Vector product
     real[int] product(3);
@@ -13,6 +13,7 @@ func real[int] vectorProduct(real[int] &v1, real[int] &v2) {
     return product;
 }
 
+// vector product (normalized)
 func real[int] vectorProductNormalized(real[int] &v1, real[int] &v2) {
     // Normalized Vector product
     real[int] product(3);
@@ -24,66 +25,86 @@ func real[int] vectorProductNormalized(real[int] &v1, real[int] &v2) {
 }
 <% } -%>
 
-<%# TODO review with Houssam -%>
-func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &segdof2) {
-    meshN Th2 = ThFu;
-    int dimensio = xxx.n / <%- locals.dimension -%>; // points number to be projected
-    real[int] etab((<%- locals.dimension -%> - 1) * dimensio); // eta parameters of the projected points of the ip points
-    int nu; // The border segment number
+// Minimal projection
+// ThFu Fundation mesh
+// xxx Position of points
+// XYZ Fundation mesh positions
+// position Store position of the closest element of the fundation
+// elementDof Store DOF of the closest element of the fundation
+func real[int] minimalProjection(meshN ThFu, real[int] &xxx, real[int] &XYZ, int[int] &position, int[int] &elementDof) {
+    // Number of points to be projected
+    int nPoints = xxx.n / <%- locals.dimension -%>;
+    // eta parameters of the projected points of the integration points
+    real[int] etaParameters((<%- locals.dimension -%> - 1) * nPoints);
+    // The border segment number
+    int nu;
     R3 ph;
     
-    meshN1 Lh = extract(Th2); // The border of Th2
+    // The border of ThFu
+    meshN1 Lh = extract(ThFu);
     
-    for (int i = 0; i < dimensio; i++) {
+    for (int i = 0; i < nPoints; i++) {
         // Loop on the integration points
-        x = xxx[<%- locals.dimension -%> * i]; // The abssica of the integration point
-        y = xxx[<%- locals.dimension -%> * i + 1]; // The ordinate of the integration point
-        z = 0; // 2D case
+        // The abssica of the integration point
+        x = xxx[<%- locals.dimension -%> * i];
+        // The ordinate of the integration point
+        y = xxx[<%- locals.dimension -%> * i + 1];
+        z = 0;
 <% if (locals.dimension !== 2){ -%>
         z = xxx[3 * i + 2]; // 3D case
 <% } -%>
         
-        R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
-        real xproj = proj.x; // Abssica of the projection of the integration point
-        real yproj = proj.y; // Ordinate of the projection of the integration point
+        // Projection of the integration point
+        R3 proj = projection(Lh, nu = nu, Phat = ph);
+        // Abssica of the projection of the integration point
+        real xproj = proj.x;
+        // Ordinate of the projection of the integration point
+        real yproj = proj.y;
 <% if (locals.dimension !== 2){ -%>
         real zproj = proj.z; // 3D case
 <% } -%>
         
-        int IDseg = nu;
-        posi[i] = IDseg; // The segment ID in 2D and The triangle ID in 3D
+        position[i] = nu;
         
-        int dofx0 = segdof2[<%- locals.dimension -%> * IDseg]; // dof x of the first vertice of the segment IDseg (tridof2[3*IDtri] in 3D)
-        int dofx1 = segdof2[<%- locals.dimension -%> * IDseg + 1]; // dof x of the second vertice of the segment IDseg
+        // dof x of the first vertice of the element
+        int dofx0 = elementDof[<%- locals.dimension -%> * nu];
+        // dof x of the second vertice of the element
+        int dofx1 = elementDof[<%- locals.dimension -%> * nu + 1];
 <% if (locals.dimension !== 2){ -%>
-        int dofx2 = segdof2[<%- locals.dimension -%> * IDseg + 2]; // dof x of the third vertice of the triangle IDseg =IDtri
+        // dof x of the third vertice of element
+        int dofx2 = elementDof[<%- locals.dimension -%> * nu + 2];
 <% } -%>
         
-        real xA = XY2[dofx0]; // x of the first vertice of the segment IDseg
-        real yA = XY2[dofx0 + 1]; // y of the first vertice of the segment IDseg
+        // x of the first vertice of the element
+        real xA = XYZ[dofx0];
+        // y of the first vertice of the element
+        real yA = XYZ[dofx0 + 1];
 <% if (dimension !== 2){ -%>
-        real zA = XY2[dofx0 + 2]; // z of the first vertice of the triangle IDtri
+        // z of the first vertice of the element
+        real zA = XYZ[dofx0 + 2];
 <% } -%>
         
-        real xB = XY2[dofx1]; // x of the second vertice of the segment IDseg
-        real yB = XY2[dofx1 + 1]; // y of the second vertice of the segment IDseg
+        // x of the second vertice of the element
+        real xB = XYZ[dofx1];
+        // y of the second vertice of the element
+        real yB = XYZ[dofx1 + 1];
 <% if (dimension !== 2){ -%>
-        real zB = XY2[dofx1 + 2]; // z of the second vertice of the triangle IDtri
+        // z of the second vertice of the element
+        real zB = XYZ[dofx1 + 2];
+        
+        // x of the second vertice of the element
+        real xC = XYZ[dofx2];
+        // y of the second vertice of the element
+        real yC = XYZ[dofx2 + 1];
+        // z of the second vertice of the element
+        real zC = XYZ[dofx2 + 2];
 <% } -%>
         
-<% if (dimension !== 2){ -%>
-        real xC = XY2[dofx2]; // x of the second vertice of the triangle IDtri
-        real yC = XY2[dofx2 + 1]; // y of the second vertice of the triangle IDtri
-        real zC = XY2[dofx2 + 2]; // z of the second vertice of the triangle IDtri
-<% } -%>
-        
-<% if (dimension==2){ -%>
+<% if (dimension == 2) { -%>
         real dPA = sqrt((xproj - xA)^2 + (yproj - yA)^2);
         real dAB = sqrt((xB - xA)^2 + (yB - yA)^2);
-        etab[i] = dPA / dAB;
-<% } -%>
-        
-<% if (dimension !== 2){ -%>
+        etaParameters[i] = dPA / dAB;
+<% } else { -%>
         real SABC, SPAC, SPAB;
         real[int] AB(3), AC(3), BC(3), PA(3), PC(3), PB(3), provec(3);
         AB = [xB - xA, yB - yA, zB - zA];
@@ -93,19 +114,27 @@ func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi
         PC = [xC - xproj, yC - yproj, zC - zproj];
         PB = [xB - xproj, yB - yproj, zB - zproj];
         
-        provec = vectorProduct(AB, AC); // Vectorial product in order to compute the area of a triangle
-        SABC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        // Vectorial product in order to compute the area of a triangle
+        provec = vectorProduct(AB, AC);
+        // The surface of the triangle
+        SABC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5;
         
-        provec = vectorProduct(PA, PC); // Vectorial product in order to compute the area of a triangle
-        SPAC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        // Vectorial product in order to compute the area of a triangle
+        provec = vectorProduct(PA, PC);
+        // The surface of the triangle
+        SPAC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5;
         
-        provec = vectorProduct(PA, PB); // Vectorial product in order to compute the area of a triangle
-        SPAB = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        // Vectorial product in order to compute the area of a triangle
+        provec = vectorProduct(PA, PB);
+        // The surface of the triangle
+        SPAB = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5;
         
-        etab[2 * i] = SPAC / SABC; // First parameter (surface of triangle PAC / surface of triangle ABC)
-        etab[2 * i + 1] = SPAB / SABC; // Second parameter (surface of triangle PAB / surface of triangle ABC)
+        // First parameter (surface of triangle PAC / surface of triangle ABC)
+        etaParameters[2 * i] = SPAC / SABC;
+        // Second parameter (surface of triangle PAB / surface of triangle ABC)
+        etaParameters[2 * i + 1] = SPAB / SABC;
 <% } -%>
-        
     }
-    return etab;
+
+    return etaParameters;
 }

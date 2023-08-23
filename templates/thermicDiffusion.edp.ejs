@@ -70,7 +70,7 @@ try {
             + Lambda * grad(<%- unknownFunction -%>)' * grad(<%- testFunction -%>)
         )
 <% for (const t of temperature){ -%>
-        + on(<%= t.labels -%>, <%- unknownFunction -%> = 0)
+        + on(<%- t.labels -%>, <%- unknownFunction -%> = 0)
 <% } -%>
         ;
     
@@ -79,7 +79,7 @@ try {
             (Rho * Cp / dt) * <%- unknownFunction -%> * <%- testFunction %>
         )
 <% for (const t of temperature){ -%>
-        + on(<%= t.labels -%>, <%- freeFunction -%> = <%- t.values[0].value ?? t.values[0].default -%>)
+        + on(<%- t.labels -%>, <%- freeFunction -%> = <%- t.values[0].value ?? t.values[0].default -%>)
 <% } -%>
         ;
     
@@ -91,7 +91,7 @@ try {
     
 <%# Matrix -%>
     appendLog("Build matrix...");
-    matrix ThermalDiffusion = vThermalDiffusion(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>);
+    matrix ThermalDiffusion = vThermalDiffusion(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>);
     
 <%# Time loop -%>
     // Time loop
@@ -105,7 +105,7 @@ try {
         t += dt;
         appendLog("Time: " + t);
         
-        real[int] ThermalDiffusionRHS = vThermalDiffusionRHS(0, <%= finiteElementSpace.name -%>);
+        real[int] ThermalDiffusionRHS = vThermalDiffusionRHS(0, <%- finiteElementSpace.name -%>);
         
         // Solve
         <%- unknownFunction -%>[] = ThermalDiffusion^-1 * ThermalDiffusionRHS;

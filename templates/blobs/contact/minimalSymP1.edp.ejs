@@ -27,8 +27,8 @@ func real[int] vectorProductNormalized(real[int] &v1, real[int] &v2) {
 <%# TODO review with Houssam -%>
 func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &segdof2) {
     meshN Th2 = ThFu;
-    int dimensio = xxx.n / <%- dimension -%>; // points number to be projected
-    real[int] etab((<%- dimension -%> - 1) * dimensio); // eta parameters of the projected points of the ip points
+    int dimensio = xxx.n / <%- locals.dimension -%>; // points number to be projected
+    real[int] etab((<%- locals.dimension -%> - 1) * dimensio); // eta parameters of the projected points of the ip points
     int nu; // The border segment number
     R3 ph;
     
@@ -36,27 +36,27 @@ func real[int] minim1(mesh3 ThFu, real[int] &xxx, real[int] &XY2, int[int] &posi
     
     for (int i = 0; i < dimensio; i++) {
         // Loop on the integration points
-        x = xxx[<%- dimension -%> * i]; // The abssica of the integration point
-        y = xxx[<%- dimension -%> * i + 1]; // The ordinate of the integration point
+        x = xxx[<%- locals.dimension -%> * i]; // The abssica of the integration point
+        y = xxx[<%- locals.dimension -%> * i + 1]; // The ordinate of the integration point
         z = 0; // 2D case
-<% if (dimension !== 2){ -%>
+<% if (locals.dimension !== 2){ -%>
         z = xxx[3 * i + 2]; // 3D case
 <% } -%>
         
         R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
         real xproj = proj.x; // Abssica of the projection of the integration point
         real yproj = proj.y; // Ordinate of the projection of the integration point
-<% if (dimension !== 2){ -%>
+<% if (locals.dimension !== 2){ -%>
         real zproj = proj.z; // 3D case
 <% } -%>
         
         int IDseg = nu;
         posi[i] = IDseg; // The segment ID in 2D and The triangle ID in 3D
         
-        int dofx0 = segdof2[<%- dimension -%> * IDseg]; // dof x of the first vertice of the segment IDseg (tridof2[3*IDtri] in 3D)
-        int dofx1 = segdof2[<%- dimension -%> * IDseg + 1]; // dof x of the second vertice of the segment IDseg
-<% if (dimension !== 2){ -%>
-        int dofx2 = segdof2[<%- dimension -%> * IDseg + 2]; // dof x of the third vertice of the triangle IDseg =IDtri
+        int dofx0 = segdof2[<%- locals.dimension -%> * IDseg]; // dof x of the first vertice of the segment IDseg (tridof2[3*IDtri] in 3D)
+        int dofx1 = segdof2[<%- locals.dimension -%> * IDseg + 1]; // dof x of the second vertice of the segment IDseg
+<% if (locals.dimension !== 2){ -%>
+        int dofx2 = segdof2[<%- locals.dimension -%> * IDseg + 2]; // dof x of the third vertice of the triangle IDseg =IDtri
 <% } -%>
         
         real xA = XY2[dofx0]; // x of the first vertice of the segment IDseg

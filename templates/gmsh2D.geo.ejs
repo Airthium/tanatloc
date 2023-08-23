@@ -1,7 +1,7 @@
 SetFactory("OpenCASCADE");
 
 Geometry.OCCScaling = 1.e-3;
-S() = ShapeFromFile("<%= geometry %>");
+S() = ShapeFromFile("<%- geometry %>");
 
 Mesh.Optimize = 1;
 
@@ -55,7 +55,7 @@ veryFine = max - 1. * (max - min);
 // Global size
 <% if (type === 'manual') { -%>
 // Manual size
-globalSize = <%= value %>;
+globalSize = <%- value %>;
 <% } else { -%>
 // Automatic size
 	<% if (value === 'verycoarse') { -%>
@@ -113,13 +113,13 @@ EndFor
 	const selected = refinement.selected.map(selected => selected.label)
 	if (0){//refinement.selection.type === 'solids') {
 -%>
-P() = PointsOf { Surface{<%= selected.join('') %>}; };
+P() = PointsOf { Surface{<%- selected.join('') %>}; };
 <% } else { -%>
-P() = PointsOf { Curve{<%= selected.join(',') %>}; };
+P() = PointsOf { Curve{<%- selected.join(',') %>}; };
 <% } -%>
 <% if (refinement.type === 'manual') { -%>
 // Manual refinement
-localSize = <%= refinement.value %>;
+localSize = <%- refinement.value %>;
 <% } else if (refinement.type === 'auto') { -%>
 // Automatic refinement
 <% if (refinement.fineness === 'verycoarse') { -%>
@@ -140,7 +140,7 @@ localSize = normal;
 <% } -%>
 <% } else if (refinement.type === 'factor') {-%>
 // Factor refinement
-localSize = globalSize / <%= refinement.factor -%>;
+localSize = globalSize / <%- refinement.factor -%>;
 <% } -%>
 Characteristic Length { P[] } = localSize;
 

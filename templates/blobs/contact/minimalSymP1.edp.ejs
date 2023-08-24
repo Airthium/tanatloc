@@ -1,36 +1,10 @@
-// xxx is the array of the points to be projected
-// ABC is the array of the current coordinates of the second contact area nodes
-// Projection of a point (xp,yp) to the segments of the second body
-
-<% if (locals.dimension !== 2){ -%>
-// vector product
-func real[int] vectorProduct(real[int] &v1, real[int] &v2) {
-    // Vector product
-    real[int] product(3);
-    product[0] = v1[1] * v2[2] - v1[2] * v2[1];
-    product[1] = v1[2] * v2[0] - v1[0] * v2[2];
-    product[2] = v1[0] * v2[1] - v1[1] * v2[0];
-    return product;
-}
-
-// vector product (normalized)
-func real[int] vectorProductNormalized(real[int] &v1, real[int] &v2) {
-    // Normalized Vector product
-    real[int] product(3);
-    product[0] = v1[1] * v2[2] - v1[2] * v2[1];
-    product[1] = v1[2] * v2[0] - v1[0] * v2[2];
-    product[2] = v1[0] * v2[1] - v1[1] * v2[0];
-    product = product / ((product[0]^2 + product[1]^2 + product[2]^2)^0.5); // normalized
-    return product;
-}
-<% } -%>
-
 // Minimal projection
 // ThFu Fundation mesh
-// xxx Position of points
+// xxx Position of points to be projected
 // XYZ Fundation mesh positions
 // position Store position of the closest element of the fundation
 // elementDof Store DOF of the closest element of the fundation
+// return Projection of a point (xp,yp) to the element of the fundation
 func real[int] minimalProjection(meshN ThFu, real[int] &xxx, real[int] &XYZ, int[int] &position, int[int] &elementDof) {
     // Number of points to be projected
     int nPoints = xxx.n / <%- locals.dimension -%>;

@@ -212,28 +212,20 @@ try {
         // Solve
         <%- unknownFunctionX -%>[] = LinearElasticity^-1 * LinearElasticityRHS;
         
-        // Von Mises stress
-        fespace Sh(<%- mesh.name -%>, P2);
-        Sh epsilon11 = dx(<%- unknownFunctionX -%>);
-        Sh epsilon22 = dy(<%- unknownFunctionY -%>);
-        Sh epsilon33 = <% if (dimension === 2){ -%>0<% } else { -%>dz(<%- unknownFunctionZ -%>)<% } -%>;
-        Sh epsilon12 = 0.5 * (dy(<%- unknownFunctionX -%>) + dx(<%- unknownFunctionY -%>));
-        Sh epsilon13 = <% if (dimension === 2){ -%>0<% } else { -%>0.5 * (dz(<%- unknownFunctionX -%>) + dx(<%- unknownFunctionZ -%>))<% } -%>;
-        Sh epsilon23 = <% if (dimension === 2){ -%>0<% } else { -%>0.5 * (dy(<%- unknownFunctionZ -%>) + dz(<%- unknownFunctionY -%>))<% } -%>;
-        
-        Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
-        
-        Sh gamma11 = 2. * Mu * epsilon11 + Lambda * traceEpsilon;
-        Sh gamma22 = 2. * Mu * epsilon22 + Lambda * traceEpsilon;
-        Sh gamma33 = 2. * Mu * epsilon33 + Lambda * traceEpsilon;
-        Sh gamma12 = 2. * Mu * epsilon12;
-        Sh gamma13 = 2. * Mu * epsilon13;
-        Sh gamma23 = 2. * Mu * epsilon23;
-        
-        Sh Sigma = sqrt(
-            0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
-            + 3. * (gamma12^2 + gamma23^2 + gamma13^2)
-        );
+<%# Sigma %>
+<%- helpers.indent(include('/blobs/sigma.edp.ejs', {
+    dimension,
+    mesh,
+    elasticity: {
+        unknownFunction: {
+            x: unknownFunctionX,
+            y: unknownFunctionY,
+            z: unknownFunctionZ
+        },
+        mu: 'Mu',
+        lambda: 'Lambda'
+    },
+}), 2) -%>
         
         Sh UUx = <%- unknownFunctionX -%>;
         Sh UUy = <%- unknownFunctionY -%>;

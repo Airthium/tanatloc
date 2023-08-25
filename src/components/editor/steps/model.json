@@ -67,6 +67,29 @@
         "description": {
           "type": "string"
         },
+        "extra": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "const": "button",
+                "type": "string"
+              }
+            },
+            "required": ["type", "label", "action", "icon"],
+            "type": "object"
+          },
+          "type": "object"
+        },
         "haveInit": {
           "type": "boolean"
         },
@@ -172,17 +195,7 @@
         },
         "variables": {
           "items": {
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            },
-            "required": ["name", "value"],
-            "type": "object"
+            "$ref": "#/definitions/IModelVariable"
           },
           "type": "array"
         },
@@ -1188,6 +1201,22 @@
         }
       },
       "required": ["label"],
+      "type": "object"
+    },
+    "IModelVariable": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "only3D": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": ["label", "value"],
       "type": "object"
     },
     "IUnit": {

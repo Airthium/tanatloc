@@ -284,7 +284,9 @@ describe('components/project/view/three', () => {
       {
         type: 'PointLight',
         position: {
-          multiplyScalar: jest.fn()
+          copy: () => ({
+            add: jest.fn()
+          })
         }
       },
       { type: 'AxisHelper' },

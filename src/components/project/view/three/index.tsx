@@ -238,10 +238,9 @@ export const _zoomToFit = (
 
   // Light
   const light = scene.children.find((child) => child.type === 'PointLight')
-  if (light)
-    light.position
-      .copy(camera.position)
-      .add(lightDeviation.multiplyScalar(distance))
+  light?.position
+    .copy(camera.position)
+    .add(lightDeviation.multiplyScalar(distance))
 }
 
 /**

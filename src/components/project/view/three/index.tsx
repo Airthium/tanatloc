@@ -135,6 +135,11 @@ const zoomFactor = 0.01
 let alreadyZoomToFit = false
 
 /**
+ * Light deviation
+ */
+const lightDeviation = new Vector3(1, 1, 1)
+
+/**
  * Compute scene bounding box
  * @param scene Scene
  */
@@ -230,6 +235,13 @@ export const _zoomToFit = (
   camera.near = distance / 100
   camera.far = distance * 100
   camera.updateProjectionMatrix()
+
+  // Light
+  const light = scene.children.find((child) => child.type === 'PointLight')
+  if (light)
+    light.position
+      .copy(camera.position)
+      .add(lightDeviation.multiplyScalar(distance))
 }
 
 /**
@@ -538,13 +550,12 @@ const ThreeView = ({ loading, project, parts }: IProps): React.JSX.Element => {
     camera.current.position.z = 10
 
     // Light
-    const ambientLight = new AmbientLight('#aaa', 0.75)
+    const ambientLight = new AmbientLight('#ccc', 0.75)
     scene.current.add(ambientLight)
 
-    const pointLight1 = new PointLight('#fff', 0.5)
-    pointLight1.decay = 2
-
-    camera.current.add(pointLight1)
+    const pointLight = new PointLight('#fff', 0.5)
+    pointLight.decay = 0
+    scene.current.add(pointLight)
 
     scene.current.add(camera.current)
 

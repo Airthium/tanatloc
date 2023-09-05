@@ -13,7 +13,7 @@ const GoogleTag = (): null => {
 
   // Check cookie
   useEffect(() => {
-    if (cookies['gpdr-gtag-accept'] !== 'true') return
+    if (!cookies['gpdr-gtag-accept']) return
 
     const script = document.createElement('script')
     script.src = 'https://www.googletagmanager.com/gtag/js?id=G-NYKWRV173F'

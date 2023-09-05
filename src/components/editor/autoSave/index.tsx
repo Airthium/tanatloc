@@ -27,7 +27,7 @@ const AutoSave = (): React.JSX.Element => {
 
   // Auto-save
   useEffect(() => {
-    if (cookies.accepted === 'true') {
+    if (cookies.accepted) {
       setDisabled(false)
 
       if (checked) {

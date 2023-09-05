@@ -20,7 +20,7 @@ describe('components/assets/gtag', () => {
   })
 
   test('ok', () => {
-    mockUseCookies.mockImplementation(() => [{ 'gpdr-gtag-accept': 'true' }])
+    mockUseCookies.mockImplementation(() => [{ 'gpdr-gtag-accept': true }])
     const { unmount } = render(<GoogleTag />)
 
     const script = document.getElementsByTagName('script')[0]

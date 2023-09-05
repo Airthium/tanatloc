@@ -117,8 +117,8 @@ const Cookies = (): React.JSX.Element => {
                   <Form
                     className={style.descriptionForm}
                     initialValues={{
-                      accepted: cookies.accepted === 'true',
-                      'gpdr-gtag-accept': cookies['gpdr-gtag-accept'] === 'true'
+                      accepted: cookies.accepted,
+                      'gpdr-gtag-accept': cookies['gpdr-gtag-accept']
                     }}
                     size="small"
                     colon={false}

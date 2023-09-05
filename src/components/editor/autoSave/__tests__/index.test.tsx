@@ -23,14 +23,14 @@ describe('components/editor/autoSave', () => {
   })
 
   test('accepted', () => {
-    mockUseCookies.mockImplementation(() => [{ accepted: 'true' }])
+    mockUseCookies.mockImplementation(() => [{ accepted: true }])
     const { unmount } = render(<AutoSave />)
 
     unmount()
   })
 
   test('uncheck', () => {
-    mockUseCookies.mockImplementation(() => [{ accepted: 'true' }])
+    mockUseCookies.mockImplementation(() => [{ accepted: true }])
     const { unmount } = render(<AutoSave />)
 
     const switcher = screen.getByRole('switch')
@@ -40,7 +40,7 @@ describe('components/editor/autoSave', () => {
   })
 
   test('reload', () => {
-    mockUseCookies.mockImplementation(() => [{ accepted: 'true' }])
+    mockUseCookies.mockImplementation(() => [{ accepted: true }])
     const { unmount } = render(<AutoSave />)
 
     const button = screen.getByRole('button')

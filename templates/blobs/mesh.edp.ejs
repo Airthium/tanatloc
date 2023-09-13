@@ -1,7 +1,7 @@
 // Mesh
 appendLog("Read mesh...");
 
-<% if (locals.dimension !== 2) { -%>load "msh3"<% } -%>
+<% if (locals.dimension !== 2) { -%>load "msh3"<% } %>
 <%- include('./gmshMesh.edp.ejs', {
 	dimension: locals.dimension,
 	mesh: locals.mesh

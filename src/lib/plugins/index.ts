@@ -30,7 +30,10 @@ export const loadPlugins = async (): Promise<IPlugin[]> => {
         ? await require(`../../../plugins/${available}`)
         : await import(`../../../plugins/${available}`)
       process.stdout.write(' loaded\n')
-      plugins.push(plugin.default)
+      plugins.push({
+        rootDirectory: available,
+        ...plugin.default
+      })
     } catch (err) {
       process.stdout.write(' ERROR\n')
       console.error(err)
@@ -109,6 +112,7 @@ const serverList = async (): Promise<IServerPlugin[]> => {
   return tanatloc.plugins?.map((plugin) => ({
     category: plugin.category,
     key: plugin.key,
+    rootDirectory: plugin.rootDirectory,
     ...plugin.server
   }))
 }

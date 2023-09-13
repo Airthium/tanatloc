@@ -74,13 +74,24 @@ const loadPluginsTemplates = async (): Promise<ITemplates> => {
           template.file
         )
       )
+
       const func = ejs.compile(content.toString(), {
-        root: path.join(
-          isElectron()
-            ? process.resourcesPath + '/extra/server/tanatloc'
-            : './',
-          'templates'
-        )
+        root: [
+          path.join(
+            isElectron()
+              ? process.resourcesPath + '/extra/server/tanatloc'
+              : './',
+            'plugins',
+            plugin.rootDirectory!,
+            'template'
+          ),
+          path.join(
+            isElectron()
+              ? process.resourcesPath + '/extra/server/tanatloc'
+              : './',
+            'templates'
+          )
+        ]
       })
       templates[template.key] = func as unknown as AsyncTemplateFunction
       process.stdout.write(' loaded\n')

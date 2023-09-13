@@ -7,6 +7,7 @@ export interface IPlugin {
   uuid?: string
   key?: string
   category?: string
+  rootDirectory?: string
   client?: {
     name?: string
     description?: string

@@ -151,6 +151,7 @@ describe('src/lib/plugins', () => {
       {
         category: 'HPC1',
         key: 'key1',
+        rootDirectory: 'plugin',
         server: {
           lib: {}
         },
@@ -161,6 +162,7 @@ describe('src/lib/plugins', () => {
       {
         category: 'HPC2',
         key: 'key2',
+        rootDirectory: 'pluginHPC',
         server: {
           lib: {
             monitoring: jest.fn
@@ -175,7 +177,10 @@ describe('src/lib/plugins', () => {
     // Electron
     mockElectron.mockReturnValue(true)
     plugins = await loadPlugins()
-    expect(plugins).toEqual([])
+    expect(plugins).toEqual([
+      { rootDirectory: 'plugin' },
+      { rootDirectory: 'pluginHPC' }
+    ])
   })
 
   test('restartJobs', async () => {

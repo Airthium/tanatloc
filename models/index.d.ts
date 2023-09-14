@@ -116,7 +116,7 @@ export interface IModelMaterials extends IModelCommon {
 export interface IModelMaterialsChild {
   label: string
   name: string
-  htmlEntity: string
+  htmlEntity: 'formula' | 'select' | 'checkbox'
   default: number | string
   units?: IUnit[]
   unit?: IUnit

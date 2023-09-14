@@ -110,7 +110,7 @@ export const _onAdd = (
         ...materials.map((material) => ({
           label: material.label,
           name: material.name,
-          htmlEntity: 'formula',
+          htmlEntity: 'formula' as 'formula',
           default: +material.default,
           units: material.units,
           unit: material.unit

@@ -52,6 +52,10 @@ const dataPath = 'data'
 // dB update delay
 const updateDelay = 1000 // ms
 
+/**
+ * Initialization
+ * @param configuration Configuration
+ */
 const init = async (
   configuration: IClientPlugin['configuration']
 ): Promise<void> => {
@@ -104,6 +108,15 @@ const updateTasks = (id: string, tasks: ISimulationTask[]): void => {
       ])
     } catch (err) {}
   })()
+}
+
+/**
+ * Update tasks helper
+ */
+export interface UpdateTasksHelper {
+  tasks?: ISimulationTask[]
+  currentTask?: ISimulationTask
+  updateTasks: () => void
 }
 
 /**
@@ -173,16 +186,14 @@ const getRefinements = (
 
 /**
  * Compute meshes
- * @param id Simulation id
  * @param simulationPath Simulation path
  * @param configuration Configuration
- * @param tasks Tasks
+ * @param udpateTasksHelper Update tasks helper
  */
 const computeMeshes = async (
-  id: string,
   simulationPath: string,
   configuration: IModel['configuration'],
-  tasks: ISimulationTask[]
+  { tasks, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   const geometry = configuration.geometry
   if (!geometry.meshable) return
@@ -199,7 +210,6 @@ const computeMeshes = async (
       const value = geometry.values![i]
       const data = geometry.datas![i]
       const mesh = await computeMesh(
-        id,
         simulationPath,
         {
           dimension,
@@ -210,7 +220,7 @@ const computeMeshes = async (
             cloudServer
           }
         },
-        tasks
+        { tasks, updateTasks }
       )
       geometry.meshes = [...geometry.meshes, mesh]
     }
@@ -218,7 +228,6 @@ const computeMeshes = async (
     const value = geometry.value
     const data = geometry.data
     const mesh = await computeMesh(
-      id,
       simulationPath,
       {
         dimension,
@@ -229,7 +238,7 @@ const computeMeshes = async (
           cloudServer
         }
       },
-      tasks
+      { tasks, updateTasks }
     )
     geometry.mesh = mesh
   }
@@ -237,13 +246,11 @@ const computeMeshes = async (
 
 /**
  * Compute mesh
- * @param id Simulation id
  * @param simulationPath Simulation path
  * @param configuration Configuration
- * @param tasks Tasks
+ * @param updateTasksHelper Update tasks helper
  */
 const computeMesh = async (
-  id: string,
   simulationPath: string,
   configuration: {
     dimension: IModel['configuration']['dimension']
@@ -258,14 +265,14 @@ const computeMesh = async (
       cloudServer: IModel['configuration']['run']['cloudServer']
     }
   },
-  tasks: ISimulationTask[]
+  { tasks, updateTasks }: UpdateTasksHelper
 ): Promise<ISimulationTaskFile> => {
   // Time
   const start = Date.now()
 
   // Task
   const meshingTask: ISimulationTask = {
-    index: tasks.length,
+    index: tasks!.length,
     label: 'Mesh (' + configuration.geometry.data?.name + ')',
     status: 'wait',
     pid: undefined,
@@ -274,8 +281,8 @@ const computeMesh = async (
     warning: '',
     error: ''
   }
-  tasks.push(meshingTask)
-  updateTasks(id, tasks)
+  tasks!.push(meshingTask)
+  updateTasks()
 
   try {
     if (
@@ -289,7 +296,7 @@ const computeMesh = async (
       // Build not needed
       meshingTask.log += 'Coupling: skip mesh build'
       meshingTask.status = 'finish'
-      updateTasks(id, tasks)
+      updateTasks()
       return {} as ISimulationTaskFile
     }
 
@@ -352,7 +359,7 @@ const computeMesh = async (
 
       data && (meshingTask.log += data + '\n')
 
-      if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+      if ((Date.now() - start) % updateDelay === 0) updateTasks()
     }
 
     // Configuration
@@ -393,16 +400,60 @@ const computeMesh = async (
     // Task
     meshingTask.status = 'finish'
     meshingTask.file = mesh
-    updateTasks(id, tasks)
+    updateTasks()
 
     return mesh
   } catch (err: any) {
     // Task
     meshingTask.status = 'error'
     meshingTask.error += 'Fatal error: ' + err.message
-    updateTasks(id, tasks)
+    updateTasks()
 
     throw err
+  }
+}
+
+/**
+ * Check custom FreeFEM plugins
+ * @param simulationPath Simulation path
+ * @param plugins Plugins
+ * @param updateTasksHelper Update tasks helper
+ */
+const checkCustomFreeFEMPlugins = async (
+  simulationPath: string,
+  plugins: IModel['customFreeFEMPlugins'],
+  { currentTask, updateTasks }: UpdateTasksHelper
+): Promise<void> => {
+  if (!plugins) return
+
+  // Plugin
+  for (const plugin of plugins) {
+    // File
+    await Tools.copyFile(
+      { path: plugin.path, file: plugin.file },
+      { path: simulationPath, file: plugin.file }
+    )
+    // Header
+    for (const header of plugin.headers) {
+      await Tools.copyFile(
+        { path: plugin.path, file: header },
+        { path: simulationPath, file: header }
+      )
+    }
+
+    // Compile
+    try {
+      const command = 'ff-c++ ' + (plugin.mpi ? '-mpi ' : '') + plugin.file
+      execSync(command, {
+        cwd: simulationPath
+      })
+      currentTask!.pluginLog += 'Compiled FreeFEM plugin ' + plugin.file + '\n'
+      updateTasks()
+    } catch (err) {
+      currentTask!.pluginLog +=
+        'Unable to compile FreeFEM plugin ' + plugin.file + '\n'
+      updateTasks()
+    }
   }
 }
 
@@ -446,7 +497,10 @@ const computeSimulation = async (
 
   // Meshes
   if (!keepMesh) {
-    await computeMeshes(id, simulationPath, configuration, tasks)
+    await computeMeshes(simulationPath, configuration, {
+      tasks,
+      updateTasks: () => updateTasks(id, tasks)
+    })
     // Save mesh/meshes for reuse
     scheme.configuration.geometry.mesh &&
       (await Simulation.update({ id }, [
@@ -474,6 +528,7 @@ const computeSimulation = async (
     index: tasks.length,
     label: 'Simulation',
     pid: undefined,
+    pluginLog: '',
     log: '',
     warning: '',
     error: '',
@@ -483,6 +538,12 @@ const computeSimulation = async (
   }
   tasks.push(simulationTask)
   updateTasks(id, tasks)
+
+  // Custom FreeFEM plugins
+  await checkCustomFreeFEMPlugins(simulationPath, scheme.customFreeFEMPlugins, {
+    currentTask: simulationTask,
+    updateTasks: () => updateTasks(id, tasks)
+  })
 
   try {
     // Build the simulation script
@@ -511,9 +572,10 @@ const computeSimulation = async (
     await Tools.createPath(path.join(simulationPath, runPath, dataPath))
 
     // Compute simulation
-    Local.startProcess(id, simulationPath, simulationTask, () =>
-      updateTasks(id, tasks)
-    )
+    Local.startProcess(id, simulationPath, {
+      currentTask: simulationTask,
+      updateTasks: () => updateTasks(id, tasks)
+    })
     const freefemPath =
       configuration.run.cloudServer?.configuration?.freefemPath?.value
     const code = await Services.freefem(
@@ -533,9 +595,10 @@ const computeSimulation = async (
       freefemPath
     )
 
-    await stopProcess(id, simulationPath, simulationTask, () =>
-      updateTasks(id, tasks)
-    )
+    await stopProcess(id, simulationPath, {
+      currentTask: simulationTask,
+      updateTasks: () => updateTasks(id, tasks)
+    })
 
     // check code
     if (code !== 0) throw new Error('Simulating process failed. Code ' + code)
@@ -547,9 +610,10 @@ const computeSimulation = async (
     // Task
     simulationTask.status = 'error'
     simulationTask.error += 'Fatal error: ' + err.message
-    stopProcess(id, simulationPath, simulationTask, () =>
-      updateTasks(id, tasks)
-    ).catch(console.warn)
+    stopProcess(id, simulationPath, {
+      currentTask: simulationTask,
+      updateTasks: () => updateTasks(id, tasks)
+    }).catch(console.warn)
     updateTasks(id, tasks)
 
     throw err
@@ -573,9 +637,10 @@ const monitoring = async (
   await checkDatas(id, simulationTask)
 
   const simulationPath = path.join(SIMULATION, id)
-  await stopProcess(id, simulationPath, simulationTask, () =>
-    updateTasks(id, tasks)
-  )
+  await stopProcess(id, simulationPath, {
+    currentTask: simulationTask,
+    updateTasks: () => updateTasks(id, tasks)
+  })
 
   simulationTask.status = 'finish'
   updateTasks(id, tasks)
@@ -657,21 +722,20 @@ const checkDatas = async (
  * Start process results & datas
  * @param id Simulation id
  * @param simulationPath Simulation path
- * @param task Simulation task
- * @param update Update task
+ * @param updateTasksHelper Update tasks helper
  * @returns Interval id
  */
 const startProcess = (
   id: string,
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): SetIntervalAsyncTimer<any> => {
   if (!interval[id]) {
     results[id] = []
     datas[id] = []
     interval[id] = setIntervalAsync(
-      async () => processOutput(id, simulationPath, task, update),
+      async () =>
+        processOutput(id, simulationPath, { currentTask, updateTasks }),
       updateDelay
     )
   }
@@ -683,41 +747,37 @@ const startProcess = (
  * Stop process results and datas
  * @param id Simulation id
  * @param simulationPath Simulation path
- * @param task Simulation task
- * @param update Update task
+ * @param updateTasksHelper Update tasks helper
  */
 const stopProcess = async (
   id: string,
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   if (interval[id]) {
     await clearIntervalAsync(interval[id])
     delete interval[id]
   }
 
-  await processOutput(id, simulationPath, task, update)
+  await processOutput(id, simulationPath, { currentTask, updateTasks })
 }
 
 /**
  * Process results & datas
  * @param id Simulation id
  * @param simulationPath Simulation path
- * @param task Simulation task
- * @param update Update task
+ * @param updateTasksHelper Update tasks helper
  */
 const processOutput = async (
   id: string,
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Log
   try {
     const log = await Tools.readFile(path.join(simulationPath, logFileName))
-    task.log = log.toString()
-    update()
+    currentTask!.log = log.toString()
+    updateTasks()
   } catch (err) {}
 
   // Result / data
@@ -734,10 +794,16 @@ const processOutput = async (
     const dataOutputs = JSONLines.filter((l) => l.type === 'DATA')
 
     // Results
-    await processResults(id, resultOutputs, simulationPath, task, update)
+    await processResults(id, resultOutputs, simulationPath, {
+      currentTask,
+      updateTasks
+    })
 
     // Data
-    await processDatas(id, dataOutputs, simulationPath, task, update)
+    await processDatas(id, dataOutputs, simulationPath, {
+      currentTask,
+      updateTasks
+    })
   } catch (err) {}
 }
 
@@ -746,15 +812,13 @@ const processOutput = async (
  * @param id Id
  * @param result Result
  * @param simulationPath Simulation Path
- * @param task Task
- * @param update Update
+ * @param updateTasksHelper Update tasks helper
  */
 const processResult = async (
   id: string,
   result: IOutput,
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Already existing result
   if (!results[id]) results[id] = []
@@ -774,16 +838,16 @@ const processResult = async (
       },
       ({ error }) => {
         error &&
-          (task.warning +=
+          (currentTask!.warning +=
             'Warning: Result converting process failed (' + error + ')\n')
       },
       { isResult: true }
     )
-    update()
+    updateTasks()
 
     // Add to task
-    task.files = [
-      ...(task.files ?? []),
+    currentTask!.files = [
+      ...(currentTask!.files ?? []),
       ...newResults.map((res) => ({
         type: 'result',
         fileName: resFile,
@@ -794,11 +858,11 @@ const processResult = async (
         extra: result.extra
       }))
     ]
-    update()
+    updateTasks()
   } catch (err: any) {
-    task.warning +=
+    currentTask!.warning +=
       'Warning: Unable to convert result file (' + err.message + ')\n'
-    update()
+    updateTasks()
 
     // Remove line from existing results
     const index = results[id].findIndex((l) => l === result.name)
@@ -811,20 +875,18 @@ const processResult = async (
  * @param id Simulation id
  * @param resultOutputs Result outputs
  * @param simulationPath Simulation path
- * @param task Task
- * @param update Update task
+ * @param updateTasksHelper Update tasks helper
  */
 const processResults = async (
   id: string,
   resultOutputs: IOutput[],
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Get result
   await Promise.all(
     resultOutputs.map(async (output) =>
-      processResult(id, output, simulationPath, task, update)
+      processResult(id, output, simulationPath, { currentTask, updateTasks })
     )
   )
 }
@@ -834,15 +896,13 @@ const processResults = async (
  * @param id Id
  * @param data Data
  * @param simulationPath Simulation path
- * @param task Task
- * @param update Update
+ * @param updateTasksHelper Update tasks helper
  */
 const processData = async (
   id: string,
   data: IOutput,
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Already existing data
   if (!datas[id]) datas[id] = []
@@ -858,18 +918,19 @@ const processData = async (
     const dContent = await Tools.readFile(dPath)
 
     // Add to tasks
-    task.datas = [
-      ...(task.datas ?? []),
+    currentTask!.datas = [
+      ...(currentTask!.datas ?? []),
       {
         fileName: data.name,
         extra: data.extra,
         ...JSON.parse(dContent.toString())
       }
     ]
-    update()
+    updateTasks()
   } catch (err: any) {
-    task.warning += 'Warning: Unable to read data file (' + err.message + ')\n'
-    update()
+    currentTask!.warning +=
+      'Warning: Unable to read data file (' + err.message + ')\n'
+    updateTasks()
 
     // Remove line from existing datas
     const index = datas[id].findIndex((l) => l === data.name)
@@ -882,20 +943,18 @@ const processData = async (
  * @param id Simulation id
  * @param dataOutputs Data outputes
  * @param simulationPath Simulation path
- * @param task Task
- * @param update Update task
+ * @param updateTasksHelper Update tasks helper
  */
 const processDatas = async (
   id: string,
   dataOutputs: IOutput[],
   simulationPath: string,
-  task: ISimulationTask,
-  update: () => void
+  { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Get data
   await Promise.all(
     dataOutputs.map(async (output) =>
-      processData(id, output, simulationPath, task, update)
+      processData(id, output, simulationPath, { currentTask, updateTasks })
     )
   )
 }

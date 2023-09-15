@@ -227,27 +227,21 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(() => {
       throw new Error('no file')
     })
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
-    const interval = Local.startProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    const interval = Local.startProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
     expect(interval).toBe('interval')
 
-    Local.startProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    Local.startProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
   })
 
   test('stopProcess', async () => {
@@ -256,12 +250,10 @@ describe('plugins/local/src/lib', () => {
       throw new Error('no file')
     })
 
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
   })
 
   test('processResult', async () => {
@@ -273,23 +265,19 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(
       () => '{ "type": "VTU", "name": "Result.vtu" }'
     )
-    Local.startProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    Local.startProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
     // Convert error
     mockConvert.mockImplementation(() => {
       throw new Error('Convert errror')
     })
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
     // Convert error message
     mockConvert.mockImplementation((_, __, callback) => {
@@ -297,30 +285,24 @@ describe('plugins/local/src/lib', () => {
       callback({ data: 'Data' })
       return [{ name: 'name', glb: 'glb' }]
     })
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
     // Ok
     mockConvert.mockImplementation(() => {
       return [{ name: 'name', glb: 'glb' }]
     })
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
   })
 
   test('processData', async () => {
@@ -332,20 +314,16 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(
       () => '{ "type": "DATA", "name": "data.dat" }'
     )
-    Local.startProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    Local.startProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
     // Error
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
 
     // Ok
     let count = 0
@@ -354,21 +332,18 @@ describe('plugins/local/src/lib', () => {
       if (count === 3) return JSON.stringify({ t: 0, x: 1 })
       return '{ "type": "DATA", "name": "data.dat" }'
     })
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
-    await Local.stopProcess(
-      'id',
-      'path',
-      { index: 1, label: 'label', status: 'wait' },
-      update
-    )
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
+    await Local.stopProcess('id', 'path', {
+      currentTask: { index: 1, label: 'label', status: 'wait' },
+      updateTasks: update
+    })
   })
 
   test('computeMeshes', async () => {
+    const update = jest.fn()
     mockGmsh.mockImplementation((_, __, ___, callback) => {
       callback({ data: 'data', error: 'error' })
       return 0
@@ -385,7 +360,6 @@ describe('plugins/local/src/lib', () => {
 
     // Not meshable
     await Local.computeMeshes(
-      'id',
       'path',
       {
         geometry: {
@@ -395,13 +369,12 @@ describe('plugins/local/src/lib', () => {
         },
         run: {}
       } as IModel['configuration'],
-      []
+      { tasks: [], updateTasks: update }
     )
 
     // Missing data
     try {
       await Local.computeMeshes(
-        'id',
         'path',
         {
           geometry: {
@@ -411,7 +384,7 @@ describe('plugins/local/src/lib', () => {
           },
           run: {}
         } as IModel['configuration'],
-        []
+        { tasks: [], updateTasks: update }
       )
       expect(true).toBe(false)
     } catch (err: any) {
@@ -420,7 +393,6 @@ describe('plugins/local/src/lib', () => {
 
     // Normal
     await Local.computeMeshes(
-      'id',
       'path',
       {
         geometry: {
@@ -435,12 +407,11 @@ describe('plugins/local/src/lib', () => {
         },
         run: {}
       } as IModel['configuration'],
-      []
+      { tasks: [], updateTasks: update }
     )
 
     // Multiple
     await Local.computeMeshes(
-      'id',
       'path',
       {
         geometry: {
@@ -459,12 +430,11 @@ describe('plugins/local/src/lib', () => {
         },
         run: {}
       } as IModel['configuration'],
-      []
+      { tasks: [], updateTasks: update }
     )
 
     // 2D
     await Local.computeMeshes(
-      'id',
       'path',
       {
         dimension: 2,
@@ -476,7 +446,7 @@ describe('plugins/local/src/lib', () => {
         },
         run: {}
       } as IModel['configuration'],
-      []
+      { tasks: [], updateTasks: update }
     )
 
     // Mesh convert error
@@ -485,7 +455,6 @@ describe('plugins/local/src/lib', () => {
     })
     try {
       await Local.computeMeshes(
-        'id',
         'path',
         {
           geometry: {
@@ -496,7 +465,7 @@ describe('plugins/local/src/lib', () => {
           },
           run: {}
         } as IModel['configuration'],
-        []
+        { tasks: [], updateTasks: update }
       )
       expect(true).toBe(false)
     } catch (err) {
@@ -507,7 +476,6 @@ describe('plugins/local/src/lib', () => {
     mockGmsh.mockReset()
     try {
       await Local.computeMeshes(
-        'id',
         'path',
         {
           geometry: {
@@ -518,7 +486,7 @@ describe('plugins/local/src/lib', () => {
           },
           run: {}
         } as IModel['configuration'],
-        []
+        { tasks: [], updateTasks: update }
       )
       expect(true).toBe(false)
     } catch (err) {
@@ -815,12 +783,7 @@ describe('plugins/local/src/lib', () => {
     jest
       .spyOn(Local, 'startProcess')
       .mockImplementationOnce(
-        (
-          _id: string,
-          _simulationPath: string,
-          _simulationTask: ISimulationTask,
-          callback: Function
-        ) => {
+        (_id: string, _simulationPath: string, { updateTasks: callback }) => {
           callback()
           return 'id' as any
         }
@@ -863,7 +826,10 @@ describe('plugins/local/src/lib', () => {
       callback()
       return 'interval'
     })
-    Local.startProcess('id', '_', {} as ISimulationTask, jest.fn)
+    Local.startProcess('id', '_', {
+      currentTask: {} as ISimulationTask,
+      updateTasks: jest.fn
+    })
     await Local.stop('id', [
       { index: 1, label: 'label', status: 'finish' },
       { index: 1, label: 'label', status: 'wait' },
@@ -876,8 +842,10 @@ describe('plugins/local/src/lib', () => {
       'new_id',
       { type: 'VTU', name: 'result', geometry: 'id' },
       'path',
-      { index: 1, label: 'task', status: 'process' },
-      () => undefined
+      {
+        currentTask: { index: 1, label: 'task', status: 'process' },
+        updateTasks: () => undefined
+      }
     )
   })
 
@@ -886,8 +854,10 @@ describe('plugins/local/src/lib', () => {
       'new_id',
       { type: 'DATA', name: 'data', geometry: 'id' },
       'path',
-      { index: 1, label: 'task', status: 'process' },
-      () => undefined
+      {
+        currentTask: { index: 1, label: 'task', status: 'process' },
+        updateTasks: () => undefined
+      }
     )
   })
 })

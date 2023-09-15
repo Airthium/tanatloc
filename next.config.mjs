@@ -16,10 +16,20 @@ const nextConfig = {
       __dirname: true
     }
 
-    config.module.rules.push({
-      test: /\.ejs/,
-      use: [{ loader: 'ignore-loader' }]
-    })
+    config.module.rules.push(
+      {
+        test: /\.ejs/,
+        use: [{ loader: 'ignore-loader' }]
+      },
+      {
+        test: /\.h/,
+        use: [{ loader: 'ignore-loader' }]
+      },
+      {
+        test: /\.cpp/,
+        use: [{ loader: 'ignore-loader' }]
+      }
+    )
 
     config.plugins.push(
       new webpack.IgnorePlugin({ resourceRegExp: /\/__tests__\// })

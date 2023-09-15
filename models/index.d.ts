@@ -32,6 +32,12 @@ export interface IModel {
   version: string
   description: string
   variables?: IModelVariable[]
+  customFreeFEMPlugins?: {
+    path: string
+    file: string
+    headers: string[]
+    mpi?: boolean
+  }[]
   configuration: {
     dimension?: number
     geometry: IModelGeometry

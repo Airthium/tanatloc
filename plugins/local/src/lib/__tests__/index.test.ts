@@ -27,6 +27,9 @@ jest.mock('set-interval-async', () => ({
   clearIntervalAsync: () => undefined
 }))
 
+const mockIsElectron = jest.fn()
+jest.mock('is-electron', () => () => mockIsElectron())
+
 jest.mock('@/config/storage', () => ({ SIMULATION: 'simulation' }))
 
 const mockUpdate = jest.fn()
@@ -88,6 +91,9 @@ describe('plugins/local/src/lib', () => {
 
     mockSetInterval.mockReset()
 
+    mockIsElectron.mockReset()
+    mockIsElectron.mockImplementation(() => false)
+
     mockUpdate.mockReset()
 
     mockConvert.mockReset()
@@ -117,6 +123,10 @@ describe('plugins/local/src/lib', () => {
     expect(Local.paths.coupling).toBeDefined()
     expect(Local.paths.result).toBeDefined()
     expect(Local.paths.data).toBeDefined()
+  })
+
+  test('emptyFunction', () => {
+    expect(Local.emptyFunction()).toBeUndefined()
   })
 
   test('init', async () => {
@@ -528,7 +538,7 @@ describe('plugins/local/src/lib', () => {
       { id: 'id' },
       {
         algorithm: 'algorithm',
-        customFreeFEMPlugins: [{}],
+        customFreeFEMPlugins: [{ path: 'path', file: 'file' }],
         configuration: { geometry: {}, run: {} }
       } as ISimulation<'scheme'[]>['scheme'],
       true
@@ -545,7 +555,9 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeSimulation({ id: 'id' }, {
         algorithm: 'algorithm',
-        customFreeFEMPlugins: [{ headers: ['header.h'], mpi: true }],
+        customFreeFEMPlugins: [
+          { path: 'path', file: 'file', headers: ['header.h'], mpi: true }
+        ],
         configuration: {
           geometry: {},
           run: {}
@@ -557,6 +569,8 @@ describe('plugins/local/src/lib', () => {
     }
 
     //With mesh
+    mockIsElectron.mockImplementation(() => true)
+    process.resourcesPath = 'resources'
     mockFreefem.mockImplementation((_, __, callback) => {
       callback({ pid: 'pid' })
       return 0
@@ -572,6 +586,9 @@ describe('plugins/local/src/lib', () => {
       { id: 'id' },
       {
         algorithm: 'algorithm',
+        customFreeFEMPlugins: [
+          { path: 'path', file: 'file', headers: ['header.h'], mpi: true }
+        ],
         //@ts-ignore
         configuration: {
           geometry: {

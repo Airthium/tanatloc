@@ -8,6 +8,7 @@ import {
   SetIntervalAsyncTimer
 } from 'set-interval-async/fixed'
 import { clearIntervalAsync } from 'set-interval-async'
+import isElectron from 'is-electron'
 
 import {
   IModel,
@@ -51,6 +52,11 @@ const dataPath = 'data'
 
 // dB update delay
 const updateDelay = 1000 // ms
+
+/**
+ * Empty function
+ */
+const emptyFunction = () => undefined
 
 /**
  * Initialization
@@ -428,15 +434,32 @@ const checkCustomFreeFEMPlugins = async (
 
   // Plugin
   for (const plugin of plugins) {
-    // File
     await Tools.copyFile(
-      { path: plugin.path, file: plugin.file },
+      {
+        path: isElectron()
+          ? path.join(
+              process.resourcesPath,
+              'extra/server/tanatloc',
+              plugin.path
+            )
+          : plugin.path,
+        file: plugin.file
+      },
       { path: simulationPath, file: plugin.file }
     )
     // Header
     for (const header of plugin.headers ?? []) {
       await Tools.copyFile(
-        { path: plugin.path, file: header },
+        {
+          path: isElectron()
+            ? path.join(
+                process.resourcesPath,
+                'extra/server/tanatloc',
+                plugin.path
+              )
+            : plugin.path,
+          file: header
+        },
         { path: simulationPath, file: header }
       )
     }
@@ -980,6 +1003,7 @@ const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
 const Local = {
   // Must be exported for each plugin
   key,
+  emptyFunction,
   init,
   getRefinements,
   computeMeshes,

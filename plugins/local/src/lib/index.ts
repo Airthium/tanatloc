@@ -188,7 +188,7 @@ const getRefinements = (
  * Compute meshes
  * @param simulationPath Simulation path
  * @param configuration Configuration
- * @param udpateTasksHelper Update tasks helper
+ * @param updateTasksHelper Update tasks helper
  */
 const computeMeshes = async (
   simulationPath: string,
@@ -434,7 +434,7 @@ const checkCustomFreeFEMPlugins = async (
       { path: simulationPath, file: plugin.file }
     )
     // Header
-    for (const header of plugin.headers) {
+    for (const header of plugin.headers ?? []) {
       await Tools.copyFile(
         { path: plugin.path, file: header },
         { path: simulationPath, file: header }
@@ -630,20 +630,19 @@ const computeSimulation = async (
 const monitoring = async (
   id: string,
   _: any,
-  tasks: ISimulationTask[],
-  simulationTask: ISimulationTask
+  { tasks, currentTask }: UpdateTasksHelper
 ): Promise<void> => {
-  await checkResults(id, simulationTask)
-  await checkDatas(id, simulationTask)
+  await checkResults(id, currentTask!)
+  await checkDatas(id, currentTask!)
 
   const simulationPath = path.join(SIMULATION, id)
   await stopProcess(id, simulationPath, {
-    currentTask: simulationTask,
-    updateTasks: () => updateTasks(id, tasks)
+    currentTask: currentTask!,
+    updateTasks: () => updateTasks(id, tasks!)
   })
 
-  simulationTask.status = 'finish'
-  updateTasks(id, tasks)
+  currentTask!.status = 'finish'
+  updateTasks(id, tasks!)
 }
 
 const interval: { [key: string]: SetIntervalAsyncTimer<any> } = {}

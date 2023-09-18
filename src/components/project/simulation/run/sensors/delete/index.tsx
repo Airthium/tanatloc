@@ -39,7 +39,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  udpate: 'Unable to update simulation'
+  update: 'Unable to update simulation'
 }
 
 /**
@@ -90,7 +90,7 @@ export const _onDelete = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    notificationDispatch(addError({ title: errors.udpate, err }))
+    notificationDispatch(addError({ title: errors.update, err }))
     throw err
   }
 }

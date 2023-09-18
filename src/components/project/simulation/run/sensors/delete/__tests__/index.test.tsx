@@ -92,7 +92,7 @@ describe('components/project/simulation/run/sensors/delete', () => {
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenCalledWith(
-        errors.udpate,
+        errors.update,
         new Error('update error')
       )
     )

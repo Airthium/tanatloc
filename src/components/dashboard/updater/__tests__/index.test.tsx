@@ -11,7 +11,7 @@ jest.mock('@/lib/update', () => ({
   needUpdate: async () => mockNeedUpdate()
 }))
 
-describe('components/dashboard/udpater', () => {
+describe('components/dashboard/updater', () => {
   beforeEach(() => {
     mockNeedUpdate.mockReset()
     mockNeedUpdate.mockImplementation(() => ({ needed: false }))

@@ -54,6 +54,7 @@ const mockListFiles = jest.fn()
 const mockRemoveFile = jest.fn()
 const mockRemoveDirectory = jest.fn()
 jest.mock('@/lib/tools', () => ({
+  copyFile: async () => jest.fn(),
   toPosix: (path: string) => path,
   createPath: async () => mockCreatePath(),
   readFile: async () => mockReadFile(),
@@ -527,12 +528,16 @@ describe('plugins/local/src/lib', () => {
       { id: 'id' },
       {
         algorithm: 'algorithm',
+        customFreeFEMPlugins: [{}],
         configuration: { geometry: {}, run: {} }
       } as ISimulation<'scheme'[]>['scheme'],
       true
     )
 
     // Simulation error
+    mockExecSync.mockImplementation(() => {
+      throw new Error('')
+    })
     mockFreefem.mockImplementation((_, __, callback) => {
       callback({})
       return 1
@@ -540,6 +545,7 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeSimulation({ id: 'id' }, {
         algorithm: 'algorithm',
+        customFreeFEMPlugins: [{ headers: ['header.h'], mpi: true }],
         configuration: {
           geometry: {},
           run: {}
@@ -798,16 +804,15 @@ describe('plugins/local/src/lib', () => {
     mockReadFile.mockImplementation(
       () => '{ "type": "DATA", "name": "Result.dat" }'
     )
-    await Local.monitoring(
-      'id',
-      '_',
-      [{ index: 1, label: 'label', status: 'wait' }],
-      {
+    await Local.monitoring('id', '_', {
+      tasks: [{ index: 1, label: 'label', status: 'wait' }],
+      currentTask: {
         index: 1,
         label: 'Task',
         status: 'finish'
-      }
-    )
+      },
+      updateTasks: jest.fn
+    })
   })
 
   test('stop', async () => {

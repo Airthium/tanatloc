@@ -3,6 +3,8 @@
 import { IModel } from '@/models/index.d'
 import { ISimulation, ISimulationTask } from '@/database/simulation'
 
+import { UpdateTasksHelper } from './local/src/lib'
+
 export interface IPlugin {
   uuid?: string
   key?: string
@@ -62,8 +64,7 @@ export interface IPlugin {
       monitoring: (
         id: string,
         pid: string | undefined,
-        tasks: ISimulationTask[],
-        simulationTask: ISimulationTask,
+        { tasks, currentTask }: UpdateTasksHelper,
         configuration?: IClientPlugin['configuration']
       ) => Promise<void>
       stop: (

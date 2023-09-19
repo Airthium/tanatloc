@@ -35,7 +35,7 @@ export interface IModel {
   customFreeFEMPlugins?: {
     path: string
     file: string
-    headers: string[]
+    headers?: string[]
     mpi?: boolean
   }[]
   configuration: {

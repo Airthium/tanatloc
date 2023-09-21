@@ -246,7 +246,7 @@ const Selector = ({
             className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
-            showArrow={false}
+            suffixIcon={null}
             placeholder="Category filter"
             onChange={setCategories}
             value={categories}
@@ -279,7 +279,7 @@ const Selector = ({
             className={globalStyle.fullWidth}
             options={availableCategories}
             allowClear
-            showArrow={false}
+            suffixIcon={null}
             placeholder="Category filter"
             onChange={setCategories}
             value={categories}

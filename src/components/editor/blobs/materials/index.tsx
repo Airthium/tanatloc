@@ -4,7 +4,7 @@ import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import JSON5 from 'json5'
 
-import { IModel } from '@/models/index.d'
+import { IModel, IModelMaterialsChild } from '@/models/index.d'
 
 import { availableSymbols } from '@/config/materials'
 
@@ -110,7 +110,7 @@ export const _onAdd = (
         ...materials.map((material) => ({
           label: material.label,
           name: material.name,
-          htmlEntity: 'formula' as 'formula',
+          htmlEntity: 'formula' as IModelMaterialsChild['htmlEntity'],
           default: +material.default,
           units: material.units,
           unit: material.unit

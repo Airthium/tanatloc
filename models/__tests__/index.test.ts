@@ -11,6 +11,6 @@ jest.mock('../description/thermicDiffusion', () => 'description')
 
 describe('models', () => {
   test('length', () => {
-    expect(models.length).toBe(8)
+    expect(models.length).toBe(9)
   })
 })

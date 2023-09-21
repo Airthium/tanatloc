@@ -12,10 +12,14 @@ try {
     const mesh = geometry.mesh
     mesh.name = variables[0].value
 -%>
+<% if (initialization.value && initialization.value.type === 'coupling'){ -%>
+    meshN <%- mesh.name -%> = readmesh3("<%- initialization.value.mesh -%>");
+<% } else { -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
-    dimension,
-    mesh
-}), 1) -%>
+        dimension,
+        mesh
+    }), 1) -%>
+<% } -%>
 
     // Variables
     real t = 0.;
@@ -89,8 +93,6 @@ try {
     type: ['Gradient', 'Divergence']
 }), 1) -%>
 
-    appendPercent(10);
-    
 <%# Problem -%>
 <%
     const symmetric = parameters.symmetric.children[0].value ?? parameters.symmetric.children[0].default
@@ -206,13 +208,14 @@ try {
         0];
 <% } -%>
 <% } -%>
+<% } -%>
 
 <%# Solve -%>
     matrix Stokes = vStokes(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
 
 <%# Time loop -%>
     // Time loop
-    appendLog("Time loop...")
+    appendLog("Time loop...");
 
     int nbIter = T / dt;
     for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
@@ -271,4 +274,3 @@ try {
     appendError("An internal error occurs");
     exit(- 1);
 }
-

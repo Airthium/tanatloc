@@ -8,6 +8,7 @@ const Templates = {
   linearElasticityTime: 'linearElasticityTime.edp.ejs',
   linearElasticityModal: 'linearElasticityModal.edp.ejs',
   stokes: 'stokes.edp.ejs',
+  stokesTime: 'stokesTime.edp.ejs',
   navierStokesTime: 'navierStokesTime.edp.ejs',
   thermicDiffusion: 'thermicDiffusion.edp.ejs',
   magnetostatic: 'magnetostatic.edp.ejs'

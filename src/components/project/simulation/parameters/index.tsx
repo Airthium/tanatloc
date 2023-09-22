@@ -1,7 +1,16 @@
 /** @module Components.Project.Simulation.Parameters */
 
 import { Dispatch, useCallback, useContext, useEffect, useMemo } from 'react'
-import { Card, Checkbox, Collapse, Form, Layout, Select, Space } from 'antd'
+import {
+  Card,
+  Checkbox,
+  Collapse,
+  Form,
+  Layout,
+  Radio,
+  Select,
+  Space
+} from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 import {
@@ -21,6 +30,7 @@ import Formula from '@/components/assets/formula'
 import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
+import { RadioChangeEvent } from 'antd/lib'
 
 /**
  * Props
@@ -218,6 +228,31 @@ export const _buildCheckbox = (
     </Form.Item>
   </Form>
 )
+
+/**
+ * Build radio
+ * @param key Key
+ * @param child Child
+ * @param onValueChange On value change
+ * @returns Radio
+ */
+export const _buildRadio = (
+  key: string,
+  child: IModelParameter,
+  onValueChange: (e: RadioChangeEvent) => void
+): React.JSX.Element => {
+  return (
+    <Form layout="vertical" key={key}>
+      <Form.Item label={child.label}>
+        <Radio.Group
+          options={child.options}
+          defaultValue={child.value ?? child.default}
+          onChange={onValueChange}
+        ></Radio.Group>
+      </Form.Item>
+    </Form>
+  )
+}
 
 /**
  * On done
@@ -502,6 +537,8 @@ const ParameterChild = ({
       return _buildSelect(pkey + '&' + index, child, onChange)
     else if (child.htmlEntity === 'checkbox')
       return _buildCheckbox(pkey + '&' + index, child, onChangeEvent)
+    else if (child.htmlEntity === 'radio')
+      return _buildRadio(pkey + '&' + index, child, onChangeEvent)
 
     return null
   }

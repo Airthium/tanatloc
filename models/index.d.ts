@@ -20,6 +20,11 @@ export interface IOutput {
 }
 
 /**
+ * HTML entity
+ */
+export type IHtmlEntity = 'formula' | 'select' | 'checkbox' | 'radio'
+
+/**
  * Model
  */
 export interface IModel {
@@ -122,7 +127,7 @@ export interface IModelMaterials extends IModelCommon {
 export interface IModelMaterialsChild {
   label: string
   name: string
-  htmlEntity: 'formula' | 'select' | 'checkbox'
+  htmlEntity: IHtmlEntity
   default: number | string
   units?: IUnit[]
   unit?: IUnit
@@ -165,7 +170,7 @@ export interface IModelParameter {
   only3D?: boolean
   label: string
   label2D?: string
-  htmlEntity: string
+  htmlEntity: IHtmlEntity
   default: TValue
   default2D?: TValue
   options?: { label: string; value: string; value2D?: string }[]
@@ -191,7 +196,7 @@ export interface IModelInitializationDirect {
 export interface IModelInitializationDirectChild {
   only3D?: boolean
   label: string
-  htmlEntity: string
+  htmlEntity: IHtmlEntity
   options?: { label: string; value: string }[]
   default: TValue
   units?: IUnit[]
@@ -272,7 +277,7 @@ export interface IModelBoundaryConditionValue {
 
 export interface IModelBoundaryCondition {
   label: string
-  htmlEntity: string
+  htmlEntity: IHtmlEntity
   default: TValue
   only3D?: boolean
   units?: IUnit[]

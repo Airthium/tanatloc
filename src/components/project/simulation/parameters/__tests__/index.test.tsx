@@ -78,7 +78,7 @@ describe('components/project/simulation/parameters', () => {
               },
               {
                 label: 'label',
-                htmlEntity: 'entity',
+                htmlEntity: 'formula',
                 default: 0
               }
             ]
@@ -89,6 +89,21 @@ describe('components/project/simulation/parameters', () => {
               {
                 label: 'Checkbox',
                 htmlEntity: 'checkbox',
+                default: 0
+              },
+              {
+                label: 'Radio',
+                htmlEntity: 'radio',
+                options: [
+                  { label: 'option1', value: 0 },
+                  { label: 'option2', value: 1 }
+                ],
+                default: 0
+              },
+              {
+                label: 'Other',
+                //@ts-ignore
+                htmlEntity: 'other',
                 default: 0
               }
             ]
@@ -242,13 +257,13 @@ describe('components/project/simulation/parameters', () => {
     const option2 = options2[1]
     await act(() => fireEvent.click(option2))
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(10))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
 
     // Checkbox
     const checkbox = screen.getByRole('checkbox')
     await act(() => fireEvent.click(checkbox))
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(12))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(10))
 
     unmount()
   })

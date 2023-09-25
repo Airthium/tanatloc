@@ -64,14 +64,14 @@ describe('components/project/simulation/materials/material', () => {
             {
               label: 'Test',
               name: 'Test',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               unit: 'unit',
               default: 0
             },
             {
               label: 'Test2',
               name: 'Test2',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 1
             }
           ]
@@ -290,7 +290,7 @@ describe('components/project/simulation/materials/material', () => {
                     {
                       label: 'Test',
                       name: 'Test',
-                      htmlEntity: 'entity',
+                      htmlEntity: 'formula',
                       unit: 'unit',
                       default: 0
                     }

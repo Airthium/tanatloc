@@ -64,7 +64,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
             children: [
               {
                 label: 'label',
-                htmlEntity: 'entity',
+                htmlEntity: 'formula',
                 default: 0
               }
             ],
@@ -87,9 +87,9 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           otherOtherKey: {
             label: 'otherOther',
             children: [
-              { label: 'label1', htmlEntity: 'entity', default: 1 },
-              { label: 'label2', htmlEntity: 'entity', default: 2 },
-              { label: 'label3', htmlEntity: 'entity', default: 3 }
+              { label: 'label1', htmlEntity: 'formula', default: 1 },
+              { label: 'label2', htmlEntity: 'formula', default: 2 },
+              { label: 'label3', htmlEntity: 'formula', default: 3 }
             ]
           }
         }
@@ -192,7 +192,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
                     {
                       only3D: true,
                       label: 'label',
-                      htmlEntity: 'entity',
+                      htmlEntity: 'formula',
                       default: 0
                     }
                   ],

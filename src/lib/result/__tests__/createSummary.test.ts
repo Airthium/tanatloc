@@ -88,7 +88,7 @@ describe('lib/download/summary', () => {
           children: [
             {
               label: 'label',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 0,
               value: 'value'
             }
@@ -99,7 +99,7 @@ describe('lib/download/summary', () => {
           children: [
             {
               label: 'label',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 'default'
             }
           ]
@@ -190,7 +190,7 @@ describe('lib/download/summary', () => {
           children: [
             {
               label: 'label',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 0,
               value: 'value'
             }
@@ -201,7 +201,7 @@ describe('lib/download/summary', () => {
           children: [
             {
               label: 'label',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 'default'
             }
           ]

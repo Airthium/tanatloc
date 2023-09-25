@@ -39,8 +39,8 @@ describe('@/components/project/simulation/run/results/tools', () => {
           time: {
             label: 'label',
             children: [
-              { label: 'label', htmlEntity: 'test', default: 0 },
-              { label: 'label', htmlEntity: 'test', default: 0.1 }
+              { label: 'label', htmlEntity: 'formula', default: 0 },
+              { label: 'label', htmlEntity: 'formula', default: 0.1 }
             ]
           }
         }

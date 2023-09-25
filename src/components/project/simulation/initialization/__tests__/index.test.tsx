@@ -66,12 +66,12 @@ describe('components/project/simulation/initialization', () => {
               children: [
                 {
                   label: 'label',
-                  htmlEntity: 'label',
+                  htmlEntity: 'formula',
                   default: 0
                 },
                 {
                   label: 'label',
-                  htmlEntity: 'label',
+                  htmlEntity: 'formula',
                   default: 1
                 }
               ]
@@ -144,12 +144,12 @@ describe('components/project/simulation/initialization', () => {
             children: [
               {
                 label: 'label',
-                htmlEntity: 'entity',
+                htmlEntity: 'formula',
                 default: 0
               },
               {
                 label: 'label',
-                htmlEntity: 'entity',
+                htmlEntity: 'formula',
                 default: 0,
                 value: 0.1
               }
@@ -574,10 +574,10 @@ describe('components/project/simulation/initialization', () => {
                 children: [
                   {
                     label: 'label',
-                    htmlEntity: 'entity',
+                    htmlEntity: 'formula',
                     default: 0
                   },
-                  { label: 'label', htmlEntity: 'entity', default: 1 }
+                  { label: 'label', htmlEntity: 'formula', default: 1 }
                 ]
               }
             },
@@ -757,12 +757,12 @@ describe('components/project/simulation/initialization', () => {
                   children: [
                     {
                       label: 'label',
-                      htmlEntity: 'entity',
+                      htmlEntity: 'formula',
                       default: 0
                     },
                     {
                       label: 'label',
-                      htmlEntity: 'entity',
+                      htmlEntity: 'formula',
                       default: 0,
                       value: 0.1
                     }
@@ -816,12 +816,12 @@ describe('components/project/simulation/initialization', () => {
                   children: [
                     {
                       label: 'label',
-                      htmlEntity: 'entity',
+                      htmlEntity: 'formula',
                       default: 0
                     },
                     {
                       label: 'label',
-                      htmlEntity: 'entity',
+                      htmlEntity: 'formula',
                       default: 0,
                       value: 0.1
                     }

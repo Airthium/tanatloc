@@ -74,10 +74,10 @@ describe('lib/download/pvd', () => {
           children: [
             {
               label: 'label',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 0
             },
-            { label: 'label', htmlEntity: 'entity', default: 0.1 }
+            { label: 'label', htmlEntity: 'formula', default: 0.1 }
           ]
         }
       }
@@ -114,10 +114,10 @@ describe('lib/download/pvd', () => {
           children: [
             {
               label: 'label',
-              htmlEntity: 'entity',
+              htmlEntity: 'formula',
               default: 0
             },
-            { label: 'label', htmlEntity: 'entity', default: 0.1 }
+            { label: 'label', htmlEntity: 'formula', default: 0.1 }
           ]
         }
       }

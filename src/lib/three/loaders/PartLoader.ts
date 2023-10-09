@@ -207,6 +207,7 @@ const PartLoader = (
     displayMesh: boolean,
     clippingPlane: Plane
   ): Promise<IPart> => {
+    console.log(JSON.stringify(part))
     const blob = new Blob([Buffer.from(part.buffer)])
     const url = URL.createObjectURL(blob)
 

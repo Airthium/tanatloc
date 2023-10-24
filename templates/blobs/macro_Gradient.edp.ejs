@@ -1,5 +1,6 @@
+<%- include('macro_gradient.edp.ejs'); -%>
 <% if (locals.dimension === 2) { -%>
-macro grad(A) [dx(A), dy(A)] //
+macro Grad(A) [grad(A[0]), grad(A[1])] //
 <% } else { -%>
-macro grad(A) [dx(A), dy(A), dz(A)] //
+macro Grad(A) [grad(A[0]), grad(A[1]), grad(A[2])] //
 <% } -%>

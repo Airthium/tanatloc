@@ -13,17 +13,18 @@ const Contact2BodiesWeak: IModel = {
   description,
   variables: [
     {
-      label: 'Displacement (x)',
-      value: 'Ux'
+      only3D: true,
+      label: 'Magnetic vector potential (x)',
+      value: 'Ax'
     },
     {
-      label: 'Displacement (y)',
-      value: 'Uy'
+      only3D: true,
+      label: 'Magnetic vector potential (y)',
+      value: 'Ay'
     },
     {
-      label: 'Displacement (z)',
-      value: 'Uz',
-      only3D: true
+      label: 'Magnetic vector potential (z)',
+      value: 'Az'
     }
   ],
   configuration: {
@@ -39,103 +40,94 @@ const Contact2BodiesWeak: IModel = {
       title: 'Materials',
       children: [
         {
-          label: 'Density',
-          name: 'Rho',
+          label: 'Magnetic permeability',
+          name: 'Mu',
           htmlEntity: 'formula',
-          default: 8050,
-          units: [{ label: 'kg.m^{-3}' }],
-          unit: { label: 'kg.m^{-3}' }
-        },
-        {
-          label: "Young's modulus",
-          name: 'E',
-          htmlEntity: 'formula',
-          default: 1e6,
-          units: [{ label: 'Pa' }],
-          unit: { label: 'Pa' }
-        },
-        {
-          label: "Poisson's ratio",
-          name: 'Nu',
-          htmlEntity: 'formula',
-          default: 0.3
+          default: '4*pi*1e-7',
+          units: [{ label: 'H.m^{-1}' }],
+          unit: { label: 'H.m^{-1}' }
         }
       ]
     },
     parameters: {
       index: 3,
       title: 'Parameters',
-      rightHandSide: {
-        label: 'Right hand side',
+      current: {
+        label: 'Current',
         children: [
           {
-            label: 'External force (x)',
+            only3D: true,
+            label: 'Current (x)',
             htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'N.m^{-3}' }],
-            unit: { label: 'N.m^{-3}' }
-          },
-          {
-            label: 'External force (y)',
-            htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'N.m^{-3}' }],
-            unit: { label: 'N.m^{-3}' }
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
           },
           {
             only3D: true,
-            label: 'External force (z)',
+            label: 'Current (y)',
             htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'N.m^{-3}' }],
-            unit: { label: 'N.m^{-3}' }
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
           },
           {
-            label: 'Gravitational acceleration (gx)',
+            label: 'Current (z)',
             htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'm.s^{-2}' }],
-            unit: { label: 'm.s^{-2}' }
-          },
-          {
-            label: 'Gravitational acceleration (gy)',
-            htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'm.s^{-2}' }],
-            unit: { label: 'm.s^{-2}' }
-          },
-          {
-            only3D: true,
-            label: 'Gravitational acceleration (gz)',
-            htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'm.s^{-2}' }],
-            unit: { label: 'm.s^{-2}' }
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
           }
         ]
       },
-      FixedIterationNumber: {
-        label: 'Contact fixed point',
+      penalty: {
+        label: 'Penalisation',
         children: [
           {
-            label: 'Maximal iterations number',
+            label: 'Penalty factor',
             htmlEntity: 'formula',
-            default: 1
+            default: '1e10'
           }
         ]
       },
-      friction: {
-        label: 'Friction',
+      finiteElementSpace: {
+        advanced: true,
+        label: 'Finite element space H(curl)',
         children: [
           {
-            label: 'Friction coefficent',
-            htmlEntity: 'formula',
-            default: 0
-          },
+            label: '[Ax, Ay, Az]',
+            label2D: '[Az]',
+            htmlEntity: 'select',
+            options: [
+              {
+                label: 'P1',
+                value: 'P1, P1, P1',
+                value2D: 'P1'
+              },
+              {
+                label: 'P2',
+                value: 'P2, P2, P2',
+                value2D: 'P2'
+              }
+            ],
+            default: 'P1, P1, P1',
+            default2D: 'P1'
+          }
+        ]
+      },
+      solver: {
+        advanced: true,
+        label: 'Solver',
+        children: [
           {
-            label: 'Quasi-static steps number',
-            htmlEntity: 'formula',
-            default: 1
+            label: 'System resolution',
+            htmlEntity: 'select',
+            options: [
+              { label: 'GMRES', value: 'GMRES' },
+              { label: 'MUMPS', value: 'MUMPS' },
+              { label: 'UMFPACK', value: 'UMFPACK' }
+            ],
+            default: 'MUMPS'
           }
         ]
       }
@@ -143,74 +135,24 @@ const Contact2BodiesWeak: IModel = {
     boundaryConditions: {
       index: 4,
       title: 'Boundary conditions',
-      fixed: {
-        label: 'Fixed',
-        refineFactor: 2
-      },
-      displacement: {
-        label: 'Displacement',
+      dirichletProd: {
+        label: 'A x n = Ad',
         children: [
           {
-            label: 'Ux',
+            label: 'Adx ',
             htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'm' }],
-            unit: { label: 'm' }
+            default: 0
           },
           {
-            label: 'Uy',
+            label: 'Ady',
             htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'm' }],
-            unit: { label: 'm' }
+            default: 0
           },
           {
             only3D: true,
-            label: 'Uz',
+            label: 'Adz',
             htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'm' }],
-            unit: { label: 'm' }
-          }
-        ],
-        refineFactor: 2
-      },
-      pressure: {
-        label: 'Surface force (normal)',
-        children: [
-          {
-            label: 'd(U)/d(N)',
-            htmlEntity: 'formula',
-            default: 0,
-            units: [{ label: 'N.m^{-2}' }],
-            unit: { label: 'N.m^{-2}' }
-          }
-        ],
-        refineFactor: 2
-      },
-      componentsPresure: {
-        label: 'Surface force (components)',
-        children: [
-          {
-            label: 'x',
-            htmlEntity: 'formula',
-            default: '0',
-            units: [{ label: 'N.m^{-2}' }],
-            unit: { label: 'N.m^{-2}' }
-          },
-          {
-            label: 'y',
-            htmlEntity: 'formula',
-            default: '0',
-            units: [{ label: 'N.m^{-2}' }],
-            unit: { label: 'N.m^{-2}' }
-          },
-          {
-            label: 'z',
-            htmlEntity: 'formula',
-            default: '0',
-            units: [{ label: 'N.m^{-2}' }],
-            unit: { label: 'N.m^{-2}' }
+            default: 0
           }
         ]
       },
@@ -224,95 +166,46 @@ const Contact2BodiesWeak: IModel = {
       results: [
         [
           {
-            name: 'Body_1_-_Displacement',
-            data: ['U1x', 'U1y', 'U1z'],
-            data2D: ['U1x', 'U1y', '0']
+            name: 'Body_1_-_VectorPotential',
+            data: ['Ax', 'Ay', 'Az'],
+            data2D: 'Az'
           },
           {
-            name: 'Body_1_-_vonMises',
-            data: 'body1Sigma'
+            name: 'Body_1_-_MagneticInduction',
+            data: ['Bx', 'By', 'Bz'],
+            data2D: 'B'
           },
           {
-            name: 'Body_1_-_gamma11',
-            data: 'body1Gamma11'
-          },
-          {
-            name: 'Body_1_-_gamma12',
-            data: 'body1Gamma12'
-          },
-          {
-            name: 'Body_1_-_gamma13',
-            data: 'body1Gamma13'
-          },
-          {
-            name: 'Body_1_-_gamma22',
-            data: 'body1Gamma22'
-          },
-          {
-            name: 'Body_1_-_gamma23',
-            data: 'body1Gamma23'
-          },
-          {
-            name: 'Body_1_-_gamma33',
-            data: 'body1Gamma33'
+            name: 'Body_1_-_MagneticField',
+            data: ['Hx', 'Hy', 'Hz'],
+            data2D: 'H'
           }
         ],
         [
           {
-            name: 'Body_2_-_Displacement',
-            data: ['U2x', 'U2y', 'U2z'],
-            data2D: ['U2x', 'U2y', '0']
+            name: 'Body_2_-_VectorPotential',
+            data: ['Ax', 'Ay', 'Az'],
+            data2D: 'Az'
           },
           {
-            name: 'Body_2_-_vonMises',
-            data: 'body2Sigma'
+            name: 'Body_2_-_MagneticInduction',
+            data: ['Bx', 'By', 'Bz'],
+            data2D: 'B'
           },
           {
-            name: 'Body_2_-_gamma11',
-            data: 'body2Gamma11'
-          },
-          {
-            name: 'Body_2_-_gamma12',
-            data: 'body2Gamma12'
-          },
-          {
-            name: 'Body_2_-_gamma13',
-            data: 'body2Gamma13'
-          },
-          {
-            name: 'Body_2_-_gamma22',
-            data: 'body2Gamma22'
-          },
-          {
-            name: 'Body_2_-_gamma23',
-            data: 'body2Gamma23'
-          },
-          {
-            name: 'Body_2_-_gamma33',
-            data: 'body2Gamma33'
+            name: 'Body_2_-_MagneticField',
+            data: ['Hx', 'Hy', 'Hz'],
+            data2D: 'H'
           }
         ]
       ],
       postprocessing: [
         {
-          key: 'warpByVector',
-          parameters: [{ key: 'Vectors', value: 'Displacement' }]
-        },
-        {
-          key: 'contour',
+          key: 'streamTracer',
           parameters: [
             {
-              key: 'ContourBy',
-              options: [
-                'Displacement',
-                'vonMises',
-                'gamma11',
-                'gamma12',
-                'gamma13',
-                'gamma22',
-                'gamma23',
-                'gamma33'
-              ]
+              key: 'Vectors',
+              value: 'MagneticInduction'
             }
           ]
         }

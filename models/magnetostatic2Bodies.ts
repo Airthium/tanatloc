@@ -1,13 +1,13 @@
-/** @module Models.Magnetostatic */
+/** @module Models.Magnetostatic2Bodies */
 
 import { IModel } from './index.d'
 
 import description from './description/magnetostatic2Bodies'
 
-const Contact2BodiesWeak: IModel = {
-  category: 'Electromagntism',
-  name: 'Magnetostatic',
-  algorithm: 'magnetostatic',
+const Magnetostatic2Bodies: IModel = {
+  category: 'Electromagnetism',
+  name: 'Magnetostatic 2 Bodies',
+  algorithm: 'magnetostatic2Bodies',
   code: 'FreeFEM',
   version: '1.0.0',
   description,
@@ -214,4 +214,4 @@ const Contact2BodiesWeak: IModel = {
   }
 }
 
-export default Contact2BodiesWeak
+export default Magnetostatic2Bodies

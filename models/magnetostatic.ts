@@ -8,7 +8,7 @@ import description from './description/magnetostatic'
  * Magnetostatic
  */
 const Magnetostatic: IModel = {
-  category: 'Electromagntism',
+  category: 'Electromagnetism',
   name: 'Magnetostatic',
   algorithm: 'magnetostatic',
   code: 'FreeFEM',

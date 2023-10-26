@@ -1,4 +1,4 @@
-/** @module Models.Description.Magnetostatic */
+/** @module Models.Description.Magnetostatic2Bodies */
 
 import ReactDOMServer from 'react-dom/server'
 import MathJax from '@/components/assets/mathjax'

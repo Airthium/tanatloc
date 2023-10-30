@@ -18,7 +18,9 @@ import {
   WebGLRenderer
 } from 'three'
 
+//@ts-ignore
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
+//@ts-ignore
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
@@ -149,7 +151,7 @@ const NotFound = (): React.JSX.Element => {
     // Load
     fontLoader.load(
       'fonts/saira/Saira_Black_Regular.json',
-      (font) => {
+      (font: any) => {
         // Geometry
         const text = new TextGeometry('404', {
           font: font,
@@ -191,7 +193,7 @@ const NotFound = (): React.JSX.Element => {
         group.add(mesh)
       },
       () => {},
-      (err) => {
+      (err: any) => {
         console.error('An error happened')
         console.error(err)
       }

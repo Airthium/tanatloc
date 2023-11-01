@@ -680,30 +680,30 @@ const Index = (): React.JSX.Element => {
                 </a>
               </Space>
             }
-            top={
-              <Side
-                left={<></>}
-                right={
-                  <>
-                    <Typography.Title level={2}>
-                      Support our fight against climate change
-                    </Typography.Title>
-                    <a
-                      href="https://wefunder.com/airthium"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button size="large">
-                        <strong>Invest in our crowdfunding</strong>
-                      </Button>
-                    </a>
-                  </>
-                }
-                sideClassName={globalStyle.backgroundPrimary}
-                leftClassName={style.turbine}
-                rightClassName={`${style.indexPadding} ${style.crowdfunding}`}
-              />
-            }
+            // top={
+            //   <Side
+            //     left={<></>}
+            //     right={
+            //       <>
+            //         <Typography.Title level={2}>
+            //           Support our fight against climate change
+            //         </Typography.Title>
+            //         <a
+            //           href="https://wefunder.com/airthium"
+            //           target="_blank"
+            //           rel="noreferrer"
+            //         >
+            //           <Button size="large">
+            //             <strong>Invest in our crowdfunding</strong>
+            //           </Button>
+            //         </a>
+            //       </>
+            //     }
+            //     sideClassName={globalStyle.backgroundPrimary}
+            //     leftClassName={style.turbine}
+            //     rightClassName={`${style.indexPadding} ${style.crowdfunding}`}
+            //   />
+            // }
             sideClassName={style.about}
             leftClassName={style.indexPadding}
             rightClassName={style.indexPadding}

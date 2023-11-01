@@ -345,7 +345,7 @@ const Doc = () => {
                   , a deeptech startup working on decarbonizing the planet{' '}
                   <img src="/images/earth.png" alt="earth" />.
                 </Typography.Text>
-                <Typography.Text>
+                {/* <Typography.Text>
                   Learn more and support our efforts by investing in our{' '}
                   <a
                     href="https://wefunder.com/airthium"
@@ -355,7 +355,7 @@ const Doc = () => {
                     crowdfunding
                   </a>
                   !
-                </Typography.Text>
+                </Typography.Text> */}
               </Typography>
 
               <Typography className={style.text}>

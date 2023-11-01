@@ -38,4 +38,8 @@ yarn run prestart >>node.local.log 2>&1
 echo " + Build"
 yarn run build >>node.local.log 2>&1
 
+# Export
+echo " + Export"
+NEXT_PUBLIC_SERVER_MODE=frontpage yarn build
+
 echo "All done!"

@@ -41,7 +41,8 @@ const nextConfig = {
   env: {
     SENTRY_DSN: Sentry.DSN
   },
-  basePath
+  basePath,
+  output: process.env.NEXT_PUBLIC_SERVER_MODE ? 'export' : undefined
 }
 
 export default nextConfig

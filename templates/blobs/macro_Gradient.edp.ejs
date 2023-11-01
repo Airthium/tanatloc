@@ -1,4 +1,4 @@
-<%- include('macro_gradient.edp.ejs'); -%>
+<%- include('macro_scalarGradient.edp.ejs'); -%>
 <% if (locals.dimension === 2) { -%>
 macro Grad(A) [grad(A[0]), grad(A[1])] //
 <% } else { -%>

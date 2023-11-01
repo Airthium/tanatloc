@@ -1,0 +1,37 @@
+// Von mises stress
+fespace Sh(<%- locals.mesh.name -%>, P1);
+Sh epsilon11 = dx(<%- locals.elasticity.unknownFunction.x -%>)
+<% if (locals.thermic) { -%>
+    - <%- locals.thermic.alpha -%> * (<%- locals.thermic.unknownFunction -%> - <%- locals.thermic.T0 -%>)
+<% } -%>;
+Sh epsilon22 = dy(<%- locals.elasticity.unknownFunction.y -%>)
+<% if (locals.thermic) { -%>
+    - <%- locals.thermic.alpha -%> * (<%- locals.thermic.unknownFunction -%> - <%- locals.thermic.T0 -%>)
+<% } -%>;
+Sh epsilon33 =
+<% if (locals.dimension === 2) { -%>
+<% if (locals.thermic) { -%>
+    -<%- locals.thermic.alpha -%> * (<%- locals.thermic.unknownFunction -%> - <%- locals.thermic.T0 -%>)
+<% } else { -%>
+    0
+<% } -%>
+<% } else { -%>
+    dz(<%- locals.elasticity.unknownFunction.z -%>)
+<% if (locals.thermic) { -%>
+    - <%- locals.thermic.alpha -%> * (<%- locals.thermic.unknownFunction -%> - <%- locals.thermic.T0 -%>)
+<% } -%>
+<% } -%>;
+Sh epsilon12 = 0.5 * (dy(<%- locals.elasticity.unknownFunction.x -%>) + dx(<%- locals.elasticity.unknownFunction.y -%>));
+Sh epsilon13 = <% if (locals.dimension === 2){ -%>0<% } else { -%>0.5 * (dz(<%- locals.elasticity.unknownFunction.x -%>) + dx(<%- locals.elasticity.unknownFunction.z -%>))<% } -%>;
+Sh epsilon23 = <% if (locals.dimension === 2){ -%>0<% } else { -%>0.5 * (dy(<%- locals.elasticity.unknownFunction.z -%>) + dz(<%- locals.elasticity.unknownFunction.y -%>))<% } -%>;
+Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
+Sh gamma11 = 2. * <%- locals.elasticity.mu -%> * epsilon11 + <%- locals.elasticity.lambda -%> * traceEpsilon;
+Sh gamma22 = 2. * <%- locals.elasticity.mu -%> * epsilon22 + <%- locals.elasticity.lambda -%> * traceEpsilon;
+Sh gamma33 = 2. * <%- locals.elasticity.mu -%> * epsilon33 + <%- locals.elasticity.lambda -%> * traceEpsilon;
+Sh gamma12 = 2. * <%- locals.elasticity.mu -%> * epsilon12;
+Sh gamma13 = 2. * <%- locals.elasticity.mu -%> * epsilon13;
+Sh gamma23 = 2. * <%- locals.elasticity.mu -%> * epsilon23;
+Sh Sigma = sqrt(
+    0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
+    + 3. * (gamma12^2 + gamma23^2 + gamma13^2)
+);

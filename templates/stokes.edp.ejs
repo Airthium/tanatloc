@@ -101,7 +101,7 @@ try {
     // Problem
     appendLog("Define the problem...");
     
-    varf vStokes(<%= unknownFunction -%>, <%= testFunction -%>)
+    varf vStokes(<%- unknownFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
 <% if (symmetric){ -%>
             (Mu / 4.) * (
@@ -119,37 +119,37 @@ try {
             - 1.e-9 * <%- unknownFunctionP -%> * <%- testFunctionP %>
         )
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>
+        + on(<%- d.labels -%>
 <% if (d.values[0].checked){ -%>, <%- unknownFunctionX -%> = 0<% } -%>
 <% if (d.values[1].checked){ -%>, <%- unknownFunctionY -%> = 0<% } -%>
 <% if (dimension !== 2 && d.values[2].checked){ -%>, <%- unknownFunctionZ -%> = 0<% } %>)
 <% } -%>
 <% for (const w of wall){ -%>
-        + on(<%= w.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
+        + on(<%- w.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
-    varf vStokesRHS(<%= freeFunction -%>, <%= testFunction -%>)
+    varf vStokesRHS(<%- freeFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
 <% if (dimension === 2){ -%>
-            [<%- rhsX -%>, <%- rhsY -%>]' * <%= Uh%>
+            [<%- rhsX -%>, <%- rhsY -%>]' * <%- Uh%>
 <% } else { -%>
-            [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= Uh%>
+            [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- Uh%>
 <% } -%>
         )
 <% for (const n of neumann){ -%>
-        - intN1(<%- mesh.name -%>, <%= n.labels -%>)(
-            (<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= Uh %>
+        - intN1(<%- mesh.name -%>, <%- n.labels -%>)(
+            (<%- n.values[0].value ?? n.values[0].default -%>) * <%- N -%>' * <%- Uh %>
         )
 <% } -%>
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>
+        + on(<%- d.labels -%>
 <% if (d.values[0].checked){ -%>, <%- freeFunctionX -%> = <%- d.values[0].value ?? d.values[0].default -%><% } -%>
 <% if (d.values[1].checked){ -%>, <%- freeFunctionY -%> = <%- d.values[1].value ?? d.values[1].default -%><% } -%>
 <% if (dimension !== 2 && d.values[2].checked){ -%>, <%- freeFunctionZ -%> = <%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 <% } -%>
 <% for (const w of wall){ -%>
-        + on(<%= w.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
+        + on(<%- w.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
@@ -160,15 +160,15 @@ try {
 }), 1) -%>
     
 <%# Solve -%>
-    matrix Stokes = vStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
-    real[int] StokesRHS = vStokesRHS(0, <%= finiteElementSpace.name -%>);
+    matrix Stokes = vStokes(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
+    real[int] StokesRHS = vStokesRHS(0, <%- finiteElementSpace.name -%>);
     
     // Solve
     <%- unknownFunctionX -%>[] = Stokes^-1 * StokesRHS;
     
 <%# Save -%>
     // Save data
-    real netFlow = intN1(<%- mesh.name -%>)(<%= U -%>' * <%= N -%>);
+    real netFlow = intN1(<%- mesh.name -%>)(<%- U -%>' * <%- N -%>);
     real div = intN(<%- mesh.name -%>)(Div(<%- U -%>)) / intN(<%- mesh.name -%>)(1);
 <%- helpers.indent(include('/blobs/data.edp.ejs', {
     title: '',

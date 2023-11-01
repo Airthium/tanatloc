@@ -131,42 +131,42 @@ try {
     // Problem
     appendLog("Define the problem...");
     
-    varf vLinearElasticity(<%= unknownFunction -%>, <%= testFunction -%>)
+    varf vLinearElasticity(<%- unknownFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
-            (Rho / dt) * <%= unknownFunction -%>' * <%= testFunction %>
+            (Rho / dt) * <%- unknownFunction -%>' * <%- testFunction %>
             + Lambda * Div(<%- unknownFunction -%>) * Div(<%- testFunction -%>)
             + 2. * Mu * (
                 Epsilon(<%- unknownFunction -%>)' * Epsilon(<%- testFunction -%>)
             )
         )
 <% for (const d of displacement){ -%>
-        + on(<%= d.labels -%>
+        + on(<%- d.labels -%>
 <% if (d.values[0].checked){ -%>, <%- unknownFunctionX -%> = 0<% } -%>
 <% if (d.values[1].checked){ -%>, <%- unknownFunctionY -%> = 0<% } -%>
 <% if (dimension !== 2 && d.values[2].checked){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
 <% } -%>
 <% for (const f of fixed){ -%>
-        + on(<%= f.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
+        + on(<%- f.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
-    varf vLinearElasticityRHS(<%= freeFunction -%>, <%= testFunction -%>)
+    varf vLinearElasticityRHS(<%- freeFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
-            2. * (Rho / dt) * <%= previousFunction -%>' * <%= testFunction %>
-            - (Rho / dt) * <%= previousPreviousFunction -%>' * <%= testFunction %>
+            2. * (Rho / dt) * <%- previousFunction -%>' * <%- testFunction %>
+            - (Rho / dt) * <%- previousPreviousFunction -%>' * <%- testFunction %>
 <% if (dimension === 2){ -%>
-            + Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+            + Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%- testFunction %>
 <% } else { -%>
-            + Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+            + Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- testFunction %>
 <% } -%>
         )
 <% for (const p of normalPresure){ -%>
-        + intN1(<%- mesh.name -%>, <%= p.labels -%>)(
-            (<%- p.values[0].value ?? p.values[0].default -%>) * <%= N -%>' * <%= testFunction %>
+        + intN1(<%- mesh.name -%>, <%- p.labels -%>)(
+            (<%- p.values[0].value ?? p.values[0].default -%>) * <%- N -%>' * <%- testFunction %>
         )
 <% } -%>
 <% for (const p of componentsPresure){ -%>
-        + intN1(<%- mesh.name -%>, <%= p.labels -%>)(
+        + intN1(<%- mesh.name -%>, <%- p.labels -%>)(
             (<%- p.values[0].value ?? p.values[0].default -%>) * <%- testFunctionX %>
             + (<%- p.values[1].value ?? p.values[1].default -%>) * <%- testFunctionY %>
 <% if (dimension !== 2){ -%>
@@ -175,13 +175,13 @@ try {
         )
 <% } -%>
 <% for (const d of displacement){ -%>
-        + on(<%= d.labels -%>
+        + on(<%- d.labels -%>
 <% if (d.values[0].checked){ -%>, <%- freeFunctionX -%> = <%- d.values[0].value ?? d.values[0].default -%><% } -%>
 <% if (d.values[1].checked){ -%>, <%- freeFunctionY -%> = <%- d.values[1].value ?? d.values[1].default -%><% } -%>
 <% if (dimension !== 2 && d.values[2].checked){ -%>, <%- freeFunctionZ -%> = <%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 <% } -%>
 <% for (const f of fixed){ -%>
-        + on(<%= f.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
+        + on(<%- f.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
@@ -194,7 +194,7 @@ try {
 <%# Matrix -%>
     // Matrix
     appendLog("Build matrix...");
-    matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
+    matrix LinearElasticity = vLinearElasticity(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
     
     // Time loop
     int nbIter = T / dt;
@@ -205,35 +205,27 @@ try {
         t += dt;
         appendLog("Time: " + t);
         
-        <%= previousPreviousFunction -%> = <%= previousFunction -%>;
-        <%= previousFunction -%> = <%= unknownFunction -%>;
-        real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+        <%- previousPreviousFunction -%> = <%- previousFunction -%>;
+        <%- previousFunction -%> = <%- unknownFunction -%>;
+        real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%- finiteElementSpace.name -%>);
         
         // Solve
         <%- unknownFunctionX -%>[] = LinearElasticity^-1 * LinearElasticityRHS;
         
-        // Von Mises stress
-        fespace Sh(<%- mesh.name -%>, P2);
-        Sh epsilon11 = dx(<%- unknownFunctionX -%>);
-        Sh epsilon22 = dy(<%- unknownFunctionY -%>);
-        Sh epsilon33 = <% if (dimension === 2){ -%>0<% } else { -%>dz(<%- unknownFunctionZ -%>)<% } -%>;
-        Sh epsilon12 = 0.5 * (dy(<%- unknownFunctionX -%>) + dx(<%- unknownFunctionY -%>));
-        Sh epsilon13 = <% if (dimension === 2){ -%>0<% } else { -%>0.5 * (dz(<%- unknownFunctionX -%>) + dx(<%- unknownFunctionZ -%>))<% } -%>;
-        Sh epsilon23 = <% if (dimension === 2){ -%>0<% } else { -%>0.5 * (dy(<%- unknownFunctionZ -%>) + dz(<%- unknownFunctionY -%>))<% } -%>;
-        
-        Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
-        
-        Sh gamma11 = 2. * Mu * epsilon11 + Lambda * traceEpsilon;
-        Sh gamma22 = 2. * Mu * epsilon22 + Lambda * traceEpsilon;
-        Sh gamma33 = 2. * Mu * epsilon33 + Lambda * traceEpsilon;
-        Sh gamma12 = 2. * Mu * epsilon12;
-        Sh gamma13 = 2. * Mu * epsilon13;
-        Sh gamma23 = 2. * Mu * epsilon23;
-        
-        Sh Sigma = sqrt(
-            0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
-            + 3. * (gamma12^2 + gamma23^2 + gamma13^2)
-        );
+<%# Sigma %>
+<%- helpers.indent(include('/blobs/sigma.edp.ejs', {
+    dimension,
+    mesh,
+    elasticity: {
+        unknownFunction: {
+            x: unknownFunctionX,
+            y: unknownFunctionY,
+            z: unknownFunctionZ
+        },
+        mu: 'Mu',
+        lambda: 'Lambda'
+    },
+}), 2) -%>
         
         Sh UUx = <%- unknownFunctionX -%>;
         Sh UUy = <%- unknownFunctionY -%>;
@@ -286,9 +278,9 @@ try {
             <%- mesh.name -%> = mmg3d(<%- mesh.name -%>, metric = metric);
 <% } -%>
             
-            <%= unknownFunction -%> = <%= unknownFunction -%>;
+            <%- unknownFunction -%> = <%- unknownFunction -%>;
             
-            LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
+            LinearElasticity = vLinearElasticity(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
         }
 <% } -%>
     }

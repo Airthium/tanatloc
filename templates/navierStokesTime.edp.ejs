@@ -13,7 +13,7 @@ try {
     mesh.name = variables[0].value
 -%>
 <% if (initialization.value && initialization.value.type === 'coupling'){ -%>
-    meshN <%- mesh.name -%> = readmesh3("<%= initialization.value.mesh -%>");
+    meshN <%- mesh.name -%> = readmesh3("<%- initialization.value.mesh -%>");
 <% } else { -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
         dimension,
@@ -111,9 +111,9 @@ try {
     appendLog("Define the problem...");
     
     real Rhodt = Rho / dt;
-    varf vNavierStokes(<%= unknownFunction -%>, <%= testFunction -%>)
+    varf vNavierStokes(<%- unknownFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
-            Rhodt * <%= U -%>' * <%= Uh%>
+            Rhodt * <%- U -%>' * <%- Uh%>
 <% if (symmetric){ -%>
             + (Mu / 4.) * (
                   (grad(<%- unknownFunctionX -%>) + grad(<%- unknownFunctionX -%>)')' * (grad(<%- testFunctionX -%>) + grad(<%- testFunctionX -%>)')
@@ -130,39 +130,39 @@ try {
             - 1.e-9 * <%- unknownFunctionP -%> * <%- testFunctionP %>
         )
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>
+        + on(<%- d.labels -%>
 <% if (d.values[0].checked){ -%>, <%- unknownFunctionX -%> = 0<% } -%>
 <% if (d.values[1].checked){ -%>, <%- unknownFunctionY -%> = 0<% } -%>
 <% if (dimension !== 2 && d.values[2].checked){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
 <% } -%>
 <% for (const w of wall){ -%>
-        + on(<%= w.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
+        + on(<%- w.labels -%>, <%- unknownFunctionX -%> = 0, <%- unknownFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- unknownFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
-    varf vNavierStokesRHS(<%= freeFunction -%>, <%= testFunction -%>)
+    varf vNavierStokesRHS(<%- freeFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
 <% if (dimension === 2){ -%>
-            Rhodt * [convect(<%= U -%>, - dt, <%- unknownFunctionX -%>), convect(<%= U -%>, - dt, <%- unknownFunctionY -%>)]' * <%= Uh %>
-            + [<%- rhsX -%>, <%- rhsY -%>]' * <%= Uh%>
+            Rhodt * [convect(<%- U -%>, - dt, <%- unknownFunctionX -%>), convect(<%- U -%>, - dt, <%- unknownFunctionY -%>)]' * <%- Uh %>
+            + [<%- rhsX -%>, <%- rhsY -%>]' * <%- Uh%>
 <% } else { -%>
-            Rhodt * [convect(<%= U -%>, - dt, <%- unknownFunctionX -%>), convect(<%= U -%>, - dt, <%- unknownFunctionY -%>), convect(<%= U -%>, - dt, <%- unknownFunctionZ -%>)]' * <%= Uh %>
-            + [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= Uh%>
+            Rhodt * [convect(<%- U -%>, - dt, <%- unknownFunctionX -%>), convect(<%- U -%>, - dt, <%- unknownFunctionY -%>), convect(<%- U -%>, - dt, <%- unknownFunctionZ -%>)]' * <%- Uh %>
+            + [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- Uh%>
 <% } -%>
         )
 <% for (const n of neumann){ -%>
-        - intN1(<%- mesh.name -%>, <%= n.labels -%>)(
-            (<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= Uh %>
+        - intN1(<%- mesh.name -%>, <%- n.labels -%>)(
+            (<%- n.values[0].value ?? n.values[0].default -%>) * <%- N -%>' * <%- Uh %>
         )
 <% } -%>
 <% for (const d of dirichlet){ -%>
-        + on(<%= d.labels -%>
+        + on(<%- d.labels -%>
 <% if (d.values[0].checked){ -%>, <%- freeFunctionX -%> = <%- d.values[0].value ?? d.values[0].default -%><% } -%>
 <% if (d.values[1].checked){ -%>, <%- freeFunctionY -%> = <%- d.values[1].value ?? d.values[1].default -%><% } -%>
 <% if (dimension !== 2 && d.values[2].checked){ -%>, <%- freeFunctionZ -%> = <%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 <% } -%>
 <% for (const w of wall){ -%>
-        + on(<%= w.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
+        + on(<%- w.labels -%>, <%- freeFunctionX -%> = 0, <%- freeFunctionY -%> = 0<% if (dimension !== 2){ -%>, <%- freeFunctionZ -%> = 0<% } -%>)
 <% } -%>
         ;
     
@@ -177,7 +177,7 @@ try {
     // Initialization
 <% if (initialization.value.type === 'coupling'){ -%>
     {
-        ifstream couplingData("<%= initialization.value.dat -%>");
+        ifstream couplingData("<%- initialization.value.dat -%>");
 <% if (dimension === 2){ -%>
         couplingData >> <%- unknownFunctionX -%>[] >> <%- unknownFunctionY -%>[];
 <% } else { -%>
@@ -186,12 +186,12 @@ try {
     }
 <% } else if (initialization.value.type === 'direct' && initialization.value.values){ -%>
 <% if (dimension === 2){ -%>
-    <%= unknownFunction -%> = [
+    <%- unknownFunction -%> = [
 <%- initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
 <%- initialization.value.values[1] ?? initialization.direct.children[1].default -%>
         0];
 <% } else { -%>
-    <%= unknownFunction -%> = [
+    <%- unknownFunction -%> = [
 <%- initialization.value.values[0] ?? initialization.direct.children[0].default -%>,
 <%- initialization.value.values[1] ?? initialization.direct.children[1].default -%>,
 <%- initialization.value.values[2] ?? initialization.direct.children[2].default -%>,
@@ -199,13 +199,13 @@ try {
 <% } -%>
 <% } else { -%>
 <% if (dimension === 2){ -%>
-    <%= unknownFunction -%> = [
+    <%- unknownFunction -%> = [
 <%- initialization.direct.children[0].default -%>,
 <%- initialization.direct.children[1].default -%>,
 <%- initialization.direct.children[2].default -%>,
         0];
 <% } else { -%>
-    <%= unknownFunction -%> = [
+    <%- unknownFunction -%> = [
 <%- initialization.direct.children[0].default -%>,
 <%- initialization.direct.children[1].default -%>
         0];
@@ -213,7 +213,7 @@ try {
 <% } -%>
     
 <% } -%>
-    matrix NavierStokes = vNavierStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver = solver);
+    matrix NavierStokes = vNavierStokes(<%- finiteElementSpace.name -%>, <%- finiteElementSpace.name -%>, solver = solver);
     
 <%# Time loop -%>
     // Time loop
@@ -227,13 +227,13 @@ try {
         t += dt;
         appendLog("Time: " + t);
         
-        real[int] NavierStokesRHS = vNavierStokesRHS(0, <%= finiteElementSpace.name -%>);
+        real[int] NavierStokesRHS = vNavierStokesRHS(0, <%- finiteElementSpace.name -%>);
         
         // Solve
         <%- unknownFunctionX -%>[] = NavierStokes^-1 * NavierStokesRHS;
         
         // Save data
-        real netFlow = intN1(<%- mesh.name -%>)(<%= U -%>' * <%= N -%>);
+        real netFlow = intN1(<%- mesh.name -%>)(<%- U -%>' * <%- N -%>);
         real div = intN(<%- mesh.name -%>)(Div(<%- U -%>)) / intN(<%- mesh.name -%>)(1);
 <%- helpers.indent(include('/blobs/data.edp.ejs', {
     title: 'Time',

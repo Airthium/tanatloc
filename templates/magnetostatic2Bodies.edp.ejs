@@ -22,9 +22,8 @@ try {
     }), 1) -%>
 <% }) -%>
 
-    meshN Th1 = Mesh0;
-    meshN Th2 = Mesh1;
-    
+    // Mesh0 and Mesh1 are the meshes    
+
 <%# Material -%>
 <%
     meshes.forEach((mesh, index) => {
@@ -37,80 +36,11 @@ try {
     })
 -%>
     
-    // Material properties
-    real Lambda0 = E0 * Nu0 / ((1. + Nu0) * (1. - 2. * Nu0));
-    real Mu0 = E0 / (2. * (1. + Nu0));
-
-    real Lambda1 = E1 * Nu1 / ((1. + Nu1) * (1. - 2. * Nu1));
-    real Mu1 = E1 / (2. * (1. + Nu1));
-
-<% if (dimension === 2){ -%>
-    // Elasticity matrix
-    func AA0 = [
-        [2 * Mu0 + Lambda0, Lambda0, 0. ],
-        [Lambda0, 2 * Mu0 + Lambda0, 0. ],
-        [ 0. , 0. , Mu0 ]];
-    func AA1 = [
-        [2 * Mu1 + Lambda1, Lambda1, 0. ],
-        [Lambda1, 2 * Mu1 + Lambda1, 0. ],
-        [ 0. , 0. , Mu1 ]];
-    // Strain vector
-    macro eps(d)([dx(d[0]), dy(d[1]), dy(d[0]) + dx(d[1])])//
-    // Strain first differential
-    macro deps(d, dd)([dx((dd)[0]), dy((dd)[1]), dy((dd)[0]) + dx((dd)[1])])//
-<% } else { -%>
-    // Elasticity matrix
-    func AA0 = [
-        [2 * Mu0 + Lambda0, Lambda0, Lambda0, 0., 0., 0. ],
-        [Lambda0, 2 * Mu0 + Lambda0, Lambda0, 0., 0., 0. ],
-        [Lambda0, Lambda0, 2 * Mu0 + Lambda0, 0., 0., 0. ],
-        [ 0. , 0. , 0., Mu0, 0., 0. ],
-        [ 0. , 0. , 0., 0., Mu0, 0. ],
-        [ 0. , 0. , 0., 0., 0., Mu0 ]
-        ];
-    func AA1 = [
-        [2 * Mu1 + Lambda1, Lambda1, Lambda1, 0., 0., 0. ],
-        [Lambda1, 2 * Mu1 + Lambda1, Lambda1, 0., 0., 0. ],
-        [Lambda1, Lambda1, 2 * Mu1 + Lambda1, 0., 0., 0. ],
-        [ 0. , 0. , 0., Mu1, 0., 0. ],
-        [ 0. , 0. , 0., 0., Mu1, 0. ],
-        [ 0. , 0. , 0., 0., 0., Mu1 ]
-        ];
-    // Strain vector
-    macro eps(d)([dx(d[0]), dy(d[1]), dz(d[2]), dy(d[0]) + dx(d[1]), dz(d[1]) + dy(d[2]), dz(d[0]) + dx(d[2])])//
-    // Strain first differential
-    macro deps(d, dd)([dx(dd[0]), dy(dd[1]), dz(dd[2]), dy(dd[0]) + dx(dd[1]), dz(dd[1]) + dy(dd[2]), dz(dd[0]) + dx(dd[2])])//
-<% } -%>
-    
-    // Density energy for elastic bodies
-    macro W2d0(d)((1./ 2.) * (eps(d)' * AA0 * eps(d)))//
-    macro W2d1(d)((1./ 2.) * (eps(d)' * AA1 * eps(d)))//
-    
-    // Density energy first differential
-    macro dW2d0(d, dd)(
-        (1./ 2.) * (eps(d)' * AA0 * deps(d, dd)) + (1./ 2.) * ((deps(d, dd))' * AA0 * eps(d))
-    )//
-    macro dW2d1(d, dd)(
-        (1./ 2.) * (eps(d)' * AA1 * deps(d, dd)) + (1./ 2.) * ((deps(d, dd))' * AA1 * eps(d))
-    )//
-    
-    // Density energy second differential
-    macro ddW2d0(d, dd, ddd)(
-        (1./ 2.) * (deps(d, ddd)' * AA0 * deps(d, dd)) + (1./ 2.) * ((deps(d, dd))' * AA0 * deps(d, ddd))
-    )//
-    macro ddW2d1(d, dd, ddd)(
-        (1./ 2.) * (deps(d, ddd)' * AA1 * deps(d, dd)) + (1./ 2.) * ((deps(d, dd))' * AA1 * deps(d, ddd))
-    )//
-    
-    // The stress vector
-    macro Sigma0(d)(AA0 * eps(d))//
-    macro Sigma1(d)(AA1 * eps(d))//
+    // Material properties Mu0 and Mu1
     
 <%# Finite element space -%>
 <%
-    const finiteElementSpace = {
-        value: dimension === 2 ? 'P1, P1' : 'P1, P1, P1'
-    }
+    const finiteElementSpace = parameters.finiteElementSpace.children[0]
 -%>
     // First deformable body
 <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
@@ -145,7 +75,7 @@ try {
     const gForceY = force[4].value ?? force[4].default
     const gForceZ = force[5].value ?? force[5].default
     const friction = parameters.friction.children
-    const FixedIterationNumber = parameters.FixedIterationNumber.children
+    const penalty = parameters.penalty.children
     
     const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
     const U0 = dimension === 2 ? '[U0x, U0y]' : '[U0x, U0y, U0z]'
@@ -156,12 +86,37 @@ try {
     const testfunc1 = dimension === 2 ? '[Vx, Vy]' : '[Vx, Vy, Vz]'
     const testfunc2 = dimension === 2 ? '[Wx, Wy]' : '[Wx, Wy, Wz]'
 -%>
+
+<%# Finite element function -%>
+<%
+    const unknownFunctionX = variables[1].value
+    const unknownFunctionY = variables[2].value
+    const unknownFunctionZ = variables[3].value
+    const unknownFunction =
+        dimension === 2
+            ? '[' + unknownFunctionZ + ']'
+            : '[' + unknownFunctionX + ', ' + unknownFunctionY + ', ' + unknownFunctionZ + ']'
+    const testFunctionX = unknownFunctionX + 'h'
+    const testFunctionY = unknownFunctionY + 'h'
+    const testFunctionZ = unknownFunctionZ + 'h'
+    const testFunction =
+        dimension === 2
+            ? '[' + testFunctionZ + ']'
+            : '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionZ + ']'
+-%>
     // Problem
     appendLog("Define the problem...");
     
     // Integration rule
 <%- helpers.indent(include('/blobs/integrationRules.edp.ejs'), 1) -%>
-    
+
+<% if (dimension !==2){ -%>
+    appendError("Error, 3D is not supported);
+    exit(- 1);
+<% } -%>
+
+    real penalty = <%- penalty[0].value ?? penalty[0].default -%>; // Penalty factor to penalize the interface conditions
+
     // Data for the friction
     real tolgap = 1e-2; // if the |gap| < tolgap => the current point is in contact
     fespace Vhh(Mesh0, P0);

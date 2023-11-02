@@ -46,7 +46,7 @@ try {
 <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
     mesh: {name: 'Mesh0'},
     finiteElementSpace: {
-        name: 'Wh1',
+        name: 'FE1',
         ...finiteElementSpace
     }
 }), 1) -%>
@@ -55,55 +55,64 @@ try {
 <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
     mesh: {name: 'Mesh1'},
     finiteElementSpace: {
-        name: 'Wh2',
+        name: 'FE2',
         ...finiteElementSpace
     }
 }), 1) -%>
     
-<%# Problem -%>
+<%# Finite element function -%>
+// unknown = [Ax1, Ay1, Az1] for the firqst body and [Ax2, Ay2, Az2] for the second one
 <%
-    const fixed = boundaryConditions.fixed.values ?? []
-    const contactArea = boundaryConditions.contactArea.values ?? []
-    const displacement = boundaryConditions.displacement.values ?? []
-    const pressure = boundaryConditions.pressure.values ?? []
-    const componentsPresure = boundaryConditions.componentsPresure.values ?? []
-    const force = parameters.rightHandSide.children
-    const forceX = force[0].value ?? force[0].default
-    const forceY = force[1].value ?? force[1].default
-    const forceZ = force[2].value ?? force[2].default
-    const gForceX = force[3].value ?? force[3].default
-    const gForceY = force[4].value ?? force[4].default
-    const gForceZ = force[5].value ?? force[5].default
-    const friction = parameters.friction.children
-    const penalty = parameters.penalty.children
-    
-    const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
-    const U0 = dimension === 2 ? '[U0x, U0y]' : '[U0x, U0y, U0z]'
-    const unknownfunc1 = dimension === 2 ? '[U1x, U1y]' : '[U1x, U1y, U1z]'
-    const unknownfunc2 = dimension === 2 ? '[U2x, U2y]' : '[U2x, U2y, U2z]'
-    const interfunc1 = dimension === 2 ? '[D1x, D1y]' : '[D1x, D1y, D1z]'
-    const interfunc2 = dimension === 2 ? '[D2x, D2y]' : '[D2x, D2y, D2z]'
-    const testfunc1 = dimension === 2 ? '[Vx, Vy]' : '[Vx, Vy, Vz]'
-    const testfunc2 = dimension === 2 ? '[Wx, Wy]' : '[Wx, Wy, Wz]'
+    const unknownFunction1X = variables[1].value + '1'
+    const unknownFunction1Y = variables[2].value + '1'
+    const unknownFunction1Z = variables[3].value + '1'
+    const unknownFunction1 =
+        dimension === 2
+            ? '[' + unknownFunction1Z +  ']'
+            : '[' + unknownFunction1X + ', ' + unknownFunction1Y + ', ' + unknownFunction1Z + ']'
+    const testFunction1X = unknownFunction1X + 'h'
+    const testFunction1Y = unknownFunction1Y + 'h'
+    const testFunction1Z = unknownFunction1Z + 'h'
+    const testFunction1 =
+        dimension === 2
+            ? '[' + testFunction1Z + ']'
+            : '[' + testFunction1X + ', ' + testFunction1Y + ', ' + testFunction1Z + ']'
+
+    const unknownFunction2X = variables[1].value + '2'
+    const unknownFunction2Y = variables[2].value + '2'
+    const unknownFunction2Z = variables[3].value + '2'
+    const unknownFunction2 =
+        dimension === 2
+            ? '[' + unknownFunction2Z +  ']'
+            : '[' + unknownFunction2X + ', ' + unknownFunction2Y + ', ' + unknownFunction2Z + ']'
+    const testFunction2X = unknownFunction2X + 'h'
+    const testFunction2Y = unknownFunction2Y + 'h'
+    const testFunction2Z = unknownFunction2Z + 'h'
+    const testFunction2 =
+        dimension === 2
+            ? '[' + testFunction2Z + ']'
+            : '[' + testFunction2X + ', ' + testFunction2Y + ', ' + testFunction2Z + ']'           
 -%>
 
-<%# Finite element function -%>
+<%# Macro -%>
+<%- helpers.indent(include('/blobs/macro.edp.ejs', {
+    dimension,
+    type: ['Curl', 'Divergence', 'DotNormal']
+}), 1) -%>
+
+<%# Problem -%>
 <%
-    const unknownFunctionX = variables[1].value
-    const unknownFunctionY = variables[2].value
-    const unknownFunctionZ = variables[3].value
-    const unknownFunction =
-        dimension === 2
-            ? '[' + unknownFunctionZ + ']'
-            : '[' + unknownFunctionX + ', ' + unknownFunctionY + ', ' + unknownFunctionZ + ']'
-    const testFunctionX = unknownFunctionX + 'h'
-    const testFunctionY = unknownFunctionY + 'h'
-    const testFunctionZ = unknownFunctionZ + 'h'
-    const testFunction =
-        dimension === 2
-            ? '[' + testFunctionZ + ']'
-            : '[' + testFunctionX + ', ' + testFunctionY + ', ' + testFunctionZ + ']'
+    const dirichletProd = boundaryConditions.dirichletProd.values ?? []
+    const contactArea = boundaryConditions.contactArea.values ?? []
+    const current = parameters.current.children
+    const penalty = parameters.penalty.children
+    const currentValueX = current[0].value ?? current[0].default
+    const currentValueY = current[1].value ?? current[1].default
+    const currentValueZ = current[2].value ?? current[2].default
+    const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
 -%>
+
+
     // Problem
     appendLog("Define the problem...");
     
@@ -117,35 +126,11 @@ try {
 
     real penalty = <%- penalty[0].value ?? penalty[0].default -%>; // Penalty factor to penalize the interface conditions
 
-    // Data for the friction
-    real tolgap = 1e-2; // if the |gap| < tolgap => the current point is in contact
-    fespace Vhh(Mesh0, P0);
-    Vhh sigy, sigx, sigxy; // The stress tensors in order to compute the normal pressure at the contact surface (Tresca problem)
-<% if (dimension !== 2){ -%>
-    Vhh sigz, sigyz, sigxz;
-<% } -%>
-    Wh1<%- U0 -%>; // Displacement for the n-1 iteration
-    real mucol = <%- friction[0].value ?? friction[0].default -%>; // Coulomb friction coefficent
-    real epsphi = 1.e-6; // tolerance for the phi_epsilon function which approximates the module function
-    bool tresca = false; // tresca criterion, Coulomb criterion is a sequence of the tresca criterion
-    bool frict; // Friction
-    if (mucol == 0) {
-        frict = false;
-    }
-    else {
-        frict = true;
-    }
-    int Nitercol0 = 8; // Maximal couloumb iteration number
-    int Nitercol;
-    if (frict) {
-        Nitercol = Nitercol0; // With friction
-    }
-    else {
-        Nitercol = 1; // No friction
-    }
-    int NT = <%- friction[1].value ?? friction[1].default -%>; // Time discretization number
-    
-    integrationRule(<% if (dimension === 2) { -%>"Gauss8"<% } else { -%>"Gauss"<% } -%>); // Function to apply the integration rule
+    FE1 <%- unknownFunction1 -%>;
+    FE2 <%- unknownFunction2 -%>;
+
+
+    integrationRule(<% if (dimension === 2) { -%>"Gauss3"<% } else { -%>"Gauss"<% } -%>); // Function to apply the integration rule
     
 <% if (dimension === 2){ -%>
     func real intpip(real tt, real X0, real X1) {
@@ -187,20 +172,26 @@ try {
 <% } -%>
     // ////////////////////////////////////////////////
     
-    int dim = <%- dimension -%>;
-    
     // P1 functions
 <%- helpers.indent(include('/blobs/P1Function.edp.ejs', {
     dimension
 }), 1) -%>
-<%- helpers.indent(include('/blobs/phiEpsilon.edp.ejs', {
-    dimension
-}), 1) -%>
-    
+
+    int dim = <%- dimension -%>;
     // Degree of Freedom
-    int ndof1 = Wh1.ndof; // Number of the degree of freedom for the first body
-    int ndof2 = Wh2.ndof; // Number of the degree of freedom for the second body
-    int ndoft = ndof1 + ndof2; // Total Number of degree of freedom for the two bodies
+<% if (dimension === 2){ -%>
+    fespace W1(Mesh0,[P1,P1]);
+    fespace Wh2(Mesh1,[P1,P1]);
+<% } else { -%>
+    fespace Wh1(Mesh0,[P1,P1,P1]);
+    fespace Wh2(Mesh1,[P1,P1,P1]);
+<% } -%>
+
+    int ndof1 = Wh1.ndof; // Number of the degree of freedom (x,y) for the first body
+    int ndof2 = Wh2.ndof; // Number of the degree of freedom (x,y) for the second body
+
+    int ndofA1 = FE1.ndof; // Number of the degree of freedom of potential A for the first body
+    int ndofA2 = FE2.ndof; // Number of the degree of freedom for of potential A the second body
     
     // Extract contact borders for the body
     // Vectors & arrays for Contact
@@ -289,7 +280,7 @@ try {
     }
     // End working space
     
-<%- helpers.indent(include('/blobs/connectivity2Bodies.edp.ejs', {
+<%- helpers.indent(include('/blobs/connectivity2Bodies_2D.edp.ejs', {
     dimension
 }), 1) -%>
 <%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs'), 1) -%>
@@ -297,23 +288,25 @@ try {
 <% if (dimension === 2){ -%>
     int nElements1 = nC1 - 1; // Segment number at the contact area 1
     int nElements2 = nC2 - 1; // Segment number at the contact area 2
-    int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Mesh0.nbe) connected to the dof
+    int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Mesh.nbe) connected to the dof
     int[int, int] Conne2(ndof2, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
     int[int] Connevec1(ndof1); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
     int[int] Connevec2(ndof2); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
-    int[int] segdof1(dim * Mesh0.nbe); // For each segment of the border 1, gives the dofx of the two segment vertices
-    int[int] segdof2(dim * Mesh1.nbe); // For each segment of the contact area 2, gives the dofx of the two segment vertices
-    int[int, int] Conorm1(ndof1, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh0.nbe) connected to the dof
-    int[int, int] Conorm2(ndof2, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh1.nbe) connected to the dof
+    int[int] segdof1(dim * Mesh.nbe); // For each segment of the border 1, gives the dofx of the two segment vertices
+    int[int] segdof2(dim * Mesh2.nbe); // For each segment of the contact area 2, gives the dofx of the two segment vertices    
+	int[int] segdofA1(dim*Mesh.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
+	int[int] segdofA2(dim*Mesh2.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A		
+	int[int, int] Conorm1(ndof1, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh.nbe) connected to the dof
+    int[int, int] Conorm2(ndof2, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh2.nbe) connected to the dof
     int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
     int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
-    int[int] vertdof1(Mesh0.nbe); // dof of the triangle vertice that does not belonging to the border 1
-    int[int] vertdof2(Mesh1.nbe); // dof of the triangle vertice that does not belonging to the border 2
-    int[int] IDni1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the segment in 0,...,nseg1
-    int[int] IDni2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
+    int[int] vertdof1(Mesh.nbe); // dof of the triangle vertice that does not belonging to the border 1
+    int[int] vertdof2(Mesh2.nbe); // dof of the triangle vertice that does not belonging to the border 2
+    int[int] IDni1(Mesh.nbe); // For each boundary element "ni" in contact 1 gives the ID of the segment in 0,...,nseg1
+    int[int] IDni2(Mesh2.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
     int[int] segid1(nElements1); // For each contact element id in 0,...,nElements1 gives the ID of the segment in 0,...,Th.nbe
     int[int] segid2(nElements2); // For each contact element id in 0,...,nElements2 gives the ID of the segment in 0,...,Th.nbe
-    int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2);
+    int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, segdofA1, segdofA2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2);
 <% } else { -%>
     int[int, int] Conne1(ndof1, Mesh0.nt); // Connectivity matrix: for each dof the triangle connected to the dof
     int[int, int] Conne2(ndof2, Mesh1.nt); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
@@ -332,15 +325,14 @@ try {
     int[int] triid1(Mesh0.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh0.nbe
     int[int] triid2(Mesh1.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh1.nbe
     int nElements1, nElements2;
-    int connecti = connectivity(Conne1, Conne2, Connevec1, Connevec2, tri1, tri2, tridof1, tridof2, vertdof1, vertdof2, onBorder1, onBorder2, triid1, triid2, nElements1, nElements2, Conorm1, Conorm2, Conormvec1, Conormvec2);
+    // 3D is not yet considered
+    //int connecti = connectivity(Conne1, Conne2, Connevec1, Connevec2, tri1, tri2, tridof1, tridof2, vertdof1, vertdof2, onBorder1, onBorder2, triid1, triid2, nElements1, nElements2, Conorm1, Conorm2, Conormvec1, Conormvec2);
     real[int] PO1(3), PO2(3), PO3(3), PO4(3); // Represent the coord of the three points of a triangle (we will use it to compute the normal vector)
 <% } -%>
     
     int nip = nElements1 * integrationPointsNumber; // Ip points number
     int nip2 = nElements2 * integrationPointsNumber; // Ip points number
     
-    int[int] contactElements(nElements1); // Contains the segment/triangle id for the segments in contact (used for the Friction)
-    int nContactElements; // The number of the segments/triangles in contact (used for the Friction)
     real[int] xbU1(ndof1);
     real[int] xbU2(ndof2);
     real[int] xip1(dim * nip); // coordi of the ip points (First body)
@@ -356,14 +348,7 @@ try {
     int[int] tid2(nip2); // For each ip point gives the closest triangle id (1,...,Mesh0.nbe) of the opposed contact area
 <% } -%>
     
-    Wh1<%- unknownfunc1 -%>; // Displacement for the first body [U1x, U1y] if dim=2 [U1x, U1y, U1z] if dim=3
-    Wh2<%- unknownfunc2 -%>; // Displacement for the first body [U2x, U2y] if dim=2 [U2x, U2y, U2z] if dim=3
-    
-    // Coulomb loop properties
-    int itercol = 0;
-    real tolecol = 1e-4; // tolerance for the normal pressure
-    real errorcol = 0.5; // relative error w.r.t the displacement field in order to stop the iteration loop
-    
+
     // Begin iterations (Fixed point algorithm for large displacement to transform the geomertical non-lin to sequence of geo lin)
     real[int] DIS(ndoft); // The Unknown displacement composed from the displacement of the first and the second body
     DIS = 0.; // Initial displacement

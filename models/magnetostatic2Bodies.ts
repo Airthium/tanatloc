@@ -139,11 +139,12 @@ const Magnetostatic2Bodies: IModel = {
         label: 'A x n = Ad',
         children: [
           {
-            label: 'Adx ',
+            label: ' Ad tangential(2D), Adx(3D) ',
             htmlEntity: 'formula',
             default: 0
           },
           {
+            only3D: true,
             label: 'Ady',
             htmlEntity: 'formula',
             default: 0

@@ -724,10 +724,104 @@ try {
 <% } -%>            
 
 
-
 <%# Solve -%>
         // Solve
         appendLog("Solve the problem...");
+// First Body 
+    real Nu1 = 1. / Mu0;
+    varf vLaplacian1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
+        = intN(<%- mesh.name -%>) (
+            Nu1 * Curl(<%- unknownFunction1 -%>)' * Curl(<%- testFunction1 -%>)
+<% if (dimension !== 2) { -%>
+            + penalty * Div(<%- unknownFunction1 -%>) * Div(<%- testFunction1 -%>)
+<% } -%>
+        )
+<% for (const d of dirichletProd){ -%>
+    <% if (c.geometryIndex === 0){ %>
+        <% if (dimension === 2) { -%>
+            +on(<%- d.labels -%>,unknownFunction1Z = <%- d.values[0].value ?? d.values[0].default -%> )
+        <% } else { -%>
+            + intN1(<%- mesh.name -%>, <%- d.labels -%>) (
+                penalty * DotNormal(<%- unknownFunction1 -%>)' * DotNormal(<%- testFunction1 -%>)
+            )
+        <% } -%>
+    <% } -%>
+<% } -%>
+        ;
+    
+    varf vLaplacianRHS1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
+        = intN(<%- mesh.name -%>) (
+<% if (dimension === 2) { -%>
+            <%- currentValueZ -%> * <%- testFunction1 %>
+<% } else { -%>
+            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction1 %>
+<% } -%>
+        )
+<% for (const d of dirichletProd){ -%>
+
+    <% if (c.geometryIndex === 0){ %>
+        <% if (dimension === 2) { -%> 
+        + on(<%- d.labels -%>,unknownFunction1Z = <%- d.values[0].value ?? d.values[0].default -%> )
+        <% } else { -%>
+        + intN1(<%- mesh.name -%>, <%- d.labels -%>) (
+            penalty *
+                [
+                    0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
+                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
+                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
+                ]' * DotNormal(<%- testFunction1 -%>))
+        <% } -%>
+    <% } -%>        
+<% } -%>
+        ;
+
+// Second Body 
+    real Nu2 = 1. / Mu1;
+    varf vLaplacian2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
+        = intN(<%- mesh.name -%>) (
+            Nu2 * Curl(<%- unknownFunction2 -%>)' * Curl(<%- testFunction2 -%>)
+<% if (dimension !== 2) { -%>
+            + penalty * Div(<%- unknownFunction2 -%>) * Div(<%- testFunction2 -%>)
+<% } -%>
+        )
+<% for (const d of dirichletProd){ -%>
+    <% if (c.geometryIndex === 1){ %>
+        <% if (dimension === 2) { -%>
+            +on(<%- d.labels -%>,unknownFunction2Z = <%- d.values[0].value ?? d.values[0].default -%> )
+        <% } else { -%>
+            + intN1(<%- mesh.name -%>, <%- d.labels -%>) (
+                penalty * DotNormal(<%- unknownFunction2 -%>)' * DotNormal(<%- testFunction2 -%>)
+            )
+        <% } -%>
+    <% } -%>
+<% } -%>
+        ;
+    
+    varf vLaplacianRHS2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
+        = intN(<%- mesh.name -%>) (
+<% if (dimension === 2) { -%>
+            <%- currentValueZ -%> * <%- testFunction2 %>
+<% } else { -%>
+            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction2 %>
+<% } -%>
+        )
+<% for (const d of dirichletProd){ -%>
+
+    <% if (c.geometryIndex === 1){ %>
+        <% if (dimension === 2) { -%> 
+        + on(<%- d.labels -%>,unknownFunction2Z = <%- d.values[0].value ?? d.values[0].default -%> )
+        <% } else { -%>
+        + intN1(<%- mesh.name -%>, <%- d.labels -%>) (
+            penalty *
+                [
+                    0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
+                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
+                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
+                ]' * DotNormal(<%- testFunction2 -%>))
+        <% } -%>
+    <% } -%>        
+<% } -%>
+        ;
 
         
         // The energy and its differentials

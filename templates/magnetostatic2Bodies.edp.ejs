@@ -180,7 +180,7 @@ try {
     int dim = <%- dimension -%>;
     // Degree of Freedom
 <% if (dimension === 2){ -%>
-    fespace W1(Mesh0,[P1,P1]);
+    fespace Wh1(Mesh0,[P1,P1]);
     fespace Wh2(Mesh1,[P1,P1]);
 <% } else { -%>
     fespace Wh1(Mesh0,[P1,P1,P1]);
@@ -280,14 +280,14 @@ try {
     }
     // End working space
     
-<%- helpers.indent(include('/blobs/connectivity2Bodies_2D.edp.ejs', {
+<%- helpers.indent(include('/blobs/cconnectivity2BodiesMagneto_2D.edp.ejs', {
     dimension
 }), 1) -%>
 <%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs'), 1) -%>
     
 <% if (dimension === 2){ -%>
-    int nElements1 = nC1 - 1; // Segment number at the contact area 1
-    int nElements2 = nC2 - 1; // Segment number at the contact area 2
+    int nElements1 = nC1; // Segment number of the contact area 1 ( = nC1 if the contact border is closed if not it is  = nC1-1 and is corrected in the connectivity function)
+    int nElements2 = nC2; // Segment number of the contact area 2 ( = nC2 if the contact border is closed if not it is  = nC2-1 and is corrected in the connectivity function)
     int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Mesh.nbe) connected to the dof
     int[int, int] Conne2(ndof2, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
     int[int] Connevec1(ndof1); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
@@ -306,7 +306,7 @@ try {
     int[int] IDni2(Mesh2.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
     int[int] segid1(nElements1); // For each contact element id in 0,...,nElements1 gives the ID of the segment in 0,...,Th.nbe
     int[int] segid2(nElements2); // For each contact element id in 0,...,nElements2 gives the ID of the segment in 0,...,Th.nbe
-    int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, segdofA1, segdofA2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2);
+    int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, segdofA1, segdofA2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
 <% } else { -%>
     int[int, int] Conne1(ndof1, Mesh0.nt); // Connectivity matrix: for each dof the triangle connected to the dof
     int[int, int] Conne2(ndof2, Mesh1.nt); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof

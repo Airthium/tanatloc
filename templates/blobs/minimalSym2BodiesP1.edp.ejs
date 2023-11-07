@@ -1,0 +1,251 @@
+<% if (dimension === 2){ -%>
+<%# TODO review with Houssam -%>
+// xxx is the array of the points to be projected
+// ABC is the array of the current coordinates of the second contact area nodes
+// Projection of a point (xp,yp) to the segments of the second body
+func real[int] minim1(real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &segdof2, real[int] &DIS2) {
+    
+    int dimensio = xxx.n / dim; // points number to be projected
+    real[int] etab(dimensio); // eta parameters of the projected points of the ip points
+    int nu; // The border segment number
+    R3 ph;
+    
+    meshN Ths = Th2;
+    Wh2[Uu2x, Uu2y]; // Displacement for the first body
+    Uu2x[] = DIS2;
+    Ths = movemesh(Ths, [x + Uu2x, y + Uu2y]);
+    meshL Lh = extract(Ths); // The border of Th2
+    
+    for (int i = 0; i < dimensio; i++) {
+        // Loop on the integration points
+        x = xxx[dim * i]; // The abssica of the integration point
+        y = xxx[dim * i + 1]; // The ordinate of the integration point
+        z = 0; // 2D case
+        
+        R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
+        real xproj = proj.x; // Abssica of the projection of the integration point
+        real yproj = proj.y; // Ordinate of the projection of the integration point
+        
+        int IDseg = nu;
+        posi[i] = IDseg; // The segment ID
+        
+        int dofx0 = segdof2[dim * IDseg]; // dof x of the first vertice of the segment IDseg
+        int dofx1 = segdof2[dim * IDseg + 1]; // dof x of the second vertice of the segment IDseg
+        
+        real xA = XY2[dofx0]; // x of the first vertice of the segment IDseg
+        real yA = XY2[dofx0 + 1]; // y of the first vertice of the segment IDseg
+        real xB = XY2[dofx1]; // x of the second vertice of the segment IDseg
+        real yB = XY2[dofx1 + 1]; // y of the second vertice of the segment IDseg
+        
+        real dPA = sqrt((xproj - xA)^2 + (yproj - yA)^2);
+        real dAB = sqrt((xB - xA)^2 + (yB - yA)^2);
+        
+        etab[i] = dPA / dAB;
+    }
+    return etab;
+}
+
+func real[int] minim2(real[int] &xxx, real[int] &XY1, int[int] &posi, int[int] &segdof1, real[int] &DIS1) {
+    
+    int dimensio = xxx.n / dim; // points number to be projected
+    real[int] etab(dimensio); // eta parameters of the projected points of the ip points
+    int nu; // The border segment number
+    R3 ph;
+    
+    meshN Ths = Th1;
+    Wh1[Uu1x, Uu1y]; // Displacement for the first body
+    Uu1x[] = DIS1;
+    Ths = movemesh(Ths, [x + Uu1x, y + Uu1y]);
+    meshL Lh = extract(Ths); // The border of Th1
+    
+    for (int i = 0; i < dimensio; i++) {
+        // Loop on the integration points
+        x = xxx[dim * i]; // The abssica of the integration point
+        y = xxx[dim * i + 1]; // The ordinate of the integration point
+        z = 0; // 2D because
+        R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
+        real xproj = proj.x; // Abssica of the projection of the integration point
+        real yproj = proj.y; // Ordinate of the projection of the integration point
+        
+        int IDseg = nu;
+        posi[i] = IDseg; // The segment ID
+        
+        int dofx0 = segdof1[dim * IDseg]; // dof x of the first vertice of the segment IDseg
+        int dofx1 = segdof1[dim * IDseg + 1]; // dof x of the second vertice of the segment IDseg
+        
+        real xA = XY1[dofx0]; // x of the first vertice of the segment IDseg
+        real yA = XY1[dofx0 + 1]; // y of the first vertice of the segment IDseg
+        real xB = XY1[dofx1]; // x of the second vertice of the segment IDseg
+        real yB = XY1[dofx1 + 1]; // y of the second vertice of the segment IDseg
+        
+        real dPA = sqrt((xproj - xA)^2 + (yproj - yA)^2);
+        real dAB = sqrt((xB - xA)^2 + (yB - yA)^2);
+        
+        etab[i] = dPA / dAB;
+    }
+    
+    return etab;
+}
+
+<% } else { -%>
+
+// vector product functions
+func real[int] vectorProduct(real[int] &v1, real[int] &v2) {
+    // Vector product
+    real[int] product(3);
+    product[0] = v1[1] * v2[2] - v1[2] * v2[1];
+    product[1] = v1[2] * v2[0] - v1[0] * v2[2];
+    product[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    return product;
+}
+
+func real[int] vectorProductNormalized(real[int] &v1, real[int] &v2) {
+    // Normalized Vector product
+    real[int] product(3);
+    product[0] = v1[1] * v2[2] - v1[2] * v2[1];
+    product[1] = v1[2] * v2[0] - v1[0] * v2[2];
+    product[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    product = product / ((product[0]^2 + product[1]^2 + product[2]^2)^0.5); // normalized
+    return product;
+}
+
+// xxx is the array of the points to be projected
+// Projection of a point (xp,yp) to the contact area triangle of the second body
+// Returns the projected point parameters "eta1" and "eta2" for each ip point, in addition to the triangle id of the contact area 2 where the projected point belongs
+<%# TODO review with Houssam -%>
+func real[int] minim1(real[int] &xxx, int[int] &tid, real[int] &XYZ2, int[int] &tridof2, real[int] &DIS2) {
+    int dimensio = xxx.n / 3; // points number to be projected
+    real[int] etab(2 * dimensio); // eta parameters of the projected points of the ip points
+    int nu; // The border triangle number
+    R3 ph;
+    
+    mesh3 Ths = Th2;
+    Wh2[Uu2x, Uu2y, Uu2z]; // Displacement for the first body
+    Uu2x[] = DIS2;
+    Ths = movemesh(Ths, [x + Uu2x, y + Uu2y, z + Uu2z]);
+    meshS Lh = extract(Ths); // The border of Th2
+    
+    for (int i = 0; i < dimensio; i++) {
+        // Loop on the integration points
+        x = xxx[dim * i]; // The abssica of the integration point
+        y = xxx[dim * i + 1]; // The ordinate of the integration point
+        z = xxx[dim * i + 2]; // 3D case
+        
+        R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
+        real xproj = proj.x; // Abssica of the projection of the integration point
+        real yproj = proj.y; // Ordinate of the projection of the integration point
+        real zproj = proj.z; // 3D case
+        
+        int IDtri = nu;
+        tid[i] = IDtri; // The triangle ID
+        
+        int dofx0 = tridof2[dim * IDtri]; // dof x of the first vertice of the triangle IDtri
+        int dofx1 = tridof2[dim * IDtri + 1]; // dof x of the second vertice of the triangle IDtri
+        int dofx2 = tridof2[dim * IDtri + 2]; // dof x of the second vertice of the triangle IDtri
+        
+        real xA = XYZ2[dofx0]; // x of the first vertice of the triangle IDtri
+        real yA = XYZ2[dofx0 + 1]; // y of the first vertice of the triangle IDtri
+        real zA = XYZ2[dofx0 + 2]; // z of the first vertice of the triangle IDtri
+        
+        real xB = XYZ2[dofx1]; // x of the second vertice of the triangle IDtri
+        real yB = XYZ2[dofx1 + 1]; // y of the second vertice of the triangle IDtri
+        real zB = XYZ2[dofx1 + 2]; // z of the second vertice of the triangle IDtri
+        
+        real xC = XYZ2[dofx2]; // x of the second vertice of the triangle IDtri
+        real yC = XYZ2[dofx2 + 1]; // y of the second vertice of the triangle IDtri
+        real zC = XYZ2[dofx2 + 2]; // z of the second vertice of the triangle IDtri
+        
+        real SABC, SPAC, SPAB;
+        real[int] AB(3), AC(3), BC(3), PA(3), PC(3), PB(3), provec(3);
+        AB = [xB - xA, yB - yA, zB - zA];
+        AC = [xC - xA, yC - yA, zC - zA];
+        
+        PA = [xA - xproj, yA - yproj, zA - zproj];
+        PC = [xC - xproj, yC - yproj, zC - zproj];
+        PB = [xB - xproj, yB - yproj, zB - zproj];
+        
+        provec = vectorProduct(AB, AC); // Vectorial product in order to compute the area of a triangle
+        SABC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        provec = vectorProduct(PA, PC); // Vectorial product in order to compute the area of a triangle
+        SPAC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        provec = vectorProduct(PA, PB); // Vectorial product in order to compute the area of a triangle
+        SPAB = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        etab[2 * i] = SPAC / SABC; // First parameter (surface of triangle PAC / surface of triangle ABC)
+        etab[2 * i + 1] = SPAB / SABC; // Second parameter (surface of triangle PAB / surface of triangle ABC)
+        
+    }
+    return etab;
+}
+
+func real[int] minim2(real[int] &xxx, int[int] &tid, real[int] &XYZ1, int[int] &tridof1, real[int] &DIS1) {
+    int dimensio = xxx.n / dim; // points number to be projected
+    real[int] etab(2 * dimensio); // eta parameters of the projected points of the ip points
+    int nu; // The border triangle number
+    R3 ph;
+    
+    mesh3 Ths = Th1;
+    Wh1[Uu1x, Uu1y, Uu1z]; // Displacement for the first body
+    Uu1x[] = DIS1;
+    Ths = movemesh(Ths, [x + Uu1x, y + Uu1y, z + Uu1z]);
+    meshS Lh = extract(Ths); // The border of Th2
+    
+    for (int i = 0; i < dimensio; i++) {
+        // Loop on the integration points
+        x = xxx[dim * i]; // The abssica of the integration point
+        y = xxx[dim * i + 1]; // The ordinate of the integration point
+        z = xxx[dim * i + 2]; // 3D case
+        
+        R3 proj = projection(Lh, nu = nu, Phat = ph); // Projection of the integration point
+        real xproj = proj.x; // Abssica of the projection of the integration point
+        real yproj = proj.y; // Ordinate of the projection of the integration point
+        real zproj = proj.z; // 3D case
+        
+        int IDtri = nu;
+        tid[i] = IDtri; // The triangle ID
+        
+        int dofx0 = tridof1[dim * IDtri]; // dof x of the first vertice of the triangle IDtri
+        int dofx1 = tridof1[dim * IDtri + 1]; // dof x of the second vertice of the triangle IDtri
+        int dofx2 = tridof1[dim * IDtri + 2]; // dof x of the second vertice of the triangle IDtri
+        
+        real xA = XYZ1[dofx0]; // x of the first vertice of the triangle IDtri
+        real yA = XYZ1[dofx0 + 1]; // y of the first vertice of the triangle IDtri
+        real zA = XYZ1[dofx0 + 2]; // z of the first vertice of the triangle IDtri
+        
+        real xB = XYZ1[dofx1]; // x of the second vertice of the triangle IDtri
+        real yB = XYZ1[dofx1 + 1]; // y of the second vertice of the triangle IDtri
+        real zB = XYZ1[dofx1 + 2]; // z of the second vertice of the triangle IDtri
+        
+        real xC = XYZ1[dofx2]; // x of the second vertice of the triangle IDtri
+        real yC = XYZ1[dofx2 + 1]; // y of the second vertice of the triangle IDtri
+        real zC = XYZ1[dofx2 + 2]; // z of the second vertice of the triangle IDtri
+        
+        real SABC, SPAC, SPAB;
+        real[int] AB(3), AC(3), BC(3), PA(3), PC(3), PB(3), provec(3);
+        AB = [xB - xA, yB - yA, zB - zA];
+        AC = [xC - xA, yC - yA, zC - zA];
+        
+        PA = [xA - xproj, yA - yproj, zA - zproj];
+        PC = [xC - xproj, yC - yproj, zC - zproj];
+        PB = [xB - xproj, yB - yproj, zB - zproj];
+        
+        provec = vectorProduct(AB, AC); // Vectorial product in order to compute the area of a triangle
+        SABC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        provec = vectorProduct(PA, PC); // Vectorial product in order to compute the area of a triangle
+        SPAC = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        provec = vectorProduct(PA, PB); // Vectorial product in order to compute the area of a triangle
+        SPAB = 0.5 * (provec[0]^2 + provec[1]^2 + provec[2]^2)^0.5; // = The surface of the triangle
+        
+        etab[2 * i] = SPAC / SABC; // First parameter (surface of triangle PAC)
+        etab[2 * i + 1] = SPAB / SABC; // Second parameter (surface of triangle PAB)
+        
+    }
+    return etab;
+}
+
+<% } -%>
+

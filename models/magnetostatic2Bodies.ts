@@ -168,35 +168,35 @@ const Magnetostatic2Bodies: IModel = {
         [
           {
             name: 'Body_1_-_VectorPotential',
-            data: ['Ax', 'Ay', 'Az'],
-            data2D: 'Az'
+            data: ['Ax1', 'Ay1', 'Az1'],
+            data2D: 'Az1'
           },
           {
             name: 'Body_1_-_MagneticInduction',
-            data: ['Bx', 'By', 'Bz'],
-            data2D: 'B'
+            data: ['Bx1', 'By1', 'Bz1'],
+            data2D: 'B1'
           },
           {
             name: 'Body_1_-_MagneticField',
-            data: ['Hx', 'Hy', 'Hz'],
-            data2D: 'H'
+            data: ['Hx1', 'Hy1', 'Hz1'],
+            data2D: 'H1'
           }
         ],
         [
           {
             name: 'Body_2_-_VectorPotential',
-            data: ['Ax', 'Ay', 'Az'],
-            data2D: 'Az'
+            data: ['Ax2', 'Ay2', 'Az2'],
+            data2D: 'Az2'
           },
           {
             name: 'Body_2_-_MagneticInduction',
-            data: ['Bx', 'By', 'Bz'],
-            data2D: 'B'
+            data: ['Bx2', 'By2', 'Bz2'],
+            data2D: 'B2'
           },
           {
             name: 'Body_2_-_MagneticField',
-            data: ['Hx', 'Hy', 'Hz'],
-            data2D: 'H'
+            data: ['Hx2', 'Hy2', 'Hz2'],
+            data2D: 'H2'
           }
         ]
       ],

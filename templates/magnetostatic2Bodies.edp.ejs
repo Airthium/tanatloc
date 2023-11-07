@@ -963,47 +963,52 @@ try {
 	<%- unknownFunction1Z -%>[]=AzC(0:(ndofA1-1));
 	<%- unknownFunction2Z -%>[]=AzC(ndofA1:(ndofA1 + ndofA2-1));
         
+<% if (dimension === 2) { -%>
+    // Body 1
+    // Magnetic induction
+    FE1 B1, Bx1, By1;
+    Bx1 = dy(<%- unknownFunction1Z -%>);
+    By1 = -dx(<%- unknownFunction1Z -%>);
+    B1 = sqrt(Bx1^2 + By1^2);
 
-    
-                      
-    // Von mises stress
-    fespace Sh1(Mesh0, P2);
-    Sh1 body1Epsilon11 = dx(U1x);
-    Sh1 body1Epsilon22 = dy(U1y);
-    Sh1 body1Epsilon33 = <% if (dimension === 2){ -%> 0 <% } else { -%> dz(U1z) <% } -%>;
-    Sh1 body1Epsilon12 = 0.5 * (dy(U1x) + dx(U1y));
-    Sh1 body1Epsilon13 = <% if (dimension === 2){ -%> 0 <% } else { -%> 0.5 * (dz(U1x) + dx(U1z)) <% } -%>;
-    Sh1 body1Epsilon23 = <% if (dimension === 2){ -%> 0 <% } else { -%> 0.5 * (dy(U1z) + dz(U1y)) <% } -%>;
-    Sh1 traceEpsilon1 = body1Epsilon11 + body1Epsilon22 + body1Epsilon33;
-    Sh1 body1Gamma11 = 2. * Mu0 * body1Epsilon11 + Lambda0 * traceEpsilon1;
-    Sh1 body1Gamma22 = 2. * Mu0 * body1Epsilon22 + Lambda0 * traceEpsilon1;
-    Sh1 body1Gamma33 = 2. * Mu0 * body1Epsilon33 + Lambda0 * traceEpsilon1;
-    Sh1 body1Gamma12 = 2. * Mu0 * body1Epsilon12;
-    Sh1 body1Gamma13 = 2. * Mu0 * body1Epsilon13;
-    Sh1 body1Gamma23 = 2. * Mu0 * body1Epsilon23;
-    Sh1 body1Sigma = sqrt(
-        0.5 * ((body1Gamma11 - body1Gamma22)^2 + (body1Gamma22 - body1Gamma33)^2 + (body1Gamma33 - body1Gamma11)^2)
-        + 3. * (body1Gamma12^2 + body1Gamma23^2 + body1Gamma13^2)
-    );
-    // Von mises stress
-    fespace Sh2(Mesh1, P2);
-    Sh2 body2Epsilon11 = dx(U2x);
-    Sh2 body2Epsilon22 = dy(U2y);
-    Sh2 body2Epsilon33 = <% if (dimension === 2){ -%> 0 <% } else { -%> dz(U2z) <% } -%>;
-    Sh2 body2Epsilon12 = 0.5 * (dy(U2x) + dx(U2y));
-    Sh2 body2Epsilon13 = <% if (dimension === 2){ -%> 0 <% } else { -%> 0.5 * (dz(U2x) + dx(U2z)) <% } -%>;
-    Sh2 body2Epsilon23 = <% if (dimension === 2){ -%> 0 <% } else { -%> 0.5 * (dy(U2z) + dz(U2y)) <% } -%>;
-    Sh2 traceEpsilon2 = body2Epsilon11 + body2Epsilon22 + body2Epsilon33;
-    Sh2 body2Gamma11 = 2. * Mu1 * body2Epsilon11 + Lambda1 * traceEpsilon2;
-    Sh2 body2Gamma22 = 2. * Mu1 * body2Epsilon22 + Lambda1 * traceEpsilon2;
-    Sh2 body2Gamma33 = 2. * Mu1 * body2Epsilon33 + Lambda1 * traceEpsilon2;
-    Sh2 body2Gamma12 = 2. * Mu1 * body2Epsilon12;
-    Sh2 body2Gamma13 = 2. * Mu1 * body2Epsilon13;
-    Sh2 body2Gamma23 = 2. * Mu1 * body2Epsilon23;
-    Sh2 body2Sigma = sqrt(
-        0.5 * ((body2Gamma11 - body2Gamma22)^2 + (body2Gamma22 - body2Gamma33)^2 + (body2Gamma33 - body2Gamma11)^2)
-        + 3. * (body2Gamma12^2 + body2Gamma23^2 + body2Gamma13^2)
-    );
+    // Magnetic field
+    FE1 H1, Hx1, Hy1;
+    Hx1 = Nu1 * Bx1;
+    Hy1 = Nu1 * By1;
+    H1 = sqrt(Hx1^2 + Hy1^2);
+
+    // Body 2
+    // Magnetic induction
+    FE2 B2, Bx2, By2;
+    Bx2 = dy(<%- unknownFunction2Z -%>);
+    By2 = -dx(<%- unknownFunction2Z -%>);
+    B2 = sqrt(Bx2^2 + By2^2);
+
+    // Magnetic field
+    FE2 H2, Hx2, Hy2;
+    Hx2 = Nu2 * Bx2;
+    Hy2 = Nu2 * By2;
+    H2 = sqrt(Hx2^2 + Hy2^2);
+
+<% } else { -%>$
+    // Body 1
+    // Magnetic induction
+    FE1 [Bx1, By1, Bz1];
+    [Bx1, By1, Bz1] = Curl(<%- unknownFunction1 -%>);
+
+    // Magnetic field
+    FE1 [Hx1, Hy1, Hz1];
+    [Hx1, Hy1, Hz1] = Nu1 * [Bx1, By1, Bz1];
+
+    // Body 2
+    // Magnetic induction
+    FE2 [Bx2, By2, Bz2];
+    [Bx2, By2, Bz2] = Curl(<%- unknownFunction2 -%>);
+
+    // Magnetic field
+    FE2 [Hx2, Hy2, Hz2];
+    [Hx2, Hy2, Hz2] = Nu2 * [Bx2, By2, Bz2];
+<% } -%>
     
 <%# Save -%>
 <%- include('/blobs/save.edp.ejs', {

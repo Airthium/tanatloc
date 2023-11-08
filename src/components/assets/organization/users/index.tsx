@@ -48,8 +48,8 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
 
   // Ref
   const refWrapper = useRef<HTMLDivElement>(null)
-  const refTableAdmin = useRef<HTMLDivElement>(null)
-  const refTableUsers = useRef<HTMLDivElement>(null)
+  const refTableAdmin = useRef<any>(null)
+  const refTableUsers = useRef<any>(null)
 
   // Columns
   const avatarRender = useCallback(

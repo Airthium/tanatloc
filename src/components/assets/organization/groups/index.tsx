@@ -58,7 +58,7 @@ export const errors = {
  */
 const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
   // Ref
-  const refTableGroup = useRef<HTMLDivElement>(null)
+  const refTableGroup = useRef<any>(null)
 
   // State
   const [userOptions, setUserOptions] = useState<

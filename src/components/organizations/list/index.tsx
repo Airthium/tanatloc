@@ -412,7 +412,7 @@ const List = ({
   const { dispatch } = useContext(NotificationContext)
 
   // Ref
-  const refTableOrga = useRef<HTMLDivElement>(null)
+  const refTableOrga = useRef<any>(null)
 
   /**
    * Owners render

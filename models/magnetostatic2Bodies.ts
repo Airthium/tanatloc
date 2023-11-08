@@ -4,6 +4,9 @@ import { IModel } from './index.d'
 
 import description from './description/magnetostatic2Bodies'
 
+/**
+ * Magnetostatic for two bodies in contact
+ */
 const Magnetostatic2Bodies: IModel = {
   category: 'Electromagnetism',
   name: 'Magnetostatic 2 Bodies',
@@ -12,6 +15,10 @@ const Magnetostatic2Bodies: IModel = {
   version: '1.0.0',
   description,
   variables: [
+    {
+      label: 'Mesh',
+      value: 'Mesh'
+    },
     {
       only3D: true,
       label: 'Magnetic vector potential (x)',

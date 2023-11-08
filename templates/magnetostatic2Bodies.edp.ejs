@@ -115,6 +115,8 @@ try {
         dimension === 2
             ? '[' + testFunction2Z + ']'
             : '[' + testFunction2X + ', ' + testFunction2Y + ', ' + testFunction2Z + ']'           
+    const testfunc1 = dimension === 2 ? '[Vx, Vy]' : '[Vx, Vy, Vz]'
+    const testfunc2 = dimension === 2 ? '[Wx, Wy]' : '[Wx, Wy, Wz]'
 -%>
 
 <%# Macro -%>
@@ -644,7 +646,7 @@ try {
             norm1[3 * ii + 2] = NX[2]; // z	coord of the normal at the ip point         
         }
     }
-<% } -%
+<% } -%>
        
     // Second body (for each ip points of the contact 1 gives the normals at the contact 1 (continuous normal field))
     // Normal vector for the ip points at the contact area 1 (computed as the average of the normal vectors)
@@ -1198,7 +1200,7 @@ try {
     Hy2 = Nu2 * By2;
     H2 = sqrt(Hx2^2 + Hy2^2);
 
-<% } else { -%>$
+<% } else { -%>
     // Body 1
     // Magnetic induction
     FE1 [Bx1, By1, Bz1];

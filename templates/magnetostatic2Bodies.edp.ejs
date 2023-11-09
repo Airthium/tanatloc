@@ -146,7 +146,7 @@ try {
 <%- helpers.indent(include('/blobs/integrationRules.edp.ejs'), 1) -%>
 
 <% if (dimension !==2){ -%>
-    appendError("Error, 3D is not supported);
+    appendError("Error, 3D is not supported");
     exit(- 1);
 <% } -%>
 

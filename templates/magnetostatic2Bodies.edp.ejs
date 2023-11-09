@@ -24,6 +24,11 @@ try {
 
     // Mesh0 and Mesh1 are the meshes    
 
+<% if (dimension !==2){ -%>
+    appendError("Error, 3D is not supported");
+    exit(- 1);
+<% } -%>
+
 <%# Material -%>
 <%
     meshes.forEach((mesh, index) => {
@@ -144,11 +149,6 @@ try {
     
     // Integration rule
 <%- helpers.indent(include('/blobs/integrationRules.edp.ejs'), 1) -%>
-
-<% if (dimension !==2){ -%>
-    appendError("Error, 3D is not supported");
-    exit(- 1);
-<% } -%>
 
     real penalty = <%- penalty[0].value ?? penalty[0].default -%>; // Penalty factor to penalize the interface conditions
 

@@ -29,7 +29,9 @@ try {
     exit(- 1);
 <% } -%>
 
+
 <%# Material -%>
+// Material properties Mu0 and Mu1
 <%
     meshes.forEach((mesh, index) => {
 -%>
@@ -40,33 +42,11 @@ try {
 <%
     })
 -%>
-    
-    // Material properties Mu0 and Mu1
-    
-<%# Finite element space -%>
+
+// Is P2 is used in 2D ?
 <%
     const finiteElementSpace = parameters.finiteElementSpace.children[0]
 -%>
-    // First deformable body
-<%- helpers.indent(include('/blobs/fespace.edp.ejs', {
-    mesh: {name: 'Mesh0'},
-    finiteElementSpace: {
-        name: 'FE1',
-        ...finiteElementSpace
-    }
-}), 1) -%>
-    
-    // Second deformable body
-<%- helpers.indent(include('/blobs/fespace.edp.ejs', {
-    mesh: {name: 'Mesh1'},
-    finiteElementSpace: {
-        name: 'FE2',
-        ...finiteElementSpace
-    }
-}), 1) -%>
-
-
-// Is P2 is used in 2D ?
 <%
     const pType = finiteElementSpace.value ?? finiteElementSpace.default2D
 -%>
@@ -87,73 +67,14 @@ try {
     <% } -%>
 <% } -%>
 
-
-    
-<%# Finite element function -%>
-// unknown = [Ax1, Ay1, Az1] for the firqst body and [Ax2, Ay2, Az2] for the second one
-<%
-    const unknownFunction1X = variables[1].value + '1'
-    const unknownFunction1Y = variables[2].value + '1'
-    const unknownFunction1Z = variables[3].value + '1'
-    const unknownFunction1 =
-        dimension === 2
-            ? '[' + unknownFunction1Z +  ']'
-            : '[' + unknownFunction1X + ', ' + unknownFunction1Y + ', ' + unknownFunction1Z + ']'
-    const testFunction1X = unknownFunction1X + 'h'
-    const testFunction1Y = unknownFunction1Y + 'h'
-    const testFunction1Z = unknownFunction1Z + 'h'
-    const testFunction1 =
-        dimension === 2
-            ? '[' + testFunction1Z + ']'
-            : '[' + testFunction1X + ', ' + testFunction1Y + ', ' + testFunction1Z + ']'
-
-    const unknownFunction2X = variables[1].value + '2'
-    const unknownFunction2Y = variables[2].value + '2'
-    const unknownFunction2Z = variables[3].value + '2'
-    const unknownFunction2 =
-        dimension === 2
-            ? '[' + unknownFunction2Z +  ']'
-            : '[' + unknownFunction2X + ', ' + unknownFunction2Y + ', ' + unknownFunction2Z + ']'
-    const testFunction2X = unknownFunction2X + 'h'
-    const testFunction2Y = unknownFunction2Y + 'h'
-    const testFunction2Z = unknownFunction2Z + 'h'
-    const testFunction2 =
-        dimension === 2
-            ? '[' + testFunction2Z + ']'
-            : '[' + testFunction2X + ', ' + testFunction2Y + ', ' + testFunction2Z + ']'           
-    const testfunc1 = dimension === 2 ? '[Vx, Vy]' : '[Vx, Vy, Vz]'
-    const testfunc2 = dimension === 2 ? '[Wx, Wy]' : '[Wx, Wy, Wz]'
--%>
-
 <%# Macro -%>
 <%- helpers.indent(include('/blobs/macro.edp.ejs', {
     dimension,
     type: ['Curl', 'Divergence', 'DotNormal']
 }), 1) -%>
 
-<%# Problem -%>
-<%
-    const dirichletProd = boundaryConditions.dirichletProd.values ?? []
-    const contactArea = boundaryConditions.contactArea.values ?? []
-    const current = parameters.current.children
-    const penalty = parameters.penalty.children
-    const currentValueX = current[0].value ?? current[0].default
-    const currentValueY = current[1].value ?? current[1].default
-    const currentValueZ = current[2].value ?? current[2].default
-    const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
--%>
-
-
-    // Problem
-    appendLog("Define the problem...");
-    
     // Integration rule
 <%- helpers.indent(include('/blobs/integrationRules.edp.ejs'), 1) -%>
-
-    real penalty = <%- penalty[0].value ?? penalty[0].default -%>; // Penalty factor to penalize the interface conditions
-
-    FE1 <%- unknownFunction1 -%>;
-    FE2 <%- unknownFunction2 -%>;
 
 
     integrationRule(<% if (dimension === 2) { -%>"Gauss3"<% } else { -%>"Gauss"<% } -%>); // Function to apply the integration rule
@@ -203,1058 +124,1157 @@ try {
     dimension
 }), 1) -%>
 
-    int dim = <%- dimension -%>;
-    // Degree of Freedom
-<% if (dimension === 2){ -%>
-    fespace Wh1(Mesh0,[P1,P1]);
-    fespace Wh2(Mesh1,[P1,P1]);
-<% } else { -%>
-    fespace Wh1(Mesh0,[P1,P1,P1]);
-    fespace Wh2(Mesh1,[P1,P1,P1]);
-<% } -%>
+// Relative rotation ?
+    real alphaTot = <%- parameters.rotation.children[0].value ?? parameters.rotation.children[0].default -%>; // Total rotation angle 
+    int RotationStepsNumber = <%- parameters.rotation.children[1].value ?? parameters.rotation.children[1].default -%>; // Rotation step number
+    real alpha;
 
-    int ndof1 = Wh1.ndof; // Number of the degree of freedom (x,y) for the first body
-    int ndof2 = Wh2.ndof; // Number of the degree of freedom (x,y) for the second body
+    if (alphaTot==0.){RotationStepsNumber=0.; alpha=0.;}
+    for (int i=0; i<(RotationStepsNumber+1) ; i++){
+		if (alphaTot!=0.){alpha = (i/RotationStepsNumber)*alphaTot;}
+        Mesh0 = movemesh(Mesh0,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
 
-    int ndofA1 = FE1.ndof; // Number of the degree of freedom of potential A for the first body
-    int ndofA2 = FE2.ndof; // Number of the degree of freedom for of potential A the second body
-    
-    // Extract contact borders for the body
-    // Vectors & arrays for Contact
-    int[int] Jb1, Jb2;
-    int[int] dof1, dof2;
-    int nC1 = 0;
-    int nC2 = 0;
-    
-    // Extract contact borders for the body 1
-    varf vcontbord(<%- testfunc2 -%>, <%- testfunc1 -%>) =
-        // truc à la con pour éviter à gérer le + au début ou valeur vide
-        intN(Mesh0)(0 * Vx)
-<% for (const c of contactArea){ -%>
-<%
-        if (c.geometryIndex === 0){
-        %>
-        + on(<%- c.labels -%>, Wx = 1, Wy = 1 <% if (dimension !== 2){ -%>, Wz = 1 <% } -%>)
-<% } -%>
-<% } -%>
-        ;
-    real[int] onBorder1 = vcontbord(0, Wh1, tgv = 1);
-    int numB1 = onBorder1.sum;
-    nC1 = numB1 / dim; // Constraint number
-<% if (dimension==2){ -%>
-    Jb1.resize(numB1);
-    int k = 0;
-    for [i, B1i : onBorder1]
-    if (B1i) { Jb1[k] = i; k++; }
-<% } else { -%>
-    dof1.resize(numB1);
-    int k = 0;
-    for (int i = 0; i < ndof1; i++) {
-        if (onBorder1[i]) {
-            dof1[k] = i;
-            k++;
+
+    <%# Finite element space -%>
+        // First deformable body
+    <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
+        mesh: {name: 'Mesh0'},
+        finiteElementSpace: {
+            name: 'FE1',
+            ...finiteElementSpace
         }
-    }
-<% } -%>
-    // End extract borders for the body 1
-    
-    // Extract contact borders for the body 2
-    varf vcontbord2(<%- testfunc2 -%>, <%- testfunc1 -%>) =
-        // truc à la con pour éviter à gérer le + au début ou valeur vide
-        intN(Mesh1)(0 * Vx)
-<% for (const c of contactArea){ -%>
-<%
-        if (c.geometryIndex === 1){
-        %>
-        + on(<%- c.labels -%>, Wx = 1, Wy = 1 <% if (dimension !== 2){ -%>, Wz = 1 <% } -%>)
-<% } -%>
-<% } -%>
-        ;
-    real[int] onBorder2 = vcontbord2(0, Wh2, tgv = 1);
-    int numB2 = onBorder2.sum;
-    nC2 = numB2 / dim; // Constraint number
-<% if (dimension==2){ -%>
-    Jb2.resize(numB2);
-    k = 0;
-    for [i, B2i : onBorder2]
-    if (B2i) { Jb2[k] = i; k++; }
-<% } else { -%>
-    dof2.resize(numB2);
-    k = 0;
-    for (int i = 0; i < ndof2; i++) {
-        if (onBorder2[i]) {
-            dof2[k] = i;
-            k++;
-        }
-    }
-<% } -%>
-    // End extract borders for the body 2
-    
-    // Working space (All internal variables are deleted after)
-    real[int] XYZ1(ndof1);
-    real[int] XYZ2(ndof2);
-<% if (dimension === 2){ -%>
-    <% if (pType==='P2') { -%> 
-	real[int] X1(ndofA1);
-	real[int] Y1(ndofA1);
-	real[int] X2(ndofA2);
-	real[int] Y2(ndofA2);
-    <% } -%>
-<% } -%>
-
-
-    {
-<% if (dimension === 2){ -%>
-        Wh1[xx1, yy1] = [x, y]; // position vector
-        Wh2[xx2, yy2] = [x, y]; // position vector
-        <% if (pType==='P2') { -%> 
-        FE1 x1 = x;
-		FE1 y1 = y;
-		FE2 x2 = x;
-		FE2 y2 = y;
-		X1 = x1[];
-		Y1 = y1[];
-		X2 = x2[];
-		Y2 = y2[];
-        <% } -%>
-<% } else { -%>
-        Wh1[xx1, yy1, zz1] = [x, y, z]; // position vector
-        Wh2[xx2, yy2, zz2] = [x, y, z]; // position vector
-<% } -%>
-        XYZ1 = xx1[];
-        XYZ2 = xx2[];
-    }
-    // End working space
-
-<% if (dimension === 2){ -%>
-<% if (pType==='P1') { -%>    
-<%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D.edp.ejs', {
-    dimension
-}), 1) -%>
-<% } else {  -%>
-<%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D_P2.edp.ejs', {
-    dimension
-}), 1) -%>
-<% } -%>
-
-<% } else { -%>
-
-<% } -%>
-
-<%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs'), 1) -%>
-    
-<% if (dimension === 2){ -%>
-    int nElements1 = nC1; // Segment number of the contact area 1 ( = nC1 if the contact border is closed if not it is  = nC1-1 and is corrected in the connectivity function)
-    int nElements2 = nC2; // Segment number of the contact area 2 ( = nC2 if the contact border is closed if not it is  = nC2-1 and is corrected in the connectivity function)
-    int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Mesh0.nbe) connected to the dof
-    int[int, int] Conne2(ndof2, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
-    int[int] Connevec1(ndof1); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
-    int[int] Connevec2(ndof2); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
-    int[int] segdof1(dim * Mesh0.nbe); // For each segment of the border 1, gives the dofx of the two segment vertices
-    int[int] segdof2(dim * Mesh1.nbe); // For each segment of the contact area 2, gives the dofx of the two segment vertices    	
-	int[int, int] Conorm1(ndof1, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh0.nbe) connected to the dof
-    int[int, int] Conorm2(ndof2, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh2.nbe) connected to the dof
-    int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
-    int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
-    int[int] vertdof1(Mesh0.nbe); // dof of the triangle vertice that does not belonging to the border 1
-    int[int] vertdof2(Mesh1.nbe); // dof of the triangle vertice that does not belonging to the border 2
-    int[int] IDni1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the segment in 0,...,nseg1
-    int[int] IDni2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
-    int[int] segid1(nElements1); // For each contact element id in 0,...,nElements1 gives the ID of the segment in 0,...,Th.nbe
-    int[int] segid2(nElements2); // For each contact element id in 0,...,nElements2 gives the ID of the segment in 0,...,Th.nbe
-    <% if (pType==='P1') { -%>
-    int[int] segdofA1(dim*Mesh0.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
-	int[int] segdofA2(dim*Mesh1.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
-    int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, segdofA1, segdofA2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
-    <% } else { -%>
-    int[int] segdofA1(3*Mesh0.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
-	int[int] segdofA2(3*Mesh1.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
-    int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
-    int connectiP2 = connectivityP2(segdofA1, segdofA2, X1, X2, Y1, Y2);
-    <% } -%>
-
-<% } else { -%>
-    int[int, int] Conne1(ndof1, Mesh0.nt); // Connectivity matrix: for each dof the triangle connected to the dof
-    int[int, int] Conne2(ndof2, Mesh1.nt); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
-    int[int] Connevec1(ndof1); // Connectivity matrix vector: for each dof gives the number of triangles connected to the dof
-    int[int] Connevec2(ndof2); // Connectivity matrix vector: for each dof gives the number of triangles connected to the dof
-    int[int] tri1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the triangle in 0,...,ntri1
-    int[int] tri2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the triangle in 0,...,ntri2
-    int[int] tridof1(3 * Mesh0.nbe); // TRiangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
-    int[int, int] Conorm1(ndof1, Mesh0.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,Mesh0.nbe) connected to the dof
-    int[int, int] Conorm2(ndof2, Mesh1.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,Mesh1.nbe) connected to the dof
-    int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of triangles connected to the dof (1 or 2)
-    int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of triangles connected to the dof (1 or 2)
-    int[int] tridof2(3 * Mesh1.nbe); // Triangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
-    int[int] vertdof1(Mesh0.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 1
-    int[int] vertdof2(Mesh1.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 2
-    int[int] triid1(Mesh0.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh0.nbe
-    int[int] triid2(Mesh1.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh1.nbe
-    int nElements1, nElements2;
-    // 3D is not yet considered
-    //int connecti = connectivity(Conne1, Conne2, Connevec1, Connevec2, tri1, tri2, tridof1, tridof2, vertdof1, vertdof2, onBorder1, onBorder2, triid1, triid2, nElements1, nElements2, Conorm1, Conorm2, Conormvec1, Conormvec2);
-    real[int] PO1(3), PO2(3), PO3(3), PO4(3); // Represent the coord of the three points of a triangle (we will use it to compute the normal vector)
-<% } -%>
-    
-    int nip = nElements1 * integrationPointsNumber; // Ip points number
-    int nip2 = nElements2 * integrationPointsNumber; // Ip points number
-    
-    real[int] xbU1(ndof1);
-    real[int] xbU2(ndof2);
-    real[int] xip1(dim * nip); // coordi of the ip points (First body)
-    real[int] xip2(dim * nip2); // coordi of the ip points (Second body)
-    real[int] Xproj(dim * nip); // coordi of the ip projection points (Second Body)
-    real[int] Xproj2(dim * nip2); // coordi of the ip projection points (Second Body)
-    
-<% if (dimension === 2){ -%>
-    int[int] pos(nip);
-    int[int] pos2(nip2);
-<% } else { -%>
-    int[int] tid1(nip); // For each ip point gives the closest triangle id (1,...,Mesh1.nbe) of the opposed contact area
-    int[int] tid2(nip2); // For each ip point gives the closest triangle id (1,...,Mesh0.nbe) of the opposed contact area
-<% } -%>
-    
-    real norm0;
-    real[int] DIS10(ndof1), DIS20(ndof2); // The displacement field from the previous iteration ( for the fixed point & to compute the error and stop the iteration)
-    
-    real[int] norm1(dim * nip), norm2(dim * nip2); // The normal (nx,ny) of the projected points
-    
-    // First Body
-    real[int] eta((dim - 1) * nip); // Parameter array (Barycentric coordinates) for the P1 curve
-    real[int] eta2((dim - 1) * nip2); // Parameter array (Barycentric coordinates) for the P1 curve
-    
-
-    real[int] AB(dim * dim);
-
-	DIS10 = 0; // The displacement array of the first body 
-	DIS20 = 0; // The displacement array of the second body 
-	xbU1 = XYZ1;
-	xbU2 = XYZ2;
+    }), 1) -%>
         
-        // Compute the projection points
-        
-        // First body
-    for (int i = 0; i < nElements1; i++) {
-        // 2D
-<% if (dimension === 2){ -%>
-        int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
-<% } -%>
-        // 3D
-<% if (dimension !== 2){ -%>
-        int trid1 = triid1[i]; // Tri ID w.r.t to the whole border
-<% } -%>
-        for (int j = 0; j < integrationPointsNumber; j++) {
-            int ii = j + i * integrationPointsNumber;
-<% if (dimension === 2){ -%>
-            real ti = integrationPointsPositions[j]; // The parameter of the ip point in the segment (integration rule)
-            xip1[dim * ii] = intpip(ti, xbU1[segdof1[dim * seid1]], xbU1[segdof1[dim * seid1 + 1]]); // Abscissa of the ip points
-            xip1[dim * ii + 1] = intpip(ti, xbU1[segdof1[dim * seid1] + 1], xbU1[segdof1[dim * seid1 + 1] + 1]); // Ordinates of the ip points
-<% } -%>
-<% if (dimension !== 2){ -%>
-            real ti1 = integrationPointsPositions1[j]; // eta1 parameter of the triangle
-            real ti2 = integrationPointsPositions2[j]; // eta2 parameter of the triangle
-            for (int k = 0; k < 3; k++) { AB[k] = xbU1[tridof1[3 * trid1] + k]; }
-            // coord of the first node of the triangle with id="i"
-            for (int k = 0; k < 3; k++) { AB[k + 3] = xbU1[tridof1[3 * trid1 + 1] + k]; }
-            // coord of the second node of the triangle with id="i"
-            for (int k = 0; k < 3; k++) { AB[k + 6] = xbU1[tridof1[3 * trid1 + 2] + k]; }
-            // coord of the third node of the triangle with id="i"
-            real[int] P1X = P1Function(AB, ti1, ti2); // The coordinates of the ip points
-            xip1[dim * ii] = P1X[0]; // x
-            xip1[dim * ii + 1] = P1X[1]; // y
-            xip1[dim * ii + 2] = P1X[2]; // z
-<% } -%>
-            
+        // Second deformable body
+    <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
+        mesh: {name: 'Mesh1'},
+        finiteElementSpace: {
+            name: 'FE2',
+            ...finiteElementSpace
         }
-    }
-        
-        // Second body
-    for (int i = 0; i < nElements2; i++) {
-        // 2D
-<% if (dimension === 2){ -%>
-        int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
-<% } -%>
-        // 3D
-<% if (dimension !== 2){ -%>
-        int trid2 = triid2[i]; // Tri ID w.r.t to the whole border
-<% } -%>
-        for (int j = 0; j < integrationPointsNumber; j++) {
-            int ii = j + i * integrationPointsNumber;
-<% if (dimension === 2){ -%>
-            real ti = integrationPointsPositions[j]; // The parameter of the ip point in the segment (integration rule)
-            xip2[dim * ii] = intpip(ti, xbU2[segdof2[dim * seid2]], xbU2[segdof2[dim * seid2 + 1]]); // Abscissa of the ip points
-            xip2[dim * ii + 1] = intpip(ti, xbU2[segdof2[dim * seid2] + 1], xbU2[segdof2[dim * seid2 + 1] + 1]); // Ordinates of the ip points
-<% } -%>
-<% if (dimension !== 2){ -%>
-            real ti1 = integrationPointsPositions1[j]; // eta1 parameter of the triangle
-            real ti2 = integrationPointsPositions2[j]; // eta2 parameter of the triangle
-            for (int k = 0; k < 3; k++) { AB[k] = xbU2[tridof2[3 * trid2] + k]; }
-            // coord of the first node of the triangle with id="i"
-            for (int k = 0; k < 3; k++) { AB[k + 3] = xbU2[tridof2[3 * trid2 + 1] + k]; }
-            // coord of the second node of the triangle with id="i"
-            for (int k = 0; k < 3; k++) { AB[k + 6] = xbU2[tridof2[3 * trid2 + 2] + k]; }
-            // coord of the third node of the triangle with id="i"
-            real[int] P1X = P1Function(AB, ti1, ti2); // The coordinates of the ip points
-            xip2[dim * ii] = P1X[0]; // x
-            xip2[dim * ii + 1] = P1X[1]; // y
-            xip2[dim * ii + 2] = P1X[2]; // z
-<% } -%>
-            
-        }
-    }
-        
-<% if (dimension === 2){ -%>
-        eta = minim1(xip1, xbU2, pos, segdof2, DIS20); // Call the projection function => parameters array of the integration points
-        eta2 = minim2(xip2, xbU1, pos2, segdof1, DIS10); // Call the projection function => parameters array of the integration points
-<% } -%>
-<% if (dimension !== 2){ -%>
-        eta = minim1(xip1, tid1, xbU2, tridof2, DIS20);
-        eta2 = minim2(xip2, tid2, xbU1, tridof1, DIS10);
-<% } -%>
-        
-    real tx, ty;
-    // First body (for each ip points of the contact 1 gives the normals at the contact 2 (continuous normal field))
-    // Normal vector for the ip points at the contact area 2 (computed as the average of the normal vectors)
-<% if (dimension !== 2){ -%>
-    for (int i = 0; i < nElements1; i++) {
-        // loop on the triangles of the contact area 1
-        for (int j = 0; j < integrationPointsNumber; j++) {
-            // loop on the integration points of each triangle
-            int ii = j + i * integrationPointsNumber;                
-            real et1 = eta[2 * ii]; // eta1 parameter of the triangle
-            real et2 = eta[2 * ii + 1]; // eta2 parameter of the triangle
-            int trid2 = tid1[ii]; // Triangle id \in contact area 2 closest to the integration point
-            
-            int dofp1 = tridof2[3 * trid2]; // dof x for the first node of the triangle with id="trid2"
-            int dofp2 = tridof2[3 * trid2 + 1]; // dof x for the second node of the triangle with id="trid2"
-            int dofp3 = tridof2[3 * trid2 + 2]; // dof x for the third node of the triangle with id="trid2"
-            
-            int conn1, conn2, conn3;
-            if (tri2[trid2] == - 1) {
-                // is a triangle of the contact potential area ?
-                conn1 = Conormvec2[dofp1]; // Triangle number connected to the first node
-                conn2 = Conormvec2[dofp2]; // Triangle number connected to the second node
-                conn3 = Conormvec2[dofp3]; // Triangle number connected to the third node
-            }
-            else {
-                conn1 = Connevec2[dofp1]; // Triangle number connected to the first node
-                conn2 = Connevec2[dofp2]; // Triangle number connected to the second node
-                conn3 = Connevec2[dofp3]; // Triangle number connected to the third node
-            }
-            
-            real[int] vec1(3);
-            real[int] vec2(3);
-            real[int] vec3(3);
-            real[int] provec(3);
-            real[int] nor1(3), nor2(3), nor3(3);
-            nor1 = 0.;
-            nor2 = 0.;
-            nor3 = 0.;
-            for (int ic = 0; ic < conn1; ic++) {
-                // Loop on the connected triangle to the first node
-                int tic1;
-                if (tri2[trid2] == - 1) {
-                    // is a triangle of the contact potential area ?
-                    tic1 = Conorm2(dofp1, ic); // Triangle id connected to the first node
-                }
-                else {
-                    tic1 = Conne2(dofp1, ic); // Triangle id connected to the first node
-                }
-                for (int k = 0; k < 3; k++) { PO1[k] = xbU2[tridof2[3 * tic1] + k]; }
-                // coord of the first node of the triangle with id="tic1"
-                for (int k = 0; k < 3; k++) { PO2[k] = xbU2[tridof2[3 * tic1 + 1] + k]; }
-                // coord of the second node of the triangle with id="tic1"
-                for (int k = 0; k < 3; k++) { PO3[k] = xbU2[tridof2[3 * tic1 + 2] + k]; }
-                // coord of the third node of the triangle with id="tic1"
-                for (int k = 0; k < 3; k++) { PO4[k] = xbU2[vertdof2[tic1] + k]; }
-                // coord of the third node of the thetraedron wich not belonging to the triangle
-                vec1 = PO2 - PO1;
-                vec2 = PO3 - PO1;
-                vec3 = PO4 - PO1;
-                provec = vectorProductNormalized(vec1, vec2); // Vectorial product
-                if (provec' * vec3 > 0.) {
-                    // scalar product is positive => -prodevec is exterior to the surface
-                    provec = - provec; // Inverse the sign
-                }
-                nor1 += (1./ conn1) * provec; // Average of the normales of each connected triangle to the first node
-            }
-            nor1 = nor1 / ((nor1[0]^2 + nor1[1]^2 + nor1[2]^2)^0.5); // Unit normal at the first node
-            
-            for (int ic = 0; ic < conn2; ic++) {
-                // Loop on the connected triangle to the second node
-                int tic2;
-                if (tri2[trid2] == - 1) {
-                    // is a triangle of the contact potential area ?
-                    tic2 = Conorm2(dofp2, ic); // Triangle id connected to the first node
-                }
-                else {
-                    tic2 = Conne2(dofp2, ic); // Triangle id connected to the first node
-                }
-                for (int k = 0; k < 3; k++) { PO1[k] = xbU2[tridof2[3 * tic2] + k]; }
-                // coord of the first node of the triangle with id="tic2"
-                for (int k = 0; k < 3; k++) { PO2[k] = xbU2[tridof2[3 * tic2 + 1] + k]; }
-                // coord of the second node of the triangle with id="tic2"
-                for (int k = 0; k < 3; k++) { PO3[k] = xbU2[tridof2[3 * tic2 + 2] + k]; }
-                // coord of the third node of the triangle with id="tic2"
-                for (int k = 0; k < 3; k++) { PO4[k] = xbU2[vertdof2[tic2] + k]; }
-                // coord of the third node of the thetraedron wich not belonging to the triangle
-                vec1 = PO2 - PO1;
-                vec2 = PO3 - PO1;
-                vec3 = PO4 - PO1;
-                provec = vectorProductNormalized(vec1, vec2); // Vectorial product
-                if (provec' * vec3 > 0.) {
-                    // scalar product is positive => -prodevec is exterior to the surface
-                    provec = - provec; // Inverse the sign
-                }
-                nor2 += (1./ conn2) * provec; // Average of the normales of each connected triangle to the second node
-            }
-            nor2 = nor2 / ((nor2[0]^2 + nor2[1]^2 + nor2[2]^2)^0.5); // Unit normal at the second node
-            
-            for (int ic = 0; ic < conn3; ic++) {
-                // Loop on the connected triangle to the third node
-                int tic3;
-                if (tri2[trid2] == - 1) {
-                    // is a triangle of the contact potential area ?
-                    tic3 = Conorm2(dofp3, ic); // Triangle id connected to the first node
-                }
-                else {
-                    tic3 = Conne2(dofp3, ic); // Triangle id connected to the first node
-                }
-                for (int k = 0; k < 3; k++) { PO1[k] = xbU2[tridof2[3 * tic3] + k]; }
-                // coord of the first node of the triangle with id="tic3"
-                for (int k = 0; k < 3; k++) { PO2[k] = xbU2[tridof2[3 * tic3 + 1] + k]; }
-                // coord of the second node of the triangle with id="tic3"
-                for (int k = 0; k < 3; k++) { PO3[k] = xbU2[tridof2[3 * tic3 + 2] + k]; }
-                // coord of the third node of the triangle with id="tic3"
-                for (int k = 0; k < 3; k++) { PO4[k] = xbU2[vertdof2[tic3] + k]; }
-                // coord of the third node of the thetraedron wich not belonging to the triangle
-                vec1 = PO2 - PO1;
-                vec2 = PO3 - PO1;
-                vec3 = PO4 - PO1;
-                provec = vectorProductNormalized(vec1, vec2); // Vectorial product
-                if (provec' * vec3 > 0.) {
-                    // scalar product is positive => -prodevec is exterior to the surface
-                    provec = - provec; // Inverse the sign
-                }
-                nor3 += (1./ conn3) * provec; // Average of the normales of each connected triangle to the third node
-            }
-            nor3 = nor3 / ((nor3[0]^2 + nor3[1]^2 + nor3[2]^2)^0.5); // Unit normal at the third node
-            
-            AB(0 : 2) = nor1;
-            AB(3 : 5) = nor2;
-            AB(6 : 8) = nor3;
-            real[int] NX = P1Function(AB, et1, et2); // The coordinates of the ip points
-            norm1[3 * ii] = NX[0]; // x coord of the normal at the ip point
-            norm1[3 * ii + 1] = NX[1]; // y	coord of the normal at the ip point
-            norm1[3 * ii + 2] = NX[2]; // z	coord of the normal at the ip point         
-        }
-    }
-<% } -%>
-       
-    // Second body (for each ip points of the contact 1 gives the normals at the contact 1 (continuous normal field))
-    // Normal vector for the ip points at the contact area 1 (computed as the average of the normal vectors)
-<% if (dimension !== 2){ -%>
-    for (int i = 0; i < nElements2; i++) {
-        // loop on the triangles of the contact area 1
-        for (int j = 0; j < integrationPointsNumber; j++) {
-            // loop on the integration points of each triangle
-            int ii = j + i * integrationPointsNumber;           
-            real et1 = eta2[2 * ii]; // eta1 parameter of the triangle
-            real et2 = eta2[2 * ii + 1]; // eta2 parameter of the triangle
-            int trid2 = tid2[ii]; // Triangle id \in contact area 1 closest to the integration point
-            
-            int dofp1 = tridof1[3 * trid2]; // dof x for the first node of the triangle with id="trid2"
-            int dofp2 = tridof1[3 * trid2 + 1]; // dof x for the second node of the triangle with id="trid2"
-            int dofp3 = tridof1[3 * trid2 + 2]; // dof x for the third node of the triangle with id="trid2"
-            
-            int conn1, conn2, conn3;
-            if (tri1[trid2] == - 1) {
-                // is a triangle of the contact potential area ?
-                conn1 = Conormvec1[dofp1]; // Triangle number connected to the first node
-                conn2 = Conormvec1[dofp2]; // Triangle number connected to the second node
-                conn3 = Conormvec1[dofp3]; // Triangle number connected to the third node
-            }
-            else {
-                conn1 = Connevec1[dofp1]; // Triangle number connected to the first node
-                conn2 = Connevec1[dofp2]; // Triangle number connected to the second node
-                conn3 = Connevec1[dofp3]; // Triangle number connected to the third node
-            }
-            
-            real[int] vec1(3);
-            real[int] vec2(3);
-            real[int] vec3(3);
-            real[int] provec(3);
-            real[int] nor1(3), nor2(3), nor3(3);
-            nor1 = 0.;
-            nor2 = 0.;
-            nor3 = 0.;
-            for (int ic = 0; ic < conn1; ic++) {
-                // Loop on the connected triangle to the first node
-                int tic1;
-                if (tri1[trid2] == - 1) {
-                    // is a triangle of the contact potential area ?
-                    tic1 = Conorm1(dofp1, ic); // Triangle id connected to the first node
-                }
-                else {
-                    tic1 = Conne1(dofp1, ic); // Triangle id connected to the first node
-                }
-                for (int k = 0; k < 3; k++) { PO1[k] = xbU1[tridof1[3 * tic1] + k]; }
-                // coord of the first node of the triangle with id="tic1"
-                for (int k = 0; k < 3; k++) { PO2[k] = xbU1[tridof1[3 * tic1 + 1] + k]; }
-                // coord of the second node of the triangle with id="tic1"
-                for (int k = 0; k < 3; k++) { PO3[k] = xbU1[tridof1[3 * tic1 + 2] + k]; }
-                // coord of the third node of the triangle with id="tic1"
-                for (int k = 0; k < 3; k++) { PO4[k] = xbU1[vertdof1[tic1] + k]; }
-                // coord of the third node of the thetraedron wich not belonging to the triangle
-                vec1 = PO2 - PO1;
-                vec2 = PO3 - PO1;
-                vec3 = PO4 - PO1;
-                provec = vectorProductNormalized(vec1, vec2); // Vectorial product
-                if (provec' * vec3 > 0.) {
-                    // scalar product is positive => -prodevec is exterior to the surface
-                    provec = - provec; // Inverse the sign
-                }
-                nor1 += (1./ conn1) * provec; // Average of the normales of each connected triangle to the first node
-            }
-            nor1 = nor1 / ((nor1[0]^2 + nor1[1]^2 + nor1[2]^2)^0.5); // Unit normal at the first node
-            
-            for (int ic = 0; ic < conn2; ic++) {
-                // Loop on the connected triangle to the second node
-                int tic2;
-                if (tri1[trid2] == - 1) {
-                    // is a triangle of the contact potential area ?
-                    tic2 = Conorm1(dofp2, ic); // Triangle id connected to the first node
-                }
-                else {
-                    tic2 = Conne1(dofp2, ic); // Triangle id connected to the first node
-                }
-                for (int k = 0; k < 3; k++) { PO1[k] = xbU1[tridof1[3 * tic2] + k]; }
-                // coord of the first node of the triangle with id="tic2"
-                for (int k = 0; k < 3; k++) { PO2[k] = xbU1[tridof1[3 * tic2 + 1] + k]; }
-                // coord of the second node of the triangle with id="tic2"
-                for (int k = 0; k < 3; k++) { PO3[k] = xbU1[tridof1[3 * tic2 + 2] + k]; }
-                // coord of the third node of the triangle with id="tic2"
-                for (int k = 0; k < 3; k++) { PO4[k] = xbU1[vertdof1[tic2] + k]; }
-                // coord of the third node of the thetraedron wich not belonging to the triangle
-                vec1 = PO2 - PO1;
-                vec2 = PO3 - PO1;
-                vec3 = PO4 - PO1;
-                provec = vectorProductNormalized(vec1, vec2); // Vectorial product
-                if (provec' * vec3 > 0.) {
-                    // scalar product is positive => -prodevec is exterior to the surface
-                    provec = - provec; // Inverse the sign
-                }
-                nor2 += (1./ conn2) * provec; // Average of the normales of each connected triangle to the second node
-            }
-            nor2 = nor2 / ((nor2[0]^2 + nor2[1]^2 + nor2[2]^2)^0.5); // Unit normal at the second node
-            
-            for (int ic = 0; ic < conn3; ic++) {
-                // Loop on the connected triangle to the third node
-                int tic3;
-                if (tri1[trid2] == - 1) {
-                    // is a triangle of the contact potential area ?
-                    tic3 = Conorm1(dofp3, ic); // Triangle id connected to the first node
-                }
-                else {
-                    tic3 = Conne1(dofp3, ic); // Triangle id connected to the first node
-                }
-                for (int k = 0; k < 3; k++) { PO1[k] = xbU1[tridof1[3 * tic3] + k]; }
-                // coord of the first node of the triangle with id="tic3"
-                for (int k = 0; k < 3; k++) { PO2[k] = xbU1[tridof1[3 * tic3 + 1] + k]; }
-                // coord of the second node of the triangle with id="tic3"
-                for (int k = 0; k < 3; k++) { PO3[k] = xbU1[tridof1[3 * tic3 + 2] + k]; }
-                // coord of the third node of the triangle with id="tic3"
-                for (int k = 0; k < 3; k++) { PO4[k] = xbU1[vertdof1[tic3] + k]; }
-                // coord of the third node of the thetraedron wich not belonging to the triangle
-                vec1 = PO2 - PO1;
-                vec2 = PO3 - PO1;
-                vec3 = PO4 - PO1;
-                provec = vectorProductNormalized(vec1, vec2); // Vectorial product
-                if (provec' * vec3 > 0.) {
-                    // scalar product is positive => -prodevec is exterior to the surface
-                    provec = - provec; // Inverse the sign
-                }
-                nor3 += (1./ conn3) * provec; // Average of the normales of each connected triangle to the third node
-            }
-            nor3 = nor3 / ((nor3[0]^2 + nor3[1]^2 + nor3[2]^2)^0.5); // Unit normal at the third node
-            
-            AB(0 : 2) = nor1;
-            AB(3 : 5) = nor2;
-            AB(6 : 8) = nor3;
-            real[int] NX = P1Function(AB, et1, et2); // The coordinates of the ip points
-            norm2[3 * ii] = NX[0]; // x coord of the normal at the ip point
-            norm2[3 * ii + 1] = NX[1]; // y	coord of the normal at the ip point
-            norm2[3 * ii + 2] = NX[2]; // z	coord of the normal at the ip point
-        }
-    }
-<% } -%>            
+    }), 1) -%>
 
 
-<%# Problem -%>
-        // Solve
+
+        
+    <%# Finite element function -%>
+    // unknown = [Ax1, Ay1, Az1] for the firqst body and [Ax2, Ay2, Az2] for the second one
+    <%
+        const unknownFunction1X = variables[1].value + '1'
+        const unknownFunction1Y = variables[2].value + '1'
+        const unknownFunction1Z = variables[3].value + '1'
+        const unknownFunction1 =
+            dimension === 2
+                ? '[' + unknownFunction1Z +  ']'
+                : '[' + unknownFunction1X + ', ' + unknownFunction1Y + ', ' + unknownFunction1Z + ']'
+        const testFunction1X = unknownFunction1X + 'h'
+        const testFunction1Y = unknownFunction1Y + 'h'
+        const testFunction1Z = unknownFunction1Z + 'h'
+        const testFunction1 =
+            dimension === 2
+                ? '[' + testFunction1Z + ']'
+                : '[' + testFunction1X + ', ' + testFunction1Y + ', ' + testFunction1Z + ']'
+
+        const unknownFunction2X = variables[1].value + '2'
+        const unknownFunction2Y = variables[2].value + '2'
+        const unknownFunction2Z = variables[3].value + '2'
+        const unknownFunction2 =
+            dimension === 2
+                ? '[' + unknownFunction2Z +  ']'
+                : '[' + unknownFunction2X + ', ' + unknownFunction2Y + ', ' + unknownFunction2Z + ']'
+        const testFunction2X = unknownFunction2X + 'h'
+        const testFunction2Y = unknownFunction2Y + 'h'
+        const testFunction2Z = unknownFunction2Z + 'h'
+        const testFunction2 =
+            dimension === 2
+                ? '[' + testFunction2Z + ']'
+                : '[' + testFunction2X + ', ' + testFunction2Y + ', ' + testFunction2Z + ']'           
+        const testfunc1 = dimension === 2 ? '[Vx, Vy]' : '[Vx, Vy, Vz]'
+        const testfunc2 = dimension === 2 ? '[Wx, Wy]' : '[Wx, Wy, Wz]'
+    -%>
+
+
+    <%# Problem -%>
+    <%
+        const dirichletProd = boundaryConditions.dirichletProd.values ?? []
+        const contactArea = boundaryConditions.contactArea.values ?? []
+        const penalty = parameters.penalty.children
+
+        const current1 = parameters.current1.children
+        const current1ValueX = current1[0].value ?? current1[0].default
+        const current1ValueY = current1[1].value ?? current1[1].default
+        const current1ValueZ = current1[2].value ?? current1[2].default
+
+        const current2 = parameters.current2.children
+        const current2ValueX = current2[0].value ?? current2[0].default
+        const current2ValueY = current2[1].value ?? current2[1].default
+        const current2ValueZ = current2[2].value ?? current2[2].default
+        const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
+    -%>
+
+
+        // Problem
         appendLog("Define the problem...");
-// First Body 
-    real Nu1 = 1. / Mu0;
-    varf vLaplacian1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
-        = intN(Mesh0) (
-            Nu1 * Curl(<%- unknownFunction1 -%>)' * Curl(<%- testFunction1 -%>)
-<% if (dimension !== 2) { -%>
-            + penalty * Div(<%- unknownFunction1 -%>) * Div(<%- testFunction1 -%>)
-<% } -%>
-        )
-<% for (const d of dirichletProd){ -%>
-    <% if (d.geometryIndex === 0){ %>
-        <% if (dimension === 2) { -%>
-            +on(<%- d.labels -%>, <%- unknownFunction1Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
-        <% } else { -%>
-            + intN1(Mesh0, <%- d.labels -%>) (
-                penalty * DotNormal(<%- unknownFunction1 -%>)' * DotNormal(<%- testFunction1 -%>)
-            )
-        <% } -%>
-    <% } -%>
-<% } -%>
-        ;
-    
-    varf vLaplacianRHS1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
-        = intN(Mesh0) (
-<% if (dimension === 2) { -%>
-            <%- currentValueZ -%> * <%- testFunction1Z %>
-<% } else { -%>
-            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction1 %>
-<% } -%>
-        )
-<% for (const d of dirichletProd){ -%>
 
-    <% if (d.geometryIndex === 0){ %>
-        <% if (dimension === 2) { -%> 
-        + on(<%- d.labels -%>,<%- unknownFunction1Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
-        <% } else { -%>
-        + intN1(Mesh0, <%- d.labels -%>) (
-            penalty *
-                [
-                    0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
-                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
-                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
-                ]' * DotNormal(<%- testFunction1 -%>))
-        <% } -%>
-    <% } -%>        
-<% } -%>
-        ;
+        real penalty = <%- penalty[0].value ?? penalty[0].default -%>; // Penalty factor to penalize the interface conditions
 
-// Second Body 
-    real Nu2 = 1. / Mu1;
-    varf vLaplacian2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
-        = intN(Mesh1) (
-            Nu2 * Curl(<%- unknownFunction2 -%>)' * Curl(<%- testFunction2 -%>)
-<% if (dimension !== 2) { -%>
-            + penalty * Div(<%- unknownFunction2 -%>) * Div(<%- testFunction2 -%>)
-<% } -%>
-        )
-<% for (const d of dirichletProd){ -%>
-    <% if (d.geometryIndex === 1){ %>
-        <% if (dimension === 2) { -%>
-            +on(<%- d.labels -%>, <%- unknownFunction2Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
-        <% } else { -%>
-            + intN1(Mesh1, <%- d.labels -%>) (
-                penalty * DotNormal(<%- unknownFunction2 -%>)' * DotNormal(<%- testFunction2 -%>)
-            )
-        <% } -%>
-    <% } -%>
-<% } -%>
-        ;
-    
-    varf vLaplacianRHS2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
-        = intN(Mesh1) (
-<% if (dimension === 2) { -%>
-            <%- currentValueZ -%> * <%- testFunction2Z %>
-<% } else { -%>
-            [<%- currentValueX -%>, <%- currentValueY -%>, <%- currentValueZ -%>]' * <%- testFunction2 %>
-<% } -%>
-        )
-<% for (const d of dirichletProd){ -%>
+        FE1 <%- unknownFunction1 -%>;
+        FE2 <%- unknownFunction2 -%>;
 
-    <% if (d.geometryIndex === 1){ %>
-        <% if (dimension === 2) { -%> 
-        + on(<%- d.labels -%>,<%- unknownFunction2Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
-        <% } else { -%>
-        + intN1(Mesh1, <%- d.labels -%>) (
-            penalty *
-                [
-                    0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
-                    0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
-                    0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
-                ]' * DotNormal(<%- testFunction2 -%>))
-        <% } -%>
-    <% } -%>        
-<% } -%>
-        ;
-
-<%# Solver -%>
-<%
-    const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default
--%>
-<%- helpers.indent(include('/blobs/solver.edp.ejs', {
-    solver
-}), 1) -%>
-
-<%# Solve -%>
-    // Solve
-    appendLog("Solve the problem...");
-
-    matrix Laplacian1 = vLaplacian1(FE1, FE1, solver = solver);
-    real[int] LaplacianRHS1 = vLaplacianRHS1(0, FE1);
-    matrix Laplacian2 = vLaplacian2(FE2, FE2, solver = solver);
-    real[int] LaplacianRHS2 = vLaplacianRHS2(0, FE2);
-
-	real[int] RHS(ndofA1+ndofA2);
-	RHS(0:ndofA1-1) = LaplacianRHS1;
-	RHS(ndofA1:(ndofA1+ndofA2-1)) = LaplacianRHS2; 
-
-
-	// Interface boundary conditions
-	real[int,int] Jac3(ndofA1,ndofA2);
-	real[int,int] Jac4(ndofA2,ndofA1);
-	Jac3=0.;
-	Jac4=0.;
-	matrix iddW3,iddW33, iddW4, LaplacianC;
-    iddW3.resize(ndofA1,ndofA2);
-    iddW3=Jac3;
-    iddW33.resize(ndofA2,ndofA1);
-    iddW33=Jac4;
-	LaplacianC.resize(ndofA1 + ndofA2, ndofA1 + ndofA2);
-
-	// (A1-A2) x n = [ - (A1-A2) * N2.y , (A1-A2) * N2.x ]
-	// energy = penalty * ( (A1-A2) * N2.y )^2 + ((A1-A2) * N2.x)^2 = penalty * (A1-A2)^2 *(N2.y ^2 + N2.x ^2) = penalty * (A1-A2)^2
-    <% if (dimension === 2) { -%>
-    <% if (pType==='P1') { -%>
-    // Slave
-	real Li;
-	for (int i = 0; i < nElements1; i++) {
-		// Loop on the segment/triangle in contact
-		int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
-		int dofxx0 = segdof1[2 * seid1]; // dof x of the first vertice of the segment
-		int dofxx1 = segdof1[2 * seid1 + 1]; // dof x of the secondt vertice of the segment
-
-		int dofx0 = segdofA1[2 * seid1]; // dof A of the first vertice of the segment
-		int dofx1 = segdofA1[2 * seid1 + 1]; // dof A of the secondt vertice of the segment
-
-		// Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
-		Li = ((xbU1[dofxx1] - xbU1[dofxx0])^2 + (xbU1[dofxx1 + 1] - xbU1[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
-		for (int j = 0; j < integrationPointsNumber; j++) {
-			// shape function of the first segment
-			int ii = j + i * integrationPointsNumber;
-			
-			real tt = eta[ii];
-			real ph1 = 1 - tt;
-			real ph2 = tt;
-			
-			int posi = pos[ii]; // The segment number w.r.t to the whole border of the closest segment
-			int dofp1 = segdofA2[2 * posi]; // Dof A of the first vertice of the segment
-			int dofp2 = segdofA2[2 * posi + 1]; // Dof A of the second vertice of the segment
-			real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
-			real wi = integrationPointsWeights[j]; // weight integration rule
-
-			Laplacian1(dofx0,dofx0) += penalty*(1-ti)*(1-ti)*wi*Li;
-			Laplacian1(dofx0,dofx1) += penalty*(1-ti)*(ti)*wi*Li;
-			Laplacian1(dofx1,dofx0) = Laplacian1(dofx0,dofx1); // sym
-			Laplacian1(dofx1,dofx1) += penalty*(ti)*(ti)*wi*Li;
-
-			Laplacian2(dofp1,dofp1) += penalty*ph1*ph1*wi*Li;
-			Laplacian2(dofp1,dofp2) += penalty*ph1*ph2*wi*Li;
-			Laplacian2(dofp2,dofp1) = Laplacian2(dofp1,dofp2); // sym
-			Laplacian2(dofp2,dofp2) += penalty*ph2*ph2*wi*Li;
-
-			iddW3(dofx0,dofp1) += -penalty*(1-ti)*ph1*wi*Li;
-			iddW3(dofx0,dofp2) += -penalty*(1-ti)*ph2*wi*Li;
-			iddW3(dofx1,dofp1) += -penalty*(ti)*ph1*wi*Li;
-			iddW3(dofx1,dofp2) += -penalty*(ti)*ph2*wi*Li;
-
-		}
-	}
-
-	// Master
-
-	real Li2;
-	for (int i = 0; i < nElements2; i++) {
-		// Loop on the segment/triangle in contact
-		int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
-		int dofxx0 = segdof2[2 * seid2]; // dof x of the first vertice of the segment
-		int dofxx1 = segdof2[2 * seid2 + 1]; // dof x of the secondt vertice of the segment
-
-		int dofx0 = segdofA2[2 * seid2]; // dof A of the first vertice of the segment
-		int dofx1 = segdofA2[2 * seid2 + 1]; // dof A of the secondt vertice of the segment
-
-		// Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
-		Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
-		for (int j = 0; j < integrationPointsNumber; j++) {
-			// shape function of the first segment
-			int ii = j + i * integrationPointsNumber;
-			
-			real tt = eta2[ii];
-			real ph1 = 1 - tt;
-			real ph2 = tt;
-			
-			int posi = pos2[ii]; // The segment number w.r.t to the whole border of the closest segment
-			int dofp1 = segdofA1[2 * posi]; // Dof A of the first vertice of the segment
-			int dofp2 = segdofA1[2 * posi + 1]; // Dof A of the second vertice of the segment
-			real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
-			real wi = integrationPointsWeights[j]; // weight integration rule
-
-			Laplacian2(dofx0,dofx0) += penalty*(1-ti)*(1-ti)*wi*Li2;
-			Laplacian2(dofx0,dofx1) += penalty*(1-ti)*(ti)*wi*Li2;
-			Laplacian2(dofx1,dofx0) = Laplacian2(dofx0,dofx1); // sym
-			Laplacian2(dofx1,dofx1) += penalty*(ti)*(ti)*wi*Li2;
-
-			Laplacian1(dofp1,dofp1) += penalty*ph1*ph1*wi*Li2;
-			Laplacian1(dofp1,dofp2) += penalty*ph1*ph2*wi*Li2;
-			Laplacian1(dofp2,dofp1) = Laplacian1(dofp1,dofp2); // sym
-			Laplacian1(dofp2,dofp2) += penalty*ph2*ph2*wi*Li2;
-
-			iddW33(dofx0,dofp1) += -penalty*(1-ti)*ph1*wi*Li2;
-			iddW33(dofx0,dofp2) += -penalty*(1-ti)*ph2*wi*Li2;
-			iddW33(dofx1,dofp1) += -penalty*(ti)*ph1*wi*Li2;
-			iddW33(dofx1,dofp2) += -penalty*(ti)*ph2*wi*Li2;
-
-		}
-	}
-
+        int dim = <%- dimension -%>;
+        // Degree of Freedom
+    <% if (dimension === 2){ -%>
+        fespace Wh1(Mesh0,[P1,P1]);
+        fespace Wh2(Mesh1,[P1,P1]);
     <% } else { -%>
-	// Slave
-	real Li;
-	for (int i = 0; i < nElements1; i++) {
-		// Loop on the segment/triangle in contact
-		int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
-		int dofxx0 = segdof1[2 * seid1]; // dof x of the first vertice of the segment
-		int dofxx1 = segdof1[2 * seid1 + 1]; // dof x of the secondt vertice of the segment
-
-		int dofx0 = segdofA1[3 * seid1]; // dof A of the first vertice of the segment
-		int dofx1 = segdofA1[3 * seid1 + 1]; // dof A of the mid-point
-		int dofx2 = segdofA1[3 * seid1 + 2]; // dof A of the secondt vertice of the segment
-
-		// Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
-		Li = ((xbU1[dofxx1] - xbU1[dofxx0])^2 + (xbU1[dofxx1 + 1] - xbU1[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
-		for (int j = 0; j < integrationPointsNumber; j++) {
-			// shape function of the first segment
-			int ii = j + i * integrationPointsNumber;
-			
-			real tt = eta[ii];
-			real ph1 = 1 - 3*tt + 2*tt^2;
-			real ph2 = 4*tt - 4*tt^2;
-			real ph3 = -tt + 2*tt^2;
-			
-			int posi = pos[ii]; // The segment number w.r.t to the whole border of the closest segment
-			int dofp1 = segdofA2[3 * posi]; // Dof A of the first vertice of the segment
-			int dofp2 = segdofA2[3 * posi + 1]; // Dof A of the mid-point
-			int dofp3 = segdofA2[3 * posi + 2]; // Dof A of the second vertice of the segment
-			real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
-			real wi = integrationPointsWeights[j]; // weight integration rule
-
-			Laplacian1(dofx0,dofx0) += penalty*N0(ti)*N0(ti)*wi*Li;
-			Laplacian1(dofx0,dofx1) += penalty*N0(ti)*N1(ti)*wi*Li;
-			Laplacian1(dofx0,dofx2) += penalty*N0(ti)*N2(ti)*wi*Li;
-
-			Laplacian1(dofx1,dofx0) = Laplacian1(dofx0,dofx1); // sym
-			Laplacian1(dofx1,dofx1) += penalty*N1(ti)*N1(ti)*wi*Li;
-			Laplacian1(dofx1,dofx2) += penalty*N1(ti)*N2(ti)*wi*Li;
-
-			Laplacian1(dofx2,dofx2) += penalty*N2(ti)*N2(ti)*wi*Li;
-			Laplacian1(dofx2,dofx0) = Laplacian1(dofx0,dofx2);
-			Laplacian1(dofx2,dofx1) = Laplacian1(dofx1,dofx2);
-
-
-			Laplacian2(dofp1,dofp1) += penalty*ph1*ph1*wi*Li;
-			Laplacian2(dofp1,dofp2) += penalty*ph1*ph2*wi*Li;
-			Laplacian2(dofp1,dofp3) += penalty*ph1*ph3*wi*Li;
-
-			Laplacian2(dofp2,dofp1) = Laplacian2(dofp1,dofp2); // sym
-			Laplacian2(dofp2,dofp2) += penalty*ph2*ph2*wi*Li;
-			Laplacian2(dofp2,dofp3) += penalty*ph2*ph3*wi*Li;
-
-			Laplacian2(dofp3,dofp3) += penalty*ph3*ph3*wi*Li;
-			Laplacian2(dofp3,dofp1) = Laplacian2(dofp1,dofp3);
-			Laplacian2(dofp3,dofp2) = Laplacian2(dofp2,dofp3);
-
-			iddW3(dofx0,dofp1) += -penalty*N0(ti)*ph1*wi*Li;
-			iddW3(dofx0,dofp2) += -penalty*N0(ti)*ph2*wi*Li;
-			iddW3(dofx0,dofp3) += -penalty*N0(ti)*ph3*wi*Li;
-
-			iddW3(dofx1,dofp1) += -penalty*N1(ti)*ph1*wi*Li;
-			iddW3(dofx1,dofp2) += -penalty*N1(ti)*ph2*wi*Li;
-			iddW3(dofx1,dofp3) += -penalty*N1(ti)*ph3*wi*Li;
-
-			iddW3(dofx2,dofp1) += -penalty*N2(ti)*ph1*wi*Li;
-			iddW3(dofx2,dofp2) += -penalty*N2(ti)*ph2*wi*Li;
-			iddW3(dofx2,dofp3) += -penalty*N2(ti)*ph3*wi*Li;			
-
-		}
-	}
-
-	// Master
-
-	real Li2;
-	for (int i = 0; i < nElements2; i++) {
-		// Loop on the segment/triangle in contact
-		int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
-		int dofxx0 = segdof2[2 * seid2]; // dof x of the first vertice of the segment
-		int dofxx1 = segdof2[2 * seid2 + 1]; // dof x of the secondt vertice of the segment
-
-		int dofx0 = segdofA2[3 * seid2]; // dof A of the first vertice of the segment
-		int dofx1 = segdofA2[3 * seid2 + 1]; // dof A of the mid-point
-		int dofx2 = segdofA2[3 * seid2 + 2]; // dof A of the secondt vertice of the segment
-
-		// Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
-		Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
-		for (int j = 0; j < integrationPointsNumber; j++) {
-			// shape function of the first segment
-			int ii = j + i * integrationPointsNumber;
-			
-			real tt = eta2[ii];
-			real ph1 = 1 - 3*tt + 2*tt^2;
-			real ph2 = 4*tt - 4*tt^2;
-			real ph3 = -tt + 2*tt^2;
-			
-			int posi = pos2[ii]; // The segment number w.r.t to the whole border of the closest segment
-			int dofp1 = segdofA1[3 * posi]; // Dof A of the first vertice of the segment
-			int dofp2 = segdofA1[3 * posi + 1]; // Dof A of the mid-point
-			int dofp3 = segdofA1[3 * posi + 2]; // Dof A of the second vertice of the segment
-			real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
-			real wi = integrationPointsWeights[j]; // weight integration rule
-
-			Laplacian2(dofx0,dofx0) += penalty*N0(ti)*N0(ti)*wi*Li2;
-			Laplacian2(dofx0,dofx1) += penalty*N0(ti)*N1(ti)*wi*Li2;
-			Laplacian2(dofx0,dofx2) += penalty*N0(ti)*N2(ti)*wi*Li2;
-
-			Laplacian2(dofx1,dofx0) = Laplacian2(dofx0,dofx1); // sym
-			Laplacian2(dofx1,dofx1) += penalty*N1(ti)*N1(ti)*wi*Li2;
-			Laplacian2(dofx1,dofx2) += penalty*N1(ti)*N2(ti)*wi*Li2;
-
-			Laplacian2(dofx2,dofx2) += penalty*N2(ti)*N2(ti)*wi*Li2;
-			Laplacian2(dofx2,dofx0) = Laplacian2(dofx0,dofx2);
-			Laplacian2(dofx2,dofx1) = Laplacian2(dofx1,dofx2);
-
-			Laplacian1(dofp1,dofp1) += penalty*ph1*ph1*wi*Li2;
-			Laplacian1(dofp1,dofp2) += penalty*ph1*ph2*wi*Li2;
-			Laplacian1(dofp1,dofp3) += penalty*ph1*ph3*wi*Li2;
-
-			Laplacian1(dofp2,dofp1) = Laplacian1(dofp1,dofp2); // sym
-			Laplacian1(dofp2,dofp2) += penalty*ph2*ph2*wi*Li2;
-			Laplacian1(dofp2,dofp3) += penalty*ph2*ph3*wi*Li2;
-
-			Laplacian1(dofp3,dofp3) += penalty*ph3*ph3*wi*Li2;
-			Laplacian1(dofp3,dofp1) = Laplacian1(dofp1,dofp3);
-			Laplacian1(dofp3,dofp2) = Laplacian1(dofp2,dofp3);
-
-			iddW33(dofx0,dofp1) += -penalty*N0(ti)*ph1*wi*Li2;
-			iddW33(dofx0,dofp2) += -penalty*N0(ti)*ph2*wi*Li2;
-			iddW33(dofx0,dofp3) += -penalty*N0(ti)*ph3*wi*Li2;
-
-			iddW33(dofx1,dofp1) += -penalty*N1(ti)*ph1*wi*Li2;
-			iddW33(dofx1,dofp2) += -penalty*N1(ti)*ph2*wi*Li2;
-			iddW33(dofx1,dofp3) += -penalty*N1(ti)*ph3*wi*Li2;
-
-			iddW33(dofx2,dofp1) += -penalty*N2(ti)*ph1*wi*Li2;
-			iddW33(dofx2,dofp2) += -penalty*N2(ti)*ph2*wi*Li2;
-			iddW33(dofx2,dofp3) += -penalty*N2(ti)*ph3*wi*Li2;
-
-		}
-	}
-    <% } -%>
-    <% } else { -%>
-
+        fespace Wh1(Mesh0,[P1,P1,P1]);
+        fespace Wh2(Mesh1,[P1,P1,P1]);
     <% } -%>
 
-    iddW3=iddW3+iddW33';
-    iddW4=iddW3';
-    LaplacianC=[[Laplacian1,iddW3],[iddW4,Laplacian2]];
+        int ndof1 = Wh1.ndof; // Number of the degree of freedom (x,y) for the first body
+        int ndof2 = Wh2.ndof; // Number of the degree of freedom (x,y) for the second body
 
-
-    set(LaplacianC, solver=solver);
-
-	real[int] AzC( ndofA1 + ndofA2 );
-    AzC = LaplacianC^-1 * RHS;
-
-<% if (dimension === 2) { -%>
-	<%- unknownFunction1Z -%>[]=AzC(0:(ndofA1-1));
-	<%- unknownFunction2Z -%>[]=AzC(ndofA1:(ndofA1 + ndofA2-1));
-<% } else { -%>
-	<%- unknownFunction1X -%>[]=AzC(0:(ndofA1-1));
-	<%- unknownFunction2X -%>[]=AzC(ndofA1:(ndofA1 + ndofA2-1));
-<% } -%>
+        int ndofA1 = FE1.ndof; // Number of the degree of freedom of potential A for the first body
+        int ndofA2 = FE2.ndof; // Number of the degree of freedom for of potential A the second body
         
-<% if (dimension === 2) { -%>
-    // Body 1
-    // Magnetic induction
-    FE1 B1, Bx1, By1;
-    Bx1 = dy(<%- unknownFunction1Z -%>);
-    By1 = -dx(<%- unknownFunction1Z -%>);
-    B1 = sqrt(Bx1^2 + By1^2);
+        // Extract contact borders for the body
+        // Vectors & arrays for Contact
+        int[int] Jb1, Jb2;
+        int[int] dof1, dof2;
+        int nC1 = 0;
+        int nC2 = 0;
+        
+        // Extract contact borders for the body 1
+        varf vcontbord(<%- testfunc2 -%>, <%- testfunc1 -%>) =
+            // truc à la con pour éviter à gérer le + au début ou valeur vide
+            intN(Mesh0)(0 * Vx)
+    <% for (const c of contactArea){ -%>
+    <%
+            if (c.geometryIndex === 0){
+            %>
+            + on(<%- c.labels -%>, Wx = 1, Wy = 1 <% if (dimension !== 2){ -%>, Wz = 1 <% } -%>)
+    <% } -%>
+    <% } -%>
+            ;
+        real[int] onBorder1 = vcontbord(0, Wh1, tgv = 1);
+        int numB1 = onBorder1.sum;
+        nC1 = numB1 / dim; // Constraint number
+    <% if (dimension==2){ -%>
+        Jb1.resize(numB1);
+        int k = 0;
+        for [i, B1i : onBorder1]
+        if (B1i) { Jb1[k] = i; k++; }
+    <% } else { -%>
+        dof1.resize(numB1);
+        int k = 0;
+        for (int i = 0; i < ndof1; i++) {
+            if (onBorder1[i]) {
+                dof1[k] = i;
+                k++;
+            }
+        }
+    <% } -%>
+        // End extract borders for the body 1
+        
+        // Extract contact borders for the body 2
+        varf vcontbord2(<%- testfunc2 -%>, <%- testfunc1 -%>) =
+            // truc à la con pour éviter à gérer le + au début ou valeur vide
+            intN(Mesh1)(0 * Vx)
+    <% for (const c of contactArea){ -%>
+    <%
+            if (c.geometryIndex === 1){
+            %>
+            + on(<%- c.labels -%>, Wx = 1, Wy = 1 <% if (dimension !== 2){ -%>, Wz = 1 <% } -%>)
+    <% } -%>
+    <% } -%>
+            ;
+        real[int] onBorder2 = vcontbord2(0, Wh2, tgv = 1);
+        int numB2 = onBorder2.sum;
+        nC2 = numB2 / dim; // Constraint number
+    <% if (dimension==2){ -%>
+        Jb2.resize(numB2);
+        k = 0;
+        for [i, B2i : onBorder2]
+        if (B2i) { Jb2[k] = i; k++; }
+    <% } else { -%>
+        dof2.resize(numB2);
+        k = 0;
+        for (int i = 0; i < ndof2; i++) {
+            if (onBorder2[i]) {
+                dof2[k] = i;
+                k++;
+            }
+        }
+    <% } -%>
+        // End extract borders for the body 2
+        
+        // Working space (All internal variables are deleted after)
+        real[int] XYZ1(ndof1);
+        real[int] XYZ2(ndof2);
+    <% if (dimension === 2){ -%>
+        <% if (pType==='P2') { -%> 
+        real[int] X1(ndofA1);
+        real[int] Y1(ndofA1);
+        real[int] X2(ndofA2);
+        real[int] Y2(ndofA2);
+        <% } -%>
+    <% } -%>
 
-    // Magnetic field
-    FE1 H1, Hx1, Hy1;
-    Hx1 = Nu1 * Bx1;
-    Hy1 = Nu1 * By1;
-    H1 = sqrt(Hx1^2 + Hy1^2);
 
-    // Body 2
-    // Magnetic induction
-    FE2 B2, Bx2, By2;
-    Bx2 = dy(<%- unknownFunction2Z -%>);
-    By2 = -dx(<%- unknownFunction2Z -%>);
-    B2 = sqrt(Bx2^2 + By2^2);
+        {
+    <% if (dimension === 2){ -%>
+            Wh1[xx1, yy1] = [x, y]; // position vector
+            Wh2[xx2, yy2] = [x, y]; // position vector
+            <% if (pType==='P2') { -%> 
+            FE1 x1 = x;
+            FE1 y1 = y;
+            FE2 x2 = x;
+            FE2 y2 = y;
+            X1 = x1[];
+            Y1 = y1[];
+            X2 = x2[];
+            Y2 = y2[];
+            <% } -%>
+    <% } else { -%>
+            Wh1[xx1, yy1, zz1] = [x, y, z]; // position vector
+            Wh2[xx2, yy2, zz2] = [x, y, z]; // position vector
+    <% } -%>
+            XYZ1 = xx1[];
+            XYZ2 = xx2[];
+        }
+        // End working space
 
-    // Magnetic field
-    FE2 H2, Hx2, Hy2;
-    Hx2 = Nu2 * Bx2;
-    Hy2 = Nu2 * By2;
-    H2 = sqrt(Hx2^2 + Hy2^2);
+    <% if (dimension === 2){ -%>
+    <% if (pType==='P1') { -%>    
+    <%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D.edp.ejs', {
+        dimension
+    }), 1) -%>
+    <% } else {  -%>
+    <%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D_P2.edp.ejs', {
+        dimension
+    }), 1) -%>
+    <% } -%>
 
-<% } else { -%>
-    // Body 1
-    // Magnetic induction
-    FE1 [Bx1, By1, Bz1];
-    [Bx1, By1, Bz1] = Curl(<%- unknownFunction1 -%>);
+    <% } else { -%>
 
-    // Magnetic field
-    FE1 [Hx1, Hy1, Hz1];
-    [Hx1, Hy1, Hz1] = Nu1 * [Bx1, By1, Bz1];
+    <% } -%>
 
-    // Body 2
-    // Magnetic induction
-    FE2 [Bx2, By2, Bz2];
-    [Bx2, By2, Bz2] = Curl(<%- unknownFunction2 -%>);
+    <%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs'), 1) -%>
+        
+    <% if (dimension === 2){ -%>
+        int nElements1 = nC1; // Segment number of the contact area 1 ( = nC1 if the contact border is closed if not it is  = nC1-1 and is corrected in the connectivity function)
+        int nElements2 = nC2; // Segment number of the contact area 2 ( = nC2 if the contact border is closed if not it is  = nC2-1 and is corrected in the connectivity function)
+        int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Mesh0.nbe) connected to the dof
+        int[int, int] Conne2(ndof2, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
+        int[int] Connevec1(ndof1); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
+        int[int] Connevec2(ndof2); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
+        int[int] segdof1(dim * Mesh0.nbe); // For each segment of the border 1, gives the dofx of the two segment vertices
+        int[int] segdof2(dim * Mesh1.nbe); // For each segment of the contact area 2, gives the dofx of the two segment vertices    	
+        int[int, int] Conorm1(ndof1, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh0.nbe) connected to the dof
+        int[int, int] Conorm2(ndof2, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh2.nbe) connected to the dof
+        int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
+        int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
+        int[int] vertdof1(Mesh0.nbe); // dof of the triangle vertice that does not belonging to the border 1
+        int[int] vertdof2(Mesh1.nbe); // dof of the triangle vertice that does not belonging to the border 2
+        int[int] IDni1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the segment in 0,...,nseg1
+        int[int] IDni2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
+        int[int] segid1(nElements1); // For each contact element id in 0,...,nElements1 gives the ID of the segment in 0,...,Th.nbe
+        int[int] segid2(nElements2); // For each contact element id in 0,...,nElements2 gives the ID of the segment in 0,...,Th.nbe
+        <% if (pType==='P1') { -%>
+        int[int] segdofA1(dim*Mesh0.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
+        int[int] segdofA2(dim*Mesh1.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
+        int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, segdofA1, segdofA2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
+        <% } else { -%>
+        int[int] segdofA1(3*Mesh0.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
+        int[int] segdofA2(3*Mesh1.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
+        int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
+        int connectiP2 = connectivityP2(segdofA1, segdofA2, X1, X2, Y1, Y2);
+        <% } -%>
 
-    // Magnetic field
-    FE2 [Hx2, Hy2, Hz2];
-    [Hx2, Hy2, Hz2] = Nu2 * [Bx2, By2, Bz2];
-<% } -%>
-    
-<%# Save -%>
-<%- include('/blobs/save.edp.ejs', {
-    dimension,
-    path: run.resultPath,
-    name: '"body1Result"',
-    mesh: "Mesh0",
-    geometry: {
-        value: geometry?.values[0]
-    },
-    results: run.results[0]
-}) -%>
-<%- include('/blobs/save.edp.ejs', {
-    dimension,
-    path: run.resultPath,
-    name: '"body2Result"',
-    mesh: "Mesh1",
-    geometry: {
-        value: geometry?.values[1]
-    },
-    results: run.results[1]
-}) -%>
-<%# Sensors -%>
-<%- include('/blobs/sensors.edp.ejs', {
-    path: run.dataPath,
-    x: 0,
-    sensors: run.sensors
-}) -%>
+    <% } else { -%>
+        int[int, int] Conne1(ndof1, Mesh0.nt); // Connectivity matrix: for each dof the triangle connected to the dof
+        int[int, int] Conne2(ndof2, Mesh1.nt); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
+        int[int] Connevec1(ndof1); // Connectivity matrix vector: for each dof gives the number of triangles connected to the dof
+        int[int] Connevec2(ndof2); // Connectivity matrix vector: for each dof gives the number of triangles connected to the dof
+        int[int] tri1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the triangle in 0,...,ntri1
+        int[int] tri2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the triangle in 0,...,ntri2
+        int[int] tridof1(3 * Mesh0.nbe); // TRiangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
+        int[int, int] Conorm1(ndof1, Mesh0.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,Mesh0.nbe) connected to the dof
+        int[int, int] Conorm2(ndof2, Mesh1.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,Mesh1.nbe) connected to the dof
+        int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of triangles connected to the dof (1 or 2)
+        int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of triangles connected to the dof (1 or 2)
+        int[int] tridof2(3 * Mesh1.nbe); // Triangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
+        int[int] vertdof1(Mesh0.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 1
+        int[int] vertdof2(Mesh1.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 2
+        int[int] triid1(Mesh0.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh0.nbe
+        int[int] triid2(Mesh1.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh1.nbe
+        int nElements1, nElements2;
+        // 3D is not yet considered
+        //int connecti = connectivity(Conne1, Conne2, Connevec1, Connevec2, tri1, tri2, tridof1, tridof2, vertdof1, vertdof2, onBorder1, onBorder2, triid1, triid2, nElements1, nElements2, Conorm1, Conorm2, Conormvec1, Conormvec2);
+        real[int] PO1(3), PO2(3), PO3(3), PO4(3); // Represent the coord of the three points of a triangle (we will use it to compute the normal vector)
+    <% } -%>
+        
+        int nip = nElements1 * integrationPointsNumber; // Ip points number
+        int nip2 = nElements2 * integrationPointsNumber; // Ip points number
+        
+        real[int] xbU1(ndof1);
+        real[int] xbU2(ndof2);
+        real[int] xip1(dim * nip); // coordi of the ip points (First body)
+        real[int] xip2(dim * nip2); // coordi of the ip points (Second body)
+        real[int] Xproj(dim * nip); // coordi of the ip projection points (Second Body)
+        real[int] Xproj2(dim * nip2); // coordi of the ip projection points (Second Body)
+        
+    <% if (dimension === 2){ -%>
+        int[int] pos(nip);
+        int[int] pos2(nip2);
+    <% } else { -%>
+        int[int] tid1(nip); // For each ip point gives the closest triangle id (1,...,Mesh1.nbe) of the opposed contact area
+        int[int] tid2(nip2); // For each ip point gives the closest triangle id (1,...,Mesh0.nbe) of the opposed contact area
+    <% } -%>
+        
+        real norm0;
+        real[int] DIS10(ndof1), DIS20(ndof2); // The displacement field from the previous iteration ( for the fixed point & to compute the error and stop the iteration)
+        
+        real[int] norm1(dim * nip), norm2(dim * nip2); // The normal (nx,ny) of the projected points
+        
+        // First Body
+        real[int] eta((dim - 1) * nip); // Parameter array (Barycentric coordinates) for the P1 curve
+        real[int] eta2((dim - 1) * nip2); // Parameter array (Barycentric coordinates) for the P1 curve
+        
+
+        real[int] AB(dim * dim);
+
+        DIS10 = 0; // The displacement array of the first body 
+        DIS20 = 0; // The displacement array of the second body 
+        xbU1 = XYZ1;
+        xbU2 = XYZ2;
+            
+            // Compute the projection points
+            
+            // First body
+        for (int i = 0; i < nElements1; i++) {
+            // 2D
+    <% if (dimension === 2){ -%>
+            int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
+    <% } -%>
+            // 3D
+    <% if (dimension !== 2){ -%>
+            int trid1 = triid1[i]; // Tri ID w.r.t to the whole border
+    <% } -%>
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                int ii = j + i * integrationPointsNumber;
+    <% if (dimension === 2){ -%>
+                real ti = integrationPointsPositions[j]; // The parameter of the ip point in the segment (integration rule)
+                xip1[dim * ii] = intpip(ti, xbU1[segdof1[dim * seid1]], xbU1[segdof1[dim * seid1 + 1]]); // Abscissa of the ip points
+                xip1[dim * ii + 1] = intpip(ti, xbU1[segdof1[dim * seid1] + 1], xbU1[segdof1[dim * seid1 + 1] + 1]); // Ordinates of the ip points
+    <% } -%>
+    <% if (dimension !== 2){ -%>
+                real ti1 = integrationPointsPositions1[j]; // eta1 parameter of the triangle
+                real ti2 = integrationPointsPositions2[j]; // eta2 parameter of the triangle
+                for (int k = 0; k < 3; k++) { AB[k] = xbU1[tridof1[3 * trid1] + k]; }
+                // coord of the first node of the triangle with id="i"
+                for (int k = 0; k < 3; k++) { AB[k + 3] = xbU1[tridof1[3 * trid1 + 1] + k]; }
+                // coord of the second node of the triangle with id="i"
+                for (int k = 0; k < 3; k++) { AB[k + 6] = xbU1[tridof1[3 * trid1 + 2] + k]; }
+                // coord of the third node of the triangle with id="i"
+                real[int] P1X = P1Function(AB, ti1, ti2); // The coordinates of the ip points
+                xip1[dim * ii] = P1X[0]; // x
+                xip1[dim * ii + 1] = P1X[1]; // y
+                xip1[dim * ii + 2] = P1X[2]; // z
+    <% } -%>
+                
+            }
+        }
+            
+            // Second body
+        for (int i = 0; i < nElements2; i++) {
+            // 2D
+    <% if (dimension === 2){ -%>
+            int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
+    <% } -%>
+            // 3D
+    <% if (dimension !== 2){ -%>
+            int trid2 = triid2[i]; // Tri ID w.r.t to the whole border
+    <% } -%>
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                int ii = j + i * integrationPointsNumber;
+    <% if (dimension === 2){ -%>
+                real ti = integrationPointsPositions[j]; // The parameter of the ip point in the segment (integration rule)
+                xip2[dim * ii] = intpip(ti, xbU2[segdof2[dim * seid2]], xbU2[segdof2[dim * seid2 + 1]]); // Abscissa of the ip points
+                xip2[dim * ii + 1] = intpip(ti, xbU2[segdof2[dim * seid2] + 1], xbU2[segdof2[dim * seid2 + 1] + 1]); // Ordinates of the ip points
+    <% } -%>
+    <% if (dimension !== 2){ -%>
+                real ti1 = integrationPointsPositions1[j]; // eta1 parameter of the triangle
+                real ti2 = integrationPointsPositions2[j]; // eta2 parameter of the triangle
+                for (int k = 0; k < 3; k++) { AB[k] = xbU2[tridof2[3 * trid2] + k]; }
+                // coord of the first node of the triangle with id="i"
+                for (int k = 0; k < 3; k++) { AB[k + 3] = xbU2[tridof2[3 * trid2 + 1] + k]; }
+                // coord of the second node of the triangle with id="i"
+                for (int k = 0; k < 3; k++) { AB[k + 6] = xbU2[tridof2[3 * trid2 + 2] + k]; }
+                // coord of the third node of the triangle with id="i"
+                real[int] P1X = P1Function(AB, ti1, ti2); // The coordinates of the ip points
+                xip2[dim * ii] = P1X[0]; // x
+                xip2[dim * ii + 1] = P1X[1]; // y
+                xip2[dim * ii + 2] = P1X[2]; // z
+    <% } -%>
+                
+            }
+        }
+            
+    <% if (dimension === 2){ -%>
+            eta = minim1(xip1, xbU2, pos, segdof2, DIS20); // Call the projection function => parameters array of the integration points
+            eta2 = minim2(xip2, xbU1, pos2, segdof1, DIS10); // Call the projection function => parameters array of the integration points
+    <% } -%>
+    <% if (dimension !== 2){ -%>
+            eta = minim1(xip1, tid1, xbU2, tridof2, DIS20);
+            eta2 = minim2(xip2, tid2, xbU1, tridof1, DIS10);
+    <% } -%>
+            
+        real tx, ty;
+        // First body (for each ip points of the contact 1 gives the normals at the contact 2 (continuous normal field))
+        // Normal vector for the ip points at the contact area 2 (computed as the average of the normal vectors)
+    <% if (dimension !== 2){ -%>
+        for (int i = 0; i < nElements1; i++) {
+            // loop on the triangles of the contact area 1
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                // loop on the integration points of each triangle
+                int ii = j + i * integrationPointsNumber;                
+                real et1 = eta[2 * ii]; // eta1 parameter of the triangle
+                real et2 = eta[2 * ii + 1]; // eta2 parameter of the triangle
+                int trid2 = tid1[ii]; // Triangle id \in contact area 2 closest to the integration point
+                
+                int dofp1 = tridof2[3 * trid2]; // dof x for the first node of the triangle with id="trid2"
+                int dofp2 = tridof2[3 * trid2 + 1]; // dof x for the second node of the triangle with id="trid2"
+                int dofp3 = tridof2[3 * trid2 + 2]; // dof x for the third node of the triangle with id="trid2"
+                
+                int conn1, conn2, conn3;
+                if (tri2[trid2] == - 1) {
+                    // is a triangle of the contact potential area ?
+                    conn1 = Conormvec2[dofp1]; // Triangle number connected to the first node
+                    conn2 = Conormvec2[dofp2]; // Triangle number connected to the second node
+                    conn3 = Conormvec2[dofp3]; // Triangle number connected to the third node
+                }
+                else {
+                    conn1 = Connevec2[dofp1]; // Triangle number connected to the first node
+                    conn2 = Connevec2[dofp2]; // Triangle number connected to the second node
+                    conn3 = Connevec2[dofp3]; // Triangle number connected to the third node
+                }
+                
+                real[int] vec1(3);
+                real[int] vec2(3);
+                real[int] vec3(3);
+                real[int] provec(3);
+                real[int] nor1(3), nor2(3), nor3(3);
+                nor1 = 0.;
+                nor2 = 0.;
+                nor3 = 0.;
+                for (int ic = 0; ic < conn1; ic++) {
+                    // Loop on the connected triangle to the first node
+                    int tic1;
+                    if (tri2[trid2] == - 1) {
+                        // is a triangle of the contact potential area ?
+                        tic1 = Conorm2(dofp1, ic); // Triangle id connected to the first node
+                    }
+                    else {
+                        tic1 = Conne2(dofp1, ic); // Triangle id connected to the first node
+                    }
+                    for (int k = 0; k < 3; k++) { PO1[k] = xbU2[tridof2[3 * tic1] + k]; }
+                    // coord of the first node of the triangle with id="tic1"
+                    for (int k = 0; k < 3; k++) { PO2[k] = xbU2[tridof2[3 * tic1 + 1] + k]; }
+                    // coord of the second node of the triangle with id="tic1"
+                    for (int k = 0; k < 3; k++) { PO3[k] = xbU2[tridof2[3 * tic1 + 2] + k]; }
+                    // coord of the third node of the triangle with id="tic1"
+                    for (int k = 0; k < 3; k++) { PO4[k] = xbU2[vertdof2[tic1] + k]; }
+                    // coord of the third node of the thetraedron wich not belonging to the triangle
+                    vec1 = PO2 - PO1;
+                    vec2 = PO3 - PO1;
+                    vec3 = PO4 - PO1;
+                    provec = vectorProductNormalized(vec1, vec2); // Vectorial product
+                    if (provec' * vec3 > 0.) {
+                        // scalar product is positive => -prodevec is exterior to the surface
+                        provec = - provec; // Inverse the sign
+                    }
+                    nor1 += (1./ conn1) * provec; // Average of the normales of each connected triangle to the first node
+                }
+                nor1 = nor1 / ((nor1[0]^2 + nor1[1]^2 + nor1[2]^2)^0.5); // Unit normal at the first node
+                
+                for (int ic = 0; ic < conn2; ic++) {
+                    // Loop on the connected triangle to the second node
+                    int tic2;
+                    if (tri2[trid2] == - 1) {
+                        // is a triangle of the contact potential area ?
+                        tic2 = Conorm2(dofp2, ic); // Triangle id connected to the first node
+                    }
+                    else {
+                        tic2 = Conne2(dofp2, ic); // Triangle id connected to the first node
+                    }
+                    for (int k = 0; k < 3; k++) { PO1[k] = xbU2[tridof2[3 * tic2] + k]; }
+                    // coord of the first node of the triangle with id="tic2"
+                    for (int k = 0; k < 3; k++) { PO2[k] = xbU2[tridof2[3 * tic2 + 1] + k]; }
+                    // coord of the second node of the triangle with id="tic2"
+                    for (int k = 0; k < 3; k++) { PO3[k] = xbU2[tridof2[3 * tic2 + 2] + k]; }
+                    // coord of the third node of the triangle with id="tic2"
+                    for (int k = 0; k < 3; k++) { PO4[k] = xbU2[vertdof2[tic2] + k]; }
+                    // coord of the third node of the thetraedron wich not belonging to the triangle
+                    vec1 = PO2 - PO1;
+                    vec2 = PO3 - PO1;
+                    vec3 = PO4 - PO1;
+                    provec = vectorProductNormalized(vec1, vec2); // Vectorial product
+                    if (provec' * vec3 > 0.) {
+                        // scalar product is positive => -prodevec is exterior to the surface
+                        provec = - provec; // Inverse the sign
+                    }
+                    nor2 += (1./ conn2) * provec; // Average of the normales of each connected triangle to the second node
+                }
+                nor2 = nor2 / ((nor2[0]^2 + nor2[1]^2 + nor2[2]^2)^0.5); // Unit normal at the second node
+                
+                for (int ic = 0; ic < conn3; ic++) {
+                    // Loop on the connected triangle to the third node
+                    int tic3;
+                    if (tri2[trid2] == - 1) {
+                        // is a triangle of the contact potential area ?
+                        tic3 = Conorm2(dofp3, ic); // Triangle id connected to the first node
+                    }
+                    else {
+                        tic3 = Conne2(dofp3, ic); // Triangle id connected to the first node
+                    }
+                    for (int k = 0; k < 3; k++) { PO1[k] = xbU2[tridof2[3 * tic3] + k]; }
+                    // coord of the first node of the triangle with id="tic3"
+                    for (int k = 0; k < 3; k++) { PO2[k] = xbU2[tridof2[3 * tic3 + 1] + k]; }
+                    // coord of the second node of the triangle with id="tic3"
+                    for (int k = 0; k < 3; k++) { PO3[k] = xbU2[tridof2[3 * tic3 + 2] + k]; }
+                    // coord of the third node of the triangle with id="tic3"
+                    for (int k = 0; k < 3; k++) { PO4[k] = xbU2[vertdof2[tic3] + k]; }
+                    // coord of the third node of the thetraedron wich not belonging to the triangle
+                    vec1 = PO2 - PO1;
+                    vec2 = PO3 - PO1;
+                    vec3 = PO4 - PO1;
+                    provec = vectorProductNormalized(vec1, vec2); // Vectorial product
+                    if (provec' * vec3 > 0.) {
+                        // scalar product is positive => -prodevec is exterior to the surface
+                        provec = - provec; // Inverse the sign
+                    }
+                    nor3 += (1./ conn3) * provec; // Average of the normales of each connected triangle to the third node
+                }
+                nor3 = nor3 / ((nor3[0]^2 + nor3[1]^2 + nor3[2]^2)^0.5); // Unit normal at the third node
+                
+                AB(0 : 2) = nor1;
+                AB(3 : 5) = nor2;
+                AB(6 : 8) = nor3;
+                real[int] NX = P1Function(AB, et1, et2); // The coordinates of the ip points
+                norm1[3 * ii] = NX[0]; // x coord of the normal at the ip point
+                norm1[3 * ii + 1] = NX[1]; // y	coord of the normal at the ip point
+                norm1[3 * ii + 2] = NX[2]; // z	coord of the normal at the ip point         
+            }
+        }
+    <% } -%>
+        
+        // Second body (for each ip points of the contact 1 gives the normals at the contact 1 (continuous normal field))
+        // Normal vector for the ip points at the contact area 1 (computed as the average of the normal vectors)
+    <% if (dimension !== 2){ -%>
+        for (int i = 0; i < nElements2; i++) {
+            // loop on the triangles of the contact area 1
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                // loop on the integration points of each triangle
+                int ii = j + i * integrationPointsNumber;           
+                real et1 = eta2[2 * ii]; // eta1 parameter of the triangle
+                real et2 = eta2[2 * ii + 1]; // eta2 parameter of the triangle
+                int trid2 = tid2[ii]; // Triangle id \in contact area 1 closest to the integration point
+                
+                int dofp1 = tridof1[3 * trid2]; // dof x for the first node of the triangle with id="trid2"
+                int dofp2 = tridof1[3 * trid2 + 1]; // dof x for the second node of the triangle with id="trid2"
+                int dofp3 = tridof1[3 * trid2 + 2]; // dof x for the third node of the triangle with id="trid2"
+                
+                int conn1, conn2, conn3;
+                if (tri1[trid2] == - 1) {
+                    // is a triangle of the contact potential area ?
+                    conn1 = Conormvec1[dofp1]; // Triangle number connected to the first node
+                    conn2 = Conormvec1[dofp2]; // Triangle number connected to the second node
+                    conn3 = Conormvec1[dofp3]; // Triangle number connected to the third node
+                }
+                else {
+                    conn1 = Connevec1[dofp1]; // Triangle number connected to the first node
+                    conn2 = Connevec1[dofp2]; // Triangle number connected to the second node
+                    conn3 = Connevec1[dofp3]; // Triangle number connected to the third node
+                }
+                
+                real[int] vec1(3);
+                real[int] vec2(3);
+                real[int] vec3(3);
+                real[int] provec(3);
+                real[int] nor1(3), nor2(3), nor3(3);
+                nor1 = 0.;
+                nor2 = 0.;
+                nor3 = 0.;
+                for (int ic = 0; ic < conn1; ic++) {
+                    // Loop on the connected triangle to the first node
+                    int tic1;
+                    if (tri1[trid2] == - 1) {
+                        // is a triangle of the contact potential area ?
+                        tic1 = Conorm1(dofp1, ic); // Triangle id connected to the first node
+                    }
+                    else {
+                        tic1 = Conne1(dofp1, ic); // Triangle id connected to the first node
+                    }
+                    for (int k = 0; k < 3; k++) { PO1[k] = xbU1[tridof1[3 * tic1] + k]; }
+                    // coord of the first node of the triangle with id="tic1"
+                    for (int k = 0; k < 3; k++) { PO2[k] = xbU1[tridof1[3 * tic1 + 1] + k]; }
+                    // coord of the second node of the triangle with id="tic1"
+                    for (int k = 0; k < 3; k++) { PO3[k] = xbU1[tridof1[3 * tic1 + 2] + k]; }
+                    // coord of the third node of the triangle with id="tic1"
+                    for (int k = 0; k < 3; k++) { PO4[k] = xbU1[vertdof1[tic1] + k]; }
+                    // coord of the third node of the thetraedron wich not belonging to the triangle
+                    vec1 = PO2 - PO1;
+                    vec2 = PO3 - PO1;
+                    vec3 = PO4 - PO1;
+                    provec = vectorProductNormalized(vec1, vec2); // Vectorial product
+                    if (provec' * vec3 > 0.) {
+                        // scalar product is positive => -prodevec is exterior to the surface
+                        provec = - provec; // Inverse the sign
+                    }
+                    nor1 += (1./ conn1) * provec; // Average of the normales of each connected triangle to the first node
+                }
+                nor1 = nor1 / ((nor1[0]^2 + nor1[1]^2 + nor1[2]^2)^0.5); // Unit normal at the first node
+                
+                for (int ic = 0; ic < conn2; ic++) {
+                    // Loop on the connected triangle to the second node
+                    int tic2;
+                    if (tri1[trid2] == - 1) {
+                        // is a triangle of the contact potential area ?
+                        tic2 = Conorm1(dofp2, ic); // Triangle id connected to the first node
+                    }
+                    else {
+                        tic2 = Conne1(dofp2, ic); // Triangle id connected to the first node
+                    }
+                    for (int k = 0; k < 3; k++) { PO1[k] = xbU1[tridof1[3 * tic2] + k]; }
+                    // coord of the first node of the triangle with id="tic2"
+                    for (int k = 0; k < 3; k++) { PO2[k] = xbU1[tridof1[3 * tic2 + 1] + k]; }
+                    // coord of the second node of the triangle with id="tic2"
+                    for (int k = 0; k < 3; k++) { PO3[k] = xbU1[tridof1[3 * tic2 + 2] + k]; }
+                    // coord of the third node of the triangle with id="tic2"
+                    for (int k = 0; k < 3; k++) { PO4[k] = xbU1[vertdof1[tic2] + k]; }
+                    // coord of the third node of the thetraedron wich not belonging to the triangle
+                    vec1 = PO2 - PO1;
+                    vec2 = PO3 - PO1;
+                    vec3 = PO4 - PO1;
+                    provec = vectorProductNormalized(vec1, vec2); // Vectorial product
+                    if (provec' * vec3 > 0.) {
+                        // scalar product is positive => -prodevec is exterior to the surface
+                        provec = - provec; // Inverse the sign
+                    }
+                    nor2 += (1./ conn2) * provec; // Average of the normales of each connected triangle to the second node
+                }
+                nor2 = nor2 / ((nor2[0]^2 + nor2[1]^2 + nor2[2]^2)^0.5); // Unit normal at the second node
+                
+                for (int ic = 0; ic < conn3; ic++) {
+                    // Loop on the connected triangle to the third node
+                    int tic3;
+                    if (tri1[trid2] == - 1) {
+                        // is a triangle of the contact potential area ?
+                        tic3 = Conorm1(dofp3, ic); // Triangle id connected to the first node
+                    }
+                    else {
+                        tic3 = Conne1(dofp3, ic); // Triangle id connected to the first node
+                    }
+                    for (int k = 0; k < 3; k++) { PO1[k] = xbU1[tridof1[3 * tic3] + k]; }
+                    // coord of the first node of the triangle with id="tic3"
+                    for (int k = 0; k < 3; k++) { PO2[k] = xbU1[tridof1[3 * tic3 + 1] + k]; }
+                    // coord of the second node of the triangle with id="tic3"
+                    for (int k = 0; k < 3; k++) { PO3[k] = xbU1[tridof1[3 * tic3 + 2] + k]; }
+                    // coord of the third node of the triangle with id="tic3"
+                    for (int k = 0; k < 3; k++) { PO4[k] = xbU1[vertdof1[tic3] + k]; }
+                    // coord of the third node of the thetraedron wich not belonging to the triangle
+                    vec1 = PO2 - PO1;
+                    vec2 = PO3 - PO1;
+                    vec3 = PO4 - PO1;
+                    provec = vectorProductNormalized(vec1, vec2); // Vectorial product
+                    if (provec' * vec3 > 0.) {
+                        // scalar product is positive => -prodevec is exterior to the surface
+                        provec = - provec; // Inverse the sign
+                    }
+                    nor3 += (1./ conn3) * provec; // Average of the normales of each connected triangle to the third node
+                }
+                nor3 = nor3 / ((nor3[0]^2 + nor3[1]^2 + nor3[2]^2)^0.5); // Unit normal at the third node
+                
+                AB(0 : 2) = nor1;
+                AB(3 : 5) = nor2;
+                AB(6 : 8) = nor3;
+                real[int] NX = P1Function(AB, et1, et2); // The coordinates of the ip points
+                norm2[3 * ii] = NX[0]; // x coord of the normal at the ip point
+                norm2[3 * ii + 1] = NX[1]; // y	coord of the normal at the ip point
+                norm2[3 * ii + 2] = NX[2]; // z	coord of the normal at the ip point
+            }
+        }
+    <% } -%>            
+
+
+    <%# Problem -%>
+            // Solve
+            appendLog("Define the problem...");
+    // First Body 
+        real Nu1 = 1. / Mu0;
+        varf vLaplacian1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
+            = intN(Mesh0) (
+                Nu1 * Curl(<%- unknownFunction1 -%>)' * Curl(<%- testFunction1 -%>)
+    <% if (dimension !== 2) { -%>
+                + penalty * Div(<%- unknownFunction1 -%>) * Div(<%- testFunction1 -%>)
+    <% } -%>
+            )
+    <% for (const d of dirichletProd){ -%>
+        <% if (d.geometryIndex === 0){ %>
+            <% if (dimension === 2) { -%>
+                +on(<%- d.labels -%>, <%- unknownFunction1Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
+            <% } else { -%>
+                + intN1(Mesh0, <%- d.labels -%>) (
+                    penalty * DotNormal(<%- unknownFunction1 -%>)' * DotNormal(<%- testFunction1 -%>)
+                )
+            <% } -%>
+        <% } -%>
+    <% } -%>
+            ;
+        
+        varf vLaplacianRHS1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
+            = intN(Mesh0) (
+    <% if (dimension === 2) { -%>
+                (<%- current1ValueZ -%> + <%- current2ValueZ -%>) * <%- testFunction1Z %>
+    <% } else { -%>
+                [<%- current1ValueX -%> + <%- current2ValueX -%>, <%- current1ValueY -%> + <%- current2ValueY -%>, <%- current1ValueZ -%> + <%- current2ValueZ -%>]' * <%- testFunction1 %>
+    <% } -%>
+            )
+    <% for (const d of dirichletProd){ -%>
+
+        <% if (d.geometryIndex === 0){ %>
+            <% if (dimension === 2) { -%> 
+            + on(<%- d.labels -%>,<%- unknownFunction1Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
+            <% } else { -%>
+            + intN1(Mesh0, <%- d.labels -%>) (
+                penalty *
+                    [
+                        0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
+                        0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
+                        0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
+                    ]' * DotNormal(<%- testFunction1 -%>))
+            <% } -%>
+        <% } -%>        
+    <% } -%>
+            ;
+
+    // Second Body 
+        real Nu2 = 1. / Mu1;
+        varf vLaplacian2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
+            = intN(Mesh1) (
+                Nu2 * Curl(<%- unknownFunction2 -%>)' * Curl(<%- testFunction2 -%>)
+    <% if (dimension !== 2) { -%>
+                + penalty * Div(<%- unknownFunction2 -%>) * Div(<%- testFunction2 -%>)
+    <% } -%>
+            )
+    <% for (const d of dirichletProd){ -%>
+        <% if (d.geometryIndex === 1){ %>
+            <% if (dimension === 2) { -%>
+                +on(<%- d.labels -%>, <%- unknownFunction2Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
+            <% } else { -%>
+                + intN1(Mesh1, <%- d.labels -%>) (
+                    penalty * DotNormal(<%- unknownFunction2 -%>)' * DotNormal(<%- testFunction2 -%>)
+                )
+            <% } -%>
+        <% } -%>
+    <% } -%>
+            ;
+        
+        varf vLaplacianRHS2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
+            = intN(Mesh1) (
+    <% if (dimension === 2) { -%>
+                (<%- current1ValueZ -%> + <%- current2ValueZ -%>) * <%- testFunction2Z %>
+    <% } else { -%>
+                [<%- current1ValueX -%> + <%- current2ValueX -%>, <%- current1ValueY -%> + <%- current2ValueY -%>, <%- current1ValueZ -%> + <%- current2ValueZ -%>]' * <%- testFunction2 %>
+    <% } -%>
+            )
+    <% for (const d of dirichletProd){ -%>
+
+        <% if (d.geometryIndex === 1){ %>
+            <% if (dimension === 2) { -%> 
+            + on(<%- d.labels -%>,<%- unknownFunction2Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
+            <% } else { -%>
+            + intN1(Mesh1, <%- d.labels -%>) (
+                penalty *
+                    [
+                        0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
+                        0<% if (d.values[1].checked){ -%> + <%- d.values[1].value ?? d.values[1].default -%><% } -%>,
+                        0<% if (d.values[2].checked){ -%> + <%- d.values[2].value ?? d.values[2].default -%><% } %>
+                    ]' * DotNormal(<%- testFunction2 -%>))
+            <% } -%>
+        <% } -%>        
+    <% } -%>
+            ;
+
+    <%# Solver -%>
+    <%
+        const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default
+    -%>
+    <%- helpers.indent(include('/blobs/solver.edp.ejs', {
+        solver
+    }), 1) -%>
+
+    <%# Solve -%>
+        // Solve
+        appendLog("Solve the problem...");
+
+        matrix Laplacian1 = vLaplacian1(FE1, FE1, solver = solver);
+        real[int] LaplacianRHS1 = vLaplacianRHS1(0, FE1);
+        matrix Laplacian2 = vLaplacian2(FE2, FE2, solver = solver);
+        real[int] LaplacianRHS2 = vLaplacianRHS2(0, FE2);
+
+        real[int] RHS(ndofA1+ndofA2);
+        RHS(0:ndofA1-1) = LaplacianRHS1;
+        RHS(ndofA1:(ndofA1+ndofA2-1)) = LaplacianRHS2; 
+
+
+        // Interface boundary conditions
+        real[int,int] Jac3(ndofA1,ndofA2);
+        real[int,int] Jac4(ndofA2,ndofA1);
+        Jac3=0.;
+        Jac4=0.;
+        matrix iddW3,iddW33, iddW4, LaplacianC;
+        iddW3.resize(ndofA1,ndofA2);
+        iddW3=Jac3;
+        iddW33.resize(ndofA2,ndofA1);
+        iddW33=Jac4;
+        LaplacianC.resize(ndofA1 + ndofA2, ndofA1 + ndofA2);
+
+        // (A1-A2) x n = [ - (A1-A2) * N2.y , (A1-A2) * N2.x ]
+        // energy = penalty * ( (A1-A2) * N2.y )^2 + ((A1-A2) * N2.x)^2 = penalty * (A1-A2)^2 *(N2.y ^2 + N2.x ^2) = penalty * (A1-A2)^2
+        <% if (dimension === 2) { -%>
+        <% if (pType==='P1') { -%>
+        // Slave
+        real Li;
+        for (int i = 0; i < nElements1; i++) {
+            // Loop on the segment/triangle in contact
+            int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
+            int dofxx0 = segdof1[2 * seid1]; // dof x of the first vertice of the segment
+            int dofxx1 = segdof1[2 * seid1 + 1]; // dof x of the secondt vertice of the segment
+
+            int dofx0 = segdofA1[2 * seid1]; // dof A of the first vertice of the segment
+            int dofx1 = segdofA1[2 * seid1 + 1]; // dof A of the secondt vertice of the segment
+
+            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
+            Li = ((xbU1[dofxx1] - xbU1[dofxx0])^2 + (xbU1[dofxx1 + 1] - xbU1[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                // shape function of the first segment
+                int ii = j + i * integrationPointsNumber;
+                
+                real tt = eta[ii];
+                real ph1 = 1 - tt;
+                real ph2 = tt;
+                
+                int posi = pos[ii]; // The segment number w.r.t to the whole border of the closest segment
+                int dofp1 = segdofA2[2 * posi]; // Dof A of the first vertice of the segment
+                int dofp2 = segdofA2[2 * posi + 1]; // Dof A of the second vertice of the segment
+                real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
+                real wi = integrationPointsWeights[j]; // weight integration rule
+
+                Laplacian1(dofx0,dofx0) += penalty*(1-ti)*(1-ti)*wi*Li;
+                Laplacian1(dofx0,dofx1) += penalty*(1-ti)*(ti)*wi*Li;
+                Laplacian1(dofx1,dofx0) = Laplacian1(dofx0,dofx1); // sym
+                Laplacian1(dofx1,dofx1) += penalty*(ti)*(ti)*wi*Li;
+
+                Laplacian2(dofp1,dofp1) += penalty*ph1*ph1*wi*Li;
+                Laplacian2(dofp1,dofp2) += penalty*ph1*ph2*wi*Li;
+                Laplacian2(dofp2,dofp1) = Laplacian2(dofp1,dofp2); // sym
+                Laplacian2(dofp2,dofp2) += penalty*ph2*ph2*wi*Li;
+
+                iddW3(dofx0,dofp1) += -penalty*(1-ti)*ph1*wi*Li;
+                iddW3(dofx0,dofp2) += -penalty*(1-ti)*ph2*wi*Li;
+                iddW3(dofx1,dofp1) += -penalty*(ti)*ph1*wi*Li;
+                iddW3(dofx1,dofp2) += -penalty*(ti)*ph2*wi*Li;
+
+            }
+        }
+
+        // Master
+
+        real Li2;
+        for (int i = 0; i < nElements2; i++) {
+            // Loop on the segment/triangle in contact
+            int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
+            int dofxx0 = segdof2[2 * seid2]; // dof x of the first vertice of the segment
+            int dofxx1 = segdof2[2 * seid2 + 1]; // dof x of the secondt vertice of the segment
+
+            int dofx0 = segdofA2[2 * seid2]; // dof A of the first vertice of the segment
+            int dofx1 = segdofA2[2 * seid2 + 1]; // dof A of the secondt vertice of the segment
+
+            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
+            Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                // shape function of the first segment
+                int ii = j + i * integrationPointsNumber;
+                
+                real tt = eta2[ii];
+                real ph1 = 1 - tt;
+                real ph2 = tt;
+                
+                int posi = pos2[ii]; // The segment number w.r.t to the whole border of the closest segment
+                int dofp1 = segdofA1[2 * posi]; // Dof A of the first vertice of the segment
+                int dofp2 = segdofA1[2 * posi + 1]; // Dof A of the second vertice of the segment
+                real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
+                real wi = integrationPointsWeights[j]; // weight integration rule
+
+                Laplacian2(dofx0,dofx0) += penalty*(1-ti)*(1-ti)*wi*Li2;
+                Laplacian2(dofx0,dofx1) += penalty*(1-ti)*(ti)*wi*Li2;
+                Laplacian2(dofx1,dofx0) = Laplacian2(dofx0,dofx1); // sym
+                Laplacian2(dofx1,dofx1) += penalty*(ti)*(ti)*wi*Li2;
+
+                Laplacian1(dofp1,dofp1) += penalty*ph1*ph1*wi*Li2;
+                Laplacian1(dofp1,dofp2) += penalty*ph1*ph2*wi*Li2;
+                Laplacian1(dofp2,dofp1) = Laplacian1(dofp1,dofp2); // sym
+                Laplacian1(dofp2,dofp2) += penalty*ph2*ph2*wi*Li2;
+
+                iddW33(dofx0,dofp1) += -penalty*(1-ti)*ph1*wi*Li2;
+                iddW33(dofx0,dofp2) += -penalty*(1-ti)*ph2*wi*Li2;
+                iddW33(dofx1,dofp1) += -penalty*(ti)*ph1*wi*Li2;
+                iddW33(dofx1,dofp2) += -penalty*(ti)*ph2*wi*Li2;
+
+            }
+        }
+
+        <% } else { -%>
+        // Slave
+        real Li;
+        for (int i = 0; i < nElements1; i++) {
+            // Loop on the segment/triangle in contact
+            int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
+            int dofxx0 = segdof1[2 * seid1]; // dof x of the first vertice of the segment
+            int dofxx1 = segdof1[2 * seid1 + 1]; // dof x of the secondt vertice of the segment
+
+            int dofx0 = segdofA1[3 * seid1]; // dof A of the first vertice of the segment
+            int dofx1 = segdofA1[3 * seid1 + 1]; // dof A of the mid-point
+            int dofx2 = segdofA1[3 * seid1 + 2]; // dof A of the secondt vertice of the segment
+
+            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
+            Li = ((xbU1[dofxx1] - xbU1[dofxx0])^2 + (xbU1[dofxx1 + 1] - xbU1[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                // shape function of the first segment
+                int ii = j + i * integrationPointsNumber;
+                
+                real tt = eta[ii];
+                real ph1 = 1 - 3*tt + 2*tt^2;
+                real ph2 = 4*tt - 4*tt^2;
+                real ph3 = -tt + 2*tt^2;
+                
+                int posi = pos[ii]; // The segment number w.r.t to the whole border of the closest segment
+                int dofp1 = segdofA2[3 * posi]; // Dof A of the first vertice of the segment
+                int dofp2 = segdofA2[3 * posi + 1]; // Dof A of the mid-point
+                int dofp3 = segdofA2[3 * posi + 2]; // Dof A of the second vertice of the segment
+                real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
+                real wi = integrationPointsWeights[j]; // weight integration rule
+
+                Laplacian1(dofx0,dofx0) += penalty*N0(ti)*N0(ti)*wi*Li;
+                Laplacian1(dofx0,dofx1) += penalty*N0(ti)*N1(ti)*wi*Li;
+                Laplacian1(dofx0,dofx2) += penalty*N0(ti)*N2(ti)*wi*Li;
+
+                Laplacian1(dofx1,dofx0) = Laplacian1(dofx0,dofx1); // sym
+                Laplacian1(dofx1,dofx1) += penalty*N1(ti)*N1(ti)*wi*Li;
+                Laplacian1(dofx1,dofx2) += penalty*N1(ti)*N2(ti)*wi*Li;
+
+                Laplacian1(dofx2,dofx2) += penalty*N2(ti)*N2(ti)*wi*Li;
+                Laplacian1(dofx2,dofx0) = Laplacian1(dofx0,dofx2);
+                Laplacian1(dofx2,dofx1) = Laplacian1(dofx1,dofx2);
+
+
+                Laplacian2(dofp1,dofp1) += penalty*ph1*ph1*wi*Li;
+                Laplacian2(dofp1,dofp2) += penalty*ph1*ph2*wi*Li;
+                Laplacian2(dofp1,dofp3) += penalty*ph1*ph3*wi*Li;
+
+                Laplacian2(dofp2,dofp1) = Laplacian2(dofp1,dofp2); // sym
+                Laplacian2(dofp2,dofp2) += penalty*ph2*ph2*wi*Li;
+                Laplacian2(dofp2,dofp3) += penalty*ph2*ph3*wi*Li;
+
+                Laplacian2(dofp3,dofp3) += penalty*ph3*ph3*wi*Li;
+                Laplacian2(dofp3,dofp1) = Laplacian2(dofp1,dofp3);
+                Laplacian2(dofp3,dofp2) = Laplacian2(dofp2,dofp3);
+
+                iddW3(dofx0,dofp1) += -penalty*N0(ti)*ph1*wi*Li;
+                iddW3(dofx0,dofp2) += -penalty*N0(ti)*ph2*wi*Li;
+                iddW3(dofx0,dofp3) += -penalty*N0(ti)*ph3*wi*Li;
+
+                iddW3(dofx1,dofp1) += -penalty*N1(ti)*ph1*wi*Li;
+                iddW3(dofx1,dofp2) += -penalty*N1(ti)*ph2*wi*Li;
+                iddW3(dofx1,dofp3) += -penalty*N1(ti)*ph3*wi*Li;
+
+                iddW3(dofx2,dofp1) += -penalty*N2(ti)*ph1*wi*Li;
+                iddW3(dofx2,dofp2) += -penalty*N2(ti)*ph2*wi*Li;
+                iddW3(dofx2,dofp3) += -penalty*N2(ti)*ph3*wi*Li;			
+
+            }
+        }
+
+        // Master
+
+        real Li2;
+        for (int i = 0; i < nElements2; i++) {
+            // Loop on the segment/triangle in contact
+            int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
+            int dofxx0 = segdof2[2 * seid2]; // dof x of the first vertice of the segment
+            int dofxx1 = segdof2[2 * seid2 + 1]; // dof x of the secondt vertice of the segment
+
+            int dofx0 = segdofA2[3 * seid2]; // dof A of the first vertice of the segment
+            int dofx1 = segdofA2[3 * seid2 + 1]; // dof A of the mid-point
+            int dofx2 = segdofA2[3 * seid2 + 2]; // dof A of the secondt vertice of the segment
+
+            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
+            Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
+            for (int j = 0; j < integrationPointsNumber; j++) {
+                // shape function of the first segment
+                int ii = j + i * integrationPointsNumber;
+                
+                real tt = eta2[ii];
+                real ph1 = 1 - 3*tt + 2*tt^2;
+                real ph2 = 4*tt - 4*tt^2;
+                real ph3 = -tt + 2*tt^2;
+                
+                int posi = pos2[ii]; // The segment number w.r.t to the whole border of the closest segment
+                int dofp1 = segdofA1[3 * posi]; // Dof A of the first vertice of the segment
+                int dofp2 = segdofA1[3 * posi + 1]; // Dof A of the mid-point
+                int dofp3 = segdofA1[3 * posi + 2]; // Dof A of the second vertice of the segment
+                real ti = integrationPointsPositions[j]; // the parameter of the ip point in the segment (integration rule)
+                real wi = integrationPointsWeights[j]; // weight integration rule
+
+                Laplacian2(dofx0,dofx0) += penalty*N0(ti)*N0(ti)*wi*Li2;
+                Laplacian2(dofx0,dofx1) += penalty*N0(ti)*N1(ti)*wi*Li2;
+                Laplacian2(dofx0,dofx2) += penalty*N0(ti)*N2(ti)*wi*Li2;
+
+                Laplacian2(dofx1,dofx0) = Laplacian2(dofx0,dofx1); // sym
+                Laplacian2(dofx1,dofx1) += penalty*N1(ti)*N1(ti)*wi*Li2;
+                Laplacian2(dofx1,dofx2) += penalty*N1(ti)*N2(ti)*wi*Li2;
+
+                Laplacian2(dofx2,dofx2) += penalty*N2(ti)*N2(ti)*wi*Li2;
+                Laplacian2(dofx2,dofx0) = Laplacian2(dofx0,dofx2);
+                Laplacian2(dofx2,dofx1) = Laplacian2(dofx1,dofx2);
+
+                Laplacian1(dofp1,dofp1) += penalty*ph1*ph1*wi*Li2;
+                Laplacian1(dofp1,dofp2) += penalty*ph1*ph2*wi*Li2;
+                Laplacian1(dofp1,dofp3) += penalty*ph1*ph3*wi*Li2;
+
+                Laplacian1(dofp2,dofp1) = Laplacian1(dofp1,dofp2); // sym
+                Laplacian1(dofp2,dofp2) += penalty*ph2*ph2*wi*Li2;
+                Laplacian1(dofp2,dofp3) += penalty*ph2*ph3*wi*Li2;
+
+                Laplacian1(dofp3,dofp3) += penalty*ph3*ph3*wi*Li2;
+                Laplacian1(dofp3,dofp1) = Laplacian1(dofp1,dofp3);
+                Laplacian1(dofp3,dofp2) = Laplacian1(dofp2,dofp3);
+
+                iddW33(dofx0,dofp1) += -penalty*N0(ti)*ph1*wi*Li2;
+                iddW33(dofx0,dofp2) += -penalty*N0(ti)*ph2*wi*Li2;
+                iddW33(dofx0,dofp3) += -penalty*N0(ti)*ph3*wi*Li2;
+
+                iddW33(dofx1,dofp1) += -penalty*N1(ti)*ph1*wi*Li2;
+                iddW33(dofx1,dofp2) += -penalty*N1(ti)*ph2*wi*Li2;
+                iddW33(dofx1,dofp3) += -penalty*N1(ti)*ph3*wi*Li2;
+
+                iddW33(dofx2,dofp1) += -penalty*N2(ti)*ph1*wi*Li2;
+                iddW33(dofx2,dofp2) += -penalty*N2(ti)*ph2*wi*Li2;
+                iddW33(dofx2,dofp3) += -penalty*N2(ti)*ph3*wi*Li2;
+
+            }
+        }
+        <% } -%>
+        <% } else { -%>
+
+        <% } -%>
+
+        iddW3=iddW3+iddW33';
+        iddW4=iddW3';
+        LaplacianC=[[Laplacian1,iddW3],[iddW4,Laplacian2]];
+
+
+        set(LaplacianC, solver=solver);
+
+        real[int] AzC( ndofA1 + ndofA2 );
+        AzC = LaplacianC^-1 * RHS;
+
+    <% if (dimension === 2) { -%>
+        <%- unknownFunction1Z -%>[]=AzC(0:(ndofA1-1));
+        <%- unknownFunction2Z -%>[]=AzC(ndofA1:(ndofA1 + ndofA2-1));
+    <% } else { -%>
+        <%- unknownFunction1X -%>[]=AzC(0:(ndofA1-1));
+        <%- unknownFunction2X -%>[]=AzC(ndofA1:(ndofA1 + ndofA2-1));
+    <% } -%>
+            
+    <% if (dimension === 2) { -%>
+        // Body 1
+        // Magnetic induction
+        FE1 B1, Bx1, By1;
+        Bx1 = dy(<%- unknownFunction1Z -%>);
+        By1 = -dx(<%- unknownFunction1Z -%>);
+        B1 = sqrt(Bx1^2 + By1^2);
+
+        // Magnetic field
+        FE1 H1, Hx1, Hy1;
+        Hx1 = Nu1 * Bx1;
+        Hy1 = Nu1 * By1;
+        H1 = sqrt(Hx1^2 + Hy1^2);
+
+        // Body 2
+        // Magnetic induction
+        FE2 B2, Bx2, By2;
+        Bx2 = dy(<%- unknownFunction2Z -%>);
+        By2 = -dx(<%- unknownFunction2Z -%>);
+        B2 = sqrt(Bx2^2 + By2^2);
+
+        // Magnetic field
+        FE2 H2, Hx2, Hy2;
+        Hx2 = Nu2 * Bx2;
+        Hy2 = Nu2 * By2;
+        H2 = sqrt(Hx2^2 + Hy2^2);
+
+    <% } else { -%>
+        // Body 1
+        // Magnetic induction
+        FE1 [Bx1, By1, Bz1];
+        [Bx1, By1, Bz1] = Curl(<%- unknownFunction1 -%>);
+
+        // Magnetic field
+        FE1 [Hx1, Hy1, Hz1];
+        [Hx1, Hy1, Hz1] = Nu1 * [Bx1, By1, Bz1];
+
+        // Body 2
+        // Magnetic induction
+        FE2 [Bx2, By2, Bz2];
+        [Bx2, By2, Bz2] = Curl(<%- unknownFunction2 -%>);
+
+        // Magnetic field
+        FE2 [Hx2, Hy2, Hz2];
+        [Hx2, Hy2, Hz2] = Nu2 * [Bx2, By2, Bz2];
+    <% } -%>
+        
+    <%# Save -%>
+    <%- include('/blobs/save.edp.ejs', {
+        dimension,
+        path: run.resultPath,
+        name: '"body1Result"',
+        mesh: "Mesh0",
+        geometry: {
+            value: geometry?.values[0]
+        },
+        results: run.results[0]
+    }) -%>
+    <%- include('/blobs/save.edp.ejs', {
+        dimension,
+        path: run.resultPath,
+        name: '"body2Result"',
+        mesh: "Mesh1",
+        geometry: {
+            value: geometry?.values[1]
+        },
+        results: run.results[1]
+    }) -%>
+    <%# Sensors -%>
+    <%- include('/blobs/sensors.edp.ejs', {
+        path: run.dataPath,
+        x: 0,
+        sensors: run.sensors
+    }) -%>
+
+    }
     appendLog("End");
 } catch (...) {
     appendError("An internal error occurs");

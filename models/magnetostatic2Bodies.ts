@@ -59,12 +59,12 @@ const Magnetostatic2Bodies: IModel = {
     parameters: {
       index: 3,
       title: 'Parameters',
-      current: {
-        label: 'Current',
+      current1: {
+        label: 'Current 1',
         children: [
           {
             only3D: true,
-            label: 'Current (x)',
+            label: 'Current 1 (x)',
             htmlEntity: 'formula',
             default: '0',
             units: [{ label: 'A.m^{-2}' }],
@@ -72,14 +72,42 @@ const Magnetostatic2Bodies: IModel = {
           },
           {
             only3D: true,
-            label: 'Current (y)',
+            label: 'Current 1 (y)',
             htmlEntity: 'formula',
             default: '0',
             units: [{ label: 'A.m^{-2}' }],
             unit: { label: 'A.m^{-2}' }
           },
           {
-            label: 'Current (z)',
+            label: 'Current 1 (z)',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
+          }
+        ]
+      },
+      current2: {
+        label: 'Current 2',
+        children: [
+          {
+            only3D: true,
+            label: 'Current 2 (x)',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
+          },
+          {
+            only3D: true,
+            label: 'Current 2 (y)',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
+          },
+          {
+            label: 'Current 2 (z)',
             htmlEntity: 'formula',
             default: '0',
             units: [{ label: 'A.m^{-2}' }],
@@ -94,6 +122,23 @@ const Magnetostatic2Bodies: IModel = {
             label: 'Penalty factor',
             htmlEntity: 'formula',
             default: '1e10'
+          }
+        ]
+      },
+      rotation: {
+        label: 'Relative rotation',
+        children: [
+          {
+            label: 'Total angle',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: '°' }],
+            unit: { label: '°' }
+          },
+          {
+            label: 'Step number',
+            htmlEntity: 'formula',
+            default: '1'
           }
         ]
       },

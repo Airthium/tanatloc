@@ -14,12 +14,23 @@ export const getFilesNumbers = (
   filter: IModel['configuration']['run']['resultsFilter']
 ): (ISimulationTaskFile & { number: number })[] => {
   return files.map((file) => {
-    let regexps = []
-    if (Array.isArray(filter!.pattern)) regexps = [...filter!.pattern]
-    else regexps = [filter!.pattern]
+    let preffixPatterns: RegExp[] = []
+    if (Array.isArray(filter!.prefixPattern))
+      preffixPatterns = filter!.prefixPattern.map(
+        (pattern) => new RegExp(pattern)
+      )
+    else preffixPatterns = [new RegExp(filter!.prefixPattern)]
+
+    let suffixPatterns: RegExp[] = []
+    if (Array.isArray(filter!.suffixPattern))
+      suffixPatterns = filter!.suffixPattern.map(
+        (pattern) => new RegExp(pattern)
+      )
+    else suffixPatterns = [new RegExp(filter!.suffixPattern)]
 
     let number = file.fileName
-    regexps.forEach((regexp) => (number = number.replace(regexp, '')))
+    preffixPatterns.forEach((pattern) => (number = number.replace(pattern, '')))
+    suffixPatterns.forEach((pattern) => (number = number.replace(pattern, '')))
 
     return {
       ...file,

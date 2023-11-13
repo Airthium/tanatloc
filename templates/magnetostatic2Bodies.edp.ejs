@@ -125,15 +125,45 @@ try {
 }), 1) -%>
 
 // Relative rotation ?
-    real alphaTot = <%- parameters.rotation.children[0].value ?? parameters.rotation.children[0].default -%>; // Total rotation angle 
+    real alphaTot = -<%- parameters.rotation.children[0].value ?? parameters.rotation.children[0].default -%>; // Total rotation angle (Trigo rotation)
     int RotationStepsNumber = <%- parameters.rotation.children[1].value ?? parameters.rotation.children[1].default -%>; // Rotation step number
     real alpha;
 
     if (alphaTot==0.){RotationStepsNumber=0.; alpha=0.;}
-    for (int i=0; i<(RotationStepsNumber+1) ; i++){
-		if (alphaTot!=0.){alpha = (i/RotationStepsNumber)*alphaTot;}
-        Mesh0 = movemesh(Mesh0,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
-
+    for (int timeIter=0; timeIter<(RotationStepsNumber+1) ; timeIter++){
+		if (alphaTot!=0.){alpha = (1.*timeIter/RotationStepsNumber)*alphaTot;}
+        fespace Vh1(Mesh0, P1);
+        fespace Vh2(Mesh1, P1);
+        Vh1 dist1;
+        Vh2 dist2;
+    <% if (dimension === 2){ -%>
+        dist1 = x*x + y*y;
+        dist2 = x*x + y*y;
+        real distance1 = dist1[].linfty; 
+        real distance2 = dist2[].linfty;
+        if( distance1 <= distance2 ){
+            // Mesh0 is close to the origin => Rotation of Mesh0 
+            Mesh0 = movemesh(Mesh0,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
+        } 
+        else {
+            // Mesh1 is close to the origin => Rotation of Mesh1
+            Mesh1 = movemesh(Mesh1,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
+        }
+    <% } else { -%>
+        dist1 = x*x + y*y + z*z;
+        dist2 = x*x + y*y + z*z; 
+        real distance1 = dist1[].linfty; 
+        real distance2 = dist2[].linfty;   
+        if( distance1 <= distance2 ){
+            // Mesh0 is close to the origin => Rotation of Mesh0 
+            Mesh0 = movemesh(Mesh0,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
+        } 
+        else {
+            // Mesh1 is close to the origin => Rotation of Mesh1
+            Mesh1 = movemesh(Mesh1,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
+        }   
+    <% } -%>
+        
 
     <%# Finite element space -%>
         // First deformable body
@@ -1245,12 +1275,13 @@ try {
         FE2 [Hx2, Hy2, Hz2];
         [Hx2, Hy2, Hz2] = Nu2 * [Bx2, By2, Bz2];
     <% } -%>
+  
         
     <%# Save -%>
     <%- include('/blobs/save.edp.ejs', {
         dimension,
         path: run.resultPath,
-        name: '"body1Result"',
+        name: '"body1Result_"+timeIter',
         mesh: "Mesh0",
         geometry: {
             value: geometry?.values[0]
@@ -1260,7 +1291,7 @@ try {
     <%- include('/blobs/save.edp.ejs', {
         dimension,
         path: run.resultPath,
-        name: '"body2Result"',
+        name: '"body2Result_"+timeIter',
         mesh: "Mesh1",
         geometry: {
             value: geometry?.values[1]

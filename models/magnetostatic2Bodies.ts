@@ -252,6 +252,12 @@ const Magnetostatic2Bodies: IModel = {
           }
         ]
       ],
+      resultsFilter: {
+        name: 'Angle step',
+        prefixPattern: ['body1Result_', 'body2Result_'],
+        suffixPattern: '.vtu',
+        pattern: ['body1Result_\\d+.vtu', 'body2Result_\\d+.vtu']
+      },
       postprocessing: [
         {
           key: 'streamTracer',

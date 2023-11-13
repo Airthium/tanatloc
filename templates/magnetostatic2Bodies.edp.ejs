@@ -242,10 +242,6 @@ try {
         const N = dimension === 2 ? '[N.x, N.y]' : '[N.x, N.y, N.z]'
     -%>
 
-
-        // Problem
-        appendLog("Define the problem...");
-
         real penalty = <%- penalty[0].value ?? penalty[0].default -%>; // Penalty factor to penalize the interface conditions
 
         FE1 <%- unknownFunction1 -%>;
@@ -390,7 +386,7 @@ try {
     <% } -%>
 
     <%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs'), 1) -%>
-        
+    appendLog("Connectivity..");    
     <% if (dimension === 2){ -%>
         int nElements1 = nC1; // Segment number of the contact area 1 ( = nC1 if the contact border is closed if not it is  = nC1-1 and is corrected in the connectivity function)
         int nElements2 = nC2; // Segment number of the contact area 2 ( = nC2 if the contact border is closed if not it is  = nC2-1 and is corrected in the connectivity function)
@@ -550,7 +546,7 @@ try {
                 
             }
         }
-            
+    appendLog("Projections..");        
     <% if (dimension === 2){ -%>
             eta = minim1(xip1, xbU2, pos, segdof2, DIS20); // Call the projection function => parameters array of the integration points
             eta2 = minim2(xip2, xbU1, pos2, segdof1, DIS10); // Call the projection function => parameters array of the integration points
@@ -839,8 +835,8 @@ try {
 
 
     <%# Problem -%>
-            // Solve
-            appendLog("Define the problem...");
+    // Solve
+        appendLog("Define the problem...");
     // First Body 
         real Nu1 = 1. / Mu0;
         varf vLaplacian1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
@@ -947,7 +943,7 @@ try {
 
     <%# Solve -%>
         // Solve
-        appendLog("Solve the problem...");
+        appendLog("Matrices construction...");
 
         matrix Laplacian1 = vLaplacian1(FE1, FE1, solver = solver);
         real[int] LaplacianRHS1 = vLaplacianRHS1(0, FE1);
@@ -958,19 +954,11 @@ try {
         RHS(0:ndofA1-1) = LaplacianRHS1;
         RHS(ndofA1:(ndofA1+ndofA2-1)) = LaplacianRHS2; 
 
-
         // Interface boundary conditions
-        real[int,int] Jac3(ndofA1,ndofA2);
-        real[int,int] Jac4(ndofA2,ndofA1);
-        Jac3=0.;
-        Jac4=0.;
         matrix iddW3,iddW33, iddW4, LaplacianC;
         iddW3.resize(ndofA1,ndofA2);
-        iddW3=Jac3;
         iddW33.resize(ndofA2,ndofA1);
-        iddW33=Jac4;
         LaplacianC.resize(ndofA1 + ndofA2, ndofA1 + ndofA2);
-
         // (A1-A2) x n = [ - (A1-A2) * N2.y , (A1-A2) * N2.x ]
         // energy = penalty * ( (A1-A2) * N2.y )^2 + ((A1-A2) * N2.x)^2 = penalty * (A1-A2)^2 *(N2.y ^2 + N2.x ^2) = penalty * (A1-A2)^2
         <% if (dimension === 2) { -%>
@@ -1019,7 +1007,6 @@ try {
 
             }
         }
-
         // Master
 
         real Li2;
@@ -1065,6 +1052,7 @@ try {
 
             }
         }
+
 
         <% } else { -%>
         // Slave
@@ -1210,15 +1198,14 @@ try {
         <% } else { -%>
 
         <% } -%>
-
         iddW3=iddW3+iddW33';
         iddW4=iddW3';
         LaplacianC=[[Laplacian1,iddW3],[iddW4,Laplacian2]];
 
-
         set(LaplacianC, solver=solver);
 
         real[int] AzC( ndofA1 + ndofA2 );
+        appendLog("Solve the problem...");
         AzC = LaplacianC^-1 * RHS;
 
     <% if (dimension === 2) { -%>

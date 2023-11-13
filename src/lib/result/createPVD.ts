@@ -2,11 +2,86 @@
 
 import path from 'path'
 
-import { SIMULATION } from '@/config/storage'
-
+import { IModel } from '@/models/index.d'
 import { ISimulation } from '@/database/simulation'
 
+import { SIMULATION } from '@/config/storage'
+
 import Tools from '../tools'
+
+/**
+ * Separate files
+ * @param files Files
+ * @param filter FIlter
+ * @returns Files
+ */
+export const separateFiles = (
+  files: string[],
+  filter: IModel['configuration']['run']['resultsFilter']
+): {
+  notFilteredFiles: string[]
+  filteredFiles: string[]
+} => {
+  if (!filter) return { notFilteredFiles: [], filteredFiles: [] }
+
+  // Pattern filter
+  let patterns: RegExp[] = []
+  if (Array.isArray(filter.pattern))
+    patterns = filter.pattern.map((pattern) => new RegExp(pattern))
+  else patterns = [new RegExp(filter.pattern)]
+
+  const filteredFiles: string[] = []
+  const notFilteredFiles: string[] = []
+
+  files.forEach((file) => {
+    const res = patterns.map((pattern) => pattern.test(file))
+    const sum = res.reduce((accumulator, currentValue) => {
+      return +accumulator + +currentValue
+    }, 0)
+
+    if (sum === 0) notFilteredFiles.push(file)
+    else filteredFiles.push(file)
+  })
+
+  return {
+    notFilteredFiles,
+    filteredFiles
+  }
+}
+
+/**
+ * Get files numbers
+ * @param files Files
+ * @param filter Filter
+ * @returns Files & number
+ */
+export const getFilesNumbers = (
+  files: string[],
+  filter: IModel['configuration']['run']['resultsFilter']
+): { name: string; number: number }[] => {
+  let preffixPatterns: RegExp[] = []
+  if (Array.isArray(filter!.prefixPattern))
+    preffixPatterns = filter!.prefixPattern.map(
+      (pattern) => new RegExp(pattern)
+    )
+  else preffixPatterns = [new RegExp(filter!.prefixPattern)]
+
+  let suffixPatterns: RegExp[] = []
+  if (Array.isArray(filter!.suffixPattern))
+    suffixPatterns = filter!.suffixPattern.map((pattern) => new RegExp(pattern))
+  else suffixPatterns = [new RegExp(filter!.suffixPattern)]
+
+  return files.map((file) => {
+    let number = file
+    preffixPatterns.forEach((pattern) => (number = number.replace(pattern, '')))
+    suffixPatterns.forEach((pattern) => (number = number.replace(pattern, '')))
+
+    return {
+      name: file,
+      number: +number
+    }
+  })
+}
 
 /**
  * Create PVD files
@@ -26,20 +101,11 @@ const createPVD = (
 
   const filter = configuration.run?.resultsFilter
   if (filter) {
-    const pattern = new RegExp(filter.pattern)
-    const filteredFiles = files.filter((file) => pattern.test(file))
+    const { filteredFiles } = separateFiles(files, filter)
 
     if (filteredFiles.length) {
       // Set iteration numbers
-      const vtuFiles = filteredFiles.map((file) => {
-        const number = file
-          .replace(new RegExp(filter.prefixPattern), '')
-          .replace(new RegExp(filter.suffixPattern), '')
-        return {
-          name: file,
-          number: +number
-        }
-      })
+      const vtuFiles = getFilesNumbers(filteredFiles, filter)
 
       // Sort
       vtuFiles.sort((a, b) => a.number - b.number)

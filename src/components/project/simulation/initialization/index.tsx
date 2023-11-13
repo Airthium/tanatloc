@@ -294,7 +294,12 @@ export const _loadResults = async (
         })
       } else {
         // Pattern filter
-        const pattern = new RegExp(filter.pattern)
+        let patterns = []
+        if (Array.isArray(filter.pattern)) patterns = [...filter.pattern]
+        else patterns = [filter.pattern]
+
+        //TODO
+
         const notFilteredFiles = task.files
           .filter((file) => !pattern.test(file.fileName))
           .filter((file) => file.type === 'result')

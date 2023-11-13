@@ -153,12 +153,24 @@ const Results = ({
           newSingleFiles.push(...task.files)
         } else {
           // Pattern filter
-          const pattern = new RegExp(filter.pattern)
-          const notFilteredFiles = task.files.filter(
-            (file: IFrontResult) => !pattern.test(file.fileName)
+          let patterns = []
+          if (Array.isArray(filter.pattern))
+            patterns = filter.pattern.map((pattern) => new RegExp(pattern))
+          else patterns = [new RegExp(filter.pattern)]
+
+          let notFilteredFiles = task.files
+          patterns.forEach(
+            (pattern) =>
+              (notFilteredFiles = notFilteredFiles.filter(
+                (file: IFrontResult) => !pattern.test(file.fileName)
+              ))
           )
-          const files = task.files.filter((file: IFrontResult) =>
-            pattern.test(file.fileName)
+          let files = task.files
+          patterns.forEach(
+            (pattern) =>
+              (files = files.filter((file: IFrontResult) =>
+                pattern.test(file.fileName)
+              ))
           )
 
           // Numbering

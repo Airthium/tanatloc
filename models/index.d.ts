@@ -299,9 +299,9 @@ export interface IModelRun extends IModelCommon {
   results?: IModelRunResult[][]
   resultsFilter?: {
     name: string
-    prefixPattern: string | RegExp
-    suffixPattern: string | RegExp
-    pattern: string | RegExp
+    prefixPattern: string[] | RegExp[] | string | RegExp
+    suffixPattern: string[] | RegExp[] | string | RegExp
+    pattern: string[] | RegExp[] | string | RegExp
     multiplicator?: string[]
   }
   postprocessing?: {

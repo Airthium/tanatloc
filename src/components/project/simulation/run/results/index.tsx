@@ -153,7 +153,7 @@ const Results = ({
           newSingleFiles.push(...task.files)
         } else {
           // Pattern filter
-          let patterns = []
+          let patterns: RegExp[] = []
           if (Array.isArray(filter.pattern))
             patterns = filter.pattern.map((pattern) => new RegExp(pattern))
           else patterns = [new RegExp(filter.pattern)]
@@ -163,15 +163,18 @@ const Results = ({
             (pattern) =>
               (notFilteredFiles = notFilteredFiles.filter(
                 (file: IFrontResult) => !pattern.test(file.fileName)
+                //TODO wrong
               ))
           )
-          let files = task.files
-          patterns.forEach(
-            (pattern) =>
-              (files = files.filter((file: IFrontResult) =>
-                pattern.test(file.fileName)
-              ))
-          )
+          const files = task.files.filter((file) => {
+            const res = patterns.map((pattern) => pattern.test(file.fileName))
+
+            const sum = res.reduce((accumulator, currentValue) => {
+              return +accumulator + +currentValue
+            }, 0)
+
+            return !!sum
+          })
 
           // Numbering
           const filesWithNumbers = getFilesNumbers(files, filter)

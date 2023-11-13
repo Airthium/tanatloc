@@ -1,8 +1,6 @@
 /** @module Components.Project.View */
 
 import { Dispatch, useContext, useState } from 'react'
-// import Tanatloc3D, { Tanatloc3DPart } from '@airthium/tanatloc-3d'
-import { v4 } from 'uuid'
 
 import {
   IFrontGeometriesItem,
@@ -21,13 +19,10 @@ import { addError } from '@/context/notification/actions'
 
 import { IGeometryPart } from '@/lib/index.d'
 
-import AvatarAPI from '@/api/avatar'
 import GeometryAPI from '@/api/geometry'
 import ResultAPI from '@/api/result'
 
 import ThreeView from './three'
-
-import theme from '@/styles/theme'
 
 // Local interfaces
 export interface TGeometry
@@ -255,36 +250,10 @@ const View = ({
     [dispatch]
   )
 
-  // console.log(loading)
-
   /**
    * Render
    */
   return (
-    // <Tanatloc3D
-    //   theme={theme}
-    //   parts={parts as Tanatloc3DPart[]}
-    //   snapshot={{
-    //     project: {
-    //       apiRoute: async (image: string) => {
-    //         try {
-    //           await AvatarAPI.add(
-    //             {
-    //               name: 'snapshot',
-    //               uid: 'snapshot_' + v4(),
-    //               data: image
-    //             },
-    //             { id: project.id }
-    //           )
-    //         } catch (err) {
-    //           console.log(err)
-    //           //TODO
-    //         }
-    //       },
-    //       size: { width: 2 * 260, height: 2 * 156 }
-    //     }
-    //   }}
-    // />
     <ThreeView
       loading={loading}
       project={{

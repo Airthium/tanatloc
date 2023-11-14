@@ -272,7 +272,6 @@ try {
         
         // Extract contact borders for the body 1
         varf vcontbord(<%- testfunc2 -%>, <%- testfunc1 -%>) =
-            // truc à la con pour éviter à gérer le + au début ou valeur vide
             intN(Mesh0)(0 * Vx)
     <% for (const c of contactArea){ -%>
     <%
@@ -304,7 +303,6 @@ try {
         
         // Extract contact borders for the body 2
         varf vcontbord2(<%- testfunc2 -%>, <%- testfunc1 -%>) =
-            // truc à la con pour éviter à gérer le + au début ou valeur vide
             intN(Mesh1)(0 * Vx)
     <% for (const c of contactArea){ -%>
     <%

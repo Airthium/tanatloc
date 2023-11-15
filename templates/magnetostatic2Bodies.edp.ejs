@@ -117,7 +117,6 @@ try {
         }
     }
 <% } -%>
-    // ////////////////////////////////////////////////
     
     // P1 functions
 <%- helpers.indent(include('/blobs/P1Function.edp.ejs', {
@@ -166,7 +165,7 @@ try {
         
 
     <%# Finite element space -%>
-        // First deformable body
+        // First finite element space
     <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
         mesh: {name: 'Mesh0'},
         finiteElementSpace: {
@@ -175,7 +174,7 @@ try {
         }
     }), 1) -%>
         
-        // Second deformable body
+        // Second finite element space
     <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
         mesh: {name: 'Mesh1'},
         finiteElementSpace: {
@@ -972,7 +971,6 @@ try {
             int dofx0 = segdofA1[2 * seid1]; // dof A of the first vertice of the segment
             int dofx1 = segdofA1[2 * seid1 + 1]; // dof A of the secondt vertice of the segment
 
-            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
             Li = ((xbU1[dofxx1] - xbU1[dofxx0])^2 + (xbU1[dofxx1 + 1] - xbU1[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
             for (int j = 0; j < integrationPointsNumber; j++) {
                 // shape function of the first segment
@@ -1017,7 +1015,6 @@ try {
             int dofx0 = segdofA2[2 * seid2]; // dof A of the first vertice of the segment
             int dofx1 = segdofA2[2 * seid2 + 1]; // dof A of the secondt vertice of the segment
 
-            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
             Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
             for (int j = 0; j < integrationPointsNumber; j++) {
                 // shape function of the first segment
@@ -1065,7 +1062,6 @@ try {
             int dofx1 = segdofA1[3 * seid1 + 1]; // dof A of the mid-point
             int dofx2 = segdofA1[3 * seid1 + 2]; // dof A of the secondt vertice of the segment
 
-            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
             Li = ((xbU1[dofxx1] - xbU1[dofxx0])^2 + (xbU1[dofxx1 + 1] - xbU1[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
             for (int j = 0; j < integrationPointsNumber; j++) {
                 // shape function of the first segment
@@ -1136,7 +1132,6 @@ try {
             int dofx1 = segdofA2[3 * seid2 + 1]; // dof A of the mid-point
             int dofx2 = segdofA2[3 * seid2 + 2]; // dof A of the secondt vertice of the segment
 
-            // Integral on the surface of the previous iteration where there is a contact => Fixed point for the Tresca problem
             Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
             for (int j = 0; j < integrationPointsNumber; j++) {
                 // shape function of the first segment

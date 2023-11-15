@@ -284,6 +284,26 @@ const decrypt = async ({
   return decrypted.toString()
 }
 
+const splitStep = async (
+  location: string,
+  fileIn: string
+): Promise<string[]> => {
+  const executable = 'StepSplit'
+  const { code, data, error } = await Services.custom(location, executable, [
+    fileIn
+  ])
+
+  if (error) throw new Error(error)
+
+  if (code !== 0) {
+    const err = new Error('Split STEP process failed. Code ' + code + '.')
+    data && (err.message += '\nData: ' + data)
+    throw err
+  }
+
+  return data.split('\n').filter((d) => d)
+}
+
 const Tools = {
   toPosix,
   createPath,
@@ -302,6 +322,7 @@ const Tools = {
   writeStream,
   convert,
   encrypt,
-  decrypt
+  decrypt,
+  splitStep
 }
 export default Tools

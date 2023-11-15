@@ -30,6 +30,7 @@ import Add from './add'
 import Edit from './edit'
 
 import globalStyle from '@/styles/index.module.css'
+import Split from './split'
 
 /**
  * Props
@@ -225,6 +226,11 @@ const Geometry = ({
           size="small"
           title="Informations"
           actions={[
+            <Split
+              project={{ id: project.id }}
+              geometry={{ id: geometry.id, summary: geometry.summary }}
+              key="split"
+            />,
             <DownloadButton
               key="download"
               loading={downloading}

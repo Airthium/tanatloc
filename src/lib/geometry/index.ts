@@ -2,6 +2,7 @@
 
 import path from 'path'
 import extractJson from '@airthium/extract-json-from-string'
+import { v4 as uuid } from 'uuid'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { TGeometrySummary } from '@/database/geometry/get'
@@ -287,5 +288,35 @@ const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   }
 }
 
-const Geometry = { add, get, update, del, read, readPart, archive }
+/**
+ * Split step
+ * @param project Project
+ * @param geometry Geometry
+ * @returns Message
+ */
+const splitStep = async (
+  project: { id: string },
+  geometry: { id: string }
+): Promise<string> => {
+  // Data
+  const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
+
+  // Split step
+  const geometries = await Tools.splitStep(
+    GEOMETRY,
+    geometryData.uploadfilename
+  )
+
+  if (geometries.length === 1) return 'Only one volume found'
+
+  // Add geometries
+  for (const geometry of geometries) {
+    const buffer = await Tools.readFile(path.join(GEOMETRY, geometry))
+    await add(project, { name: geometry, uid: uuid(), buffer })
+  }
+
+  return ''
+}
+
+const Geometry = { add, get, update, del, read, readPart, archive, splitStep }
 export default Geometry

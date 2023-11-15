@@ -7,6 +7,15 @@ import { del } from './del'
 
 import { download } from './download'
 import { getPart } from './getPart'
+import { splitStep } from './splitStep'
 
-const Geometry = { useGeometries, add, update, del, download, getPart }
+const Geometry = {
+  useGeometries,
+  add,
+  update,
+  del,
+  download,
+  getPart,
+  splitStep
+}
 export default Geometry

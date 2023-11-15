@@ -253,8 +253,6 @@ const Results = ({
     setPlay(interval)
   }, [currentNumber, minMax, onChange])
 
-  console.log(minMax)
-
   /**
    * On pause
    */

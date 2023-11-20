@@ -1,0 +1,41 @@
+// Integration points number by segment
+int integrationPointsNumber;
+// Positions
+real[int] integrationPointsPositions1, integrationPointsPositions2;
+// Weights
+real[int] integrationPointsWeights;
+
+func int integrationRule(string integrationRule) {
+    if (integrationRule == "Gauss") {
+        // Gauss quadrature IP
+        integrationPointsNumber = 7;
+        integrationPointsPositions1 = [
+            1. / 3.,
+            (6. - 15^0.5) / 21.,
+            (6. - 15^0.5) / 21.,
+            (9. + 2 * 15^0.5) / 21.,
+            (6. + 15^0.5) / 21.,
+            (6. + 15^0.5) / 21.,
+            (9. - 2 * 15^0.5) / 21.
+        ];
+        integrationPointsPositions2 = [
+            1. / 3.,
+            (6. - 15^0.5) / 21.,
+            (9. + 2 * 15^0.5) / 21.,
+            (6. - 15^0.5) / 21.,
+            (6. + 15^0.5) / 21.,
+            (9. - 2 * 15^0.5) / 21.,
+            (6. + 15^0.5) / 21.
+        ];
+        integrationPointsWeights = 1 / 2. * [
+            0.225, (155. - 15^0.5) / 1200.,
+            (155. - 15^0.5) / 1200.,
+            (155. - 15^0.5) / 1200.,
+            (155. + 15^0.5) / 1200.,
+            (155. + 15^0.5) / 1200.,
+            (155. + 15^0.5) / 1200.
+        ];
+    }
+    
+    return 0;
+}

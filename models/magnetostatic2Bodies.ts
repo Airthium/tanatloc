@@ -1,16 +1,16 @@
-/** @module Models.LinearElasticityTime */
+/** @module Models.Magnetostatic2Bodies */
 
 import { IModel } from './index.d'
 
-import description from './description/magnetostatic'
+import description from './description/magnetostatic2Bodies'
 
 /**
- * Magnetostatic
+ * Magnetostatic for two bodies in contact
  */
-const Magnetostatic: IModel = {
+const Magnetostatic2Bodies: IModel = {
   category: 'Electromagnetism',
-  name: 'Magnetostatic',
-  algorithm: 'magnetostatic',
+  name: 'Magnetostatic 2 Bodies',
+  algorithm: 'magnetostatic2Bodies',
   code: 'FreeFEM',
   version: '1.0.0',
   description,
@@ -37,8 +37,10 @@ const Magnetostatic: IModel = {
   configuration: {
     geometry: {
       index: 1,
-      title: 'Geometry',
-      meshable: true
+      title: 'Geometries',
+      meshable: true,
+      multiple: true,
+      n: 2
     },
     materials: {
       index: 2,
@@ -57,12 +59,12 @@ const Magnetostatic: IModel = {
     parameters: {
       index: 3,
       title: 'Parameters',
-      current: {
-        label: 'Current',
+      current1: {
+        label: 'Current 1',
         children: [
           {
             only3D: true,
-            label: 'Current (x)',
+            label: 'Current 1 (x)',
             htmlEntity: 'formula',
             default: '0',
             units: [{ label: 'A.m^{-2}' }],
@@ -70,14 +72,42 @@ const Magnetostatic: IModel = {
           },
           {
             only3D: true,
-            label: 'Current (y)',
+            label: 'Current 1 (y)',
             htmlEntity: 'formula',
             default: '0',
             units: [{ label: 'A.m^{-2}' }],
             unit: { label: 'A.m^{-2}' }
           },
           {
-            label: 'Current (z)',
+            label: 'Current 1 (z)',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
+          }
+        ]
+      },
+      current2: {
+        label: 'Current 2',
+        children: [
+          {
+            only3D: true,
+            label: 'Current 2 (x)',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
+          },
+          {
+            only3D: true,
+            label: 'Current 2 (y)',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: 'A.m^{-2}' }],
+            unit: { label: 'A.m^{-2}' }
+          },
+          {
+            label: 'Current 2 (z)',
             htmlEntity: 'formula',
             default: '0',
             units: [{ label: 'A.m^{-2}' }],
@@ -91,7 +121,24 @@ const Magnetostatic: IModel = {
           {
             label: 'Penalty factor',
             htmlEntity: 'formula',
-            default: '1e6'
+            default: '1e10'
+          }
+        ]
+      },
+      rotation: {
+        label: 'Relative rotation',
+        children: [
+          {
+            label: 'Total angle',
+            htmlEntity: 'formula',
+            default: '0',
+            units: [{ label: '°' }],
+            unit: { label: '°' }
+          },
+          {
+            label: 'Step number',
+            htmlEntity: 'formula',
+            default: '1'
           }
         ]
       },
@@ -144,11 +191,12 @@ const Magnetostatic: IModel = {
         label: 'A x n = Ad',
         children: [
           {
-            label: 'Adx ',
+            label: ' Ad tangential(2D), Adx(3D) ',
             htmlEntity: 'formula',
             default: 0
           },
           {
+            only3D: true,
             label: 'Ady',
             htmlEntity: 'formula',
             default: 0
@@ -160,6 +208,9 @@ const Magnetostatic: IModel = {
             default: 0
           }
         ]
+      },
+      contactArea: {
+        label: 'Contact areas'
       }
     },
     run: {
@@ -168,22 +219,45 @@ const Magnetostatic: IModel = {
       results: [
         [
           {
-            name: 'VectorPotential',
-            data: ['Ax', 'Ay', 'Az'],
-            data2D: 'Az'
+            name: 'Body_1_-_VectorPotential',
+            data: ['Ax1', 'Ay1', 'Az1'],
+            data2D: 'Az1'
           },
           {
-            name: 'MagneticInduction',
-            data: ['Bx', 'By', 'Bz'],
-            data2D: 'B'
+            name: 'Body_1_-_MagneticInduction',
+            data: ['Bx1', 'By1', 'Bz1'],
+            data2D: ['Bx1', 'By1', '0']
           },
           {
-            name: 'MagneticField',
-            data: ['Hx', 'Hy', 'Hz'],
-            data2D: 'H'
+            name: 'Body_1_-_MagneticField',
+            data: ['Hx1', 'Hy1', 'Hz1'],
+            data2D: ['Hx1', 'Hy1', '0']
+          }
+        ],
+        [
+          {
+            name: 'Body_2_-_VectorPotential',
+            data: ['Ax2', 'Ay2', 'Az2'],
+            data2D: 'Az2'
+          },
+          {
+            name: 'Body_2_-_MagneticInduction',
+            data: ['Bx2', 'By2', 'Bz2'],
+            data2D: ['Bx2', 'By2', '0']
+          },
+          {
+            name: 'Body_2_-_MagneticField',
+            data: ['Hx2', 'Hy2', 'Hz2'],
+            data2D: ['Hx2', 'Hy2', '0']
           }
         ]
       ],
+      resultsFilter: {
+        name: 'Angle step',
+        prefixPattern: ['body1Result_', 'body2Result_'],
+        suffixPattern: '.vtu',
+        pattern: ['body1Result_\\d+.vtu', 'body2Result_\\d+.vtu']
+      },
       postprocessing: [
         {
           key: 'streamTracer',
@@ -199,4 +273,4 @@ const Magnetostatic: IModel = {
   }
 }
 
-export default Magnetostatic
+export default Magnetostatic2Bodies

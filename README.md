@@ -16,7 +16,6 @@ Run your numerical simulations locally using the provided physics models (linear
 Deploy your code on [Qarnot](https://qarnot.com), a low-carbon emissions HPC cloud platform, or [Rescale](https://rescale.com) using our paid HPC plugins.<br> [Get in touch](mailto:contact@airthium.com) with our team to learn more.
 
 Tanatloc is an open-source project by [Airthium](https://airthium.com), a deeptech startup working on decarbonizing the planet :earth_africa:.<br>
-Learn more and support our efforts by investing in our [crowdfunding](https://wefunder.com/airthium)!
 
 ## Local app - Electron
 

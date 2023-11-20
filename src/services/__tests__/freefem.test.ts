@@ -1,9 +1,7 @@
 import freefem from '../freefem'
 
-const mockExecSync = jest.fn()
 const mockSpawn = jest.fn()
 jest.mock('child_process', () => ({
-  execSync: () => mockExecSync(),
   spawn: () => mockSpawn()
 }))
 
@@ -17,8 +15,6 @@ describe('services/freefem', () => {
   const mockCallback = jest.fn()
 
   beforeEach(() => {
-    mockExecSync.mockReset()
-    mockExecSync.mockImplementation(() => '')
     mockSpawn.mockReset()
 
     mockIsDocker.mockReset()
@@ -46,7 +42,6 @@ describe('services/freefem', () => {
       }
     }))
     const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(1)
     expect(mockSpawn).toHaveBeenCalledTimes(0)
     expect(code).toBe(0)
 
@@ -72,37 +67,8 @@ describe('services/freefem', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(2)
       expect(mockSpawn).toHaveBeenCalledTimes(0)
     }
-  })
-
-  test('docker desktop', async () => {
-    Object.defineProperty(process, 'platform', {
-      value: 'linux',
-      configurable: true
-    })
-    // Normal
-    mockExecSync.mockImplementation(() => 'Docker Desktop')
-    mockDocker.mockImplementation(() => ({
-      stdout: {
-        on: (_: any, callback: Function) => {
-          callback('stdout')
-        }
-      },
-      stderr: {
-        on: (_: any, callback: Function) => {
-          callback('stderr')
-        }
-      },
-      on: (arg: string, callback: Function) => {
-        if (arg === 'close') callback(0)
-      }
-    }))
-    const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(1)
-    expect(mockSpawn).toHaveBeenCalledTimes(0)
-    expect(code).toBe(0)
   })
 
   test('isDocker', async () => {
@@ -124,7 +90,6 @@ describe('services/freefem', () => {
       }
     }))
     const code = await freefem('path', 'script', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
   })
@@ -146,7 +111,6 @@ describe('services/freefem', () => {
       }
     }))
     const code = await freefem('path', 'script', mockCallback, 'custom')
-    expect(mockExecSync).toHaveBeenCalledTimes(0)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
   })

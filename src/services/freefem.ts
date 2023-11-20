@@ -1,6 +1,6 @@
 /** @module Services.Freefem */
 
-import { execSync, spawn } from 'child_process'
+import { spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
 
@@ -39,23 +39,7 @@ const freefem = async (
         }
       )
     } else {
-      // Check docker version
-      let dockerVersion = 'engine'
-      {
-        const dockerFullVersion = execSync('docker version')
-        if (dockerFullVersion.includes('Docker Desktop'))
-          dockerVersion = 'desktop'
-      }
-
-      const command = [
-        'ff-mpirun',
-        dockerVersion === 'desktop' ? '--allow-run-as-root' : '',
-        '-np',
-        '1',
-        scriptPOSIX,
-        '-ns',
-        '> log'
-      ]
+      const command = ['ff-mpirun', '-np', '1', scriptPOSIX, '-ns', '> log']
         .filter((c) => c)
         .join(' ')
       run = docker(bindPath, command)

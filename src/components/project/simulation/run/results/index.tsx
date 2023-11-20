@@ -2,13 +2,23 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  PlayCircleOutlined,
+  PauseCircleOutlined
+} from '@ant-design/icons'
 
 import { IFrontSimulation, IFrontResult } from '@/api/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
-import { getFilesNumbers, getMultiplicator } from './tools'
+import {
+  getFilesNumbers,
+  getMinMax,
+  getMultiplicator,
+  separateFiles
+} from './tools'
 import Download from './download'
 import Archive from './archive'
 
@@ -121,6 +131,11 @@ const Results = ({
   const [singleFiles, setSingleFiles] = useState<IFrontResult[]>()
   const [filteredFiles, setFilteredFiles] = useState<IFilteredFiles>()
   const [currentNumber, setCurrentNumber] = useState<number>()
+  const [minMax, setMinMax] = useState<{ min: number; max: number }>({
+    min: 0,
+    max: 0
+  })
+  const [play, setPlay] = useState<NodeJS.Timeout>()
 
   // Data
   const configuration = useMemo(
@@ -152,17 +167,14 @@ const Results = ({
         if (!filter) {
           newSingleFiles.push(...task.files)
         } else {
-          // Pattern filter
-          const pattern = new RegExp(filter.pattern)
-          const notFilteredFiles = task.files.filter(
-            (file: IFrontResult) => !pattern.test(file.fileName)
-          )
-          const files = task.files.filter((file: IFrontResult) =>
-            pattern.test(file.fileName)
+          // Seprate
+          const { filteredFiles, notFilteredFiles } = separateFiles(
+            task.files,
+            filter
           )
 
           // Numbering
-          const filesWithNumbers = getFilesNumbers(files, filter)
+          const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
           const numbers = filesWithNumbers
             .map((file) => file.number)
             .filter((n, i, s) => s.indexOf(n) === i)
@@ -183,6 +195,10 @@ const Results = ({
 
           // Add to single files
           newSingleFiles.push(...notFilteredFiles)
+
+          // Min/max
+          const { min, max } = getMinMax(filesWithNumbers)
+          setMinMax({ min, max })
 
           // Add to filtered
           setFilteredFiles({
@@ -222,6 +238,29 @@ const Results = ({
     [results, filteredFiles, setResults]
   )
 
+  /**
+   * On play
+   */
+  const onPlay = useCallback(() => {
+    let number = currentNumber ?? minMax.min - 1
+    // TODO do not use interval but check loading time and wait x seconds after loading complete to see the new result
+    // TODO preload data in threejs ?
+    const interval = setInterval(() => {
+      number++
+      number = number % minMax.max
+      onChange(number)
+    }, 2_000)
+    setPlay(interval)
+  }, [currentNumber, minMax, onChange])
+
+  /**
+   * On pause
+   */
+  const onPause = useCallback(() => {
+    clearInterval(play)
+    setPlay(undefined)
+  }, [play])
+
   // Results render
   if (!singleFiles && !filteredFiles) return <Spin />
   if (!singleFiles?.length && !filteredFiles)
@@ -254,12 +293,25 @@ const Results = ({
         {filteredFiles && (
           <>
             {filteredFiles.name}
-            <Select
-              className={globalStyle.fullWidth}
-              options={filteredFiles.options}
-              value={currentNumber}
-              onChange={onChange}
-            />
+            <div style={{ display: 'flex' }}>
+              <Select
+                className={globalStyle.fullWidth}
+                options={filteredFiles.options}
+                value={currentNumber}
+                onChange={onChange}
+              />
+              <Button
+                disabled={!!play}
+                type={play ? 'primary' : undefined}
+                icon={<PlayCircleOutlined />}
+                onClick={onPlay}
+              />
+              <Button
+                disabled={!play}
+                icon={<PauseCircleOutlined />}
+                onClick={onPause}
+              />
+            </div>
             {filteredFiles.files.map((filteredFile) => {
               if (filteredFile.number === currentNumber) {
                 return (

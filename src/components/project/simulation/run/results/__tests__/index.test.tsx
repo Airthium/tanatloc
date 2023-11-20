@@ -8,7 +8,8 @@ const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplicator = jest.fn()
 jest.mock('../tools', () => ({
   getFilesNumbers: () => mockGetFilesNumbers(),
-  getMultiplicator: () => mockGetMultiplicator()
+  getMultiplicator: () => mockGetMultiplicator(),
+  separateFiles: () => jest.fn()
 }))
 
 const mockDownload = jest.fn()

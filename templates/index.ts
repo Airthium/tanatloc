@@ -11,7 +11,8 @@ const Templates = {
   stokesTime: 'stokesTime.edp.ejs',
   navierStokesTime: 'navierStokesTime.edp.ejs',
   thermicDiffusion: 'thermicDiffusion.edp.ejs',
-  magnetostatic: 'magnetostatic.edp.ejs'
+  magnetostatic: 'magnetostatic.edp.ejs',
+  magnetostatic2Bodies: 'magnetostatic2Bodies.edp.ejs'
 }
 
 export default Templates

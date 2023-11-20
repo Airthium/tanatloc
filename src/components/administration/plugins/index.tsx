@@ -137,7 +137,7 @@ const Plugin = ({
  */
 const Plugins = () => {
   // Ref
-  const tableRef = useRef<HTMLDivElement>(null)
+  const tableRef = useRef<any>(null)
 
   // Context
   const { dispatch } = useContext(NotificationContext)
@@ -235,12 +235,12 @@ const Plugins = () => {
    */
   return (
     <Table
+      ref={tableRef}
       loading={!plugins || loadingSystem}
       pagination={false}
       size="small"
       columns={columns as TableColumnsType<object>}
       dataSource={plugins}
-      ref={tableRef}
       scroll={{ y: scroll?.y }}
     />
   )

@@ -6,16 +6,7 @@ import Sentry from './config/sentry.js'
 const basePath = ''
 
 const nextConfig = {
-  webpack: (config, { isServer, webpack }) => {
-    if (!isServer) {
-      config.resolve.alias['@sentry/node'] = '@sentry/browser'
-    }
-
-    config.node = {
-      ...config.node,
-      __dirname: true
-    }
-
+  webpack: (config, { webpack }) => {
     config.module.rules.push(
       {
         test: /\.ejs/,
@@ -41,7 +32,8 @@ const nextConfig = {
   env: {
     SENTRY_DSN: Sentry.DSN
   },
-  basePath
+  basePath,
+  output: process.env.NEXT_PUBLIC_SERVER_MODE ? 'export' : undefined
 }
 
 export default nextConfig

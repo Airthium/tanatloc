@@ -20,7 +20,8 @@ const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplcator = jest.fn()
 jest.mock('@/components/project/simulation/run/results/tools', () => ({
   getFilesNumbers: () => mockGetFilesNumbers(),
-  getMultiplicator: () => mockGetMultiplcator()
+  getMultiplicator: () => mockGetMultiplcator(),
+  separateFiles: () => jest.fn()
 }))
 
 const mockUpdate = jest.fn()
@@ -447,7 +448,7 @@ describe('components/project/simulation/initialization', () => {
 
     // Normal
     await act(() => fireEvent.click(option1))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )

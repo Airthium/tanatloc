@@ -21,7 +21,8 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
 import Formula from '@/components/assets/formula'
 import {
   getFilesNumbers,
-  getMultiplicator
+  getMultiplicator,
+  separateFiles
 } from '@/components/project/simulation/run/results/tools'
 
 import Utils from '@/lib/utils'
@@ -293,23 +294,34 @@ export const _loadResults = async (
             })
         })
       } else {
-        // Pattern filter
-        const pattern = new RegExp(filter.pattern)
-        const notFilteredFiles = task.files
-          .filter((file) => !pattern.test(file.fileName))
-          .filter((file) => file.type === 'result')
-        const files = task.files.filter((file) => pattern.test(file.fileName))
+        const { filteredFiles, notFilteredFiles } = separateFiles(
+          task.files,
+          filter
+        )
 
         // Numbering
-        const filesWithNumbers = getFilesNumbers(files, filter)
+        const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
         const uniqueFilesWithNumbers = filesWithNumbers
-          .map((file) => ({
-            number: file.number,
-            fileName: file.fileName.replace(
-              new RegExp(filter.suffixPattern),
-              ''
+          .map((file) => {
+            let suffixes: RegExp[] = []
+            if (Array.isArray(filter.suffixPattern))
+              suffixes = filter.suffixPattern.map(
+                (pattern) => new RegExp(pattern)
+              )
+            else suffixes = [new RegExp(filter.suffixPattern)]
+            let fileNameWithoutSuffix = file.fileName
+            suffixes.forEach(
+              (pattern) =>
+                (fileNameWithoutSuffix = fileNameWithoutSuffix.replace(
+                  pattern,
+                  ''
+                ))
             )
-          }))
+            return {
+              number: file.number,
+              fileName: fileNameWithoutSuffix
+            }
+          })
           .filter(
             (file, index, self) =>
               self.findIndex((s) => s.number === file.number) === index

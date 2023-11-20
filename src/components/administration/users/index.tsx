@@ -74,7 +74,7 @@ export const errors = {
  */
 const Users = ({ users, swr }: IProps): React.JSX.Element => {
   // Ref
-  const refTable = useRef<HTMLDivElement>(null)
+  const refTable = useRef<any>(null)
 
   // State
   const [plugins, setPlugins] = useState<IClientPlugin[]>()

@@ -9,6 +9,7 @@ import StokesTime from './stokesTime'
 import NavierStokesTime from './navierStokesTime'
 import ThermicDiffusion from './thermicDiffusion'
 import Magnetostatic from './magnetostatic'
+import Magnetostatic2Bodies from './magnetostatic2Bodies'
 
 /**
  * Models
@@ -22,7 +23,8 @@ const models = [
   StokesTime,
   NavierStokesTime,
   ThermicDiffusion,
-  Magnetostatic
+  Magnetostatic,
+  Magnetostatic2Bodies
 ]
 
 export default models

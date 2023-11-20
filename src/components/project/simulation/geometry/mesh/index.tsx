@@ -1,19 +1,21 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
-import { useState, useEffect, useCallback, Dispatch, useContext } from 'react'
-import { Card, Form, Select, Space } from 'antd'
+import { useState, useEffect, useCallback, useContext } from 'react'
+import { Card, Collapse, Form, Select } from 'antd'
 
-import { IUnit } from '@/models/index.d'
+import {
+  IModelMeshSizeAuto,
+  IModelMeshSizeFactor,
+  IModelMeshSizeManual,
+  IUnit
+} from '@/models/index.d'
 
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import Formula from '@/components/assets/formula'
@@ -27,13 +29,38 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type MeshParameters =
+  | IModelMeshSizeManual
+  | IModelMeshSizeAuto
+  | IModelMeshSizeFactor
+
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
+  index: number
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
   }
+}
+
+/**
+ * Defaults
+ */
+const defaultMeshSize = {
+  manual: {
+    type: 'manual',
+    value: 1
+  } as IModelMeshSizeManual,
+  auto: {
+    type: 'auto',
+    value: 'normal'
+  } as IModelMeshSizeAuto,
+  factor: {
+    type: 'factor',
+    value: 1
+  } as IModelMeshSizeFactor
 }
 
 /**
@@ -44,91 +71,28 @@ export const errors = {
 }
 
 /**
- * On mesh global type
+ * On global
  * @param simulation Simulation
- * @param type Type
+ * @param index Index
+ * @param meshParameters Mesh parameters
  * @param swr SWR
  */
-export const _onMeshGlobalType = async (
+export const _onGlobal = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  type: string,
+  index: number,
+  meshParameters: MeshParameters,
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    const newSimulation = Utils.deepCopy(simulation)
-
-    // Update
-    newSimulation.scheme.configuration.geometry.meshParameters = {
-      type,
-      value: type === 'auto' ? 'normal' : '1'
-    }
-
-    const diff = {
-      ...newSimulation.scheme.configuration.geometry,
-      done: true
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'geometry'],
-        value: diff
-      }
-    ])
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...newSimulation.scheme.configuration.run,
-          done: false
-        }
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
   }
-}
-
-/**
- * On mesh global size
- * @param simulation Simulation
- * @param value Value
- * @param swr SWR
- */
-export const _onMeshGlobalSize = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  value: string | number,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
 
     // Update
-    newSimulation.scheme.configuration.geometry.meshParameters = {
-      ...newSimulation.scheme.configuration.geometry.meshParameters,
-      type: newSimulation.scheme.configuration.geometry.meshParameters?.type!,
-      value: value
-    }
+    newSimulation.scheme.configuration.geometry.children[index].meshParameters =
+      meshParameters
 
     const diff = {
       ...newSimulation.scheme.configuration.geometry,
@@ -161,70 +125,6 @@ export const _onMeshGlobalSize = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
-  }
-}
-
-/**
- * On mesh global unit
- * @param simulation Simulation
- * @param unit Unit
- * @param swr SWR
- */
-export const _onMeshGlobalUnit = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  unit: IUnit,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    const newSimulation = Utils.deepCopy(simulation)
-
-    // Update
-    newSimulation.scheme.configuration.geometry.meshParameters = {
-      ...newSimulation.scheme.configuration.geometry.meshParameters,
-      type: newSimulation.scheme.configuration.geometry.meshParameters?.type!,
-      value: newSimulation.scheme.configuration.geometry.meshParameters?.value!,
-      unit
-    }
-
-    const diff = {
-      ...newSimulation.scheme.configuration.geometry,
-      done: true
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'geometry'],
-        value: diff
-      }
-    ])
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...newSimulation.scheme.configuration.run,
-          done: false
-        }
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -234,11 +134,9 @@ export const _onMeshGlobalUnit = async (
  * @param props Props
  * @returns Mesh
  */
-const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
+const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   // State
-  const [meshGlobalType, setMeshGlobalType] = useState<string>()
-  const [meshGlobalValue, setMeshGlobalValue] = useState<string | number>()
-  const [meshGlobalUnit, setMeshGlobalUnit] = useState<IUnit>()
+  const [global, setGlobal] = useState<MeshParameters>(defaultMeshSize.auto)
 
   // Context
   const { dispatch } = useContext(NotificationContext)
@@ -246,51 +144,43 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
   // Global
   useEffect(() => {
     const meshParameters =
-      simulation.scheme.configuration.geometry.meshParameters
-    if (meshParameters) {
-      setMeshGlobalType(meshParameters.type)
-      setMeshGlobalValue(meshParameters.value)
-      setMeshGlobalUnit(meshParameters.unit ?? { label: 'm' })
-    } else {
-      setMeshGlobalType('auto')
-      setMeshGlobalValue('normal')
-      setMeshGlobalUnit({ label: 'm' })
-    }
-  }, [simulation])
+      simulation.scheme.configuration.geometry.children[index].meshParameters
+    meshParameters && setGlobal(meshParameters)
+  }, [simulation, index])
 
   /**
-   * On change
+   * On type
    * @param type Type
    */
-  const onChange = useCallback(
-    (type: string): void => {
-      ;(async () => {
-        try {
-          await _onMeshGlobalType(simulation, type, swr, dispatch)
-
-          setMeshGlobalType(type)
-          if (type === 'auto') setMeshGlobalValue('normal')
-          else setMeshGlobalValue('1')
-        } catch (err) {}
-      })()
+  const onType = useCallback(
+    (type: keyof typeof defaultMeshSize): void => {
+      const newGlobal = defaultMeshSize[type]
+      _onGlobal(simulation, index, newGlobal, swr)
+        .then(() => {
+          setGlobal(newGlobal)
+        })
+        .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
     [simulation, swr, dispatch]
   )
 
   /**
-   * On size
+   * On value
    * @param value Value
    */
-  const onSize = useCallback(
+  const onValue = useCallback(
     (value: string | number): void => {
-      ;(async () => {
-        try {
-          await _onMeshGlobalSize(simulation, value, swr, dispatch)
-          setMeshGlobalValue(value)
-        } catch (err) {}
-      })()
+      const newGlobal = {
+        ...global,
+        value: value
+      } as MeshParameters
+      _onGlobal(simulation, index, newGlobal, swr)
+        .then(() => {
+          setGlobal(newGlobal)
+        })
+        .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
-    [simulation, swr, dispatch]
+    [simulation, swr, global, dispatch]
   )
 
   /**
@@ -299,12 +189,13 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
    */
   const onUnit = useCallback(
     (unit: IUnit): void => {
-      ;(async () => {
-        try {
-          await _onMeshGlobalUnit(simulation, unit, swr, dispatch)
-          setMeshGlobalUnit(unit)
-        } catch (err) {}
-      })()
+      const newGlobal = {
+        ...global,
+        unit
+      } as MeshParameters
+      _onGlobal(simulation, index, newGlobal, swr)
+        .then(() => setGlobal(newGlobal))
+        .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
     [simulation, swr, dispatch]
   )
@@ -313,50 +204,63 @@ const Mesh = ({ simulation, swr }: IProps): React.JSX.Element => {
    * Render
    */
   return (
-    <Card size="small" title="Mesh refinement">
-      <Space direction="vertical" className={globalStyle.fullWidth}>
-        <Form layout="vertical">
-          <Form.Item label="Type">
-            <Select
-              className={globalStyle.fullWidth}
-              value={meshGlobalType}
-              onChange={onChange}
-            >
-              <Select.Option value="auto">Automatic</Select.Option>
-              <Select.Option value="manual">Manual</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
-        {meshGlobalType === 'auto' && (
+    <Collapse>
+      <Collapse.Panel key="meshRefinement" header="Mesh refinement">
+        <Card size="small">
           <Form layout="vertical">
-            <Form.Item label="Size">
+            <Form.Item label="Type">
               <Select
                 className={globalStyle.fullWidth}
-                value={meshGlobalValue}
-                onChange={onSize}
+                value={global.type}
+                onChange={onType}
               >
-                <Select.Option value="veryfine">Very fine</Select.Option>
-                <Select.Option value="fine">Fine</Select.Option>
-                <Select.Option value="normal">Normal</Select.Option>
-                <Select.Option value="coarse">Coarse</Select.Option>
-                <Select.Option value="verycoarse">Very coarse</Select.Option>
+                {Object.keys(defaultMeshSize).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
           </Form>
-        )}
-        {meshGlobalType === 'manual' && (
-          <Formula
-            label="Size"
-            noLarge
-            defaultValue={meshGlobalValue}
-            units={[{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }]}
-            unit={meshGlobalUnit}
-            onValueChange={onSize}
-            onUnitChange={onUnit}
-          />
-        )}
-      </Space>
-    </Card>
+          {global.type === 'auto' && (
+            <Form layout="vertical">
+              <Form.Item label="Size">
+                <Select
+                  className={globalStyle.fullWidth}
+                  value={global.value}
+                  onChange={onValue}
+                >
+                  <Select.Option value="veryfine">Very fine</Select.Option>
+                  <Select.Option value="fine">Fine</Select.Option>
+                  <Select.Option value="normal">Normal</Select.Option>
+                  <Select.Option value="coarse">Coarse</Select.Option>
+                  <Select.Option value="verycoarse">Very coarse</Select.Option>
+                </Select>
+              </Form.Item>
+            </Form>
+          )}
+          {global.type === 'manual' && (
+            <Formula
+              label="Size"
+              noLarge
+              defaultValue={global.value}
+              units={[{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }]}
+              unit={global.unit}
+              onValueChange={onValue}
+              onUnitChange={onUnit}
+            />
+          )}
+          {global.type === 'factor' && (
+            <Formula
+              label="Size"
+              noLarge
+              defaultValue={global.value}
+              onValueChange={onValue}
+            />
+          )}
+        </Card>
+      </Collapse.Panel>
+    </Collapse>
   )
 }
 

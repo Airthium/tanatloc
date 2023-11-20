@@ -5,9 +5,10 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useMemo
 } from 'react'
-import { Card, Select, Typography } from 'antd'
+import { Card, Form, Select, Typography } from 'antd'
 
 import {
   IFrontGeometriesItem,
@@ -15,12 +16,7 @@ import {
   IFrontSimulationsItem
 } from '@/api/index.d'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
@@ -29,15 +25,30 @@ import SimulationAPI from '@/api/simulation'
 
 import Mesh from './mesh'
 
-import style from '../index.module.css'
-
 /**
  * Props
  */
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type GeometryChild =
+  IFrontSimulationsItem['scheme']['configuration']['geometry']['children'][0]
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+
 export interface IProps {
-  loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  geometries: Geometry[]
+  simulation: Simulation
+  setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>
+  swr: {
+    mutateOneSimulation: (
+      simulation: IFrontMutateSimulationsItem
+    ) => Promise<void>
+  }
+}
+
+export interface OneGeometryProps {
+  geometries: Geometry[]
+  simulation: Simulation
+  child: GeometryChild
+  index: number
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>
   swr: {
     mutateOneSimulation: (
@@ -56,36 +67,30 @@ export const errors = {
 /**
  * On select
  * @param simulation Simulation
- * @param loadedGeometries Geometries
- * @param geometryId Geometry id
- * @param setGeometries Set geometries
+ * @param geometry Geometry
+ * @param index Index
  * @param swr Swr
  */
 export const _onSelect = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
-  geometryId: string,
-  setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>,
+  simulation: Simulation,
+  geometry: Geometry,
+  index: number,
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  }
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
-    const newGeometry = loadedGeometries.find(
-      (g) => g.id === geometryId
-    ) as IFrontGeometriesItem
 
     // Update
-    newSimulation.scheme.configuration.geometry.value = geometryId
-    newSimulation.scheme.configuration.geometry.values = undefined
+    newSimulation.scheme.configuration.geometry.children[index].value =
+      geometry.id
 
     const diff = {
       ...newSimulation.scheme.configuration,
-      dimension: newGeometry.summary.dimension ?? 3,
+      dimension: geometry.summary.dimension ?? 3,
       geometry: {
         ...newSimulation.scheme.configuration.geometry,
         done: true
@@ -109,78 +114,85 @@ export const _onSelect = async (
 
     // Local
     await swr.mutateOneSimulation(newSimulation)
-
-    // Display
-
-    setGeometries([newGeometry])
   } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
+    throw err
   }
 }
 
 /**
- * On mutliple select
- * @param simulation Simulation
- * @param loadedGeometries Geometries
- * @param geometriesIds Geometries ids
- * @param setGeometries Set geometries
- * @param swr Swr
+ * One geometry
+ * @param props Props
+ * @returns OneGeometry
  */
-export const _onMultipleSelect = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  loadedGeometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[],
-  geometriesIds: string[],
-  setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    const newSimulation = Utils.deepCopy(simulation)
-    const newGeometries = loadedGeometries.filter((geometry) =>
-      geometriesIds.includes(geometry.id)
-    )
+const OneGeometry = ({
+  geometries,
+  simulation,
+  child,
+  index,
+  setGeometries,
+  swr
+}: OneGeometryProps) => {
+  // Context
+  const { dispatch } = useContext(NotificationContext)
 
-    // Update
-    newSimulation.scheme.configuration.geometry.value = undefined
-    newSimulation.scheme.configuration.geometry.values = geometriesIds
+  // Geometry id
+  const geometryId = useMemo(() => child.value, [child.value])
 
-    const diff = {
-      ...newSimulation.scheme.configuration,
-      dimension: newGeometries[0].summary.dimension ?? 3,
-      geometry: {
-        ...newSimulation.scheme.configuration.geometry,
-        done: true
-      },
-      run: {
-        ...newSimulation.scheme.configuration.run,
-        done: false
-      }
-    }
+  // Meshable
+  const meshable = useMemo(() => child.meshable, [child.meshable])
 
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration'],
-        value: diff
-      }
-    ])
+  // Autofill
+  useEffect(() => {
+    if (geometries.length && !geometryId) onChange(geometries[0].id)
+  }, [geometries, geometryId])
 
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
+  /**
+   * On change
+   * @param value Value
+   */
+  const onChange = useCallback(
+    (value: string): void => {
+      const geometry = geometries.find((g) => g.id === value)
+      if (!geometry) return
 
-    // Display
+      _onSelect(simulation, geometry, index, swr)
+        .then(() => setGeometries([geometry as IFrontGeometriesItem]))
+        .catch((err) => dispatch(addError({ title: errors.update, err })))
+    },
+    [geometries, simulation, index, setGeometries, swr, geometryId]
+  )
 
-    setGeometries(newGeometries as IFrontGeometriesItem[])
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-  }
+  //TODO add geometry with respect of child.limit
+
+  // TODO need database update
+
+  /**
+   * Render
+   */
+  return (
+    <Card size="small" title={child.label}>
+      <Form layout="vertical">
+        <Form.Item label="Simulation domain">
+          <Select
+            placeholder="Select a simulation domain"
+            options={geometries.map((geometry) => ({
+              value: geometry.id,
+              label: geometry.name
+            }))}
+            value={geometryId}
+            onChange={onChange}
+          />
+        </Form.Item>
+      </Form>
+      {meshable && (
+        <Mesh
+          simulation={{ id: simulation.id, scheme: simulation.scheme }}
+          index={index}
+          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+        />
+      )}
+    </Card>
+  )
 }
 
 /**
@@ -189,107 +201,16 @@ export const _onMultipleSelect = async (
  * @returns Geometry
  */
 const Geometry = ({
-  loadedGeometries,
+  // geometries,
   geometries,
   simulation,
   setGeometries,
   swr
 }: IProps): React.JSX.Element => {
-  // Context
-  const { dispatch } = useContext(NotificationContext)
-
-  // Data
-  const multiple = useMemo(
-    () => simulation.scheme.configuration.geometry.multiple,
-    [simulation]
-  )
-  const n = useMemo(
-    () => simulation.scheme.configuration.geometry.n,
-    [simulation]
-  )
-  const geometryId = useMemo(
-    () => simulation.scheme.configuration.geometry.value,
-    [simulation]
-  )
-  const geometriesIds = useMemo(
-    () => simulation.scheme.configuration.geometry.values,
-    [simulation]
-  )
-
-  // Auto select
-  useCustomEffect(
-    () => {
-      ;(async () => {
-        if (!multiple && !geometryId && geometries.length) {
-          await _onSelect(
-            simulation,
-            loadedGeometries,
-            geometries[0].id,
-            setGeometries,
-            swr,
-            dispatch
-          )
-        } else if (multiple && !geometriesIds && geometries.length) {
-          await _onMultipleSelect(
-            simulation,
-            loadedGeometries,
-            geometries.map((geometry) => geometry.id),
-            setGeometries,
-            swr,
-            dispatch
-          )
-        }
-      })()
-    },
-    [multiple, geometryId, geometriesIds, loadedGeometries, geometries, swr],
-    [dispatch]
-  )
-
-  /**
-   * On change
-   * @param values Values
-   */
-  const onChange = useCallback(
-    (value: string | string[]): void => {
-      ;(async () => {
-        multiple
-          ? await _onMultipleSelect(
-              simulation,
-              loadedGeometries,
-              value as string[],
-              setGeometries,
-              swr,
-              dispatch
-            )
-          : await _onSelect(
-              simulation,
-              loadedGeometries,
-              value as string,
-              setGeometries,
-              swr,
-              dispatch
-            )
-      })()
-    },
-    [multiple, loadedGeometries, simulation, setGeometries, swr, dispatch]
-  )
-
-  // List
-  const list = useMemo(
-    () => (
-      <div className={style.geometriesList}>
-        <Select
-          mode={multiple ? 'multiple' : undefined}
-          options={loadedGeometries.map((geometry) => ({
-            value: geometry.id,
-            label: geometry.name
-          }))}
-          value={multiple ? geometriesIds : geometryId}
-          onChange={onChange}
-        />
-      </div>
-    ),
-    [multiple, geometryId, geometriesIds, onChange, loadedGeometries]
+  // Children
+  const children = useMemo(
+    () => simulation.scheme.configuration.geometry.children,
+    [simulation.scheme.configuration.geometry.children]
   )
 
   /**
@@ -303,22 +224,17 @@ const Geometry = ({
           entity assignments
         </Typography.Text>
       </Card>
-      <Card size="small">
-        <Typography.Text strong>Select a simulation domain</Typography.Text>
-        {n ? (
-          <>
-            <br />
-            <Typography.Text>{n} geometries needed</Typography.Text>
-          </>
-        ) : null}
-      </Card>
-      {list}
-      {simulation.scheme.configuration.geometry.meshable && (
-        <Mesh
-          simulation={{ id: simulation.id, scheme: simulation.scheme }}
-          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+      {children.map((child, index) => (
+        <OneGeometry
+          key={child.label}
+          geometries={geometries}
+          simulation={simulation}
+          child={child}
+          index={index}
+          setGeometries={setGeometries}
+          swr={swr}
         />
-      )}
+      ))}
     </>
   )
 }

@@ -469,11 +469,12 @@ const Project = (): React.JSX.Element => {
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Simulation.Geometry
-            loadedGeometries={loadedGeometries}
-            geometries={geometries.map((geometry) => ({
-              id: geometry.id,
-              summary: geometry.summary
-            }))}
+            // loadedGeometries={loadedGeometries}
+            geometries={loadedGeometries}
+            // geometries={geometries.map((geometry) => ({
+            //   id: geometry.id,
+            //   summary: geometry.summary
+            // }))}
             simulation={{
               id: current.id,
               scheme: current.scheme

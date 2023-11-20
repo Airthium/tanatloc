@@ -38,7 +38,13 @@ const LinearElasticityModal: IModel = {
     geometry: {
       index: 1,
       title: 'Geometry',
-      meshable: true
+      children: [
+        {
+          label: 'Domain',
+          meshable: true,
+          limit: 1
+        }
+      ]
     },
     materials: {
       index: 2,

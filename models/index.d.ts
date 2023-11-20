@@ -83,32 +83,11 @@ export interface IUnit {
 /**
  * Geometry
  */
-export type IModelGeometry = IModelGeometrySingle | IModelGeometryMultiple
-
-export interface IModelGeometrySingle extends IModelCommon {
-  meshable: boolean
-  dimension?: number
-  value?: string
-  data?: {
-    file?: string
-    name?: string
-    path?: string
-  }
-  meshParameters?: {
-    type: string
-    value: number | string
-    unit?: IUnit
-    refinements?: IModelMeshRefinement[]
-  }
-  mesh?: Partial<ISimulationTaskFile>
-}
-
-export interface IModelGeometryMultiple extends IModelCommon {
-  meshable: boolean
-  multiple: true
-  n?: number
+export interface IModelGeometry extends IModelCommon {
   children: {
     label: string
+    meshable: boolean
+    limit?: number
     tag?: string
     dimension?: number
     value?: string
@@ -117,14 +96,32 @@ export interface IModelGeometryMultiple extends IModelCommon {
       name?: string
       path?: string
     }
-    meshParameters?: {
-      type: string
-      value: number | string
-      unit?: IUnit
-      refinements?: IModelMeshRefinement[]
-    }
+    meshParameters?:
+      | IModelMeshSizeManual
+      | IModelMeshSizeAuto
+      | IModelMeshSizeFactor
     mesh?: Partial<ISimulationTaskFile>
   }[]
+}
+
+export interface IModelMeshSize {
+  refinements?: IModelMeshRefinement[]
+}
+
+export interface IModelMeshSizeManual extends IModelMeshSize {
+  type: 'manual'
+  value: number
+  unit?: IUnit
+}
+
+export interface IModelMeshSizeAuto extends IModelMeshSize {
+  type: 'auto'
+  value: 'veryfine' | 'fine' | 'normal' | 'coarse' | 'verycoarse'
+}
+
+export interface IModelMeshSizeFactor extends IModelMeshSize {
+  type: 'factor'
+  value: number
 }
 
 export interface IModelMeshRefinement {

@@ -28,7 +28,13 @@ const Poisson: IModel = {
     geometry: {
       index: 1,
       title: 'Geometry',
-      meshable: true
+      children: [
+        {
+          label: 'Domain',
+          meshable: true,
+          limit: 1
+        }
+      ]
     },
     parameters: {
       index: 2,

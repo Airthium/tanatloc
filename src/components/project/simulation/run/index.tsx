@@ -219,8 +219,12 @@ const Run = ({
 
   // Keep mesh
   useEffect(() => {
-    const geometry = simulation.scheme.configuration?.geometry
-    if (geometry?.mesh || geometry?.meshes) {
+    const geometry = simulation.scheme.configuration.geometry
+    let alreadyMeshed = true
+    geometry.children.forEach((child) => {
+      if (!child.mesh) alreadyMeshed = false
+    })
+    if (alreadyMeshed) {
       setKeepMeshAvailable(true)
     } else {
       setKeepMeshAvailable(false)
@@ -365,7 +369,7 @@ const Run = ({
             >
               {keepMeshAvailable ? (
                 <Checkbox checked={keepMesh} onChange={onKeepMesh}>
-                  Keep mesh?
+                  Keep mesh(es)?
                 </Checkbox>
               ) : null}
               <div

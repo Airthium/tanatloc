@@ -300,7 +300,7 @@ const Results = ({
                 value={currentNumber}
                 onChange={onChange}
               />
-              <Button
+              {/* <Button
                 disabled={!!play}
                 type={play ? 'primary' : undefined}
                 icon={<PlayCircleOutlined />}
@@ -310,7 +310,7 @@ const Results = ({
                 disabled={!play}
                 icon={<PauseCircleOutlined />}
                 onClick={onPause}
-              />
+              /> */}
             </div>
             {filteredFiles.files.map((filteredFile) => {
               if (filteredFile.number === currentNumber) {

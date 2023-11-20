@@ -260,7 +260,7 @@ try {
         int ndof2 = Wh2.ndof; // Number of the degree of freedom (x,y) for the second body
 
         int ndofA1 = FE1.ndof; // Number of the degree of freedom of potential A for the first body
-        int ndofA2 = FE2.ndof; // Number of the degree of freedom for of potential A the second body
+        int ndofA2 = FE2.ndof; // Number of the degree of freedom of potential A for the second body
         
         // Extract contact borders for the body
         // Vectors & arrays for Contact
@@ -331,7 +331,6 @@ try {
     <% } -%>
         // End extract borders for the body 2
         
-        // Working space (All internal variables are deleted after)
         real[int] XYZ1(ndof1);
         real[int] XYZ2(ndof2);
     <% if (dimension === 2){ -%>
@@ -1056,7 +1055,7 @@ try {
             // Loop on the segment/triangle in contact
             int seid1 = segid1[i]; // Seg ID w.r.t to the whole border
             int dofxx0 = segdof1[2 * seid1]; // dof x of the first vertice of the segment
-            int dofxx1 = segdof1[2 * seid1 + 1]; // dof x of the secondt vertice of the segment
+            int dofxx1 = segdof1[2 * seid1 + 1]; // dof x of the second vertice of the segment
 
             int dofx0 = segdofA1[3 * seid1]; // dof A of the first vertice of the segment
             int dofx1 = segdofA1[3 * seid1 + 1]; // dof A of the mid-point
@@ -1126,11 +1125,11 @@ try {
             // Loop on the segment/triangle in contact
             int seid2 = segid2[i]; // Seg ID w.r.t to the whole border
             int dofxx0 = segdof2[2 * seid2]; // dof x of the first vertice of the segment
-            int dofxx1 = segdof2[2 * seid2 + 1]; // dof x of the secondt vertice of the segment
+            int dofxx1 = segdof2[2 * seid2 + 1]; // dof x of the second vertice of the segment
 
             int dofx0 = segdofA2[3 * seid2]; // dof A of the first vertice of the segment
             int dofx1 = segdofA2[3 * seid2 + 1]; // dof A of the mid-point
-            int dofx2 = segdofA2[3 * seid2 + 2]; // dof A of the secondt vertice of the segment
+            int dofx2 = segdofA2[3 * seid2 + 2]; // dof A of the second vertice of the segment
 
             Li2 = ((xbU2[dofxx1] - xbU2[dofxx0])^2 + (xbU2[dofxx1 + 1] - xbU2[dofxx0 + 1])^2)^0.5; // Length due to the integral by substitution
             for (int j = 0; j < integrationPointsNumber; j++) {

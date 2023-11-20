@@ -83,30 +83,48 @@ export interface IUnit {
 /**
  * Geometry
  */
-export interface IModelGeometry extends IModelCommon {
+export type IModelGeometry = IModelGeometrySingle | IModelGeometryMultiple
+
+export interface IModelGeometrySingle extends IModelCommon {
   meshable: boolean
-  multiple?: boolean
-  n?: number
   dimension?: number
   value?: string
-  values?: string[]
   data?: {
     file?: string
     name?: string
     path?: string
   }
-  datas?: {
-    file?: string
-    name?: string
-    path?: string
-  }[]
   meshParameters?: {
     type: string
     value: number | string
     unit?: IUnit
+    refinements?: IModelMeshRefinement[]
   }
   mesh?: Partial<ISimulationTaskFile>
-  meshes?: Partial<ISimulationTaskFile>[]
+}
+
+export interface IModelGeometryMultiple extends IModelCommon {
+  meshable: boolean
+  multiple: true
+  n?: number
+  children: {
+    label: string
+    tag?: string
+    dimension?: number
+    value?: string
+    data?: {
+      file?: string
+      name?: string
+      path?: string
+    }
+    meshParameters?: {
+      type: string
+      value: number | string
+      unit?: IUnit
+      refinements?: IModelMeshRefinement[]
+    }
+    mesh?: Partial<ISimulationTaskFile>
+  }[]
 }
 
 export interface IModelMeshRefinement {

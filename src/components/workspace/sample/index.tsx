@@ -154,7 +154,12 @@ export const _onSimulationAdd = async (
   try {
     const scheme = Models.find((m) => m.algorithm === 'poisson')!
     // Geometry
-    scheme.configuration.geometry.value = geometry.id
+    scheme.configuration.geometry.children = [
+      {
+        ...scheme.configuration.geometry.children[0],
+        value: geometry.id
+      }
+    ]
     scheme.configuration.geometry.done = true
 
     // Parameters

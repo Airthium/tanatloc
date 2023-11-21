@@ -8,12 +8,26 @@ import { error } from '@/route/error'
 
 import GeometryLib from '@/lib/geometry'
 
+export interface PostBody {
+  project: {
+    id: string
+  }
+}
+
+const checkPostBody = (body: PostBody): void => {
+  if (!body?.project?.id || typeof body.project.id !== 'string')
+    throw error(
+      400,
+      'Missing data in your request (body: { project: { id(uuid) } })'
+    )
+}
+
 /**
  * Geometry API split step
  * @param req Request
  * @param res Response
  */
-const part = async (req: Request, res: Response) => {
+const splitStep = async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)
@@ -30,8 +44,13 @@ const part = async (req: Request, res: Response) => {
 
     if (req.method === 'POST') {
       try {
+        // Check
+        checkPostBody(req.body)
+
+        const { project } = req.body
+
         // Split step
-        const message = await GeometryLib.splitStep(req.body.project, { id })
+        const message = await GeometryLib.splitStep(project, { id })
         res.status(200).json({ message })
       } catch (err: any) {
         throw error(500, err.message)
@@ -45,4 +64,4 @@ const part = async (req: Request, res: Response) => {
   }
 }
 
-export default part
+export default splitStep

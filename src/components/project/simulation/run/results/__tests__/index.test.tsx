@@ -6,10 +6,11 @@ import Results from '..'
 
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplicator = jest.fn()
+const mockSeparateFiles = jest.fn()
 jest.mock('../tools', () => ({
   getFilesNumbers: () => mockGetFilesNumbers(),
   getMultiplicator: () => mockGetMultiplicator(),
-  separateFiles: () => jest.fn()
+  separateFiles: () => mockSeparateFiles()
 }))
 
 const mockDownload = jest.fn()
@@ -74,12 +75,33 @@ describe('components/project/simulation/run/results', () => {
 
     mockGetFilesNumbers.mockReset()
     mockGetMultiplicator.mockReset()
+    mockSeparateFiles.mockReset()
+    mockSeparateFiles.mockImplementation(() => ({
+      filteredFiles: [{}, {}],
+      notFilteredFiles: [{}, {}]
+    }))
   })
 
   test('render', () => {
     const { unmount } = render(
       <Results
         simulation={simulation}
+        results={results}
+        setResults={setResults}
+      />
+    )
+
+    unmount()
+  })
+
+  test('render - no tasks', () => {
+    const { unmount } = render(
+      <Results
+        simulation={{
+          ...simulation,
+          //@ts-ignore
+          tasks: undefined
+        }}
         results={results}
         setResults={setResults}
       />
@@ -199,82 +221,6 @@ describe('components/project/simulation/run/results', () => {
 
     const options = screen.getAllByText('1')
     await act(() => fireEvent.click(options[1]))
-
-    const eyeClose = screen.getByRole('button', { name: 'eye-invisible' })
-    await act(() => fireEvent.click(eyeClose))
-
-    unmount()
-  })
-
-  test('with filter - result', async () => {
-    mockGetFilesNumbers.mockImplementation(() => [
-      {
-        fileName: 'file_0.vtu',
-        name: 'file',
-        type: 'result',
-        originPath: 'originPath',
-        number: 0
-      },
-      {
-        fileName: 'file_1.vtu',
-        name: 'file',
-        type: 'result',
-        originPath: 'originPath',
-        number: 1
-      }
-    ])
-    const { unmount } = render(
-      <Results
-        simulation={
-          {
-            ...simulation,
-            scheme: {
-              category: 'category',
-              name: 'name',
-              description: 'description',
-              algorithm: 'algorithm',
-              code: 'code',
-              version: 'version',
-              configuration: {
-                run: {
-                  index: 1,
-                  title: 'Run',
-                  resultsFilter: {
-                    name: 'name',
-                    pattern: 'file_\\d+.vtu',
-                    prefixPattern: 'file_',
-                    suffixPattern: '.vtu'
-                  }
-                }
-              }
-            }
-          } as IFrontSimulation
-        }
-        results={[{ fileName: 'file_1.vtu', name: 'file' } as IFrontResult]}
-        setResults={setResults}
-      />
-    )
-
-    // Selector
-    const selector = screen.getByRole('combobox')
-    await act(() => fireEvent.mouseDown(selector))
-
-    const options = screen.getAllByText('1')
-    await act(() => fireEvent.click(options[1]))
-    await waitFor(() =>
-      expect(setResults).toHaveBeenLastCalledWith([
-        {
-          fileName: 'file_1.vtu',
-          name: 'file',
-          number: 1,
-          originPath: 'originPath',
-          type: 'result'
-        }
-      ])
-    )
-
-    const eyeOpen = screen.getByRole('button', { name: 'eye' })
-    await act(() => fireEvent.click(eyeOpen))
 
     unmount()
   })

@@ -558,10 +558,10 @@ describe('plugins/local/src/lib', () => {
           { path: 'path', file: 'file', headers: ['header.h'], mpi: true }
         ],
         configuration: {
-          geometry: {},
+          geometry: { children: [] },
           run: {}
         }
-      } as ISimulation<'scheme'[]>['scheme'])
+      } as unknown as ISimulation<'scheme'[]>['scheme'])
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
@@ -771,8 +771,13 @@ describe('plugins/local/src/lib', () => {
       )
     await Local.computeSimulation({ id: 'id' }, {
       algorithm: 'algorithm',
-      configuration: { geometry: {}, run: {} }
-    } as ISimulation<'scheme'[]>['scheme'])
+      configuration: {
+        geometry: {
+          children: []
+        },
+        run: {}
+      }
+    } as unknown as ISimulation<'scheme'[]>['scheme'])
   })
 
   test('monitoring', async () => {

@@ -28,12 +28,24 @@ Object.defineProperty(global, 'setTimeout', {
 })
 
 describe('components/editor/code/json_editor', () => {
+  const ace = {
+    focus: jest.fn,
+    editor: {
+      session: {
+        addMarker: jest.fn,
+        removeMarker: jest.fn,
+        clearAnnotations: jest.fn
+      }
+    }
+  }
   beforeEach(() => {
     mockReactAce.mockReset()
     mockReactAce.mockImplementation(() => <div />)
 
     mockRef.mockReset()
-    mockRef.mockImplementation(() => ({}))
+    mockRef.mockImplementation(() => ({
+      current: ace
+    }))
   })
 
   test('render', () => {

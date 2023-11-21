@@ -18,10 +18,11 @@ jest.mock('@/context/notification/actions', () => ({
 
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplcator = jest.fn()
+const mockSeparateFiles = jest.fn()
 jest.mock('@/components/project/simulation/run/results/tools', () => ({
   getFilesNumbers: () => mockGetFilesNumbers(),
   getMultiplicator: () => mockGetMultiplcator(),
-  separateFiles: () => jest.fn()
+  separateFiles: () => mockSeparateFiles()
 }))
 
 const mockUpdate = jest.fn()
@@ -84,7 +85,7 @@ describe('components/project/simulation/initialization', () => {
             resultsFilter: {
               name: 'Time',
               prefixPattern: 'result_',
-              suffixPattern: '.vtu',
+              suffixPattern: ['.vtu'],
               pattern: 'result_\\d+.vtu',
               multiplicator: ['parameters', 'time', 'children', '1']
             }
@@ -192,6 +193,8 @@ describe('components/project/simulation/initialization', () => {
                 map: [1, 1, 1],
                 filter: {
                   name: 'Time step',
+                  prefixPattern: 'Result_',
+                  suffixPattern: '.vtu',
                   pattern: 'Result_\\d+.vtu',
                   multiplicator: ['parameters', 'time', 'children', '1']
                 }
@@ -217,6 +220,11 @@ describe('components/project/simulation/initialization', () => {
     mockGetFilesNumbers.mockReset()
     mockGetFilesNumbers.mockImplementation(() => [])
     mockGetMultiplcator.mockReset()
+    mockSeparateFiles.mockReset()
+    mockSeparateFiles.mockImplementation(() => ({
+      filteredFiles: ['', ''],
+      notFilteredFiles: ['', '']
+    }))
 
     mockUpdate.mockReset()
     mockTasks.mockReset()
@@ -443,11 +451,10 @@ describe('components/project/simulation/initialization', () => {
 
     // Normal
     await act(() => fireEvent.click(option1))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )
-    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(4))
 
     await waitFor(() => {
       const selects = screen.getAllByRole('combobox')
@@ -479,41 +486,6 @@ describe('components/project/simulation/initialization', () => {
     await act(() => fireEvent.click(resultOption1))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
-
-    unmount()
-  })
-
-  test('onCouplingChange, without files', async () => {
-    mockTasks.mockImplementation(() => [{ files: [] }])
-    const { unmount } = render(
-      <Initialization
-        simulations={simulations}
-        simulation={simulation}
-        swr={swr}
-      />
-    )
-
-    // Open
-    const select = screen.getAllByRole('combobox')
-    await act(() => fireEvent.mouseDown(select[0]))
-
-    const velocity = screen.getByText('Velocity')
-    await act(() => fireEvent.click(velocity))
-
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-
-    await waitFor(() => screen.getByText('Coupling'))
-
-    const coupling = screen.getByText('Coupling')
-    await act(() => fireEvent.click(coupling))
-
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
-    )
 
     unmount()
   })

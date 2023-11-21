@@ -201,7 +201,11 @@ describe('lib/simulation', () => {
       scheme: {
         configuration: {
           geometry: {
-            value: 'id'
+            children: [
+              {
+                value: 'id'
+              }
+            ]
           },
           parameters: {},
           boundaryConditions: {},
@@ -222,10 +226,56 @@ describe('lib/simulation', () => {
       scheme: {
         configuration: {
           geometry: {
-            value: 'id'
+            children: [
+              {
+                value: 'id'
+              },
+              {}
+            ]
+          },
+          materials: {
+            values: [
+              {
+                material: {
+                  children: [
+                    {
+                      unit: { label: 'm', multiplicator: '1.', adder: 1 }
+                    },
+                    { unit: { label: 'm' } }
+                  ]
+                }
+              },
+              {
+                geometry: 'id',
+                material: {
+                  children: []
+                }
+              }
+            ]
           },
           parameters: {},
-          boundaryConditions: {},
+          boundaryConditions: {
+            title: 'Boundary conditions',
+            test: {
+              values: [
+                {
+                  values: [
+                    {},
+                    {
+                      value: 1,
+                      unit: { label: 'm', multiplicator: '1.', adder: 1 }
+                    }
+                  ],
+                  selected: [{}]
+                },
+                {
+                  geometry: 'id',
+                  values: [{ value: 1, unit: { label: 'm' } }],
+                  selected: [{}]
+                }
+              ]
+            }
+          },
           initialization: {
             direct: {
               children: [{}]
@@ -260,7 +310,11 @@ describe('lib/simulation', () => {
       scheme: {
         configuration: {
           geometry: {
-            value: 'id'
+            children: [
+              {
+                value: 'id'
+              }
+            ]
           },
           parameters: {},
           initialization: {
@@ -289,7 +343,11 @@ describe('lib/simulation', () => {
       scheme: {
         configuration: {
           geometry: {
-            value: 'id'
+            children: [
+              {
+                value: 'id'
+              }
+            ]
           },
           parameters: {},
           initialization: {
@@ -319,7 +377,9 @@ describe('lib/simulation', () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {},
+          geometry: {
+            children: []
+          },
           initialization: {
             value: {
               type: 'default'
@@ -396,11 +456,24 @@ describe('lib/simulation', () => {
         configuration: {
           dimension: 2,
           geometry: {
-            value: 'id',
-            meshParameters: {
-              value: 1,
-              unit: { label: 'm' }
-            }
+            children: [
+              {
+                value: 'id',
+                meshParameters: {
+                  type: 'manual',
+                  value: 1,
+                  unit: { label: 'm' }
+                }
+              },
+              {
+                value: 'id2',
+                meshParameters: {
+                  type: 'manual',
+                  value: 1,
+                  unit: { label: 'm', multiplicator: 1, adder: 1 }
+                }
+              }
+            ]
           },
           parameters: {
             title: 'title',
@@ -433,139 +506,11 @@ describe('lib/simulation', () => {
     }))
 
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(3)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockToolsCopyFile).toHaveBeenCalledTimes(1)
-    expect(mockPluginCompute).toHaveBeenCalledTimes(1)
-  })
-
-  test('run geometries', async () => {
-    // Normal
-    mockGet.mockImplementation(() => ({
-      scheme: {
-        configuration: {
-          geometry: {
-            values: ['id1', 'id2'],
-            meshParameters: {
-              value: 1,
-              unit: { label: 'm', multiplicator: 1, adder: 1 }
-            }
-          },
-          parameters: {},
-          materials: {
-            values: [
-              {
-                geometry: 'id2',
-                material: {
-                  children: [
-                    { value: 1 },
-                    { value: 1, unit: { label: 'm' } },
-                    {
-                      value: 1,
-                      unit: { label: 'm', multiplicator: 1, adder: 1 }
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          boundaryConditions: {
-            title: 'BC',
-            first: {
-              values: [
-                {
-                  geometry: 'id1',
-                  selected: [{ label: 1 }],
-                  values: [{ value: 1 }]
-                },
-                {
-                  geometry: 'id2',
-                  selected: [],
-                  values: [
-                    {},
-                    { value: 1, unit: { label: 'm' } },
-                    {
-                      value: 1,
-                      unit: { label: 'm', multiplicator: 1, adder: 1 }
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          run: {
-            cloudServer: {
-              key: 'key'
-            }
-          }
-        }
-      }
-    }))
-    mockUserGet.mockImplementation(() => ({
-      plugins: [],
-      authorizedplugins: ['key']
-    }))
-    mockGeometryGet.mockImplementation(() => ({
-      brep: 'file.brep'
-    }))
-
-    await Simulation.run({ id: 'id' }, { id: 'id' })
-
-    expect(mockGeometryGet).toHaveBeenCalledTimes(2)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
-
-    // 2D
-    mockGet.mockImplementation(() => ({
-      scheme: {
-        configuration: {
-          dimension: 2,
-          geometry: {
-            values: ['id1', 'id2']
-          },
-          parameters: {},
-          materials: {
-            values: [
-              {
-                geometry: 'id2',
-                material: {
-                  children: []
-                }
-              }
-            ]
-          },
-          boundaryConditions: {
-            title: 'BC',
-            first: {
-              values: [
-                {
-                  geometry: 'id1',
-                  selected: [{ label: 1 }]
-                },
-                { geometry: 'id2', selected: [] }
-              ]
-            }
-          },
-          run: {
-            cloudServer: {
-              key: 'key'
-            }
-          }
-        }
-      }
-    }))
-    mockUserGet.mockImplementation(() => ({
-      plugins: [],
-      authorizedplugins: ['key']
-    }))
-    mockGeometryGet.mockImplementation(() => ({
-      brep: 'file.brep'
-    }))
-
-    await Simulation.run({ id: 'id' }, { id: 'id' })
-
-    expect(mockGeometryGet).toHaveBeenCalledTimes(4)
-    expect(mockToolsCopyFile).toHaveBeenCalledTimes(4)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(1)
   })
 
   test('stop', async () => {

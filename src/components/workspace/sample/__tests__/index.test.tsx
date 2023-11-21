@@ -13,7 +13,7 @@ jest.mock('@/models', () => [
   {
     algorithm: 'poisson',
     configuration: {
-      geometry: {},
+      geometry: { children: [{}] },
       parameters: {},
       boundaryConditions: { dirichlet: {} },
       run: {}

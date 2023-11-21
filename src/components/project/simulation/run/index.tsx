@@ -219,7 +219,9 @@ const Run = ({
 
   // Keep mesh
   useEffect(() => {
-    const geometry = simulation.scheme.configuration.geometry
+    if (!configuration) return
+
+    const geometry = configuration.geometry
     let alreadyMeshed = true
     geometry.children.forEach((child) => {
       if (!child.mesh) alreadyMeshed = false
@@ -230,7 +232,7 @@ const Run = ({
       setKeepMeshAvailable(false)
       setKeepMesh(false)
     }
-  }, [simulation])
+  }, [configuration])
 
   // Running & steps
   useCustomEffect(() => {

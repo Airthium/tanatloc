@@ -631,7 +631,7 @@ const Project = (): React.JSX.Element => {
       setSimulation(current)
 
       // Display geometries
-      const children = current.scheme.configuration.geometry.children
+      const children = current.scheme.configuration?.geometry.children ?? []
       const toDisplay = children
         .map((child) => {
           const id = child.value
@@ -639,7 +639,7 @@ const Project = (): React.JSX.Element => {
           return loadedGeometries.find((g) => g.id === id)
         })
         .filter((g) => g) as IFrontGeometriesItem[]
-      setGeometries(toDisplay)
+      if (toDisplay.length) setGeometries(toDisplay)
 
       switch (item) {
         case 'about':

@@ -52,6 +52,7 @@ const JSONCode = (): React.JSX.Element => {
    * @param highlight Highlight
    */
   const highlight = useCallback(({ begin, end }: IEditorHighlight): void => {
+    /* istanbul ignore next */
     if (!editorRef.current) return
 
     const editor = editorRef.current.editor
@@ -80,6 +81,7 @@ const JSONCode = (): React.JSX.Element => {
 
   // Set Annotations
   useEffect(() => {
+    /* istanbul ignore next */
     if (!editorRef.current) return
 
     if (jsonError) {

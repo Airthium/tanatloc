@@ -11,13 +11,11 @@ import { IModel } from '@/models/index.d'
  */
 export const separateFiles = (
   files: ISimulationTaskFile[],
-  filter: IModel['configuration']['run']['resultsFilter']
+  filter: NonNullable<IModel['configuration']['run']['resultsFilter']>
 ): {
   notFilteredFiles: ISimulationTaskFile[]
   filteredFiles: ISimulationTaskFile[]
 } => {
-  if (!filter) return { notFilteredFiles: [], filteredFiles: [] }
-
   // Pattern filter
   let patterns: RegExp[] = []
   if (Array.isArray(filter.pattern))

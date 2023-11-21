@@ -439,7 +439,9 @@ describe('lib/project', () => {
     mockSimulationGet.mockImplementation(() => ({
       scheme: {
         configuration: {
-          geometry: {}
+          geometry: {
+            children: [{}]
+          }
         }
       }
     }))
@@ -454,8 +456,11 @@ describe('lib/project', () => {
       scheme: {
         configuration: {
           geometry: {
-            value: 'id1',
-            values: ['id1', 'id2']
+            children: [
+              {
+                value: 'id1'
+              }
+            ]
           }
         }
       }

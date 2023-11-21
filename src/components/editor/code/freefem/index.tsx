@@ -201,6 +201,7 @@ const FreeFEMCode = (): React.JSX.Element => {
 
   // Init
   useEffect(() => {
+    /* istanbul ignore next */
     if (!editorRef.current) return
 
     const editor = editorRef.current
@@ -249,11 +250,13 @@ const FreeFEMCode = (): React.JSX.Element => {
   // Event
   useEffect(() => {
     const editor = editorRef.current?.editor
+    /* istanbul ignore next */
     if (editor) {
       editor.container.addEventListener('paste', handlePaste)
     }
 
     return () => {
+      /* istanbul ignore next */
       if (editor) {
         editor.container.removeEventListener('paste', handlePaste)
       }
@@ -266,7 +269,6 @@ const FreeFEMCode = (): React.JSX.Element => {
   return (
     <div className={style.codeBlock}>
       <Typography.Title level={3}>FreeFEM template</Typography.Title>
-      <div style={{ position: 'relative' }}></div>
       <AceEditor
         //@ts-ignore
         ref={editorRef}

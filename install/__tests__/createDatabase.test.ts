@@ -27,6 +27,9 @@ jest.mock('@/server/init/database', () => ({
   initDatabase: async () => mockInit()
 }))
 
+jest.mock('../update/update-1.2.8', () => () => {})
+jest.mock('../update/update-1.3.0', () => () => {})
+
 describe('install/dB', () => {
   beforeEach(() => {
     mockIsElectron.mockReset()

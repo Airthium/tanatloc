@@ -34,12 +34,14 @@ const mockToolsReadFile = jest.fn()
 const mockToolsWriteFile = jest.fn()
 const mockToolsConvert = jest.fn()
 const mockToolsRemoveFile = jest.fn()
+const mockToolsSplitStep = jest.fn()
 jest.mock('../../tools', () => ({
   copyFile: async (path: string) => mockToolsCopyFile(path),
   readFile: async (path: string) => mockToolsReadFile(path),
   writeFile: async () => mockToolsWriteFile(),
   convert: async () => mockToolsConvert(),
-  removeFile: async () => mockToolsRemoveFile()
+  removeFile: async () => mockToolsRemoveFile(),
+  splitStep: async () => mockToolsSplitStep()
 }))
 
 describe('lib/geometry', () => {
@@ -58,6 +60,7 @@ describe('lib/geometry', () => {
     mockToolsWriteFile.mockReset()
     mockToolsConvert.mockReset()
     mockToolsRemoveFile.mockReset()
+    mockToolsSplitStep.mockReset()
   })
 
   test('add', async () => {
@@ -299,5 +302,29 @@ describe('lib/geometry', () => {
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(3)
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(3)
+  })
+
+  test('splitStep', async () => {
+    mockAdd.mockImplementation(() => ({}))
+    mockGet.mockImplementation(() => ({}))
+    mockToolsReadFile.mockImplementation(() =>
+      JSON.stringify({
+        scenes: [{}]
+      })
+    )
+    mockToolsConvert.mockImplementation(() => [
+      {
+        glb: 'glb'
+      }
+    ])
+    mockToolsSplitStep.mockImplementation(() => [{}, {}])
+
+    await Geometry.splitStep({ id: 'id' }, { id: 'id' })
+    expect(mockToolsSplitStep).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+
+    mockToolsSplitStep.mockImplementation(() => [{}])
+    const message = await Geometry.splitStep({ id: 'id' }, { id: 'id' })
+    expect(message).toBe('Only one volume found')
   })
 })

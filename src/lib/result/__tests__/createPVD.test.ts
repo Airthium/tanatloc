@@ -92,6 +92,46 @@ describe('lib/download/pvd', () => {
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
   })
 
+  test('full array', () => {
+    //@ts-ignore
+    simulation.scheme.configuration = {
+      run: {
+        index: 2,
+        title: 'Run',
+        resultsFilter: {
+          name: 'Name',
+          prefixPattern: ['result_'],
+          suffixPattern: ['.vtu'],
+          pattern: ['result_\\d+.vtu'],
+          multiplicator: ['parameters', 'time', 'children', '1']
+        }
+      },
+      parameters: {
+        index: 1,
+        title: 'Parameters',
+        time: {
+          label: 'Time',
+          children: [
+            {
+              label: 'label',
+              htmlEntity: 'formula',
+              default: 0
+            },
+            { label: 'label', htmlEntity: 'formula', default: 0.1 }
+          ]
+        }
+      }
+    }
+    let pvds = createPVD(simulation, files)
+    expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
+
+    // Without multiplicator
+    //@ts-ignore
+    delete simulation.scheme.configuration.run.resultsFilter.multiplicator
+    pvds = createPVD(simulation, files)
+    expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
+  })
+
   test('no filtered files', () => {
     //@ts-ignore
     simulation.scheme.configuration = {

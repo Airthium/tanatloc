@@ -172,7 +172,8 @@ describe('components/project', () => {
         dimension: 2,
         geometry: {
           index: 0,
-          title: 'Simulation 1 Geometry'
+          title: 'Simulation 1 Geometry',
+          children: []
         },
         parameters: {
           index: 1,
@@ -216,20 +217,12 @@ describe('components/project', () => {
         geometry: {
           index: 0,
           title: 'Simulation 3 Geometry',
-          value: 'idg'
-        }
-      }
-    }
-  }
-  const simulation4 = {
-    id: 'ids4',
-    name: 'Simulation 4',
-    scheme: {
-      configuration: {
-        geometry: {
-          index: 0,
-          title: 'Simulation 4 Geometry',
-          values: ['idg']
+          children: [
+            {},
+            {
+              value: 'idg'
+            }
+          ]
         }
       }
     }
@@ -268,7 +261,7 @@ describe('components/project', () => {
     mockUpdate.mockReset()
 
     mockSimulations.mockReset()
-    const simulations = [simulation1, simulation2, simulation3, simulation4]
+    const simulations = [simulation1, simulation2, simulation3]
     mockSimulations.mockImplementation(() => simulations)
     mockErrorSimulations.mockReset()
     mockSimulationAdd.mockReset()
@@ -379,7 +372,7 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('Simulation with geometry value & values', () => {
+  test('Simulation with geometry value ', () => {
     {
       const simulationWithGeoId = {
         ...simulation1,
@@ -389,7 +382,7 @@ describe('components/project', () => {
             ...simulation1.scheme.configuration,
             geometry: {
               ...simulation1.scheme.configuration.geometry,
-              value: geometry.id
+              children: [{}, { value: geometry.id }]
             }
           }
         }
@@ -398,50 +391,7 @@ describe('components/project', () => {
       mockSimulations.mockImplementation(() => simulations)
     }
 
-    const { rerender, unmount } = render(<Project />)
-
-    {
-      const simulationWithGeoIds = {
-        ...simulation1,
-        scheme: {
-          ...simulation1.scheme,
-          configuration: {
-            ...simulation1.scheme.configuration,
-            geometry: {
-              ...simulation1.scheme.configuration.geometry,
-              multiple: true,
-              n: 1,
-              values: [geometry.id]
-            }
-          }
-        }
-      }
-      const simulations = [simulationWithGeoIds]
-      mockSimulations.mockImplementation(() => simulations)
-    }
-
-    rerender(<Project />)
-
-    {
-      const simulationWithGeoIdsWithoutN = {
-        ...simulation1,
-        scheme: {
-          ...simulation1.scheme,
-          configuration: {
-            ...simulation1.scheme.configuration,
-            geometry: {
-              ...simulation1.scheme.configuration.geometry,
-              multiple: true,
-              values: [geometry.id]
-            }
-          }
-        }
-      }
-      const simulations = [simulationWithGeoIdsWithoutN]
-      mockSimulations.mockImplementation(() => simulations)
-    }
-
-    rerender(<Project />)
+    const { unmount } = render(<Project />)
 
     unmount()
   })
@@ -591,17 +541,6 @@ describe('components/project', () => {
 
     simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 3 Geometry'
-    })
-    fireEvent.click(simulationItem)
-
-    // Open simulation 4
-    const simulation4 = screen.getByRole('menuitem', {
-      name: 'code-sandbox Simulation 4'
-    })
-    fireEvent.click(simulation4)
-
-    simulationItem = screen.getByRole('menuitem', {
-      name: 'exclamation-circle Simulation 4 Geometry'
     })
     fireEvent.click(simulationItem)
 

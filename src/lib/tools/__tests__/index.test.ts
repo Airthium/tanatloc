@@ -58,9 +58,11 @@ jest.mock('@/database/security', () => ({
 }))
 
 const mockToThree = jest.fn()
+const mockCustom = jest.fn()
 jest.mock('@/services', () => ({
   toThree: async (path: string, fileIn: string, pathOut: string) =>
-    mockToThree(path, fileIn, pathOut)
+    mockToThree(path, fileIn, pathOut),
+  custom: async () => mockCustom()
 }))
 
 describe('lib/tools', () => {
@@ -82,6 +84,7 @@ describe('lib/tools', () => {
     mockTarX.mockReset()
 
     mockToThree.mockReset()
+    mockCustom.mockReset()
   })
 
   test('toPosix', () => {
@@ -273,5 +276,43 @@ describe('lib/tools', () => {
   test('decrypt', async () => {
     const res = await Tools.decrypt({ iv: 'randomBytes', content: 'content' })
     expect(res).toBe('updatefinal')
+  })
+
+  test('splitStep', async () => {
+    // Error
+    mockCustom.mockImplementation(() => ({
+      code: 0,
+      data: 'data',
+      error: 'error'
+    }))
+    try {
+      await Tools.splitStep('location', 'fileIn')
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('error')
+    }
+
+    // Code != 0
+    mockCustom.mockImplementation(() => ({
+      code: 1,
+      data: 'data'
+    }))
+    try {
+      await Tools.splitStep('location', 'fileIn')
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe(
+        `Split STEP process failed. Code 1.
+Data: data`
+      )
+    }
+
+    // Normal
+    mockCustom.mockImplementation(() => ({
+      code: 0,
+      data: 'data\ndata'
+    }))
+    const res = await Tools.splitStep('location', 'fileIn')
+    expect(res).toEqual(['data', 'data'])
   })
 })

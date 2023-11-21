@@ -17,13 +17,11 @@ import Tools from '../tools'
  */
 export const separateFiles = (
   files: string[],
-  filter: IModel['configuration']['run']['resultsFilter']
+  filter: NonNullable<IModel['configuration']['run']['resultsFilter']>
 ): {
   notFilteredFiles: string[]
   filteredFiles: string[]
 } => {
-  if (!filter) return { notFilteredFiles: [], filteredFiles: [] }
-
   // Pattern filter
   let patterns: RegExp[] = []
   if (Array.isArray(filter.pattern))

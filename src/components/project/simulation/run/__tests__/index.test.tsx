@@ -73,6 +73,7 @@ describe('components/project/simulation/run', () => {
       version: 'version',
       configuration: {
         geometry: {
+          children: [{}, { mesh: {} }],
           done: true
         },
         parameters: {
@@ -88,7 +89,7 @@ describe('components/project/simulation/run', () => {
         }
       }
     }
-  } as Pick<IFrontSimulation, 'id' | 'scheme'>
+  } as unknown as Pick<IFrontSimulation, 'id' | 'scheme'>
   const results = [
     {
       fileName: 'fileName',
@@ -214,13 +215,16 @@ describe('components/project/simulation/run', () => {
             id: 'id',
             scheme: {
               configuration: {
+                geometry: {
+                  children: []
+                },
                 parameters: {
                   done: false
                 },
                 run: {}
               }
             }
-          } as IFrontSimulation
+          } as unknown as IFrontSimulation
         }
         results={results}
         setResults={setResults}

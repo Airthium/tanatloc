@@ -30,12 +30,63 @@ jest.mock('react', () => {
 jest.mock('../tooltip', () => () => <div />)
 
 describe('components/editor/code/freefem_editor', () => {
+  let count = 0
+  const ace = {
+    focus: jest.fn,
+    editor: {
+      getCursorPosition: () => ({
+        row: 1
+      }),
+      on: (_type: string, callback: Function) => {
+        callback({})
+        callback({})
+        callback({})
+        callback({})
+        callback({})
+      },
+      renderer: {
+        pixelToScreenCoordinates: jest.fn,
+        textToScreenCoordinates: jest.fn
+      },
+      container: {
+        classList: {
+          add: jest.fn
+        },
+        addEventListener: (_: any, callback: Function) => {
+          callback({
+            clipboardData: {
+              getData: () => 'text\ntext'
+            }
+          })
+        },
+        removeEventListener: jest.fn,
+        getBoundingClientRect: jest.fn
+      },
+      session: {
+        getTokenAt: () => {
+          count++
+          if (count === 1) return {}
+          else if (count === 2 || count === 3)
+            return { type: 'support.function', value: 'abs' }
+          else if (count === 4)
+            return { type: 'support.other', value: 'unknown' }
+          else return undefined
+        },
+        getWordRange: () => ({
+          start: { row: 1, column: 1 }
+        }),
+        addMarker: () => 'id',
+        removeMarker: jest.fn
+      }
+    }
+  }
+
   beforeEach(() => {
     mockReactAce.mockReset()
     mockReactAce.mockImplementation(() => <div />)
 
     mockRef.mockReset()
-    mockRef.mockImplementation(() => ({}))
+    mockRef.mockImplementation(() => ({ current: ace }))
   })
 
   test('render', () => {
@@ -86,65 +137,6 @@ describe('components/editor/code/freefem_editor', () => {
 
     const editor = screen.getByRole('ReactAce')
     fireEvent.click(editor)
-
-    unmount()
-  })
-
-  test('ace editor', () => {
-    let count = 0
-    const ace = {
-      focus: jest.fn,
-      editor: {
-        getCursorPosition: () => ({
-          row: 1
-        }),
-        on: (_type: string, callback: Function) => {
-          callback({})
-          callback({})
-          callback({})
-          callback({})
-          callback({})
-        },
-        renderer: {
-          pixelToScreenCoordinates: jest.fn,
-          textToScreenCoordinates: jest.fn
-        },
-        container: {
-          classList: {
-            add: jest.fn
-          },
-          addEventListener: (_: any, callback: Function) => {
-            callback({
-              clipboardData: {
-                getData: () => 'text\ntext'
-              }
-            })
-          },
-          removeEventListener: jest.fn,
-          getBoundingClientRect: jest.fn
-        },
-        session: {
-          getTokenAt: () => {
-            count++
-            if (count === 1) return {}
-            else if (count === 2 || count === 3)
-              return { type: 'support.function', value: 'abs' }
-            else if (count === 4)
-              return { type: 'support.other', value: 'unknown' }
-            else return undefined
-          },
-          getWordRange: () => ({
-            start: { row: 1, column: 1 }
-          }),
-          addMarker: () => 'id',
-          removeMarker: jest.fn
-        }
-      }
-    }
-    mockRef.mockImplementationOnce(() => ({
-      current: ace
-    }))
-    const { unmount } = render(<FreeFEMCode />)
 
     unmount()
   })

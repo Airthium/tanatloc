@@ -225,8 +225,8 @@ export interface IModelInitializationCoupling {
     map?: number[]
     filter: {
       name: string
-      prefixPattern?: string | RegExp
-      suffixPattern?: string | RegExp
+      prefixPattern: string | RegExp
+      suffixPattern: string | RegExp
       pattern: string | RegExp
       multiplicator?: string[]
     }

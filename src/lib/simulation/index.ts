@@ -5,7 +5,9 @@ import path from 'path'
 import { IDataBaseEntry } from '@/database/index.d'
 import {
   IModel,
+  IModelBoundaryConditions,
   IModelParameter,
+  IModelParameters,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
 import { ISimulationGet } from '../index.d'
@@ -165,82 +167,96 @@ const returnError = async (
 }
 
 /**
- * Copy geometry(ies)
+ * Foreach function for boundary conditions
+ * @param boundaryConditions Boundary conditions
+ * @param callback Callback
+ */
+const forEachBoundaryConditions = (
+  boundaryConditions: IModelBoundaryConditions,
+  callback: (boundaryCondition: IModelTypedBoundaryCondition) => void
+): void => {
+  Object.keys(boundaryConditions).forEach((key) => {
+    if (key === 'index' || key === 'title' || key === 'done') return
+    const typedBoundaryCondition = boundaryConditions[
+      key
+    ] as IModelTypedBoundaryCondition
+    callback(typedBoundaryCondition)
+  })
+}
+
+/**
+ * Foreach function for parameters
+ * @param parameters Parameters
+ * @param callback Callback
+ */
+const forEachParameters = (
+  parameters: IModelParameters,
+  callback: (parameter: {
+    label: string
+    advanced?: boolean
+    children: IModelParameter[]
+  }) => void
+): void => {
+  Object.keys(parameters).forEach((key) => {
+    if (key === 'index' || key === 'title' || key === 'done') return
+
+    const parameter = parameters[key] as {
+      label: string
+      advanced?: boolean
+      children: IModelParameter[]
+    }
+    callback(parameter)
+  })
+}
+
+/**
+ * Copy geometries
  * @param simulation Simulation
  * @param configuration Configuration
  */
-const copyGeometry = async (
+const copyGeometries = async (
   simulation: { id: string },
   configuration: IModel['configuration']
 ): Promise<void> => {
-  const geometryId = configuration.geometry?.value
-  const geometriesIds = configuration.geometry?.values
-  if (geometryId) {
-    const geometry = await Geometry.get(geometryId, [
-      'name',
-      'uploadfilename',
-      'brep'
-    ])
-    configuration.geometry.data = {}
-    configuration.geometry.data.file =
+  const children = configuration.geometry.children
+  const materials = configuration.materials?.values ?? []
+  const boundaryConditions = configuration.boundaryConditions
+
+  for (let i = 0; i < children.length; ++i) {
+    const child = children[i]
+    const id = child.value
+    if (!id) continue
+
+    // Get data
+    const geometry = await Geometry.get(id, ['name', 'uploadfilename', 'brep'])
+    child.data = {}
+    child.data.file =
       configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
-    configuration.geometry.data.name = geometry.name
-    configuration.geometry.data.path = GEOMETRY_RELATIVE
+    child.data.name = geometry.name
+    child.data.path = GEOMETRY_RELATIVE
+
+    // Copy
     await Tools.copyFile(
       {
         path: GEOMETRY,
-        file: configuration.geometry.data.file
+        file: child.data.file
       },
       {
         path: path.join(SIMULATION, simulation.id, 'geometry'),
-        file: configuration.geometry.data.file
+        file: child.data.file
       }
     )
-  } else if (geometriesIds) {
-    configuration.geometry.datas = []
-    for (const gId of geometriesIds) {
-      const geometry = await Geometry.get(gId, [
-        'name',
-        'uploadfilename',
-        'brep'
-      ])
-      const file =
-        configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
-      configuration.geometry.datas.push({
-        file,
-        name: geometry.name,
-        path: GEOMETRY_RELATIVE
-      })
-      await Tools.copyFile(
-        {
-          path: GEOMETRY,
-          file: file
-        },
-        {
-          path: path.join(SIMULATION, simulation.id, 'geometry'),
-          file: file
-        }
-      )
-    }
 
     // Check materials
-    configuration.materials?.values?.forEach((material) => {
-      const index = geometriesIds.findIndex((id) => id === material.geometry)
-      material.geometryIndex = index
+    materials.forEach((material) => {
+      if (material.geometry === id) material.geometryIndex = i
     })
 
     // Check boundary conditions
-    Object.keys(configuration.boundaryConditions).forEach((key) => {
-      if (key === 'index' || key === 'title' || key === 'done') return
-
-      const typedBoundaryCondition = configuration.boundaryConditions[
-        key
-      ] as IModelTypedBoundaryCondition
-
-      const values = typedBoundaryCondition.values
+    forEachBoundaryConditions(boundaryConditions, (boundaryCondition) => {
+      const values = boundaryCondition.values
       values?.forEach((value) => {
-        const index = geometriesIds.findIndex((id) => id === value.geometry)
-        value.geometryIndex = index
+        if (value.geometry === id) value.geometryIndex = i
       })
     })
   }
@@ -262,15 +278,18 @@ const toFloat = (num: number): string => {
  * @param configuration Configuration
  */
 const checkMeshUnits = (configuration: IModel['configuration']): void => {
-  const meshParameters = configuration.geometry.meshParameters
-  if (meshParameters) {
-    const unit = meshParameters.unit
-    if (unit?.multiplicator)
-      meshParameters.value =
-        '(' + meshParameters.value + ') / ' + toFloat(unit.multiplicator)
-    if (unit?.adder)
-      meshParameters.value = '(' + meshParameters.value + ') - ' + unit.adder
-  }
+  const children = configuration.geometry.children
+  children.forEach((child) => {
+    const meshParameters = child.meshParameters
+    if (meshParameters?.type === 'manual') {
+      const unit = meshParameters.unit
+      if (unit?.multiplicator)
+        meshParameters.value =
+          '(' + meshParameters.value + ') / ' + toFloat(unit.multiplicator)
+      if (unit?.adder)
+        meshParameters.value = '(' + meshParameters.value + ') - ' + unit.adder
+    }
+  })
 }
 
 /**
@@ -295,15 +314,7 @@ const checkMaterialsUnits = (configuration: IModel['configuration']): void => {
  */
 const checkParametersUnits = (configuration: IModel['configuration']): void => {
   const parameters = configuration.parameters
-  Object.keys(parameters).forEach((key) => {
-    if (key === 'index' || key === 'title' || key === 'done') return
-
-    const parameter = parameters[key] as {
-      label: string
-      advanced?: boolean
-      children: IModelParameter[]
-    }
-
+  forEachParameters(parameters, (parameter) => {
     parameter.children.forEach((child) => {
       const unit = child.unit
       if (child.value !== undefined) {
@@ -344,12 +355,7 @@ const checkBoundaryConditionsUnits = (
   configuration: IModel['configuration']
 ): void => {
   const boundaryConditions = configuration.boundaryConditions
-  Object.keys(boundaryConditions).forEach((key) => {
-    if (key === 'index' || key === 'title' || key === 'done') return
-
-    const boundaryCondition = boundaryConditions[
-      key
-    ] as IModelTypedBoundaryCondition
+  forEachBoundaryConditions(boundaryConditions, (boundaryCondition) => {
     boundaryCondition.values?.forEach((v) => {
       v.values?.forEach((val) => {
         const unit = val.unit
@@ -471,7 +477,7 @@ const run = async (
   await Tools.createPath(path.join(SIMULATION, simulation.id, 'run'))
 
   // Copy geometry
-  await copyGeometry(simulation, configuration)
+  await copyGeometries(simulation, configuration)
 
   // Check coupling
   if (configuration.initialization?.value) {
@@ -524,19 +530,17 @@ const run = async (
   }
 
   // Prepare boundary conditions
-  Object.keys(configuration.boundaryConditions).forEach((key) => {
-    if (key === 'index' || key === 'title' || key === 'done') return
-
-    const boundaryCondition = configuration.boundaryConditions[
-      key
-    ] as IModelTypedBoundaryCondition
-    boundaryCondition.values?.forEach((value) => {
-      value.labels = value.selected
-        .map((s) => s.label)
-        .filter((s) => s)
-        .join(', ')
-    })
-  })
+  forEachBoundaryConditions(
+    configuration.boundaryConditions,
+    (boundaryCondition) => {
+      boundaryCondition.values?.forEach((value) => {
+        value.labels = value.selected
+          .map((s) => s.label)
+          .filter((s) => s)
+          .join(', ')
+      })
+    }
+  )
 
   // Units
   checkUnits(configuration)

@@ -26,6 +26,7 @@ import { query } from '@/database'
 import { initDatabase } from '@/server/init/database'
 
 import update128 from './update/update-1.2.8'
+import update130 from './update/update-1.3.0'
 
 /**
  * Local plugin
@@ -182,6 +183,7 @@ export const createDatabase = async (): Promise<void> => {
 
     // Update
     await update128()
+    await update130()
 
     console.info('')
   } catch (err) {

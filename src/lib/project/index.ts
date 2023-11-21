@@ -685,33 +685,16 @@ const copy = async (
   for (const simulation of data.simulations) {
     const simulationData = await Simulation.get(simulation, ['name', 'scheme'])
 
-    // Update scheme
-    let newValue
-    let newValues
-    const value = simulationData.scheme.configuration.geometry.value
-    if (value) {
-      const replace = geometriesReplace.find((r) => r.old === value)
-      newValue = replace?.new
-    }
-    const values = simulationData.scheme.configuration.geometry.values
-    if (values) {
-      newValues = []
-      values.forEach((value, index) => {
+    // Update geometries
+    const geometry = simulationData.scheme.configuration.geometry
+    const children = geometry.children
+    children.forEach((child) => {
+      const value = child.value
+      if (value) {
         const replace = geometriesReplace.find((r) => r.old === value)
-        newValues[index] = replace?.new
-      })
-    }
-    simulationData.scheme.configuration.geometry = {
-      index: simulationData.scheme.configuration.geometry.index,
-      title: simulationData.scheme.configuration.geometry.title,
-      done: simulationData.scheme.configuration.geometry.done,
-      error: simulationData.scheme.configuration.geometry.error,
-      meshable: simulationData.scheme.configuration.geometry.meshable,
-      multiple: simulationData.scheme.configuration.geometry.multiple,
-      n: simulationData.scheme.configuration.geometry.n,
-      value: newValue,
-      values: newValues
-    }
+        child.value = replace?.new
+      }
+    })
 
     // Add simulation
     await Simulation.add(

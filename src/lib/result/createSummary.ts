@@ -80,8 +80,10 @@ const geometrySummary = (
   stream: WriteStream,
   configuration: IModel['configuration']['geometry']
 ) => {
-  stream.write('Geometry:\n')
-  stream.write(' - ' + configuration.value + '\n\n')
+  stream.write('Geometries:\n')
+  configuration.children.forEach((child) =>
+    stream.write(' - ' + child.value + '\n\n')
+  )
 }
 
 /**

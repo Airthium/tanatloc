@@ -38,9 +38,14 @@ const Magnetostatic2Bodies: IModel = {
     geometry: {
       index: 1,
       title: 'Geometries',
-      meshable: true,
-      multiple: true,
-      n: 2
+      children: [
+        {
+          label: 'Domain 1'
+        },
+        {
+          label: 'Domain 2'
+        }
+      ]
     },
     materials: {
       index: 2,

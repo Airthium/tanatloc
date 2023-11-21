@@ -614,7 +614,7 @@ const Parameters = ({ simulation, swr }: IProps): React.JSX.Element => {
     () =>
       Object.keys(subScheme)
         .map((key) => {
-          if (key === 'index' || key === 'title' || key == 'done') return null
+          if (key === 'index' || key === 'title' || key === 'done') return null
           const parameter = subScheme[key] as {
             label: string
             advanced?: boolean
@@ -642,7 +642,7 @@ const Parameters = ({ simulation, swr }: IProps): React.JSX.Element => {
     () =>
       Object.keys(subScheme)
         .map((key) => {
-          if (key === 'index' || key === 'title' || key == 'done') return null
+          if (key === 'index' || key === 'title' || key === 'done') return null
           const parameter = subScheme[key] as {
             label: string
             advanced?: boolean

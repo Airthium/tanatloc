@@ -132,11 +132,6 @@ describe('components/project/simulation/initialization', () => {
       description: 'description',
       //@ts-ignore
       configuration: {
-        geometry: {
-          title: 'Geometry',
-          index: 0,
-          meshable: false
-        },
         parameters: {
           index: 1,
           title: 'Parameters',
@@ -745,11 +740,6 @@ describe('components/project/simulation/initialization', () => {
             description: 'description',
             //@ts-ignore
             configuration: {
-              geometry: {
-                title: 'Geometry',
-                index: 0,
-                meshable: false
-              },
               parameters: {
                 index: 1,
                 title: 'Parameters',
@@ -804,11 +794,6 @@ describe('components/project/simulation/initialization', () => {
             description: 'description',
             //@ts-ignore
             configuration: {
-              geometry: {
-                title: 'Geometry',
-                index: 0,
-                meshable: false
-              },
               parameters: {
                 index: 1,
                 title: 'Parameters',

@@ -139,12 +139,7 @@ const OneGeometry = ({
   const geometryId = useMemo(() => child.value, [child.value])
 
   // Meshable
-  const meshable = useMemo(() => child.meshable, [child.meshable])
-
-  // Autofill
-  useEffect(() => {
-    if (geometries.length && !geometryId) onChange(geometries[0].id)
-  }, [geometries, geometryId])
+  const noMeshable = useMemo(() => child.noMeshable, [child.noMeshable])
 
   /**
    * On change
@@ -152,19 +147,19 @@ const OneGeometry = ({
    */
   const onChange = useCallback(
     (value: string): void => {
-      const geometry = geometries.find((g) => g.id === value)
-      if (!geometry) return
+      const geometry = geometries.find((g) => g.id === value)!
 
       _onSelect(simulation, geometry, index, swr)
         .then(() => setGeometries([geometry as IFrontGeometriesItem]))
         .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
-    [geometries, simulation, index, setGeometries, swr, geometryId]
+    [geometries, simulation, index, setGeometries, swr, dispatch]
   )
 
-  //TODO add geometry with respect of child.limit
-
-  // TODO need database update
+  // Autofill
+  useEffect(() => {
+    if (geometries.length && !geometryId) onChange(geometries[0].id)
+  }, [geometries, geometryId, onChange])
 
   /**
    * Render
@@ -184,7 +179,7 @@ const OneGeometry = ({
           />
         </Form.Item>
       </Form>
-      {meshable && (
+      {noMeshable ? null : (
         <Mesh
           simulation={{ id: simulation.id, scheme: simulation.scheme }}
           index={index}

@@ -161,7 +161,7 @@ const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
         })
         .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
-    [simulation, swr, dispatch]
+    [simulation, index, swr, dispatch]
   )
 
   /**
@@ -180,7 +180,7 @@ const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
         })
         .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
-    [simulation, swr, global, dispatch]
+    [simulation, index, swr, global, dispatch]
   )
 
   /**
@@ -197,70 +197,90 @@ const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
         .then(() => setGlobal(newGlobal))
         .catch((err) => dispatch(addError({ title: errors.update, err })))
     },
-    [simulation, swr, dispatch]
+    [simulation, index, swr, global, dispatch]
   )
 
   /**
    * Render
    */
   return (
-    <Collapse>
-      <Collapse.Panel key="meshRefinement" header="Mesh refinement">
-        <Card size="small">
-          <Form layout="vertical">
-            <Form.Item label="Type">
-              <Select
-                className={globalStyle.fullWidth}
-                value={global.type}
-                onChange={onType}
-              >
-                {Object.keys(defaultMeshSize).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Form>
-          {global.type === 'auto' && (
-            <Form layout="vertical">
-              <Form.Item label="Size">
-                <Select
-                  className={globalStyle.fullWidth}
-                  value={global.value}
-                  onChange={onValue}
-                >
-                  <Select.Option value="veryfine">Very fine</Select.Option>
-                  <Select.Option value="fine">Fine</Select.Option>
-                  <Select.Option value="normal">Normal</Select.Option>
-                  <Select.Option value="coarse">Coarse</Select.Option>
-                  <Select.Option value="verycoarse">Very coarse</Select.Option>
-                </Select>
-              </Form.Item>
-            </Form>
-          )}
-          {global.type === 'manual' && (
-            <Formula
-              label="Size"
-              noLarge
-              defaultValue={global.value}
-              units={[{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }]}
-              unit={global.unit}
-              onValueChange={onValue}
-              onUnitChange={onUnit}
-            />
-          )}
-          {global.type === 'factor' && (
-            <Formula
-              label="Size"
-              noLarge
-              defaultValue={global.value}
-              onValueChange={onValue}
-            />
-          )}
-        </Card>
-      </Collapse.Panel>
-    </Collapse>
+    <Collapse
+      items={[
+        {
+          key: 'meshRefinement',
+          label: 'Mesh refinement',
+          children: (
+            <Card size="small">
+              <Form layout="vertical">
+                <Form.Item label="Type">
+                  <Select
+                    className={globalStyle.fullWidth}
+                    options={Object.keys(defaultMeshSize).map((key) => ({
+                      label: key.charAt(0).toUpperCase() + key.slice(1),
+                      value: key
+                    }))}
+                    value={global.type}
+                    onChange={onType}
+                  />
+                </Form.Item>
+              </Form>
+              {global.type === 'auto' && (
+                <Form layout="vertical">
+                  <Form.Item label="Size">
+                    <Select
+                      className={globalStyle.fullWidth}
+                      options={[
+                        {
+                          label: 'Very fine',
+                          value: 'veryfine'
+                        },
+                        {
+                          label: 'Fine',
+                          value: 'fine'
+                        },
+                        {
+                          label: 'Normal',
+                          value: 'normal'
+                        },
+                        {
+                          label: 'Coarse',
+                          value: 'coarse'
+                        },
+                        {
+                          label: 'Very coarse',
+                          value: 'verycoarse'
+                        }
+                      ]}
+                      value={global.value}
+                      onChange={onValue}
+                    />
+                  </Form.Item>
+                </Form>
+              )}
+              {global.type === 'manual' && (
+                <Formula
+                  label="Size"
+                  noLarge
+                  defaultValue={global.value}
+                  units={[{ label: 'm' }, { label: 'mm', multiplicator: 1e3 }]}
+                  unit={global.unit}
+                  onValueChange={onValue}
+                  onUnitChange={onUnit}
+                />
+              )}
+              {global.type === 'factor' && (
+                <Formula
+                  label="Size"
+                  noLarge
+                  defaultValue={global.value}
+                  onValueChange={onValue}
+                />
+              )}
+            </Card>
+          )
+        }
+      ]}
+    />
   )
 }
 

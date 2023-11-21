@@ -28,9 +28,9 @@ import GeometryAPI from '@/api/geometry'
 
 import Add from './add'
 import Edit from './edit'
+import Split from './split'
 
 import globalStyle from '@/styles/index.module.css'
-import Split from './split'
 
 /**
  * Props

@@ -37,6 +37,7 @@ jest.mock('@/api/geometry', () => ({
 jest.mock('../add', () => () => <div />)
 const mockEdit = jest.fn()
 jest.mock('../edit', () => (props: any) => mockEdit(props))
+jest.mock('../split', () => () => <div />)
 
 describe('components/project/geometry', () => {
   const project = {

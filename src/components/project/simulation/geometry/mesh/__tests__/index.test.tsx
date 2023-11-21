@@ -27,10 +27,17 @@ describe('components/project/simulation/geometry/mesh', () => {
     scheme: {
       configuration: {
         //@ts-ignore
-        geometry: {}
+        geometry: {
+          children: [
+            {
+              label: 'Label'
+            }
+          ]
+        }
       }
     }
   }
+  const index = 0
   const swr = {
     mutateOneSimulation: jest.fn()
   }
@@ -47,7 +54,9 @@ describe('components/project/simulation/geometry/mesh', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Mesh simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Mesh simulation={simulation} index={index} swr={swr} />
+    )
 
     unmount()
   })
@@ -61,14 +70,20 @@ describe('components/project/simulation/geometry/mesh', () => {
             configuration: {
               //@ts-ignore
               geometry: {
-                meshParameters: {
-                  type: 'auto',
-                  value: 'normal'
-                }
+                children: [
+                  {
+                    label: 'Label',
+                    meshParameters: {
+                      type: 'auto',
+                      value: 'normal'
+                    }
+                  }
+                ]
               }
             }
           }
         }}
+        index={index}
         swr={swr}
       />
     )
@@ -84,7 +99,14 @@ describe('components/project/simulation/geometry/mesh', () => {
         onMouseMove={props.onUnitChange}
       />
     ))
-    const { unmount } = render(<Mesh simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Mesh simulation={simulation} index={index} swr={swr} />
+    )
+
+    const collapse = screen.getByRole('button', {
+      name: 'right Mesh refinement'
+    })
+    fireEvent.click(collapse)
 
     const selects = screen.getAllByRole('combobox')
     const select = selects[0]
@@ -124,7 +146,8 @@ describe('components/project/simulation/geometry/mesh', () => {
 
     expect(mockErrorNotification).toHaveBeenCalledTimes(0)
 
-    delete simulation.scheme.configuration.geometry.meshParameters
+    delete simulation.scheme.configuration.geometry.children[index]
+      .meshParameters
 
     unmount()
   })
@@ -137,7 +160,14 @@ describe('components/project/simulation/geometry/mesh', () => {
         onMouseMove={props.onUnitChange}
       />
     ))
-    const { unmount } = render(<Mesh simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Mesh simulation={simulation} index={index} swr={swr} />
+    )
+
+    const collapse = screen.getByRole('button', {
+      name: 'right Mesh refinement'
+    })
+    fireEvent.click(collapse)
 
     const selects = screen.getAllByRole('combobox')
     const select = selects[0]
@@ -193,7 +223,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     )
 
     // Auto error
-    const newAuto = screen.getByText('Automatic')
+    const newAuto = screen.getByText('Auto')
     await act(() => fireEvent.click(newAuto))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(11))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(3))
@@ -204,7 +234,8 @@ describe('components/project/simulation/geometry/mesh', () => {
       )
     )
 
-    delete simulation.scheme.configuration.geometry.meshParameters
+    delete simulation.scheme.configuration.geometry.children[index]
+      .meshParameters
 
     unmount()
   })
@@ -218,24 +249,82 @@ describe('components/project/simulation/geometry/mesh', () => {
             configuration: {
               //@ts-ignore
               geometry: {
-                meshParameters: {
-                  type: 'manual',
-                  value: '1'
-                }
+                children: [
+                  {
+                    label: 'Domain',
+                    meshParameters: {
+                      type: 'manual',
+                      value: '1'
+                    }
+                  }
+                ]
               }
             }
           }
         }}
+        index={index}
         swr={swr}
       />
     )
+
+    const collapse = screen.getByRole('button', {
+      name: 'right Mesh refinement'
+    })
+    fireEvent.click(collapse)
 
     // Open
     const select = screen.getByRole('combobox')
     await act(() => fireEvent.mouseDown(select))
 
-    // Manual
-    const automatic = screen.getByText('Automatic')
+    // Auto
+    const automatic = screen.getByText('Auto')
+    await act(() => fireEvent.click(automatic))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+
+    unmount()
+  })
+
+  test('set factor', async () => {
+    const { unmount } = render(
+      <Mesh
+        simulation={{
+          id: 'id',
+          scheme: {
+            configuration: {
+              //@ts-ignore
+              geometry: {
+                children: [
+                  {
+                    label: 'Domain',
+                    meshParameters: {
+                      type: 'manual',
+                      value: '1'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        index={index}
+        swr={swr}
+      />
+    )
+
+    const collapse = screen.getByRole('button', {
+      name: 'right Mesh refinement'
+    })
+    fireEvent.click(collapse)
+
+    // Open
+    const select = screen.getByRole('combobox')
+    await act(() => fireEvent.mouseDown(select))
+
+    // Factor
+    const automatic = screen.getByText('Factor')
     await act(() => fireEvent.click(automatic))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>

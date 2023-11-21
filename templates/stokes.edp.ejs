@@ -9,7 +9,7 @@ try {
     
 <%# Mesh -%>
 <%
-    const mesh = geometry.mesh
+    const mesh = geometry.children[0].mesh
     mesh.name = variables[0].value
 -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {

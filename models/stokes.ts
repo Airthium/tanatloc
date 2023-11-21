@@ -43,9 +43,7 @@ const Stokes: IModel = {
       title: 'Geometry',
       children: [
         {
-          label: 'Domain',
-          meshable: true,
-          limit: 1
+          label: 'Domain'
         }
       ]
     },

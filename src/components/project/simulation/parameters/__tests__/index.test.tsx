@@ -32,11 +32,6 @@ describe('components/project/simulation/parameters', () => {
       version: 'version',
       description: 'description',
       configuration: {
-        geometry: {
-          index: 0,
-          title: 'Geometry',
-          meshable: true
-        },
         parameters: {
           index: 0,
           title: 'title',
@@ -109,17 +104,13 @@ describe('components/project/simulation/parameters', () => {
             ]
           }
         },
-        boundaryConditions: {
-          index: 0,
-          title: 'Boundary Conditions'
-        },
         run: {
           index: 0,
           title: 'Run'
         }
       }
     }
-  } as Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  } as unknown as Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {

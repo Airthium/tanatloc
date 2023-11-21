@@ -40,9 +40,7 @@ const LinearElasticity: IModel = {
 
       children: [
         {
-          label: 'Domain',
-          meshable: true,
-          limit: 1
+          label: 'Domain'
         }
       ]
     },

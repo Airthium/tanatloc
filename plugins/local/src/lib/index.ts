@@ -12,6 +12,7 @@ import isElectron from 'is-electron'
 
 import {
   IModel,
+  IModelGeometry,
   IModelMeshRefinement,
   IModelTypedBoundaryCondition,
   IOutput
@@ -192,47 +193,31 @@ const getRefinements = (
 
 /**
  * Compute meshes
+ * @param simulationId Simulation id
  * @param simulationPath Simulation path
  * @param configuration Configuration
  * @param updateTasksHelper Update tasks helper
  */
 const computeMeshes = async (
+  simulationId: string,
   simulationPath: string,
   configuration: IModel['configuration'],
   { tasks, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
-  const geometry = configuration.geometry
-  if (!geometry.meshable) return
-
   const dimension = configuration.dimension
-  const meshParameters = configuration.geometry.meshParameters
   const initialization = configuration.initialization
   const boundaryConditions = configuration.boundaryConditions
   const cloudServer = configuration.run.cloudServer
 
-  if (geometry.multiple) {
-    geometry.meshes = []
-    for (let i = 0; i < geometry.values!.length; ++i) {
-      const value = geometry.values![i]
-      const data = geometry.datas![i]
-      const mesh = await computeMesh(
-        simulationPath,
-        {
-          dimension,
-          geometry: { value, data, meshParameters },
-          initialization,
-          boundaryConditions,
-          run: {
-            cloudServer
-          }
-        },
-        { tasks, updateTasks }
-      )
-      geometry.meshes = [...geometry.meshes, mesh]
-    }
-  } else {
-    const value = geometry.value
-    const data = geometry.data
+  const children = configuration.geometry.children
+
+  for (let i = 0; i < children.length; ++i) {
+    const child = children[i]
+    if (child.noMeshable) continue
+
+    const meshParameters = child.meshParameters
+    const value = child.value
+    const data = child.data
     const mesh = await computeMesh(
       simulationPath,
       {
@@ -246,7 +231,18 @@ const computeMeshes = async (
       },
       { tasks, updateTasks }
     )
-    geometry.mesh = mesh
+    child.mesh = mesh
+
+    // Save mesh/meshes for reuse
+    await Simulation.update({ id: simulationId }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'geometry', 'children', i, 'mesh'],
+        value: mesh
+      }
+    ])
   }
 }
 
@@ -261,9 +257,9 @@ const computeMesh = async (
   configuration: {
     dimension: IModel['configuration']['dimension']
     geometry: {
-      value: IModel['configuration']['geometry']['value']
-      data: IModel['configuration']['geometry']['data']
-      meshParameters: IModel['configuration']['geometry']['meshParameters']
+      value: IModelGeometry['children'][0]['value']
+      data: IModelGeometry['children'][0]['data']
+      meshParameters: IModelGeometry['children'][0]['meshParameters']
     }
     initialization: IModel['configuration']['initialization']
     boundaryConditions: IModel['configuration']['boundaryConditions']
@@ -519,33 +515,11 @@ const computeSimulation = async (
   configuration.dimension ?? (configuration.dimension = 3)
 
   // Meshes
-  if (!keepMesh) {
-    await computeMeshes(simulationPath, configuration, {
+  if (!keepMesh)
+    await computeMeshes(id, simulationPath, configuration, {
       tasks,
       updateTasks: () => updateTasks(id, tasks)
     })
-    // Save mesh/meshes for reuse
-    scheme.configuration.geometry.mesh &&
-      (await Simulation.update({ id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'geometry', 'mesh'],
-          value: scheme.configuration.geometry.mesh
-        }
-      ]))
-    scheme.configuration.geometry.meshes &&
-      (await Simulation.update({ id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'geometry', 'meshes'],
-          value: scheme.configuration.geometry.meshes
-        }
-      ]))
-  }
 
   const simulationTask: ISimulationTask = {
     index: tasks.length,

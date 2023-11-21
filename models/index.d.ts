@@ -86,8 +86,7 @@ export interface IUnit {
 export interface IModelGeometry extends IModelCommon {
   children: {
     label: string
-    meshable: boolean
-    limit?: number
+    noMeshable?: true
     tag?: string
     dimension?: number
     value?: string
@@ -110,7 +109,7 @@ export interface IModelMeshSize {
 
 export interface IModelMeshSizeManual extends IModelMeshSize {
   type: 'manual'
-  value: number
+  value: number | string
   unit?: IUnit
 }
 
@@ -121,7 +120,7 @@ export interface IModelMeshSizeAuto extends IModelMeshSize {
 
 export interface IModelMeshSizeFactor extends IModelMeshSize {
   type: 'factor'
-  value: number
+  value: number | string
 }
 
 export interface IModelMeshRefinement {

@@ -57,7 +57,9 @@ const Split = ({ project, geometry }: ISplitProps): ReactNode => {
     [geometry.summary.dimension]
   )
 
-  // On split
+  /**
+   * On split
+   */
   const onSplit = useCallback(() => {
     setLoading(true)
     _onSplit(project, geometry)

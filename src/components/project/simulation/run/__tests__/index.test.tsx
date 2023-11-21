@@ -377,7 +377,12 @@ describe('components/project/simulation/run', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 ...simulation.scheme.configuration.geometry,
-                mesh: {}
+                children: [
+                  {
+                    label: 'Domain',
+                    mesh: {}
+                  }
+                ]
               }
             }
           }

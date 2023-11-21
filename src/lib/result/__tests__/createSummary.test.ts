@@ -55,8 +55,12 @@ describe('lib/download/summary', () => {
       geometry: {
         index: 1,
         title: 'Geometry',
-        meshable: true,
-        data: { file: 'file' }
+        children: [
+          {
+            label: 'Domain',
+            data: { file: 'file' }
+          }
+        ]
       },
       materials: {
         index: 2,
@@ -178,8 +182,12 @@ describe('lib/download/summary', () => {
       geometry: {
         index: 1,
         title: 'Geometry',
-        meshable: true,
-        data: { file: 'file' }
+        children: [
+          {
+            label: 'Domain',
+            data: { file: 'file' }
+          }
+        ]
       },
       materials: undefined,
       parameters: {

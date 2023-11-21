@@ -469,12 +469,7 @@ const Project = (): React.JSX.Element => {
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Simulation.Geometry
-            // loadedGeometries={loadedGeometries}
             geometries={loadedGeometries}
-            // geometries={geometries.map((geometry) => ({
-            //   id: geometry.id,
-            //   summary: geometry.summary
-            // }))}
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -485,7 +480,7 @@ const Project = (): React.JSX.Element => {
         </Panel>
       )
     },
-    [loadedGeometries, geometries, mutateOneSimulation, onPanelClose]
+    [loadedGeometries, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -636,19 +631,15 @@ const Project = (): React.JSX.Element => {
       setSimulation(current)
 
       // Display geometries
-      const geometryId = current.scheme?.configuration?.geometry?.value
-      const geometriesIds = current.scheme?.configuration?.geometry?.values
-
-      if (geometryId) {
-        const newGeometry = loadedGeometries.find((g) => g.id === geometryId)
-        /* istanbul ignore next */
-        if (newGeometry) setGeometries([newGeometry])
-      } else if (geometriesIds) {
-        const newGeometries = loadedGeometries.filter((g) =>
-          geometriesIds.includes(g.id)
-        )
-        setGeometries(newGeometries)
-      }
+      const children = current.scheme.configuration.geometry.children
+      const toDisplay = children
+        .map((child) => {
+          const id = child.value
+          if (!id) return
+          return loadedGeometries.find((g) => g.id === id)
+        })
+        .filter((g) => g) as IFrontGeometriesItem[]
+      setGeometries(toDisplay)
 
       switch (item) {
         case 'about':
@@ -750,33 +741,26 @@ const Project = (): React.JSX.Element => {
   )
 
   /**
-   * Check geometry
+   * Check geometries
    * @param geometry Geometry
    * @returns Check
    */
-  const checkGeometry = useCallback(
+  const checkGeometries = useCallback(
     (geometry: IModelGeometry): boolean => {
       if (loadingGeometries) return true
 
-      const value = geometry.value
-      const values = geometry.values
-      const multiple = geometry.multiple
-      const n = geometry.n
-      if (
-        (value && !loadedGeometries.filter((g) => g.id === value).length) ||
-        (multiple &&
-          values &&
-          (n
-            ? loadedGeometries.filter((g) => values.includes(g.id)).length !==
-              geometry.n
-            : !loadedGeometries.filter((g) => values.includes(g.id)).length)) ||
-        (!value && !values)
-      ) {
-        geometry.done = false
-        return false
+      let res = true
+      const children = geometry.children
+      for (const child of children) {
+        const value = child.value
+
+        if (value && !loadedGeometries.filter((g) => g.id === value).length) {
+          geometry.done = false
+          res = false
+        }
       }
 
-      return true
+      return res
     },
     [loadedGeometries, loadingGeometries]
   )
@@ -948,7 +932,7 @@ const Project = (): React.JSX.Element => {
 
           // Deleted simulation's geometry
           if (key === 'geometry')
-            if (!checkGeometry(child as IModelGeometry))
+            if (!checkGeometries(child as IModelGeometry))
               icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
 
           categories[child.index] = {
@@ -974,7 +958,7 @@ const Project = (): React.JSX.Element => {
           ]
         }
       }),
-    [geometries, loadedSimulations, checkGeometry]
+    [geometries, loadedSimulations, checkGeometries]
   )
 
   /**

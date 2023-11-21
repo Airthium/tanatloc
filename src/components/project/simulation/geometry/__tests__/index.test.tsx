@@ -41,7 +41,7 @@ describe('components/project/simulation/geometry', () => {
           children: [
             {
               label: 'Label',
-              meshable: false
+              noMeshable: true
             }
           ]
         }
@@ -120,7 +120,7 @@ describe('components/project/simulation/geometry', () => {
                 children: [
                   {
                     label: 'Label',
-                    meshable: false,
+                    noMeshable: true,
                     value: 'id'
                   }
                 ]
@@ -172,8 +172,7 @@ describe('components/project/simulation/geometry', () => {
                 title: 'Geometry',
                 children: [
                   {
-                    label: 'Label',
-                    meshable: true
+                    label: 'Label'
                   }
                 ]
               }

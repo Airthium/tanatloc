@@ -371,12 +371,17 @@ describe('plugins/local/src/lib', () => {
 
     // Not meshable
     await Local.computeMeshes(
+      'id',
       'path',
       {
         geometry: {
           index: 1,
           title: 'Geometry',
-          meshable: false
+          children: [
+            {
+              noMeshable: true
+            }
+          ]
         },
         run: {}
       } as IModel['configuration'],
@@ -386,12 +391,13 @@ describe('plugins/local/src/lib', () => {
     // Missing data
     try {
       await Local.computeMeshes(
+        'id',
         'path',
         {
           geometry: {
             index: 1,
             title: 'Geometry',
-            meshable: true
+            children: [{}]
           },
           run: {}
         } as IModel['configuration'],
@@ -404,40 +410,21 @@ describe('plugins/local/src/lib', () => {
 
     // Normal
     await Local.computeMeshes(
+      'id',
       'path',
       {
         geometry: {
           index: 1,
           title: 'Geometry',
-          meshable: true,
-          data: {
-            name: 'name',
-            path: 'path',
-            file: 'file'
-          }
-        },
-        run: {}
-      } as IModel['configuration'],
-      { tasks: [], updateTasks: update }
-    )
-
-    // Multiple
-    await Local.computeMeshes(
-      'path',
-      {
-        geometry: {
-          index: 1,
-          title: 'Geometry',
-          meshable: true,
-          multiple: true,
-          datas: [
+          children: [
             {
-              name: 'name',
-              path: 'path',
-              file: 'file'
+              data: {
+                name: 'name',
+                path: 'path',
+                file: 'file'
+              }
             }
-          ],
-          values: ['1']
+          ]
         },
         run: {}
       } as IModel['configuration'],
@@ -446,14 +433,18 @@ describe('plugins/local/src/lib', () => {
 
     // 2D
     await Local.computeMeshes(
+      'id',
       'path',
       {
         dimension: 2,
         geometry: {
           index: 1,
           title: 'Geometry',
-          meshable: true,
-          data: { name: 'name', path: 'path', file: 'file' }
+          children: [
+            {
+              data: { name: 'name', path: 'path', file: 'file' }
+            }
+          ]
         },
         run: {}
       } as IModel['configuration'],
@@ -466,13 +457,17 @@ describe('plugins/local/src/lib', () => {
     })
     try {
       await Local.computeMeshes(
+        'id',
         'path',
         {
           geometry: {
             index: 1,
             title: 'Geometry',
-            meshable: true,
-            data: { name: 'name', path: 'path', file: 'file' }
+            children: [
+              {
+                data: { name: 'name', path: 'path', file: 'file' }
+              }
+            ]
           },
           run: {}
         } as IModel['configuration'],
@@ -487,13 +482,17 @@ describe('plugins/local/src/lib', () => {
     mockGmsh.mockReset()
     try {
       await Local.computeMeshes(
+        'id',
         'path',
         {
           geometry: {
             index: 1,
             title: 'Geometry',
-            meshable: true,
-            data: { name: 'name', path: 'path', file: 'file' }
+            children: [
+              {
+                data: { name: 'name', path: 'path', file: 'file' }
+              }
+            ]
           },
           run: {}
         } as IModel['configuration'],
@@ -594,64 +593,17 @@ describe('plugins/local/src/lib', () => {
           geometry: {
             index: 1,
             title: 'Geometry',
-            meshable: true,
-            data: { name: 'name', path: 'path', file: 'file' },
-            meshParameters: {
-              type: 'auto',
-              value: 'normal'
-            },
-            mesh: {}
-          },
-          boundaryConditions: {
-            index: 0,
-            title: 'Boundary conditions',
-            key1: {
-              label: 'key1'
-            },
-            key2: {
-              label: 'key2',
-              values: [
-                {
-                  uuid: 'uuid',
-                  name: 'name',
-                  type: {
-                    key: 'key',
-                    label: 'label'
-                  },
-                  geometry: 'id',
-                  selected: [{ uuid: 'uuid', label: 1 }]
-                }
-              ],
-              refineFactor: 5
-            }
-          },
-          run: {
-            index: 0,
-            title: 'Run'
-          }
-        }
-      }
-    )
-
-    //With meshes
-    mockConvert.mockImplementation(() => [{}])
-    await Local.computeSimulation(
-      { id: 'id' },
-      {
-        algorithm: 'algorithm',
-        //@ts-ignore
-        configuration: {
-          geometry: {
-            index: 1,
-            title: 'Geometry',
-            meshable: true,
-            datas: [{ name: 'name', path: 'path', file: 'file' }],
-            values: ['1'],
-            multiple: true,
-            meshParameters: {
-              type: 'auto',
-              value: 'normal'
-            }
+            children: [
+              {
+                label: 'Label',
+                data: { name: 'name', path: 'path', file: 'file' },
+                meshParameters: {
+                  type: 'auto',
+                  value: 'normal'
+                },
+                mesh: {}
+              }
+            ]
           },
           boundaryConditions: {
             index: 0,
@@ -695,8 +647,12 @@ describe('plugins/local/src/lib', () => {
           geometry: {
             index: 1,
             title: 'Geometry',
-            meshable: true,
-            data: { name: 'name', path: 'path', file: 'file' }
+            children: [
+              {
+                label: 'Label',
+                data: { name: 'name', path: 'path', file: 'file' }
+              }
+            ]
           },
           initialization: {
             index: 1,
@@ -750,15 +706,17 @@ describe('plugins/local/src/lib', () => {
           algorithm: 'algorithm',
           configuration: {
             geometry: {
-              meshable: true,
-              //@ts-ignore
-              file: {
-                originPath: 'originPath',
-                fileName: 'fileName'
-              }
-            },
-            geometry2: {
-              meshable: false
+              children: [
+                {
+                  label: 'Label',
+                  noMeshable: true,
+                  //@ts-ignore
+                  file: {
+                    originPath: 'originPath',
+                    fileName: 'fileName'
+                  }
+                }
+              ]
             },
             boundaryConditions: {
               index: 0,

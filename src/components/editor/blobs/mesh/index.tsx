@@ -88,11 +88,15 @@ mesh.name = '${values.name}'
     geometry: {
       index: index + 1,
       title: 'Geometry',
-      mesh: {
-        name: values.name
-      },
-      ...(modelJSON.configuration?.geometry ?? {}),
-      meshable: true
+      children: [
+        {
+          label: 'Domain',
+          mesh: {
+            name: values.name
+          }
+        }
+      ],
+      ...(modelJSON.configuration?.geometry ?? {})
     }
   }
   const newModel = JSON.stringify(modelJSON, null, '\t')

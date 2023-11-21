@@ -67,9 +67,8 @@ const Formula = ({
   const [internalValue, setInternalValue] = useState<string>(
     String(defaultValue ?? 0)
   )
-  const [internalChecked, setInternalChecked] = useState<boolean>(
-    !!defaultChecked
-  )
+  const [internalChecked, setInternalChecked] =
+    useState<boolean>(!!defaultChecked)
   const [disabled, setDisabled] = useState<boolean>(
     defaultChecked !== undefined ? !defaultChecked : false
   )

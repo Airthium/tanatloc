@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import { IFrontResult, IFrontSimulation } from '@/api/index.d'
 

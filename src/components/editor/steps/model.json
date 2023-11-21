@@ -13,11 +13,7 @@
             "additionalProperties": false,
             "properties": {
               "default": {
-                "type": [
-                  "boolean",
-                  "number",
-                  "string"
-                ]
+                "type": ["boolean", "number", "string"]
               },
               "label": {
                 "type": "string"
@@ -57,17 +53,10 @@
                 "type": "string"
               },
               "value": {
-                "type": [
-                  "boolean",
-                  "number",
-                  "string"
-                ]
+                "type": ["boolean", "number", "string"]
               }
             },
-            "required": [
-              "label",
-              "type"
-            ],
+            "required": ["label", "type"],
             "type": "object"
           },
           "type": "object"
@@ -96,12 +85,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "type",
-              "label",
-              "action",
-              "icon"
-            ],
+            "required": ["type", "label", "action", "icon"],
             "type": "object"
           },
           "type": "object"
@@ -117,16 +101,10 @@
                 "type": "string"
               },
               "value": {
-                "type": [
-                  "boolean",
-                  "number",
-                  "string"
-                ]
+                "type": ["boolean", "number", "string"]
               }
             },
-            "required": [
-              "label"
-            ],
+            "required": ["label"],
             "type": "object"
           },
           "type": "object"
@@ -157,12 +135,7 @@
     },
     "IHtmlEntity": {
       "description": "HTML entity",
-      "enum": [
-        "formula",
-        "select",
-        "checkbox",
-        "radio"
-      ],
+      "enum": ["formula", "select", "checkbox", "radio"],
       "type": "string"
     },
     "IModel": {
@@ -213,12 +186,7 @@
               "$ref": "#/definitions/IModelRun"
             }
           },
-          "required": [
-            "geometry",
-            "parameters",
-            "boundaryConditions",
-            "run"
-          ],
+          "required": ["geometry", "parameters", "boundaryConditions", "run"],
           "type": "object"
         },
         "customFreeFEMPlugins": {
@@ -241,10 +209,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "path",
-              "file"
-            ],
+            "required": ["path", "file"],
             "type": "object"
           },
           "type": "array"
@@ -307,11 +272,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "label",
-        "htmlEntity",
-        "default"
-      ],
+      "required": ["label", "htmlEntity", "default"],
       "type": "object"
     },
     "IModelBoundaryConditionValue": {
@@ -340,10 +301,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "uuid",
-              "label"
-            ],
+            "required": ["uuid", "label"],
             "type": "object"
           },
           "type": "array"
@@ -364,10 +322,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "key",
-            "label"
-          ],
+          "required": ["key", "label"],
           "type": "object"
         },
         "uuid": {
@@ -392,13 +347,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "uuid",
-        "name",
-        "type",
-        "geometry",
-        "selected"
-      ],
+      "required": ["uuid", "name", "type", "geometry", "selected"],
       "type": "object"
     },
     "IModelBoundaryConditions": {
@@ -411,12 +360,7 @@
             "not": {}
           },
           {
-            "type": [
-              "boolean",
-              "number",
-              "string",
-              "object"
-            ]
+            "type": ["boolean", "number", "string", "object"]
           }
         ]
       },
@@ -443,10 +387,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "name",
-                "message"
-              ],
+              "required": ["name", "message"],
               "type": "object"
             }
           ]
@@ -458,10 +399,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "index",
-        "title"
-      ],
+      "required": ["index", "title"],
       "type": "object"
     },
     "IModelGeometry": {
@@ -513,9 +451,7 @@
                           "type": "array"
                         }
                       },
-                      "required": [
-                        "name"
-                      ],
+                      "required": ["name"],
                       "type": "object"
                     },
                     "type": "array"
@@ -574,9 +510,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "label"
-            ],
+            "required": ["label"],
             "type": "object"
           },
           "type": "array"
@@ -602,10 +536,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "name",
-                "message"
-              ],
+              "required": ["name", "message"],
               "type": "object"
             }
           ]
@@ -617,11 +548,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "children",
-        "index",
-        "title"
-      ],
+      "required": ["children", "index", "title"],
       "type": "object"
     },
     "IModelInitialization": {
@@ -655,10 +582,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "name",
-                "message"
-              ],
+              "required": ["name", "message"],
               "type": "object"
             }
           ]
@@ -673,10 +597,7 @@
           "$ref": "#/definitions/IModelInitializationValue"
         }
       },
-      "required": [
-        "index",
-        "title"
-      ],
+      "required": ["index", "title"],
       "type": "object"
     },
     "IModelInitializationCoupling": {
@@ -711,10 +632,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "name",
-                  "pattern"
-                ],
+                "required": ["name", "pattern"],
                 "type": "object"
               },
               "map": {
@@ -724,10 +642,7 @@
                 "type": "array"
               }
             },
-            "required": [
-              "algorithm",
-              "filter"
-            ],
+            "required": ["algorithm", "filter"],
             "type": "object"
           },
           "type": "array"
@@ -736,10 +651,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "label",
-        "compatibility"
-      ],
+      "required": ["label", "compatibility"],
       "type": "object"
     },
     "IModelInitializationDirect": {
@@ -755,10 +667,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "label",
-        "children"
-      ],
+      "required": ["label", "children"],
       "type": "object"
     },
     "IModelInitializationDirectChild": {
@@ -787,10 +696,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "label",
-              "value"
-            ],
+            "required": ["label", "value"],
             "type": "object"
           },
           "type": "array"
@@ -808,11 +714,7 @@
           "$ref": "#/definitions/TValue"
         }
       },
-      "required": [
-        "label",
-        "htmlEntity",
-        "default"
-      ],
+      "required": ["label", "htmlEntity", "default"],
       "type": "object"
     },
     "IModelInitializationValue": {
@@ -834,11 +736,7 @@
           "type": "string"
         },
         "type": {
-          "enum": [
-            "none",
-            "direct",
-            "coupling"
-          ],
+          "enum": ["none", "direct", "coupling"],
           "type": "string"
         },
         "values": {
@@ -848,9 +746,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "type"
-      ],
+      "required": ["type"],
       "type": "object"
     },
     "IModelMaterials": {
@@ -884,10 +780,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "name",
-                "message"
-              ],
+              "required": ["name", "message"],
               "type": "object"
             }
           ]
@@ -905,21 +798,14 @@
           "type": "array"
         }
       },
-      "required": [
-        "children",
-        "index",
-        "title"
-      ],
+      "required": ["children", "index", "title"],
       "type": "object"
     },
     "IModelMaterialsChild": {
       "additionalProperties": false,
       "properties": {
         "default": {
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         },
         "htmlEntity": {
           "$ref": "#/definitions/IHtmlEntity"
@@ -940,12 +826,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "label",
-        "name",
-        "htmlEntity",
-        "default"
-      ],
+      "required": ["label", "name", "htmlEntity", "default"],
       "type": "object"
     },
     "IModelMaterialsValue": {
@@ -974,17 +855,10 @@
                     "$ref": "#/definitions/IUnit"
                   },
                   "value": {
-                    "type": [
-                      "number",
-                      "string"
-                    ]
+                    "type": ["number", "string"]
                   }
                 },
-                "required": [
-                  "label",
-                  "symbol",
-                  "value"
-                ],
+                "required": ["label", "symbol", "value"],
                 "type": "object"
               },
               "type": "array"
@@ -993,10 +867,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "label",
-            "children"
-          ],
+          "required": ["label", "children"],
           "type": "object"
         },
         "selected": {
@@ -1010,10 +881,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "uuid",
-              "label"
-            ],
+            "required": ["uuid", "label"],
             "type": "object"
           },
           "type": "array"
@@ -1022,12 +890,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "uuid",
-        "material",
-        "geometry",
-        "selected"
-      ],
+      "required": ["uuid", "material", "geometry", "selected"],
       "type": "object"
     },
     "IModelMeshRefinement": {
@@ -1041,35 +904,23 @@
             "additionalProperties": false,
             "properties": {
               "label": {
-                "type": [
-                  "number",
-                  "string"
-                ]
+                "type": ["number", "string"]
               }
             },
-            "required": [
-              "label"
-            ],
+            "required": ["label"],
             "type": "object"
           },
           "type": "array"
         },
         "type": {
-          "enum": [
-            "manual",
-            "auto",
-            "factor"
-          ],
+          "enum": ["manual", "auto", "factor"],
           "type": "string"
         },
         "value": {
           "type": "number"
         }
       },
-      "required": [
-        "type",
-        "selected"
-      ],
+      "required": ["type", "selected"],
       "type": "object"
     },
     "IModelMeshSizeAuto": {
@@ -1086,20 +937,11 @@
           "type": "string"
         },
         "value": {
-          "enum": [
-            "veryfine",
-            "fine",
-            "normal",
-            "coarse",
-            "verycoarse"
-          ],
+          "enum": ["veryfine", "fine", "normal", "coarse", "verycoarse"],
           "type": "string"
         }
       },
-      "required": [
-        "type",
-        "value"
-      ],
+      "required": ["type", "value"],
       "type": "object"
     },
     "IModelMeshSizeFactor": {
@@ -1116,16 +958,10 @@
           "type": "string"
         },
         "value": {
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         }
       },
-      "required": [
-        "type",
-        "value"
-      ],
+      "required": ["type", "value"],
       "type": "object"
     },
     "IModelMeshSizeManual": {
@@ -1145,16 +981,10 @@
           "$ref": "#/definitions/IUnit"
         },
         "value": {
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         }
       },
-      "required": [
-        "type",
-        "value"
-      ],
+      "required": ["type", "value"],
       "type": "object"
     },
     "IModelParameters": {
@@ -1164,12 +994,7 @@
             "not": {}
           },
           {
-            "type": [
-              "boolean",
-              "number",
-              "string",
-              "object"
-            ]
+            "type": ["boolean", "number", "string", "object"]
           }
         ]
       },
@@ -1196,10 +1021,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "name",
-                "message"
-              ],
+              "required": ["name", "message"],
               "type": "object"
             }
           ]
@@ -1211,10 +1033,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "index",
-        "title"
-      ],
+      "required": ["index", "title"],
       "type": "object"
     },
     "IModelRun": {
@@ -1244,10 +1063,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "name",
-                "message"
-              ],
+              "required": ["name", "message"],
               "type": "object"
             }
           ]
@@ -1279,17 +1095,13 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "key"
-                  ],
+                  "required": ["key"],
                   "type": "object"
                 },
                 "type": "array"
               }
             },
-            "required": [
-              "key"
-            ],
+            "required": ["key"],
             "type": "object"
           },
           "type": "array"
@@ -1388,12 +1200,7 @@
               ]
             }
           },
-          "required": [
-            "name",
-            "prefixPattern",
-            "suffixPattern",
-            "pattern"
-          ],
+          "required": ["name", "prefixPattern", "suffixPattern", "pattern"],
           "type": "object"
         },
         "sensors": {
@@ -1406,10 +1213,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "index",
-        "title"
-      ],
+      "required": ["index", "title"],
       "type": "object"
     },
     "IModelRunResult": {
@@ -1455,10 +1259,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "name",
-        "data"
-      ],
+      "required": ["name", "data"],
       "type": "object"
     },
     "IModelSensor": {
@@ -1486,20 +1287,11 @@
               "type": "number"
             }
           },
-          "required": [
-            "x",
-            "y",
-            "z"
-          ],
+          "required": ["x", "y", "z"],
           "type": "object"
         }
       },
-      "required": [
-        "name",
-        "geometry",
-        "point",
-        "formula"
-      ],
+      "required": ["name", "geometry", "point", "formula"],
       "type": "object"
     },
     "IModelTypedBoundaryCondition": {
@@ -1524,9 +1316,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "label"
-      ],
+      "required": ["label"],
       "type": "object"
     },
     "IModelVariable": {
@@ -1542,10 +1332,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "label",
-        "value"
-      ],
+      "required": ["label", "value"],
       "type": "object"
     },
     "IUnit": {
@@ -1562,17 +1349,11 @@
           "type": "number"
         }
       },
-      "required": [
-        "label"
-      ],
+      "required": ["label"],
       "type": "object"
     },
     "TValue": {
-      "type": [
-        "boolean",
-        "number",
-        "string"
-      ]
+      "type": ["boolean", "number", "string"]
     }
   }
 }

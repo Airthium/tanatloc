@@ -7,14 +7,10 @@ import { SelectContext } from '@/context/select'
 import Selector from '@/components/assets/selector'
 
 const mockHighlight = jest.fn()
-const mockUnhighlight = jest.fn()
 const mockSelect = jest.fn()
-const mockUnselect = jest.fn()
 jest.mock('@/context/select/actions', () => ({
   highlight: () => mockHighlight(),
-  unhighlight: () => mockUnhighlight(),
-  select: () => mockSelect(),
-  unselect: () => mockUnselect()
+  select: () => mockSelect()
 }))
 
 jest.mock('@/lib/utils', () => ({
@@ -63,9 +59,7 @@ describe('components/assets/selector', () => {
 
   beforeEach(() => {
     mockHighlight.mockReset()
-    mockUnhighlight.mockReset()
     mockSelect.mockReset()
-    mockUnselect.mockReset()
 
     updateSelected.mockReset()
   })
@@ -112,7 +106,31 @@ describe('components/assets/selector', () => {
     unmount()
   })
 
-  test('on highlight unhighlight', () => {
+  test('without existing type', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'solids',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
+    )
+
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
+
+    unmount()
+  })
+
+  test('on highlight', () => {
     const { unmount } = render(
       <SelectContext.Provider
         value={{
@@ -136,7 +154,7 @@ describe('components/assets/selector', () => {
     expect(mockHighlight).toHaveBeenCalledTimes(1)
 
     fireEvent.mouseLeave(card)
-    expect(mockUnhighlight).toHaveBeenCalledTimes(1)
+    expect(mockHighlight).toHaveBeenCalledTimes(2)
 
     unmount()
   })
@@ -163,32 +181,6 @@ describe('components/assets/selector', () => {
     const card = screen.getByText('name')
     fireEvent.click(card)
     expect(mockSelect).toHaveBeenCalledTimes(1)
-
-    unmount()
-  })
-
-  test('unselect', () => {
-    const { unmount } = render(
-      <SelectContext.Provider
-        value={{
-          enabled: true,
-          type: 'faces',
-          selected: [{ uuid: 'uuid', label: 1 }],
-          dispatch: jest.fn()
-        }}
-      >
-        <Selector
-          geometry={geometry}
-          alreadySelected={alreadySelected}
-          updateSelected={updateSelected}
-        />
-      </SelectContext.Provider>
-    )
-
-    // Unselect
-    const card = screen.getByText('name')
-    fireEvent.click(card)
-    expect(mockUnselect).toHaveBeenCalledTimes(1)
 
     unmount()
   })

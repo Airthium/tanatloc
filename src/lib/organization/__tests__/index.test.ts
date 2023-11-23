@@ -249,7 +249,7 @@ describe('lib/organization', () => {
     expect(organizations).toEqual([
       {
         name: 'name',
-        owners: [{ id: 'id1' }],
+        owners: [],
         pendingowners: [],
         users: [],
         pendingusers: [],
@@ -288,19 +288,16 @@ describe('lib/organization', () => {
         name: 'name',
         owners: [
           {
-            id: 'id1',
             firstname: 'firstname'
           }
         ],
         users: [
           {
-            id: 'id2',
             firstname: 'firstname'
           }
         ],
         groups: [
           {
-            id: 'id3',
             name: 'name'
           }
         ]

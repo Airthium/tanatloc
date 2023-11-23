@@ -34,13 +34,13 @@ const pvpython = async (
 
     if (isDocker()) {
       run = spawn(
-        'pvpython',
+        'python3',
         [scriptPOSIX, fileInPOSIX, fileOutPOSIX, ...parameters],
         { cwd: bindPath }
       )
     } else {
       const command = [
-        'pvpython',
+        'python3',
         scriptPOSIX,
         fileInPOSIX,
         fileOutPOSIX,

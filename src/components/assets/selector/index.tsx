@@ -7,7 +7,8 @@ import {
   useContext,
   Dispatch,
   SetStateAction,
-  useMemo
+  useMemo,
+  ReactNode
 } from 'react'
 import { Button, Card, Input, Space, Tag, Tooltip, Typography } from 'antd'
 import {
@@ -23,12 +24,13 @@ import { IFrontGeometriesItem } from '@/api/index.d'
 import { TGeometryColor } from '@/database/geometry/get'
 
 import { SelectContext, ISelect, ISelectAction } from '@/context/select'
+import { highlight, select } from '@/context/select/actions'
 import {
-  highlight,
-  unhighlight,
-  select,
-  unselect
-} from '@/context/select/actions'
+  addOrRemoveSelection,
+  addSelections,
+  removeSelections,
+  swapSelections
+} from '@/context/select/helpers'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
@@ -83,10 +85,7 @@ export interface IGeometryElementCardProps {
  * @param props Props
  * @returns ColorFilter
  */
-const ColorFilter = ({
-  color,
-  setFilter
-}: IColorFilterProps): React.JSX.Element => {
+const ColorFilter = ({ color, setFilter }: IColorFilterProps): ReactNode => {
   /**
    * On color fitler
    * @param color Color
@@ -115,10 +114,7 @@ const ColorFilter = ({
  * @param props Props
  * @returns ColorFilters
  */
-const ColorFilters = ({
-  colors,
-  setFilter
-}: IColorFiltersProps): React.JSX.Element => {
+const ColorFilters = ({ colors, setFilter }: IColorFiltersProps): ReactNode => {
   /**
    * On color fitler clear
    */
@@ -130,22 +126,20 @@ const ColorFilters = ({
    * Render
    */
   return (
-    <>
-      {colors.length > 1 && (
-        <>
-          <Tooltip title="Reset">
-            <Button icon={<CloseOutlined />} onClick={onColorFilterClear} />
-          </Tooltip>
-          {colors.map((color) => (
-            <ColorFilter
-              key={JSON.stringify(color)}
-              color={color}
-              setFilter={setFilter}
-            />
-          ))}
-        </>
-      )}
-    </>
+    colors.length > 1 && (
+      <>
+        <Tooltip title="Reset">
+          <Button icon={<CloseOutlined />} onClick={onColorFilterClear} />
+        </Tooltip>
+        {colors.map((color) => (
+          <ColorFilter
+            key={JSON.stringify(color)}
+            color={color}
+            setFilter={setFilter}
+          />
+        ))}
+      </>
+    )
   )
 }
 
@@ -160,33 +154,25 @@ const GeometryElementCard = ({
   filter,
   search,
   context
-}: IGeometryElementCardProps): React.JSX.Element | null => {
+}: IGeometryElementCardProps): ReactNode => {
   /**
    * Display?
    * @param element Element
    * @returns True/false
    */
-  const display = useCallback(
-    (element: {
-      uuid: string
-      label: number
-      name: string
-      color?: TGeometryColor
-    }): boolean => {
-      // Color filter
-      if (
-        filter &&
-        (filter.r !== element.color?.r ||
-          filter.g !== element.color?.g ||
-          filter.b !== element.color?.b)
-      )
-        return false
-      // Search
-      if (search && element.name && !element.name.includes(search)) return false
-      return true
-    },
-    [filter, search]
-  )
+  const display = useMemo(() => {
+    // Color filter
+    if (
+      filter &&
+      (filter.r !== element.color?.r ||
+        filter.g !== element.color?.g ||
+        filter.b !== element.color?.b)
+    )
+      return false
+    // Search
+    if (search && element.name && !element.name.includes(search)) return false
+    return true
+  }, [element, filter, search])
 
   /**
    * On highglight
@@ -203,7 +189,7 @@ const GeometryElementCard = ({
    * On unhighlight
    */
   const onUnhighlight = useCallback((): void => {
-    context.dispatch(unhighlight())
+    context.dispatch(highlight())
   }, [context])
 
   /**
@@ -212,9 +198,8 @@ const GeometryElementCard = ({
    */
   const onSelect = useCallback(
     (selection: ISelect): void => {
-      if (context.selected.find((s) => s.uuid === selection.uuid))
-        context.dispatch(unselect(selection))
-      else context.dispatch(select(selection))
+      const selected = addOrRemoveSelection(context.selected, selection)
+      context.dispatch(select(selected))
     },
     [context]
   )
@@ -262,47 +247,48 @@ const GeometryElementCard = ({
   /**
    * Render
    */
-  if (!display(element)) return null
-  return (
-    <Card
-      style={{ marginBottom: '10px' }}
-      bodyStyle={{
-        position: 'relative',
-        padding: '10px 10px 10px 40px',
-        borderWidth: '2px',
-        borderStyle: 'solid',
-        borderColor,
-        backgroundColor
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onUnhighlight}
-      onClick={onClick}
-    >
-      <Space direction="vertical">
-        <div>
-          <div
-            style={{
-              position: 'absolute',
-              left: '-2px',
-              top: '-2px',
-              bottom: '-2px',
-              width: '30px',
-              backgroundColor: Utils.rgbToRgba(element.color, 1)
-            }}
-          />
-          {element.name}
-        </div>
-        {alreadySelected?.map((a) => {
-          if (a.selected.find((s) => s.uuid === element.uuid))
-            return (
-              <Tag key={element.uuid} color={Utils.stringToColor(a.label)}>
-                {a.label}
-              </Tag>
-            )
-        })}
-      </Space>
-    </Card>
-  )
+  if (display)
+    return (
+      <Card
+        style={{ marginBottom: '10px' }}
+        bodyStyle={{
+          position: 'relative',
+          padding: '10px 10px 10px 40px',
+          borderWidth: '2px',
+          borderStyle: 'solid',
+          borderColor,
+          backgroundColor
+        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onUnhighlight}
+        onClick={onClick}
+      >
+        <Space direction="vertical">
+          <div>
+            <div
+              style={{
+                position: 'absolute',
+                left: '-2px',
+                top: '-2px',
+                bottom: '-2px',
+                width: '30px',
+                backgroundColor: Utils.rgbToRgba(element.color, 1)
+              }}
+            />
+            {element.name}
+          </div>
+          {alreadySelected?.map((a) => {
+            if (a.selected.find((s) => s.uuid === element.uuid))
+              return (
+                <Tag key={element.uuid} color={Utils.stringToColor(a.label)}>
+                  {a.label}
+                </Tag>
+              )
+          })}
+        </Space>
+      </Card>
+    )
+  return null
 }
 
 /**
@@ -317,7 +303,7 @@ const Selector = ({
   geometry,
   alreadySelected,
   updateSelected
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [colors, setColors] = useState<TGeometryColor[]>([])
   const [filter, setFilter] = useState<TGeometryColor>()
@@ -354,80 +340,70 @@ const Selector = ({
    * Select all
    */
   const selectAll = useCallback((): void => {
-    geometry.summary[type!]?.forEach((element) => {
-      if (
-        !filter ||
-        (filter &&
-          filter.r === element.color?.r &&
-          filter.g === element.color?.g &&
-          filter.b === element.color?.b)
-      )
-        dispatch(
-          select({
-            uuid: element.uuid,
-            label: element.label
-          })
-        )
-    })
-  }, [geometry, type, filter, dispatch])
+    const toAdd =
+      (geometry.summary[type!]
+        ?.map((element) => {
+          if (
+            !filter ||
+            (filter &&
+              filter.r === element.color?.r &&
+              filter.g === element.color?.g &&
+              filter.b === element.color?.b)
+          )
+            return { uuid: element.uuid, label: element.label }
+        })
+        .filter((s) => s) as ISelect[]) ?? []
+    const newSelected = addSelections(selected, toAdd)
+    dispatch(select(newSelected))
+  }, [geometry, type, selected, filter, dispatch])
 
   /**
    * Unselect all
    */
   const unselectAll = useCallback(() => {
-    geometry.summary[type!]?.forEach((element) => {
-      if (
-        !filter ||
-        (filter &&
-          filter.r === element.color?.r &&
-          filter.g === element.color?.g &&
-          filter.b === element.color?.b)
-      )
-        dispatch(
-          unselect({
-            uuid: element.uuid,
-            label: element.label
-          })
-        )
-    })
-  }, [geometry, type, filter, dispatch])
+    const toRemove =
+      (geometry.summary[type!]
+        ?.map((element) => {
+          if (
+            !filter ||
+            (filter &&
+              filter.r === element.color?.r &&
+              filter.g === element.color?.g &&
+              filter.b === element.color?.b)
+          )
+            return {
+              uuid: element.uuid,
+              label: element.label
+            }
+        })
+        .filter((s) => s) as ISelect[]) ?? []
+    const newSelected = removeSelections(selected, toRemove)
+    dispatch(select(newSelected))
+  }, [geometry, type, selected, filter, dispatch])
 
   /**
    * Swap selection
    */
   const selectSwap = useCallback(() => {
-    geometry.summary[type!]?.forEach((element) => {
-      if (
-        !filter ||
-        (filter &&
-          filter.r === element.color?.r &&
-          filter.g === element.color?.g &&
-          filter.b === element.color?.b)
-      ) {
-        if (selected.find((s) => s.uuid === element.uuid))
-          dispatch(
-            unselect({
+    const toSwap =
+      (geometry.summary[type!]
+        ?.map((element) => {
+          if (
+            !filter ||
+            (filter &&
+              filter.r === element.color?.r &&
+              filter.g === element.color?.g &&
+              filter.b === element.color?.b)
+          )
+            return {
               uuid: element.uuid,
               label: element.label
-            })
-          )
-        else
-          dispatch(
-            select({
-              uuid: element.uuid,
-              label: element.label
-            })
-          )
-      } else {
-        dispatch(
-          select({
-            uuid: element.uuid,
-            label: element.label
-          })
-        )
-      }
-    })
-  }, [geometry, selected, type, filter, dispatch])
+            }
+        })
+        .filter((s) => s) as ISelect[]) ?? []
+    const newSelected = swapSelections(selected, toSwap)
+    dispatch(select(newSelected))
+  }, [geometry, type, selected, filter, dispatch])
 
   /**
    * On search

@@ -1,3 +1,0 @@
-/** @module Lib.Three */
-
-export {}

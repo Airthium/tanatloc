@@ -67,8 +67,9 @@ const add = async (
 const get = async <T extends TProjectGet>(
   id: string,
   data: T
-): Promise<IProjectGet<T>> => {
-  const projectData = (await ProjectDB.get(id, data)) as IProjectGet<T>
+): Promise<IProjectGet<T> | undefined> => {
+  const projectData = await ProjectDB.get(id, data)
+  if (!projectData) return
 
   if (data.includes('geometries') && !projectData.geometries)
     projectData.geometries = []
@@ -82,7 +83,7 @@ const get = async <T extends TProjectGet>(
 
   if (data.includes('groups') && !projectData.groups) projectData.groups = []
 
-  return projectData
+  return projectData as IProjectGet<T>
 }
 
 /**
@@ -110,20 +111,19 @@ const getUsers = async (
 ): Promise<
   IUserWithData<('lastname' | 'firstname' | 'email' | 'avatar')[]>[]
 > => {
-  return Promise.all(
-    users.map(async (user) => {
-      const userData = await User.getWithData(user, [
-        'lastname',
-        'firstname',
-        'email',
-        'avatar'
-      ])
-      return {
-        ...userData,
-        id: user
-      }
-    })
-  )
+  const usersData = []
+  for (const user of users) {
+    const userData = await User.getWithData(user, [
+      'lastname',
+      'firstname',
+      'email',
+      'avatar'
+    ])
+    if (!userData) continue
+
+    usersData.push(userData)
+  }
+  return usersData
 }
 
 /**
@@ -134,15 +134,14 @@ const getUsers = async (
 const getGroups = async (
   groups: string[]
 ): Promise<IGroupWithData<'name'[]>[]> => {
-  return Promise.all(
-    groups.map(async (group) => {
-      const groupData = await Group.getWithData(group, ['name'])
-      return {
-        ...groupData,
-        id: group
-      }
-    })
-  )
+  const groupsData = []
+  for (const group of groups) {
+    const groupData = await Group.getWithData(group, ['name'])
+    if (!groupData) continue
+
+    groupsData.push(groupData)
+  }
+  return groupsData
 }
 
 /**
@@ -154,11 +153,12 @@ const getGroups = async (
 const getWithData = async <T extends TProjectGet>(
   id: string,
   data: T
-): Promise<IProjectWithData<T>> => {
+): Promise<IProjectWithData<T> | undefined> => {
   const project = await get(id, data)
+  if (!project) return
 
   // Check archived
-  if (project?.archived) project.avatar = undefined
+  if (project.archived) project.avatar = undefined
 
   const { avatar, owners, users, groups, ...projectData } = project
 
@@ -194,6 +194,8 @@ const getWithData = async <T extends TProjectGet>(
  */
 const addToGroup = async (group: string, project: { id: string }) => {
   const groupData = await Group.get(group, ['projects'])
+  if (!groupData) return
+
   if (!groupData.projects.includes(project.id))
     await Group.update({ id: group }, [
       {
@@ -228,6 +230,8 @@ const deleteFromGroup = async (group: string, project: { id: string }) => {
  */
 const addToUser = async (user: string, project: { id: string }) => {
   const userData = await User.get(user, ['projects'])
+  if (!userData) return
+
   if (!userData.projects.includes(project.id))
     await User.update({ id: user }, [
       {
@@ -279,27 +283,21 @@ const update = async (
     // Get data
     const projectData = await get(project.id, ['groups'])
 
-    // Delete groups
-    const deleted = projectData.groups.filter(
-      (g) => !groupsUpdate.value.includes(g)
-    )
+    if (projectData) {
+      // Delete groups
+      const deleted = projectData.groups.filter(
+        (g) => !groupsUpdate.value.includes(g)
+      )
 
-    await Promise.all(
-      deleted.map(async (group) => {
-        await deleteFromGroup(group, project)
-      })
-    )
+      for (const group of deleted) await deleteFromGroup(group, project)
 
-    // Added groups
-    const added = groupsUpdate.value.filter(
-      (g) => !projectData.groups.find((gg) => gg === g)
-    )
+      // Added groups
+      const added = groupsUpdate.value.filter(
+        (g) => !projectData.groups.find((gg) => gg === g)
+      )
 
-    await Promise.all(
-      added.map(async (group) => {
-        await addToGroup(group, project)
-      })
-    )
+      for (const group of added) await addToGroup(group, project)
+    }
   }
 
   // Check users
@@ -310,27 +308,21 @@ const update = async (
     // Get data
     const projectData = await get(project.id, ['users'])
 
-    // Deleted users
-    const deleted = projectData.users.filter(
-      (u) => !usersUpdate.value.includes(u)
-    )
+    if (projectData) {
+      // Deleted users
+      const deleted = projectData.users.filter(
+        (u) => !usersUpdate.value.includes(u)
+      )
 
-    await Promise.all(
-      deleted.map(async (user) => {
-        await deleteFromUser(user, project)
-      })
-    )
+      for (const user of deleted) await deleteFromUser(user, project)
 
-    // Added users
-    const added = usersUpdate.value.filter(
-      (u) => !projectData.users.includes(u)
-    )
+      // Added users
+      const added = usersUpdate.value.filter(
+        (u) => !projectData.users.includes(u)
+      )
 
-    await Promise.all(
-      added.map(async (user) => {
-        await addToUser(user, project)
-      })
-    )
+      for (const user of added) await addToUser(user, project)
+    }
   }
 
   // Check title
@@ -360,26 +352,17 @@ const del = async (
   // Get data
   const data = await get(project.id, ['groups', 'users', 'simulations'])
 
-  // Delete from groups
-  await Promise.all(
-    data.groups.map(async (group) => {
-      await deleteFromGroup(group, project)
-    })
-  )
+  if (data) {
+    // Delete from groups
+    for (const group of data.groups) await deleteFromGroup(group, project)
 
-  // Delete from users
-  await Promise.all(
-    data.users.map(async (user) => {
-      await deleteFromUser(user, project)
-    })
-  )
+    // Delete from users
+    for (const user of data.users) await deleteFromUser(user, project)
 
-  // Delete simulation
-  await Promise.all(
-    data.simulations.map(async (simulation) => {
+    // Delete simulation
+    for (const simulation of data.simulations)
       await Simulation.del({ id: simulation })
-    })
-  )
+  }
 
   // Delete project
   await ProjectDB.del(project)
@@ -404,6 +387,7 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
     'geometries',
     'simulations'
   ])
+  if (!data) throw new Error('Project not found')
 
   // Create temporary path
   const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
@@ -423,28 +407,24 @@ const archive = async (project: { id: string }): Promise<ReadStream> => {
     } catch (err) {}
 
   // Archive geometries
-  await Promise.all(
-    data.geometries.map(async (geometry) => {
-      try {
-        await Geometry.archive(
-          { id: geometry },
-          path.join(temporaryPath, GEOMETRY_RELATIVE)
-        )
-      } catch (err) {}
-    })
-  )
+  for (const geometry of data.geometries) {
+    try {
+      await Geometry.archive(
+        { id: geometry },
+        path.join(temporaryPath, GEOMETRY_RELATIVE)
+      )
+    } catch (err) {}
+  }
 
   // Archive simulations
-  await Promise.all(
-    data.simulations.map(async (simulation) => {
-      try {
-        await Simulation.archive(
-          { id: simulation },
-          path.join(temporaryPath, SIMULATION_RELATIVE)
-        )
-      } catch (err) {}
-    })
-  )
+  for (const simulation of data.simulations) {
+    try {
+      await Simulation.archive(
+        { id: simulation },
+        path.join(temporaryPath, SIMULATION_RELATIVE)
+      )
+    } catch (err) {}
+  }
 
   // Create archive
   const archiveFileName = temporaryPath + '.tgz'
@@ -498,14 +478,12 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
       path.join(temporaryPath, AVATAR_RELATIVE)
     )
 
-    await Promise.all(
-      files.map(async (file) => {
-        await Tools.copyFile(
-          { path: path.join(temporaryPath, AVATAR_RELATIVE), file: file.name },
-          { path: path.join(STORAGE, AVATAR_RELATIVE), file: file.name }
-        )
-      })
-    )
+    for (const file of files) {
+      await Tools.copyFile(
+        { path: path.join(temporaryPath, AVATAR_RELATIVE), file: file.name },
+        { path: path.join(STORAGE, AVATAR_RELATIVE), file: file.name }
+      )
+    }
   }
 
   // Geometry
@@ -514,23 +492,21 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
       path.join(temporaryPath, GEOMETRY_RELATIVE)
     )
 
-    await Promise.all(
-      files.map(async (file) => {
-        if (file.isDirectory())
-          await Tools.copyDirectory(
-            path.join(temporaryPath, GEOMETRY_RELATIVE, file.name),
-            path.join(STORAGE, GEOMETRY_RELATIVE, file.name)
-          )
-        else if (file.isFile())
-          await Tools.copyFile(
-            {
-              path: path.join(temporaryPath, GEOMETRY_RELATIVE),
-              file: file.name
-            },
-            { path: path.join(STORAGE, GEOMETRY_RELATIVE), file: file.name }
-          )
-      })
-    )
+    for (const file of files) {
+      if (file.isDirectory())
+        await Tools.copyDirectory(
+          path.join(temporaryPath, GEOMETRY_RELATIVE, file.name),
+          path.join(STORAGE, GEOMETRY_RELATIVE, file.name)
+        )
+      else if (file.isFile())
+        await Tools.copyFile(
+          {
+            path: path.join(temporaryPath, GEOMETRY_RELATIVE),
+            file: file.name
+          },
+          { path: path.join(STORAGE, GEOMETRY_RELATIVE), file: file.name }
+        )
+    }
   }
 
   // Simulation
@@ -539,14 +515,12 @@ const unarchiveFromServer = async (project: { id: string }): Promise<void> => {
       path.join(temporaryPath, SIMULATION_RELATIVE)
     )
 
-    await Promise.all(
-      simulationDirectories.map(async (simulation) => {
-        await Tools.copyDirectory(
-          path.join(temporaryPath, SIMULATION_RELATIVE, simulation),
-          path.join(STORAGE, SIMULATION_RELATIVE, simulation)
-        )
-      })
-    )
+    for (const simulation of simulationDirectories) {
+      await Tools.copyDirectory(
+        path.join(temporaryPath, SIMULATION_RELATIVE, simulation),
+        path.join(STORAGE, SIMULATION_RELATIVE, simulation)
+      )
+    }
   }
 
   // Update project
@@ -609,7 +583,7 @@ const copy = async (
   user: { id: string },
   workspace: { id: string },
   project: { id: string }
-): Promise<INewProject> => {
+): Promise<INewProject | undefined> => {
   const data = await get(project.id, [
     'title',
     'description',
@@ -619,6 +593,7 @@ const copy = async (
     'users',
     'groups'
   ])
+  if (!data) return
 
   const newProject = await add(user, workspace, {
     title: data.title + ' (Copy)',
@@ -650,6 +625,7 @@ const copy = async (
       'extension',
       'uploadfilename'
     ])
+    if (!geometryData) continue
 
     // Read geometry
     const buffer = await Tools.readFile(
@@ -684,6 +660,7 @@ const copy = async (
   // Simulations
   for (const simulation of data.simulations) {
     const simulationData = await Simulation.get(simulation, ['name', 'scheme'])
+    if (!simulationData) continue
 
     // Update geometries
     const geometry = simulationData.scheme.configuration.geometry

@@ -77,7 +77,7 @@ export const get = async <T extends TUserGet, Key extends TUserGetKey>(
   id: string,
   data: T,
   key: TUserGetKey = 'id'
-): Promise<IUser<T, Key>> => {
+): Promise<IUser<T, Key> | undefined> => {
   const response = await getter(tables.USERS, id, data, key)
 
   const user = response.rows[0]

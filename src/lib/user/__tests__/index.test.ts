@@ -226,30 +226,6 @@ describe('lib/user', () => {
       workspaces: [],
       usermodels: [{}]
     })
-
-    mockAvatarRead.mockImplementation(() => {
-      throw new Error('avatar error')
-    })
-    mockWorkspaceGet.mockImplementation(() => {
-      throw new Error('workspace error')
-    })
-    mockProjectGet.mockImplementation(() => {
-      throw new Error('project error')
-    })
-    mockUserModelGet.mockImplementation(() => {
-      throw new Error('usermodel error')
-    })
-    user = await User.getWithData('id', ['email', 'avatar'])
-    expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockAvatarRead).toHaveBeenCalledTimes(2)
-    expect(user).toEqual({
-      id: 'id',
-      email: 'email',
-      avatar: undefined,
-      projects: [],
-      workspaces: [],
-      usermodels: []
-    })
   })
 
   test('getBy', async () => {

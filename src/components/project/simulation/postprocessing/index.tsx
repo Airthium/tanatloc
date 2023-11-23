@@ -8,21 +8,10 @@ import {
   useMemo,
   useState
 } from 'react'
-import {
-  Button,
-  Card,
-  Drawer,
-  Form,
-  Input,
-  Layout,
-  Select,
-  Space,
-  Tooltip
-} from 'antd'
+import { Button, Card, Drawer, Form, Input, Select, Space } from 'antd'
 import {
   EyeInvisibleOutlined,
   EyeOutlined,
-  RadarChartOutlined,
   RocketOutlined
 } from '@ant-design/icons'
 
@@ -35,13 +24,14 @@ import {
   NotificationContext
 } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+import { SelectContext } from '@/context/select'
+import { setPostProcessing } from '@/context/select/actions'
 
 import Download from '@/components/project/simulation/run/results/download'
 
 import PostprocessingAPI from '@/api/postprocessing'
 
 import globalStyle from '@/styles/index.module.css'
-import style from './index.module.css'
 
 /**
  * Props
@@ -205,7 +195,6 @@ const Postprocessing = ({
   setResult
 }: IProps): React.JSX.Element | null => {
   // State
-  const [visible, setVisible] = useState<boolean>()
   const [filter, setFilter] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
   const [current, setCurrent] = useState<{
@@ -214,13 +203,10 @@ const Postprocessing = ({
   }>()
 
   // Context
+  const { postProcessing, dispatch: selectDispatch } = useContext(SelectContext)
   const { dispatch } = useContext(NotificationContext)
 
-  // Update visible
-  useEffect(() => {
-    if (results.length !== 1 && visible) setVisible(false)
-  }, [results, visible])
-
+  // Data
   const result = useMemo(() => results[0], [results])
 
   // Cleanup
@@ -309,14 +295,12 @@ const Postprocessing = ({
   }, [postprocess, filter])
 
   /**
-   * Set visible true
-   */
-  const setVisibleTrue = useCallback((): void => setVisible(true), [])
-
-  /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback((): void => setVisible(false), [])
+  const setVisibleFalse = useCallback(
+    (): void => selectDispatch(setPostProcessing(false)),
+    [selectDispatch]
+  )
 
   /**
    * On finish
@@ -342,6 +326,11 @@ const Postprocessing = ({
     [simulation, result, filter, dispatch]
   )
 
+  // Update visible
+  useEffect(() => {
+    if (results.length !== 1 && postProcessing) setVisibleFalse()
+  }, [results, postProcessing, setVisibleFalse])
+
   /**
    * Render
    */
@@ -349,64 +338,47 @@ const Postprocessing = ({
   if (!postprocess) return null
   if (!options.length) return null
   return (
-    <Layout className={style.postprocessing}>
-      <Layout.Content>
-        <Tooltip title="Post-processing">
+    <Drawer
+      title="Post-processing"
+      closable={true}
+      onClose={setVisibleFalse}
+      open={postProcessing}
+      mask={false}
+      maskClosable={false}
+    >
+      <Form>
+        <Form.Item name="filter" label="Filter">
+          <Select
+            placeholder="Select a filter"
+            options={options}
+            onChange={setFilter}
+          />
+        </Form.Item>
+      </Form>
+      <Form layout="vertical" style={{ margin: '24px 0' }} onFinish={onFinish}>
+        {parameters}
+        <Form.Item>
           <Button
             type="primary"
-            icon={<RadarChartOutlined />}
-            onClick={setVisibleTrue}
-            className={style.button}
-          />
-        </Tooltip>
-
-        <Drawer
-          title="Post-processing"
-          closable={true}
-          onClose={setVisibleFalse}
-          open={visible}
-          mask={false}
-          maskClosable={false}
-        >
-          <Form>
-            <Form.Item name="filter" label="Filter">
-              <Select
-                placeholder="Select a filter"
-                options={options}
-                onChange={setFilter}
-              />
-            </Form.Item>
-          </Form>
-          <Form
-            layout="vertical"
-            style={{ margin: '24px 0' }}
-            onFinish={onFinish}
+            loading={loading}
+            htmlType="submit"
+            icon={<RocketOutlined />}
           >
-            {parameters}
-            <Form.Item>
-              <Button
-                type="primary"
-                loading={loading}
-                htmlType="submit"
-                icon={<RocketOutlined />}
-              >
-                Run
-              </Button>
-            </Form.Item>
-          </Form>
-          {current && (
-            <Card size="small" title="Post-processing" extra={current.filter}>
-              <Results
-                simulation={simulation}
-                postprocessing={postprocessing}
-                results={current.results}
-                setResult={setResult}
-              />
-            </Card>
-          )}
-        </Drawer>
-      </Layout.Content>
-    </Layout>
+            Run
+          </Button>
+        </Form.Item>
+      </Form>
+      {current && (
+        <Card size="small" title="Post-processing" extra={current.filter}>
+          <Results
+            simulation={simulation}
+            postprocessing={postprocessing}
+            results={current.results}
+            setResult={setResult}
+          />
+        </Card>
+      )}
+    </Drawer>
   )
 }
 

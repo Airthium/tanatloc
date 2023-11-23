@@ -17,7 +17,7 @@ import { addError } from '@/context/notification/actions'
 import { DeleteButton } from '@/components/assets/button'
 
 import { ISelectAction, SelectContext } from '@/context/select'
-import { unselect } from '@/context/select/actions'
+import { select } from '@/context/select/actions'
 
 import Utils from '@/lib/utils'
 
@@ -66,9 +66,7 @@ export const _onDelete = async (
     const material = materials.values![index]
 
     // (unselect)
-    material.selected.forEach((s) => {
-      selectDispatch(unselect(s))
-    })
+    selectDispatch(select(material.selected))
 
     // Remove value
     materials.values = [

@@ -15,9 +15,7 @@ describe('context', () => {
     expect(actionTypes.SETTYPE).toBeDefined()
     expect(actionTypes.SETPART).toBeDefined()
     expect(actionTypes.HIGHLIGHT).toBeDefined()
-    expect(actionTypes.UNHIGHLIGHT).toBeDefined()
     expect(actionTypes.SELECT).toBeDefined()
-    expect(actionTypes.UNSELECT).toBeDefined()
     expect(actionTypes.SETPOINT).toBeDefined()
   })
 
@@ -63,51 +61,42 @@ describe('context', () => {
     })
     expect(res.highlighted).toEqual({ uuid: 'uuid', label: 1 })
 
-    // Unhighlight
-    res = selectReducer(initialState, { type: actionTypes.UNHIGHLIGHT })
-    expect(res.highlighted).toBe(undefined)
-
     // Select
     res = selectReducer(initialState, {
       type: actionTypes.SELECT,
-      value: { uuid: 'uuid', label: 2 }
+      value: [{ uuid: 'uuid', label: 2 }]
     })
     expect(res.selected).toEqual([{ uuid: 'uuid', label: 2 }])
-
-    res = selectReducer(res, {
-      type: actionTypes.SELECT,
-      value: { uuid: 'uuid', label: 3 }
-    })
-    expect(res.selected).toEqual([{ uuid: 'uuid', label: 2 }])
-
-    // Unselect
-    res = selectReducer(res, {
-      type: actionTypes.UNSELECT,
-      value: { uuid: 'uuid', label: 4 }
-    })
-    expect(res.selected).toEqual([])
-
-    res = selectReducer(res, {
-      type: actionTypes.UNSELECT,
-      value: { uuid: 'uuid', label: 4 }
-    })
-    expect(res.selected).toEqual([])
 
     // Set point
-    res = selectReducer(res, {
+    res = selectReducer(initialState, {
       type: actionTypes.SETPOINT,
       value: { x: 0, y: 1, z: 2 }
     })
     expect(res.point).toEqual({ x: 0, y: 1, z: 2 })
 
-    res = selectReducer(res, {
+    res = selectReducer(initialState, {
       type: actionTypes.SETPOINT,
       value: undefined
     })
     expect(res.point).toEqual(undefined)
 
+    // Set data
+    res = selectReducer(initialState, {
+      type: actionTypes.SETDATA,
+      value: true
+    })
+    expect(res.data).toEqual(true)
+
+    // Set post processing
+    res = selectReducer(initialState, {
+      type: actionTypes.SETPOSTPROCESSING,
+      value: true
+    })
+    expect(res.postProcessing).toEqual(true)
+
     // Default
-    res = selectReducer(res, { type: 'unknown' })
+    res = selectReducer(initialState, { type: 'unknown' })
     expect(res).toEqual(initialState)
   })
 

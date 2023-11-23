@@ -44,34 +44,27 @@ const route = async (req: Request, res: Response): Promise<void> => {
       }
 
       // Get simulations
-      const simulationsTmp = await Promise.all(
-        ids.map(async (id) => {
-          try {
-            // Get simulation
-            const simulation = await SimulationLib.get(id, [
-              'name',
-              'scheme',
-              'project'
-            ])
-            if (!simulation) throw error(400, 'Invalid simulation identifier')
+      const simulations = []
+      for (const id of ids) {
+        try {
+          // Get simulation
+          const simulation = await SimulationLib.get(id, [
+            'name',
+            'scheme',
+            'project'
+          ])
+          if (!simulation) throw error(400, 'Invalid simulation identifier')
 
-            // Check authorization
-            await checkProjectAuth(
-              { id: sessionId },
-              { id: simulation.project }
-            )
+          // Check authorization
+          await checkProjectAuth({ id: sessionId }, { id: simulation.project })
 
-            return simulation
-          } catch (err) {
-            console.warn(err)
-            return null
-          }
-        })
-      )
+          simulations.push(simulation)
+        } catch (err) {
+          console.warn(err)
+        }
+      }
 
       try {
-        const simulations = simulationsTmp.filter((p) => p)
-
         res.status(200).json({ simulations })
       } catch (err: any) {
         /* istanbul ignore next */

@@ -1133,7 +1133,8 @@ const Project = (): React.JSX.Element => {
             }}
             simulation={
               simulation && {
-                id: simulation.id
+                id: simulation.id,
+                scheme: simulation.scheme
               }
             }
             geometries={geometries.map((geometry) => ({

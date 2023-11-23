@@ -9,15 +9,12 @@ import {
   useContext
 } from 'react'
 import {
-  Button,
   Checkbox,
   Drawer,
   Dropdown,
-  Layout,
   Space,
   Table,
-  TableColumnsType,
-  Tooltip
+  TableColumnsType
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { LineChartOutlined } from '@ant-design/icons'
@@ -37,6 +34,8 @@ import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+import { SelectContext } from '@/context/select'
+import { setData } from '@/context/select/actions'
 
 import Utils from '@/lib/utils'
 
@@ -151,7 +150,6 @@ const ColumnRender = ({
  */
 const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   // State
-  const [visible, setVisible] = useState<boolean>(false)
   const [datas, setDatas] =
     useState<{ key: number; x: number; [key: string]: number }[]>()
   const [title, setTitle] = useState<string>()
@@ -170,6 +168,7 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   const [downloading, setDownloading] = useState<boolean>(false)
 
   // Context
+  const { data, dispatch: selectDispatch } = useContext(SelectContext)
   const { dispatch } = useContext(NotificationContext)
 
   // Data
@@ -318,14 +317,12 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   }, [datas, names, camelNames, columnSelection])
 
   /**
-   * Set visible true
-   */
-  const setVisibleTrue = useCallback((): void => setVisible(true), [])
-
-  /**
    * Set visible false
    */
-  const setVisibleFalse = useCallback((): void => setVisible(false), [])
+  const setVisibleFalse = useCallback(
+    (): void => selectDispatch(setData(false)),
+    [selectDispatch]
+  )
 
   /**
    * Export CSV (tab)
@@ -384,90 +381,77 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   if (!simulation) return null
   if (!datas || !names || !camelNames) return null
   return (
-    <Layout className={style.data}>
-      <Layout.Content>
-        <Tooltip title="Data visualization">
-          <Button
-            type="primary"
-            icon={<LineChartOutlined />}
-            onClick={setVisibleTrue}
-            className={style.button}
-          />
-        </Tooltip>
-
-        <Drawer
-          title="Data visualization"
-          placement="bottom"
-          closable={true}
-          onClose={setVisibleFalse}
-          open={visible}
-          mask={false}
-          maskClosable={false}
-          height="50vh"
-          bodyStyle={{ height: '100%', overflow: 'hidden' }}
-          extra={
-            <Dropdown.Button
-              loading={downloading}
-              disabled={!datas}
-              menu={{
-                items: [
-                  {
-                    label: 'Default separator: semicolon',
-                    key: 'semicolon',
-                    disabled: true
-                  },
-                  {
-                    label: 'Separator: tab',
-                    key: 'tab',
-                    onClick: exportCSVTab
-                  },
-                  {
-                    label: 'Separator: comma',
-                    key: ',',
-                    onClick: exportCSVComma
-                  }
-                ]
-              }}
-              onClick={exportCSVDefault}
-            >
-              Export CSV
-            </Dropdown.Button>
-          }
+    <Drawer
+      title="Data visualization"
+      placement="bottom"
+      closable={true}
+      onClose={setVisibleFalse}
+      open={data}
+      mask={false}
+      maskClosable={false}
+      height="50vh"
+      styles={{ body: { height: '100%', overflow: 'hidden' } }}
+      extra={
+        <Dropdown.Button
+          loading={downloading}
+          disabled={!datas}
+          menu={{
+            items: [
+              {
+                label: 'Default separator: semicolon',
+                key: 'semicolon',
+                disabled: true
+              },
+              {
+                label: 'Separator: tab',
+                key: 'tab',
+                onClick: exportCSVTab
+              },
+              {
+                label: 'Separator: comma',
+                key: ',',
+                onClick: exportCSVComma
+              }
+            ]
+          }}
+          onClick={exportCSVDefault}
         >
-          <div className={style.container}>
-            <div className={style.tableContainer}>
-              <Table
-                size="small"
-                sticky={true}
-                pagination={false}
-                dataSource={datas}
-                columns={columns}
-                scroll={{
-                  x: ((columns?.length ? +columns.length : 1) - 1) * 200
-                }}
-              />
-            </div>
+          Export CSV
+        </Dropdown.Button>
+      }
+    >
+      <div className={style.container}>
+        <div className={style.tableContainer}>
+          <Table
+            size="small"
+            sticky={true}
+            pagination={false}
+            dataSource={datas}
+            columns={columns}
+            scroll={{
+              x: ((columns?.length ? +columns.length : 1) - 1) * 200
+            }}
+          />
+        </div>
 
-            <ResponsiveContainer width="49%" height="100%">
-              <LineChart
-                data={plot?.data}
-                margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey={'x'} />
-                <YAxis
-                  domain={plot ? [plot.domainMin, plot.domainMax] : [-1, 1]}
-                  tickFormatter={format}
-                />
-                <ReTooltip />
-                <Legend />
-                {plot?.lines}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Drawer>
-      </Layout.Content>
-    </Layout>
+        <ResponsiveContainer width="49%" height="100%">
+          <LineChart
+            data={plot?.data}
+            margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey={'x'} />
+            <YAxis
+              domain={plot ? [plot.domainMin, plot.domainMax] : [-1, 1]}
+              tickFormatter={format}
+            />
+            <ReTooltip />
+            <Legend />
+            {plot?.lines}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </Drawer>
   )
 }
 

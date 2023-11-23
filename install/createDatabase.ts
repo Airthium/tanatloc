@@ -328,13 +328,11 @@ const checkSchema = async (table: string): Promise<void> => {
 
   if (existingColumns.length) {
     console.warn(' ⚠ Not used columns:')
-    await Promise.all(
-      existingColumns.map(async (column) => {
-        console.warn(' - ' + column.column_name)
+    for (const column of existingColumns) {
+      console.warn(' - ' + column.column_name)
 
-        await fixNotUsedColumn(table, column)
-      })
-    )
+      await fixNotUsedColumn(table, column)
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Data, { errors } from '..'
+import { ISelectState, SelectContext } from '@/context/select'
 
 jest.mock('recharts', () => ({
   CartesianGrid: () => <div />,
@@ -32,6 +33,11 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/data', () => {
+  const contextValue = {
+    data: true,
+    dispatch: jest.fn
+  } as unknown as ISelectState
+
   const simulation = { id: 'id', name: 'name' }
 
   beforeEach(() => {
@@ -103,12 +109,11 @@ describe('components/project/data', () => {
     }
     mockSimulation.mockImplementation(() => data)
 
-    const { unmount } = render(<Data simulation={simulation} />)
-
-    // Visible
-
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
+    const { unmount } = render(
+      <SelectContext.Provider value={contextValue}>
+        <Data simulation={simulation} />
+      </SelectContext.Provider>
+    )
 
     // Checkbox
     const checkboxes = screen.getAllByTestId('table-checkbox')
@@ -140,7 +145,11 @@ describe('components/project/data', () => {
     }
     mockSimulation.mockImplementation(() => data)
 
-    const { unmount } = render(<Data simulation={simulation} />)
+    const { unmount } = render(
+      <SelectContext.Provider value={contextValue}>
+        <Data simulation={simulation} />
+      </SelectContext.Provider>
+    )
 
     Object.defineProperty(window, 'URL', {
       value: {
@@ -148,10 +157,6 @@ describe('components/project/data', () => {
       },
       configurable: true
     })
-
-    // Visible
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
 
     // Download
     const exportCSV = screen.getByRole('button', { name: 'Export CSV' })

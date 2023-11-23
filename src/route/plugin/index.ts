@@ -74,7 +74,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
 
         // Check authorization
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
-        if (!user.authorizedplugins?.includes(body.plugin.key))
+        if (!user?.authorizedplugins?.includes(body.plugin.key))
           throw error(403, 'Access denied')
 
         try {

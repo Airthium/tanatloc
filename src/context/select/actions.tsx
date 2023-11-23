@@ -5,23 +5,17 @@ import { actionTypes, ISelect, ISelectAction, ISelectPoint } from '.'
 /**
  * Enable
  */
-export const enable = (): ISelectAction => {
-  return { type: actionTypes.ENABLE }
-}
+export const enable = (): ISelectAction => ({ type: actionTypes.ENABLE })
 
 /**
  * Disable
  */
-export const disable = (): ISelectAction => {
-  return { type: actionTypes.DISABLE }
-}
+export const disable = (): ISelectAction => ({ type: actionTypes.DISABLE })
 
 /**
  * Clear
  */
-export const clear = (): ISelectAction => {
-  return { type: actionTypes.CLEAR }
-}
+export const clear = (): ISelectAction => ({ type: actionTypes.CLEAR })
 
 /**
  * Set type
@@ -29,65 +23,58 @@ export const clear = (): ISelectAction => {
  */
 export const setType = (
   type: 'solids' | 'faces' | 'edges' | 'point'
-): ISelectAction => {
-  return { type: actionTypes.SETTYPE, value: type }
-}
+): ISelectAction => ({ type: actionTypes.SETTYPE, value: type })
 
 /**
  * Set part
  * @param part Part
  */
-export const setPart = (part?: string): ISelectAction => {
-  return { type: actionTypes.SETPART, value: part }
-}
+export const setPart = (part?: string): ISelectAction => ({
+  type: actionTypes.SETPART,
+  value: part
+})
 
 /**
  * Highlight
  * @param value Value
  */
-export const highlight = ({ uuid, label }: ISelect): ISelectAction => {
-  return {
-    type: actionTypes.HIGHLIGHT,
-    value: { uuid, label }
-  }
-}
-
-/**
- * Unhighlight
- */
-export const unhighlight = (): ISelectAction => {
-  return { type: actionTypes.UNHIGHLIGHT }
-}
+export const highlight = (highlighted?: ISelect): ISelectAction => ({
+  type: actionTypes.HIGHLIGHT,
+  value: highlighted
+})
 
 /**
  * Select
  * @param value Value
  */
-export const select = ({ uuid, label }: ISelect): ISelectAction => {
-  return {
-    type: actionTypes.SELECT,
-    value: { uuid, label: label }
-  }
-}
-
-/**
- * Unselect
- * @param value Value
- */
-export const unselect = ({ uuid, label }: ISelect): ISelectAction => {
-  return {
-    type: actionTypes.UNSELECT,
-    value: { uuid, label: label }
-  }
-}
+export const select = (selected: ISelect[]): ISelectAction => ({
+  type: actionTypes.SELECT,
+  value: selected
+})
 
 /**
  * Set point
  * @param point Point
  */
-export const setPoint = (point?: ISelectPoint): ISelectAction => {
-  return {
-    type: actionTypes.SETPOINT,
-    value: point
-  }
-}
+export const setPoint = (point?: ISelectPoint): ISelectAction => ({
+  type: actionTypes.SETPOINT,
+  value: point
+})
+
+/**
+ * Set data
+ * @param data Data
+ */
+export const setData = (data?: boolean): ISelectAction => ({
+  type: actionTypes.SETDATA,
+  value: data
+})
+
+/**
+ * Set post processing
+ * @param postProcessing Post processing
+ */
+export const setPostProcessing = (postProcessing?: boolean): ISelectAction => ({
+  type: actionTypes.SETPOSTPROCESSING,
+  value: postProcessing
+})

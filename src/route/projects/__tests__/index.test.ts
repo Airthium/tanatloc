@@ -150,12 +150,12 @@ describe('route/projects/ids', () => {
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
-    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(3)
-    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual({
-      projects: [{ id: 'id', name: 'name' }]
+      projects: []
     })
   })
 

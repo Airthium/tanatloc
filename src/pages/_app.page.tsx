@@ -1,6 +1,7 @@
 /** @module Pages.App */
 
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import { AppProps } from 'next/app'
 import { ConfigProvider } from 'antd'
 import { CookiesProvider } from 'react-cookie'
@@ -15,6 +16,11 @@ import theme from '@/styles/theme'
 
 import '@/styles/index.css'
 import '@/styles/fonts.css'
+
+const Canvas = dynamic(
+  () => import('@airthium/tanatloc-3d').then((mod) => mod.default.Canvas),
+  { ssr: false }
+)
 
 /**
  * Global App component
@@ -37,6 +43,7 @@ const App = ({ Component, pageProps }: AppProps): React.JSX.Element => {
           </Head>
           <MathJax.Head />
           <Component {...pageProps} />
+          <Canvas />
           <Cookies />
           <GoogleTag />
         </ConfigProvider>

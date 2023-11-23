@@ -39,7 +39,7 @@ export interface IWorkspace<T = []> {
 export const get = async <T extends TWorkspaceGet>(
   id: string,
   data: T
-): Promise<IWorkspace<T>> => {
+): Promise<IWorkspace<T> | undefined> => {
   const response = await getter(tables.WORKSPACES, id, data)
 
   const workspace = response.rows[0]

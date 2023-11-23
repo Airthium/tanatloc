@@ -39,7 +39,7 @@ export interface IOrganization<T = []> {
 export const get = async <T extends TOrganizationGet>(
   id: string,
   data: T
-): Promise<IOrganization<T>> => {
+): Promise<IOrganization<T> | undefined> => {
   const response = await getter(tables.ORGANIZATIONS, id, data)
 
   const organization = response.rows[0]

@@ -116,6 +116,8 @@ const Organization = ({
     [organization, swr, dispatch]
   )
 
+  console.log(organization)
+
   /**
    * Render
    */

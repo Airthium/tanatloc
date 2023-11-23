@@ -10,7 +10,7 @@ import {
 } from '@/api/index.d'
 
 import { ISelectAction, SelectContext } from '@/context/select'
-import { unselect } from '@/context/select/actions'
+import { select } from '@/context/select/actions'
 import {
   INotificationAction,
   NotificationContext
@@ -61,7 +61,7 @@ export const _onDelete = async (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
   },
-  editorDispatch: Dispatch<ISelectAction>,
+  selectDispatch: Dispatch<ISelectAction>,
   notificationDispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {
@@ -77,9 +77,7 @@ export const _onDelete = async (
     const boundaryCondition = typedBoundaryCondition.values![index]
 
     // (unselect)
-    boundaryCondition.selected.forEach((s) => {
-      editorDispatch(unselect(s))
-    })
+    selectDispatch(select(boundaryCondition.selected))
 
     typedBoundaryCondition.values = [
       ...typedBoundaryCondition.values!.slice(0, index),
@@ -134,7 +132,7 @@ const Delete = ({
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
-  const { dispatch: editorDispatch } = useContext(SelectContext)
+  const { dispatch: selectDispatch } = useContext(SelectContext)
   const { dispatch: notificationDispatch } = useContext(NotificationContext)
 
   // Data
@@ -162,13 +160,13 @@ const Delete = ({
         type,
         index,
         swr,
-        editorDispatch,
+        selectDispatch,
         notificationDispatch
       )
     } finally {
       setLoading(false)
     }
-  }, [simulation, type, index, swr, editorDispatch, notificationDispatch])
+  }, [simulation, type, index, swr, selectDispatch, notificationDispatch])
 
   /**
    * Render

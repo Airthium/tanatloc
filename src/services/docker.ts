@@ -50,6 +50,10 @@ const docker = (
   run.on('close', () => {
     try {
       execSync('docker stop ' + containerName)
+    } catch (err) {
+      console.error(err)
+    }
+    try {
       execSync('docker rm ' + containerName)
     } catch (err) {
       console.error(err)

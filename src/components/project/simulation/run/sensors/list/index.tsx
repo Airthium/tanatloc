@@ -73,6 +73,7 @@ const ListItem = ({
    */
   const unhighlight = useCallback((): void => {
     dispatch(disable())
+    dispatch(setPoint())
   }, [dispatch])
 
   /**

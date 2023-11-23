@@ -85,9 +85,7 @@ const ListItem = ({
 
     // Selected
     const currentSelected = boundaryCondition.selected
-    currentSelected?.forEach((s) => {
-      dispatch(select(s))
-    })
+    dispatch(select(currentSelected))
   }, [geometries, boundaryCondition, dispatch])
 
   /**

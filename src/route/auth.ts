@@ -30,11 +30,14 @@ const authGroup = async (
 ) => {
   for (let group of object.groups) {
     const groupData = await GroupLib.get(group, ['organization'])
+    if (!groupData) return false
+
     const organizationData = await OrganizationLib.get(groupData.organization, [
       'owners',
       'users',
       'groups'
     ])
+    if (!organizationData) return false
 
     if (await auth(user, organizationData)) return true
   }

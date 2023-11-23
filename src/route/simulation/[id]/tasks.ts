@@ -32,7 +32,7 @@ const tasks = async (req: Request, res: Response): Promise<void> => {
       // Tasks
       try {
         const simulation = await SimulationLib.get(id, ['tasks'])
-        res.status(200).json(simulation.tasks || [])
+        res.status(200).json(simulation?.tasks ?? [])
       } catch (err: any) {
         throw error(500, err.message)
       }

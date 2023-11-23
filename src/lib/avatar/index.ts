@@ -46,17 +46,21 @@ const add = async (
   if (type === 'user') {
     // Check existing avatar in user, if exists: delete
     const userData = await User.get(parent.id, ['avatar'])
-    if (userData.avatar) await del(parent, type, userData.avatar)
+    if (userData) {
+      if (userData.avatar) await del(parent, type, userData.avatar)
 
-    // Update user
-    await User.update(parent, [{ key: 'avatar', value: avatar.id }])
+      // Update user
+      await User.update(parent, [{ key: 'avatar', value: avatar.id }])
+    }
   } else {
     // Check existing avatar in project, if exists: delete
     const projectData = await Project.get(parent.id, ['avatar'])
-    if (projectData.avatar) await del(parent, type, projectData.avatar)
+    if (projectData) {
+      if (projectData.avatar) await del(parent, type, projectData.avatar)
 
-    // Update project
-    await Project.update(parent, [{ key: 'avatar', value: avatar.id }])
+      // Update project
+      await Project.update(parent, [{ key: 'avatar', value: avatar.id }])
+    }
   }
 
   // Return avatar
@@ -89,7 +93,7 @@ const read = async (id: string): Promise<Buffer> => {
 const get = async <T extends TAvatarGet>(
   id: string,
   data: T
-): Promise<IAvatar<T>> => AvatarDB.get(id, data)
+): Promise<IAvatar<T> | undefined> => AvatarDB.get(id, data)
 
 /**
  * Delete
@@ -146,7 +150,7 @@ const archive = async (avatar: { id: string }, to: string): Promise<void> => {
   // Data
   const data = await get(avatar.id, ['path'])
 
-  if (data.path) {
+  if (data?.path) {
     // Copy
     await Tools.copyFile(
       {

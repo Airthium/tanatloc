@@ -136,7 +136,12 @@ describe('lib/workspace', () => {
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
-    expect(workspace).toEqual({ name: 'name' })
+    expect(workspace).toEqual({
+      name: 'name',
+      owners: [],
+      users: [],
+      groups: []
+    })
 
     // With owners and users
     mockGet.mockImplementation(() => ({
@@ -161,9 +166,9 @@ describe('lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({
       name: 'name',
-      owners: [{ id: 'ownerid', email: 'email' }],
-      users: [{ id: 'userid', email: 'email' }],
-      groups: [{ id: 'groupid', name: 'name' }]
+      owners: [{ email: 'email' }],
+      users: [{ email: 'email' }],
+      groups: [{ name: 'name' }]
     })
   })
 
@@ -200,11 +205,9 @@ describe('lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspaces).toEqual([
       {
-        id: 'id',
         name: 'name',
         owners: [
           {
-            id: 'ownerid',
             workspaces: ['id', 'id'],
             projects: ['id']
           }
@@ -214,11 +217,9 @@ describe('lib/workspace', () => {
         projects: []
       },
       {
-        id: 'id',
         name: 'name',
         owners: [
           {
-            id: 'ownerid',
             workspaces: ['id', 'id'],
             projects: ['id']
           }
@@ -237,11 +238,9 @@ describe('lib/workspace', () => {
         archivedprojects: []
       },
       {
-        id: 'id',
         name: 'name',
         owners: [
           {
-            id: 'ownerid',
             workspaces: ['id', 'id'],
             projects: ['id']
           }

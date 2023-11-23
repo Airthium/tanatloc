@@ -65,12 +65,13 @@ const add = async (
 const get = async <T extends TSimulationGet>(
   id: string,
   data: T
-): Promise<ISimulationGet<T>> => {
-  const simulationData = (await SimulationDB.get(id, data)) as ISimulationGet<T>
+): Promise<ISimulationGet<T> | undefined> => {
+  const simulationData = await SimulationDB.get(id, data)
+  if (!simulationData) return
 
   if (data.includes('tasks') && !simulationData.tasks) simulationData.tasks = []
 
-  return simulationData
+  return simulationData as ISimulationGet<T>
 }
 
 /**
@@ -113,14 +114,15 @@ const del = async (simulation: { id: string }): Promise<void> => {
   const simulationData = await get(simulation.id, ['project'])
 
   // Delete simulation reference in project
-  await Project.update({ id: simulationData.project }, [
-    {
-      type: 'array',
-      method: 'remove',
-      key: 'simulations',
-      value: simulation.id
-    }
-  ])
+  simulationData &&
+    (await Project.update({ id: simulationData.project }, [
+      {
+        type: 'array',
+        method: 'remove',
+        key: 'simulations',
+        value: simulation.id
+      }
+    ]))
 
   // Delete folder
   const simulationDirectory = path.join(SIMULATION, simulation.id)
@@ -229,6 +231,7 @@ const copyGeometries = async (
 
     // Get data
     const geometry = await Geometry.get(id, ['name', 'uploadfilename', 'brep'])
+    if (!geometry) throw new Error('Geometry not found')
     child.data = {}
     child.data.file =
       configuration.dimension === 2 ? geometry.brep : geometry.uploadfilename
@@ -420,6 +423,7 @@ const checkCloudServer = async (
 
   // Update plugin configuration
   const userData = await User.get(user.id, ['authorizedplugins', 'plugins'])
+  if (!userData) throw new Error('User not found')
   const userPlugin = userData.plugins.find((p) => p.uuid === cloudServer.uuid)
   if (userPlugin) cloudServer.configuration = userPlugin.configuration
 
@@ -444,6 +448,7 @@ const run = async (
   keepMesh?: boolean
 ): Promise<void> => {
   const simulationData = await get(simulation.id, ['scheme'])
+  if (!simulationData) return
 
   // Global
   const configuration = simulationData.scheme?.configuration
@@ -580,6 +585,7 @@ const run = async (
  */
 const stop = async (simulation: { id: string }): Promise<void> => {
   const simulationData = await get(simulation.id, ['scheme', 'tasks'])
+  if (!simulationData) return
 
   // Global
   const configuration = simulationData.scheme?.configuration
@@ -652,9 +658,12 @@ const archive = async (
  * Copy
  * @param simulation Simulation
  */
-const copy = async (simulation: { id: string }): Promise<INewSimulation> => {
+const copy = async (simulation: {
+  id: string
+}): Promise<INewSimulation | undefined> => {
   // Get data
   const data = await get(simulation.id, ['name', 'scheme', 'project'])
+  if (!data) return
 
   // Update configuration
   data.scheme.configuration.run.done = false

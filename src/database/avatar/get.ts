@@ -26,7 +26,7 @@ export interface IAvatar<T = []> {
 const get = async <T extends TAvatarGet>(
   id: string,
   data: T
-): Promise<IAvatar<T>> => {
+): Promise<IAvatar<T> | undefined> => {
   const response = await getter(tables.AVATARS, id, data)
 
   const avatar = response.rows[0]

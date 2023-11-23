@@ -74,9 +74,7 @@ const ListItem = ({
 
     // Selected
     const currentSelected = material.selected
-    currentSelected?.forEach((s) => {
-      dispatch(select(s))
-    })
+    dispatch(select(currentSelected))
   }, [geometries, material, dispatch])
 
   /**

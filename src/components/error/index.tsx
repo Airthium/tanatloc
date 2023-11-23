@@ -19,7 +19,7 @@ export interface IProps {
  * @param props Props
  * @return Error
  */
-function ErrorPage({ webStatusCode }: IProps): React.JSX.Element {
+function ErrorPage({ webStatusCode }: Readonly<IProps>): React.JSX.Element {
   // Data
   const router = useRouter()
   const {

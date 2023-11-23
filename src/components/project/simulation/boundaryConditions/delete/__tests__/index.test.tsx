@@ -18,9 +18,9 @@ jest.mock('@/context/notification/actions', () => ({
     mockErrorNotification(title, err)
 }))
 
-const mockUnselect = jest.fn()
+const mockSelect = jest.fn()
 jest.mock('@/context/select/actions', () => ({
-  unselect: () => mockUnselect()
+  select: () => mockSelect()
 }))
 
 const mockUpdate = jest.fn()
@@ -90,7 +90,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
 
     mockErrorNotification.mockReset()
 
-    mockUnselect.mockReset()
+    mockSelect.mockReset()
 
     mockUpdate.mockReset()
   })

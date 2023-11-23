@@ -6,9 +6,10 @@ import {
   setType,
   setPart,
   highlight,
-  unhighlight,
   select,
-  unselect
+  setData,
+  setPostProcessing,
+  setPoint
 } from '../actions'
 
 describe('context/select', () => {
@@ -46,24 +47,32 @@ describe('context/select', () => {
     })
   })
 
-  test('unhighlight', () => {
-    const res = unhighlight()
-    expect(res).toEqual({ type: actionTypes.UNHIGHLIGHT })
-  })
-
   test('select', () => {
-    const res = select({ uuid: 'uuid', label: 1 })
+    const res = select([{ uuid: 'uuid', label: 1 }])
     expect(res).toEqual({
       type: actionTypes.SELECT,
-      value: { uuid: 'uuid', label: 1 }
+      value: [{ uuid: 'uuid', label: 1 }]
     })
   })
 
-  test('unselect', () => {
-    const res = unselect({ uuid: 'uuid', label: 2 })
+  test('setPoint', () => {
+    const point = { x: 0, y: 1, z: 2 }
+    const res = setPoint(point)
+    expect(res).toEqual({ type: actionTypes.SETPOINT, value: point })
+  })
+
+  test('setData', () => {
+    const data = true
+    const res = setData(data)
+    expect(res).toEqual({ type: actionTypes.SETDATA, value: data })
+  })
+
+  test('setPostProcessing', () => {
+    const postProcessing = true
+    const res = setPostProcessing(postProcessing)
     expect(res).toEqual({
-      type: actionTypes.UNSELECT,
-      value: { uuid: 'uuid', label: 2 }
+      type: actionTypes.SETPOSTPROCESSING,
+      value: postProcessing
     })
   })
 })

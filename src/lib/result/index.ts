@@ -83,14 +83,13 @@ const archive = async (simulation: { id: string }): Promise<ReadStream> => {
     .map((dirent) => dirent.name)
 
   // Summary
-  const simulationScheme = await Simulation.get(simulation.id, [
-    'name',
-    'scheme'
-  ])
-  const summary = createSummary(simulationScheme)
+  const simulationData = await Simulation.get(simulation.id, ['name', 'scheme'])
+  if (!simulationData) throw new Error('Simulation not found')
+
+  const summary = createSummary(simulationData)
 
   // PVD files
-  const pvdFiles = createPVD(simulationScheme, files)
+  const pvdFiles = createPVD(simulationData, files)
 
   // Create zip
   const output = Tools.writeStream(archiveName)

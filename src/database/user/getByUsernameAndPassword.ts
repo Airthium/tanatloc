@@ -17,7 +17,7 @@ export interface IUserCheck {
 export const getByUsernameAndPassword = async (user: {
   email: string
   password: string
-}): Promise<IUserCheck> => {
+}): Promise<IUserCheck | undefined> => {
   const response = await query(
     'SELECT id, isvalidated FROM ' +
       tables.USERS +

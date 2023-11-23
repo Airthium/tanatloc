@@ -44,34 +44,34 @@ const route = async (req: Request, res: Response) => {
       }
 
       // Get projects
-      const projectsTmp = await Promise.all(
-        ids.map(async (id) => {
-          try {
-            await checkProjectAuth({ id: sessionId }, { id })
+      const projects = []
+      for (const id of ids) {
+        try {
+          await checkProjectAuth({ id: sessionId }, { id })
 
-            // Get
-            return await ProjectLib.getWithData(id, [
-              'archived',
-              'title',
-              'description',
-              'createddate',
-              'lastaccess',
-              'avatar',
-              'owners',
-              'users',
-              'groups',
-              'simulations',
-              'workspace'
-            ])
-          } catch (err) {
-            console.warn(err)
-            return null
-          }
-        })
-      )
+          // Get
+          const project = await ProjectLib.getWithData(id, [
+            'archived',
+            'title',
+            'description',
+            'createddate',
+            'lastaccess',
+            'avatar',
+            'owners',
+            'users',
+            'groups',
+            'simulations',
+            'workspace'
+          ])
+
+          projects.push(project)
+        } catch (err) {
+          console.warn(err)
+          return null
+        }
+      }
 
       try {
-        const projects = projectsTmp.filter((p) => p)
         res.status(200).json({ projects })
       } catch (err: any) {
         /* istanbul ignore next */

@@ -44,32 +44,28 @@ const route = async (req: Request, res: Response): Promise<void> => {
       }
 
       // Get geometries
-      const geometriesTmp = await Promise.all(
-        ids.map(async (id) => {
-          try {
-            // Get geometry
-            const geometry = await GeometryLib.get(id, [
-              'name',
-              'summary',
-              'originalfilename',
-              'project'
-            ])
-            if (!geometry) throw error(400, 'Invalid geometry identifier')
+      const geometries = []
+      for (const id of ids) {
+        try {
+          // Get geometry
+          const geometry = await GeometryLib.get(id, [
+            'name',
+            'summary',
+            'originalfilename',
+            'project'
+          ])
+          if (!geometry) throw error(400, 'Invalid geometry identifier')
 
-            // Check authorization
-            await checkProjectAuth({ id: sessionId }, { id: geometry.project })
+          // Check authorization
+          await checkProjectAuth({ id: sessionId }, { id: geometry.project })
 
-            return geometry
-          } catch (err) {
-            console.warn(err)
-          }
-        })
-      )
+          geometries.push(geometry)
+        } catch (err) {
+          console.warn(err)
+        }
+      }
 
       try {
-        // Filter
-        const geometries = geometriesTmp.filter((p) => p)
-
         res.status(200).json({ geometries })
       } catch (err: any) {
         /* istanbul ignore next */

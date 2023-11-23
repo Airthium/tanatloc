@@ -112,7 +112,7 @@ const add = async (
 const get = async <T extends TGeometryGet>(
   id: string,
   data: T
-): Promise<IGeometry<T>> => GeometryDB.get(id, data)
+): Promise<IGeometry<T> | undefined> => GeometryDB.get(id, data)
 
 /**
  * Update geometry
@@ -144,17 +144,18 @@ const del = async (geometry: {
   ])
 
   // Delete geometry reference in project
-  await Project.update({ id: geometryData.project }, [
-    {
-      type: 'array',
-      method: 'remove',
-      key: 'geometries',
-      value: geometry.id
-    }
-  ])
+  geometryData &&
+    (await Project.update({ id: geometryData.project }, [
+      {
+        type: 'array',
+        method: 'remove',
+        key: 'geometries',
+        value: geometry.id
+      }
+    ]))
 
   // Delete original file
-  if (geometryData.uploadfilename)
+  if (geometryData?.uploadfilename)
     try {
       await Tools.removeFile(path.join(GEOMETRY, geometryData.uploadfilename))
     } catch (err) {
@@ -162,7 +163,7 @@ const del = async (geometry: {
     }
 
   // Delete glb file
-  if (geometryData.glb)
+  if (geometryData?.glb)
     try {
       await Tools.removeFile(path.join(GEOMETRY, geometryData.glb))
     } catch (err) {
@@ -176,7 +177,7 @@ const del = async (geometry: {
     }
 
   // Delete brep file
-  if (geometryData.brep)
+  if (geometryData?.brep)
     try {
       await Tools.removeFile(path.join(GEOMETRY, geometryData.brep))
     } catch (err) {
@@ -243,7 +244,7 @@ const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   const data = await get(geometry.id, ['uploadfilename', 'glb', 'brep'])
 
   // Original file
-  if (data.uploadfilename) {
+  if (data?.uploadfilename) {
     //copy
     await Tools.copyFile(
       {
@@ -260,7 +261,7 @@ const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   }
 
   // GLB
-  if (data.glb) {
+  if (data?.glb) {
     //copy
     await Tools.copyFile(
       {
@@ -274,7 +275,7 @@ const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   }
 
   // BRep
-  if (data.brep) {
+  if (data?.brep) {
     //copy
     await Tools.copyFile(
       {
@@ -300,6 +301,7 @@ const splitStep = async (
 ): Promise<string> => {
   // Data
   const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
+  if (!geometryData) return 'Geometry not found'
 
   // Split step
   const geometries = await Tools.splitStep(

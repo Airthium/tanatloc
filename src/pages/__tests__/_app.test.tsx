@@ -2,6 +2,15 @@ import { render } from '@testing-library/react'
 
 import App from '../_app.page'
 
+jest.mock('@airthium/tanatloc-3d', () => ({
+  __esModule: true,
+  default: { Canvas: () => <div /> }
+}))
+jest.mock('next/dynamic', () => (callback: Function) => {
+  callback()
+  return () => <div />
+})
+
 jest.mock('@/components/assets/mathjax', () => ({
   Head: () => <></>
 }))

@@ -41,13 +41,25 @@ describe('services/docker', () => {
     docker('bindPath', 'command')
   })
 
-  test('close error', () => {
+  test('docker stop error', () => {
     mockExecSync
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => '')
       .mockImplementationOnce(() => {
         throw new Error('docker stop error')
+      })
+    docker('bindPath', 'command')
+  })
+
+  test('docker rm error', () => {
+    mockExecSync
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => '')
+      .mockImplementationOnce(() => {
+        throw new Error('docker rm error')
       })
     docker('bindPath', 'command')
   })

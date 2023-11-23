@@ -74,7 +74,7 @@ export interface IGeometry<T = []> {
 export const get = async <T extends TGeometryGet>(
   id: string,
   data: T
-): Promise<IGeometry<T>> => {
+): Promise<IGeometry<T> | undefined> => {
   const response = await getter(tables.GEOMETRIES, id, data)
 
   const geometry = response.rows[0]

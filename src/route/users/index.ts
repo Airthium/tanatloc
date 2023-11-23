@@ -19,7 +19,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
 
     // Check superuser
     const user = await UserLib.get(sessionId, ['superuser'])
-    if (!user.superuser) throw error(403, 'Access denied')
+    if (!user?.superuser) throw error(403, 'Access denied')
 
     if (req.method === 'GET') {
       try {

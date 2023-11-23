@@ -2,6 +2,7 @@ import Postprocessing, { errors } from '..'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
+import { ISelectState, SelectContext } from '@/context/select'
 
 jest.mock('@/postprocessing', () => [
   {
@@ -51,6 +52,11 @@ jest.mock('@/api/postprocessing', () => ({
 }))
 
 describe('components/project/simulation/postprocessing', () => {
+  const contextValue = {
+    postProcessing: true,
+    dispatch: jest.fn
+  } as unknown as ISelectState
+
   const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
     id: 'id',
     scheme: {
@@ -164,15 +170,14 @@ describe('components/project/simulation/postprocessing', () => {
 
   test('visible', () => {
     const { unmount } = render(
-      <Postprocessing
-        simulation={simulation}
-        results={results}
-        setResult={setResult}
-      />
+      <SelectContext.Provider value={contextValue}>
+        <Postprocessing
+          simulation={simulation}
+          results={results}
+          setResult={setResult}
+        />
+      </SelectContext.Provider>
     )
-
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
 
     const drawer = screen.getByRole('button', { name: 'Close' })
     fireEvent.click(drawer)
@@ -182,16 +187,15 @@ describe('components/project/simulation/postprocessing', () => {
 
   test('filter & run', async () => {
     const { unmount } = render(
-      <Postprocessing
-        simulation={simulation}
-        results={results}
-        postprocessing={postprocessing}
-        setResult={setResult}
-      />
+      <SelectContext.Provider value={contextValue}>
+        <Postprocessing
+          simulation={simulation}
+          results={results}
+          postprocessing={postprocessing}
+          setResult={setResult}
+        />
+      </SelectContext.Provider>
     )
-
-    const button = screen.getByRole('button')
-    await act(() => fireEvent.click(button))
 
     const select = screen.getByRole('combobox')
     await act(() => fireEvent.mouseDown(select))
@@ -262,22 +266,23 @@ describe('components/project/simulation/postprocessing', () => {
 
   test('update visible', () => {
     const { rerender, unmount } = render(
-      <Postprocessing
-        simulation={simulation}
-        results={results}
-        setResult={setResult}
-      />
+      <SelectContext.Provider value={contextValue}>
+        <Postprocessing
+          simulation={simulation}
+          results={results}
+          setResult={setResult}
+        />
+      </SelectContext.Provider>
     )
 
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
-
     rerender(
-      <Postprocessing
-        results={[]}
-        simulation={simulation}
-        setResult={setResult}
-      />
+      <SelectContext.Provider value={contextValue}>
+        <Postprocessing
+          results={[]}
+          simulation={simulation}
+          setResult={setResult}
+        />
+      </SelectContext.Provider>
     )
 
     unmount()

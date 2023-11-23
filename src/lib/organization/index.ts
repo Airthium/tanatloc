@@ -58,8 +58,9 @@ const add = async (
 const get = async <T extends TOrganizationGet>(
   id: string,
   data: T
-): Promise<IOrganizationGet<T>> => {
+): Promise<IOrganizationGet<T> | undefined> => {
   const organizationData = await OrganizationDB.get(id, data)
+  if (!organizationData) return
 
   if (data.includes('owners') && !organizationData.owners)
     organizationData.owners = []
@@ -89,27 +90,25 @@ const getUsersData = async (
   users: string[],
   partial?: boolean
 ): Promise<IUserWithData[]> => {
-  return Promise.all(
-    users.map(async (user) => {
-      const data: TUserGet = ['email']
-      if (!partial) {
-        data.push(
-          'firstname',
-          'lastname',
-          'avatar',
-          'workspaces',
-          'projects',
-          'usermodels'
-        )
-      }
-      const ownerData = await User.getWithData(user, data)
+  const usersData = []
+  for (const user of users) {
+    const data: TUserGet = ['email']
+    if (!partial) {
+      data.push(
+        'firstname',
+        'lastname',
+        'avatar',
+        'workspaces',
+        'projects',
+        'usermodels'
+      )
+    }
+    const userData = await User.getWithData(user, data)
+    if (!userData) continue
 
-      return {
-        ...ownerData,
-        id: user
-      }
-    })
-  ) as Promise<IUserWithData[]>
+    usersData.push(userData)
+  }
+  return usersData as unknown as IUserWithData[]
 }
 
 /**
@@ -118,16 +117,14 @@ const getUsersData = async (
  * @returns Groups data
  */
 const getGroupsData = async (groups: string[]): Promise<IGroupWithData[]> => {
-  return Promise.all(
-    groups.map(async (group) => {
-      const groupData = await Group.getWithData(group, ['name', 'users'])
+  const groupsData = []
+  for (const group of groups) {
+    const groupData = await Group.getWithData(group, ['name', 'users'])
+    if (!groupData) continue
 
-      return {
-        ...groupData,
-        id: group
-      }
-    })
-  ) as Promise<IGroupWithData[]>
+    groupsData.push(groupData)
+  }
+  return groupsData as unknown as IGroupWithData[]
 }
 
 /**
@@ -139,8 +136,9 @@ const getGroupsData = async (groups: string[]): Promise<IGroupWithData[]> => {
 const getWithData = async <T extends TOrganizationGet>(
   id: string,
   data: T
-): Promise<IOrganizationWithData<T>> => {
+): Promise<IOrganizationWithData<T> | undefined> => {
   const organization = await get(id, data)
+  if (!organization) return
 
   const {
     owners,
@@ -258,13 +256,15 @@ const getByUser = async <T extends TOrganizationGet>(
   })
 
   // Get data
-  const userOrganizations = await Promise.all(
-    accessOrganizations.map(async (organization) => {
-      return getWithData(organization.id, data)
-    })
-  )
+  const userOrganizations: IOrganizationWithData<T>[] = []
+  for (const organization of accessOrganizations) {
+    const userOrganization = await getWithData(organization.id, data)
+    if (!userOrganization) continue
 
-  return userOrganizations.filter((o) => o)
+    userOrganizations.push(userOrganization)
+  }
+
+  return userOrganizations
 }
 
 /**
@@ -281,6 +281,7 @@ const update = async (
   if (ownerId) {
     // Get owner
     const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
+    if (!owner) return
 
     // Check for emails
     for (const d of data) {
@@ -329,44 +330,36 @@ const del = async (organization: { id: string }): Promise<void> => {
     'users',
     'groups'
   ])
+  if (!organizationData) return
 
   // Del organization from owners
-  organizationData.owners &&
-    (await Promise.all(
-      organizationData.owners.map(async (owner) => {
-        await User.update({ id: owner }, [
-          {
-            key: 'organizations',
-            type: 'array',
-            method: 'remove',
-            value: organization.id
-          }
-        ])
-      })
-    ))
+  for (const owner of organizationData.owners) {
+    await User.update({ id: owner }, [
+      {
+        key: 'organizations',
+        type: 'array',
+        method: 'remove',
+        value: organization.id
+      }
+    ])
+  }
 
   // Del organization from users
-  organizationData.users &&
-    (await Promise.all(
-      organizationData.users.map(async (user) => {
-        await User.update({ id: user }, [
-          {
-            key: 'organizations',
-            type: 'array',
-            method: 'remove',
-            value: organization.id
-          }
-        ])
-      })
-    ))
+  for (const user of organizationData.users) {
+    await User.update({ id: user }, [
+      {
+        key: 'organizations',
+        type: 'array',
+        method: 'remove',
+        value: organization.id
+      }
+    ])
+  }
 
   // Del groups
-  organizationData.groups &&
-    (await Promise.all(
-      organizationData.groups.map(async (group) => {
-        await Group.del({ id: group })
-      })
-    ))
+  for (const group of organizationData.groups) {
+    await Group.del({ id: group })
+  }
 
   // Delete organization
   await OrganizationDB.del(organization)
@@ -383,6 +376,7 @@ const accept = async (organization: { id: string }, user: { id: string }) => {
     'pendingowners',
     'pendingusers'
   ])
+  if (!organizationData) return
 
   // Check if user is pending
   const pendingOwner = organizationData.pendingowners?.includes(user.id)
@@ -419,6 +413,7 @@ const decline = async (organization: { id: string }, user: { id: string }) => {
     'pendingowners',
     'pendingusers'
   ])
+  if (!organizationData) return
 
   // Check if user is pending
   const pendingOwner = organizationData.pendingowners?.includes(user.id)
@@ -446,6 +441,7 @@ const decline = async (organization: { id: string }, user: { id: string }) => {
 const quit = async (organization: { id: string }, user: { id: string }) => {
   // Data
   const organizationData = await get(organization.id, ['users'])
+  if (!organizationData) return
 
   // Check user
   if (!organizationData.users?.includes(user.id))

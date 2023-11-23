@@ -2,8 +2,6 @@
 
 import { createContext, Dispatch, ReactNode, useMemo, useReducer } from 'react'
 
-import { IPart } from '@/lib/three/loaders/PartLoader'
-
 /**
  * Select interface
  */
@@ -22,6 +20,8 @@ export interface ISelectState {
   highlighted?: ISelect
   selected: ISelect[]
   point?: ISelectPoint
+  data?: boolean
+  postProcessing?: boolean
   dispatch: Dispatch<ISelectAction>
 }
 
@@ -30,7 +30,7 @@ export interface ISelectState {
  */
 export interface ISelectAction {
   type: string
-  value?: string | ISelectPoint | ISelect | IPart
+  value?: boolean | string | ISelectPoint | ISelect | ISelect[]
 }
 
 /**
@@ -52,6 +52,8 @@ export const initialState: ISelectState = {
   highlighted: undefined,
   selected: [],
   point: undefined,
+  data: undefined,
+  postProcessing: undefined,
   dispatch: () => undefined
 }
 
@@ -65,10 +67,10 @@ export const actionTypes = {
   SETTYPE: 'SETTYPE',
   SETPART: 'SETPART',
   HIGHLIGHT: 'HIGHLIGHT',
-  UNHIGHLIGHT: 'UNHIGHLIGHT',
   SELECT: 'SELECT',
-  UNSELECT: 'UNSELECT',
-  SETPOINT: 'SETPOINT'
+  SETPOINT: 'SETPOINT',
+  SETDATA: 'SETDATA',
+  SETPOSTPROCESSING: 'SETPOSTPROCESSING'
 }
 
 /**
@@ -86,8 +88,6 @@ export const selectReducer = (
   state: ISelectState,
   action: ISelectAction
 ): ISelectState => {
-  let index: number
-
   switch (action.type) {
     case actionTypes.ENABLE:
       return { ...state, enabled: true }
@@ -96,8 +96,7 @@ export const selectReducer = (
         ...state,
         enabled: false,
         highlighted: undefined,
-        selected: [],
-        point: undefined
+        selected: []
       }
     case actionTypes.CLEAR:
       return { ...initialState }
@@ -106,36 +105,26 @@ export const selectReducer = (
     case actionTypes.SETPART:
       return { ...state, part: action.value as string }
     case actionTypes.HIGHLIGHT:
-      return { ...state, highlighted: action.value as ISelect }
-    case actionTypes.UNHIGHLIGHT:
-      return { ...state, highlighted: undefined }
+      return { ...state, highlighted: action.value as ISelect | undefined }
     case actionTypes.SELECT:
-      index = state.selected.findIndex(
-        (item: ISelect) => item.uuid === (action.value as ISelect).uuid
-      )
-      if (index === -1)
-        return {
-          ...state,
-          selected: [...state.selected, action.value as ISelect]
-        }
-      else return state
-    case actionTypes.UNSELECT:
-      index = state.selected.findIndex(
-        (item: ISelect) => item.uuid === (action.value as ISelect).uuid
-      )
-      if (index === -1) return state
-      else
-        return {
-          ...state,
-          selected: [
-            ...state.selected.slice(0, index),
-            ...state.selected.slice(index + 1)
-          ]
-        }
+      return {
+        ...state,
+        selected: action.value as ISelect[]
+      }
     case actionTypes.SETPOINT:
       return {
         ...state,
         point: action.value as ISelectPoint
+      }
+    case actionTypes.SETDATA:
+      return {
+        ...state,
+        data: action.value as boolean
+      }
+    case actionTypes.SETPOSTPROCESSING:
+      return {
+        ...state,
+        postProcessing: action.value as boolean
       }
     default:
       return state

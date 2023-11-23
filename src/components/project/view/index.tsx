@@ -1,6 +1,15 @@
 /** @module Components.Project.View */
 
-import { Dispatch, useContext, useState } from 'react'
+import { Dispatch, useCallback, useContext, useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { Spin } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
+import {
+  Tanatloc3DPart,
+  Tanatloc3DSelectionPoint,
+  Tanatloc3DSelectionValue
+} from '@airthium/tanatloc-3d'
+import { v4 } from 'uuid'
 
 import {
   IFrontGeometriesItem,
@@ -16,13 +25,30 @@ import {
   NotificationContext
 } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+import { SelectContext } from '@/context/select'
+import {
+  highlight,
+  select,
+  setData,
+  setPoint,
+  setPostProcessing
+} from '@/context/select/actions'
 
 import { IGeometryPart } from '@/lib/index.d'
 
+import SimulationAPI from '@/api/simulation'
+import AvatarAPI from '@/api/avatar'
 import GeometryAPI from '@/api/geometry'
 import ResultAPI from '@/api/result'
 
-import ThreeView from './three'
+import style from './index.module.css'
+
+import theme from '@/styles/theme'
+
+const Renderer = dynamic(
+  () => import('@airthium/tanatloc-3d').then((mod) => mod.default.Renderer),
+  { ssr: false }
+)
 
 // Local interfaces
 export interface TGeometry
@@ -38,7 +64,7 @@ export interface TResult
  */
 export interface IProps {
   project: Pick<IFrontProject, 'id' | 'title'>
-  simulation?: Pick<IFrontSimulationsItem, 'id'>
+  simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
   geometries: TGeometry[]
   results: TResult[]
   postprocessing?: TResult
@@ -48,7 +74,8 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  part: 'Unable to load part'
+  part: 'Unable to load part',
+  snapshot: 'Unable to save snapshot'
 }
 
 /**
@@ -106,20 +133,19 @@ export const _loadResults = async (
   results: TResult[],
   dispatch: Dispatch<INotificationAction>
 ): Promise<IGeometryPart[]> => {
-  return Promise.all(
-    results.map(async (result) => {
-      const prevPart = parts.find((part) => part.extra?.glb === result.glb)
-      if (prevPart) return prevPart
+  const partsContent = []
+  for (const result of results) {
+    const prevPart = parts.find((part) => part.extra?.glb === result.glb)
+    if (prevPart) {
+      partsContent.push(prevPart)
+      continue
+    }
 
-      const partContent = await _loadPart(
-        simulation,
-        result,
-        'result',
-        dispatch
-      )
-      return partContent
-    })
-  )
+    const partContent = await _loadPart(simulation, result, 'result', dispatch)
+    partsContent.push(partContent)
+  }
+
+  return partsContent
 }
 
 /**
@@ -162,20 +188,24 @@ export const _loadGeometries = async (
   geometries: TGeometry[],
   dispatch: Dispatch<INotificationAction>
 ): Promise<IGeometryPart[]> => {
-  return Promise.all(
-    geometries.map(async (geometry) => {
-      const prevPart = parts.find((part) => part.extra?.id === geometry.id)
-      if (prevPart) return prevPart
+  const partsContent = []
+  for (const geometry of geometries) {
+    const prevPart = parts.find((part) => part.extra?.id === geometry.id)
+    if (prevPart) {
+      partsContent.push(prevPart)
+      continue
+    }
 
-      const partContent = await _loadPart(
-        simulation,
-        geometry,
-        'geometry',
-        dispatch
-      )
-      return partContent
-    })
-  )
+    const partContent = await _loadPart(
+      simulation,
+      geometry,
+      'geometry',
+      dispatch
+    )
+    partsContent.push(partContent)
+  }
+
+  return partsContent
 }
 
 /**
@@ -193,75 +223,207 @@ const View = ({
   // State
   const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+  const [dataEnabled, setDataEnabled] = useState<boolean>(false)
+  const [postProcessingEnabled, setPostProcessingEnabled] =
+    useState<boolean>(false)
 
   // Context
-  const { dispatch } = useContext(NotificationContext)
+  const { enabled, part, highlighted, selected, point, type, dispatch } =
+    useContext(SelectContext)
+  const { dispatch: notificationDispatch } = useContext(NotificationContext)
+
+  // Data
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
 
   // Parts
-  useCustomEffect(
-    () => {
-      ;(async () => {
-        setLoading(true)
+  useCustomEffect(() => {
+    const load = async () => {
+      setLoading(true)
 
-        try {
-          const newParts = []
+      const newParts = []
 
-          // Results
-          if (simulation && !postprocessing) {
-            const newResults = await _loadResults(
-              simulation,
-              parts,
-              results,
-              dispatch
-            )
-            newParts.push(...newResults)
-          }
+      // Results
+      if (simulation && !postprocessing) {
+        const newResults = await _loadResults(
+          simulation,
+          parts,
+          results,
+          notificationDispatch
+        )
+        newParts.push(...newResults)
+      }
 
-          // Postprocessing
-          if (simulation) {
-            const newPostprocessing = await _loadPostprocessing(
-              simulation,
-              parts,
-              dispatch,
-              postprocessing
-            )
-            newPostprocessing && newParts.push(newPostprocessing)
-          }
+      // Postprocessing
+      if (simulation) {
+        const newPostprocessing = await _loadPostprocessing(
+          simulation,
+          parts,
+          notificationDispatch,
+          postprocessing
+        )
+        newPostprocessing && newParts.push(newPostprocessing)
+      }
 
-          // Geometries
-          if (!results.length && !postprocessing) {
-            const newGeometries = await _loadGeometries(
-              simulation,
-              parts,
-              geometries,
-              dispatch
-            )
-            newParts.push(...newGeometries)
-          }
+      // Geometries
+      if (!results.length && !postprocessing) {
+        const newGeometries = await _loadGeometries(
+          simulation,
+          parts,
+          geometries,
+          notificationDispatch
+        )
+        newParts.push(...newGeometries)
+      }
 
-          setParts(newParts)
-        } catch (err) {
-        } finally {
-          setLoading(false)
-        }
-      })()
+      setParts(newParts)
+    }
+
+    load()
+      .catch((_err) => {
+        setLoading(false)
+      })
+      .finally(() => setLoading(false))
+  }, [
+    simulation,
+    geometries,
+    results,
+    postprocessing,
+    parts,
+    notificationDispatch
+  ])
+
+  // Data enabled
+  useEffect(() => {
+    const tasks = currentSimulation.tasks
+    const datas = tasks
+      ?.map((task) => task.datas)
+      .filter((d) => d)
+      .flat()
+
+    if (datas?.length) setDataEnabled(true)
+    else setDataEnabled(false)
+  }, [currentSimulation])
+
+  // Postprocessing enabled
+  useEffect(() => {
+    if (simulation?.scheme.configuration.run.postprocessing) {
+      let oneResult = false
+      parts.forEach((part) => {
+        if (part.summary.type === 'result') oneResult = true
+      })
+
+      if (oneResult) setPostProcessingEnabled(true)
+      else setPostProcessingEnabled(false)
+    } else setPostProcessingEnabled(false)
+  }, [simulation, parts])
+
+  /**
+   * Snapshot
+   * @param image Image
+   */
+  const snapshot = useCallback(
+    async (image: string): Promise<void> => {
+      try {
+        await AvatarAPI.add(
+          {
+            name: 'snapshot',
+            uid: 'snapshot_' + v4(),
+            data: image
+          },
+          { id: project.id }
+        )
+      } catch (err: any) {
+        notificationDispatch(addError({ title: errors.snapshot, err }))
+      }
     },
-    [simulation, geometries, results, postprocessing, parts],
+    [project.id, notificationDispatch]
+  )
+
+  /**
+   * On highlight
+   * @param value Value
+   */
+  const onHighlight = useCallback(
+    (value?: Tanatloc3DSelectionValue) => {
+      dispatch(highlight(value))
+    },
     [dispatch]
   )
+
+  /**
+   * On select
+   * @param value Value
+   */
+  const onSelect = useCallback(
+    (value: Tanatloc3DSelectionValue[]) => {
+      dispatch(select(value))
+    },
+    [dispatch]
+  )
+
+  /**
+   * On point
+   * @param value Value
+   */
+  const onPoint = useCallback(
+    (value: Tanatloc3DSelectionPoint) => {
+      dispatch(setPoint(value))
+    },
+    [dispatch]
+  )
+
+  /**
+   * On data
+   */
+  const onData = useCallback(() => {
+    dispatch(setData(true))
+  }, [dispatch])
+
+  /**
+   * On postprocessing
+   */
+  const onPostProcessing = useCallback(() => {
+    dispatch(setPostProcessing(true))
+  }, [dispatch])
 
   /**
    * Render
    */
   return (
-    <ThreeView
-      loading={loading}
-      project={{
-        id: project.id,
-        title: project.title
-      }}
-      parts={parts}
-    />
+    <>
+      <div
+        style={{ display: loading ? 'flex' : 'none' }}
+        className={style.loading}
+      >
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 80 }} spin />} />
+      </div>
+      <Renderer
+        theme={theme}
+        style={{ width: 'calc(100vw - 256px)' }}
+        parts={parts as Tanatloc3DPart[]}
+        selection={{
+          enabled,
+          part,
+          type,
+          highlighted,
+          selected,
+          point,
+          onHighlight,
+          onSelect,
+          onPoint
+        }}
+        data={dataEnabled}
+        postProcessing={postProcessingEnabled}
+        snapshot={{
+          project: {
+            apiRoute: snapshot,
+            size: { width: 2 * 260, height: 2 * 156 }
+          }
+        }}
+        onData={onData}
+        onPostProcessing={onPostProcessing}
+      />
+    </>
   )
 }
 

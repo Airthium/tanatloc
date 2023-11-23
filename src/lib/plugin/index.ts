@@ -51,6 +51,7 @@ const add = async (
 
   // Get
   const userData = await User.get(user.id, ['plugins'])
+  if (!userData) return
 
   // Update user
   userData.plugins = [...(userData.plugins ?? []), plugin]
@@ -81,7 +82,7 @@ const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
   // Get plugins
   const userData = await User.get(user.id, ['plugins'])
 
-  return userData.plugins ?? []
+  return userData?.plugins ?? []
 }
 
 /**
@@ -102,6 +103,7 @@ const update = async (
 
   // Get
   const userData = await User.get(user.id, ['plugins'])
+  if (!userData) return
 
   if (!userData.plugins) return
 
@@ -120,18 +122,17 @@ const update = async (
   }
 
   // Encrypt
-  userData.plugins = await Promise.all(
-    userData.plugins.map(async (p) => {
-      for (const key in p.configuration) {
-        const config = p.configuration[key]
-        if (config.secret && config.value)
-          p.configuration[key].value = JSON.stringify(
-            await Tools.encrypt(config.value)
-          )
-      }
-      return p
-    })
-  )
+  userData.plugins = []
+  for (const p of userData.plugins) {
+    for (const key in p.configuration) {
+      const config = p.configuration[key]
+      if (config.secret && config.value)
+        p.configuration[key].value = JSON.stringify(
+          await Tools.encrypt(config.value)
+        )
+    }
+    userData.plugins.push(p)
+  }
 
   userData.plugins = [
     ...userData.plugins.slice(0, index),
@@ -154,6 +155,8 @@ const del = async (
 ): Promise<void> => {
   // Get
   const userData = await User.get(user.id, ['plugins'])
+  if (!userData) return
+
   if (!userData.plugins) return
 
   const index = userData.plugins.findIndex((p) => p.uuid === plugin.uuid)

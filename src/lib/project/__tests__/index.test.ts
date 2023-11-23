@@ -213,6 +213,8 @@ describe('lib/project', () => {
       users: ['user'],
       groups: ['group']
     }))
+    mockUserGetWithData.mockImplementation(() => ({ id: 'user' }))
+    mockGroupGetWithData.mockImplementation(() => ({ id: 'group' }))
     mockAvatarRead.mockImplementation((val) => val)
     project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(2)
@@ -220,7 +222,7 @@ describe('lib/project', () => {
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
     expect(project).toEqual({
       avatar: 'avatar',
-      owners: [{ id: 'owner' }],
+      owners: [{ id: 'user' }],
       users: [{ id: 'user' }],
       groups: [{ id: 'group' }]
     })
@@ -236,7 +238,7 @@ describe('lib/project', () => {
     expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: undefined,
-      owners: [{ id: 'owner' }],
+      owners: [{ id: 'user' }],
       users: [{ id: 'user' }],
       groups: [{ id: 'group' }]
     })

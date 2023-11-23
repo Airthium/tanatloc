@@ -101,7 +101,7 @@ describe('lib/group', () => {
     const group = await Group.getWithData('id', ['users'])
     expect(group).toEqual({
       id: 'id',
-      users: [{ id: 'id', firstname: 'firstname' }]
+      users: [{ firstname: 'firstname' }]
     })
     expect(mockGet).toHaveBeenCalledTimes(1)
 
@@ -115,10 +115,10 @@ describe('lib/group', () => {
     const group2 = await Group.getWithData('id', ['users'])
     expect(group2).toEqual({
       id: 'id',
-      users: [{ id: 'id', firstname: 'firstname' }],
-      workspaces: [{ id: 'id' }],
-      projects: [{ id: 'id' }],
-      usermodels: [{ id: 'id' }]
+      users: [{ firstname: 'firstname' }],
+      workspaces: [],
+      projects: [],
+      usermodels: []
     })
   })
 
@@ -145,7 +145,7 @@ describe('lib/group', () => {
     expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(1)
     expect(groups).toEqual([
-      { users: [{ id: 'id', firstname: 'firstname' }] },
+      { users: [{ firstname: 'firstname' }] },
       { users: [] }
     ])
 
@@ -167,7 +167,7 @@ describe('lib/group', () => {
     expect(groups).toEqual([
       {
         name: 'name',
-        users: [{ id: 'id', firstname: 'firstname' }],
+        users: [{ firstname: 'firstname' }],
         workspaces: [],
         projects: [],
         usermodels: []
@@ -195,7 +195,7 @@ describe('lib/group', () => {
     expect(groups).toEqual([
       {
         name: 'name',
-        users: [{ id: 'id', firstname: 'firstname' }],
+        users: [{ firstname: 'firstname' }],
         workspaces: [],
         projects: [],
         usermodels: []
@@ -216,7 +216,7 @@ describe('lib/group', () => {
     groups = await Group.getByOrganization('id', ['name'])
     expect(mockOrganizationGet).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(groups).toEqual([{ id: 'id', name: 'name' }])
+    expect(groups).toEqual([{ name: 'name' }])
 
     // With users
     mockGet.mockImplementation(() => ({
@@ -229,7 +229,7 @@ describe('lib/group', () => {
     expect(mockUserGetWithData).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(groups).toEqual([
-      { id: 'id', name: 'name', users: [{ id: 'id', firstname: 'firstname' }] }
+      { name: 'name', users: [{ firstname: 'firstname' }] }
     ])
   })
 

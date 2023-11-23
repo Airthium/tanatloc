@@ -197,7 +197,7 @@ const Index = (): React.JSX.Element => {
       <Drawer
         open={dockerOpen}
         title="Docker Desktop installation instruction"
-        bodyStyle={{ marginTop: 16 }}
+        styles={{ body: { marginTop: 16 } }}
         onClose={setDockerOpenFalse}
       >
         <Typography>
@@ -273,7 +273,7 @@ const Index = (): React.JSX.Element => {
       <Drawer
         open={troubleshootingOpen}
         title="Troubleshooting"
-        bodyStyle={{ marginTop: 16 }}
+        styles={{ body: { marginTop: 16 } }}
         onClose={setTroubleshootingOpenFalse}
       >
         <Collapse

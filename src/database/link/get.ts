@@ -26,7 +26,7 @@ export interface ILink<T = []> {
 export const get = async <T extends TLinkGet>(
   id: string,
   data: T
-): Promise<ILink<T>> => {
+): Promise<ILink<T> | undefined> => {
   const response = await getter(tables.LINKS, id, data)
 
   const link = response.rows[0]

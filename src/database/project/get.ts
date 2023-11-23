@@ -63,7 +63,7 @@ export interface IProject<T = []> {
 export const get = async <T extends TProjectGet>(
   id: string,
   data: T
-): Promise<IProject<T>> => {
+): Promise<IProject<T> | undefined> => {
   const response = await getter(tables.PROJECTS, id, data)
 
   const project = response.rows[0]

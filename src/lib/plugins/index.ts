@@ -51,54 +51,51 @@ export const restartJobs = async (): Promise<void> => {
   const simulations = await Simulation.getAll(['scheme', 'tasks'])
 
   // Check waiting or processing tasks
-  await Promise.all(
-    simulations.map(async (simulation) => {
-      const tasks = simulation.tasks
-        ?.filter((t) => t.status === 'wait' || t.status === 'process')
-        .filter((t) => t)
+  for (const simulation of simulations) {
+    const tasks = simulation.tasks
+      ?.filter((t) => t.status === 'wait' || t.status === 'process')
+      .filter((t) => t)
 
-      tasks &&
-        (await Promise.all(
-          tasks.map(async (task, index) => {
-            console.info(
-              ' - Restart simulation ' + simulation.id + ' - task ' + task.label
+    if (tasks) {
+      for (let i = 0; i < tasks.length; ++i) {
+        const task = tasks[i]
+        console.info(
+          ' - Restart simulation ' + simulation.id + ' - task ' + task.label
+        )
+        try {
+          const pluginKey = task.plugin
+          const plugin = tanatloc.plugins.find((p) => p.key === pluginKey)
+          if (plugin?.server.lib.monitoring) {
+            const cloudConfiguration =
+              simulation.scheme?.configuration?.run?.cloudServer?.configuration
+            await plugin.server.lib.monitoring(
+              simulation.id,
+              task.pid,
+              { tasks: simulation.tasks, currentTask: task },
+              cloudConfiguration
             )
-            try {
-              const pluginKey = task.plugin
-              const plugin = tanatloc.plugins.find((p) => p.key === pluginKey)
-              if (plugin?.server.lib.monitoring) {
-                const cloudConfiguration =
-                  simulation.scheme?.configuration?.run?.cloudServer
-                    ?.configuration
-                await plugin.server.lib.monitoring(
-                  simulation.id,
-                  task.pid,
-                  { tasks: simulation.tasks, currentTask: task },
-                  cloudConfiguration
-                )
-              }
-            } catch (err) {
-              console.warn(
-                ' ⚠ Simulation ' +
-                  simulation.id +
-                  ' - task ' +
-                  task.label +
-                  ' restart failed!'
-              )
+          }
+        } catch (err) {
+          console.warn(
+            ' ⚠ Simulation ' +
+              simulation.id +
+              ' - task ' +
+              task.label +
+              ' restart failed!'
+          )
 
-              // Set task in error
-              tasks[index].status = 'error'
-              await Simulation.update({ id: simulation.id }, [
-                {
-                  key: 'tasks',
-                  value: tasks
-                }
-              ])
+          // Set task in error
+          tasks[i].status = 'error'
+          await Simulation.update({ id: simulation.id }, [
+            {
+              key: 'tasks',
+              value: tasks
             }
-          })
-        ))
-    })
-  )
+          ])
+        }
+      }
+    }
+  }
 }
 
 /**

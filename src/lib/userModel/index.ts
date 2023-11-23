@@ -54,8 +54,9 @@ const add = async (
 const get = async <T extends TUserModelGet>(
   id: string,
   data: T
-): Promise<IUserModelGet<T>> => {
+): Promise<IUserModelGet<T> | undefined> => {
   const userModelData = await UserModelDB.get(id, data)
+  if (!userModelData) return
 
   if (data.includes('owners') && !userModelData.owners)
     userModelData.owners = []
@@ -77,61 +78,53 @@ const get = async <T extends TUserModelGet>(
 const getWithData = async <T extends TUserModelGet>(
   id: string,
   data: T
-): Promise<IUserModelWithData<T>> => {
+): Promise<IUserModelWithData<T> | undefined> => {
   const userModel = await get(id, data)
+  if (!userModel) return
 
   const { owners, users, groups, ...userModelData } = userModel
 
   // Get owners
-  let ownersData
+  const ownersData = []
   if (owners) {
-    ownersData = await Promise.all(
-      owners.map(async (owner) => {
-        const ownerData = await User.getWithData(owner, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
-        return {
-          ...ownerData,
-          id: owner
-        }
-      })
-    )
+    for (const owner of owners) {
+      const ownerData = await User.getWithData(owner, [
+        'lastname',
+        'firstname',
+        'email',
+        'avatar'
+      ])
+      if (!ownerData) continue
+
+      ownersData.push(ownerData)
+    }
   }
 
   // Get users
-  let usersData
+  const usersData = []
   if (users) {
-    usersData = await Promise.all(
-      users.map(async (user) => {
-        const userData = await User.getWithData(user, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
-        return {
-          ...userData,
-          id: user
-        }
-      })
-    )
+    for (const user of users) {
+      const userData = await User.getWithData(user, [
+        'lastname',
+        'firstname',
+        'email',
+        'avatar'
+      ])
+      if (!userData) continue
+
+      usersData.push(userData)
+    }
   }
 
   // Get groups
-  let groupsData
+  const groupsData = []
   if (groups) {
-    groupsData = await Promise.all(
-      groups.map(async (group) => {
-        const groupData = await Group.get(group, ['name'])
-        return {
-          ...groupData,
-          id: group
-        }
-      })
-    )
+    for (const group of groups) {
+      const groupData = await Group.get(group, ['name'])
+      if (!groupData) continue
+
+      groupsData.push(groupData)
+    }
   }
 
   return {
@@ -152,6 +145,8 @@ const addToGroup = async (
   userModel: { id: string }
 ): Promise<void> => {
   const groupData = await Group.get(group, ['usermodels'])
+  if (!groupData) return
+
   if (!groupData.usermodels.includes(userModel.id))
     await Group.update({ id: group }, [
       {
@@ -192,6 +187,8 @@ const addToUser = async (
   userModel: { id: string }
 ): Promise<void> => {
   const userData = await User.get(user, ['usermodels'])
+  if (!userData) return
+
   if (!userData.usermodels.includes(userModel.id))
     await User.update({ id: user }, [
       {
@@ -239,21 +236,21 @@ const update = async (
     // Get data
     const userModelData = await getWithData(userModel.id, ['groups'])
 
-    // Deleted groups
-    const deleted = userModelData.groups.filter(
-      (g) => !groupsUpdate.value.includes(g.id)
-    )
+    if (userModelData) {
+      // Deleted groups
+      const deleted = userModelData.groups.filter(
+        (g) => !groupsUpdate.value.includes(g.id)
+      )
 
-    await Promise.all(
-      deleted.map(async (group) => deleteFromGroup(group.id, userModel))
-    )
+      for (const group of deleted) await deleteFromGroup(group.id, userModel)
 
-    // Added groups
-    const added = groupsUpdate.value.filter(
-      (g) => !userModelData.groups.find((gg) => gg.id === g)
-    )
+      // Added groups
+      const added = groupsUpdate.value.filter(
+        (g) => !userModelData.groups.find((gg) => gg.id === g)
+      )
 
-    await Promise.all(added.map(async (group) => addToGroup(group, userModel)))
+      for (const group of added) await addToGroup(group, userModel)
+    }
   }
 
   // Check users
@@ -264,21 +261,21 @@ const update = async (
     // Get data
     const userModelData = await getWithData(userModel.id, ['users'])
 
-    // Deleted users
-    const deleted = userModelData.users.filter(
-      (u) => !usersUpdate.value.includes(u.id)
-    )
+    if (userModelData) {
+      // Deleted users
+      const deleted = userModelData.users.filter(
+        (u) => !usersUpdate.value.includes(u.id)
+      )
 
-    await Promise.all(
-      deleted.map(async (user) => deleteFromUser(user.id, userModel))
-    )
+      for (const user of deleted) await deleteFromUser(user.id, userModel)
 
-    // Added users
-    const added = usersUpdate.value.filter(
-      (u) => !userModelData.users.find((user) => user.id === u)
-    )
+      // Added users
+      const added = usersUpdate.value.filter(
+        (u) => !userModelData.users.find((user) => user.id === u)
+      )
 
-    await Promise.all(added.map(async (user) => addToUser(user, userModel)))
+      for (const user of added) await addToUser(user, userModel)
+    }
   }
 
   // Update
@@ -297,15 +294,13 @@ const del = async (
   // Get data
   const data = await getWithData(userModel.id, ['groups', 'users'])
 
-  // Delete from groups
-  await Promise.all(
-    data.groups.map(async (group) => deleteFromGroup(group.id, userModel))
-  )
+  if (data) {
+    // Delete from groups
+    for (const group of data.groups) await deleteFromGroup(group.id, userModel)
 
-  // Delete from users
-  await Promise.all(
-    data.users.map(async (user) => deleteFromUser(user.id, userModel))
-  )
+    // Delete from users
+    for (const user of data.users) await deleteFromUser(user.id, userModel)
+  }
 
   // Delete user model
   await UserModelDB.del(userModel)

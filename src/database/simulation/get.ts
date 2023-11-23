@@ -73,7 +73,7 @@ export interface ISimulation<T = []> {
 export const get = async <T extends TSimulationGet>(
   id: string,
   data: T
-): Promise<ISimulation<T>> => {
+): Promise<ISimulation<T> | undefined> => {
   const response = await getter(tables.SIMULATIONS, id, data)
 
   const simulation = response.rows[0]

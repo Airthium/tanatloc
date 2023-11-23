@@ -500,6 +500,8 @@ const computeSimulation = async (
 
   // Get mesh tasks
   const simulationData = await Simulation.get(id, ['tasks'])
+  if (!simulationData) throw new Error('Simulation not found')
+
   const meshTasks = simulationData.tasks.filter(
     (task) => task.file?.type === 'mesh'
   )
@@ -880,11 +882,9 @@ const processResults = async (
   { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Get result
-  await Promise.all(
-    resultOutputs.map(async (output) =>
-      processResult(id, output, simulationPath, { currentTask, updateTasks })
-    )
-  )
+  for (const output of resultOutputs) {
+    processResult(id, output, simulationPath, { currentTask, updateTasks })
+  }
 }
 
 /**
@@ -948,11 +948,9 @@ const processDatas = async (
   { currentTask, updateTasks }: UpdateTasksHelper
 ): Promise<void> => {
   // Get data
-  await Promise.all(
-    dataOutputs.map(async (output) =>
-      processData(id, output, simulationPath, { currentTask, updateTasks })
-    )
-  )
+  for (const output of dataOutputs) {
+    processData(id, output, simulationPath, { currentTask, updateTasks })
+  }
 }
 
 /**

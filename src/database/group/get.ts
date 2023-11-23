@@ -39,7 +39,7 @@ export interface IGroup<T = []> {
 export const get = async <T extends TGroupGet>(
   id: string,
   data: T
-): Promise<IGroup<T>> => {
+): Promise<IGroup<T> | undefined> => {
   const response = await getter(tables.GROUPS, id, data)
 
   const group = response.rows[0]

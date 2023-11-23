@@ -28,7 +28,7 @@ const add = async (link: {
 const get = async <T extends TLinkGet>(
   id: string,
   data: T
-): Promise<ILink<T>> => {
+): Promise<ILink<T> | undefined> => {
   return LinkDB.get(id, data)
 }
 
@@ -42,6 +42,7 @@ const process = async (
   data?: { email: string; password: string }
 ): Promise<void> => {
   const link = await get(id, ['type', 'email', 'userid'])
+  if (!link) return
 
   if (link.type === SUBSCRIBE || link.type === REVALIDATE) {
     // Update user
@@ -59,13 +60,14 @@ const process = async (
 
     // Update user
     const user = await UserLib.getBy(data!.email, ['id'], 'email')
-    await UserLib.update({ id: user.id }, [
-      {
-        type: 'crypt',
-        key: 'password',
-        value: data!.password
-      }
-    ])
+    user &&
+      (await UserLib.update({ id: user.id }, [
+        {
+          type: 'crypt',
+          key: 'password',
+          value: data!.password
+        }
+      ]))
 
     // Remove link
     await del({ id })

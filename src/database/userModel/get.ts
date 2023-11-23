@@ -37,7 +37,7 @@ export interface IUserModel<T = []> {
 export const get = async <T extends TUserModelGet>(
   id: string,
   data: T
-): Promise<IUserModel<T>> => {
+): Promise<IUserModel<T> | undefined> => {
   const response = await getter(tables.MODELS, id, data)
 
   const userModel = response.rows[0]

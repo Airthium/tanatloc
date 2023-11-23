@@ -85,8 +85,9 @@ const checkUserModels = <T extends TGroupGet>(data: IGroup<T>): void => {
 const get = async <T extends TGroupGet>(
   id: string,
   data: T
-): Promise<IGroupGet<T>> => {
+): Promise<IGroupGet<T> | undefined> => {
   const groupData = await GroupDB.get(id, data)
+  if (!groupData) return
 
   if (data.includes('users')) checkUsers(groupData)
 
@@ -109,21 +110,19 @@ const getUsersData = async (
 ): Promise<
   IUserWithData<('firstname' | 'lastname' | 'email' | 'avatar')[]>[]
 > => {
-  return Promise.all(
-    users.map(async (user) => {
-      const userData = await User.getWithData(user, [
-        'firstname',
-        'lastname',
-        'email',
-        'avatar'
-      ])
+  const usersData = []
+  for (const user of users) {
+    const userData = await User.getWithData(user, [
+      'firstname',
+      'lastname',
+      'email',
+      'avatar'
+    ])
+    if (!userData) continue
 
-      return {
-        ...userData,
-        id: user
-      }
-    })
-  )
+    usersData.push(userData)
+  }
+  return usersData
 }
 
 /**
@@ -134,16 +133,14 @@ const getUsersData = async (
 const getWorkspacesData = async (
   workspaces: string[]
 ): Promise<IWorkspaceWithData<'name'[]>[]> => {
-  return Promise.all(
-    workspaces.map(async (workspace) => {
-      const workspaceData = await Workspace.getWithData(workspace, ['name'])
+  const workspacesData = []
+  for (const workspace of workspaces) {
+    const workspaceData = await Workspace.getWithData(workspace, ['name'])
+    if (!workspaceData) continue
 
-      return {
-        ...workspaceData,
-        id: workspace
-      }
-    })
-  )
+    workspacesData.push(workspaceData)
+  }
+  return workspacesData
 }
 
 /**
@@ -154,16 +151,14 @@ const getWorkspacesData = async (
 const getProjectsData = async (
   projects: string[]
 ): Promise<IProjectWithData<'title'[]>[]> => {
-  return Promise.all(
-    projects.map(async (project) => {
-      const projectData = await Project.getWithData(project, ['title'])
+  const projectsData = []
+  for (const project of projects) {
+    const projectData = await Project.getWithData(project, ['title'])
+    if (!projectData) continue
 
-      return {
-        ...projectData,
-        id: project
-      }
-    })
-  )
+    projectsData.push(projectData)
+  }
+  return projectsData
 }
 
 /**
@@ -174,15 +169,14 @@ const getProjectsData = async (
 const getUsermodelsData = async (
   usermodels: string[]
 ): Promise<IUserModelWithData<'model'[]>[]> => {
-  return Promise.all(
-    usermodels.map(async (usermodel) => {
-      const usermodelData = await UserModel.getWithData(usermodel, ['model'])
-      return {
-        ...usermodelData,
-        id: usermodel
-      }
-    })
-  )
+  const usermodelsData = []
+  for (const usermodel of usermodels) {
+    const usermodelData = await UserModel.getWithData(usermodel, ['model'])
+    if (!usermodelData) continue
+
+    usermodelsData.push(usermodelData)
+  }
+  return usermodelsData
 }
 
 /**
@@ -194,8 +188,9 @@ const getUsermodelsData = async (
 const getWithData = async <T extends TGroupGet>(
   id: string,
   data: T
-): Promise<IGroupWithData<T>> => {
+): Promise<IGroupWithData<T> | undefined> => {
   const group = await get(id, data)
+  if (!group) return
 
   const { users, workspaces, projects, usermodels, ...groupData } = group
 
@@ -251,9 +246,13 @@ const getAll = async <T extends TGroupGet>(
   })
 
   // Get users
-  const usersData = await Promise.all(
-    groups.map(async (group) => getUsersData(group.users))
-  )
+  const usersData: IUserWithData<
+    ('firstname' | 'lastname' | 'email' | 'avatar')[]
+  >[][] = []
+  for (const group of groups) {
+    const data = await getUsersData(group.users)
+    usersData.push(data)
+  }
 
   // Return
   return groupsData.map((group, index) => ({
@@ -274,18 +273,17 @@ const getByOrganization = async <T extends TGroupGet>(
 ): Promise<IGroupWithData<T>[]> => {
   // Get organization
   const organization = await Organization.get(id, ['groups'])
+  if (!organization) return []
 
   // Get groups
-  return Promise.all(
-    organization.groups.map(async (group) => {
-      const groupData = await getWithData(group, data)
+  const groupsData = []
+  for (const group of organization.groups) {
+    const groupData = await getWithData(group, data)
+    if (!groupData) continue
 
-      return {
-        ...groupData,
-        id: group
-      }
-    })
-  )
+    groupsData.push(groupData)
+  }
+  return groupsData
 }
 
 /**
@@ -313,6 +311,7 @@ const del = async (group: { id: string }): Promise<void> => {
     'organization',
     'usermodels'
   ])
+  if (!groupData) return
 
   // Delete group from organization
   await Organization.update({ id: groupData.organization }, [
@@ -325,49 +324,40 @@ const del = async (group: { id: string }): Promise<void> => {
   ])
 
   // Delete group from workspaces
-  groupData.workspaces &&
-    (await Promise.all(
-      groupData.workspaces.map(async (workspace) => {
-        await Workspace.update({ id: workspace }, [
-          {
-            key: 'groups',
-            type: 'array',
-            method: 'remove',
-            value: group.id
-          }
-        ])
-      })
-    ))
+  for (const workspace of groupData.workspaces) {
+    await Workspace.update({ id: workspace }, [
+      {
+        key: 'groups',
+        type: 'array',
+        method: 'remove',
+        value: group.id
+      }
+    ])
+  }
 
   // Delete group from projects
-  groupData.projects &&
-    (await Promise.all(
-      groupData.projects.map(async (project) => {
-        await Project.update({ id: project }, [
-          {
-            key: 'groups',
-            type: 'array',
-            method: 'remove',
-            value: group.id
-          }
-        ])
-      })
-    ))
+  for (const project of groupData.projects) {
+    await Project.update({ id: project }, [
+      {
+        key: 'groups',
+        type: 'array',
+        method: 'remove',
+        value: group.id
+      }
+    ])
+  }
 
   // Delete group from usermodels
-  groupData.usermodels &&
-    (await Promise.all(
-      groupData.usermodels.map(async (usermodel) => {
-        await UserModel.update({ id: usermodel }, [
-          {
-            key: 'groups',
-            type: 'array',
-            method: 'remove',
-            value: group.id
-          }
-        ])
-      })
-    ))
+  for (const usermodel of groupData.usermodels) {
+    await UserModel.update({ id: usermodel }, [
+      {
+        key: 'groups',
+        type: 'array',
+        method: 'remove',
+        value: group.id
+      }
+    ])
+  }
 
   // Delete group
   await GroupDB.del(group)

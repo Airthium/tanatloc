@@ -159,15 +159,18 @@ const route = async (req: Request, res: Response): Promise<void> => {
     const sessionId = await session(req)
 
     switch (req.method) {
-      case 'POST':
+      case 'POST': {
         await add(req, res, sessionId)
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         await update(req, res)
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         await del(req, res, sessionId)
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

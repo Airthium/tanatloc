@@ -29,7 +29,7 @@ const archive = async (req: Request, res: Response) => {
     await checkProjectAuth({ id: sessionId }, { id })
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         // Archive project
         try {
           res.setHeader('Content-Type', 'application/x-tgz')
@@ -39,7 +39,8 @@ const archive = async (req: Request, res: Response) => {
           throw error(500, err.message)
         }
         break
-      case 'POST':
+      }
+      case 'POST': {
         try {
           await ProjectLib.unarchiveFromFile({ id }, req.body.archive)
           res.status(200).end()
@@ -47,7 +48,8 @@ const archive = async (req: Request, res: Response) => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Unarchive project from server
         try {
           await ProjectLib.unarchiveFromServer({ id })
@@ -56,7 +58,8 @@ const archive = async (req: Request, res: Response) => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Delete archive file
         try {
           await ProjectLib.deleteArchiveFile({ id })
@@ -65,6 +68,7 @@ const archive = async (req: Request, res: Response) => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

@@ -66,7 +66,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
     const sessionId = await session(req)
 
     switch (req.method) {
-      case 'POST':
+      case 'POST': {
         // Check
         checkAddBody(req.body)
 
@@ -90,7 +90,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'GET':
+      }
+      case 'GET': {
         try {
           const plugins = await PluginLib.getByUser({ id: sessionId })
           res.status(200).json({ plugins })
@@ -98,7 +99,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Check
         checkUpdateBody(req.body)
 
@@ -110,7 +112,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Check
         checkDeleteBody(req.body)
 
@@ -121,6 +124,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

@@ -37,17 +37,15 @@ const Start = () => {
    * Render
    */
   return (
-    <>
-      <Loading
-        text={
-          <Typography.Title level={3} style={{ margin: 0 }}>
-            Tanatloc is starting, please wait...
-          </Typography.Title>
-        }
-        status={status}
-        errors={errors}
-      />
-    </>
+    <Loading
+      text={
+        <Typography.Title level={3} style={{ margin: 0 }}>
+          Tanatloc is starting, please wait...
+        </Typography.Title>
+      }
+      status={status}
+      errors={errors}
+    />
   )
 }
 

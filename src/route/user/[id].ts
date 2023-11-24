@@ -42,7 +42,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
       throw error(400, 'Missing data in your request (query: { id(uuid) })')
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         try {
           const user = await UserLib.getWithData(id, [
             'lastname',
@@ -58,7 +58,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Check
         checkUpdateBody(req.body)
 
@@ -70,7 +71,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         try {
           await UserLib.del({ id })
           res.status(200).end()
@@ -78,6 +80,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

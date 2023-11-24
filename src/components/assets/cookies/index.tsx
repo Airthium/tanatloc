@@ -177,14 +177,12 @@ const Cookies = (): React.JSX.Element => {
    * Render
    */
   return (
-    <>
-      <Button
-        type="primary"
-        icon={<CookieIcon style={{ fill: 'white' }} />}
-        className={style.button}
-        onClick={openAgreement}
-      />
-    </>
+    <Button
+      type="primary"
+      icon={<CookieIcon style={{ fill: 'white' }} />}
+      className={style.button}
+      onClick={openAgreement}
+    />
   )
 }
 

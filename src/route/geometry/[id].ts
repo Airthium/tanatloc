@@ -42,7 +42,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
     await checkGeometryAuth({ id: sessionId }, { id })
 
     switch (req.method) {
-      case 'PUT':
+      case 'PUT': {
         // Check
         checkUpdateBody(req.body)
 
@@ -54,7 +54,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Delete
         try {
           await GeometryLib.del({ id })
@@ -63,6 +64,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

@@ -56,7 +56,7 @@ const checkProcessBody = (body: IProcessBody): void => {
 const route = async (req: Request, res: Response): Promise<void> => {
   try {
     switch (req.method) {
-      case 'POST':
+      case 'POST': {
         // Check
         checkGetBody(req.body)
 
@@ -68,7 +68,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Check
         checkProcessBody(req.body)
 
@@ -80,6 +81,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

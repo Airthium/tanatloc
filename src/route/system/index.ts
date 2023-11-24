@@ -29,7 +29,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 const route = async (req: Request, res: Response): Promise<void> => {
   try {
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         try {
           // Get
           const items = await SystemLib.get([
@@ -42,7 +42,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Check session
         const sessionId = await session(req)
 
@@ -61,6 +62,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

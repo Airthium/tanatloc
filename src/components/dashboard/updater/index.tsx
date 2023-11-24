@@ -52,23 +52,21 @@ const Updater = (): React.JSX.Element => {
   }, [needUpdate])
 
   return (
-    <>
-      <Dialog
-        visible={visible}
-        title="Update"
-        okButtonText="Update"
-        onCancel={onCancel}
-        onOk={onOk}
-      >
-        <Space direction="vertical">
-          <Typography.Text>A new release is available</Typography.Text>
-          <Typography.Text>
-            Do you want to update to version{' '}
-            <Typography.Text code>{needUpdate?.res.tag_name}</Typography.Text>?
-          </Typography.Text>
-        </Space>
-      </Dialog>
-    </>
+    <Dialog
+      visible={visible}
+      title="Update"
+      okButtonText="Update"
+      onCancel={onCancel}
+      onOk={onOk}
+    >
+      <Space direction="vertical">
+        <Typography.Text>A new release is available</Typography.Text>
+        <Typography.Text>
+          Do you want to update to version{' '}
+          <Typography.Text code>{needUpdate?.res.tag_name}</Typography.Text>?
+        </Typography.Text>
+      </Space>
+    </Dialog>
   )
 }
 

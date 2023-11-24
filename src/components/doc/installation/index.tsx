@@ -179,9 +179,7 @@ const Desktop = (): React.JSX.Element => {
             <Typography.Text>Version: {release.version}</Typography.Text>
           </>
         ) : (
-          <>
-            <Spin />
-          </>
+          <Spin />
         )}
 
         <Typography.Text className={style.tips}>

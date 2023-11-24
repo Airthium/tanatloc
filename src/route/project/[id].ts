@@ -55,7 +55,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
     await checkProjectAuth({ id: sessionId }, { id })
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         // Get project
         try {
           const project = await ProjectLib.getWithData(id, [
@@ -73,7 +73,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Check
         checkUpdateBody(req.body)
 
@@ -85,7 +86,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Check
         checkDeleteBody(req.body)
 
@@ -97,6 +99,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

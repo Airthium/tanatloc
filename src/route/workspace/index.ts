@@ -71,7 +71,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
     const sessionId = await session(req)
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         // Get
         try {
           const workspaces = await WorkspaceLib.getByUser({ id: sessionId })
@@ -80,7 +80,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'POST':
+      }
+      case 'POST': {
         // Check
         checkAddBody(req.body)
 
@@ -95,7 +96,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'PUT':
+      }
+      case 'PUT': {
         // Check
         checkUpdateBody(req.body)
 
@@ -112,7 +114,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Check
         checkDeleteBody(req.body)
 
@@ -127,6 +130,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

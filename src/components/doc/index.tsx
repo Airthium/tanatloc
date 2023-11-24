@@ -10,7 +10,7 @@ import Utils from '@/lib/utils'
 import packageJson from '../../../package.json'
 
 import Installation from './installation'
-import CHANGELOG from './changelog'
+import Changelog from './changelog'
 import Workflow from './workflow'
 import Dashboard from './dashboard'
 import Project from './project'
@@ -88,7 +88,7 @@ const Doc = () => {
               section: 'changelog'
             }
           })
-          setContent(<CHANGELOG />)
+          setContent(<Changelog />)
           break
         case 'workflow':
           onRouter({

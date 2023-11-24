@@ -105,7 +105,7 @@ const PostCard = ({
  */
 const Blog = () => {
   // State
-  const [PostRender, setPostRender] = useState<React.JSX.Element>()
+  const [postRender, setPostRender] = useState<React.JSX.Element>()
   const [sort, setSort] = useState<number>(1)
   const [tags, setTags] = useState<string[]>([])
   const [search, setSearch] = useState<string>()
@@ -241,9 +241,9 @@ const Blog = () => {
         />
         <Typography.Title level={1}>Blog</Typography.Title>
       </Layout.Header>
-      {PostRender ? (
+      {postRender ? (
         <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>
-          {PostRender}
+          {postRender}
         </Layout.Content>
       ) : (
         <Layout.Content className={`${globalStyle.scroll} ${style.content}`}>

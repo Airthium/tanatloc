@@ -263,78 +263,76 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
    * Render
    */
   return (
-    <>
-      <Card title="Contact Details">
-        <Space direction="horizontal" className={style.information}>
-          <div className={style.avatar}>
-            <Avatar
-              size={128}
-              src={user.avatar && Buffer.from(user.avatar).toString()}
-              icon={<UserOutlined />}
-            />
-            <Upload
-              action={'/api/noop'}
-              accept={'.jpg,.png'}
-              showUploadList={false}
-              beforeUpload={beforeUpload}
-              onChange={onChange}
+    <Card title="Contact Details">
+      <Space direction="horizontal" className={style.information}>
+        <div className={style.avatar}>
+          <Avatar
+            size={128}
+            src={user.avatar && Buffer.from(user.avatar).toString()}
+            icon={<UserOutlined />}
+          />
+          <Upload
+            action={'/api/noop'}
+            accept={'.jpg,.png'}
+            showUploadList={false}
+            beforeUpload={beforeUpload}
+            onChange={onChange}
+          >
+            <Button loading={uploading} icon={<UploadOutlined />}>
+              Upload new
+            </Button>
+          </Upload>
+        </div>
+        <div className={style.form}>
+          <Form
+            {...layout}
+            style={{ maxWidth: 500 }}
+            initialValues={{
+              email: user.email,
+              firstname: user.firstname ?? '',
+              lastname: user.lastname ?? ''
+            }}
+            onFinish={onFinish}
+          >
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+              ]}
             >
-              <Button loading={uploading} icon={<UploadOutlined />}>
-                Upload new
+              <Input disabled={isElectron()} />
+            </Form.Item>
+
+            <Form.Item
+              label="First name"
+              name="firstname"
+              rules={[
+                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              label="Last name"
+              name="lastname"
+              rules={[
+                { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <FormError error={formError} />
+            <Form.Item {...buttonLayout}>
+              <Button loading={loading} type="primary" htmlType="submit">
+                Save changes
               </Button>
-            </Upload>
-          </div>
-          <div className={style.form}>
-            <Form
-              {...layout}
-              style={{ maxWidth: 500 }}
-              initialValues={{
-                email: user.email,
-                firstname: user.firstname ?? '',
-                lastname: user.lastname ?? ''
-              }}
-              onFinish={onFinish}
-            >
-              <Form.Item
-                label="Email"
-                name="email"
-                rules={[
-                  { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
-                ]}
-              >
-                <Input disabled={isElectron()} />
-              </Form.Item>
-
-              <Form.Item
-                label="First name"
-                name="firstname"
-                rules={[
-                  { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Last name"
-                name="lastname"
-                rules={[
-                  { max: LIMIT50, message: 'Max ' + LIMIT50 + ' characters' }
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <FormError error={formError} />
-              <Form.Item {...buttonLayout}>
-                <Button loading={loading} type="primary" htmlType="submit">
-                  Save changes
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-        </Space>
-      </Card>
-    </>
+            </Form.Item>
+          </Form>
+        </div>
+      </Space>
+    </Card>
   )
 }
 

@@ -41,11 +41,12 @@ const route = async (req: Request, res: Response): Promise<void> => {
     const sessionId = await session(req)
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         // Empty route
         res.status(200).end()
         break
-      case 'POST':
+      }
+      case 'POST': {
         // Check
         checkAddBody(req.body)
 
@@ -66,6 +67,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

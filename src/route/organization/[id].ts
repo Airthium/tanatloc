@@ -25,7 +25,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
       throw error(400, 'Missing data in your request (query: { id(string) })')
 
     switch (req.method) {
-      case 'PUT':
+      case 'PUT': {
         //Accept
         try {
           await OrganizationLib.accept({ id }, { id: sessionId })
@@ -34,7 +34,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'POST':
+      }
+      case 'POST': {
         // Decline
         try {
           await OrganizationLib.decline({ id }, { id: sessionId })
@@ -43,7 +44,8 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
-      case 'DELETE':
+      }
+      case 'DELETE': {
         // Quit
         try {
           await OrganizationLib.quit({ id }, { id: sessionId })
@@ -52,6 +54,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
           throw error(500, err.message)
         }
         break
+      }
       default:
         // Unauthorized method
         throw error(402, 'Method ' + req.method + ' not allowed')

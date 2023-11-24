@@ -30,6 +30,9 @@ export interface IRect {
   width: number
 }
 
+// Role
+const DividerRole = 'Divider'
+
 /**
  * Divider
  * @returns Divider
@@ -85,7 +88,7 @@ export const Divider = ({
    */
   return (
     <div
-      role="Divider"
+      role={DividerRole}
       className={style.divider}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}

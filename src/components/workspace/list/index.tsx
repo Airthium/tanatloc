@@ -301,26 +301,24 @@ const WorkspacesList = ({
             />
           </>
         ) : (
-          <>
-            <Empty
-              className={style.empty}
-              image="images/empty.svg"
-              description={'No workspace for now. Get started !'}
+          <Empty
+            className={style.empty}
+            image="images/empty.svg"
+            description={'No workspace for now. Get started !'}
+          >
+            <Add
+              swr={{
+                addOneWorkspace: swr.addOneWorkspace
+              }}
+            />
+            <Button
+              type="primary"
+              icon={<PlusCircleOutlined />}
+              onClick={setSampleVisibleTrue}
             >
-              <Add
-                swr={{
-                  addOneWorkspace: swr.addOneWorkspace
-                }}
-              />
-              <Button
-                type="primary"
-                icon={<PlusCircleOutlined />}
-                onClick={setSampleVisibleTrue}
-              >
-                Create a sample workspace
-              </Button>
-            </Empty>
-          </>
+              Create a sample workspace
+            </Button>
+          </Empty>
         )}
       </Layout.Content>
     </Layout>

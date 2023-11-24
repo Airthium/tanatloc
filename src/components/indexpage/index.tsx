@@ -252,21 +252,20 @@ const Index = (): React.JSX.Element => {
         <br />
         <Typography>
           In case of trouble, you can have a look on the{' '}
-          <a
+          <Link
             href="https://docs.docker.com/desktop/faqs/general/"
             target="_blank"
-            rel="noreferrer"
           >
             Docker Desktop FAQ
-          </a>{' '}
+          </Link>{' '}
           or on the Tanatloc electron{' '}
-          <a
+          <Link
             href="https://github.com/Airthium/tanatloc-electron/issues"
             target="_blank"
             rel="noreferrer"
           >
             Github Issues
-          </a>
+          </Link>
           .
         </Typography>
       </Drawer>
@@ -445,9 +444,9 @@ const Index = (): React.JSX.Element => {
                   <Typography.Text className={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
-                  <a href="mailto:contact@airthium.com">
+                  <Link href="mailto:contact@airthium.com">
                     <Button type="link">Contact us</Button>
-                  </a>
+                  </Link>
                 </div>
                 <div>
                   <Avatar
@@ -459,9 +458,9 @@ const Index = (): React.JSX.Element => {
                   <Typography.Text className={globalStyle.textLight}>
                     Paid feature
                   </Typography.Text>
-                  <a href="mailto:contact@airthium.com">
+                  <Link href="mailto:contact@airthium.com">
                     <Button type="link">Contact us</Button>
-                  </a>
+                  </Link>
                 </div>
                 <div>
                   <Avatar
@@ -576,13 +575,12 @@ const Index = (): React.JSX.Element => {
                     <>
                       <Typography>
                         Follow the Docker installation instruction at{' '}
-                        <a
+                        <Link
                           href="https://docs.docker.com/get-docker/"
                           target="_blank"
-                          rel="noreferrer"
                         >
                           docs.docker.com/get-docker
-                        </a>{' '}
+                        </Link>{' '}
                         and reboot your computer.
                       </Typography>
                       <Typography>
@@ -612,7 +610,7 @@ const Index = (): React.JSX.Element => {
                             onClick={onDownloadWindows}
                           >
                             <img src="/images/indexpage/windows.svg" alt="" />
-                            Windows
+                            {/**/}Windows
                           </Button>
                           <Button
                             type="primary"
@@ -620,7 +618,7 @@ const Index = (): React.JSX.Element => {
                             onClick={onDownloadMacOS}
                           >
                             <img src="/images/indexpage/MacOS.svg" alt="" />
-                            MacOS
+                            {/**/}MacOS
                           </Button>
                           <Button
                             type="primary"
@@ -628,7 +626,7 @@ const Index = (): React.JSX.Element => {
                             onClick={onDownloadLinux}
                           >
                             <img src="/images/indexpage/Linux.svg" alt="" />
-                            Linux
+                            {/**/}Linux
                           </Button>
                           <br />
                         </>
@@ -671,13 +669,9 @@ const Index = (): React.JSX.Element => {
                   heat engine to decarbonise the planet.
                 </Typography.Text>
 
-                <a
-                  href="https://airthium.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Link href="https://airthium.com/" target="_blank">
                   <Button type="primary">Discover the project</Button>
-                </a>
+                </Link>
               </Space>
             }
             // top={
@@ -688,15 +682,14 @@ const Index = (): React.JSX.Element => {
             //         <Typography.Title level={2}>
             //           Support our fight against climate change
             //         </Typography.Title>
-            //         <a
+            //         <Link
             //           href="https://wefunder.com/airthium"
             //           target="_blank"
-            //           rel="noreferrer"
             //         >
             //           <Button size="large">
             //             <strong>Invest in our crowdfunding</strong>
             //           </Button>
-            //         </a>
+            //         </Link>
             //       </>
             //     }
             //     sideClassName={globalStyle.backgroundPrimary}

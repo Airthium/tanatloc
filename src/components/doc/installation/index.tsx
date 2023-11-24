@@ -1,6 +1,7 @@
 /** @module Components.Doc.Installation */
 
 import { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Collapse, Spin, Table, Tabs, Typography } from 'antd'
 import { URL } from 'url'
@@ -89,23 +90,18 @@ const Desktop = (): React.JSX.Element => {
         <Typography.Title level={4}>Description</Typography.Title>
         <Typography.Text>
           The Tanatloc desktop application is built using{' '}
-          <a
-            href="https://www.electronjs.org/fr/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link href="https://www.electronjs.org/fr/" target="_blank">
             Electron
-          </a>
+          </Link>
         </Typography.Text>
         <Typography.Text>
           The source code of the electron build is available on{' '}
-          <a
+          <Link
             href="https://github.com/Airthium/tanatloc-electron"
             target="_blank"
-            rel="noreferrer"
           >
             tanatloc-electron Github repository
-          </a>
+          </Link>
         </Typography.Text>
       </Typography>
 
@@ -113,13 +109,12 @@ const Desktop = (): React.JSX.Element => {
         <Typography.Title level={4}>Docker Desktop</Typography.Title>
         <Typography.Text>
           The first step is to install{' '}
-          <a
+          <Link
             href="https://www.docker.com/products/docker-desktop/"
             target="_blank"
-            rel="noreferrer"
           >
             Docker Desktop
-          </a>
+          </Link>
         </Typography.Text>
         <Typography.Text>
           Ensure all is working fine before continuing, sometimes Docker Desktop
@@ -153,7 +148,7 @@ const Desktop = (): React.JSX.Element => {
                 className={style.downloadButton}
               >
                 <img src="/images/indexpage/windows.svg" alt="" />
-                Windows
+                {/**/}Windows
               </Button>
             ) : null}
             {release.dmg ? (
@@ -163,7 +158,7 @@ const Desktop = (): React.JSX.Element => {
                 className={style.downloadButton}
               >
                 <img src="/images/indexpage/MacOS.svg" alt="" />
-                MacOS
+                {/**/}MacOS
               </Button>
             ) : null}
             {release.appImage ? (
@@ -173,7 +168,7 @@ const Desktop = (): React.JSX.Element => {
                 className={style.downloadButton}
               >
                 <img src="/images/indexpage/Linux.svg" alt="" />
-                Linux
+                {/**/}Linux
               </Button>
             ) : null}
             <Typography.Text>Version: {release.version}</Typography.Text>
@@ -196,13 +191,13 @@ const Desktop = (): React.JSX.Element => {
 
         <Typography.Text className={style.tips}>
           If you want to try a beta version, you can directly look at{' '}
-          <a
+          <Link
             href="https://github.com/Airthium/tanatloc-electron/releases"
             target="_blank"
             rel="noreferrer"
           >
             tanatloc-electron Github releases
-          </a>
+          </Link>
         </Typography.Text>
       </Typography>
     </>
@@ -344,24 +339,22 @@ const Server = (): React.JSX.Element => {
         </Typography.Text>
         <Typography.Text>
           The source code of the Docker build is available on{' '}
-          <a
+          <Link
             href="https://github.com/Airthium/tanatloc-docker"
             target="_blank"
-            rel="noreferrer"
           >
             tanatloc-docker Github repository
-          </a>
+          </Link>
         </Typography.Text>
         <Typography.Text>
           The Docker Compose configuration, and a deployment script are
           available on{' '}
-          <a
+          <Link
             href="https://github.com/Airthium/tanatloc-deploy"
             target="_blank"
-            rel="noreferrer"
           >
             tanatloc-deploy Github repository
-          </a>
+          </Link>
         </Typography.Text>
       </Typography>
 
@@ -369,21 +362,13 @@ const Server = (): React.JSX.Element => {
         <Typography.Title level={4}>Docker</Typography.Title>
         <Typography.Text>
           Install{' '}
-          <a
-            href="https://docs.docker.com/engine/install/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link href="https://docs.docker.com/engine/install/" target="_blank">
             Docker Engine
-          </a>{' '}
+          </Link>{' '}
           and{' '}
-          <a
-            href="https://docs.docker.com/compose/install/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link href="https://docs.docker.com/compose/install/" target="_blank">
             Docker Compose
-          </a>
+          </Link>
         </Typography.Text>
       </Typography>
 
@@ -391,13 +376,12 @@ const Server = (): React.JSX.Element => {
         <Typography.Title level={4}>Certbot</Typography.Title>
         <Typography.Text>
           If you need an HTTPS certificate, install{' '}
-          <a
+          <Link
             href="https://eff-certbot.readthedocs.io/en/stable/install.html"
             target="_blank"
-            rel="noreferrer"
           >
             Certbot
-          </a>
+          </Link>
         </Typography.Text>
       </Typography>
 

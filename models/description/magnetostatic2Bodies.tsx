@@ -81,18 +81,19 @@ const description = (
       />
     </div>
     <div>
-      Finally, the "Bi-pass Formulation for Non-conforming Meshes in
-      Magnetostatic Problems" is used to solve the magnetostatic problem, where
-      the penalty method is employed to take care of the interface conditions.
-      For more details about the used formulation or to check how this
-      magnetostatic problem is solved, the user is invited to see Houssein's{' '}
+      Finally, the &apos;Bi-pass Formulation for Non-conforming Meshes in
+      Magnetostatic Problems&apos; is used to solve the magnetostatic problem,
+      where the penalty method is employed to take care of the interface
+      conditions. For more details about the used formulation or to check how
+      this magnetostatic problem is solved, the user is invited to see
+      Houssein&apos;s{' '}
       <a
         target="_blank"
         href="https://www.techrxiv.org/articles/preprint/Bi-pass_Formulation_for_Non-conforming_Meshes_in_Magnetostatic_Problems/24315232"
       >
         paper
       </a>
-      .
+      {/**/}.
     </div>
 
     <div>

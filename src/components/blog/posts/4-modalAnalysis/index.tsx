@@ -200,7 +200,7 @@ const Post = () => {
           <a href="https://freefem.org" target="_blank" rel="noreferrer">
             FreeFEM
           </a>
-          .
+          {/**/}.
         </p>
       </section>
       <section>

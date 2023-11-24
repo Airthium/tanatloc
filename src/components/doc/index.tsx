@@ -45,6 +45,11 @@ const Doc = () => {
   }, [router])
 
   /**
+   * On key up (ghost function)
+   */
+  const onKeyUp = useCallback((): void => undefined, [])
+
+  /**
    * On router
    * @param route Route
    */
@@ -278,17 +283,17 @@ const Doc = () => {
           src="/images/logo.svg"
           alt="Tanatloc"
           onClick={onTanatloc}
+          onKeyUp={onKeyUp}
         />
         <Typography.Title level={1}>Doc</Typography.Title>
 
-        <a
+        <Link
           href="https://github.com/Airthium/tanatloc"
           target="_blank"
-          rel="noreferrer"
           className={style.github}
         >
           <img src="/images/github-mark.svg" alt="Github Airthium/tanatloc" />
-        </a>
+        </Link>
       </Layout.Header>
       <Layout>
         <Layout.Header className={style.menu}>
@@ -321,13 +326,9 @@ const Doc = () => {
                   Run your numerical simulations locally using the provided
                   physics models (linear elasticity, Navier-Stokes, and more) or
                   write your own using the{' '}
-                  <a
-                    href="https://freefem.org/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <Link href="https://freefem.org/" target="_blank">
                     FreeFEM language
-                  </a>
+                  </Link>
                   !
                 </Typography.Text>
               </Typography>
@@ -335,25 +336,20 @@ const Doc = () => {
               <Typography className={style.text}>
                 <Typography.Text>
                   Tanatloc is an open-source project by{' '}
-                  <a
-                    href="https://airthium.com"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <Link href="https://airthium.com" target="_blank">
                     Airthium
-                  </a>
+                  </Link>
                   , a deeptech startup working on decarbonizing the planet{' '}
                   <img src="/images/earth.png" alt="earth" />.
                 </Typography.Text>
                 {/* <Typography.Text>
                   Learn more and support our efforts by investing in our{' '}
-                  <a
+                  <Link
                     href="https://wefunder.com/airthium"
                     target="_blank"
-                    rel="noreferrer"
                   >
                     crowdfunding
-                  </a>
+                  </Link>
                   !
                 </Typography.Text> */}
               </Typography>
@@ -365,13 +361,13 @@ const Doc = () => {
                 <Typography.Text>
                   You can run Tanatloc locally using the Electron app, download
                   the latest release from the{' '}
-                  <a
+                  <Link
                     href="https://github.com/Airthium/tanatloc-electron"
                     target="_blank"
                     rel="noreferrer"
                   >
                     tanatloc-electron repository
-                  </a>
+                  </Link>
                   .
                 </Typography.Text>
                 <Typography.Text>
@@ -388,24 +384,22 @@ const Doc = () => {
                 </Typography.Title>
                 <Typography.Text>
                   If you want to run Tanatloc on a server, you can use the{' '}
-                  <a
+                  <Link
                     href="https://github.com/Airthium/tanatloc-deploy#readme"
                     target="_blank"
-                    rel="noreferrer"
                   >
                     tanatloc-deploy script
-                  </a>
+                  </Link>
                   .
                 </Typography.Text>
                 <Typography.Text>
                   The Tanatloc-deploy script uses the{' '}
-                  <a
+                  <Link
                     href="https://github.com/Airthium/tanatloc-docker#readme"
                     target="_blank"
-                    rel="noreferrer"
                   >
                     tanatloc-docker repository
-                  </a>
+                  </Link>
                   .
                 </Typography.Text>
                 <Typography.Text>

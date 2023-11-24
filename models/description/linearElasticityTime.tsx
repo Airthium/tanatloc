@@ -59,7 +59,7 @@ const description = (
       <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">
         Wikipedia
       </a>
-      .
+      {/**/}.
     </div>
   </>
 )

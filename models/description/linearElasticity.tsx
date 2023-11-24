@@ -29,9 +29,9 @@ const description = (
       <MathJax.BackFormula
         text={`
 \\begin{align}
-  -\\text{div}(\\sigma) &= f &\\text{on}\\Omega\\\\
-  u &= u_D&\\text{on}\\Gamma_D\\\\
-  \\sigma\\cdot n &= u_N&\\text{on}\\Gamma_N
+	-\\text{div}(\\sigma) &= f &\\text{on}\\Omega\\\\
+	u &= u_D&\\text{on}\\Gamma_D\\\\
+	\\sigma\\cdot n &= u_N&\\text{on}\\Gamma_N
 \\end{align}
 `}
       />
@@ -59,7 +59,7 @@ const description = (
       <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">
         Wikipedia
       </a>
-      .
+      {/**/}.
     </div>
   </>
 )

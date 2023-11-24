@@ -1,6 +1,7 @@
 /** @module Components.Doc.Project */
 
 import { useCallback } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Switch, Tabs, Typography } from 'antd'
 import {
@@ -55,9 +56,9 @@ const Geometry = (): React.JSX.Element => {
         </Typography.Text>
         <Typography.Text>
           Here is an example with a cube geometry (
-          <a href="/doc/cube.stp" download>
+          <Link href="/doc/cube.stp" download>
             STEP file
-          </a>
+          </Link>
           )
         </Typography.Text>
         <Typography.Text>

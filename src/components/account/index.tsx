@@ -12,7 +12,7 @@ import PageHeader from '@/components/assets/pageHeader'
 import Information from './information'
 import Password from './password'
 import Delete from './delete'
-import HPC from './hpc'
+import Hpc from './hpc'
 
 import dashboardStyle from '@/components/dashboard/index.module.css'
 import globalStyle from '@/styles/index.module.css'
@@ -85,7 +85,7 @@ const Account = ({ user, swr }: IProps): React.JSX.Element => {
         {
           key: 'hpc',
           label: 'HPC Providers',
-          children: <HPC />
+          children: <Hpc />
         }
       ].filter((t) => t),
     [user, swr]

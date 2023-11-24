@@ -13,7 +13,7 @@ import style from '../index.module.css'
  * HPC
  * @returns HPC
  */
-const HPC = (): React.JSX.Element => {
+const Hpc = (): React.JSX.Element => {
   /**
    * Render
    */
@@ -158,7 +158,7 @@ const tabs = [
   {
     key: 'hpc',
     label: 'HPC plugins',
-    children: <HPC />
+    children: <Hpc />
   },
   {
     key: 'model',

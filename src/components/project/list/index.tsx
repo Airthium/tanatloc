@@ -135,6 +135,11 @@ const ProjectCard = ({
     })()
   }, [router, workspace, page, project])
 
+  /**
+   * On key up (ghost function)
+   */
+  const onKeyUp = useCallback((): void => undefined, [])
+
   // Snapshot
   const snapshot = useMemo(() => {
     if (project.archived) return <Empty description={'Archived project'} />
@@ -208,6 +213,7 @@ const ProjectCard = ({
               project.archived ? style.carouselSnapshotArchived : ''
             }`}
             onClick={openProject}
+            onKeyUp={onKeyUp}
           >
             {snapshot}
           </div>
@@ -216,6 +222,7 @@ const ProjectCard = ({
               project.archived ? style.carouselDescriptionArchived : ''
             }`}
             onClick={openProject}
+            onKeyUp={onKeyUp}
           >
             {description}
           </div>

@@ -1,5 +1,6 @@
 /** @module Components.Signup */
 
+import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
 import { useState, useEffect, useCallback, useContext } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
@@ -59,7 +60,7 @@ export const _onSignup = async (
       title: errors.alreadyExists,
       render: (
         <>
-          We know you! <a onClick={() => _onLogin(router)}>Log in?</a>
+          We know you! <Link href="/login">Log in?</Link>
         </>
       ),
       type: 'warning'
@@ -67,16 +68,6 @@ export const _onSignup = async (
 
   if (TOKEN) await router.push('/signup/send').catch()
   else await router.push('/login').catch()
-}
-
-/**
- * Go to login
- * @param router Router
- */
-export const _onLogin = (router: NextRouter): void => {
-  ;(async () => {
-    await router.push('/login').catch()
-  })()
 }
 
 /**

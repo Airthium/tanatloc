@@ -63,7 +63,6 @@ const route = async (req: Request, res: Response) => {
             'simulations',
             'workspace'
           ])
-          console.log(project)
           if (!project) throw error(400, 'Invalid geometry identifier')
 
           projects.push(project)

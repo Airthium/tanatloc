@@ -57,8 +57,7 @@ export const restartJobs = async (): Promise<void> => {
       .filter((t) => t)
 
     if (tasks) {
-      for (let i = 0; i < tasks.length; ++i) {
-        const task = tasks[i]
+      for (const task of tasks) {
         console.info(
           ' - Restart simulation ' + simulation.id + ' - task ' + task.label
         )
@@ -85,15 +84,16 @@ export const restartJobs = async (): Promise<void> => {
           )
 
           // Set task in error
-          tasks[i].status = 'error'
-          await Simulation.update({ id: simulation.id }, [
-            {
-              key: 'tasks',
-              value: tasks
-            }
-          ])
+          task.status = 'error'
         }
       }
+      // Update simulation
+      await Simulation.update({ id: simulation.id }, [
+        {
+          key: 'tasks',
+          value: tasks
+        }
+      ])
     }
   }
 }

@@ -53,7 +53,7 @@ const description = (
       >
         Wikipedia
       </a>
-      .
+      {/**/}.
     </div>
   </>
 )

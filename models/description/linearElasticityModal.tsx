@@ -45,7 +45,7 @@ const description = (
       <a target="_blank" href="https://freefem.org">
         FreeFEM
       </a>
-      .
+      {/**/}.
     </div>
   </>
 )

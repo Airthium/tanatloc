@@ -132,6 +132,11 @@ const Blog = () => {
   }, [router])
 
   /**
+   * On key up (ghost function)
+   */
+  const onKeyUp = useCallback((): void => undefined, [])
+
+  /**
    * On search
    * @param e Event
    */
@@ -238,6 +243,7 @@ const Blog = () => {
           src="/images/logo.svg"
           alt="Tanatloc"
           onClick={onTanatloc}
+          onKeyUp={onKeyUp}
         />
         <Typography.Title level={1}>Blog</Typography.Title>
       </Layout.Header>

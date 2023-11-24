@@ -2,7 +2,12 @@
 
 import { IModel } from '@/models/index.d'
 import { IDataBaseEntry } from '@/database/index.d'
-import { IUserModelGet, IUserModelWithData } from '../index.d'
+import {
+  IGroupGet,
+  IUserModelGet,
+  IUserModelWithData,
+  IUserWithData
+} from '../index.d'
 
 import UserModelDB, { IUserModel, TUserModelGet } from '@/database/userModel'
 
@@ -70,6 +75,55 @@ const get = async <T extends TUserModelGet>(
 }
 
 /**
+ * Get users data
+ * @param users Users
+ * @returns Users data
+ */
+const getUsersData = async (
+  users: string[]
+): Promise<
+  IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>[]
+> => {
+  if (!users) return []
+
+  const usersData = []
+  for (const user of users) {
+    const userData = await User.getWithData(user, [
+      'lastname',
+      'firstname',
+      'email',
+      'avatar'
+    ])
+    if (!userData) continue
+
+    usersData.push(userData)
+  }
+
+  return usersData
+}
+
+/**
+ * Get groups data
+ * @param groups Groups
+ * @returns Groups data
+ */
+const getGroupsData = async (
+  groups: string[]
+): Promise<IGroupGet<'name'[]>[]> => {
+  if (!groups) return []
+
+  const groupsData = []
+  for (const group of groups) {
+    const groupData = await Group.get(group, ['name'])
+    if (!groupData) continue
+
+    groupsData.push(groupData)
+  }
+
+  return groupsData
+}
+
+/**
  * Get with data
  * @param id Id
  * @param data Data
@@ -85,47 +139,13 @@ const getWithData = async <T extends TUserModelGet>(
   const { owners, users, groups, ...userModelData } = userModel
 
   // Get owners
-  const ownersData = []
-  if (owners) {
-    for (const owner of owners) {
-      const ownerData = await User.getWithData(owner, [
-        'lastname',
-        'firstname',
-        'email',
-        'avatar'
-      ])
-      if (!ownerData) continue
-
-      ownersData.push(ownerData)
-    }
-  }
+  const ownersData = await getUsersData(owners)
 
   // Get users
-  const usersData = []
-  if (users) {
-    for (const user of users) {
-      const userData = await User.getWithData(user, [
-        'lastname',
-        'firstname',
-        'email',
-        'avatar'
-      ])
-      if (!userData) continue
-
-      usersData.push(userData)
-    }
-  }
+  const usersData = await getUsersData(users)
 
   // Get groups
-  const groupsData = []
-  if (groups) {
-    for (const group of groups) {
-      const groupData = await Group.get(group, ['name'])
-      if (!groupData) continue
-
-      groupsData.push(groupData)
-    }
-  }
+  const groupsData = await getGroupsData(groups)
 
   return {
     ...userModelData,
@@ -292,11 +312,14 @@ const del = async (
   userModel: { id: string }
 ): Promise<void> => {
   // Get data
-  const data = await getWithData(userModel.id, ['groups', 'users'])
+  const data = await getWithData(userModel.id, ['groups', 'users', 'owners'])
 
   if (data) {
     // Delete from groups
     for (const group of data.groups) await deleteFromGroup(group.id, userModel)
+
+    // Delete from owners
+    for (const owner of data.owners) await deleteFromUser(owner.id, userModel)
 
     // Delete from users
     for (const user of data.users) await deleteFromUser(user.id, userModel)

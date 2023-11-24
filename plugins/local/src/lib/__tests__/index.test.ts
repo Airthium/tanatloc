@@ -752,6 +752,16 @@ describe('plugins/local/src/lib', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
+
+    // No simulation
+    mockSimulationGet.mockImplementation(() => undefined)
+    try {
+      await Local.computeSimulation({ id: 'id' }, {
+        configuration: {}
+      } as ISimulation['scheme'])
+    } catch (err: any) {
+      expect(err.message).toBe('Simulation not found')
+    }
   })
 
   test('computeSimulation (with startProcess mock)', async () => {

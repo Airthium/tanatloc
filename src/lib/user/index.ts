@@ -2,7 +2,13 @@
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { TUserGetKey } from '@/database/user/get'
-import { IUserGet, IUserWithData } from '../index.d'
+import {
+  IProjectGet,
+  IUserGet,
+  IUserModelWithData,
+  IUserWithData,
+  IWorkspaceGet
+} from '../index.d'
 import { IClientPlugin } from '@/plugins/index.d'
 
 import { LIMIT50 } from '@/config/string'
@@ -122,6 +128,75 @@ const decrypt = async (plugins: IClientPlugin[]): Promise<IClientPlugin[]> => {
 }
 
 /**
+ * Get workspaces data
+ * @param workspaces Workspaces
+ * @returns Workspaces data
+ */
+const getWorkspacesData = async (
+  workspaces: string[]
+): Promise<IWorkspaceGet<'name'[]>[]> => {
+  if (!workspaces) return []
+
+  const workspacesData = []
+  for (const workspace of workspaces) {
+    const workspaceData = await Workspace.get(workspace, ['name'])
+    if (!workspaceData) continue
+
+    workspacesData.push(workspaceData)
+  }
+
+  return workspacesData
+}
+
+/**
+ * Get projects data
+ * @param projects Projects
+ * @returns Projects data
+ */
+const getProjectsData = async (
+  projects: string[]
+): Promise<IProjectGet<'title'[]>[]> => {
+  if (!projects) return []
+
+  const projectsData = []
+  for (const project of projects) {
+    const projectData = await Project.get(project, ['title'])
+    if (!projectData) continue
+
+    projectsData.push(projectData)
+  }
+  return projectsData
+}
+
+/**
+ * Get usermodels data
+ * @param usermodels Usermodels
+ * @returns Usermodels data
+ */
+const getUsermodelsData = async (
+  usermodels: string[]
+): Promise<
+  IUserModelWithData<('owners' | 'users' | 'groups' | 'model' | 'template')[]>[]
+> => {
+  if (!usermodels) return []
+
+  const usermodelsData = []
+  for (const usermodel of usermodels) {
+    const usermodelData = await UserModel.getWithData(usermodel, [
+      'model',
+      'template',
+      'owners',
+      'users',
+      'groups'
+    ])
+    if (!usermodelData) continue
+
+    usermodelsData.push(usermodelData)
+  }
+  return usermodelsData
+}
+
+/**
  * Get with data (avatar)
  * @param id User id
  * @param data Data
@@ -148,40 +223,13 @@ const getWithData = async <T extends TUserGet>(
   }
 
   // Get workspaces data
-  const workspacesData = []
-  if (workspaces)
-    for (const workspace of workspaces) {
-      const workspaceData = await Workspace.get(workspace, ['name'])
-      if (!workspaceData) continue
-
-      workspacesData.push(workspaceData)
-    }
+  const workspacesData = await getWorkspacesData(workspaces)
 
   // Get projects data
-  const projectsData = []
-  if (projects)
-    for (const project of projects) {
-      const projectData = await Project.get(project, ['title'])
-      if (!projectData) continue
-
-      projectsData.push(projectData)
-    }
+  const projectsData = await getProjectsData(projects)
 
   // Get user models
-  const usermodelsData = []
-  if (usermodels)
-    for (const usermodel of usermodels) {
-      const usermodelData = await UserModel.getWithData(usermodel, [
-        'model',
-        'template',
-        'owners',
-        'users',
-        'groups'
-      ])
-      if (!usermodelData) continue
-
-      usermodelsData.push(usermodelData)
-    }
+  const usermodelsData = await getUsermodelsData(usermodels)
 
   // Return
   return {

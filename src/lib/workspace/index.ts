@@ -1,7 +1,12 @@
 /** @module Lib.Workspace */
 
 import { IDataBaseEntry } from '@/database/index.d'
-import { IGroupWithData, IWorkspaceGet, IWorkspaceWithData } from '../index.d'
+import {
+  IGroupWithData,
+  IUserWithData,
+  IWorkspaceGet,
+  IWorkspaceWithData
+} from '../index.d'
 
 import { LIMIT50 } from '@/config/string'
 
@@ -80,6 +85,54 @@ const get = async <T extends TWorkspaceGet>(
 }
 
 /**
+ * Get users data
+ * @param users Users
+ * @returns Users data
+ */
+const getUsersData = async (
+  users: string[]
+): Promise<
+  IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>[]
+> => {
+  if (!users) return []
+
+  const usersData = []
+  for (const user of users) {
+    const userData = await User.getWithData(user, [
+      'lastname',
+      'firstname',
+      'email',
+      'avatar'
+    ])
+    if (!userData) continue
+
+    usersData.push(userData)
+  }
+  return usersData
+}
+
+/**
+ * Get groups data
+ * @param groups Groups
+ * @returns Groups data
+ */
+const getGroupsData = async (
+  groups: string[]
+): Promise<IGroupWithData<'name'[]>[]> => {
+  if (!groups) return []
+
+  const groupsData = []
+  for (const group of groups) {
+    const groupData = await Group.getWithData(group, ['name'])
+    if (!groupData) continue
+
+    groupsData.push(groupData)
+  }
+
+  return groupsData
+}
+
+/**
  * Get with data
  * @param id Id
  * @param data Data
@@ -95,47 +148,13 @@ const getWithData = async <T extends TWorkspaceGet>(
   const { owners, users, groups, ...workspaceData } = workspace
 
   // Get owners
-  const ownersData = []
-  if (owners) {
-    for (const owner of owners) {
-      const ownerData = await User.getWithData(owner, [
-        'lastname',
-        'firstname',
-        'email',
-        'avatar'
-      ])
-      if (!ownerData) continue
-
-      ownersData.push(ownerData)
-    }
-  }
+  const ownersData = await getUsersData(owners)
 
   // Get users
-  const usersData = []
-  if (users) {
-    for (const user of users) {
-      const userData = await User.getWithData(user, [
-        'lastname',
-        'firstname',
-        'email',
-        'avatar'
-      ])
-      if (!userData) continue
-
-      usersData.push(userData)
-    }
-  }
+  const usersData = await getUsersData(users)
 
   // Get groups
-  const groupsData = []
-  if (groups) {
-    for (const group of groups) {
-      const groupData = await Group.getWithData(group, ['name'])
-      if (!groupData) continue
-
-      groupsData.push(groupData)
-    }
-  }
+  const groupsData = await getGroupsData(groups)
 
   // Return
   return {

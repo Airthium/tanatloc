@@ -127,6 +127,14 @@ describe('lib/avatar', () => {
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
     expect(avatar).toEqual({ id: 'id' })
 
+    // No user
+    mockUserGet.mockImplementation(() => undefined)
+    await Avatar.add({ id: 'id' }, 'user', {
+      name: 'name',
+      uid: 'uid',
+      data: 'data'
+    })
+
     // Project
     avatar = await Avatar.add({ id: 'id' }, 'project', {
       name: 'name',
@@ -134,16 +142,16 @@ describe('lib/avatar', () => {
       data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(1)
-    expect(mockSharp).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(3)
+    expect(mockSharp).toHaveBeenCalledTimes(3)
+    expect(mockAdd).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(3)
     expect(mockProjectGet).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
     expect(mockToolsReadFile).toHaveBeenCalledTimes(0)
-    expect(mockToolsWriteFile).toHaveBeenCalledTimes(3)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(4)
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
     expect(avatar).toEqual({ id: 'id' })
 
@@ -157,18 +165,26 @@ describe('lib/avatar', () => {
       data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockSharp).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(4)
+    expect(mockSharp).toHaveBeenCalledTimes(3)
+    expect(mockAdd).toHaveBeenCalledTimes(5)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(3)
     expect(mockProjectGet).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
     expect(mockToolsReadFile).toHaveBeenCalledTimes(0)
-    expect(mockToolsWriteFile).toHaveBeenCalledTimes(4)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(5)
     expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
     expect(avatar).toEqual({ id: 'id' })
+
+    // No project
+    mockProjectGet.mockImplementation(() => undefined)
+    await Avatar.add({ id: 'id' }, 'project', {
+      name: 'name',
+      uid: 'uid',
+      data: 'data'
+    })
   })
 
   test('read', async () => {

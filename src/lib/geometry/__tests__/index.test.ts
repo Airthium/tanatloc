@@ -326,5 +326,9 @@ describe('lib/geometry', () => {
     mockToolsSplitStep.mockImplementation(() => [{}])
     const message = await Geometry.splitStep({ id: 'id' }, { id: 'id' })
     expect(message).toBe('Only one volume found')
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Geometry.splitStep({ id: 'id' }, { id: 'id' })
   })
 })

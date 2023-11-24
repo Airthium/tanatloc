@@ -4,11 +4,11 @@ jest.mock('uuid', () => ({
   v4: () => 'uuid'
 }))
 
-const mockGet = jest.fn()
-const mockUpdate = jest.fn()
+const mockUserGet = jest.fn()
+const mockUserUpdate = jest.fn()
 jest.mock('../../user', () => ({
-  get: async () => mockGet(),
-  update: async () => mockUpdate()
+  get: async () => mockUserGet(),
+  update: async () => mockUserUpdate()
 }))
 
 const mockInit = jest.fn()
@@ -24,36 +24,36 @@ jest.mock('../../plugins', () => ({
 }))
 
 jest.mock('../../tools', () => ({
-  encrypt: async (str: string) => str
+  encrypt: async (str: string) => '[MOCK ENCRYPTED]' + str
 }))
 
 describe('lib/plugin', () => {
   beforeEach(() => {
     mockInit.mockReset()
 
-    mockGet.mockReset()
-    mockGet.mockImplementation(() => ({}))
-    mockUpdate.mockReset()
+    mockUserGet.mockReset()
+    mockUserGet.mockImplementation(() => ({}))
+    mockUserUpdate.mockReset()
   })
 
   test('add', async () => {
     // Normal
     await Plugin.add({ id: 'id' }, {})
-    expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
-    mockGet.mockImplementation(() => ({ plugins: [{}] }))
+    mockUserGet.mockImplementation(() => ({ plugins: [{}] }))
 
     // Init (without API)
     await Plugin.add({ id: 'id' }, { key: 'nokey', haveInit: true })
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
     expect(mockInit).toHaveBeenCalledTimes(0)
 
     // Init (with API)
     await Plugin.add({ id: 'id' }, { key: 'key', haveInit: true })
-    expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockUpdate).toHaveBeenCalledTimes(3)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
     expect(mockInit).toHaveBeenCalledTimes(1)
 
     // Name & secret
@@ -70,6 +70,10 @@ describe('lib/plugin', () => {
         }
       }
     )
+
+    // No user
+    mockUserGet.mockImplementation(() => undefined)
+    await Plugin.add({ id: 'id' }, {})
   })
 
   test('extra', async () => {
@@ -86,25 +90,41 @@ describe('lib/plugin', () => {
     plugins = await Plugin.getByUser({ id: 'id' })
     expect(plugins).toEqual([])
 
-    mockGet.mockImplementation(() => ({ plugins: [{}] }))
+    mockUserGet.mockImplementation(() => ({ plugins: [{}] }))
     plugins = await Plugin.getByUser({ id: 'id' })
     expect(plugins).toEqual([{}])
   })
 
   test('update', async () => {
-    // No plugins
-    await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
-    expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    // No user
+    mockUserGet.mockImplementation(() => undefined)
+    await Plugin.update(
+      { id: 'id' },
+      { uuid: 'uuid', configuration: { name: { value: 'name' } } }
+    )
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
 
     // Normal
-    mockGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
+    mockUserGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
     await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+
+    // No plugin
+    mockUserGet.mockImplementation(() => ({}))
+    await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+
+    // Pplugin not found
+    mockUserGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
+    await Plugin.update({ id: 'id' }, { uuid: 'nouuid' })
+    expect(mockUserGet).toHaveBeenCalledTimes(4)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // Re-init
-    mockGet.mockImplementation(() => ({
+    mockUserGet.mockImplementation(() => ({
       plugins: [
         {
           uuid: 'uuid',
@@ -119,51 +139,48 @@ describe('lib/plugin', () => {
       { id: 'id' },
       { key: 'nokey', uuid: 'uuid', haveInit: true, needReInit: true }
     )
-    expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(5)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
 
+    // Re-init with lib
+    mockUserGet.mockImplementation(() => ({
+      plugins: [
+        {
+          uuid: 'uuid',
+          configuration: {
+            secret: { secret: true, value: 'secret' },
+            nosecret: {}
+          }
+        }
+      ]
+    }))
     await Plugin.update(
       { id: 'id' },
       { key: 'key', uuid: 'uuid', haveInit: true, needReInit: true }
     )
-    expect(mockGet).toHaveBeenCalledTimes(4)
-    expect(mockUpdate).toHaveBeenCalledTimes(3)
-
-    // Not found
-    await Plugin.update(
-      { id: 'id' },
-      { uuid: 'nouuid', haveInit: true, needReInit: true }
-    )
-    expect(mockGet).toHaveBeenCalledTimes(5)
-    expect(mockUpdate).toHaveBeenCalledTimes(3)
-
-    // Name & secret
-    await Plugin.update(
-      { id: 'id' },
-      {
-        uuid: 'uuid',
-        configuration: {
-          name: { label: 'name', type: 'type', value: 'name' }
-        }
-      }
-    )
+    expect(mockUserGet).toHaveBeenCalledTimes(6)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
   })
 
   test('del', async () => {
     // No plugins
     await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
-    expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
 
     // Normal
-    mockGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
+    mockUserGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
     await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // Not found
     await Plugin.del({ id: 'id' }, { uuid: 'nouuid' })
-    expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+
+    // No user
+    mockUserGet.mockImplementation(() => undefined)
+    await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
   })
 })

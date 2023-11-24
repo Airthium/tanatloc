@@ -56,11 +56,13 @@ describe('lib/userModel', () => {
     expect(newModel).toEqual({ id: 'id', model: { userModelId: 'id' } })
   })
 
-  test('get', async () => {
+  test('getWithData', async () => {
+    // Normal
     mockGet.mockImplementation(() => ({}))
     await UserModel.getWithData('id', ['model', 'template'])
     expect(mockGet).toHaveBeenCalledTimes(1)
 
+    // With data
     await UserModel.getWithData('id', [
       'model',
       'template',
@@ -69,11 +71,32 @@ describe('lib/userModel', () => {
       'groups'
     ])
     expect(mockGet).toHaveBeenCalledTimes(2)
+
+    // With owners, users, groups
+    mockGet.mockImplementation(() => ({
+      owners: ['id', 'id'],
+      users: ['id', 'id'],
+      groups: ['id', 'id']
+    }))
+    mockUserGetWithData
+      .mockImplementationOnce(() => ({}))
+      .mockImplementation(() => undefined)
+    mockGroupGet
+      .mockImplementationOnce(() => ({}))
+      .mockImplementation(() => undefined)
+    await UserModel.getWithData('id', ['model', 'template'])
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUserGetWithData).toHaveBeenCalledTimes(4)
+    expect(mockGroupGet).toHaveBeenCalledTimes(2)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await UserModel.getWithData('id', ['model', 'template'])
+    expect(mockGet).toHaveBeenCalledTimes(4)
   })
 
   test('update', async () => {
-    mockUserGet.mockImplementation(() => ({ usermodels: [] }))
-    mockGroupGet.mockImplementation(() => ({ usermodels: [] }))
+    // Simple
     await UserModel.update({ id: 'id' }, [
       {
         key: 'key',
@@ -82,16 +105,36 @@ describe('lib/userModel', () => {
     ])
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    // With users and groups
-    mockGet.mockImplementation(() => ({ users: ['id0'], groups: ['id0'] }))
+    // Groups & users update
+    mockGet.mockImplementation(() => ({
+      users: ['id1', 'id4', 'id5', 'id6'],
+      groups: ['id1', 'id4', 'id5', 'id6']
+    }))
+    mockUserGetWithData.mockImplementation(() => ({}))
     mockUserGet
+      .mockImplementationOnce(() => undefined)
       .mockImplementationOnce(() => ({ usermodels: [] }))
       .mockImplementationOnce(() => ({ usermodels: ['id'] }))
-      .mockImplementationOnce(() => ({ usermodels: ['id1'] }))
     mockGroupGet
+      .mockImplementationOnce(() => ({}))
+      .mockImplementationOnce(() => ({}))
+      .mockImplementationOnce(() => ({}))
+      .mockImplementationOnce(() => undefined)
       .mockImplementationOnce(() => ({ usermodels: [] }))
       .mockImplementationOnce(() => ({ usermodels: ['id'] }))
-      .mockImplementationOnce(() => ({ usermodels: ['id1'] }))
+    await UserModel.update({ id: 'id' }, [
+      {
+        key: 'users',
+        value: ['id1', 'id2', 'id3']
+      },
+      {
+        key: 'groups',
+        value: ['id1', 'id2', 'id3']
+      }
+    ])
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
     await UserModel.update({ id: 'id' }, [
       {
         key: 'users',
@@ -105,20 +148,21 @@ describe('lib/userModel', () => {
   })
 
   test('del', async () => {
-    mockGet.mockImplementation(() => ({ owners: [], users: [], groups: [] }))
-    await UserModel.del({ id: 'id' }, { id: 'id' })
-    expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
-
-    // With users and groups
     mockGet.mockImplementation(() => ({
       owners: ['id'],
       users: ['id'],
       groups: ['id']
     }))
+    mockUserGetWithData.mockImplementation(() => ({ id: 'id' }))
+    mockGroupGet.mockImplementation(() => ({ id: 'id' }))
+    await UserModel.del({ id: 'id' }, { id: 'id' })
+    expect(mockDel).toHaveBeenCalledTimes(1)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
+    expect(mockGroupUpdate).toHaveBeenCalledTimes(1)
+
+    // Without data
+    mockGet.mockImplementation(() => undefined)
     await UserModel.del({ id: 'id' }, { id: 'id' })
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
-    expect(mockGroupUpdate).toHaveBeenCalledTimes(0)
   })
 })

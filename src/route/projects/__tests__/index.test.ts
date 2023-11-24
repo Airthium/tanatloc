@@ -19,9 +19,9 @@ jest.mock('../../error', () => ({
   error: (status: number, message: string) => mockError(status, message)
 }))
 
-const mockGet = jest.fn()
+const mockProjectGetWithData = jest.fn()
 jest.mock('@/lib/project', () => ({
-  getWithData: async () => mockGet()
+  getWithData: async () => mockProjectGetWithData()
 }))
 
 describe('route/projects/ids', () => {
@@ -51,8 +51,8 @@ describe('route/projects/ids', () => {
     mockError.mockReset()
     mockError.mockImplementation((status, message) => ({ status, message }))
 
-    mockGet.mockReset()
-    mockGet.mockImplementation(() => ({
+    mockProjectGetWithData.mockReset()
+    mockProjectGetWithData.mockImplementation(() => ({
       id: 'id',
       title: 'title'
     }))
@@ -78,7 +78,7 @@ describe('route/projects/ids', () => {
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectGetWithData).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(resStatus).toBe(401)
     expect(resJson).toEqual({
@@ -99,7 +99,7 @@ describe('route/projects/ids', () => {
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectGetWithData).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(resStatus).toBe(400)
     expect(resJson).toEqual({
@@ -118,7 +118,7 @@ describe('route/projects/ids', () => {
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectGetWithData).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual({
@@ -126,19 +126,20 @@ describe('route/projects/ids', () => {
     })
 
     // Normal
-    let check = 0
-    mockGet.mockImplementation(() => ({
-      id: 'id',
-      name: 'name'
-    }))
-    mockCheckProjectAuth.mockImplementation(() => {
-      check++
-      if (check % 2) {
+    mockProjectGetWithData
+      .mockImplementationOnce(() => ({
+        id: 'id',
+        name: 'name'
+      }))
+      .mockImplementation(() => undefined)
+    mockCheckProjectAuth
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => {
         const error: IRouteError = new Error('Access denied')
         error.status = 403
         throw error
-      }
-    })
+      })
+      .mockImplementationOnce(() => undefined)
     await ids(
       {
         ...req,
@@ -150,12 +151,12 @@ describe('route/projects/ids', () => {
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
-    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(3)
+    expect(mockProjectGetWithData).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(2)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual({
-      projects: []
+      projects: [{ id: 'id', name: 'name' }]
     })
   })
 
@@ -172,7 +173,7 @@ describe('route/projects/ids', () => {
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectGetWithData).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(resStatus).toBe(402)
     expect(resJson).toEqual({

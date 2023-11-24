@@ -36,10 +36,10 @@ jest.mock('../../project', () => ({
   update: async () => mockProjectUpdate()
 }))
 
-const mockuserModelGet = jest.fn()
+const mockUserModelGetWithData = jest.fn()
 const mockUserModelUpdate = jest.fn()
 jest.mock('../../userModel', () => ({
-  getWithData: async () => mockuserModelGet(),
+  getWithData: async () => mockUserModelGetWithData(),
   update: async () => mockUserModelUpdate()
 }))
 
@@ -67,7 +67,7 @@ describe('lib/group', () => {
     mockProjectGetWithData.mockReset()
     mockProjectUpdate.mockReset()
 
-    mockuserModelGet.mockReset()
+    mockUserModelGetWithData.mockReset()
     mockUserModelUpdate.mockReset()
 
     mockOrganizationGet.mockReset()
@@ -93,33 +93,40 @@ describe('lib/group', () => {
       users: ['id']
     })
     expect(mockGet).toHaveBeenCalledTimes(1)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Group.get('id', ['users'])
+    expect(mockGet).toHaveBeenCalledTimes(2)
   })
 
   test('getWithData', async () => {
-    mockGet.mockImplementation(() => ({ id: 'id', users: ['id'] }))
-    mockUserGetWithData.mockImplementation(() => ({ firstname: 'firstname' }))
-    const group = await Group.getWithData('id', ['users'])
-    expect(group).toEqual({
-      id: 'id',
-      users: [{ firstname: 'firstname' }]
-    })
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Group.getWithData('id', ['users'])
     expect(mockGet).toHaveBeenCalledTimes(1)
 
+    // With users, workspace, projects, usermodels
     mockGet.mockImplementation(() => ({
       id: 'id',
-      users: ['id'],
-      workspaces: ['id'],
-      projects: ['id'],
-      usermodels: ['id']
+      users: ['id1', 'id2'],
+      workspaces: ['id1', 'id2'],
+      projects: ['id1', 'id2'],
+      usermodels: ['id1', 'id2']
     }))
-    const group2 = await Group.getWithData('id', ['users'])
-    expect(group2).toEqual({
-      id: 'id',
-      users: [{ firstname: 'firstname' }],
-      workspaces: [],
-      projects: [],
-      usermodels: []
-    })
+    mockUserGetWithData
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
+    mockWorkspaceGetWithData
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
+    mockProjectGetWithData
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
+    mockUserModelGetWithData
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
+    await Group.getWithData('id', ['users'])
   })
 
   test('getAll', async () => {
@@ -231,6 +238,15 @@ describe('lib/group', () => {
     expect(groups).toEqual([
       { name: 'name', users: [{ firstname: 'firstname' }] }
     ])
+
+    // No organization
+    mockOrganizationGet.mockImplementation(() => undefined)
+    await Group.getByOrganization('id', ['name'])
+
+    // Undefined
+    mockOrganizationGet.mockImplementation(() => ({ groups: ['id1'] }))
+    mockGet.mockImplementation(() => undefined)
+    await Group.getByOrganization('id', ['name'])
   })
 
   test('update', async () => {
@@ -263,5 +279,9 @@ describe('lib/group', () => {
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
     expect(mockUserModelUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(2)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Group.del({ id: 'id' })
   })
 })

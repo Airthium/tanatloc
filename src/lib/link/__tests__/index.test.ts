@@ -84,6 +84,10 @@ describe('lib/link', () => {
       expect(mockUserUpdate).toHaveBeenCalledTimes(3)
       expect(mockLinkDel).toHaveBeenCalledTimes(4)
     }
+
+    // Undefined
+    mockLinkGet.mockImplementation(() => undefined)
+    await Link.process('id', { email: 'email', password: 'password' })
   })
 
   test('del', async () => {

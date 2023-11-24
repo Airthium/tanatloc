@@ -195,6 +195,10 @@ describe('lib/project', () => {
       users: [],
       groups: []
     })
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Project.get('id', [])
   })
 
   test('getWithData', async () => {
@@ -209,21 +213,21 @@ describe('lib/project', () => {
     // With avatar, owners, users & groups
     mockGet.mockImplementation(() => ({
       avatar: 'avatar',
-      owners: ['owner'],
-      users: ['user'],
-      groups: ['group']
+      owners: ['id1', 'id2'],
+      users: ['id1', 'id2'],
+      groups: ['id1', 'id2']
     }))
-    mockUserGetWithData.mockImplementation(() => ({ id: 'user' }))
-    mockGroupGetWithData.mockImplementation(() => ({ id: 'group' }))
+    mockUserGetWithData.mockImplementationOnce(() => ({ id: 'user' }))
+    mockGroupGetWithData.mockImplementationOnce(() => ({ id: 'group' }))
     mockAvatarRead.mockImplementation((val) => val)
     project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockAvatarRead).toHaveBeenCalledTimes(1)
-    expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
+    expect(mockUserGetWithData).toHaveBeenCalledTimes(4)
     expect(project).toEqual({
       avatar: 'avatar',
       owners: [{ id: 'user' }],
-      users: [{ id: 'user' }],
+      users: [],
       groups: [{ id: 'group' }]
     })
 
@@ -234,13 +238,13 @@ describe('lib/project', () => {
     project = await Project.getWithData('id', ['title'])
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockAvatarRead).toHaveBeenCalledTimes(2)
-    expect(mockUserGetWithData).toHaveBeenCalledTimes(4)
+    expect(mockUserGetWithData).toHaveBeenCalledTimes(8)
     expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: undefined,
-      owners: [{ id: 'user' }],
-      users: [{ id: 'user' }],
-      groups: [{ id: 'group' }]
+      owners: [],
+      users: [],
+      groups: []
     })
 
     // Archived
@@ -252,12 +256,16 @@ describe('lib/project', () => {
     expect(project).toEqual({
       archived: true
     })
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Project.getWithData('id', ['title'])
   })
 
   test('update', async () => {
     mockGet.mockImplementation(() => ({}))
-    mockGroupGet.mockImplementation(() => ({ projects: [] }))
-    mockUserGet.mockImplementation(() => ({ projects: [] }))
+    mockGroupGet.mockImplementationOnce(() => ({ projects: [] }))
+    mockUserGet.mockImplementationOnce(() => ({ projects: [] }))
     await Project.update({ id: 'id' }, [
       { key: 'groups', value: ['id'] },
       { key: 'users', value: ['id'] }
@@ -272,8 +280,8 @@ describe('lib/project', () => {
     }))
 
     await Project.update({ id: 'id' }, [
-      { key: 'groups', value: ['id'] },
-      { key: 'users', value: ['id'] }
+      { key: 'groups', value: ['id1', 'id2', 'id3', 'id4'] },
+      { key: 'users', value: ['id1', 'id2', 'id3', 'id4'] }
     ])
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
@@ -300,6 +308,13 @@ describe('lib/project', () => {
     await Project.update({ id: 'id' }, [
       { key: 'description', value: 'description' }
     ])
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Project.update({ id: 'id' }, [
+      { key: 'groups', value: ['id'] },
+      { key: 'users', value: ['id'] }
+    ])
   })
 
   test('delete', async () => {
@@ -321,6 +336,10 @@ describe('lib/project', () => {
     expect(mockDelete).toHaveBeenCalledTimes(2)
     expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2)
     expect(mockSimulationDel).toHaveBeenCalledTimes(1)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Project.del({ id: 'id' }, { id: 'id' })
   })
 
   test('archive', async () => {
@@ -350,6 +369,12 @@ describe('lib/project', () => {
     expect(mockToolsArchive).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsReadStream).toHaveBeenCalledTimes(2)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    try {
+      await Project.archive({ id: 'id' })
+    } catch (err) {}
   })
 
   test('unarchiveFromServer', async () => {
@@ -434,19 +459,23 @@ describe('lib/project', () => {
     }))
     mockAdd.mockImplementation(() => ({}))
     mockWorkspaceUpdate.mockImplementation(() => jest.fn)
-    mockGeometryGet.mockImplementation(() => ({
-      uploadfilename: 'uploadfilename'
-    }))
+    mockGeometryGet
+      .mockImplementationOnce(() => undefined)
+      .mockImplementation(() => ({
+        uploadfilename: 'uploadfilename'
+      }))
     mockGeometryAdd.mockImplementation(() => ({ id: 'newid' }))
-    mockSimulationGet.mockImplementation(() => ({
-      scheme: {
-        configuration: {
-          geometry: {
-            children: [{}]
+    mockSimulationGet
+      .mockImplementationOnce(() => undefined)
+      .mockImplementation(() => ({
+        scheme: {
+          configuration: {
+            geometry: {
+              children: [{}]
+            }
           }
         }
-      }
-    }))
+      }))
     await Project.copy(
       { id: 'userid' },
       { id: 'workspaceid' },
@@ -468,6 +497,14 @@ describe('lib/project', () => {
       }
     }))
 
+    await Project.copy(
+      { id: 'userid' },
+      { id: 'workspaceid' },
+      { id: 'projectid' }
+    )
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
     await Project.copy(
       { id: 'userid' },
       { id: 'workspaceid' },

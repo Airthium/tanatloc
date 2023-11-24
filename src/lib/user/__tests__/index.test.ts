@@ -184,6 +184,10 @@ describe('lib/user', () => {
         }
       ]
     })
+
+    // undefined
+    mockGet.mockImplementation(() => undefined)
+    await User.get('id', ['email'])
   })
 
   test('getWithData', async () => {
@@ -209,12 +213,20 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       avatar: 'avatar',
-      projects: ['id'],
-      workspaces: ['id'],
-      usermodels: ['id']
+      projects: ['id1', 'id2'],
+      workspaces: ['id1', 'id2'],
+      usermodels: ['id1', 'id2']
     }))
     mockAvatarRead.mockImplementation(() => 'avatar')
-    mockUserModelGet.mockImplementation(() => ({}))
+    mockWorkspaceGet
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
+    mockProjectGet
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
+    mockUserModelGet
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => ({}))
     user = await User.getWithData('id', ['email', 'avatar'])
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockAvatarRead).toHaveBeenCalledTimes(1)
@@ -222,10 +234,20 @@ describe('lib/user', () => {
       id: 'id',
       email: 'email',
       avatar: 'avatar',
-      projects: [],
-      workspaces: [],
+      projects: [{}],
+      workspaces: [{}],
       usermodels: [{}]
     })
+
+    // Avatar error
+    mockAvatarRead.mockImplementation(() => {
+      throw new Error('avatar read error')
+    })
+    await User.getWithData('id', ['email', 'avatar'])
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await User.getWithData('id', [])
   })
 
   test('getBy', async () => {
@@ -356,5 +378,13 @@ describe('lib/user', () => {
     expect(mockWorkspaceDel).toHaveBeenCalledTimes(1)
     expect(mockOrganizationUpdate).toHaveBeenCalledTimes(4)
     expect(mockGroupUpdate).toHaveBeenCalledTimes(1)
+
+    // No organization
+    mockOrganizationGet.mockImplementation(() => undefined)
+    await User.del({ id: 'id' })
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await User.del({ id: 'id' })
   })
 })

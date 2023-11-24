@@ -8,15 +8,15 @@ import { error } from '../error'
 
 import ProjectLib from '@/lib/project'
 
-export interface IGetBody {
+export interface IPostBody {
   ids: string[]
 }
 
 /**
- * Check get body
+ * Check POST body
  * @param body Body
  */
-const checkGetBody = (body: IGetBody): void => {
+const checkPostBody = (body: IPostBody): void => {
   if (!body)
     throw error(400, 'Missing data in your request (body: { ids(?array) })')
 }
@@ -33,10 +33,10 @@ const route = async (req: Request, res: Response) => {
 
     if (req.method === 'POST') {
       // Check
-      checkGetBody(req.body)
+      checkPostBody(req.body)
 
       // Ids
-      const ids = req.body.ids
+      const { ids } = req.body
 
       if (!ids || !Array.isArray(ids)) {
         res.status(200).json({ projects: [] })
@@ -63,11 +63,12 @@ const route = async (req: Request, res: Response) => {
             'simulations',
             'workspace'
           ])
+          console.log(project)
+          if (!project) throw error(400, 'Invalid geometry identifier')
 
           projects.push(project)
         } catch (err) {
           console.warn(err)
-          return null
         }
       }
 

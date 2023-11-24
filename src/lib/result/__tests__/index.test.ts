@@ -170,5 +170,14 @@ describe('lib/result', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
+
+    // No simulation
+    mockSimulationGet.mockImplementation(() => undefined)
+    try {
+      await Result.archive({ id: 'id' })
+      expect(true).toBe(false)
+    } catch (err: any) {
+      expect(err.message).toBe('Simulation not found')
+    }
   })
 })

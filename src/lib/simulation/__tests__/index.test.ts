@@ -133,6 +133,10 @@ describe('lib/simulation', () => {
     }))
     simulation = await Simulation.get('id', ['tasks'])
     expect(simulation).toEqual({ tasks: [] })
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Simulation.get('id', [])
   })
 
   test('getAll', async () => {
@@ -447,6 +451,59 @@ describe('lib/simulation', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(6)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
     expect(mockPluginCompute).toHaveBeenCalledTimes(5)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Simulation.run({ id: 'id' }, { id: 'id' })
+
+    // No cloud server
+
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {
+            children: [
+              {
+                value: 'id'
+              }
+            ]
+          },
+          run: {
+            cloudServer: {
+              key: 'key',
+              configuration: {}
+            }
+          }
+        }
+      }
+    }))
+    mockPluginServerList.mockImplementation(() => [
+      {
+        key: 'key',
+        lib: {
+          computeSimulation: async () => mockPluginCompute(),
+          stop: async () => mockPluginStop()
+        }
+      }
+    ])
+    mockUserGet.mockImplementation(() => undefined)
+    try {
+      await Simulation.run({ id: 'id' }, { id: 'id' })
+    } catch (err: any) {
+      expect(err.message).toBe('User not found')
+    }
+
+    // No geometry
+    mockUserGet.mockImplementation(() => ({
+      plugins: [{ key: 'key', configuration: {} }],
+      authorizedplugins: ['key']
+    }))
+    mockGeometryGet.mockImplementation(() => undefined)
+    try {
+      await Simulation.run({ id: 'id' }, { id: 'id' })
+    } catch (err: any) {
+      expect(err.message).toBe('Geometry not found')
+    }
   })
 
   test('run 2D', async () => {
@@ -546,6 +603,10 @@ describe('lib/simulation', () => {
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockPluginStop).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
+    await Simulation.stop({ id: 'id' })
   })
 
   test('getLog', async () => {
@@ -578,6 +639,10 @@ describe('lib/simulation', () => {
         }
       }
     }))
+    await Simulation.copy({ id: 'id' })
+
+    // Undefined
+    mockGet.mockImplementation(() => undefined)
     await Simulation.copy({ id: 'id' })
   })
 })

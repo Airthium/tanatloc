@@ -122,16 +122,14 @@ const update = async (
   }
 
   // Encrypt
-  userData.plugins = []
-  for (const p of userData.plugins) {
-    for (const key in p.configuration) {
-      const config = p.configuration[key]
+  for (const userPlugin of userData.plugins) {
+    for (const key in userPlugin.configuration) {
+      const config = userPlugin.configuration[key]
       if (config.secret && config.value)
-        p.configuration[key].value = JSON.stringify(
+        userPlugin.configuration[key].value = JSON.stringify(
           await Tools.encrypt(config.value)
         )
     }
-    userData.plugins.push(p)
   }
 
   userData.plugins = [

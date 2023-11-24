@@ -60,9 +60,9 @@ const Hpc = (): React.JSX.Element => {
         </Typography.Title>
         <Typography.Text>
           Allow to compute a simulation on{' '}
-          <a href="https://www.rescale.com/" target="_blank" rel="noreferrer">
+          <Link href="https://www.rescale.com/" target="_blank">
             Rescale
-          </a>
+          </Link>
           .
         </Typography.Text>
         <Typography.Text>

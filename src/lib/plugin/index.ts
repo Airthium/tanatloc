@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 
 import { LIMIT50 } from '@/config/string'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin, HPCServerPlugin } from '@/plugins/index.d'
 
 import User from '../user'
 import Plugins from '../plugins'
@@ -18,24 +18,26 @@ import Tools from '../tools'
  */
 const add = async (
   user: { id: string },
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
 ): Promise<void> => {
   // Set uuid
   plugin.uuid = uuid()
 
   // Check name
-  if (plugin.configuration?.name?.value)
-    plugin.configuration.name.value = plugin.configuration.name.value.substring(
-      0,
-      LIMIT50
-    )
+  if (plugin.configuration?.name?.value) {
+    const name = plugin.configuration.name.value as string
+    plugin.configuration.name.value = name.substring(0, LIMIT50)
+  }
 
   // Plugin initialization
   if (plugin.haveInit) {
     const plugins = await Plugins.serverList()
-    const lib = plugins.find((l) => l.key === plugin.key)?.lib
+    const HPCPlugins = plugins.filter(
+      (p) => p.category === 'HPC'
+    ) as HPCServerPlugin[]
+    const lib = HPCPlugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {
-      const init = await lib.init(plugin.configuration)
+      const init = await lib.init!(plugin.configuration)
       merge(plugin, init)
     }
   }
@@ -45,7 +47,7 @@ const add = async (
     const config = plugin.configuration[key]
     if (config.secret && config.value)
       plugin.configuration[key].value = JSON.stringify(
-        await Tools.encrypt(config.value)
+        await Tools.encrypt(config.value.toString())
       )
   }
 
@@ -62,14 +64,22 @@ const add = async (
 
 /**
  * Extra
+ * @param simulation Simulation
  * @param plugin Plugin
  * @param extra Extra action
  */
-const extra = async (plugin: IClientPlugin, extra: string): Promise<void> => {
+const extra = async (
+  simulation: { id: string },
+  plugin: HPCClientPlugin,
+  extra: string
+): Promise<void> => {
   const plugins = await Plugins.serverList()
-  const lib = plugins.find((l) => l.key === plugin.key)?.lib
+  const HPCPlugins = plugins.filter(
+    (p) => p.category === 'HPC'
+  ) as HPCServerPlugin[]
+  const lib = HPCPlugins.find((l) => l.key === plugin.key)?.lib
   if (lib) {
-    await lib.extra?.(plugin.configuration, extra)
+    await lib.extra?.(simulation, plugin.configuration, extra)
   }
 }
 
@@ -78,7 +88,7 @@ const extra = async (plugin: IClientPlugin, extra: string): Promise<void> => {
  * @param user User
  * @returns Plugins
  */
-const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
+const getByUser = async (user: { id: string }): Promise<HPCClientPlugin[]> => {
   // Get plugins
   const userData = await User.get(user.id, ['plugins'])
 
@@ -92,14 +102,13 @@ const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
  */
 const update = async (
   user: { id: string },
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
 ): Promise<void> => {
   // Check name
-  if (plugin.configuration?.name?.value)
-    plugin.configuration.name.value = plugin.configuration.name.value.substring(
-      0,
-      LIMIT50
-    )
+  if (plugin.configuration?.name?.value) {
+    const name = plugin.configuration.name.value as string
+    plugin.configuration.name.value = name.substring(0, LIMIT50)
+  }
 
   // Get
   const userData = await User.get(user.id, ['plugins'])
@@ -113,9 +122,12 @@ const update = async (
   // Re-init
   if (plugin.haveInit && plugin.needReInit) {
     const plugins = await Plugins.serverList()
-    const lib = plugins.find((l) => l.key === plugin.key)?.lib
+    const HPCPlugins = plugins.filter(
+      (p) => p.category === 'HPC'
+    ) as HPCServerPlugin[]
+    const lib = HPCPlugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {
-      const init = await lib.init(plugin.configuration)
+      const init = await lib.init!(plugin.configuration)
       merge(plugin, init)
     }
     plugin.needReInit = false
@@ -149,7 +161,7 @@ const update = async (
  */
 const del = async (
   user: { id: string },
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
 ): Promise<void> => {
   // Get
   const userData = await User.get(user.id, ['plugins'])

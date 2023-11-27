@@ -6,7 +6,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
 import { merge } from 'lodash'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 import {
   IFrontMutateSimulationsItem,
@@ -92,13 +92,13 @@ export const _pluginsList = async (
 export const _loadModels = (
   user: Pick<IFrontUser, 'authorizedplugins'>,
   models: IModel[],
-  plugins: IClientPlugin[]
+  plugins: ClientPlugin[]
 ): IModel[] => {
   let allModels = models
 
   plugins.forEach((plugin) => {
     if (
-      user.authorizedplugins?.includes(plugin.key as string) &&
+      user.authorizedplugins?.includes(plugin.key) &&
       plugin.category === 'Model'
     )
       allModels = [...allModels, ...plugin.models]

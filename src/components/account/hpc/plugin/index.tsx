@@ -1,9 +1,9 @@
 /** @module Components.Account.HPC.Plugin */
 
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { Space, Spin } from 'antd'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
@@ -19,7 +19,7 @@ import globalStyle from '@/styles/index.module.css'
  * Props
  */
 export interface IProps {
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
 }
 
 /**
@@ -55,28 +55,25 @@ const Plugin = ({ plugin }: IProps): React.JSX.Element => {
       dispatch(addError({ title: errors.plugins, err: errorPlugins }))
   }, [errorPlugins, dispatch])
 
+  // HPC plugins
+  const HPCPlugins = useMemo(
+    () =>
+      plugins.filter(
+        (plugin) => plugin.category === 'HPC'
+      ) as HPCClientPlugin[],
+    [plugins]
+  )
+
   /**
    * Render
    */
   if (loadingPlugins) return <Spin />
   return (
     <Space direction="vertical" className={globalStyle.fullWidth}>
-      <PluginDialog
-        plugin={plugin}
-        // {
-        //   uuid: plugin.uuid,
-        //   key: plugin.key,
-        //   name: plugin.name,
-        //   description: plugin.description,
-        //   haveInit: plugin.haveInit,
-        //   configuration: plugin.configuration,
-        //   inUseConfiguration: plugin.inUseConfiguration
-        // }}
-        swr={{ addOnePlugin }}
-      />
+      <PluginDialog plugin={plugin} swr={{ addOnePlugin }} />
       <List
         plugin={{ key: plugin.key }}
-        plugins={plugins}
+        plugins={HPCPlugins}
         swr={{ delOnePlugin, mutateOnePlugin }}
       />
     </Space>

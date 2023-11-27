@@ -13,7 +13,7 @@ import {
 import { Form, Input, InputRef, Select, Typography } from 'antd'
 import parse from 'html-react-parser'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import {
   INotificationAction,
@@ -32,10 +32,10 @@ import PluginAPI from '@/api/plugin'
  * Props
  */
 export interface IProps {
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
   swr: {
-    addOnePlugin?: (plugin: IClientPlugin) => Promise<void>
-    mutateOnePlugin?: (plugin: IClientPlugin) => Promise<void>
+    addOnePlugin?: (plugin: HPCClientPlugin) => Promise<void>
+    mutateOnePlugin?: (plugin: HPCClientPlugin) => Promise<void>
   }
   edit?: boolean
 }
@@ -53,7 +53,7 @@ export const errors = {
  * @param key Key
  */
 export const _inputItem = (
-  item: IClientPlugin['configuration']['key'],
+  item: HPCClientPlugin['configuration']['key'],
   key: string,
   inputRef?: RefObject<InputRef>
 ): React.ReactElement => {
@@ -82,7 +82,7 @@ export const _inputItem = (
  * @param key Key
  */
 export const _textareaItem = (
-  item: IClientPlugin['configuration']['key'],
+  item: HPCClientPlugin['configuration']['key'],
   key: string
 ): React.ReactElement => {
   return (
@@ -109,7 +109,7 @@ export const _textareaItem = (
  * @param key Key
  */
 export const _passwordItem = (
-  item: IClientPlugin['configuration']['key'],
+  item: HPCClientPlugin['configuration']['key'],
   key: string
 ): React.ReactElement => {
   return (
@@ -137,7 +137,7 @@ export const _passwordItem = (
  * @param key Key
  */
 export const _selectItem = (
-  item: IClientPlugin['configuration']['key'],
+  item: HPCClientPlugin['configuration']['key'],
   key: string
 ): React.ReactElement => {
   return (
@@ -150,7 +150,7 @@ export const _selectItem = (
       rules={item.rules}
     >
       <Select id={'select-' + key}>
-        {item.options.map((option: string[]) => (
+        {item.options?.map((option) => (
           <Select.Option key={option} value={option} {...(item.props ?? {})}>
             {option}
           </Select.Option>
@@ -168,12 +168,12 @@ export const _selectItem = (
  * @param swr SWR
  */
 export const _onFinish = async (
-  plugin: IClientPlugin,
+  plugin: HPCClientPlugin,
   edit: boolean,
-  values: {},
+  values: { [key: string]: string },
   swr: {
-    addOnePlugin?: (plugin: IClientPlugin) => Promise<void>
-    mutateOnePlugin?: (plugin: IClientPlugin) => Promise<void>
+    addOnePlugin?: (plugin: HPCClientPlugin) => Promise<void>
+    mutateOnePlugin?: (plugin: HPCClientPlugin) => Promise<void>
   },
   dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
@@ -183,7 +183,7 @@ export const _onFinish = async (
 
       // Set values
       Object.keys(values).forEach((key) => {
-        initialPlugin.configuration[key].value = values[key as keyof {}]
+        initialPlugin.configuration[key].value = values[key]
       })
 
       initialPlugin.needReInit = true
@@ -200,7 +200,7 @@ export const _onFinish = async (
 
       // Set values
       Object.keys(values).forEach((key) => {
-        newPlugin.configuration[key].value = values[key as keyof {}]
+        newPlugin.configuration[key].value = values[key]
       })
 
       // API
@@ -318,7 +318,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
         <EditButton onEdit={setVisibleTrue}>Edit</EditButton>
       ) : (
         <AddButton onAdd={setVisibleTrue}>
-          Add a new «{plugin.name}» configuration
+          <>Add a new «{plugin.name}» configuration</>
         </AddButton>
       )}
     </>

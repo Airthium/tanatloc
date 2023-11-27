@@ -13,7 +13,7 @@ import { Checkbox, Table, TableColumnsType } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { IFrontSystem, IFrontMutateSystem } from '@/api/index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 
 import {
   INotificationAction,
@@ -30,7 +30,7 @@ import SystemAPI from '@/api/system'
  * Props
  */
 export interface IPluginProps {
-  plugin: IClientPlugin
+  plugin: ClientPlugin
   system: IFrontSystem
   swr: {
     mutateSystem: (system: IFrontMutateSystem) => Promise<void>
@@ -55,7 +55,7 @@ export const errors = {
  */
 export const _onChange = async (
   system: IFrontSystem,
-  plugin: IClientPlugin,
+  plugin: ClientPlugin,
   checked: boolean,
   swr: { mutateSystem: (system: IFrontMutateSystem) => Promise<void> },
   dispatch: Dispatch<INotificationAction>
@@ -143,7 +143,7 @@ const Plugins = () => {
   const { dispatch } = useContext(NotificationContext)
 
   // State
-  const [plugins, setPlugins] = useState<IClientPlugin[]>()
+  const [plugins, setPlugins] = useState<ClientPlugin[]>()
   const [scroll, setScroll] = useState<{ y: number } | null>()
 
   // Data
@@ -168,7 +168,7 @@ const Plugins = () => {
    * @returns Render
    */
   const renderPlugin = useCallback(
-    (plugin: IClientPlugin): React.JSX.Element => (
+    (plugin: ClientPlugin): React.JSX.Element => (
       <Plugin
         system={system}
         plugin={plugin}

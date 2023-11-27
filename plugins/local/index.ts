@@ -2,14 +2,14 @@
 
 import { LIMIT50 } from '@/config/string'
 
-import { IPlugin } from '@/plugins/index.d'
+import { HPCPlugin } from '@/plugins/index.d'
 
 import Lib from './src/lib'
 
 /**
  * Local plugin definition
  */
-const Local: IPlugin = {
+const Local: HPCPlugin = {
   category: 'HPC',
   key: 'local',
   client: {
@@ -46,7 +46,13 @@ const Local: IPlugin = {
         tooltip: 'Fill this input to use a local version of FreeFEM'
       }
     },
-    inUseConfiguration: {}
+    inUseConfiguration: {
+      nCores: {
+        label: 'Number of cores',
+        parallelOnly: true,
+        value: 1
+      }
+    }
   },
   server: {
     lib: Lib

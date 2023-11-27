@@ -21,6 +21,9 @@ const update = async (): Promise<void> => {
     for (const simulation of simulations) {
       const geometry = simulation.scheme.configuration.geometry
 
+      // Skip already up-to-date
+      if (geometry.children) continue
+
       // Replace meshable
       let noMeshable: true | undefined = undefined
       if (!geometry.meshable) noMeshable = true

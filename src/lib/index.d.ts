@@ -9,7 +9,7 @@ import { IProject } from '@/database/project'
 import { IOrganization } from '@/database/organization'
 import { ISimulation, ISimulationTask } from '@/database/simulation'
 import { IUserModel } from '@/database/userModel'
-import { IClientPlugin } from '@/plugins'
+import { ClientPlugin } from '@/plugins'
 import { IModel } from '@/models'
 import { IUnit } from '@/models'
 
@@ -225,7 +225,7 @@ export interface IUserGet<T = []>
   projects: 'projects'[] extends T ? string[] : never[]
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   authorizedplugins: 'authorizedplugins'[] extends T ? string[] : never[]
-  plugins: 'plugins'[] extends T ? IClientPlugin[] : never[]
+  plugins: 'plugins'[] extends T ? ClientPlugin[] : never[]
   usermodels: 'usermodels'[] extends T ? string[] : never[]
 }
 

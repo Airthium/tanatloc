@@ -1,3 +1,5 @@
+import { ClientPlugin } from '@/plugins/index.d'
+
 import { del } from '../del'
 
 const mockCall = jest.fn(async () => ({
@@ -9,7 +11,7 @@ jest.mock('../../call', () => ({
 
 describe('api/plugin/del', () => {
   test('call', async () => {
-    await del({})
+    await del({} as ClientPlugin)
     expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

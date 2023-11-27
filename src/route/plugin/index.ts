@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import { session } from '../session'
 import { error } from '../error'
@@ -11,7 +11,7 @@ import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
 export interface IAddBody {
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
 }
 
 export type IUpdateBody = object
@@ -70,20 +70,24 @@ const route = async (req: Request, res: Response): Promise<void> => {
         // Check
         checkAddBody(req.body)
 
-        const body = req.body
+        const { plugin } = req.body
 
         // Check authorization
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
-        if (!user?.authorizedplugins?.includes(body.plugin.key))
+        if (!user?.authorizedplugins?.includes(plugin.key))
           throw error(403, 'Access denied')
 
         try {
-          if (body.extra) {
+          if (req.body.extra) {
+            const { simulation, plugin, extra } = req.body
+
             // Extra
-            await PluginLib.extra(body.plugin, body.extra)
+            await PluginLib.extra(simulation, plugin, extra)
           } else {
+            const { plugin } = req.body
+
             // Add
-            await PluginLib.add({ id: sessionId }, body.plugin)
+            await PluginLib.add({ id: sessionId }, plugin)
           }
           res.status(200).end()
         } catch (err: any) {

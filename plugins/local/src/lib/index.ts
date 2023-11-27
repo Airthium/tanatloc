@@ -17,7 +17,7 @@ import {
   IModelTypedBoundaryCondition,
   IOutput
 } from '@/models/index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import { SIMULATION } from '@/config/storage'
 
@@ -64,12 +64,13 @@ const emptyFunction = () => undefined
  * @param configuration Configuration
  */
 const init = async (
-  configuration: IClientPlugin['configuration']
+  configuration: HPCClientPlugin['configuration']
 ): Promise<void> => {
   // Check FreeFEM
   if (configuration.freefemPath.value) {
     try {
-      await fs.access(configuration.freefemPath.value, fs.constants.X_OK)
+      const freefemPath = configuration.freefemPath.value as string
+      await fs.access(freefemPath, fs.constants.X_OK)
     } catch (_err) {
       throw new Error('No access to FreeFEM executable')
     }
@@ -85,7 +86,8 @@ const init = async (
   // Check Gmsh
   if (configuration.gmshPath.value) {
     try {
-      await fs.access(configuration.gmshPath.value, fs.constants.X_OK)
+      const gmshPath = configuration.gmshPath.value as string
+      await fs.access(gmshPath, fs.constants.X_OK)
     } catch (_err) {
       throw new Error('No access to GMSH executable')
     }
@@ -365,8 +367,8 @@ const computeMesh = async (
     }
 
     // Configuration
-    const gmshPath =
-      configuration.run.cloudServer?.configuration?.gmshPath?.value
+    const gmshPath = configuration.run.cloudServer?.configuration?.gmshPath
+      ?.value as string
 
     // Compute mesh
     let code = await Services.gmsh(
@@ -575,8 +577,11 @@ const computeSimulation = async (
       currentTask: simulationTask,
       updateTasks: () => updateTasks(id, tasks)
     })
-    const freefemPath =
-      configuration.run.cloudServer?.configuration?.freefemPath?.value
+    const nCores =
+      (configuration.run.cloudServer?.inUseConfiguration?.nCores
+        ?.value as number) ?? 1
+    const freefemPath = configuration.run.cloudServer?.configuration.freefemPath
+      ?.value as string
     const code = await Services.freefem(
       simulationPath,
       path.join(runPath, id + '.edp'),
@@ -591,6 +596,7 @@ const computeSimulation = async (
           if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
         })({ pid, error })
       },
+      nCores,
       freefemPath
     )
 

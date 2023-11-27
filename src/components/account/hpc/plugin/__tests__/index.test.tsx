@@ -1,5 +1,7 @@
 import { render } from '@testing-library/react'
 
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import Plugin, { errors } from '..'
 
 const mockErrorNotification = jest.fn()
@@ -32,7 +34,11 @@ jest.mock('../dialog', () => () => <div role="PluginDialog" />)
 jest.mock('../list', () => () => <div role="List" />)
 
 describe('component/account/hpc/plugin', () => {
-  const plugin = { key: 'key', name: 'Plugin', configuration: {} }
+  const plugin = {
+    key: 'key',
+    name: 'Plugin',
+    configuration: {}
+  } as HPCClientPlugin
 
   beforeEach(() => {
     mockErrorNotification.mockReset()

@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import PluginDialog, { errors } from '..'
 
 const mockAddButton = jest.fn()
@@ -27,7 +29,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 describe('components/account/hpc/plugin/dialog', () => {
-  const plugin = {
+  const plugin: HPCClientPlugin = {
     key: 'key',
     name: 'name',
     configuration: {
@@ -51,6 +53,7 @@ describe('components/account/hpc/plugin/dialog', () => {
       },
       other: {
         label: 'Other',
+        //@ts-ignore
         type: 'other'
       }
     }

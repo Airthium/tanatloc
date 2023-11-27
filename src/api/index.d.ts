@@ -15,7 +15,7 @@ import { ISystem } from '@/database/system'
 import { INewUser } from '@/database/user'
 import { INewUserModel, IUserModel } from '@/database/userModel'
 import { INewWorkspace } from '@/database/workspace'
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 import {
   IGroupWithData,
   INewGeometryWithData,
@@ -257,7 +257,7 @@ export interface IFetchResponse {
   geometries?: IFrontGeometries
   groups?: IFrontGroups
   organizations?: IFrontOrganizations
-  plugins?: IClientPlugin[]
+  plugins?: HPCClientPlugin[]
   project?: IFrontProject
   projects?: IFrontProjects
   simulation?: IFrontSimulation

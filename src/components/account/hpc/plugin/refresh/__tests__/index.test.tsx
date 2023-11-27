@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import Refresh, { errors } from '..'
 
@@ -12,11 +12,11 @@ jest.mock('@/context/notification/actions', () => ({
 
 const mockUpdate = jest.fn()
 jest.mock('@/api/plugin', () => ({
-  update: (plugin: IClientPlugin) => mockUpdate(plugin)
+  update: (plugin: HPCClientPlugin) => mockUpdate(plugin)
 }))
 
 describe('components/account/hpc/refresh', () => {
-  const plugin = {}
+  const plugin = {} as HPCClientPlugin
 
   beforeEach(() => {
     mockErrorNotification.mockReset()

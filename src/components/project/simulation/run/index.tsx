@@ -21,7 +21,7 @@ import {
   IModelInitialization,
   IModelBoundaryConditions
 } from '@/models/index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 import {
   IFrontSimulationsItem,
   IFrontResult,
@@ -82,7 +82,7 @@ export const errors = {
  */
 export const _onCloudServer = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  cloudServer: IClientPlugin,
+  cloudServer: HPCClientPlugin,
   swr: {
     mutateSimulation: (simulation: IFrontMutateSimulation) => Promise<void>
     mutateOneSimulation: (
@@ -284,7 +284,7 @@ const Run = ({
    * @param cloudServer Cloud server
    */
   const onOk = useCallback(
-    async (cloudServer: IClientPlugin): Promise<void> =>
+    async (cloudServer: HPCClientPlugin): Promise<void> =>
       _onCloudServer(
         simulation,
         cloudServer,
@@ -360,6 +360,7 @@ const Run = ({
           />
           <CloudServer
             disabled={running}
+            parallel={simulation.scheme.parallel}
             cloudServer={currentConfiguration?.run?.cloudServer}
             onOk={onOk}
           />

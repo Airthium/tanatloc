@@ -11,7 +11,7 @@ import {
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IFrontMutateUser } from '@/api/index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 
 import {
   INotificationAction,
@@ -30,7 +30,7 @@ import SystemAPI from '@/api/system'
  * Props
  */
 export interface IProps {
-  plugins: IClientPlugin[]
+  plugins: Pick<ClientPlugin, 'key' | 'name'>[]
   swr: {
     addOneUser: (user: IFrontMutateUser) => Promise<void>
   }

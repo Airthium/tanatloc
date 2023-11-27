@@ -131,7 +131,10 @@ describe('plugins/local/src/lib', () => {
 
   test('init', async () => {
     // Empty
-    await Local.init({ freefemPath: {}, gmshPath: {} })
+    await Local.init({
+      freefemPath: { label: 'label', type: 'input' },
+      gmshPath: { label: 'label', type: 'input' }
+    })
 
     // Exec error
     mockExecSync.mockImplementation(() => {
@@ -139,14 +142,14 @@ describe('plugins/local/src/lib', () => {
     })
     try {
       await Local.init({
-        freefemPath: {},
-        gmshPath: { value: 'path' }
+        freefemPath: { label: 'label', type: 'input' },
+        gmshPath: { label: 'label', type: 'input', value: 'path' }
       })
     } catch (err) {}
     try {
       await Local.init({
-        freefemPath: { value: 'path' },
-        gmshPath: {}
+        freefemPath: { label: 'label', type: 'input', value: 'path' },
+        gmshPath: { label: 'label', type: 'input' }
       })
     } catch (err) {}
 
@@ -156,14 +159,14 @@ describe('plugins/local/src/lib', () => {
     })
     try {
       await Local.init({
-        freefemPath: {},
-        gmshPath: { value: 'path' }
+        freefemPath: { label: 'label', type: 'input' },
+        gmshPath: { label: 'label', type: 'input', value: 'path' }
       })
     } catch (err) {}
     try {
       await Local.init({
-        freefemPath: { value: 'path' },
-        gmshPath: {}
+        freefemPath: { label: 'label', type: 'input', value: 'path' },
+        gmshPath: { label: 'label', type: 'input' }
       })
     } catch (err) {}
   })

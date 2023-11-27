@@ -5,30 +5,30 @@ import { useCallback } from 'react'
 
 import { fetcher } from '@/api/call'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 /**
  * Uses plugins
  * @returns Plugins
  */
 export const usePlugins = (): [
-  IClientPlugin[],
+  HPCClientPlugin[],
   {
-    addOnePlugin: (plugin: IClientPlugin) => Promise<void>
-    delOnePlugin: (plugin: IClientPlugin) => Promise<void>
-    mutateOnePlugin: (plugin: IClientPlugin) => Promise<void>
+    addOnePlugin: (plugin: HPCClientPlugin) => Promise<void>
+    delOnePlugin: (plugin: Pick<HPCClientPlugin, 'key'>) => Promise<void>
+    mutateOnePlugin: (plugin: Partial<HPCClientPlugin>) => Promise<void>
     errorPlugins: Error
     loadingPlugins: boolean
   }
 ] => {
-  const defaultData: IClientPlugin[] = []
+  const defaultData: HPCClientPlugin[] = []
 
   const { data, error, mutate } = useSWR('/api/plugin', fetcher)
   const loading = !data
   const plugins = data?.plugins ?? defaultData
 
   const addOne = useCallback(
-    async (plugin: IClientPlugin): Promise<void> => {
+    async (plugin: HPCClientPlugin): Promise<void> => {
       const newPlugins = [...plugins, plugin]
       await mutate({ plugins: newPlugins })
     },
@@ -36,7 +36,7 @@ export const usePlugins = (): [
   )
 
   const delOne = useCallback(
-    async (plugin: IClientPlugin): Promise<void> => {
+    async (plugin: Pick<HPCClientPlugin, 'key'>): Promise<void> => {
       const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
       await mutate({ plugins: filteredPlugins })
     },
@@ -44,7 +44,7 @@ export const usePlugins = (): [
   )
 
   const mutateOne = useCallback(
-    async (plugin: IClientPlugin): Promise<void> => {
+    async (plugin: Partial<HPCClientPlugin>): Promise<void> => {
       const mutatedPlugin = plugins.map((p) => {
         if (p.key === plugin.key) p = { ...p, ...plugin }
         return p

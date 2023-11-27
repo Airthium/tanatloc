@@ -221,10 +221,10 @@ describe('src/lib/plugins', () => {
   test('Empty', async () => {
     //@ts-ignore
     global.tanatloc.plugins = null
-    let list = await Plugins.serverList()
-    expect(list).toEqual([])
+    const serverList = await Plugins.serverList()
+    expect(serverList).toEqual([])
 
-    list = await Plugins.clientList({ authorizedplugins: ['key1'] })
-    expect(list).toEqual([])
+    const clientList = await Plugins.clientList({ authorizedplugins: ['key1'] })
+    expect(clientList).toEqual([])
   })
 })

@@ -11,6 +11,7 @@ import {
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
 import { ISimulationGet } from '../index.d'
+import { HPCServerPlugin } from '@/plugins/index.d'
 
 import { GEOMETRY, GEOMETRY_RELATIVE, SIMULATION } from '@/config/storage'
 
@@ -404,7 +405,7 @@ const checkCloudServer = async (
   user: { id: string },
   simulation: { id: string },
   configuration: IModel['configuration']
-) => {
+): Promise<HPCServerPlugin | undefined> => {
   const cloudServer = configuration.run.cloudServer
   if (!cloudServer) {
     returnError(simulation, configuration, 'Cloud server unavailable')
@@ -428,12 +429,12 @@ const checkCloudServer = async (
   if (userPlugin) cloudServer.configuration = userPlugin.configuration
 
   // Check authorized
-  if (!userData.authorizedplugins?.includes(serverPlugin.key as string)) {
+  if (!userData.authorizedplugins?.includes(serverPlugin.key)) {
     returnError(simulation, configuration, 'Unauthorized')
     return
   }
 
-  return serverPlugin
+  return serverPlugin as HPCServerPlugin
 }
 
 /**
@@ -595,9 +596,11 @@ const stop = async (simulation: { id: string }): Promise<void> => {
 
   // Find plugin
   const pluginsLibs = await Plugins.serverList()
-  const pluginLib = pluginsLibs.find(
-    (p) => p.key === configuration.run.cloudServer?.key
-  )?.lib
+  const pluginLib = (
+    pluginsLibs.find(
+      (p) => p.key === configuration.run.cloudServer?.key
+    ) as HPCServerPlugin
+  ).lib
 
   // Stop
   await pluginLib.stop(simulation.id, tasks, configuration)

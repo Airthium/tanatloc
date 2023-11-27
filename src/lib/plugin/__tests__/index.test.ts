@@ -1,3 +1,5 @@
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import Plugin from '../'
 
 jest.mock('uuid', () => ({
@@ -38,50 +40,63 @@ describe('lib/plugin', () => {
 
   test('add', async () => {
     // Normal
-    await Plugin.add({ id: 'id' }, {})
+    await Plugin.add({ id: 'id' }, {} as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     mockUserGet.mockImplementation(() => ({ plugins: [{}] }))
 
     // Init (without API)
-    await Plugin.add({ id: 'id' }, { key: 'nokey', haveInit: true })
+    await Plugin.add({ id: 'id' }, {
+      key: 'nokey',
+      haveInit: true
+    } as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(2)
     expect(mockInit).toHaveBeenCalledTimes(0)
 
     // Init (with API)
-    await Plugin.add({ id: 'id' }, { key: 'key', haveInit: true })
+    await Plugin.add({ id: 'id' }, {
+      key: 'key',
+      haveInit: true
+    } as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(3)
     expect(mockInit).toHaveBeenCalledTimes(1)
 
     // Name & secret
-    await Plugin.add(
-      { id: 'id' },
-      {
-        key: 'key',
-        configuration: {
-          name: { label: 'name', type: 'type', value: 'name' },
-          secret: {
-            secret: true,
-            value: 'secret'
-          }
+    await Plugin.add({ id: 'id' }, {
+      key: 'key',
+      configuration: {
+        name: { label: 'name', type: 'type', value: 'name' },
+        secret: {
+          type: '',
+          label: 'secret',
+          secret: true,
+          value: 'secret'
         }
       }
-    )
+    } as unknown as HPCClientPlugin)
 
     // No user
     mockUserGet.mockImplementation(() => undefined)
-    await Plugin.add({ id: 'id' }, {})
+    await Plugin.add({ id: 'id' }, {} as HPCClientPlugin)
   })
 
   test('extra', async () => {
     // Normal
-    await Plugin.extra({ key: 'key' }, 'reload')
+    await Plugin.extra(
+      { id: 'id' },
+      { key: 'key' } as HPCClientPlugin,
+      'reload'
+    )
 
     // Not found
-    await Plugin.extra({ key: 'otherkey' }, 'reload')
+    await Plugin.extra(
+      { id: 'id' },
+      { key: 'otherkey' } as HPCClientPlugin,
+      'reload'
+    )
   })
 
   test('getByUser', async () => {
@@ -98,28 +113,34 @@ describe('lib/plugin', () => {
   test('update', async () => {
     // No user
     mockUserGet.mockImplementation(() => undefined)
-    await Plugin.update(
-      { id: 'id' },
-      { uuid: 'uuid', configuration: { name: { value: 'name' } } }
-    )
+    await Plugin.update({ id: 'id' }, {
+      uuid: 'uuid',
+      configuration: { name: { value: 'name' } }
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
 
     // Normal
     mockUserGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
-    await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
+    await Plugin.update({ id: 'id' }, {
+      uuid: 'uuid'
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // No plugin
     mockUserGet.mockImplementation(() => ({}))
-    await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
+    await Plugin.update({ id: 'id' }, {
+      uuid: 'uuid'
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // Pplugin not found
     mockUserGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
-    await Plugin.update({ id: 'id' }, { uuid: 'nouuid' })
+    await Plugin.update({ id: 'id' }, {
+      uuid: 'nouuid'
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(4)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
@@ -135,10 +156,12 @@ describe('lib/plugin', () => {
         }
       ]
     }))
-    await Plugin.update(
-      { id: 'id' },
-      { key: 'nokey', uuid: 'uuid', haveInit: true, needReInit: true }
-    )
+    await Plugin.update({ id: 'id' }, {
+      key: 'nokey',
+      uuid: 'uuid',
+      haveInit: true,
+      needReInit: true
+    } as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(5)
     expect(mockUserUpdate).toHaveBeenCalledTimes(2)
 
@@ -154,33 +177,43 @@ describe('lib/plugin', () => {
         }
       ]
     }))
-    await Plugin.update(
-      { id: 'id' },
-      { key: 'key', uuid: 'uuid', haveInit: true, needReInit: true }
-    )
+    await Plugin.update({ id: 'id' }, {
+      key: 'key',
+      uuid: 'uuid',
+      haveInit: true,
+      needReInit: true
+    } as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(6)
     expect(mockUserUpdate).toHaveBeenCalledTimes(3)
   })
 
   test('del', async () => {
     // No plugins
-    await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
+    await Plugin.del({ id: 'id' }, {
+      uuid: 'uuid'
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
 
     // Normal
     mockUserGet.mockImplementation(() => ({ plugins: [{ uuid: 'uuid' }] }))
-    await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
+    await Plugin.del({ id: 'id' }, {
+      uuid: 'uuid'
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // Not found
-    await Plugin.del({ id: 'id' }, { uuid: 'nouuid' })
+    await Plugin.del({ id: 'id' }, {
+      uuid: 'nouuid'
+    } as unknown as HPCClientPlugin)
     expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
 
     // No user
     mockUserGet.mockImplementation(() => undefined)
-    await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
+    await Plugin.del({ id: 'id' }, {
+      uuid: 'uuid'
+    } as unknown as HPCClientPlugin)
   })
 })

@@ -1,5 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import CloudServer from '@/components/project/simulation/run/cloudServer'
 
 jest.mock('/plugins/key/src/components', () => {}, { virtual: true })
@@ -55,7 +57,7 @@ describe('components/project/simulation/run/cloudServer', () => {
         value: false
       }
     }
-  }
+  } as unknown as HPCClientPlugin
   const onOk = jest.fn()
 
   beforeEach(() => {
@@ -113,6 +115,7 @@ describe('components/project/simulation/run/cloudServer', () => {
               icon: 'cloud-download'
             },
             test2: {
+              //@ts-ignore
               type: 'other',
               label: 'Test',
               action: 'action',

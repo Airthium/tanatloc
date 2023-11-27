@@ -4,7 +4,7 @@ import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Button } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import {
   INotificationAction,
@@ -22,7 +22,7 @@ import globalStyle from '@/styles/index.module.css'
  * Props
  */
 export interface IProps {
-  plugin: IClientPlugin
+  plugin: HPCClientPlugin
 }
 
 /**
@@ -37,7 +37,7 @@ export const errors = {
  * @param plugin Plugin
  */
 export const _onUpdate = async (
-  plugin: IClientPlugin,
+  plugin: HPCClientPlugin,
   dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {

@@ -1,11 +1,13 @@
 {
   "$ref": "#/definitions/IModel",
-  "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "IClientPlugin": {
+    "HPCClientPlugin": {
       "additionalProperties": false,
+      "description": "HPC client plugin",
       "properties": {
         "category": {
+          "const": "HPC",
           "type": "string"
         },
         "configuration": {
@@ -35,6 +37,9 @@
                     "message": {
                       "type": "string"
                     },
+                    "min": {
+                      "type": "number"
+                    },
                     "required": {
                       "type": "boolean"
                     }
@@ -50,6 +55,7 @@
                 "type": "string"
               },
               "type": {
+                "enum": ["input", "textarea", "password", "select"],
                 "type": "string"
               },
               "value": {
@@ -91,6 +97,7 @@
           "type": "object"
         },
         "haveInit": {
+          "const": true,
           "type": "boolean"
         },
         "inUseConfiguration": {
@@ -99,6 +106,9 @@
             "properties": {
               "label": {
                 "type": "string"
+              },
+              "parallelOnly": {
+                "type": "boolean"
               },
               "value": {
                 "type": ["boolean", "number", "string"]
@@ -111,12 +121,6 @@
         },
         "key": {
           "type": "string"
-        },
-        "models": {
-          "items": {
-            "$ref": "#/definitions/IModel"
-          },
-          "type": "array"
         },
         "name": {
           "type": "string"
@@ -131,6 +135,7 @@
           "type": "string"
         }
       },
+      "required": ["category", "configuration", "description", "key", "name"],
       "type": "object"
     },
     "IHtmlEntity": {
@@ -219,6 +224,9 @@
         },
         "name": {
           "type": "string"
+        },
+        "parallel": {
+          "type": "boolean"
         },
         "sequential": {
           "type": "boolean"
@@ -1045,7 +1053,7 @@
       "additionalProperties": false,
       "properties": {
         "cloudServer": {
-          "$ref": "#/definitions/IClientPlugin"
+          "$ref": "#/definitions/HPCClientPlugin"
         },
         "done": {
           "type": "boolean"

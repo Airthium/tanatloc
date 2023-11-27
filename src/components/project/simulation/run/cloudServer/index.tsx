@@ -16,7 +16,7 @@ import { Button, Card, Modal, Space, Tooltip, Typography } from 'antd'
 import { CloudDownloadOutlined, CloudServerOutlined } from '@ant-design/icons'
 import { merge } from 'lodash'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
 import {
@@ -37,20 +37,23 @@ import globalStyle from '@/styles/index.module.css'
  */
 export interface IProps {
   disabled?: boolean
+  parallel?: boolean
   cloudServer?: IModel['configuration']['run']['cloudServer']
-  onOk: (plugin: IClientPlugin) => Promise<void>
+  onOk: (plugin: HPCClientPlugin) => Promise<void>
 }
 
 export interface IPluginProps {
-  plugin: IClientPlugin
-  onOk: (plugin: IClientPlugin) => Promise<void>
+  plugin: HPCClientPlugin
+  parallel?: boolean
+  onOk: (plugin: HPCClientPlugin) => Promise<void>
   setVisible: Dispatch<SetStateAction<boolean>>
 }
 
 export interface IPluginsProps {
-  pluginsList: IClientPlugin[]
-  plugins: IClientPlugin[]
-  onOk: (plugin: IClientPlugin) => Promise<void>
+  pluginsList: HPCClientPlugin[]
+  plugins: HPCClientPlugin[]
+  parallel?: boolean
+  onOk: (plugin: HPCClientPlugin) => Promise<void>
   setVisible: Dispatch<SetStateAction<boolean>>
 }
 
@@ -69,7 +72,7 @@ export const errors = {
  * @param dispatch Dispatch
  */
 export const _onExtra = async (
-  plugin: IClientPlugin,
+  plugin: HPCClientPlugin,
   action: string,
   dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
@@ -87,13 +90,15 @@ export const _onExtra = async (
  */
 const Plugin = ({
   plugin,
+  parallel,
   onOk,
   setVisible
 }: IPluginProps): React.JSX.Element => {
   // Renderer
   const Renderer: ComponentType<{
     data: any
-    onSelect: (diff: IClientPlugin) => void
+    parallel?: boolean
+    onSelect: (diff: HPCClientPlugin) => void
   }> = dynamic(() => import(`/plugins/${plugin.key}/src/components`))
 
   /**
@@ -101,7 +106,7 @@ const Plugin = ({
    * @param diff Plugin
    */
   const onSelect = useCallback(
-    (diff: IClientPlugin): void => {
+    (diff: HPCClientPlugin): void => {
       ;(async () => {
         // Merge
         merge(plugin, diff)
@@ -119,7 +124,7 @@ const Plugin = ({
    */
   return (
     <Card key={plugin.uuid} title={plugin.configuration.name.value}>
-      <Renderer data={plugin.data} onSelect={onSelect} />
+      <Renderer data={plugin.data} parallel={parallel} onSelect={onSelect} />
     </Card>
   )
 }
@@ -132,6 +137,7 @@ const Plugin = ({
 const Plugins = ({
   pluginsList,
   plugins,
+  parallel,
   onOk,
   setVisible
 }: IPluginsProps): React.JSX.Element | null => {
@@ -147,6 +153,7 @@ const Plugins = ({
           <Plugin
             key={plugin.uuid}
             plugin={plugin}
+            parallel={parallel}
             onOk={onOk}
             setVisible={setVisible}
           />
@@ -163,12 +170,13 @@ const Plugins = ({
  */
 const CloudServer = ({
   disabled,
+  parallel,
   cloudServer,
   onOk
 }: IProps): React.JSX.Element => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
-  const [pluginsList, setPluginsList] = useState<IClientPlugin[]>([])
+  const [pluginsList, setPluginsList] = useState<HPCClientPlugin[]>([])
 
   // Context
   const { dispatch } = useContext(NotificationContext)
@@ -188,7 +196,10 @@ const CloudServer = ({
     ;(async () => {
       try {
         const list = await PluginsAPI.list()
-        setPluginsList(list)
+        const listHPC = list.filter(
+          (l) => l.category === 'HPC'
+        ) as HPCClientPlugin[]
+        setPluginsList(listHPC)
       } catch (err: any) {
         dispatch(addError({ title: errors.pluginsLoad, err }))
       }
@@ -256,6 +267,10 @@ const CloudServer = ({
     )
   }, [cloudServer?.extra, onExtra])
 
+  const HPCPlugins = plugins.filter(
+    (plugin) => plugin.category === 'HPC'
+  ) as HPCClientPlugin[]
+
   /**
    * Render
    */
@@ -279,7 +294,8 @@ const CloudServer = ({
           </Typography.Text>
           <Plugins
             pluginsList={pluginsList}
-            plugins={plugins}
+            plugins={HPCPlugins}
+            parallel={parallel}
             onOk={onOk}
             setVisible={setVisible}
           />
@@ -298,8 +314,11 @@ const CloudServer = ({
               {cloudServer.configuration.name.value}
             </Typography.Text>
 
-            {Object.keys(cloudServer.inUseConfiguration).map((key) => {
-              const item = cloudServer.inUseConfiguration[key]
+            {Object.keys(cloudServer.inUseConfiguration ?? {}).map((key) => {
+              const item = cloudServer.inUseConfiguration![key]
+              const parallelOnly = item.parallelOnly
+
+              if (parallelOnly && !parallel) return
 
               let value = item.value
               if (typeof value === 'boolean') value = value ? 'yes' : 'no'

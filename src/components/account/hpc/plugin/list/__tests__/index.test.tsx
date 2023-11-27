@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import List from '..'
 
@@ -12,7 +12,7 @@ jest.mock('../../refresh', () => () => <div />)
 
 describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
-  const plugins: IClientPlugin[] = []
+  const plugins: HPCClientPlugin[] = []
   const swr = {
     delOnePlugin: jest.fn(),
     mutateOnePlugin: jest.fn()
@@ -31,7 +31,12 @@ describe('components/account/hpc/list', () => {
       <List
         plugin={plugin}
         plugins={[
-          { key: 'key', uuid: 'uuid', haveInit: true, configuration: {} }
+          {
+            key: 'key',
+            uuid: 'uuid',
+            haveInit: true,
+            configuration: {}
+          } as HPCClientPlugin
         ]}
         swr={swr}
       />
@@ -48,7 +53,9 @@ describe('components/account/hpc/list', () => {
           {
             uuid: '0',
             key: '0',
+            category: 'HPC',
             name: '0',
+            description: '0',
             configuration: {}
           },
           {
@@ -95,7 +102,9 @@ describe('components/account/hpc/list', () => {
           {
             uuid: '0',
             key: 'key',
+            category: 'HPC',
             name: '0',
+            description: '0',
             configuration: {}
           },
           {

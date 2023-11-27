@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 
 import Edit, { errors } from '..'
 
@@ -30,7 +30,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 describe('components/administration/users/edit', () => {
-  const plugins: IClientPlugin[] = []
+  const plugins: ClientPlugin[] = []
   const user = {
     id: 'id',
     email: 'email',
@@ -99,7 +99,7 @@ describe('components/administration/users/edit', () => {
     ))
     const { unmount } = render(
       <Edit
-        plugins={[...plugins, { key: 'key', name: 'name' }]}
+        plugins={[...plugins, { key: 'key', name: 'name' } as ClientPlugin]}
         user={user}
         swr={swr}
       />

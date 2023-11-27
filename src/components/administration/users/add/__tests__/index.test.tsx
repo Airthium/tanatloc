@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import Add, { errors } from '..'
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -36,7 +36,7 @@ jest.mock('@/api/system', () => ({
 }))
 
 describe('components/administration/users/add', () => {
-  const plugins: IClientPlugin[] = []
+  const plugins: ClientPlugin[] = []
   const swr = { addOneUser: jest.fn() }
 
   beforeEach(() => {
@@ -109,7 +109,10 @@ describe('components/administration/users/add', () => {
       />
     ))
     const { unmount } = render(
-      <Add plugins={[...plugins, { key: 'key', name: 'name' }]} swr={swr} />
+      <Add
+        plugins={[...plugins, { key: 'key', name: 'name' } as ClientPlugin]}
+        swr={swr}
+      />
     )
 
     const dialog = screen.getByRole('Dialog')

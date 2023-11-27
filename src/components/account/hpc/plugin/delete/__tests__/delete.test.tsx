@@ -1,5 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import Delete, { errors } from '..'
 
 const mockDeleteButton = jest.fn()
@@ -19,7 +21,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 describe('components/account/hpc/delete', () => {
-  const plugin = { uuid: 'uuid', configuration: {} }
+  const plugin = { uuid: 'uuid', configuration: {} } as HPCClientPlugin
   const swr = {
     delOnePlugin: jest.fn()
   }

@@ -9,7 +9,7 @@ import {
   IUserWithData,
   IWorkspaceGet
 } from '../index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import { LIMIT50 } from '@/config/string'
 
@@ -97,7 +97,7 @@ const setPluginsData = async (
   userData: Partial<IUser<TUserGet>>
 ): Promise<void> => {
   if (userData.plugins) {
-    userData.plugins = await decrypt(userData.plugins)
+    userData.plugins = await decrypt(userData.plugins as HPCClientPlugin[])
   } else {
     userData.plugins = []
   }
@@ -108,14 +108,16 @@ const setPluginsData = async (
  * @param plugins Plugins
  * @returns Decrypted plugins
  */
-const decrypt = async (plugins: IClientPlugin[]): Promise<IClientPlugin[]> => {
+const decrypt = async (
+  plugins: HPCClientPlugin[]
+): Promise<HPCClientPlugin[]> => {
   const pluginsData = []
   for (const plugin of plugins) {
     for (const key in plugin.configuration) {
       const config = plugin.configuration[key]
       if (config.secret && config.value) {
         try {
-          const valueJSON = JSON.parse(config.value)
+          const valueJSON = JSON.parse(config.value.toString())
           plugin.configuration[key].value = await Tools.decrypt(valueJSON)
         } catch (err) {
           plugin.configuration[key].value = config.value

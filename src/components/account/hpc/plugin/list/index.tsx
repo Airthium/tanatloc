@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
 import parse from 'html-react-parser'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import Delete from '../delete'
 import PluginDialog from '../dialog'
@@ -14,11 +14,11 @@ import Refresh from '../refresh'
  * Props
  */
 export interface IProps {
-  plugin: IClientPlugin
-  plugins: IClientPlugin[]
+  plugin: Pick<HPCClientPlugin, 'key'>
+  plugins: HPCClientPlugin[]
   swr: {
-    delOnePlugin: (plugin: IClientPlugin) => Promise<void>
-    mutateOnePlugin: (plugin: IClientPlugin) => Promise<void>
+    delOnePlugin: (plugin: Pick<HPCClientPlugin, 'key'>) => Promise<void>
+    mutateOnePlugin: (plugin: HPCClientPlugin) => Promise<void>
   }
 }
 
@@ -34,7 +34,7 @@ const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
   // List
   useEffect(() => {
     const pluginsList = plugins
-      .map((p: IClientPlugin) => {
+      .map((p: HPCClientPlugin) => {
         if (p.key !== plugin.key) return
 
         const configuration = p.configuration
@@ -79,6 +79,7 @@ const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
           <Delete
             key="delete"
             plugin={{
+              key: p.key,
               uuid: p.uuid,
               configuration: p.configuration
             }}

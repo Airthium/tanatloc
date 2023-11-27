@@ -60,7 +60,7 @@ const loadPluginsTemplates = async (): Promise<ITemplates> => {
   for (const plugin of plugins) {
     if (plugin.category !== 'Model') continue
 
-    for (const template of plugin.templates) {
+    for (const template of plugin.templates!) {
       process.stdout.write(
         ' - Template ' + template.key + '(from ' + plugin.key + ')'
       )
@@ -70,7 +70,7 @@ const loadPluginsTemplates = async (): Promise<ITemplates> => {
             ? process.resourcesPath + '/extra/server/tanatloc'
             : './',
           'plugins',
-          plugin.key as string,
+          plugin.key!,
           template.file
         )
       )

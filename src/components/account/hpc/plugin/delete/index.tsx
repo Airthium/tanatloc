@@ -3,7 +3,7 @@
 import { Dispatch, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 import {
   INotificationAction,
@@ -19,9 +19,9 @@ import PluginAPI from '@/api/plugin'
  * Props
  */
 export interface IProps {
-  plugin: IClientPlugin
+  plugin: Pick<HPCClientPlugin, 'key' | 'uuid' | 'configuration'>
   swr: {
-    delOnePlugin: (plugin: IClientPlugin) => Promise<void>
+    delOnePlugin: (plugin: Pick<HPCClientPlugin, 'key'>) => Promise<void>
   }
 }
 
@@ -38,8 +38,10 @@ export const errors = {
  * @param swr SWR
  */
 export const _onDelete = async (
-  plugin: IClientPlugin,
-  swr: { delOnePlugin: (plugin: IClientPlugin) => Promise<void> },
+  plugin: Pick<HPCClientPlugin, 'key' | 'uuid'>,
+  swr: {
+    delOnePlugin: (plugin: Pick<HPCClientPlugin, 'key'>) => Promise<void>
+  },
   dispatch: Dispatch<INotificationAction>
 ): Promise<void> => {
   try {

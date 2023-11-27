@@ -25,7 +25,7 @@ import {
   IFrontNewUser,
   IFrontMutateUsersItem
 } from '@/api/index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
@@ -77,7 +77,7 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
   const refTable = useRef<any>(null)
 
   // State
-  const [plugins, setPlugins] = useState<IClientPlugin[]>()
+  const [plugins, setPlugins] = useState<ClientPlugin[]>()
   const [scroll, setScroll] = useState<{ y: number }>()
 
   // Context

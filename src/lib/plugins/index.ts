@@ -2,7 +2,7 @@
 
 import isElectron from 'is-electron'
 
-import { IClientPlugin, IPlugin, IServerPlugin } from '@/plugins/index.d'
+import { ClientPlugin, Plugin, ServerPlugin } from '@/plugins/index.d'
 
 import Simulation from '../simulation'
 import Tools from '../tools'
@@ -11,7 +11,7 @@ import Tools from '../tools'
  * Load plugins
  * @return Plugins
  */
-export const loadPlugins = async (): Promise<IPlugin[]> => {
+export const loadPlugins = async (): Promise<Plugin[]> => {
   console.info('Load plugins...')
 
   // Available directories
@@ -102,7 +102,7 @@ export const restartJobs = async (): Promise<void> => {
  * Server list
  * @returns List
  */
-const serverList = async (): Promise<IServerPlugin[]> => {
+const serverList = async (): Promise<ServerPlugin[]> => {
   if (!tanatloc?.plugins) return []
 
   return tanatloc.plugins?.map((plugin) => ({
@@ -122,7 +122,7 @@ const serverList = async (): Promise<IServerPlugin[]> => {
 const clientList = async (
   user?: { authorizedplugins?: string[] },
   complete?: boolean
-): Promise<IClientPlugin[]> => {
+): Promise<ClientPlugin[]> => {
   if (!tanatloc?.plugins) return []
 
   if (complete) {

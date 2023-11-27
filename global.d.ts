@@ -1,10 +1,10 @@
-import { IPlugin } from '@/database'
+import { Plugin } from '@/database'
 import { Pool } from 'pg'
 import { AsyncTemplateFunction } from 'ejs'
 
 interface ITanatloc {
   pool: Pool
-  plugins: IPlugin[]
+  plugins: Plugin[]
   templates: { [key: string]: AsyncTemplateFunction }
   complete: boolean
 }

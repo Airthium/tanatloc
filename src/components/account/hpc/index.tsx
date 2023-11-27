@@ -16,6 +16,8 @@ import {
 } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
@@ -39,16 +41,16 @@ export const _pluginsList = async (
   try {
     const plugins = await PluginsAPI.list()
 
-    const HPCPlugins = plugins.filter((plugin) => plugin.category === 'HPC')
+    const HPCPlugins = plugins.filter(
+      (plugin) => plugin.category === 'HPC'
+    ) as HPCClientPlugin[]
 
     if (HPCPlugins.length) {
-      return HPCPlugins.map((plugin) => {
-        return (
-          <Card key={plugin.key} title={plugin.name}>
-            <Plugin plugin={plugin} />
-          </Card>
-        )
-      })
+      return HPCPlugins.map((plugin) => (
+        <Card key={plugin.key} title={plugin.name}>
+          <Plugin plugin={plugin} />
+        </Card>
+      ))
     } else {
       return [
         <Card key="no-access" title="No access">

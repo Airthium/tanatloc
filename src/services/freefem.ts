@@ -18,6 +18,7 @@ const freefem = async (
   bindPath: string,
   script: string,
   callback: (data: { pid?: number; data?: string; error?: string }) => void,
+  nCores: number,
   customExecutable?: string
 ): Promise<number> => {
   // Enfore POSIX
@@ -27,19 +28,23 @@ const freefem = async (
     let run: any
 
     if (isDocker()) {
-      run = spawn('ff-mpirun', [' -np', '1', scriptPOSIX, '-ns', ' > log'], {
-        cwd: bindPath
-      })
+      run = spawn(
+        'ff-mpirun',
+        [' -np ', nCores.toString(), scriptPOSIX, '-ns', ' > log'],
+        {
+          cwd: bindPath
+        }
+      )
     } else if (customExecutable) {
       run = spawn(
         customExecutable,
-        [' -np', '1', scriptPOSIX, '-ns', ' > log'],
+        [' -np', nCores.toString(), scriptPOSIX, '-ns', ' > log'],
         {
           cwd: bindPath
         }
       )
     } else {
-      const command = ['ff-mpirun', '-np', '1', scriptPOSIX, '-ns', '> log']
+      const command = ['ff-mpirun', '-np', nCores, scriptPOSIX, '-ns', '> log']
         .filter((c) => c)
         .join(' ')
       run = docker(bindPath, command)

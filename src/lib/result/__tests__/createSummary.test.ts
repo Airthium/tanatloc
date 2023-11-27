@@ -1,5 +1,7 @@
 import { ISimulation } from '@/database/simulation'
 
+import { HPCClientPlugin } from '@/plugins/index.d'
+
 import createSummary from '../createSummary'
 
 const mockPath = jest.fn()
@@ -164,7 +166,7 @@ describe('lib/download/summary', () => {
         title: 'Run',
         cloudServer: {
           name: 'name'
-        }
+        } as HPCClientPlugin
       },
       //@ts-ignore
       unknowKey: {}

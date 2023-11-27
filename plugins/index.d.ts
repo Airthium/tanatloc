@@ -5,32 +5,48 @@ import { ISimulation, ISimulationTask } from '@/database/simulation'
 
 import { UpdateTasksHelper } from './local/src/lib'
 
-export interface IPlugin {
+/**
+ * Plugin base
+ */
+export interface BasePlugin {
+  key: string
   uuid?: string
-  key?: string
-  category?: string
   rootDirectory?: string
-  client?: {
-    name?: string
-    description?: string
-    models?: IModel[]
-    haveInit?: boolean
+}
+
+/**
+ * HPC plugin
+ */
+export interface HPCPlugin extends BasePlugin {
+  category: 'HPC'
+  client: {
+    name: string
+    description: string
+    haveInit?: true
     needReInit?: boolean
-    configuration?: {
+    configuration: {
       [key: string]: {
         label: string
-        type: string
+        type: 'input' | 'textarea' | 'password' | 'select'
         secret?: boolean
         tooltip?: string
         rules?: {
           required?: boolean
           message?: string
+          min?: number
           max?: number
         }[]
         options?: string[]
         default?: boolean | number | string
         value?: boolean | number | string
         props?: any
+      }
+    }
+    inUseConfiguration?: {
+      [key: string]: {
+        label: string
+        parallelOnly?: boolean
+        value?: boolean | number | string
       }
     }
     extra?: {
@@ -44,52 +60,94 @@ export interface IPlugin {
     data?: {
       [key: string]: any
     }
-    inUseConfiguration?: {
-      [key: string]: {
-        label: string
-        value?: boolean | number | string
-      }
-    }
   }
-  server?: {
-    lib?: {
+  server: {
+    lib: {
       init?: (
-        configuration: IClientPlugin['configuration']
-      ) => Promise<{ data: IClientPlugin['data'] } | void>
+        configuration: HPCClientPlugin['configuration']
+      ) => Promise<{ data: HPCClientPlugin['data'] } | void>
       computeSimulation: (
         { id }: { id: string },
-        scheme: ISimulation['scheme'],
+        scheme: ISimulation<'scheme'[]>['scheme'],
         keepMesh?: boolean
       ) => Promise<void>
       monitoring: (
         id: string,
         pid: string | undefined,
         { tasks, currentTask }: UpdateTasksHelper,
-        configuration?: IClientPlugin['configuration']
+        configuration?: HPCClientPlugin['configuration']
       ) => Promise<void>
       stop: (
         id: string,
         tasks: ISimulationTask[],
         configuration: IModel['configuration']
       ) => Promise<void>
+      extra?: (
+        simulation: { id: string },
+        configuration: HPCClientPlugin['configuration'],
+        extra: string
+      ) => Promise<void>
     }
+  }
+}
+
+/**
+ * Model plugin
+ */
+export interface ModelPlugin extends BasePlugin {
+  category: 'Model'
+  client: {
+    name: string
+    models: IModel[]
+  }
+  server: {
     templates?: { key: string; file: string }[]
   }
 }
 
-export interface IServerPlugin extends Omit<IPlugin, 'client' | 'server'> {
-  lib?: IPlugin['server']['lib']
-  templates?: IPlugin['server']['templates']
-}
+/**
+ * Generic plugin
+ */
+export type Plugin = HPCPlugin | ModelPlugin
 
-export interface IClientPlugin extends Omit<IPlugin, 'client' | 'server'> {
-  name?: IPlugin['client']['name']
-  description?: IPlugin['client']['description']
-  models?: IPlugin['client']['models']
-  haveInit?: IPlugin['client']['haveInit']
-  needReInit?: IPlugin['client']['needReInit']
-  configuration?: IPlugin['client']['configuration']
-  data?: IPlugin['client']['data']
-  extra?: IPlugin['client']['extra']
-  inUseConfiguration?: IPlugin['client']['inUseConfiguration']
-}
+/**
+ * HPC server plugin
+ */
+export type HPCServerPlugin = BasePlugin &
+  HPCPlugin['server'] & {
+    category: 'HPC'
+  }
+
+/**
+ * Model server plugin
+ */
+export type ModelServerPlugin = BasePlugin &
+  ModelPlugin['server'] & {
+    category: 'Model'
+  }
+
+/**
+ * Generic server plugin
+ */
+export type ServerPlugin = HPCServerPlugin | ModelServerPlugin
+
+/**
+ * HPC client plugin
+ */
+export type HPCClientPlugin = BasePlugin &
+  HPCPlugin['client'] & {
+    category: 'HPC'
+  }
+
+/**
+ * Model client plugin
+ */
+export type ModelClientPlugin = BasePlugin &
+  ModelPlugin['client'] & {
+    category: 'Model'
+  }
+
+/**
+ * Generic client plugin
+ */
+export type ClientPlugin = HPCClientPlugin | ModelClientPlugin

@@ -1,3 +1,5 @@
+import { ClientPlugin } from '@/plugins/index.d'
+
 import { update } from '../update'
 
 const mockCall = jest.fn(async () => ({
@@ -9,7 +11,7 @@ jest.mock('../../call', () => ({
 
 describe('api/plugin/update', () => {
   test('call', async () => {
-    await update({})
+    await update({} as ClientPlugin)
     expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

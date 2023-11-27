@@ -41,7 +41,7 @@ describe('services/freefem', () => {
         if (arg === 'close') callback(0)
       }
     }))
-    const code = await freefem('path', 'script', mockCallback)
+    const code = await freefem('path', 'script', mockCallback, 1)
     expect(mockSpawn).toHaveBeenCalledTimes(0)
     expect(code).toBe(0)
 
@@ -62,7 +62,7 @@ describe('services/freefem', () => {
           if (arg === 'error') callback('error')
         }
       }))
-      await freefem('path', 'script', mockCallback)
+      await freefem('path', 'script', mockCallback, 2)
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
@@ -89,7 +89,7 @@ describe('services/freefem', () => {
         if (arg === 'close') callback(0)
       }
     }))
-    const code = await freefem('path', 'script', mockCallback)
+    const code = await freefem('path', 'script', mockCallback, 1)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
   })
@@ -110,7 +110,7 @@ describe('services/freefem', () => {
         if (arg === 'close') callback(0)
       }
     }))
-    const code = await freefem('path', 'script', mockCallback, 'custom')
+    const code = await freefem('path', 'script', mockCallback, 1, 'custom')
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
   })

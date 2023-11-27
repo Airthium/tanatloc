@@ -1,7 +1,7 @@
 /** @module Models.Interface */
 
 import { ISimulationTaskFile } from '@/database/simulation'
-import { IClientPlugin } from '@/plugins/index.d'
+import { HPCClientPlugin } from '@/plugins/index.d'
 
 type TValue = boolean | number | string
 
@@ -29,6 +29,7 @@ export type IHtmlEntity = 'formula' | 'select' | 'checkbox' | 'radio'
  */
 export interface IModel {
   userModelId?: string
+  parallel?: boolean
   category: string | string[]
   name: string
   algorithm: string
@@ -322,6 +323,6 @@ export interface IModelRun extends IModelCommon {
     key: string
     parameters?: { key: string; value?: string; options?: string[] }[]
   }[]
-  cloudServer?: IClientPlugin
+  cloudServer?: HPCClientPlugin
   sensors?: IModelSensor[]
 }

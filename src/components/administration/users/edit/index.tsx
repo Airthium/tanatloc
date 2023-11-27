@@ -12,7 +12,7 @@ import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
 import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
-import { IClientPlugin } from '@/plugins/index.d'
+import { ClientPlugin } from '@/plugins/index.d'
 
 import {
   INotificationAction,
@@ -38,7 +38,7 @@ export type TUserItem = Pick<
  * Props
  */
 export interface IProps {
-  plugins: IClientPlugin[]
+  plugins: Pick<ClientPlugin, 'key' | 'name'>[]
   user: TUserItem
   swr: {
     mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void>

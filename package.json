@@ -25,7 +25,7 @@
     "prestart:package": "swc package.json --out-dir dist-install --copy-files",
     "prestart:install": "swc install --out-dir dist-install/install",
     "prestart:run": "node --experimental-specifier-resolution=node dist-install/install",
-    "prestart:norun": "yarn prestart:config && yarn prestart:database && yarn prestart:init && yarn prestart:install",
+    "prestart:norun": "yarn prestart:config && yarn prestart:database && yarn prestart:init && yarn prestart:package && yarn prestart:install",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) nodemon",
     "build": "yarn build:server && yarn build:client",
     "build:server": "yarn build:server:config && yarn build:server:src && yarn build:server:models && yarn build:server:plugins && yarn build:server:postprocessing && yarn build:server:templates",

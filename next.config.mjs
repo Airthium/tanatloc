@@ -33,7 +33,8 @@ const nextConfig = {
     SENTRY_DSN: Sentry.DSN
   },
   basePath,
-  output: process.env.NEXT_PUBLIC_SERVER_MODE ? 'export' : undefined
+  output: process.env.NEXT_PUBLIC_SERVER_MODE ? 'export' : undefined,
+  distDir: process.env.NEXT_PUBLIC_SERVER_MODE ? 'renderer' : undefined
 }
 
 export default nextConfig

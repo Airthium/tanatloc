@@ -6,7 +6,7 @@
 
 # Build
 /.next
-/out
+/renderer
 /dist
 
 # Dist

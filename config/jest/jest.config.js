@@ -57,7 +57,7 @@ const jestConfig = {
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
-    '<rootDir>/out/',
+    '<rootDir>/renderer/',
     '<rootDir>/next.config.js',
     '<rootDir>/app/',
     '<rootDir>/dist/',

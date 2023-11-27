@@ -14,7 +14,7 @@
     "../../dist-install/**",
     "../../doc/**",
     "../../node_modules/**",
-    "../../out/**",
+    "../../renderer/**",
     "../../public/**",
     "../../*.d.ts",
     "../../next.config.mjs",

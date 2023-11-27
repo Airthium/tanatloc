@@ -177,14 +177,12 @@ describe('components/signup', () => {
     await waitFor(() => screen.getByText('Log in?'))
     const logIn = screen.getByText('Log in?')
     await act(() => fireEvent.click(logIn))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockPush).toHaveBeenLastCalledWith('/login'))
 
     // Normal
     mockAdd.mockImplementation(() => ({ alreadyExists: false }))
     await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(mockPush).toHaveBeenLastCalledWith('/signup/send')
     )

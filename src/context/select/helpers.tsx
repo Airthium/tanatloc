@@ -1,3 +1,5 @@
+/** @module Context.Select.Helpers */
+
 import { ISelect } from '.'
 
 /**

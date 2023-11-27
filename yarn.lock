@@ -33,34 +33,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-3d@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@airthium/tanatloc-3d@npm:1.0.0"
+"@airthium/tanatloc-3d@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@airthium/tanatloc-3d@npm:1.0.1"
   dependencies:
     "@ant-design/icons": "npm:5.2.6"
     "@react-three/drei": "npm:9.88.17"
     "@react-three/fiber": "npm:8.15.11"
-    antd: "npm:5.11.3"
+    antd: "npm:5.11.4"
     three: "npm:0.158.0"
     zustand: "npm:4.4.6"
   peerDependencies:
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: 0d8ec5fc3853854c45a3d7d4b7da2e48f408290377b966231edfb13471d6983dffced1e9e7e236572a70d2012ee4c6820262fe12359e1c6e2eb8eb64d98efcd6
+  checksum: f5c923423173f3e37345297e2299b8d650a32c8aab7c180e4547e2935845fa7642030ed5f88fa2dd483dd36a336161b62680f715a331f7a847d78a1d47027c50
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-formula-validator@npm:1.0.21":
-  version: 1.0.21
-  resolution: "@airthium/tanatloc-formula-validator@npm:1.0.21"
-  checksum: 6d1a10f579e9841bcf2a8e02619cd96f795c6df139801f7060c0a36e63e2566983c9dc282be538b53943133ce20dd99fc3bd654a80df4d31787c0a50fec3da30
+"@airthium/tanatloc-formula-validator@npm:1.0.22":
+  version: 1.0.22
+  resolution: "@airthium/tanatloc-formula-validator@npm:1.0.22"
+  checksum: 9435a0cd83477c343ddaae1bedfa8a01332633dd20fcc49fb606686f126eec2fd95ecbb0e0656a22f25b55656f02ac556e6a195c1b5955422fe45c1ca0243ea7
   languageName: node
   linkType: hard
 
-"@airthium/typedoc-plugin-airthium@npm:1.1.23":
-  version: 1.1.23
-  resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.23"
-  checksum: 843c4473d6322c05c4f48ffbbaebed848f460c5d569c8f2816008c5d79f2f03f3175384a797e5300bef4189646caae0fd1e05258b672567fe67b70139d923761
+"@airthium/typedoc-plugin-airthium@npm:1.1.24":
+  version: 1.1.24
+  resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.24"
+  checksum: d3515ae09b8a9383a9ab8f8c8ba995f8f2157f4bd50879cfc16d60aa15fef838ef3258b5a4496e1a57115818e36d01cad65b26acc77671b56a1c92a9c99947a2
   languageName: node
   linkType: hard
 
@@ -1038,10 +1038,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/env@npm:14.0.3"
-  checksum: 8688367c22461a075b5406463d16c284cf58e6861418e974fbd5901721da73402988340f8dd72d8e2e41e32ae0b7f24f91bd49029ee6e63424361587165febc5
+"@next/env@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/env@npm:14.0.2"
+  checksum: 9fad703ce13b7b7fecf898d3c239f8976f2ec7f3c7c461c06da70898a0221775c48e1a2e2c76740216c4093c2db9bd7adaacd196586cd4283e09eb89de4c1db6
   languageName: node
   linkType: hard
 
@@ -1061,65 +1061,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-darwin-arm64@npm:14.0.3"
+"@next/swc-darwin-arm64@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-darwin-arm64@npm:14.0.2"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-darwin-x64@npm:14.0.3"
+"@next/swc-darwin-x64@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-darwin-x64@npm:14.0.2"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-linux-arm64-gnu@npm:14.0.3"
+"@next/swc-linux-arm64-gnu@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-linux-arm64-gnu@npm:14.0.2"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-linux-arm64-musl@npm:14.0.3"
+"@next/swc-linux-arm64-musl@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-linux-arm64-musl@npm:14.0.2"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-linux-x64-gnu@npm:14.0.3"
+"@next/swc-linux-x64-gnu@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-linux-x64-gnu@npm:14.0.2"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-linux-x64-musl@npm:14.0.3"
+"@next/swc-linux-x64-musl@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-linux-x64-musl@npm:14.0.2"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-win32-arm64-msvc@npm:14.0.3"
+"@next/swc-win32-arm64-msvc@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-win32-arm64-msvc@npm:14.0.2"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-win32-ia32-msvc@npm:14.0.3"
+"@next/swc-win32-ia32-msvc@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-win32-ia32-msvc@npm:14.0.2"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:14.0.3":
-  version: 14.0.3
-  resolution: "@next/swc-win32-x64-msvc@npm:14.0.3"
+"@next/swc-win32-x64-msvc@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@next/swc-win32-x64-msvc@npm:14.0.2"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2220,16 +2220,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 20.9.4
-  resolution: "@types/node@npm:20.9.4"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: c8b48ace4c7e17715fa901201c98275f8e5268cf5895a8d149777eb0ec6c3ef6c831ff3917e92da5453a5dbe13f230caa50b348a0601b0d50eb9e628010c0364
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:20.10.0":
+"@types/node@npm:*, @types/node@npm:20.10.0":
   version: 20.10.0
   resolution: "@types/node@npm:20.10.0"
   dependencies:
@@ -2239,11 +2230,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^18.11.18":
-  version: 18.18.12
-  resolution: "@types/node@npm:18.18.12"
+  version: 18.18.13
+  resolution: "@types/node@npm:18.18.13"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: f7c4b95173f4014841d331da5b005ab613351d61498c8dca373cd4365b721a73fd1161e91c965c0f786132594b46e68c92dc1c92d657a7942816f2ea185ae1ba
+  checksum: 5f1840f26b4c00e6b4945be678644a46e6689ef10d9d7795d587b76059045b99a14ca6075264296e6e91d73e098fe83df9580881278d9a6ce394b368d9c76700
   languageName: node
   linkType: hard
 
@@ -2600,73 +2591,73 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-core@npm:3.3.8":
-  version: 3.3.8
-  resolution: "@vue/compiler-core@npm:3.3.8"
+"@vue/compiler-core@npm:3.3.9":
+  version: 3.3.9
+  resolution: "@vue/compiler-core@npm:3.3.9"
   dependencies:
-    "@babel/parser": "npm:^7.23.0"
-    "@vue/shared": "npm:3.3.8"
+    "@babel/parser": "npm:^7.23.3"
+    "@vue/shared": "npm:3.3.9"
     estree-walker: "npm:^2.0.2"
     source-map-js: "npm:^1.0.2"
-  checksum: de7dcdaae73f2f3680efdb1bda7a48a98f9ccbb907e4c78562252a5a084fd1d78aaa2477e59605c665439614f16fed7524addf04b00007a5bcb66fa4bfc3f4c4
+  checksum: b7114c299f765a6df27c9e3cfdd3372644d941aece10518207b4b402778f7be6180da7532f5dc2ae1627e569f81067d27b112787e195692cb5faee3fad254192
   languageName: node
   linkType: hard
 
-"@vue/compiler-dom@npm:3.3.8":
-  version: 3.3.8
-  resolution: "@vue/compiler-dom@npm:3.3.8"
+"@vue/compiler-dom@npm:3.3.9":
+  version: 3.3.9
+  resolution: "@vue/compiler-dom@npm:3.3.9"
   dependencies:
-    "@vue/compiler-core": "npm:3.3.8"
-    "@vue/shared": "npm:3.3.8"
-  checksum: 81d18034169d37c058852a1fe708e54443de5c237f83c8d5ebde9621da2f51d3cb9ac256be6c0324aa382155a267e63a956bd0c372441f5a81594cfda27895c5
+    "@vue/compiler-core": "npm:3.3.9"
+    "@vue/shared": "npm:3.3.9"
+  checksum: cc7b731400ddcbd2f7ffc5a64e5de6af42f1c647d178f7a48d63579c5e5cf2a3f39acafeefada6bd82cfa4af6724bd7363faef0522eb2a4c2dec8304e1b36c50
   languageName: node
   linkType: hard
 
 "@vue/compiler-sfc@npm:^3.3.4":
-  version: 3.3.8
-  resolution: "@vue/compiler-sfc@npm:3.3.8"
+  version: 3.3.9
+  resolution: "@vue/compiler-sfc@npm:3.3.9"
   dependencies:
-    "@babel/parser": "npm:^7.23.0"
-    "@vue/compiler-core": "npm:3.3.8"
-    "@vue/compiler-dom": "npm:3.3.8"
-    "@vue/compiler-ssr": "npm:3.3.8"
-    "@vue/reactivity-transform": "npm:3.3.8"
-    "@vue/shared": "npm:3.3.8"
+    "@babel/parser": "npm:^7.23.3"
+    "@vue/compiler-core": "npm:3.3.9"
+    "@vue/compiler-dom": "npm:3.3.9"
+    "@vue/compiler-ssr": "npm:3.3.9"
+    "@vue/reactivity-transform": "npm:3.3.9"
+    "@vue/shared": "npm:3.3.9"
     estree-walker: "npm:^2.0.2"
     magic-string: "npm:^0.30.5"
     postcss: "npm:^8.4.31"
     source-map-js: "npm:^1.0.2"
-  checksum: e127f1dcb3cd6f5bae66c6921faaa74c65a4c67e94f12af86203d02a1a33f35c719532fafa6db705f83eeea061334badb600c5ed2863dabca61bda756b886385
+  checksum: a4f346c285268c1b30e5f837f78d0fef995e9bf553c2806d5be62aa66cc12ec6d44db5066433f14c9183f22f0310eeb9f5e872e865eb84638accd0ff7e3c8c76
   languageName: node
   linkType: hard
 
-"@vue/compiler-ssr@npm:3.3.8":
-  version: 3.3.8
-  resolution: "@vue/compiler-ssr@npm:3.3.8"
+"@vue/compiler-ssr@npm:3.3.9":
+  version: 3.3.9
+  resolution: "@vue/compiler-ssr@npm:3.3.9"
   dependencies:
-    "@vue/compiler-dom": "npm:3.3.8"
-    "@vue/shared": "npm:3.3.8"
-  checksum: 88377c7cc217965a4f0ed790309b8988b1f3be3e8cf133fa49e4917b0781425d81b9d75f7338a7ba7a7ff9cdb33b8b8d707795b9dfadf93e78aca376b55d0a72
+    "@vue/compiler-dom": "npm:3.3.9"
+    "@vue/shared": "npm:3.3.9"
+  checksum: 119b67a3c2a739842f9a4b4b0385986549262586ce4d9eb8bb5d308ace80f7f3a854ef302982bfd3951dc359779b25758a6e53ddaf9e2b1c95b50cd3a7e9ae58
   languageName: node
   linkType: hard
 
-"@vue/reactivity-transform@npm:3.3.8":
-  version: 3.3.8
-  resolution: "@vue/reactivity-transform@npm:3.3.8"
+"@vue/reactivity-transform@npm:3.3.9":
+  version: 3.3.9
+  resolution: "@vue/reactivity-transform@npm:3.3.9"
   dependencies:
-    "@babel/parser": "npm:^7.23.0"
-    "@vue/compiler-core": "npm:3.3.8"
-    "@vue/shared": "npm:3.3.8"
+    "@babel/parser": "npm:^7.23.3"
+    "@vue/compiler-core": "npm:3.3.9"
+    "@vue/shared": "npm:3.3.9"
     estree-walker: "npm:^2.0.2"
     magic-string: "npm:^0.30.5"
-  checksum: b0ed1d42430e515437b06be5ba3da52329f416ca1a34bd40066c45bd65c0207042a40e975728be2d3f5adc6ced9c83fc54c1279cb4230392f106991756798a99
+  checksum: 43053f09229f1994179491a15bdd13515601074e640781e5419007ee32c68060f0fb13e7c60ee533af91dd7da0b38442bf736fa74bf5597b1181174c11c2642d
   languageName: node
   linkType: hard
 
-"@vue/shared@npm:3.3.8":
-  version: 3.3.8
-  resolution: "@vue/shared@npm:3.3.8"
-  checksum: 4e35a331309f883616cd21087d180ea10c95ed742cf67c33bedf9b0f060b791976071b076b31e075eb34571861cbe5d191fb8e265ee85573d2908d00f022171e
+"@vue/shared@npm:3.3.9":
+  version: 3.3.9
+  resolution: "@vue/shared@npm:3.3.9"
+  checksum: abf10852baf4009e838c5c12893a67e4dbb4369ec6be2892ce6294a4115d2087ecd619783bbafe048d154da48dd28763fc6c53114ab490ced45e573b2d69dbc9
   languageName: node
   linkType: hard
 
@@ -2868,65 +2859,6 @@ __metadata:
   version: 6.2.1
   resolution: "ansi-styles@npm:6.2.1"
   checksum: 5d1ec38c123984bcedd996eac680d548f31828bd679a66db2bdf11844634dde55fec3efa9c6bb1d89056a5e79c1ac540c4c784d592ea1d25028a92227d2f2d5c
-  languageName: node
-  linkType: hard
-
-"antd@npm:5.11.3":
-  version: 5.11.3
-  resolution: "antd@npm:5.11.3"
-  dependencies:
-    "@ant-design/colors": "npm:^7.0.0"
-    "@ant-design/cssinjs": "npm:^1.17.5"
-    "@ant-design/icons": "npm:^5.2.6"
-    "@ant-design/react-slick": "npm:~1.0.2"
-    "@babel/runtime": "npm:^7.18.3"
-    "@ctrl/tinycolor": "npm:^3.6.1"
-    "@rc-component/color-picker": "npm:~1.4.1"
-    "@rc-component/mutate-observer": "npm:^1.1.0"
-    "@rc-component/tour": "npm:~1.10.0"
-    "@rc-component/trigger": "npm:^1.18.2"
-    classnames: "npm:^2.3.2"
-    copy-to-clipboard: "npm:^3.3.3"
-    dayjs: "npm:^1.11.1"
-    qrcode.react: "npm:^3.1.0"
-    rc-cascader: "npm:~3.20.0"
-    rc-checkbox: "npm:~3.1.0"
-    rc-collapse: "npm:~3.7.1"
-    rc-dialog: "npm:~9.3.4"
-    rc-drawer: "npm:~6.5.2"
-    rc-dropdown: "npm:~4.1.0"
-    rc-field-form: "npm:~1.40.0"
-    rc-image: "npm:~7.5.0"
-    rc-input: "npm:~1.3.6"
-    rc-input-number: "npm:~8.4.0"
-    rc-mentions: "npm:~2.9.1"
-    rc-menu: "npm:~9.12.2"
-    rc-motion: "npm:^2.9.0"
-    rc-notification: "npm:~5.3.0"
-    rc-pagination: "npm:~3.7.0"
-    rc-picker: "npm:~3.14.6"
-    rc-progress: "npm:~3.5.1"
-    rc-rate: "npm:~2.12.0"
-    rc-resize-observer: "npm:^1.4.0"
-    rc-segmented: "npm:~2.2.2"
-    rc-select: "npm:~14.10.0"
-    rc-slider: "npm:~10.4.0"
-    rc-steps: "npm:~6.0.1"
-    rc-switch: "npm:~4.1.0"
-    rc-table: "npm:~7.36.0"
-    rc-tabs: "npm:~12.13.1"
-    rc-textarea: "npm:~1.5.3"
-    rc-tooltip: "npm:~6.1.2"
-    rc-tree: "npm:~5.8.2"
-    rc-tree-select: "npm:~5.15.0"
-    rc-upload: "npm:~4.3.5"
-    rc-util: "npm:^5.38.1"
-    scroll-into-view-if-needed: "npm:^3.1.0"
-    throttle-debounce: "npm:^5.0.0"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 74b6e37f28e7433bf18f7e9d43bfcd76824032ea2e4962fb86ee6b8995385e92bbea929ffc0b429de2b030d8276af7990ecf4d1e0f90fc3be34fc597024d7439
   languageName: node
   linkType: hard
 
@@ -3640,9 +3572,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001406, caniuse-lite@npm:^1.0.30001541":
-  version: 1.0.30001564
-  resolution: "caniuse-lite@npm:1.0.30001564"
-  checksum: 27722fea974fc8d2cd334cdef23e1299465c870c97902cc5c293673e6c3ae5241f36f31ca180c903160f0b1c3b51e2b2e8962c537b0a6ac6518a1113b5b5665e
+  version: 1.0.30001565
+  resolution: "caniuse-lite@npm:1.0.30001565"
+  checksum: b400e0364651a700e39d59449ca6c65b26e2caceecc4b93ae54a01ed1f62d2a7e1333b1dc640d95fbe620ffa5be38fe4dbacd880cd7a1f42fc72bb8de9a2d0c9
   languageName: node
   linkType: hard
 
@@ -4653,9 +4585,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.535":
-  version: 1.4.592
-  resolution: "electron-to-chromium@npm:1.4.592"
-  checksum: 94a4719f792243b5914ef3630c30827712e4ddb683f0b1ce6848f2e96ce1f33c29a7f4bf65ffe50d0ad8a3fa8c87f740c85d48dafe4297c770738125a9f2f494
+  version: 1.4.594
+  resolution: "electron-to-chromium@npm:1.4.594"
+  checksum: 3714e204c5dd00fa95aaddd636953c4e6b8b358f780c0b1ba94140fe1b3c25f54364fd818a2d501fbdae5f85903bfa64d634fa57d8b4160847fa0a0f6a53575f
   languageName: node
   linkType: hard
 
@@ -8279,20 +8211,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:14.0.3":
-  version: 14.0.3
-  resolution: "next@npm:14.0.3"
+"next@npm:14.0.2":
+  version: 14.0.2
+  resolution: "next@npm:14.0.2"
   dependencies:
-    "@next/env": "npm:14.0.3"
-    "@next/swc-darwin-arm64": "npm:14.0.3"
-    "@next/swc-darwin-x64": "npm:14.0.3"
-    "@next/swc-linux-arm64-gnu": "npm:14.0.3"
-    "@next/swc-linux-arm64-musl": "npm:14.0.3"
-    "@next/swc-linux-x64-gnu": "npm:14.0.3"
-    "@next/swc-linux-x64-musl": "npm:14.0.3"
-    "@next/swc-win32-arm64-msvc": "npm:14.0.3"
-    "@next/swc-win32-ia32-msvc": "npm:14.0.3"
-    "@next/swc-win32-x64-msvc": "npm:14.0.3"
+    "@next/env": "npm:14.0.2"
+    "@next/swc-darwin-arm64": "npm:14.0.2"
+    "@next/swc-darwin-x64": "npm:14.0.2"
+    "@next/swc-linux-arm64-gnu": "npm:14.0.2"
+    "@next/swc-linux-arm64-musl": "npm:14.0.2"
+    "@next/swc-linux-x64-gnu": "npm:14.0.2"
+    "@next/swc-linux-x64-musl": "npm:14.0.2"
+    "@next/swc-win32-arm64-msvc": "npm:14.0.2"
+    "@next/swc-win32-ia32-msvc": "npm:14.0.2"
+    "@next/swc-win32-x64-msvc": "npm:14.0.2"
     "@swc/helpers": "npm:0.5.2"
     busboy: "npm:1.6.0"
     caniuse-lite: "npm:^1.0.30001406"
@@ -8330,7 +8262,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 73aa3d5dd7b65b53ef68fa7723a7a98536482a69ae2d56e7b335194168f00b2851397bbdfe490b53dba2c70dfb8ad0150035fab4c762d6bc331e884487c4ff07
+  checksum: 65ae7a09f1643bc3deafdbdae9ce0c02326346c4a60a7c739f8f6b154b2226b8fcc5efb984cdcb4ef100116910d4c1013089135800d30c7a50cf98c9d22e5a26
   languageName: node
   linkType: hard
 
@@ -9498,23 +9430,6 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 4f3bef8c452722f1fc3e9e8a7a51ff4ce704604e7027c6076b012df527001421805a1f2bc24446130e54124c240331b02db9654c783dc632fc84cfe12d7e8d65
-  languageName: node
-  linkType: hard
-
-"rc-image@npm:~7.5.0":
-  version: 7.5.0
-  resolution: "rc-image@npm:7.5.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.11.2"
-    "@rc-component/portal": "npm:^1.0.2"
-    classnames: "npm:^2.2.6"
-    rc-dialog: "npm:~9.3.4"
-    rc-motion: "npm:^2.6.2"
-    rc-util: "npm:^5.34.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: e6ce353af7dfbb257b216430d877644f91ae54cefff466ab835d67f0ff23b5c3ed5943a1e239ba0023e9dfe5b86c10f85cc3a20cbb228ce20cf8b17d2239b1bf
   languageName: node
   linkType: hard
 
@@ -11259,9 +11174,9 @@ __metadata:
     "@airthium/deep-object-diff": "npm:1.0.20"
     "@airthium/extract-json-from-string": "npm:1.0.38"
     "@airthium/pg-format": "npm:2.0.43"
-    "@airthium/tanatloc-3d": "npm:1.0.0"
-    "@airthium/tanatloc-formula-validator": "npm:1.0.21"
-    "@airthium/typedoc-plugin-airthium": "npm:1.1.23"
+    "@airthium/tanatloc-3d": "npm:1.0.1"
+    "@airthium/tanatloc-formula-validator": "npm:1.0.22"
+    "@airthium/typedoc-plugin-airthium": "npm:1.1.24"
     "@ant-design/icons": "npm:5.2.6"
     "@babel/core": "npm:7.23.3"
     "@hapi/iron": "npm:7.0.1"
@@ -11313,7 +11228,7 @@ __metadata:
     lodash: "npm:4.17.21"
     mailersend: "npm:2.2.0"
     mathjax: "npm:3.2.2"
-    next: "npm:14.0.3"
+    next: "npm:14.0.2"
     next-sitemap: "npm:4.2.3"
     node-fetch: "npm:3.3.2"
     nodemon: "npm:3.0.1"

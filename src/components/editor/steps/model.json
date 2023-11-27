@@ -1,6 +1,6 @@
 {
   "$ref": "#/definitions/IModel",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "definitions": {
     "IClientPlugin": {
       "additionalProperties": false,
@@ -632,7 +632,12 @@
                     "type": "string"
                   }
                 },
-                "required": ["name", "pattern"],
+                "required": [
+                  "name",
+                  "prefixPattern",
+                  "suffixPattern",
+                  "pattern"
+                ],
                 "type": "object"
               },
               "map": {
@@ -1137,7 +1142,6 @@
                 },
                 {
                   "items": {
-                    "format": "regex",
                     "type": "string"
                   },
                   "type": "array"
@@ -1146,7 +1150,6 @@
                   "type": "string"
                 },
                 {
-                  "format": "regex",
                   "type": "string"
                 }
               ]
@@ -1161,7 +1164,6 @@
                 },
                 {
                   "items": {
-                    "format": "regex",
                     "type": "string"
                   },
                   "type": "array"
@@ -1170,7 +1172,6 @@
                   "type": "string"
                 },
                 {
-                  "format": "regex",
                   "type": "string"
                 }
               ]
@@ -1185,7 +1186,6 @@
                 },
                 {
                   "items": {
-                    "format": "regex",
                     "type": "string"
                   },
                   "type": "array"
@@ -1194,7 +1194,6 @@
                   "type": "string"
                 },
                 {
-                  "format": "regex",
                   "type": "string"
                 }
               ]

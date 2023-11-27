@@ -142,20 +142,9 @@ const StatusSteps = ({ setName }: IProps) => {
       .replace(/\./g, ' > ')
       .replace(/must/g, '\n  - Must')
       .split('\n')
-      .map((item) => <>{item}</>)
 
     return <span>{formattedError}</span>
   }
-
-  const generateStep = (
-    statusObj: IStatus,
-    title: string,
-    defaultDescription: string
-  ) => ({
-    title,
-    description: formatDescription(statusObj, defaultDescription),
-    status: statusObj?.status ?? 'wait'
-  })
 
   /**
    * Render
@@ -166,12 +155,19 @@ const StatusSteps = ({ setName }: IProps) => {
         className={style.steps}
         direction="vertical"
         items={[
-          generateStep(
-            status.template,
-            'Check template format',
-            'EJS + FreeFEM'
-          ),
-          generateStep(status.model, 'Check description format', 'JSON')
+          {
+            title: 'Check template format',
+            status: status.template?.status ?? 'wait',
+            description: formatDescription(status.template, 'EJS + FreeFEM')
+          },
+          {
+            title: 'Check description format',
+            status: status.model?.status ?? 'wait',
+            description: formatDescription(
+              status.model,
+              'Check description format'
+            )
+          }
         ]}
       />
     </div>

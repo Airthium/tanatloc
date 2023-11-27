@@ -61,6 +61,17 @@
   justify-content: space-between;
   background: transparent !important;
   border: none;
+  color: inherit;
+}
+
+.menu2
+  :global(.SubMenu)
+  ul
+  li
+  :global(.ant-menu-title-content)
+  > div
+  :global(.ant-typography) {
+  color: inherit;
 }
 
 .menu2 :global(.SubMenu) ul li ul li {

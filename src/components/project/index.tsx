@@ -198,7 +198,9 @@ const GeometryLabel = ({
    */
   return (
     <div>
-      {geometry.name}
+      <Typography.Text ellipsis={{ tooltip: true }}>
+        {geometry.name}
+      </Typography.Text>
       {visible ? (
         <EyeOutlined onClick={onDelete} />
       ) : (
@@ -233,7 +235,7 @@ const SimulationLabel = ({
             }}
           />
         </Tooltip>
-        {simulation.name}
+        <Typography.Text ellipsis>{simulation.name}</Typography.Text>
       </>
     )
   return <>{simulation.name}</>

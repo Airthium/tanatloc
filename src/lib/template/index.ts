@@ -70,7 +70,7 @@ const loadPluginsTemplates = async (): Promise<ITemplates> => {
             ? process.resourcesPath + '/extra/server/tanatloc'
             : './',
           'plugins',
-          plugin.key!,
+          plugin.key,
           template.file
         )
       )

@@ -73,9 +73,9 @@ export const _onChange = async (
 
     // Local
     const defaultplugins = Utils.deepCopy(system?.defaultplugins ?? [])
-    const index: number = defaultplugins.indexOf(plugin.key as string)
+    const index: number = defaultplugins.indexOf(plugin.key)
     if (checked && index === -1) {
-      defaultplugins.push(plugin.key as string)
+      defaultplugins.push(plugin.key)
     }
     if (!checked && index !== -1) {
       defaultplugins.splice(index, 1)
@@ -107,7 +107,7 @@ const Plugin = ({
   // Effect
   useEffect(() => {
     if (system?.defaultplugins) {
-      const isChecked = system.defaultplugins.includes(plugin.key!)
+      const isChecked = system.defaultplugins.includes(plugin.key)
       setChecked(isChecked)
     }
   }, [plugin, system])

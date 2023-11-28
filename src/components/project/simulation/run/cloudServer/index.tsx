@@ -267,10 +267,6 @@ const CloudServer = ({
     )
   }, [cloudServer?.extra, onExtra])
 
-  const HPCPlugins = plugins.filter(
-    (plugin) => plugin.category === 'HPC'
-  ) as HPCClientPlugin[]
-
   /**
    * Render
    */
@@ -294,7 +290,7 @@ const CloudServer = ({
           </Typography.Text>
           <Plugins
             pluginsList={pluginsList}
-            plugins={HPCPlugins}
+            plugins={plugins}
             parallel={parallel}
             onOk={onOk}
             setVisible={setVisible}

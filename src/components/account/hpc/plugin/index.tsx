@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin */
 
-import { useContext, useEffect, useMemo } from 'react'
+import { useContext, useEffect } from 'react'
 import { Space, Spin } from 'antd'
 
 import { HPCClientPlugin } from '@/plugins/index.d'
@@ -55,15 +55,6 @@ const Plugin = ({ plugin }: IProps): React.JSX.Element => {
       dispatch(addError({ title: errors.plugins, err: errorPlugins }))
   }, [errorPlugins, dispatch])
 
-  // HPC plugins
-  const HPCPlugins = useMemo(
-    () =>
-      plugins.filter(
-        (plugin) => plugin.category === 'HPC'
-      ) as HPCClientPlugin[],
-    [plugins]
-  )
-
   /**
    * Render
    */
@@ -73,7 +64,7 @@ const Plugin = ({ plugin }: IProps): React.JSX.Element => {
       <PluginDialog plugin={plugin} swr={{ addOnePlugin }} />
       <List
         plugin={{ key: plugin.key }}
-        plugins={HPCPlugins}
+        plugins={plugins}
         swr={{ delOnePlugin, mutateOnePlugin }}
       />
     </Space>

@@ -131,6 +131,7 @@ describe('component/project/list', () => {
 
     const empty = screen.getByRole('img', { name: 'No preview yet.' })
     fireEvent.click(empty)
+    fireEvent.keyUp(empty)
     expect(mockPush).toHaveBeenCalledTimes(1)
 
     const descriptions = screen.getAllByText('description')

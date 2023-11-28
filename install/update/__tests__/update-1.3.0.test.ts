@@ -44,6 +44,34 @@ describe('install/update/1.3.0', () => {
     expect(mockUpdater).toHaveBeenCalledTimes(2)
   })
 
+  test('geometry children already defined', async () => {
+    mockQuery.mockImplementation(() => ({
+      rows: [
+        {
+          scheme: {
+            configuration: {
+              geometry: {
+                children: []
+              }
+            }
+          }
+        },
+        {
+          scheme: {
+            configuration: {
+              geometry: {
+                children: []
+              }
+            }
+          }
+        }
+      ]
+    }))
+    await update()
+    expect(mockQuery).toHaveBeenCalledTimes(1)
+    expect(mockUpdater).toHaveBeenCalledTimes(0)
+  })
+
   test('error', async () => {
     mockQuery.mockImplementation(() => {
       throw new Error('query error')

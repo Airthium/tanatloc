@@ -97,12 +97,10 @@ const Local = ({ parallel, onSelect }: IProps): ReactNode => {
     onSelect()
   }, [onSelect])
 
-  // Parallel
-  if (parallel) return <LocalParallel onSelect={onSelect} />
-
   /**
    * Render
    */
+  if (parallel) return <LocalParallel onSelect={onSelect} />
   return (
     <Space className={globalStyle.fullWidth}>
       <Typography.Text>Local computing</Typography.Text>

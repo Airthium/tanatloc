@@ -42,6 +42,9 @@ describe('components/doc', () => {
     const button = screen.getAllByRole('img', { name: 'Tanatloc' })[0]
     fireEvent.click(button)
 
+    const img = screen.getAllByRole('img', { name: 'Tanatloc' })
+    fireEvent.keyUp(img[0])
+
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenLastCalledWith('/')
 

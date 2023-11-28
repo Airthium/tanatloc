@@ -3,13 +3,14 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import Blog from '..'
 
 let tag: JSX.Element
+const selectRole = 'Select'
 jest.mock('antd', () => {
   const actual = jest.requireActual('antd')
   return {
     ...actual,
     Select: (props: any) => (
       <div
-        role="Select"
+        role={selectRole}
         onClick={() => props.onChange(['keyword'])}
         onMouseEnter={() =>
           (tag = props.tagRender({
@@ -19,6 +20,7 @@ jest.mock('antd', () => {
             onClose: jest.fn
           }))
         }
+        onKeyUp={console.info}
       />
     )
   }
@@ -93,6 +95,9 @@ describe('components/blog', () => {
     const button = screen.getByRole('img', { name: 'Tanatloc' })
     fireEvent.click(button)
 
+    const img = screen.getByRole('img', { name: 'Tanatloc' })
+    fireEvent.keyUp(img)
+
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenLastCalledWith('/')
 
@@ -127,7 +132,7 @@ describe('components/blog', () => {
   test('tags', () => {
     const { unmount } = render(<Blog />)
 
-    const select = screen.getByRole('Select')
+    const select = screen.getByRole(selectRole)
     fireEvent.click(select)
     fireEvent.mouseEnter(select)
 

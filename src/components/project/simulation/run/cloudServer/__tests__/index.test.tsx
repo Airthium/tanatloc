@@ -39,6 +39,7 @@ jest.mock('@/api/plugins', () => ({
 }))
 
 describe('components/project/simulation/run/cloudServer', () => {
+  const RendererRole = 'Renderer'
   const cloudServer = {
     configuration: {
       name: { label: 'Name', type: 'input', value: 'name' }
@@ -51,6 +52,11 @@ describe('components/project/simulation/run/cloudServer', () => {
       otheritem: {
         label: 'bool',
         value: true
+      },
+      parallelItem: {
+        label: 'parallel',
+        parallelOnly: true,
+        value: 'value'
       },
       otherotheritem: {
         label: 'bool again',
@@ -72,6 +78,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     mockPlugins.mockImplementation(() => [
       {
         key: 'key',
+        category: 'HPC',
         uuid: 'uuid',
         name: 'name',
         configuration: {
@@ -87,7 +94,8 @@ describe('components/project/simulation/run/cloudServer', () => {
     mockList.mockReset()
     mockList.mockImplementation(() => [
       {
-        key: 'key'
+        key: 'key',
+        category: 'HPC'
       }
     ])
 
@@ -97,6 +105,23 @@ describe('components/project/simulation/run/cloudServer', () => {
   test('render', () => {
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
+
+    unmount()
+  })
+
+  test('without inUseConfiguration', () => {
+    const { unmount } = render(
+      <CloudServer
+        cloudServer={
+          {
+            configuration: {
+              name: { label: 'Name', type: 'input', value: 'name' }
+            }
+          } as unknown as HPCClientPlugin
+        }
+        onOk={onOk}
+      />
     )
 
     unmount()
@@ -220,7 +245,11 @@ describe('components/project/simulation/run/cloudServer', () => {
 
   test('onMerge', async () => {
     mockDynamic.mockImplementation(() => (props: any) => (
-      <div role="Renderer" onClick={props.onSelect} />
+      <div
+        role={RendererRole}
+        onClick={props.onSelect}
+        onKeyUp={console.info}
+      />
     ))
 
     const { unmount } = render(
@@ -233,7 +262,7 @@ describe('components/project/simulation/run/cloudServer', () => {
 
     await waitFor(() => screen.getByText('Plugin name'))
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     await act(() => fireEvent.click(renderer))
 
     expect(onOk).toHaveBeenCalledTimes(1)

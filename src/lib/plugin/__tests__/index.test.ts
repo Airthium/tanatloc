@@ -18,6 +18,7 @@ jest.mock('../../plugins', () => ({
   serverList: () => [
     {
       key: 'key',
+      category: 'HPC',
       lib: {
         init: () => mockInit()
       }

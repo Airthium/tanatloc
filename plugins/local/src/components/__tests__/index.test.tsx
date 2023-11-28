@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
 import Local from '..'
 
@@ -17,8 +17,33 @@ describe('plugins/local/src/component', () => {
 
   test('onClick', () => {
     const { unmount } = render(<Local onSelect={onSelect} />)
-    fireEvent.click(screen.getByRole('button'))
+
+    const open = screen.getByRole('button')
+    fireEvent.click(open)
     expect(onSelect).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('parallel', async () => {
+    const { unmount } = render(<Local parallel={true} onSelect={onSelect} />)
+
+    // Open
+    const open = screen.getByRole('button')
+    fireEvent.click(open)
+
+    // Close
+    const close = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(close)
+
+    // Re-open
+    fireEvent.click(open)
+
+    // Ok
+    const ok = screen.getByRole('button', { name: 'OK' })
+    fireEvent.click(ok)
+
+    await waitFor(() => expect(onSelect).toHaveBeenCalledTimes(1))
 
     unmount()
   })

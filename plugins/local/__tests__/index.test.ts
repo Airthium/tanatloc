@@ -41,7 +41,13 @@ describe('plugins/local', () => {
             tooltip: 'Fill this input to use a local version of FreeFEM'
           }
         },
-        inUseConfiguration: {}
+        inUseConfiguration: {
+          nCores: {
+            label: 'Number of cores',
+            parallelOnly: true,
+            value: 1
+          }
+        }
       },
       server: {
         lib: {}

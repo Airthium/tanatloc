@@ -289,9 +289,6 @@
         "geometry": {
           "type": "string"
         },
-        "geometryIndex": {
-          "type": "number"
-        },
         "labels": {
           "type": "string"
         },
@@ -847,9 +844,6 @@
       "properties": {
         "geometry": {
           "type": "string"
-        },
-        "geometryIndex": {
-          "type": "number"
         },
         "material": {
           "additionalProperties": false,

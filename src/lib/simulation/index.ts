@@ -222,11 +222,8 @@ const copyGeometries = async (
   configuration: IModel['configuration']
 ): Promise<void> => {
   const children = configuration.geometry.children
-  const materials = configuration.materials?.values ?? []
-  const boundaryConditions = configuration.boundaryConditions
 
-  for (let i = 0; i < children.length; ++i) {
-    const child = children[i]
+  for (const child of children) {
     const id = child.value
     if (!id) continue
 
@@ -250,19 +247,6 @@ const copyGeometries = async (
         file: child.data.file
       }
     )
-
-    // Check materials
-    materials.forEach((material) => {
-      if (material.geometry === id) material.geometryIndex = i
-    })
-
-    // Check boundary conditions
-    forEachBoundaryConditions(boundaryConditions, (boundaryCondition) => {
-      const values = boundaryCondition.values
-      values?.forEach((value) => {
-        if (value.geometry === id) value.geometryIndex = i
-      })
-    })
   }
 }
 

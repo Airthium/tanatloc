@@ -12,8 +12,13 @@ try {
     
 <%# Mesh -%>
 <%
-    const meshes = geometry.childrenmap(child => child.mesh)
-    meshes.forEach((mesh, index) => mesh.name = 'Mesh' + index)
+	const mesh1 = geometry.children[0].mesh
+	mesh1.name = variables[0].value
+	const mesh1UUID = geometry.children[0].value
+	const mesh2 = geometry.children[1].mesh
+	mesh2.name = variables[1].value
+	const mesh2UUID = geometry.children[1].value
+	const meshes = [mesh1, mesh2]
 -%>
 <% meshes.forEach(mesh => { -%>
 <%- helpers.indent(include('/blobs/mesh.edp.ejs', {
@@ -21,8 +26,6 @@ try {
         mesh
     }), 1) -%>
 <% }) -%>
-
-    // Mesh0 and Mesh1 are the meshes    
 
 <% if (dimension !==2){ -%>
     appendError("Error, 3D is not supported");
@@ -32,16 +35,16 @@ try {
 
 <%# Material -%>
 // Material properties Mu0 and Mu1
-<%
-    meshes.forEach((mesh, index) => {
--%>
 <%- helpers.indent(include('/blobs/materials.edp.ejs', {
     materials,
-    geometryIndex: index
+	uuid: mesh1UUID,
+    index: 0
 }), 1) -%>
-<%
-    })
--%>
+<%- helpers.indent(include('/blobs/materials.edp.ejs', {
+    materials,
+	uuid: mesh2UUID,
+    index: 1
+}), 1) -%>
 
 // Is P2 is used in 2D ?
 <%
@@ -131,8 +134,8 @@ try {
     if (alphaTot==0.){RotationStepsNumber=0.; alpha=0.;}
     for (int timeIter=0; timeIter<(RotationStepsNumber+1) ; timeIter++){
 		if (alphaTot!=0.){alpha = (1.*timeIter/RotationStepsNumber)*alphaTot;}
-        fespace Vh1(Mesh0, P1);
-        fespace Vh2(Mesh1, P1);
+        fespace Vh1(<%= mesh1.name -%>, P1);
+        fespace Vh2(<%= mesh2.name -%>, P1);
         Vh1 dist1;
         Vh2 dist2;
     <% if (dimension === 2){ -%>
@@ -141,12 +144,12 @@ try {
         real distance1 = dist1[].linfty; 
         real distance2 = dist2[].linfty;
         if( distance1 <= distance2 ){
-            // Mesh0 is close to the origin => Rotation of Mesh0 
-            Mesh0 = movemesh(Mesh0,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
+            // <%= mesh1.name -%> is close to the origin => Rotation of <%= mesh1.name -%> 
+            <%= mesh1.name -%> = movemesh(<%= mesh1.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
         } 
         else {
-            // Mesh1 is close to the origin => Rotation of Mesh1
-            Mesh1 = movemesh(Mesh1,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
+            // <%= mesh2.name -%> is close to the origin => Rotation of <%= mesh2.name -%>
+            <%= mesh2.name -%> = movemesh(<%= mesh2.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
         }
     <% } else { -%>
         dist1 = x*x + y*y + z*z;
@@ -154,12 +157,12 @@ try {
         real distance1 = dist1[].linfty; 
         real distance2 = dist2[].linfty;   
         if( distance1 <= distance2 ){
-            // Mesh0 is close to the origin => Rotation of Mesh0 
-            Mesh0 = movemesh(Mesh0,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
+            // <%= mesh1.name -%> is close to the origin => Rotation of <%= mesh1.name -%> 
+            <%= mesh1.name -%> = movemesh(<%= mesh1.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
         } 
         else {
-            // Mesh1 is close to the origin => Rotation of Mesh1
-            Mesh1 = movemesh(Mesh1,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
+            // <%= mesh2.name -%> is close to the origin => Rotation of <%= mesh2.name -%>
+            <%= mesh2.name -%> = movemesh(<%= mesh2.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
         }   
     <% } -%>
         
@@ -167,7 +170,7 @@ try {
     <%# Finite element space -%>
         // First finite element space
     <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
-        mesh: {name: 'Mesh0'},
+        mesh: mesh1,
         finiteElementSpace: {
             name: 'FE1',
             ...finiteElementSpace
@@ -176,7 +179,7 @@ try {
         
         // Second finite element space
     <%- helpers.indent(include('/blobs/fespace.edp.ejs', {
-        mesh: {name: 'Mesh1'},
+        mesh: mesh2,
         finiteElementSpace: {
             name: 'FE2',
             ...finiteElementSpace
@@ -249,11 +252,11 @@ try {
         int dim = <%- dimension -%>;
         // Degree of Freedom
     <% if (dimension === 2){ -%>
-        fespace Wh1(Mesh0,[P1,P1]);
-        fespace Wh2(Mesh1,[P1,P1]);
+        fespace Wh1(<%= mesh1.name -%>,[P1,P1]);
+        fespace Wh2(<%= mesh2.name -%>,[P1,P1]);
     <% } else { -%>
-        fespace Wh1(Mesh0,[P1,P1,P1]);
-        fespace Wh2(Mesh1,[P1,P1,P1]);
+        fespace Wh1(<%= mesh1.name -%>,[P1,P1,P1]);
+        fespace Wh2(<%= mesh2.name -%>,[P1,P1,P1]);
     <% } -%>
 
         int ndof1 = Wh1.ndof; // Number of the degree of freedom (x,y) for the first body
@@ -271,10 +274,10 @@ try {
         
         // Extract contact borders for the body 1
         varf vcontbord(<%- testfunc2 -%>, <%- testfunc1 -%>) =
-            intN(Mesh0)(0 * Vx)
+            intN(<%= mesh1.name -%>)(0 * Vx)
     <% for (const c of contactArea){ -%>
     <%
-            if (c.geometryIndex === 0){
+            if (c.geometry === mesh1UUID){
             %>
             + on(<%- c.labels -%>, Wx = 1, Wy = 1 <% if (dimension !== 2){ -%>, Wz = 1 <% } -%>)
     <% } -%>
@@ -302,10 +305,10 @@ try {
         
         // Extract contact borders for the body 2
         varf vcontbord2(<%- testfunc2 -%>, <%- testfunc1 -%>) =
-            intN(Mesh1)(0 * Vx)
+            intN(<%= mesh2.name -%>)(0 * Vx)
     <% for (const c of contactArea){ -%>
     <%
-            if (c.geometryIndex === 1){
+            if (c.geometry === mesh2UUID){
             %>
             + on(<%- c.labels -%>, Wx = 1, Wy = 1 <% if (dimension !== 2){ -%>, Wz = 1 <% } -%>)
     <% } -%>
@@ -386,50 +389,50 @@ try {
     <% if (dimension === 2){ -%>
         int nElements1 = nC1; // Segment number of the contact area 1 ( = nC1 if the contact border is closed if not it is  = nC1-1 and is corrected in the connectivity function)
         int nElements2 = nC2; // Segment number of the contact area 2 ( = nC2 if the contact border is closed if not it is  = nC2-1 and is corrected in the connectivity function)
-        int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Mesh0.nbe) connected to the dof
+        int[int, int] Conne1(ndof1, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,<%= mesh1.name -%>.nbe) connected to the dof
         int[int, int] Conne2(ndof2, 2); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
         int[int] Connevec1(ndof1); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
         int[int] Connevec2(ndof2); // Connectivity matrix vector Connevec: for each dof at the contact area gives the number of segment connected to the dof (1 or 2)
-        int[int] segdof1(dim * Mesh0.nbe); // For each segment of the border 1, gives the dofx of the two segment vertices
-        int[int] segdof2(dim * Mesh1.nbe); // For each segment of the contact area 2, gives the dofx of the two segment vertices    	
-        int[int, int] Conorm1(ndof1, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh0.nbe) connected to the dof
+        int[int] segdof1(dim * <%= mesh1.name -%>.nbe); // For each segment of the border 1, gives the dofx of the two segment vertices
+        int[int] segdof2(dim * <%= mesh2.name -%>.nbe); // For each segment of the contact area 2, gives the dofx of the two segment vertices    	
+        int[int, int] Conorm1(ndof1, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,<%= mesh1.name -%>.nbe) connected to the dof
         int[int, int] Conorm2(ndof2, 2); // Connectivity matrix Conorm: for each general dof => the segment (1,...,Mesh2.nbe) connected to the dof
         int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
         int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of segments connected to the dof (1 or 2)
-        int[int] vertdof1(Mesh0.nbe); // dof of the triangle vertice that does not belonging to the border 1
-        int[int] vertdof2(Mesh1.nbe); // dof of the triangle vertice that does not belonging to the border 2
-        int[int] IDni1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the segment in 0,...,nseg1
-        int[int] IDni2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
+        int[int] vertdof1(<%= mesh1.name -%>.nbe); // dof of the triangle vertice that does not belonging to the border 1
+        int[int] vertdof2(<%= mesh2.name -%>.nbe); // dof of the triangle vertice that does not belonging to the border 2
+        int[int] IDni1(<%= mesh1.name -%>.nbe); // For each boundary element "ni" in contact 1 gives the ID of the segment in 0,...,nseg1
+        int[int] IDni2(<%= mesh2.name -%>.nbe); // For each boundary element "ni" in contact 2 gives the ID of the segment in 0,...,nseg2
         int[int] segid1(nElements1); // For each contact element id in 0,...,nElements1 gives the ID of the segment in 0,...,Th.nbe
         int[int] segid2(nElements2); // For each contact element id in 0,...,nElements2 gives the ID of the segment in 0,...,Th.nbe
         <% if (pType==='P1') { -%>
-        int[int] segdofA1(dim*Mesh0.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
-        int[int] segdofA2(dim*Mesh1.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
+        int[int] segdofA1(dim*<%= mesh1.name -%>.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
+        int[int] segdofA2(dim*<%= mesh2.name -%>.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
         int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, segdofA1, segdofA2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
         <% } else { -%>
-        int[int] segdofA1(3*Mesh0.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
-        int[int] segdofA2(3*Mesh1.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
+        int[int] segdofA1(3*<%= mesh1.name -%>.nbe);  // For each segment of the border 1, gives the dofx of the two segment vertices for the potential A
+        int[int] segdofA2(3*<%= mesh2.name -%>.nbe); // For each segment of the border 2, gives the dofx of the two segment vertices for the potential A	
         int connecti = connectivity(nC1, nC2, Conne1, Conne2, Connevec1, Connevec2, segdof1, segdof2, vertdof1, vertdof2, onBorder1, onBorder2, IDni1, IDni2, segid1, segid2, Conorm1, Conorm2, Conormvec1, Conormvec2, nElements1, nElements2);
         int connectiP2 = connectivityP2(segdofA1, segdofA2, X1, X2, Y1, Y2);
         <% } -%>
 
     <% } else { -%>
-        int[int, int] Conne1(ndof1, Mesh0.nt); // Connectivity matrix: for each dof the triangle connected to the dof
-        int[int, int] Conne2(ndof2, Mesh1.nt); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
+        int[int, int] Conne1(ndof1, <%= mesh1.name -%>.nt); // Connectivity matrix: for each dof the triangle connected to the dof
+        int[int, int] Conne2(ndof2, <%= mesh2.name -%>.nt); // Connectivity matrix Conne: for each dof at the contact area gives the segment (1,...,Th.nbe) connected to the dof
         int[int] Connevec1(ndof1); // Connectivity matrix vector: for each dof gives the number of triangles connected to the dof
         int[int] Connevec2(ndof2); // Connectivity matrix vector: for each dof gives the number of triangles connected to the dof
-        int[int] tri1(Mesh0.nbe); // For each boundary element "ni" in contact 1 gives the ID of the triangle in 0,...,ntri1
-        int[int] tri2(Mesh1.nbe); // For each boundary element "ni" in contact 2 gives the ID of the triangle in 0,...,ntri2
-        int[int] tridof1(3 * Mesh0.nbe); // TRiangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
-        int[int, int] Conorm1(ndof1, Mesh0.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,Mesh0.nbe) connected to the dof
-        int[int, int] Conorm2(ndof2, Mesh1.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,Mesh1.nbe) connected to the dof
+        int[int] tri1(<%= mesh1.name -%>.nbe); // For each boundary element "ni" in contact 1 gives the ID of the triangle in 0,...,ntri1
+        int[int] tri2(<%= mesh2.name -%>.nbe); // For each boundary element "ni" in contact 2 gives the ID of the triangle in 0,...,ntri2
+        int[int] tridof1(3 * <%= mesh1.name -%>.nbe); // TRiangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
+        int[int, int] Conorm1(ndof1, <%= mesh1.name -%>.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,<%= mesh1.name -%>.nbe) connected to the dof
+        int[int, int] Conorm2(ndof2, <%= mesh2.name -%>.nt); // Connectivity matrix Conorm: for each general dof => the triangle (1,...,<%= mesh2.name -%>.nbe) connected to the dof
         int[int] Conormvec1(ndof1); // Connectivity matrix vector Conormvec: for each general dof gives the number of triangles connected to the dof (1 or 2)
         int[int] Conormvec2(ndof2); // Connectivity matrix vector Conormvec: for each general dof gives the number of triangles connected to the dof (1 or 2)
-        int[int] tridof2(3 * Mesh1.nbe); // Triangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
-        int[int] vertdof1(Mesh0.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 1
-        int[int] vertdof2(Mesh1.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 2
-        int[int] triid1(Mesh0.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh0.nbe
-        int[int] triid2(Mesh1.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,Mesh1.nbe
+        int[int] tridof2(3 * <%= mesh2.name -%>.nbe); // Triangle dof \in contact area (3 dof because 3 vertices and corresponds to x dof)
+        int[int] vertdof1(<%= mesh1.name -%>.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 1
+        int[int] vertdof2(<%= mesh2.name -%>.nbe); // dof of the thetraedron vertice that does not belonging to the contact area 2
+        int[int] triid1(<%= mesh1.name -%>.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,<%= mesh1.name -%>.nbe
+        int[int] triid2(<%= mesh2.name -%>.nbe); // For each contact element id in 0,...,ntri1 gives the ID of the triangle in 0,...,<%= mesh2.name -%>.nbe
         int nElements1, nElements2;
         // 3D is not yet considered
         //int connecti = connectivity(Conne1, Conne2, Connevec1, Connevec2, tri1, tri2, tridof1, tridof2, vertdof1, vertdof2, onBorder1, onBorder2, triid1, triid2, nElements1, nElements2, Conorm1, Conorm2, Conormvec1, Conormvec2);
@@ -450,8 +453,8 @@ try {
         int[int] pos(nip);
         int[int] pos2(nip2);
     <% } else { -%>
-        int[int] tid1(nip); // For each ip point gives the closest triangle id (1,...,Mesh1.nbe) of the opposed contact area
-        int[int] tid2(nip2); // For each ip point gives the closest triangle id (1,...,Mesh0.nbe) of the opposed contact area
+        int[int] tid1(nip); // For each ip point gives the closest triangle id (1,...,<%= mesh2.name -%>.nbe) of the opposed contact area
+        int[int] tid2(nip2); // For each ip point gives the closest triangle id (1,...,<%= mesh1.name -%>.nbe) of the opposed contact area
     <% } -%>
         
         real norm0;
@@ -836,18 +839,18 @@ try {
     // First Body 
         real Nu1 = 1. / Mu0;
         varf vLaplacian1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
-            = intN(Mesh0) (
+            = intN(<%= mesh1.name -%>) (
                 Nu1 * Curl(<%- unknownFunction1 -%>)' * Curl(<%- testFunction1 -%>)
     <% if (dimension !== 2) { -%>
                 + penalty * Div(<%- unknownFunction1 -%>) * Div(<%- testFunction1 -%>)
     <% } -%>
             )
     <% for (const d of dirichletProd){ -%>
-        <% if (d.geometryIndex === 0){ %>
+        <% if (d.geometry === mesh1UUID){ %>
             <% if (dimension === 2) { -%>
                 +on(<%- d.labels -%>, <%- unknownFunction1Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
             <% } else { -%>
-                + intN1(Mesh0, <%- d.labels -%>) (
+                + intN1(<%= mesh1.name -%>, <%- d.labels -%>) (
                     penalty * DotNormal(<%- unknownFunction1 -%>)' * DotNormal(<%- testFunction1 -%>)
                 )
             <% } -%>
@@ -856,7 +859,7 @@ try {
             ;
         
         varf vLaplacianRHS1 (<%- unknownFunction1 -%>, <%- testFunction1 -%>)
-            = intN(Mesh0) (
+            = intN(<%= mesh1.name -%>) (
     <% if (dimension === 2) { -%>
                 (<%- current1ValueZ -%> + <%- current2ValueZ -%>) * <%- testFunction1Z %>
     <% } else { -%>
@@ -865,11 +868,11 @@ try {
             )
     <% for (const d of dirichletProd){ -%>
 
-        <% if (d.geometryIndex === 0){ %>
+        <% if (d.geometry === mesh1UUID){ %>
             <% if (dimension === 2) { -%> 
             + on(<%- d.labels -%>,<%- unknownFunction1Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
             <% } else { -%>
-            + intN1(Mesh0, <%- d.labels -%>) (
+            + intN1(<%= mesh1.name -%>, <%- d.labels -%>) (
                 penalty *
                     [
                         0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
@@ -884,18 +887,18 @@ try {
     // Second Body 
         real Nu2 = 1. / Mu1;
         varf vLaplacian2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
-            = intN(Mesh1) (
+            = intN(<%= mesh2.name -%>) (
                 Nu2 * Curl(<%- unknownFunction2 -%>)' * Curl(<%- testFunction2 -%>)
     <% if (dimension !== 2) { -%>
                 + penalty * Div(<%- unknownFunction2 -%>) * Div(<%- testFunction2 -%>)
     <% } -%>
             )
     <% for (const d of dirichletProd){ -%>
-        <% if (d.geometryIndex === 1){ %>
+        <% if (d.geometry === mesh2UUID){ %>
             <% if (dimension === 2) { -%>
                 +on(<%- d.labels -%>, <%- unknownFunction2Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
             <% } else { -%>
-                + intN1(Mesh1, <%- d.labels -%>) (
+                + intN1(<%= mesh2.name -%>, <%- d.labels -%>) (
                     penalty * DotNormal(<%- unknownFunction2 -%>)' * DotNormal(<%- testFunction2 -%>)
                 )
             <% } -%>
@@ -904,7 +907,7 @@ try {
             ;
         
         varf vLaplacianRHS2 (<%- unknownFunction2 -%>, <%- testFunction2 -%>)
-            = intN(Mesh1) (
+            = intN(<%= mesh2.name -%>) (
     <% if (dimension === 2) { -%>
                 (<%- current1ValueZ -%> + <%- current2ValueZ -%>) * <%- testFunction2Z %>
     <% } else { -%>
@@ -913,11 +916,11 @@ try {
             )
     <% for (const d of dirichletProd){ -%>
 
-        <% if (d.geometryIndex === 1){ %>
+        <% if (d.geometry === mesh2UUID){ %>
             <% if (dimension === 2) { -%> 
             + on(<%- d.labels -%>,<%- unknownFunction2Z -%> = <%- d.values[0].value ?? d.values[0].default -%> )
             <% } else { -%>
-            + intN1(Mesh1, <%- d.labels -%>) (
+            + intN1(<%= mesh2.name -%>, <%- d.labels -%>) (
                 penalty *
                     [
                         0<% if (d.values[0].checked){ -%> + <%- d.values[0].value ?? d.values[0].default -%><% } -%>,
@@ -1261,7 +1264,7 @@ try {
         dimension,
         path: run.resultPath,
         name: '"body1Result_"+timeIter',
-        mesh: "Mesh0",
+        mesh: mesh1.name,
         geometry: {
             value: geometry?.values[0]
         },
@@ -1271,7 +1274,7 @@ try {
         dimension,
         path: run.resultPath,
         name: '"body2Result_"+timeIter',
-        mesh: "Mesh1",
+        mesh: mesh2.name,
         geometry: {
             value: geometry?.values[1]
         },

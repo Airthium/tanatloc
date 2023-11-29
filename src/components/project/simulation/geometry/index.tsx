@@ -167,7 +167,7 @@ const OneGeometry = ({
   return (
     <Card size="small" title={child.label}>
       <Form layout="vertical">
-        <Form.Item label="Simulation domain">
+        <Form.Item>
           <Select
             placeholder="Select a simulation domain"
             options={geometries.map((geometry) => ({

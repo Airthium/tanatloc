@@ -16,8 +16,12 @@ const Magnetostatic2Bodies: IModel = {
   description,
   variables: [
     {
-      label: 'Mesh',
-      value: 'Mesh'
+      label: 'Mesh 1',
+      value: 'Mesh1'
+    },
+    {
+      label: 'Mesh2',
+      value: 'Mesh2'
     },
     {
       only3D: true,

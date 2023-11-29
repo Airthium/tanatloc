@@ -2,25 +2,15 @@
 appendLog("Define materials...");
 
 <%
-	locals.materials.values = locals.materials.values.filter(value => {
-		if (value.material.key === 'fundation') {
-			locals.meshes[value.geometryIndex].tag = 'fundation'
-			return false
-		}
-		return true
-	})
--%>
-
-<%
 	locals.materials.children.forEach(material => {
 		let firstValue = 0
 -%>
-// <%- material.label -%><%- locals.geometryIndex === undefined ? '' : (' - Geometry' + locals.geometryIndex) %>
-func <%- material.name -%><%- locals.geometryIndex ?? '' -%> =
+// <%- material.label -%><%- locals.index === undefined ? '' : (' - Geometry' + locals.index) %>
+func <%- material.name -%><%- locals.index ?? '' -%> =
 <%
 	let index = 0
 	locals.materials.values.forEach((value) => {
-		if (locals.geometryIndex !== undefined && (value.geometryIndex !== locals.geometryIndex)) return
+		if (locals.index !== undefined && (value.geometry !== locals.uuid)) return
 		let child = value.material.children.find(child => child.symbol === material.name) || material
 		if (index === 0) {
 			firstValue = child.value ?? material.default

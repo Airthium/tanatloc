@@ -160,7 +160,6 @@ export interface IModelMaterialsValue {
     }[]
   }
   geometry: string
-  geometryIndex?: number
   selected: { uuid: string; label: number }[]
 }
 
@@ -280,7 +279,6 @@ export interface IModelBoundaryConditionValue {
     children?: IModelBoundaryCondition[]
   }
   geometry: string
-  geometryIndex?: number
   selected: { uuid: string; label: number }[]
   labels?: string
   values?: {

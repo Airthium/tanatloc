@@ -64,16 +64,35 @@ const BoundaryConditions = ({
     [simulation]
   )
 
+  // Remove duplicated geometries
+  const filteredGeometries = useMemo(() => {
+    const filtered = geometries.reduce(
+      (
+        accumulator: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[],
+        current: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+      ) => {
+        if (!accumulator.find((geometry) => geometry.id === current.id))
+          accumulator.push(current)
+
+        return accumulator
+      },
+      []
+    )
+    return filtered
+  }, [geometries])
+
   // Part
   useCustomEffect(
     () => {
-      if (geometries[0]?.summary) {
+      if (filteredGeometries[0]?.summary) {
         dispatch(
-          setType(geometries[0].summary.dimension === 2 ? 'edges' : 'faces')
+          setType(
+            filteredGeometries[0].summary.dimension === 2 ? 'edges' : 'faces'
+          )
         )
       }
     },
-    [geometries],
+    [filteredGeometries],
     [dispatch]
   )
 
@@ -120,7 +139,7 @@ const BoundaryConditions = ({
   /**
    * Render
    */
-  if (!geometries.length) return <Loading.Simple />
+  if (!filteredGeometries.length) return <Loading.Simple />
   return (
     <Layout>
       <Layout.Content>
@@ -129,7 +148,7 @@ const BoundaryConditions = ({
             Add boundary condition
           </AddButton>
           <List
-            geometries={geometries.map((geometry) => ({
+            geometries={filteredGeometries.map((geometry) => ({
               id: geometry.id,
               summary: geometry.summary
             }))}
@@ -142,7 +161,7 @@ const BoundaryConditions = ({
           />
           <BoundaryCondition
             visible={boundaryConditionVisible}
-            geometries={geometries.map((geometry) => ({
+            geometries={filteredGeometries.map((geometry) => ({
               id: geometry.id,
               name: geometry.name,
               summary: geometry.summary

@@ -150,7 +150,7 @@ export const _build2DCheckbox = (
   <Form layout="horizontal" key={key}>
     <Form.Item label={child.label2D ?? child.label}>
       <Checkbox
-        defaultChecked={child.value as boolean}
+        defaultChecked={(child.value as boolean) ?? child.default}
         onChange={onValueChange}
       />
     </Form.Item>
@@ -222,7 +222,7 @@ export const _buildCheckbox = (
   <Form layout="horizontal" key={key}>
     <Form.Item label={child.label}>
       <Checkbox
-        defaultChecked={child.value as boolean}
+        defaultChecked={(child.value as boolean) ?? child.default}
         onChange={onValueChange}
       />
     </Form.Item>

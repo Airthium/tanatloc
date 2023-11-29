@@ -33,8 +33,6 @@ import Tools from '@/lib/tools'
 import Template from '@/lib/template'
 import Simulation from '@/lib/simulation'
 
-// TODO tasks not saved in dB ???
-
 // Plugin key
 const key = 'local'
 

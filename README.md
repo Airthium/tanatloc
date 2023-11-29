@@ -29,7 +29,3 @@ The Tanatloc-deploy script uses the [Tanatloc Docker](https://github.com/Airthiu
 ## Development
 
 See [CONTRIBUTING.md](https://github.com/Airthium/tanatloc/blob/master/.github/CONTRIBUTING.md).
-
-// TODO tasks not saved
-// TODO issues in Tanatloc-Algo
-// TODO selector multiple geometries strange

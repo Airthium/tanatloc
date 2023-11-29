@@ -156,8 +156,14 @@ const Material = ({
   // Init
   useCustomEffect(
     () => {
-      dispatch(setPart(geometries[0]?.summary.uuid))
-      setActiveKey(material?.geometry)
+      const geometry = geometries.find((g) => g.id === material?.geometry)
+      if (geometry) {
+        dispatch(setPart(geometry.summary.uuid))
+        setActiveKey(geometry.id)
+      } else {
+        dispatch(setPart(geometries[0]?.summary.uuid))
+        setActiveKey(geometries[0]?.id)
+      }
     },
     [geometries, material],
     [dispatch]

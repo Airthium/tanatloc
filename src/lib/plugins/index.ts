@@ -6,6 +6,7 @@ import { ClientPlugin, Plugin, ServerPlugin } from '@/plugins/index.d'
 
 import Simulation from '../simulation'
 import Tools from '../tools'
+import { ISimulation, ISimulationTask } from '@/database/simulation'
 
 /**
  * Load plugins
@@ -44,6 +45,42 @@ export const loadPlugins = async (): Promise<Plugin[]> => {
 }
 
 /**
+ * Restart job
+ * @param simulation Simulation
+ * @param task Task
+ */
+const restartJob = async (
+  simulation: ISimulation<('scheme' | 'tasks')[]>,
+  task: ISimulationTask
+): Promise<void> => {
+  try {
+    const pluginKey = task.plugin
+    const plugin = tanatloc.plugins.find((p) => p.key === pluginKey)
+    if (plugin?.server.lib.monitoring) {
+      const cloudConfiguration =
+        simulation.scheme?.configuration?.run?.cloudServer?.configuration
+      await plugin.server.lib.monitoring(
+        simulation.id,
+        task.pid,
+        { tasks: simulation.tasks, currentTask: task },
+        cloudConfiguration
+      )
+    }
+  } catch (err) {
+    console.warn(
+      ' ⚠ Simulation ' +
+        simulation.id +
+        ' - task ' +
+        task.label +
+        ' restart failed!'
+    )
+
+    // Set task in error
+    task.status = 'error'
+  }
+}
+
+/**
  * Restart jobs
  */
 export const restartJobs = async (): Promise<void> => {
@@ -52,41 +89,20 @@ export const restartJobs = async (): Promise<void> => {
 
   // Check waiting or processing tasks
   for (const simulation of simulations) {
-    const tasks = simulation.tasks
-      ?.filter((t) => t.status === 'wait' || t.status === 'process')
-      .filter((t) => t)
+    const tasks = simulation.tasks ?? []
 
-    if (tasks) {
-      for (const task of tasks) {
-        console.info(
-          ' - Restart simulation ' + simulation.id + ' - task ' + task.label
-        )
-        try {
-          const pluginKey = task.plugin
-          const plugin = tanatloc.plugins.find((p) => p.key === pluginKey)
-          if (plugin?.server.lib.monitoring) {
-            const cloudConfiguration =
-              simulation.scheme?.configuration?.run?.cloudServer?.configuration
-            await plugin.server.lib.monitoring(
-              simulation.id,
-              task.pid,
-              { tasks: simulation.tasks, currentTask: task },
-              cloudConfiguration
-            )
-          }
-        } catch (err) {
-          console.warn(
-            ' ⚠ Simulation ' +
-              simulation.id +
-              ' - task ' +
-              task.label +
-              ' restart failed!'
-          )
+    let needUpdate = false
+    for (const task of tasks) {
+      if (!task || (task.status !== 'wait' && task.status !== 'process'))
+        continue
+      needUpdate = true
+      console.info(
+        ' - Restart simulation ' + simulation.id + ' - task ' + task.label
+      )
+      restartJob(simulation, task)
+    }
 
-          // Set task in error
-          task.status = 'error'
-        }
-      }
+    if (needUpdate)
       // Update simulation
       await Simulation.update({ id: simulation.id }, [
         {
@@ -94,7 +110,6 @@ export const restartJobs = async (): Promise<void> => {
           value: tasks
         }
       ])
-    }
   }
 }
 

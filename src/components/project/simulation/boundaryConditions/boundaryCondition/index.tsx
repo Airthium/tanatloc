@@ -169,10 +169,18 @@ const BoundaryCondition = ({
   // Init
   useCustomEffect(
     () => {
-      dispatch(setPart(geometries[0]?.summary.uuid))
-      setActiveKey(boundaryCondition?.geometry)
+      const geometry = geometries.find(
+        (g) => g.id === boundaryCondition?.geometry
+      )
+      if (geometry) {
+        dispatch(setPart(geometry.summary.uuid))
+        setActiveKey(geometry.id)
+      } else {
+        dispatch(setPart(geometries[0]?.summary.uuid))
+        setActiveKey(geometries[0]?.id)
+      }
     },
-    [geometries, boundaryCondition],
+    [visible, geometries, boundaryCondition],
     [dispatch]
   )
 

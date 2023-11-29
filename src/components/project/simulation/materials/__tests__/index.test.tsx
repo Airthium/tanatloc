@@ -33,7 +33,15 @@ jest.mock('@/context/select/actions', () => ({
 }))
 
 describe('components/project/simulation/materials', () => {
+  const AddButtonRole = 'AddButton'
+  const ListRole = 'List'
+  const MaterialRole = 'Material'
   const geometries = [
+    {
+      id: 'id',
+      name: 'name',
+      summary: {}
+    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
     {
       id: 'id',
       name: 'name',
@@ -145,7 +153,7 @@ describe('components/project/simulation/materials', () => {
 
   test('onAdd', () => {
     mockAddButton.mockImplementation((props) => (
-      <div role="AddButton" onClick={props.onAdd} />
+      <div role={AddButtonRole} onClick={props.onAdd} onKeyUp={console.info} />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -160,7 +168,7 @@ describe('components/project/simulation/materials', () => {
       </SelectContext.Provider>
     )
 
-    const add = screen.getByRole('AddButton')
+    const add = screen.getByRole(AddButtonRole)
     fireEvent.click(add)
     expect(mockEnable).toHaveBeenCalledTimes(1)
 
@@ -169,7 +177,11 @@ describe('components/project/simulation/materials', () => {
 
   test('onEdit', () => {
     mockList.mockImplementation((props) => (
-      <div role="List" onClick={() => props.onEdit(0)} />
+      <div
+        role={ListRole}
+        onClick={() => props.onEdit(0)}
+        onKeyUp={console.info}
+      />
     ))
     mockMaterial.mockImplementation((props) => (
       <div>{JSON.stringify(props.material)}</div>
@@ -187,7 +199,7 @@ describe('components/project/simulation/materials', () => {
       </SelectContext.Provider>
     )
 
-    const list = screen.getByRole('List')
+    const list = screen.getByRole(ListRole)
     fireEvent.click(list)
     expect(mockEnable).toHaveBeenCalledTimes(1)
 
@@ -198,7 +210,7 @@ describe('components/project/simulation/materials', () => {
 
   test('onClose', () => {
     mockMaterial.mockImplementation((props) => (
-      <div role="Material" onClick={props.onClose} />
+      <div role={MaterialRole} onClick={props.onClose} onKeyUp={console.info} />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -213,7 +225,7 @@ describe('components/project/simulation/materials', () => {
       </SelectContext.Provider>
     )
 
-    const material = screen.getByRole('Material')
+    const material = screen.getByRole(MaterialRole)
     fireEvent.click(material)
     expect(mockDisable).toHaveBeenCalledTimes(1)
 

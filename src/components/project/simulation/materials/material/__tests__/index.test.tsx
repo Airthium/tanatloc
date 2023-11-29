@@ -315,6 +315,7 @@ describe('components/project/simulation/materials/material', () => {
           {
             uuid: 'uuid',
             material: {},
+            geometry: 'id',
             selected: [{ uuid: 'uuid', label: 1 }]
           } as IModelMaterialsValue
         }

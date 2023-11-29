@@ -27,9 +27,11 @@ import BoundaryCondition from './boundaryCondition'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
+  simulation: Simulation
+  geometries: Geometry[]
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
@@ -67,10 +69,7 @@ const BoundaryConditions = ({
   // Remove duplicated geometries
   const filteredGeometries = useMemo(() => {
     const filtered = geometries.reduce(
-      (
-        accumulator: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[],
-        current: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
-      ) => {
+      (accumulator: Geometry[], current: Geometry) => {
         if (!accumulator.find((geometry) => geometry.id === current.id))
           accumulator.push(current)
 

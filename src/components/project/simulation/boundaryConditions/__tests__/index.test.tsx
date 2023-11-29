@@ -33,7 +33,15 @@ jest.mock('@/context/select/actions', () => ({
 }))
 
 describe('components/project/simulation/boundaryConditions', () => {
+  const AddButtonRole = 'AddButton'
+  const ListRole = 'List'
+  const BoundaryConditionRole = 'BoundaryCondition'
   const geometries = [
+    {
+      id: 'id',
+      name: 'name',
+      summary: {}
+    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
     {
       id: 'id',
       name: 'name',
@@ -157,7 +165,7 @@ describe('components/project/simulation/boundaryConditions', () => {
 
   test('onAdd', () => {
     mockAddButton.mockImplementation((props) => (
-      <div role="AddButton" onClick={props.onAdd} />
+      <div role={AddButtonRole} onClick={props.onAdd} onKeyUp={console.info} />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -172,7 +180,7 @@ describe('components/project/simulation/boundaryConditions', () => {
       </SelectContext.Provider>
     )
 
-    const add = screen.getByRole('AddButton')
+    const add = screen.getByRole(AddButtonRole)
     fireEvent.click(add)
 
     expect(mockEnable).toHaveBeenCalledTimes(1)
@@ -182,7 +190,11 @@ describe('components/project/simulation/boundaryConditions', () => {
 
   test('onEdit', () => {
     mockList.mockImplementation((props) => (
-      <div role="List" onClick={() => props.onEdit('dirichlet', 0)} />
+      <div
+        role={ListRole}
+        onClick={() => props.onEdit('dirichlet', 0)}
+        onKeyUp={console.info}
+      />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -197,7 +209,7 @@ describe('components/project/simulation/boundaryConditions', () => {
       </SelectContext.Provider>
     )
 
-    const list = screen.getByRole('List')
+    const list = screen.getByRole(ListRole)
     fireEvent.click(list)
 
     expect(mockEnable).toHaveBeenCalledTimes(1)
@@ -207,7 +219,11 @@ describe('components/project/simulation/boundaryConditions', () => {
 
   test('onClose', () => {
     mockBoundaryCondition.mockImplementation((props) => (
-      <div role="BoundaryCondition" onClick={props.onClose} />
+      <div
+        role={BoundaryConditionRole}
+        onClick={props.onClose}
+        onKeyUp={console.info}
+      />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -222,7 +238,7 @@ describe('components/project/simulation/boundaryConditions', () => {
       </SelectContext.Provider>
     )
 
-    const boundaryCondition = screen.getByRole('BoundaryCondition')
+    const boundaryCondition = screen.getByRole(BoundaryConditionRole)
     fireEvent.click(boundaryCondition)
 
     expect(mockDisable).toHaveBeenCalledTimes(1)

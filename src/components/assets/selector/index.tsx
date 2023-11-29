@@ -98,7 +98,7 @@ const ColorFilter = ({ color, setFilter }: IColorFilterProps): ReactNode => {
    * Render
    */
   return (
-    <Tooltip title="Color" key={JSON.stringify(color)}>
+    <Tooltip title="Color">
       <Button
         style={{ backgroundColor: Utils.rgbToHex(color) }}
         onClick={onColorFilter}
@@ -280,7 +280,10 @@ const GeometryElementCard = ({
           {alreadySelected?.map((a) => {
             if (a.selected.find((s) => s.uuid === element.uuid))
               return (
-                <Tag key={element.uuid} color={Utils.stringToColor(a.label)}>
+                <Tag
+                  key={element.uuid + a.label}
+                  color={Utils.stringToColor(a.label)}
+                >
                   {a.label}
                 </Tag>
               )

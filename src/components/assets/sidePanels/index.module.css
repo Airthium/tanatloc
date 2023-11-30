@@ -7,7 +7,8 @@
   position: relative;
   flex: unset !important;
   cursor: col-resize;
-  background-color: #555;
+  background: #555;
+  border: none;
 }
 
 .divider :global(.circle),

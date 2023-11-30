@@ -1,9 +1,9 @@
 /** @module Components.Assets.SidePanels */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 import style from './index.module.css'
-import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 /**
  * Props
@@ -87,7 +87,7 @@ export const Divider = ({
    * Render
    */
   return (
-    <div
+    <button
       role={DividerRole}
       className={style.divider}
       onMouseDown={onMouseDown}
@@ -102,7 +102,7 @@ export const Divider = ({
         className="arrowRight"
         style={{ fontSize: 20, fontWeight: 'bold' }}
       />
-    </div>
+    </button>
   )
 }
 

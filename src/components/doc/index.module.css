@@ -33,6 +33,11 @@
 }
 
 .logo {
+  background-image: url('/images/logo.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 170px;
+  border: none;
   padding: 20px 8px;
   display: flex;
   justify-content: center;

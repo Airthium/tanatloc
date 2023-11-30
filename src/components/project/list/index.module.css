@@ -78,6 +78,8 @@
   align-items: center;
   padding: 5px;
   cursor: pointer;
+  border: none;
+  background: none;
 }
 
 .carouselSnapshot img {
@@ -94,6 +96,8 @@
   height: 190px;
   padding: 5px 10px;
   cursor: pointer;
+  border: none;
+  background: none;
 }
 
 .carouselDescription :global(.ant-typography) {

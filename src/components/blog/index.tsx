@@ -233,12 +233,7 @@ const Blog = () => {
   return (
     <Layout className={globalStyle.noScroll}>
       <Layout.Header className={style.header}>
-        <img
-          className={style.logo}
-          src="/images/logo.svg"
-          alt="Tanatloc"
-          onClick={onTanatloc}
-        />
+        <Button className={style.logo} onClick={onTanatloc} />
         <Typography.Title level={1}>Blog</Typography.Title>
       </Layout.Header>
       {postRender ? (

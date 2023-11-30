@@ -1265,9 +1265,7 @@ try {
         path: run.resultPath,
         name: '"body1Result_"+timeIter',
         mesh: mesh1.name,
-        geometry: {
-            value: geometry?.values[0]
-        },
+        geometry: geometry.children[0],
         results: run.results[0]
     }) -%>
     <%- include('/blobs/save.edp.ejs', {
@@ -1275,9 +1273,7 @@ try {
         path: run.resultPath,
         name: '"body2Result_"+timeIter',
         mesh: mesh2.name,
-        geometry: {
-            value: geometry?.values[1]
-        },
+        geometry: geometry.children[1],
         results: run.results[1]
     }) -%>
     <%# Sensors -%>

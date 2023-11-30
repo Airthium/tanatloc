@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Layout, Menu, Typography } from 'antd'
+import { Button, Layout, Menu, Typography } from 'antd'
 
 import Utils from '@/lib/utils'
 
@@ -273,12 +273,7 @@ const Doc = () => {
   return (
     <Layout className={globalStyle.noScroll}>
       <Layout.Header className={style.header}>
-        <img
-          className={style.logo}
-          src="/images/logo.svg"
-          alt="Tanatloc"
-          onClick={onTanatloc}
-        />
+        <Button className={style.logo} onClick={onTanatloc} />
         <Typography.Title level={1}>Doc</Typography.Title>
 
         <Link

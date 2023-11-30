@@ -203,23 +203,22 @@ const ProjectCard = ({
       className={`${style.card} ${project.archived ? style.cardArchived : ''}`}
       cover={
         <Carousel className={style.carousel} dots={{ className: 'dots' }}>
-          <div
+          <Button
             className={`${style.carouselSnapshot} ${
               project.archived ? style.carouselSnapshotArchived : ''
             }`}
             onClick={openProject}
           >
             {snapshot}
-          </div>
-          <div
-            role="button"
+          </Button>
+          <Button
             className={`${style.carouselDescription} ${
               project.archived ? style.carouselDescriptionArchived : ''
             }`}
             onClick={openProject}
           >
             {description}
-          </div>
+          </Button>
         </Carousel>
       }
       actions={[

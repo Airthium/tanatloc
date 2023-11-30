@@ -144,11 +144,11 @@ try {
         real distance1 = dist1[].linfty; 
         real distance2 = dist2[].linfty;
         if( distance1 <= distance2 ){
-            // <%- mesh1.name -%> is close to the origin => Rotation of <%- mesh1.name -%> 
+            // <%- mesh1.name -%> is close to the origin => Rotation of <%- mesh1.name %> 
             <%- mesh1.name -%> = movemesh(<%- mesh1.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
         } 
         else {
-            // <%- mesh2.name -%> is close to the origin => Rotation of <%- mesh2.name -%>
+            // <%- mesh2.name -%> is close to the origin => Rotation of <%- mesh2.name %>
             <%- mesh2.name -%> = movemesh(<%- mesh2.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.)]);
         }
     <% } else { -%>
@@ -157,11 +157,11 @@ try {
         real distance1 = dist1[].linfty; 
         real distance2 = dist2[].linfty;   
         if( distance1 <= distance2 ){
-            // <%- mesh1.name -%> is close to the origin => Rotation of <%- mesh1.name -%> 
+            // <%- mesh1.name -%> is close to the origin => Rotation of <%- mesh1.name %> 
             <%- mesh1.name -%> = movemesh(<%- mesh1.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
         } 
         else {
-            // <%- mesh2.name -%> is close to the origin => Rotation of <%- mesh2.name -%>
+            // <%- mesh2.name -%> is close to the origin => Rotation of <%- mesh2.name %>
             <%- mesh2.name -%> = movemesh(<%- mesh2.name -%>,[x*cos(alpha*pi/180.) + y*sin(alpha*pi/180.), -x*sin(alpha*pi/180.) + y*cos(alpha*pi/180.),z]);
         }   
     <% } -%>

@@ -3,72 +3,72 @@
 echo "Start release"
 
 if [ $# -eq 0 ]; then
-    echo "Error: Provide a commit description"
-    exit 1
+	echo "Error: Provide a commit description"
+	exit 1
 fi
 
 branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 
 ## Check
 check() {
-    devLogs=$(git log dev -100 --oneline --pretty=format:"%H")
+	devLogs=$(git log dev -100 --oneline --pretty=format:"%H")
 
-    hotfixCommit=$(git log hotfix -1 --oneline --pretty=format:"%H")
-    frontCommit=$(git log front -1 --oneline --pretty=format:"%H")
+	hotfixCommit=$(git log hotfix -1 --oneline --pretty=format:"%H")
+	frontCommit=$(git log front -1 --oneline --pretty=format:"%H")
 
-    hotfixOk=0
-    frontOk=0
-    for devCommit in $devLogs; do
-        if [ "$devCommit" = "$hotfixCommit" ]; then
-            hotfixOk=1
-        fi
+	hotfixOk=0
+	frontOk=0
+	for devCommit in $devLogs; do
+		if [ "$devCommit" = "$hotfixCommit" ]; then
+			hotfixOk=1
+		fi
 
-        if [ "$devCommit" = "$frontCommit" ]; then
-            frontOk=1
-        fi
-    done
+		if [ "$devCommit" = "$frontCommit" ]; then
+			frontOk=1
+		fi
+	done
 
-    if [ $hotfixOk = 1 ] && [ $frontOk = 1 ]; then
-        echo "Check passed, ready to merge"
-    else
-        echo "Error: branch mismatch"
-        if [ $hotfixOk = 0 ]; then
-            echo " - hotfix"
-        fi
-        if [ $frontOk = 0 ]; then
-            echo " - front"
-        fi
-        exit 2
-    fi
+	if [ $hotfixOk = 1 ] && [ $frontOk = 1 ]; then
+		echo "Check passed, ready to merge"
+	else
+		echo "Error: branch mismatch"
+		if [ $hotfixOk = 0 ]; then
+			echo " - hotfix"
+		fi
+		if [ $frontOk = 0 ]; then
+			echo " - front"
+		fi
+		exit 2
+	fi
 }
 
 ## Merge
 merge() {
-    git add .
-    git commit -m"[RELEASE] $1" --allow-empty
-    git push
+	git add .
+	git commit -m"[RELEASE] $1" --allow-empty
+	git push
 
-    git checkout hotfix
-    git merge dev
-    git push
+	git checkout hotfix
+	git merge dev
+	git push
 
-    git checkout front
-    git merge dev
-    git push
+	git checkout front
+	git merge dev
+	git push
 
-    git checkout master
-    git merge dev
-    git push
+	git checkout master
+	git merge dev
+	git push
 }
 
 if [ $branch = "dev" ]; then
-    # Check
-    check
+	# Check
+	check
 
-    # Merge
-    merge $1
+	# Merge
+	merge $1
 
-    git checkout dev
+	git checkout dev
 else
-    echo "You must be on dev branch to run a release"
+	echo "You must be on dev branch to run a release"
 fi

@@ -38,7 +38,7 @@ const route = async (req: Request, res: Response) => {
       // Ids
       const { ids } = req.body
 
-      if (!ids || !Array.isArray(ids)) {
+      if (!Array.isArray(ids)) {
         res.status(200).json({ projects: [] })
         return
       }

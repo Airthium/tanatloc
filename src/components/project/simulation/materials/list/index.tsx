@@ -65,23 +65,27 @@ const ListItem = ({
    * Highlight
    */
   const highlight = useCallback((): void => {
-    dispatch(enable())
-
     // Geometry
     const geometryId = material.geometry
     const geometry = geometries.find((geometry) => geometry.id === geometryId)
-    dispatch(setPart(geometry?.summary.uuid))
 
     // Selected
     const currentSelected = material.selected
-    dispatch(select(currentSelected))
+
+    // Distpatch
+    setTimeout(() => {
+      dispatch(enable())
+      dispatch(setPart(geometry?.summary.uuid))
+      dispatch(select(currentSelected))
+    }, 50)
   }, [geometries, material, dispatch])
 
   /**
    * Unhighlight
    */
   const unhighlight = useCallback((): void => {
-    enabled && dispatch(disable())
+    if (!enabled) return
+    setTimeout(() => dispatch(disable()), 50)
   }, [enabled, dispatch])
 
   /**

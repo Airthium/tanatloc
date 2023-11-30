@@ -38,7 +38,7 @@ const route = async (req: Request, res: Response): Promise<void> => {
       // Ids
       const ids = req.body.ids
 
-      if (!ids || !Array.isArray(ids)) {
+      if (!Array.isArray(ids)) {
         res.status(200).json({ geometries: [] })
         return
       }

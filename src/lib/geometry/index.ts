@@ -127,6 +127,27 @@ const update = async (
 }
 
 /**
+ * Remove geometry from project
+ * @param geometryId Geometry id
+ * @param projectId Project id
+ */
+const removeFromProject = async (
+  geometryId: string,
+  projectId?: string
+): Promise<void> => {
+  if (!projectId) return
+
+  await Project.update({ id: projectId }, [
+    {
+      type: 'array',
+      method: 'remove',
+      key: 'geometries',
+      value: geometryId
+    }
+  ])
+}
+
+/**
  * Delete
  * @param geometry Geometry
  */
@@ -144,15 +165,7 @@ const del = async (geometry: {
   ])
 
   // Delete geometry reference in project
-  geometryData &&
-    (await Project.update({ id: geometryData.project }, [
-      {
-        type: 'array',
-        method: 'remove',
-        key: 'geometries',
-        value: geometry.id
-      }
-    ]))
+  removeFromProject(geometry.id, geometryData?.project)
 
   // Delete original file
   if (geometryData?.uploadfilename)

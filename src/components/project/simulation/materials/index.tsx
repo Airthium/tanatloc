@@ -24,9 +24,11 @@ import Material from './material'
 /**
  * Props
  */
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
 export interface IProps {
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  geometries: Geometry[]
+  simulation: Simulation
   swr: {
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
@@ -62,10 +64,7 @@ const Materials = ({
   // Remove duplicated geometries
   const filteredGeometries = useMemo(() => {
     const filtered = geometries.reduce(
-      (
-        accumulator: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[],
-        current: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
-      ) => {
+      (accumulator: Geometry[], current: Geometry) => {
         if (!accumulator.find((geometry) => geometry.id === current.id))
           accumulator.push(current)
 

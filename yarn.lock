@@ -33,9 +33,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-3d@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@airthium/tanatloc-3d@npm:1.0.3"
+"@airthium/tanatloc-3d@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@airthium/tanatloc-3d@npm:1.0.4"
   dependencies:
     "@ant-design/icons": "npm:5.2.6"
     "@react-three/drei": "npm:9.88.17"
@@ -46,7 +46,7 @@ __metadata:
   peerDependencies:
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: 14f81488e65344895c600e4053b456a19d800530615cc96d4b932232f5d9fbf9d6ed183767b0c647f7b1cef38afb9cc82970f93b6663521f11c8bc27298f295b
+  checksum: 56967c181a0435c344ad75d0503dbd59d06bb288e2899af197e57f4dabcc7afc1fb29be024e921f40795a799641d1f30b2e7bd6e264df27fdeb0ffb2e052f1c2
   languageName: node
   linkType: hard
 
@@ -485,12 +485,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.7, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.0, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.5, @babel/runtime@npm:^7.23.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.7, @babel/runtime@npm:^7.18.0, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.5, @babel/runtime@npm:^7.23.2":
   version: 7.23.4
   resolution: "@babel/runtime@npm:7.23.4"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
   checksum: db2bf183cd0119599b903ca51ca0aeea8e0ab478a16be1aae10dd90473ed614159d3e5adfdd8f8f3d840402428ce0d90b5c01aae95da9e45a2dd83e02d85ca27
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.17.8":
+  version: 7.23.5
+  resolution: "@babel/runtime@npm:7.23.5"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: ca679cc91bb7e424bc2db87bb58cc3b06ade916b9adb21fbbdc43e54cdaacb3eea201ceba2a0464b11d2eb65b9fe6a6ffcf4d7521fa52994f19be96f1af14788
   languageName: node
   linkType: hard
 
@@ -11174,7 +11183,7 @@ __metadata:
     "@airthium/deep-object-diff": "npm:1.0.20"
     "@airthium/extract-json-from-string": "npm:1.0.38"
     "@airthium/pg-format": "npm:2.0.43"
-    "@airthium/tanatloc-3d": "npm:1.0.3"
+    "@airthium/tanatloc-3d": "npm:1.0.4"
     "@airthium/tanatloc-formula-validator": "npm:1.0.22"
     "@airthium/typedoc-plugin-airthium": "npm:1.1.24"
     "@ant-design/icons": "npm:5.2.6"

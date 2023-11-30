@@ -240,6 +240,64 @@ const deleteFromUser = async (
 }
 
 /**
+ * Group update
+ * @param userModel User model
+ * @param toUpdate Groups to update
+ */
+const groupUpdate = async (
+  userModel: { id: string },
+  toUpdate: { value: string[] }
+): Promise<void> => {
+  // Get data
+  const userModelData = await getWithData(userModel.id, ['groups'])
+
+  if (!userModelData) return
+
+  // Deleted groups
+  const deleted = userModelData.groups.filter(
+    (group) => !toUpdate.value.includes(group.id)
+  )
+
+  for (const group of deleted) await deleteFromGroup(group.id, userModel)
+
+  // Added groups
+  const added = toUpdate.value.filter(
+    (group) => !userModelData.groups.find((g) => g.id === group)
+  )
+
+  for (const group of added) await addToGroup(group, userModel)
+}
+
+/**
+ * User update
+ * @param userModel User model
+ * @param toUpdate Users to update
+ */
+const userUpdate = async (
+  userModel: { id: string },
+  toUpdate: { value: string[] }
+): Promise<void> => {
+  // Get data
+  const userModelData = await getWithData(userModel.id, ['users'])
+
+  if (!userModelData) return
+
+  // Deleted users
+  const deleted = userModelData.users.filter(
+    (user) => !toUpdate.value.includes(user.id)
+  )
+
+  for (const user of deleted) await deleteFromUser(user.id, userModel)
+
+  // Added users
+  const added = toUpdate.value.filter(
+    (user) => !userModelData.users.find((u) => u.id === user)
+  )
+
+  for (const user of added) await addToUser(user, userModel)
+}
+
+/**
  * Update
  * @param userModel User model
  * @param data Data
@@ -252,51 +310,13 @@ const update = async (
   const groupsUpdate: { value: string[] } = data.find(
     (d) => d.key === 'groups' && !d.type
   )
-  if (groupsUpdate) {
-    // Get data
-    const userModelData = await getWithData(userModel.id, ['groups'])
-
-    if (userModelData) {
-      // Deleted groups
-      const deleted = userModelData.groups.filter(
-        (g) => !groupsUpdate.value.includes(g.id)
-      )
-
-      for (const group of deleted) await deleteFromGroup(group.id, userModel)
-
-      // Added groups
-      const added = groupsUpdate.value.filter(
-        (g) => !userModelData.groups.find((gg) => gg.id === g)
-      )
-
-      for (const group of added) await addToGroup(group, userModel)
-    }
-  }
+  if (groupsUpdate) await groupUpdate(userModel, groupsUpdate)
 
   // Check users
   const usersUpdate: { value: string[] } = data.find(
     (d) => d.key === 'users' && !d.type
   )
-  if (usersUpdate) {
-    // Get data
-    const userModelData = await getWithData(userModel.id, ['users'])
-
-    if (userModelData) {
-      // Deleted users
-      const deleted = userModelData.users.filter(
-        (u) => !usersUpdate.value.includes(u.id)
-      )
-
-      for (const user of deleted) await deleteFromUser(user.id, userModel)
-
-      // Added users
-      const added = usersUpdate.value.filter(
-        (u) => !userModelData.users.find((user) => user.id === u)
-      )
-
-      for (const user of added) await addToUser(user, userModel)
-    }
-  }
+  if (usersUpdate) await userUpdate(userModel, usersUpdate)
 
   // Update
   await UserModelDB.update(userModel, data)

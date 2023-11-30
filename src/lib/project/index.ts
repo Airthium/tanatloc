@@ -260,6 +260,64 @@ const deleteFromUser = async (user: string, project: { id: string }) => {
 }
 
 /**
+ * Group update
+ * @param project Project
+ * @param toUpdate Groups to update
+ */
+const groupUpdate = async (
+  project: { id: string },
+  toUpdate: { value: string[] }
+): Promise<void> => {
+  // Get data
+  const projectData = await get(project.id, ['groups'])
+
+  if (!projectData) return
+
+  // Delete groups
+  const deleted = projectData.groups.filter(
+    (group) => !toUpdate.value.includes(group)
+  )
+
+  for (const group of deleted) await deleteFromGroup(group, project)
+
+  // Added groups
+  const added = toUpdate.value.filter(
+    (group) => !projectData.groups.find((g) => g === group)
+  )
+
+  for (const group of added) await addToGroup(group, project)
+}
+
+/**
+ * User update
+ * @param project Project
+ * @param toUpdate Users to update
+ */
+const userUpdate = async (
+  project: { id: string },
+  toUpdate: { value: string[] }
+): Promise<void> => {
+  // Get data
+  const projectData = await get(project.id, ['users'])
+
+  if (!projectData) return
+
+  // Deleted users
+  const deleted = projectData.users.filter(
+    (user) => !toUpdate.value.includes(user)
+  )
+
+  for (const user of deleted) await deleteFromUser(user, project)
+
+  // Added users
+  const added = toUpdate.value.filter(
+    (user) => !projectData.users.includes(user)
+  )
+
+  for (const user of added) await addToUser(user, project)
+}
+
+/**
  * Update
  * @param project Project
  * @param data Data
@@ -279,51 +337,13 @@ const update = async (
   const groupsUpdate: { value: string[] } = data.find(
     (d) => d.key === 'groups' && !d.type
   )
-  if (groupsUpdate) {
-    // Get data
-    const projectData = await get(project.id, ['groups'])
-
-    if (projectData) {
-      // Delete groups
-      const deleted = projectData.groups.filter(
-        (g) => !groupsUpdate.value.includes(g)
-      )
-
-      for (const group of deleted) await deleteFromGroup(group, project)
-
-      // Added groups
-      const added = groupsUpdate.value.filter(
-        (g) => !projectData.groups.find((gg) => gg === g)
-      )
-
-      for (const group of added) await addToGroup(group, project)
-    }
-  }
+  if (groupsUpdate) await groupUpdate(project, groupsUpdate)
 
   // Check users
   const usersUpdate: { value: string[] } = data.find(
     (d) => d.key === 'users' && !d.type
   )
-  if (usersUpdate) {
-    // Get data
-    const projectData = await get(project.id, ['users'])
-
-    if (projectData) {
-      // Deleted users
-      const deleted = projectData.users.filter(
-        (u) => !usersUpdate.value.includes(u)
-      )
-
-      for (const user of deleted) await deleteFromUser(user, project)
-
-      // Added users
-      const added = usersUpdate.value.filter(
-        (u) => !projectData.users.includes(u)
-      )
-
-      for (const user of added) await addToUser(user, project)
-    }
-  }
+  if (usersUpdate) await userUpdate(project, usersUpdate)
 
   // Check title
   const titleUpdate = data.find((d) => d.key === 'title')

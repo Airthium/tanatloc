@@ -76,23 +76,27 @@ const ListItem = ({
    * @param index Index
    */
   const highlight = useCallback((): void => {
-    dispatch(enable())
-
     // Geometry
     const geometryId = boundaryCondition.geometry
     const geometry = geometries.find((geometry) => geometry.id === geometryId)
-    dispatch(setPart(geometry?.summary.uuid))
 
     // Selected
     const currentSelected = boundaryCondition.selected
-    dispatch(select(currentSelected))
+
+    // Dispatch
+    setTimeout(() => {
+      dispatch(enable())
+      dispatch(setPart(geometry?.summary.uuid))
+      dispatch(select(currentSelected))
+    }, 50)
   }, [geometries, boundaryCondition, dispatch])
 
   /**
    * Unhighlight current
    */
   const unhighlight = useCallback((): void => {
-    enabled && dispatch(disable())
+    if (!enabled) return
+    setTimeout(() => dispatch(disable()), 50)
   }, [enabled, dispatch])
 
   /**

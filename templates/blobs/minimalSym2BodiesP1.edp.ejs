@@ -10,11 +10,11 @@ func real[int] minim1(real[int] &xxx, real[int] &XY2, int[int] &posi, int[int] &
     int nu; // The border segment number
     R3 ph;
     
-    meshN Ths = Mesh1;
+    meshN Ths = <%- mesh2 %>;
     Wh2[Uu2x, Uu2y]; // Displacement for the first body
     Uu2x[] = DIS2;
     Ths = movemesh(Ths, [x + Uu2x, y + Uu2y]);
-    meshL Lh = extract(Ths); // The border of Mesh1
+    meshL Lh = extract(Ths); // The border of <%- mesh2 %>
     
     for (int i = 0; i < dimensio; i++) {
         // Loop on the integration points
@@ -52,11 +52,11 @@ func real[int] minim2(real[int] &xxx, real[int] &XY1, int[int] &posi, int[int] &
     int nu; // The border segment number
     R3 ph;
     
-    meshN Ths = Mesh0;
+    meshN Ths = <%- mesh1 %>;
     Wh1[Uu1x, Uu1y]; // Displacement for the first body
     Uu1x[] = DIS1;
     Ths = movemesh(Ths, [x + Uu1x, y + Uu1y]);
-    meshL Lh = extract(Ths); // The border of Mesh0
+    meshL Lh = extract(Ths); // The border of <%- mesh1 %>
     
     for (int i = 0; i < dimensio; i++) {
         // Loop on the integration points
@@ -119,11 +119,11 @@ func real[int] minim1(real[int] &xxx, int[int] &tid, real[int] &XYZ2, int[int] &
     int nu; // The border triangle number
     R3 ph;
     
-    mesh3 Ths = Mesh1;
+    mesh3 Ths = <%- mesh2 %>;
     Wh2[Uu2x, Uu2y, Uu2z]; // Displacement for the first body
     Uu2x[] = DIS2;
     Ths = movemesh(Ths, [x + Uu2x, y + Uu2y, z + Uu2z]);
-    meshS Lh = extract(Ths); // The border of Mesh1
+    meshS Lh = extract(Ths); // The border of <%- mesh2 %>
     
     for (int i = 0; i < dimensio; i++) {
         // Loop on the integration points
@@ -186,11 +186,11 @@ func real[int] minim2(real[int] &xxx, int[int] &tid, real[int] &XYZ1, int[int] &
     int nu; // The border triangle number
     R3 ph;
     
-    mesh3 Ths = Mesh0;
+    mesh3 Ths = <%- mesh1 %>;
     Wh1[Uu1x, Uu1y, Uu1z]; // Displacement for the first body
     Uu1x[] = DIS1;
     Ths = movemesh(Ths, [x + Uu1x, y + Uu1y, z + Uu1z]);
-    meshS Lh = extract(Ths); // The border of Mesh0
+    meshS Lh = extract(Ths); // The border of <%- mesh1 %>
     
     for (int i = 0; i < dimensio; i++) {
         // Loop on the integration points

@@ -13,9 +13,9 @@
 	    IDni1 = - 1;
 	    IDni2 = - 1;
 	    // First body
-	    for (int ni = 0; ni < Mesh0.nbe; ni++) {
+	    for (int ni = 0; ni < <%- mesh1 %>.nbe; ni++) {
 	        // Loop on the boundary elements of the body 1
-	        int tri = Mesh0.be(ni).Element; // Triangle number
+	        int tri = <%- mesh1 %>.be(ni).Element; // Triangle number
 	        int dof1x = Wh1(tri, 0); // x dof of the first node
 	        int dof2x = Wh1(tri, 1); // x dof of the second node
 	        int dof3x = Wh1(tri, 2); // x dof of the third node
@@ -39,12 +39,12 @@
 	        }
 
 	        // ////
-	        real[int] v1 = [Mesh0.be(ni)[0].x, Mesh0.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
-	        real[int] v2 = [Mesh0.be(ni)[1].x, Mesh0.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
+	        real[int] v1 = [<%- mesh1 %>.be(ni)[0].x, <%- mesh1 %>.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
+	        real[int] v2 = [<%- mesh1 %>.be(ni)[1].x, <%- mesh1 %>.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
 
-	        real[int] vtri1 = [Mesh0[tri][0].x, Mesh0[tri][0].y]; // Coord of the vertex 0 of the triangle tri
-	        real[int] vtri2 = [Mesh0[tri][1].x, Mesh0[tri][1].y]; // Coord of the vertex 1 of the triangle tri
-	        real[int] vtri3 = [Mesh0[tri][2].x, Mesh0[tri][2].y]; // Coord of the vertex 2 of the triangle tri
+	        real[int] vtri1 = [<%- mesh1 %>[tri][0].x, <%- mesh1 %>[tri][0].y]; // Coord of the vertex 0 of the triangle tri
+	        real[int] vtri2 = [<%- mesh1 %>[tri][1].x, <%- mesh1 %>[tri][1].y]; // Coord of the vertex 1 of the triangle tri
+	        real[int] vtri3 = [<%- mesh1 %>[tri][2].x, <%- mesh1 %>[tri][2].y]; // Coord of the vertex 2 of the triangle tri
 	        bool ver1bord, ver2bord, ver3bord; // Vertex belongs to the bord ni ?
 
 	        if (((v1[0] == vtri1[0]) && (v1[1] == vtri1[1])) || ((v2[0] == vtri1[0]) && (v2[1] == vtri1[1]))) {
@@ -155,9 +155,9 @@
 	    // Second body
 
 	    tr = 0; // A counter
-	    for (int ni = 0; ni < Mesh1.nbe; ni++) {
+	    for (int ni = 0; ni < <%- mesh2 %>.nbe; ni++) {
 	        // Loop on the boundary elements of the body 1
-	        int tri = Mesh1.be(ni).Element; // Triangle number
+	        int tri = <%- mesh2 %>.be(ni).Element; // Triangle number
 	        int dof1x = Wh2(tri, 0); // x dof of the first node
 	        int dof2x = Wh2(tri, 1); // x dof of the second node
 	        int dof3x = Wh2(tri, 2); // x dof of the third node
@@ -181,12 +181,12 @@
 	        }
 
 	        // ////
-	        real[int] v1 = [Mesh1.be(ni)[0].x, Mesh1.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
-	        real[int] v2 = [Mesh1.be(ni)[1].x, Mesh1.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
+	        real[int] v1 = [<%- mesh2 %>.be(ni)[0].x, <%- mesh2 %>.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
+	        real[int] v2 = [<%- mesh2 %>.be(ni)[1].x, <%- mesh2 %>.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
 
-	        real[int] vtri1 = [Mesh1[tri][0].x, Mesh1[tri][0].y]; // Coord of the vertex 0 of the triangle tri
-	        real[int] vtri2 = [Mesh1[tri][1].x, Mesh1[tri][1].y]; // Coord of the vertex 1 of the triangle tri
-	        real[int] vtri3 = [Mesh1[tri][2].x, Mesh1[tri][2].y]; // Coord of the vertex 2 of the triangle tri
+	        real[int] vtri1 = [<%- mesh2 %>[tri][0].x, <%- mesh2 %>[tri][0].y]; // Coord of the vertex 0 of the triangle tri
+	        real[int] vtri2 = [<%- mesh2 %>[tri][1].x, <%- mesh2 %>[tri][1].y]; // Coord of the vertex 1 of the triangle tri
+	        real[int] vtri3 = [<%- mesh2 %>[tri][2].x, <%- mesh2 %>[tri][2].y]; // Coord of the vertex 2 of the triangle tri
 	        bool ver1bord, ver2bord, ver3bord; // Vertex belongs to the bord ni ?
 
 	        if (((v1[0] == vtri1[0]) && (v1[1] == vtri1[1])) || ((v2[0] == vtri1[0]) && (v2[1] == vtri1[1]))) {
@@ -301,8 +301,8 @@
 		int tr =0;          // A counter
 
 		// First body
-		for (int ni=0;ni<Mesh0.nbe;ni++){			// Loop on the boundary elements of the body 1
-			int tri = Mesh0.be(ni).Element;     // Triangle number
+		for (int ni=0;ni<<%- mesh1 %>.nbe;ni++){			// Loop on the boundary elements of the body 1
+			int tri = <%- mesh1 %>.be(ni).Element;     // Triangle number
 			int dof1x=FE1(tri,0);		// x dof of the first node
 			int dof2x=FE1(tri,1);		// x dof of the second node
 			int dof3x=FE1(tri,2);		// x dof of the third node
@@ -317,12 +317,12 @@
 			bool dofin3=false;      // Third vertice in the contact area 1?
 
 			//////
-			real[int] v1=[Mesh0.be(ni)[0].x,Mesh0.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
-			real[int] v2=[Mesh0.be(ni)[1].x,Mesh0.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
+			real[int] v1=[<%- mesh1 %>.be(ni)[0].x,<%- mesh1 %>.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
+			real[int] v2=[<%- mesh1 %>.be(ni)[1].x,<%- mesh1 %>.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
 
-			real[int] vtri1=[Mesh0[tri][0].x,Mesh0[tri][0].y]; // Coord of the vertex 0 of the triangle tri
-			real[int] vtri2=[Mesh0[tri][1].x,Mesh0[tri][1].y]; // Coord of the vertex 1 of the triangle tri
-			real[int] vtri3=[Mesh0[tri][2].x,Mesh0[tri][2].y]; // Coord of the vertex 2 of the triangle tri
+			real[int] vtri1=[<%- mesh1 %>[tri][0].x,<%- mesh1 %>[tri][0].y]; // Coord of the vertex 0 of the triangle tri
+			real[int] vtri2=[<%- mesh1 %>[tri][1].x,<%- mesh1 %>[tri][1].y]; // Coord of the vertex 1 of the triangle tri
+			real[int] vtri3=[<%- mesh1 %>[tri][2].x,<%- mesh1 %>[tri][2].y]; // Coord of the vertex 2 of the triangle tri
 			bool ver1bord, ver2bord, ver3bord;            // Vertex belongs to the bord ni ?
 
 			if( ((v1[0]==vtri1[0]) && (v1[1]==vtri1[1])) || ((v2[0]==vtri1[0]) && (v2[1]==vtri1[1])) ){
@@ -399,8 +399,8 @@
 		// Second body
 
 		tr =0;          // A counter
-		for (int ni=0;ni<Mesh1.nbe;ni++){			// Loop on the boundary elements of the body 1
-			int tri = Mesh1.be(ni).Element;     // Triangle number
+		for (int ni=0;ni<<%- mesh2 %>.nbe;ni++){			// Loop on the boundary elements of the body 1
+			int tri = <%- mesh2 %>.be(ni).Element;     // Triangle number
 			int dof1x=FE2(tri,0);		// x dof of the first node
 			int dof2x=FE2(tri,1);		// x dof of the second node
 			int dof3x=FE2(tri,2);		// x dof of the third node
@@ -415,12 +415,12 @@
 			bool dofin3=false;      // Third vertice in the contact area 1?
 
 			//////
-			real[int] v1=[Mesh1.be(ni)[0].x,Mesh1.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
-			real[int] v2=[Mesh1.be(ni)[1].x,Mesh1.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
+			real[int] v1=[<%- mesh2 %>.be(ni)[0].x,<%- mesh2 %>.be(ni)[0].y]; // Coord of the first vertex of the bound_ele ni
+			real[int] v2=[<%- mesh2 %>.be(ni)[1].x,<%- mesh2 %>.be(ni)[1].y]; // Coord of the second vertex of the bound_ele ni
 
-			real[int] vtri1=[Mesh1[tri][0].x,Mesh1[tri][0].y]; // Coord of the vertex 0 of the triangle tri
-			real[int] vtri2=[Mesh1[tri][1].x,Mesh1[tri][1].y]; // Coord of the vertex 1 of the triangle tri
-			real[int] vtri3=[Mesh1[tri][2].x,Mesh1[tri][2].y]; // Coord of the vertex 2 of the triangle tri
+			real[int] vtri1=[<%- mesh2 %>[tri][0].x,<%- mesh2 %>[tri][0].y]; // Coord of the vertex 0 of the triangle tri
+			real[int] vtri2=[<%- mesh2 %>[tri][1].x,<%- mesh2 %>[tri][1].y]; // Coord of the vertex 1 of the triangle tri
+			real[int] vtri3=[<%- mesh2 %>[tri][2].x,<%- mesh2 %>[tri][2].y]; // Coord of the vertex 2 of the triangle tri
 			bool ver1bord, ver2bord, ver3bord;            // Vertex belongs to the bord ni ?
 
 			if( ((v1[0]==vtri1[0]) && (v1[1]==vtri1[1])) || ((v2[0]==vtri1[0]) && (v2[1]==vtri1[1])) ){

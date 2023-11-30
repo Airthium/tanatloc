@@ -192,9 +192,9 @@ try {
     <%# Finite element function -%>
     // unknown = [Ax1, Ay1, Az1] for the firqst body and [Ax2, Ay2, Az2] for the second one
     <%
-        const unknownFunction1X = variables[1].value + '1'
-        const unknownFunction1Y = variables[2].value + '1'
-        const unknownFunction1Z = variables[3].value + '1'
+        const unknownFunction1X = variables[2].value + '1'
+        const unknownFunction1Y = variables[3].value + '1'
+        const unknownFunction1Z = variables[4].value + '1'
         const unknownFunction1 =
             dimension === 2
                 ? '[' + unknownFunction1Z +  ']'
@@ -207,9 +207,9 @@ try {
                 ? '[' + testFunction1Z + ']'
                 : '[' + testFunction1X + ', ' + testFunction1Y + ', ' + testFunction1Z + ']'
 
-        const unknownFunction2X = variables[1].value + '2'
-        const unknownFunction2Y = variables[2].value + '2'
-        const unknownFunction2Z = variables[3].value + '2'
+        const unknownFunction2X = variables[2].value + '2'
+        const unknownFunction2Y = variables[3].value + '2'
+        const unknownFunction2Z = variables[4].value + '2'
         const unknownFunction2 =
             dimension === 2
                 ? '[' + unknownFunction2Z +  ']'
@@ -372,11 +372,11 @@ try {
     <% if (dimension === 2){ -%>
     <% if (pType==='P1') { -%>    
     <%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D.edp.ejs', {
-        dimension
+        dimension, mesh1: mesh1.name, mesh2: mesh2.name
     }), 1) -%>
     <% } else {  -%>
     <%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D_P2.edp.ejs', {
-        dimension
+        dimension, mesh1: mesh1.name, mesh2: mesh2.name
     }), 1) -%>
     <% } -%>
 
@@ -384,7 +384,7 @@ try {
 
     <% } -%>
 
-    <%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs'), 1) -%>
+    <%- helpers.indent(include('/blobs/minimalSym2BodiesP1.edp.ejs',{mesh1: mesh1.name, mesh2: mesh2.name}), 1) -%>
     appendLog("Connectivity..");    
     <% if (dimension === 2){ -%>
         int nElements1 = nC1; // Segment number of the contact area 1 ( = nC1 if the contact border is closed if not it is  = nC1-1 and is corrected in the connectivity function)

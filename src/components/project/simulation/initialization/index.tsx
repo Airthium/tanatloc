@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo, Dispatch, useContext } from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
-import { IModelInitializationDirectChild } from '@/models/index.d'
+import { IModelInitializationDirectChild, IModelRun } from '@/models/index.d'
 import {
   IFrontSimulationsItem,
   IFrontMutateSimulationsItem,
@@ -256,6 +256,51 @@ export const _onChange = async (
 }
 
 /**
+ * Get files with filter
+ * @param files Files
+ * @param filter Filter
+ * @returns Filtered / Non-filtered files
+ */
+const getFilesWithFilter = (
+  files: NonNullable<IFrontSimulationTask['files']>,
+  filter: NonNullable<IModelRun['resultsFilter']>
+): {
+  filteredFiles: { fileName: string; number: number }[]
+  notFilteredFiles: NonNullable<IFrontSimulationTask['files']>
+} => {
+  const { filteredFiles, notFilteredFiles } = separateFiles(files, filter)
+
+  // Numbering
+  const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
+  const uniqueFilesWithNumbers = filesWithNumbers
+    .map((file) => {
+      let suffixes: RegExp[] = []
+      if (Array.isArray(filter.suffixPattern))
+        suffixes = filter.suffixPattern.map((pattern) => new RegExp(pattern))
+      else suffixes = [new RegExp(filter.suffixPattern)]
+      let fileNameWithoutSuffix = file.fileName
+      suffixes.forEach(
+        (pattern) =>
+          (fileNameWithoutSuffix = fileNameWithoutSuffix.replace(pattern, ''))
+      )
+      return {
+        number: file.number,
+        fileName: fileNameWithoutSuffix
+      }
+    })
+    .filter(
+      (file, index, self) =>
+        self.findIndex((s) => s.number === file.number) === index
+    )
+    .sort((a, b) => a.number - b.number)
+
+  return {
+    filteredFiles: uniqueFilesWithNumbers,
+    notFilteredFiles
+  }
+}
+
+/**
  * Load results
  * @param simulations Simulations
  * @param id Simulation id
@@ -294,45 +339,16 @@ export const _loadResults = async (
             })
         })
       } else {
-        const { filteredFiles, notFilteredFiles } = separateFiles(
+        const { filteredFiles, notFilteredFiles } = getFilesWithFilter(
           task.files,
           filter
         )
-
-        // Numbering
-        const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
-        const uniqueFilesWithNumbers = filesWithNumbers
-          .map((file) => {
-            let suffixes: RegExp[] = []
-            if (Array.isArray(filter.suffixPattern))
-              suffixes = filter.suffixPattern.map(
-                (pattern) => new RegExp(pattern)
-              )
-            else suffixes = [new RegExp(filter.suffixPattern)]
-            let fileNameWithoutSuffix = file.fileName
-            suffixes.forEach(
-              (pattern) =>
-                (fileNameWithoutSuffix = fileNameWithoutSuffix.replace(
-                  pattern,
-                  ''
-                ))
-            )
-            return {
-              number: file.number,
-              fileName: fileNameWithoutSuffix
-            }
-          })
-          .filter(
-            (file, index, self) =>
-              self.findIndex((s) => s.number === file.number) === index
-          )
-          .sort((a, b) => a.number - b.number)
 
         // Multiplicator
         const multiplicator = getMultiplicator(configuration, filter)
 
         // Options
-        const options = uniqueFilesWithNumbers.map((file, index) => {
+        const options = filteredFiles.map((file, index) => {
           const value = multiplicator ? file.number * multiplicator : index
           const floatingPointFix = Math.round(value * 1e15) / 1e15
           return {

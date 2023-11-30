@@ -39,11 +39,8 @@ describe('components/doc', () => {
   test('onTanatloc', () => {
     const { unmount } = render(<Doc />)
 
-    const button = screen.getAllByRole('img', { name: 'Tanatloc' })[0]
+    const button = screen.getByRole('button')
     fireEvent.click(button)
-
-    const img = screen.getAllByRole('img', { name: 'Tanatloc' })
-    fireEvent.keyUp(img[0])
 
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenLastCalledWith('/')

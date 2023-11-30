@@ -163,7 +163,6 @@ describe('lib/geometry', () => {
     })
 
     // Error
-
     mockGet.mockImplementation(() => ({}))
     mockToolsWriteFile.mockImplementation(() => {
       throw new Error()
@@ -176,7 +175,7 @@ describe('lib/geometry', () => {
     } catch (err) {}
     expect(mockAdd).toHaveBeenCalledTimes(3)
     expect(mockToolsWriteFile).toHaveBeenCalledTimes(3)
-    expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsConvert).toHaveBeenCalledTimes(2)
     expect(mockToolsReadFile).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -195,7 +194,7 @@ describe('lib/geometry', () => {
   })
 
   test('delete', async () => {
-    mockGet.mockImplementation(() => ({}))
+    mockGet.mockImplementation(() => ({ project: ['id'] }))
     await Geometry.del({ id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
@@ -203,6 +202,7 @@ describe('lib/geometry', () => {
 
     // Remove files / directory
     mockGet.mockImplementation(() => ({
+      project: ['id'],
       uploadfilename: 'uploadfilename',
       extension: 'extension',
       glb: 'glb',

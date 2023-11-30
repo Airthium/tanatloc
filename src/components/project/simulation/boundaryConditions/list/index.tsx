@@ -95,8 +95,7 @@ const ListItem = ({
    * Unhighlight current
    */
   const unhighlight = useCallback((): void => {
-    if (!enabled) return
-    setTimeout(() => dispatch(disable()), 50)
+    enabled && setTimeout(() => dispatch(disable()), 50)
   }, [enabled, dispatch])
 
   /**

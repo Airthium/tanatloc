@@ -22,7 +22,11 @@ jest.mock('@/components/assets/button', () => ({
 
 jest.mock('../../delete', () => () => <div />)
 
+//@ts-ignore
+global.setTimeout = (callback: Function) => callback()
+
 describe('components/project/simulation/boundaryConditions/list', () => {
+  const EditButtonRole = 'EditButton'
   const geometries = [
     {
       id: 'id',
@@ -123,7 +127,11 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     })
 
     mockEditButton.mockImplementation((props) => (
-      <div role="EditButton" onClick={props.onEdit} />
+      <div
+        role={EditButtonRole}
+        onClick={props.onEdit}
+        onKeyDown={console.info}
+      />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -138,7 +146,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       </SelectContext.Provider>
     )
 
-    const edit = screen.getByRole('EditButton')
+    const edit = screen.getByRole(EditButtonRole)
     fireEvent.click(edit)
 
     unmount()

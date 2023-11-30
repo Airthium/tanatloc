@@ -681,7 +681,7 @@ const Project = (): React.JSX.Element => {
       />
 
       <Tabs
-        activeKey={(query.tab as string) ?? 'geometry'}
+        defaultActiveKey={(query.tab as string) ?? 'geometry'}
         items={tabs}
         onChange={onChange}
       />

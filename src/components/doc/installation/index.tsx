@@ -550,7 +550,7 @@ const Installation = (): React.JSX.Element => {
     <>
       <Typography.Title level={3}>Installation</Typography.Title>
       <Tabs
-        activeKey={(query.tab as string) ?? 'desktop'}
+        defaultActiveKey={(query.tab as string) ?? 'desktop'}
         items={tabs}
         onChange={onChange}
       />

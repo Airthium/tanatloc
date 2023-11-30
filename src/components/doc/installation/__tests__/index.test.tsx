@@ -64,7 +64,7 @@ describe('components/doc/installation', () => {
 
     const { unmount } = render(<Installation />)
 
-    await waitFor(() => screen.getAllByRole('button'))
+    await waitFor(() => screen.getByRole('button', { name: 'Linux' }))
 
     const linux = screen.getByRole('button', { name: 'Linux' })
     const windows = screen.getByRole('button', { name: 'Windows' })

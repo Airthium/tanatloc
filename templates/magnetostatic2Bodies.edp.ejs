@@ -371,11 +371,11 @@ try {
 
     <% if (dimension === 2){ -%>
     <% if (pType==='P1') { -%>    
-    <%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D.edp.ejs', {
+    <%- helpers.indent(include('/magnetostatic2Bodies/connectivity.edp.ejs', {
         dimension, mesh1: mesh1.name, mesh2: mesh2.name
     }), 1) -%>
     <% } else {  -%>
-    <%- helpers.indent(include('/blobs/connectivity2BodiesMagneto_2D_P2.edp.ejs', {
+    <%- helpers.indent(include('/magnetostatic2Bodies/connectivity_P2.edp.ejs', {
         dimension, mesh1: mesh1.name, mesh2: mesh2.name
     }), 1) -%>
     <% } -%>

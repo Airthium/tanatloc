@@ -96,7 +96,7 @@ const Dashboard = (): React.JSX.Element => {
       </Typography>
 
       <Tabs
-        activeKey={(query.tab as string) ?? 'workspaces'}
+        defaultActiveKey={(query.tab as string) ?? 'workspaces'}
         items={tabs}
         onChange={onChange}
       />

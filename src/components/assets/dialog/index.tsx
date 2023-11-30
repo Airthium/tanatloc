@@ -122,7 +122,7 @@ const Dialog = ({
    * @param event Event
    */
   const onKeyUp = useCallback((event: KeyboardEvent<HTMLFormElement>): void => {
-    if (event.key === 'Shift') setShift(false)
+    if (event.key === 'Enter') setShift(false)
   }, [])
 
   /**

@@ -45,11 +45,6 @@ const Doc = () => {
   }, [router])
 
   /**
-   * On key up (ghost function)
-   */
-  const onKeyUp = useCallback((): void => undefined, [])
-
-  /**
    * On router
    * @param route Route
    */
@@ -283,7 +278,6 @@ const Doc = () => {
           src="/images/logo.svg"
           alt="Tanatloc"
           onClick={onTanatloc}
-          onKeyUp={onKeyUp}
         />
         <Typography.Title level={1}>Doc</Typography.Title>
 

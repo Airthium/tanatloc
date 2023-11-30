@@ -204,7 +204,6 @@ const ProjectCard = ({
       cover={
         <Carousel className={style.carousel} dots={{ className: 'dots' }}>
           <div
-            role="button"
             className={`${style.carouselSnapshot} ${
               project.archived ? style.carouselSnapshotArchived : ''
             }`}

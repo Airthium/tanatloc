@@ -123,7 +123,7 @@ const Desktop = (): React.JSX.Element => {
         </Typography.Text>
         <Typography.Text className={style.tips}>
           On Linux, you can activate Docker Desktop autostart using
-          <Typography.Text code>
+          <Typography.Text code copyable>
             systemctl --user enable docker-desktop.service
           </Typography.Text>
         </Typography.Text>
@@ -184,7 +184,7 @@ const Desktop = (): React.JSX.Element => {
           <br />
           <strong>Or</strong>
           <br />
-          <Typography.Text code>
+          <Typography.Text code copyable>
             chmod +x ./Tanatloc-{release?.version.replace('v', '')}.AppImage
           </Typography.Text>
         </Typography.Text>
@@ -390,11 +390,13 @@ const Server = (): React.JSX.Element => {
         <Typography.Text>
           <strong>Clone</strong> the tanatloc-deploy repository
         </Typography.Text>
-        <Typography.Text code>
+        <Typography.Text code copyable>
           git clone git@github.com:Airthium/tanatloc-deploy.git
         </Typography.Text>
         <Typography.Text>Move in the directory</Typography.Text>
-        <Typography.Text code>cd tanatloc-deploy</Typography.Text>
+        <Typography.Text code copyable>
+          cd tanatloc-deploy
+        </Typography.Text>
         <Typography.Text>
           <strong>Configure</strong> your deployment using{' '}
           <Typography.Text code>tanatloc.sh</Typography.Text> with the following
@@ -442,6 +444,55 @@ const Server = (): React.JSX.Element => {
           You can display all available commands of{' '}
           <Typography.Text code>./tanatloc.sh</Typography.Text> using{' '}
           <Typography.Text code>./tanatloc.sh help</Typography.Text>
+        </Typography.Text>
+
+        <Typography.Title level={4}>Update</Typography.Title>
+        <Typography.Text>
+          Before updating Tanatloc, make a complete{' '}
+          <Typography.Text strong>BACKUP</Typography.Text>
+        </Typography.Text>
+
+        <Typography.Title level={5}>Backup</Typography.Title>
+        <Typography.Text>
+          First, ensure database backup path is correctly defined using
+        </Typography.Text>
+        <Typography.Text code copyable>
+          ./tanatloc.sh set database_backup /existing/path/to/backup
+        </Typography.Text>
+        <Typography.Text className={style.tips}>
+          The default backup path is{' '}
+          <Typography.Text code>
+            /media/tanatloc-backup/database
+          </Typography.Text>
+          .<br />
+          If you want to use it, create the folder using
+          <Typography.Text code copyable>
+            mkdir -p /media/tanatloc-backup/database
+          </Typography.Text>
+        </Typography.Text>
+
+        <Typography.Text>Run the database backup script using</Typography.Text>
+        <Typography.Text code copyable>
+          ./tanatloc.sh database backup
+        </Typography.Text>
+
+        <Typography.Title level={5}>Update</Typography.Title>
+        <Typography.Text>Run the update script</Typography.Text>
+        <Typography.Text code copyable>
+          ./tanatloc.sh update
+        </Typography.Text>
+        <Typography.Text>
+          The update script will stop and delete the currently running docker
+          image, pull the new ones and restart Tanatloc.
+        </Typography.Text>
+
+        <Typography.Title level={5}>Restore database</Typography.Title>
+        <Typography.Text>
+          Only if you encounter an error during the update process, restore the
+          database with
+        </Typography.Text>
+        <Typography.Text code>
+          ./tanatloc.sh database restore /existing/path/to/backup/file-date.sql
         </Typography.Text>
       </Typography>
     </>

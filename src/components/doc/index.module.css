@@ -67,6 +67,14 @@
   height: 16px;
 }
 
+.text :global(.ant-typography):has(code :global(.ant-typography-copy)) {
+  line-height: 26px;
+}
+
+.text :global(.ant-typography):has(code :global(.ant-typography-copy)) > code {
+  padding: 10px;
+}
+
 .tips {
   display: inline-block;
   position: relative;

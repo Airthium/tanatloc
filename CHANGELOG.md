@@ -1,3 +1,19 @@
+## v1.3.0
+
+- Global:
+  - :arrow_up: Update dependencies
+- Client:
+  - :arrow_up: New 3D interface
+  - :arrow_up: Add Split STEP option in geometry
+- Models:
+  - :arrow_up: Modify geometry definition
+  - :arrow_up: Add Stokes time-dependent
+  - :arrow_up: Add magnetostatic
+  - :arrow_up: Add custom FreeFEM plugin support
+  - :arrow_up: Add parallel support
+
+---
+
 ## v1.2.12
 
 - Template:

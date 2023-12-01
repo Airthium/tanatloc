@@ -68,7 +68,7 @@
 }
 
 .text :global(.ant-typography):has(code :global(.ant-typography-copy)) {
-  line-height: 26px;
+  line-height: 30px;
 }
 
 .text :global(.ant-typography):has(code :global(.ant-typography-copy)) > code {

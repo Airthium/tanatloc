@@ -486,11 +486,39 @@ const Server = (): React.JSX.Element => {
           image, pull the new ones and restart Tanatloc.
         </Typography.Text>
 
-        <Typography.Title level={5}>Restore database</Typography.Title>
+        <Typography.Title level={5}>
+          Remove and Restore the database
+        </Typography.Title>
         <Typography.Text>
-          Only if you encounter an error during the update process, restore the
-          database with
+          Only if you encounter an error during the update process, delete and
+          restore the database
         </Typography.Text>
+        <Typography.Text>
+          Depending on your database location (docker or system PostgreSQL),
+          delete the database.
+        </Typography.Text>
+        <Typography.Text>
+          For docker, juste remove the{' '}
+          <Typography.Text code>tanatloc-postgres</Typography.Text> container
+          directly in Docker Desktop or in commaand line
+        </Typography.Text>
+        <Typography.Text code copyable>
+          id=$(docker ps -aqf &quot;name=tanatloc-postgres&quot;)
+        </Typography.Text>
+        <Typography.Text code copyable>
+          docker stop $id
+        </Typography.Text>
+        <Typography.Text code copyable>
+          docker rm $id
+        </Typography.Text>
+        <Typography.Text>For system PostgreSQL:</Typography.Text>
+        <Typography.Text code copyable>
+          psql -U postgres
+        </Typography.Text>
+        <Typography.Text code copyable>
+          DROP DATABASE tanatloc_postgres
+        </Typography.Text>
+        <Typography.Text>Restore the database with</Typography.Text>
         <Typography.Text code>
           ./tanatloc.sh database restore /existing/path/to/backup/file-date.sql
         </Typography.Text>

@@ -157,7 +157,6 @@ const Material = ({
   useCustomEffect(
     () => {
       const geometry = geometries.find((g) => g.id === material?.geometry)
-      console.log(geometry)
       if (geometry) {
         dispatch(setPart(geometry.summary.uuid))
         setActiveKey(geometry.id)

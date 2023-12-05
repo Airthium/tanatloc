@@ -1,5 +1,6 @@
 /** @module Components.Signup.Send */
 
+import { ReactNode } from 'react'
 import { Card, Layout } from 'antd'
 
 import style from '../index.module.css'
@@ -8,7 +9,7 @@ import style from '../index.module.css'
  * Signup send
  * @return Send
  */
-const Send = (): React.JSX.Element => {
+const Send = (): ReactNode => {
   /**
    * Render
    */

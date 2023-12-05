@@ -1,13 +1,13 @@
 /** @module Components.Assets.Side */
 
-import { CSSProperties } from 'react'
+import { CSSProperties, ReactNode } from 'react'
 
 import style from './index.module.css'
 
 export interface IProps {
-  left: React.JSX.Element
-  right: React.JSX.Element
-  top?: React.JSX.Element
+  left: ReactNode
+  right: ReactNode
+  top?: ReactNode
   sideStyle?: CSSProperties
   sideClassName?: string
   leftStyle?: CSSProperties
@@ -37,7 +37,7 @@ const Side = ({
   topStyle,
   topClassName,
   id
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   /**
    * Render
    */

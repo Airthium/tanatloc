@@ -1,6 +1,6 @@
 /** @module Components.Assets.Cookies */
 
-import { CSSProperties, useCallback, useEffect, useRef } from 'react'
+import { CSSProperties, ReactNode, useCallback, useEffect, useRef } from 'react'
 import { App, Button, Collapse, Form, Switch, Typography } from 'antd'
 import Icon from '@ant-design/icons'
 import { useCookies } from 'react-cookie'
@@ -19,7 +19,7 @@ export interface ICookieIconProps {
  * CookieSvg
  * @returns CookieSvg
  */
-const CookieSvg = () => (
+const CookieSvg = (): ReactNode => (
   <svg
     width="1em"
     height="1em"
@@ -34,7 +34,7 @@ const CookieSvg = () => (
  * Cookie
  * @returns Cookie
  */
-const CookieIcon = ({ style }: ICookieIconProps): React.JSX.Element => {
+const CookieIcon = ({ style }: ICookieIconProps): ReactNode => {
   return <Icon component={CookieSvg} style={{ fill: '#FAD114', ...style }} />
 }
 
@@ -42,7 +42,7 @@ const CookieIcon = ({ style }: ICookieIconProps): React.JSX.Element => {
  * Cookies
  * @returns Cookies
  */
-const Cookies = (): React.JSX.Element => {
+const Cookies = (): ReactNode => {
   // Ref
   const onlyOne = useRef<number>(0)
 
@@ -191,7 +191,7 @@ const Cookies = (): React.JSX.Element => {
  * @description Wrapped inside ant-design App component
  * @returns WrappedCookies
  */
-const WrappedCookies = () => {
+const WrappedCookies = (): ReactNode => {
   /**
    * Render
    */

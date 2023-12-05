@@ -1,6 +1,6 @@
 /** @module Components.Signup.Validation */
 
-import { useContext, useEffect } from 'react'
+import { ReactNode, useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
@@ -26,7 +26,7 @@ export const errors = {
  * Validation
  * @returns Validation
  */
-const Validation = (): React.JSX.Element => {
+const Validation = (): ReactNode => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -36,7 +36,7 @@ const Validation = (): React.JSX.Element => {
 
   // Link
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       if (!id) return
 
       try {
@@ -56,7 +56,8 @@ const Validation = (): React.JSX.Element => {
       } catch (err: any) {
         dispatch(addError({ title: errors.internal, err }))
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [id, router, dispatch])
 
   /**

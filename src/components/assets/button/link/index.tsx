@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { Button } from 'antd'
 
 export interface IProps {
-  children: string | ReactNode
+  children: ReactNode
   onClick: () => void
 }
 
@@ -13,7 +13,7 @@ export interface IProps {
  * @param props Props
  * @returns Link
  */
-const Link = ({ children, onClick }: IProps) => {
+const Link = ({ children, onClick }: IProps): ReactNode => {
   return (
     <Button type="link" onClick={onClick} style={{ padding: 0 }}>
       {children}

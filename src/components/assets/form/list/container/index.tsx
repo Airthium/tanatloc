@@ -8,7 +8,7 @@ import { PlusOutlined } from '@ant-design/icons'
  * Props
  */
 export interface IProps {
-  children: ReactNode[]
+  children: ReactNode
   label: string
   errors: ReactNode[]
   add: (defaultValue?: any, insertIndex?: number) => void
@@ -24,7 +24,7 @@ const FormListContainer = ({
   label,
   errors,
   add
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   /**
    * On add
    */

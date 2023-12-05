@@ -1,6 +1,6 @@
 /** @module Components.Administration.Registration */
 
-import { Dispatch, useCallback, useContext, useEffect } from 'react'
+import { ReactNode, useCallback, useContext, useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -14,10 +14,7 @@ import {
   REQUIRE_SYMBOL
 } from '@/config/auth'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError, addSuccess } from '@/context/notification/actions'
 
 import Loading from '@/components/loading'
@@ -38,23 +35,17 @@ export const errors = {
  * On allow signup
  * @param system System
  * @param mutateSystem Mutate system
+ * @param displaySuccess Display success
  */
 export const _onAllowSignup = async (
   system: IFrontSystem,
-  mutateSystem: (system: IFrontMutateSystem) => Promise<void>,
-  dispatch: Dispatch<INotificationAction>
+  mutateSystem: (system: IFrontMutateSystem) => Promise<void>
 ): Promise<void> => {
-  try {
-    // Update
-    await SystemAPI.update([{ key: 'allowsignup', value: !system.allowsignup }])
+  // Update
+  await SystemAPI.update([{ key: 'allowsignup', value: !system.allowsignup }])
 
-    // Mutate
-    await mutateSystem({ allowsignup: !system.allowsignup })
-
-    dispatch(addSuccess({ title: 'Changes saved' }))
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-  }
+  // Mutate
+  await mutateSystem({ allowsignup: !system.allowsignup })
 }
 
 /**
@@ -64,27 +55,20 @@ export const _onAllowSignup = async (
  */
 export const _onPasswordFinish = async (
   values: IFrontSystem['password'],
-  mutateSystem: (system: IFrontMutateSystem) => Promise<void>,
-  dispatch: Dispatch<INotificationAction>
+  mutateSystem: (system: IFrontMutateSystem) => Promise<void>
 ): Promise<void> => {
-  try {
-    // Update
-    await SystemAPI.update([{ key: 'password', value: values }])
+  // Update
+  await SystemAPI.update([{ key: 'password', value: values }])
 
-    // Mutate
-    await mutateSystem({ password: values })
-
-    dispatch(addSuccess({ title: 'Changes saved' }))
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-  }
+  // Mutate
+  await mutateSystem({ password: values })
 }
 
 /**
  * Registration
  * @returns Registration
  */
-const Registration = (): React.JSX.Element => {
+const Registration = (): ReactNode => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -117,9 +101,15 @@ const Registration = (): React.JSX.Element => {
    * On Change
    */
   const onChange = useCallback((): void => {
-    ;(async () => {
-      await _onAllowSignup(system, mutateSystem, dispatch)
-    })()
+    const asyncFunction = async () => {
+      try {
+        await _onAllowSignup(system, mutateSystem)
+        dispatch(addSuccess({ title: 'Changes saved' }))
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [system, mutateSystem, dispatch])
 
   /**
@@ -128,9 +118,15 @@ const Registration = (): React.JSX.Element => {
    */
   const onFinish = useCallback(
     (values: IFrontSystem['password']): void => {
-      ;(async () => {
-        await _onPasswordFinish(values, mutateSystem, dispatch)
-      })()
+      const asyncFunction = async () => {
+        try {
+          await _onPasswordFinish(values, mutateSystem)
+          dispatch(addSuccess({ title: 'Changes saved' }))
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      }
+      asyncFunction().catch(console.error)
     },
     [mutateSystem, dispatch]
   )

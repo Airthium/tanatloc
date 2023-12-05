@@ -1,7 +1,7 @@
 /** @module Components.Workspace.Edit */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -12,10 +12,7 @@ import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT50 } from '@/config/string'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { EditButton } from '@/components/assets/button'
@@ -54,26 +51,19 @@ export const _onEdit = async (
   values: Pick<IFrontWorkspacesItem, 'name'>,
   swr: {
     mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // New workspace
-    const newWorkspace = Utils.deepCopy(workspace)
-    workspace.name = values.name
-
-    // Edit
-    await WorkspaceAPI.update({ id: workspace.id }, [
-      { key: 'name', value: values.name }
-    ])
-
-    // Mutate
-    await swr.mutateOneWorkspace(newWorkspace)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-
-    throw err
   }
+): Promise<void> => {
+  // New workspace
+  const newWorkspace = Utils.deepCopy(workspace)
+  workspace.name = values.name
+
+  // Edit
+  await WorkspaceAPI.update({ id: workspace.id }, [
+    { key: 'name', value: values.name }
+  ])
+
+  // Mutate
+  await swr.mutateOneWorkspace(newWorkspace)
 }
 
 /**
@@ -81,7 +71,7 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ workspace, swr }: IProps): React.JSX.Element => {
+const Edit = ({ workspace, swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -116,12 +106,13 @@ const Edit = ({ workspace, swr }: IProps): React.JSX.Element => {
     async (values: Pick<IFrontWorkspacesItem, 'name'>): Promise<void> => {
       setLoading(true)
       try {
-        await _onEdit(workspace, values, swr, dispatch)
+        await _onEdit(workspace, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
         throw err
       }

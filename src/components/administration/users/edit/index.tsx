@@ -1,7 +1,7 @@
 /** @module Components.Administration.User.Delete */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -14,10 +14,7 @@ import { IDataBaseEntry } from '@/database/index.d'
 import { IFrontUsersItem, IFrontMutateUsersItem } from '@/api/index.d'
 import { ClientPlugin } from '@/plugins/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { EditButton } from '@/components/assets/button'
@@ -73,38 +70,32 @@ export const errors = {
 export const _onUpdate = async (
   user: TUserItem,
   values: ILocalValues,
-  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void> },
-  dispatch: Dispatch<INotificationAction>
+  swr: { mutateOneUser: (user: IFrontMutateUsersItem) => Promise<void> }
 ): Promise<void> => {
-  try {
-    // Update
-    const toUpdate = Object.keys(values)
-      .map((key) => {
-        const value = values[key as keyof ILocalValues]
-        if (
-          value !== undefined &&
-          value !== '******' &&
-          value !== user[key as keyof TUserItem]
-        )
-          return { key, value, type: key === 'password' && 'crypt' }
-      })
-      .filter((u) => u)
+  // Update
+  const toUpdate = Object.keys(values)
+    .map((key) => {
+      const value = values[key as keyof ILocalValues]
+      if (
+        value !== undefined &&
+        value !== '******' &&
+        value !== user[key as keyof TUserItem]
+      )
+        return { key, value, type: key === 'password' && 'crypt' }
+    })
+    .filter((u) => u)
 
-    if (!toUpdate.length) return
+  if (!toUpdate.length) return
 
-    await UserAPI.updateById(user.id, toUpdate as IDataBaseEntry[])
+  await UserAPI.updateById(user.id, toUpdate as IDataBaseEntry[])
 
-    // Mutate
-    values.password = '******'
-    const newUser = {
-      ...user,
-      ...values
-    }
-    await swr.mutateOneUser(newUser as IFrontUsersItem)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+  // Mutate
+  values.password = '******'
+  const newUser = {
+    ...user,
+    ...values
   }
+  await swr.mutateOneUser(newUser as IFrontUsersItem)
 }
 
 /**
@@ -112,7 +103,7 @@ export const _onUpdate = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ plugins, user, swr }: IProps): React.JSX.Element => {
+const Edit = ({ plugins, user, swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -146,13 +137,14 @@ const Edit = ({ plugins, user, swr }: IProps): React.JSX.Element => {
     async (values: ILocalValues): Promise<void> => {
       setLoading(true)
       try {
-        await _onUpdate(user, values, swr, dispatch)
+        await _onUpdate(user, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
         setLoading(false)
+        dispatch(addError({ title: errors.update, err }))
         throw err
       }
     },

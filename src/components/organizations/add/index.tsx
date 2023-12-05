@@ -1,7 +1,7 @@
 /** @module Components.Organizations.Add */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -12,10 +12,7 @@ import { Form, Input, InputRef } from 'antd'
 
 import { IFrontNewOrganization } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton } from '@/components/assets/button'
@@ -48,20 +45,14 @@ export const _onAdd = async (
   values: { name: string },
   swr: {
     addOneOrganization: (origanization: IFrontNewOrganization) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    const organization = await OrganizationAPI.add({ name: values.name })
-
-    // Local
-    organization.name = values.name
-    await swr.addOneOrganization(organization)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
   }
+): Promise<void> => {
+  // API
+  const organization = await OrganizationAPI.add({ name: values.name })
+
+  // Local
+  organization.name = values.name
+  await swr.addOneOrganization(organization)
 }
 
 /**
@@ -69,7 +60,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ swr }: IProps): React.JSX.Element => {
+const Add = ({ swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -104,12 +95,13 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
     async (values: { name: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _onAdd(values, swr, dispatch)
+        await _onAdd(values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.add, err }))
         setLoading(false)
         throw err
       }

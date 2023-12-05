@@ -1,6 +1,6 @@
 /** @module Components.Workspace.Sample */
 
-import React, { Dispatch, useCallback, useContext, useState } from 'react'
+import React, { ReactNode, useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { List } from 'antd'
 import { ArrowRightOutlined } from '@ant-design/icons'
@@ -18,10 +18,7 @@ import {
 
 import Models from '@/models'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import Dialog from '@/components/assets/dialog'
@@ -55,43 +52,29 @@ export const errors = {
 /**
  * On workspace add
  * @param values Values
- * @param dispatch Dispacth
  * @returns Workspace
  */
 export const _onWorkspaceAdd = async (
-  values: Pick<IFrontWorkspacesItem, 'name'>,
-  dispatch: Dispatch<INotificationAction>
+  values: Pick<IFrontWorkspacesItem, 'name'>
 ): Promise<IFrontNewWorkspace> => {
-  try {
-    const workspace = await WorkspaceAPI.add(values)
-    return workspace
-  } catch (err: any) {
-    dispatch(addError({ title: errors.addWorkspace, err }))
-    throw err
-  }
+  const workspace = await WorkspaceAPI.add(values)
+  return workspace
 }
 
 /**
  * On project add
  * @param workspace Workspace
  * @param values Values
- * @param dispatch Dispatch
  * @returns Project
  */
 export const _onProjectAdd = async (
   workspace: Pick<IFrontWorkspacesItem, 'id'>,
-  values: Pick<IFrontNewProject, 'title' | 'description'>,
-  dispatch: Dispatch<INotificationAction>
+  values: Pick<IFrontNewProject, 'title' | 'description'>
 ): Promise<IFrontNewProject> => {
-  try {
-    // Add
-    const project = await ProjectAPI.add({ id: workspace.id }, values)
+  // Add
+  const project = await ProjectAPI.add({ id: workspace.id }, values)
 
-    return project
-  } catch (err: any) {
-    dispatch(addError({ title: errors.addProject, err }))
-    throw err
-  }
+  return project
 }
 
 /**
@@ -113,134 +96,121 @@ export const _getFile = async (): Promise<ArrayBuffer> => {
 /**
  * On geometry add
  * @param project Project
- * @param dispatch Dispatch
  * @returns Geometry
  */
 export const _onGeometryAdd = async (
-  project: Pick<IFrontProject, 'id'>,
-  dispatch: Dispatch<INotificationAction>
+  project: Pick<IFrontProject, 'id'>
 ): Promise<IFrontNewGeometry> => {
   const buffer = await _getFile()
-  try {
-    // API
-    const geometry = await GeometryAPI.add(
-      { id: project.id },
-      {
-        name: 'cube.stp',
-        uid: uuid(),
-        buffer: Buffer.from(buffer)
-      }
-    )
-    return geometry
-  } catch (err: any) {
-    dispatch(addError({ title: errors.addGeometry, err }))
-    throw err
-  }
+
+  // API
+  const geometry = await GeometryAPI.add(
+    { id: project.id },
+    {
+      name: 'cube.stp',
+      uid: uuid(),
+      buffer: Buffer.from(buffer)
+    }
+  )
+  return geometry
 }
 
 /**
  * On simulation add
  * @param user User
  * @param project Project
- * @param dispatch Dispatch
  * @returns Simulation
  */
 export const _onSimulationAdd = async (
   user: Pick<IFrontUser, 'id' | 'plugins'>,
   project: Pick<IFrontProject, 'id'>,
-  geometry: IFrontNewGeometry,
-  dispatch: Dispatch<INotificationAction>
+  geometry: IFrontNewGeometry
 ): Promise<IFrontNewSimulation> => {
-  try {
-    const scheme = Models.find((m) => m.algorithm === 'poisson')!
-    // Geometry
-    scheme.configuration.geometry.children = [
-      {
-        ...scheme.configuration.geometry.children[0],
-        value: geometry.id
-      }
-    ]
-    scheme.configuration.geometry.done = true
+  const scheme = Models.find((m) => m.algorithm === 'poisson')!
+  // Geometry
+  scheme.configuration.geometry.children = [
+    {
+      ...scheme.configuration.geometry.children[0],
+      value: geometry.id
+    }
+  ]
+  scheme.configuration.geometry.done = true
 
-    // Parameters
-    scheme.configuration.parameters.done = true
+  // Parameters
+  scheme.configuration.parameters.done = true
 
-    // Boundary conditions
-    //@ts-ignore
-    scheme.configuration.boundaryConditions.dirichlet.values = [
-      {
-        uuid: '0',
-        name: 'Boundary 0',
-        type: {
-          key: 'dirichlet',
-          label: 'Dirichlet',
-          children: [
-            {
-              label: 'u',
-              htmlEntity: 'formula',
-              default: '0'
-            }
-          ]
-        },
-        geometry: geometry.id,
-        selected: [
+  // Boundary conditions
+  //@ts-ignore
+  scheme.configuration.boundaryConditions.dirichlet.values = [
+    {
+      uuid: '0',
+      name: 'Boundary 0',
+      type: {
+        key: 'dirichlet',
+        label: 'Dirichlet',
+        children: [
           {
-            label: 2,
-            uuid: geometry.summary.faces?.find((face) => face.label === 2)?.uuid
-          }
-        ],
-        values: [
-          {
-            checked: true,
-            value: 0
+            label: 'u',
+            htmlEntity: 'formula',
+            default: '0'
           }
         ]
       },
-      {
-        uuid: '1',
-        name: 'Boundary 1',
-        type: {
-          key: 'dirichlet',
-          label: 'Dirichlet',
-          children: [
-            {
-              label: 'u',
-              htmlEntity: 'formula',
-              default: '0'
-            }
-          ]
-        },
-        geometry: geometry.id,
-        selected: [
+      geometry: geometry.id,
+      selected: [
+        {
+          label: 2,
+          uuid: geometry.summary.faces?.find((face) => face.label === 2)?.uuid
+        }
+      ],
+      values: [
+        {
+          checked: true,
+          value: 0
+        }
+      ]
+    },
+    {
+      uuid: '1',
+      name: 'Boundary 1',
+      type: {
+        key: 'dirichlet',
+        label: 'Dirichlet',
+        children: [
           {
-            label: 4,
-            uuid: geometry.summary.faces?.find((face) => face.label === 4)?.uuid
-          }
-        ],
-        values: [
-          {
-            checked: true,
-            value: 1
+            label: 'u',
+            htmlEntity: 'formula',
+            default: '0'
           }
         ]
-      }
-    ]
-    scheme.configuration.boundaryConditions.done = true
+      },
+      geometry: geometry.id,
+      selected: [
+        {
+          label: 4,
+          uuid: geometry.summary.faces?.find((face) => face.label === 4)?.uuid
+        }
+      ],
+      values: [
+        {
+          checked: true,
+          value: 1
+        }
+      ]
+    }
+  ]
+  scheme.configuration.boundaryConditions.done = true
 
-    // Run
-    const localPlugin = user.plugins.find((plugin) => plugin.key === 'local')
-    scheme.configuration.run.cloudServer = localPlugin
+  // Run
+  const localPlugin = user.plugins.find((plugin) => plugin.key === 'local')
+  scheme.configuration.run.cloudServer = localPlugin
 
-    // API
-    const simulation = await SimulationAPI.add(
-      { id: project.id },
-      { name: scheme.name, scheme }
-    )
-    return simulation
-  } catch (err: any) {
-    dispatch(addError({ title: errors.addProject, err }))
-    throw err
-  }
+  // API
+  const simulation = await SimulationAPI.add(
+    { id: project.id },
+    { name: scheme.name, scheme }
+  )
+  return simulation
 }
 
 /**
@@ -252,7 +222,7 @@ const SampleWorkspace = ({
   setVisible,
   user,
   swr
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -275,27 +245,43 @@ const SampleWorkspace = ({
 
     try {
       // Workspace
-      const workspace = await _onWorkspaceAdd(
-        { name: 'Example Workspace' },
-        dispatch
-      )
+      let workspace
+      try {
+        workspace = await _onWorkspaceAdd({ name: 'Example Workspace' })
+      } catch (err: any) {
+        dispatch(addError({ title: errors.addWorkspace, err }))
+        throw err
+      }
 
       // Project
-      const project = await _onProjectAdd(
-        workspace,
-        {
+      let project
+      try {
+        project = await _onProjectAdd(workspace, {
           title: 'Example Project',
           description:
             "This is an example project solving the Poisson's equation"
-        },
-        dispatch
-      )
+        })
+      } catch (err: any) {
+        dispatch(addError({ title: errors.addProject, err }))
+        throw err
+      }
 
       // Geometry
-      const geometry = await _onGeometryAdd(project, dispatch)
+      let geometry
+      try {
+        geometry = await _onGeometryAdd(project)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.addGeometry, err }))
+        throw err
+      }
 
       // Simulation
-      await _onSimulationAdd(user, project, geometry, dispatch)
+      try {
+        await _onSimulationAdd(user, project, geometry)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.addProject, err }))
+        throw err
+      }
 
       // Mutate
       swr.addOneWorkspace(workspace)

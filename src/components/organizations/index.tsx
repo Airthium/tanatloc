@@ -1,7 +1,7 @@
 /** @module Components.Organizations */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, ReactNode } from 'react'
 import { Layout, Space, Typography } from 'antd'
 
 import {
@@ -44,11 +44,7 @@ export interface IProps {
  * @param props Props
  * @returns Organizations
  */
-const Organizations = ({
-  user,
-  organizations,
-  swr
-}: IProps): React.JSX.Element => {
+const Organizations = ({ user, organizations, swr }: IProps): ReactNode => {
   // State
   const [organization, setOrganization] =
     useState<IFrontOrganizationsItem | null>()
@@ -82,7 +78,7 @@ const Organizations = ({
    * On close
    */
   const onClose = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push({
         pathname: 'dashboard',
         query: {
@@ -90,7 +86,8 @@ const Organizations = ({
         }
       })
       setOrganization(null)
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   /**
@@ -99,7 +96,7 @@ const Organizations = ({
    */
   const setOrg = useCallback(
     (org: IFrontOrganizationsItem): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         await router.push({
           pathname: 'dashboard',
           query: {
@@ -108,7 +105,8 @@ const Organizations = ({
           }
         })
         setOrganization(org)
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )

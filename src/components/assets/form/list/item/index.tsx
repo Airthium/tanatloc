@@ -8,7 +8,7 @@ import { MinusCircleOutlined } from '@ant-design/icons'
  * Props
  */
 export interface IProps {
-  children: ReactNode[]
+  children: ReactNode
   field: FormListFieldData
   label: string
   index: number
@@ -26,7 +26,7 @@ export const FormListItem = ({
   label,
   index,
   remove
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   /**
    * On remove
    */

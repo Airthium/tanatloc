@@ -1,6 +1,6 @@
 /** @module Components.Assets.Formula.Large */
 
-import { ChangeEvent, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react'
 import {
   Collapse,
   Form,
@@ -48,7 +48,7 @@ const Large = ({
   units,
   onChange,
   onUnitChange
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   const [visible, setVisible] = useState<boolean>(false)
   const [value, setValue] = useState<string>(initialValue)
   const [error, setError] = useState<string>()

@@ -1,6 +1,6 @@
 /** @module Components.Password */
 
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
   Button,
@@ -75,7 +75,7 @@ export const _onFinish = async (
  * Password recovery
  * @returns PasswordRecovery
  */
-const PasswordRecovery = (): React.JSX.Element => {
+const PasswordRecovery = (): ReactNode => {
   // State
   const [checking, setChecking] = useState<boolean>(true)
   const [linkEmail, setLinkEmail] = useState<string>()
@@ -93,7 +93,7 @@ const PasswordRecovery = (): React.JSX.Element => {
 
   // Check link type
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       if (!id) return
 
       try {
@@ -108,7 +108,8 @@ const PasswordRecovery = (): React.JSX.Element => {
       } catch (err: any) {
         dispatch(addError({ title: errors.internal, err }))
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [id, dispatch])
 
   /**
@@ -117,7 +118,7 @@ const PasswordRecovery = (): React.JSX.Element => {
    */
   const onFinish = useCallback(
     (values: ILocalValues): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         setLoading(true)
         try {
           await _onFinish(router, linkEmail!, id!, values)
@@ -125,7 +126,8 @@ const PasswordRecovery = (): React.JSX.Element => {
           setFormError(err)
           setLoading(false)
         }
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router, linkEmail, id]
   )

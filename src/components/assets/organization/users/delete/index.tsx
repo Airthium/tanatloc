@@ -1,12 +1,9 @@
 /** @module Components.Assets.Organization.User.Delete */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -69,31 +66,25 @@ export const _onDelete = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.update(organization, [
-      {
-        key: dBkey,
-        type: 'array',
-        method: 'remove',
-        value: user.id
-      }
-    ])
-
-    // Local
-    const newOrganization = Utils.deepCopy(organization)
-    //@ts-ignore
-    newOrganization[dBkey] = newOrganization[dBkey].filter(
-      (u) => u.id !== user.id
-    )
-    await swr.mutateOneOrganization(newOrganization)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.del, err }))
-    throw err
   }
+): Promise<void> => {
+  // API
+  await OrganizationAPI.update(organization, [
+    {
+      key: dBkey,
+      type: 'array',
+      method: 'remove',
+      value: user.id
+    }
+  ])
+
+  // Local
+  const newOrganization = Utils.deepCopy(organization)
+  //@ts-ignore
+  newOrganization[dBkey] = newOrganization[dBkey].filter(
+    (u) => u.id !== user.id
+  )
+  await swr.mutateOneOrganization(newOrganization)
 }
 
 /**
@@ -114,7 +105,7 @@ const Delete = ({
   organization,
   dBkey,
   swr
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -136,7 +127,10 @@ const Delete = ({
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(user, organization, dBkey, swr, dispatch)
+      await _onDelete(user, organization, dBkey, swr)
+    } catch (err: any) {
+      dispatch(addError({ title: errors.del, err }))
+      throw err
     } finally {
       setLoading(false)
     }

@@ -1,5 +1,6 @@
 /** @module Components.Assets.Button.GoBack */
 
+import { ReactNode } from 'react'
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -9,7 +10,7 @@ import globalStyle from '@/styles/index.module.css'
  * Props
  */
 export interface IProps {
-  children?: string | React.ReactElement | React.ReactElement[]
+  children?: ReactNode
   className?: string
   onClick: () => void
 }
@@ -22,11 +23,7 @@ export interface IProps {
  * - onClick (Function) Button click
  * @returns GoBack
  */
-const GoBack = ({
-  children,
-  className,
-  onClick
-}: IProps): React.JSX.Element => {
+const GoBack = ({ children, className, onClick }: IProps): ReactNode => {
   /**
    * Render
    */

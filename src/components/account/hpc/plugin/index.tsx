@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin */
 
-import { useContext, useEffect } from 'react'
+import { ReactNode, useContext, useEffect } from 'react'
 import { Space, Spin } from 'antd'
 
 import { HPCClientPlugin } from '@/plugins/index.d'
@@ -34,7 +34,7 @@ export const errors = {
  * @param props Props
  * @returns Plugin
  */
-const Plugin = ({ plugin }: IProps): React.JSX.Element => {
+const Plugin = ({ plugin }: IProps): ReactNode => {
   // Data
   const [
     plugins,

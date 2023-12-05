@@ -1,6 +1,6 @@
 /** @module Components.Assets.Carousel */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Carousel as AntCarousel } from 'antd'
 import { CarouselRef } from 'antd/es/carousel'
 import {
@@ -29,7 +29,7 @@ export interface IProps {
  * @param props Props
  * @returns Carousel
  */
-const Carousel = ({ items }: IProps): React.JSX.Element => {
+const Carousel = ({ items }: IProps): ReactNode => {
   // Ref
   const carouselRef = useRef<CarouselRef>(null)
 

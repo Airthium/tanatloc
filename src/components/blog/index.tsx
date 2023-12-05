@@ -1,6 +1,14 @@
 /** @module Components.Blog */
 
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { useRouter } from 'next/router'
 import {
   Button,
@@ -51,7 +59,7 @@ const PostCard = ({
   description,
   keywords,
   author
-}: IPostCardProps): React.JSX.Element => {
+}: IPostCardProps): ReactNode => {
   // Data
   const router = useRouter()
 
@@ -59,12 +67,13 @@ const PostCard = ({
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push({
         pathname: '/blog',
         query: { post: postKey }
       })
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router, postKey])
 
   /**
@@ -103,9 +112,9 @@ const PostCard = ({
  * Blog
  * @returns Blog
  */
-const Blog = () => {
+const Blog = (): ReactNode => {
   // State
-  const [postRender, setPostRender] = useState<React.JSX.Element>()
+  const [postRender, setPostRender] = useState<ReactNode>()
   const [sort, setSort] = useState<number>(1)
   const [tags, setTags] = useState<string[]>([])
   const [search, setSearch] = useState<string>()
@@ -126,9 +135,10 @@ const Blog = () => {
    * On tanatloc
    */
   const onTanatloc = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push('/')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   /**
@@ -159,7 +169,7 @@ const Blog = () => {
    * @param props Props
    * @returns Render
    */
-  const tagRender = useCallback((props: CustomTagProps): React.JSX.Element => {
+  const tagRender = useCallback((props: CustomTagProps): ReactElement => {
     const { label, value, closable, onClose } = props
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault()

@@ -1,12 +1,17 @@
 /** @module Components.Doc.Dashboard.Account */
 
+import { ReactNode } from 'react'
 import { Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
 
 import style from '../../index.module.css'
 
-const Account = (): React.JSX.Element => {
+/**
+ * Account
+ * @returns Account
+ */
+const Account = (): ReactNode => {
   /**
    * Render
    */

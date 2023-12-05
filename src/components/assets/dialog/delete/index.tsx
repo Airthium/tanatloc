@@ -1,6 +1,6 @@
 /** @module Components.Assets.Dialog.Delete */
 
-import { useCallback, useContext } from 'react'
+import { ReactNode, useCallback, useContext } from 'react'
 import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 
@@ -14,7 +14,7 @@ export interface IProps {
   visible: boolean
   loading?: boolean
   title: string
-  children: string | React.ReactElement | React.ReactElement[]
+  children: ReactNode
   onCancel: () => void
   onOk: () => Promise<void>
 }
@@ -45,7 +45,7 @@ const DeleteDialog = ({
   children,
   onCancel,
   onOk
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -53,13 +53,15 @@ const DeleteDialog = ({
    * On ok
    */
   const internalOnOk = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       try {
         await onOk()
       } catch (err: any) {
         dispatch(addError({ title: errors.onOk, err, display: false }))
       }
-    })()
+    }
+
+    asyncFunction().catch(console.error)
   }, [onOk, dispatch])
 
   /**

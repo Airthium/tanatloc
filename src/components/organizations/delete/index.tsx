@@ -1,6 +1,6 @@
 /** @module Components.Organizations.Delete */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import {
@@ -8,10 +8,7 @@ import {
   IFrontOrganizationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -48,19 +45,13 @@ export const _onDelete = async (
     delOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.del({ id: organization.id })
-
-    // Local
-    await swr.delOneOrganization({ id: organization.id })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.del, err }))
-    throw err
   }
+): Promise<void> => {
+  // API
+  await OrganizationAPI.del({ id: organization.id })
+
+  // Local
+  await swr.delOneOrganization({ id: organization.id })
 }
 
 /**
@@ -81,7 +72,10 @@ const Delete = ({ organization, swr }: IProps): React.JSX.Element => {
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(organization, swr, dispatch)
+      await _onDelete(organization, swr)
+    } catch (err: any) {
+      dispatch(addError({ title: errors.del, err }))
+      throw err
     } finally {
       setLoading(false)
     }

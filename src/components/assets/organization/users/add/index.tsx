@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.User.Add */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -10,10 +10,7 @@ import {
 } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton } from '@/components/assets/button'
@@ -98,13 +95,11 @@ export const _onFinish = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  }
 ): Promise<void> => {
   // Check
   const exists = _checkAlreadyAdded(values, organization)
   if (exists) {
-    dispatch(addError({ title: errors.existing }))
     throw new Error(errors.existing)
   }
 
@@ -129,8 +124,7 @@ export const _onFinish = async (
     ]
     await swr.mutateOneOrganization(newOrganization)
   } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
+    throw new Error(errors.add)
   }
 }
 
@@ -145,12 +139,7 @@ export const _onFinish = async (
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Add
  */
-const Add = ({
-  title,
-  organization,
-  dBkey,
-  swr
-}: IProps): React.JSX.Element => {
+const Add = ({ title, organization, dBkey, swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -185,12 +174,13 @@ const Add = ({
     async (values: { email: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _onFinish(organization, dBkey, values, swr, dispatch)
+        await _onFinish(organization, dBkey, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: err.message, err: err }))
         setLoading(false)
         throw err
       }

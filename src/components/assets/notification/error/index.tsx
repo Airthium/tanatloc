@@ -1,6 +1,6 @@
 /** @module Components.Assets.Notification.Error */
 
-import { useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { App, Button, Collapse, Space, Typography } from 'antd'
 import { v4 as uuid } from 'uuid'
 
@@ -15,7 +15,7 @@ import Sentry from '@/lib/sentry'
  * Error notification
  * @return ErrorNotification
  */
-const ErrorNotification = (): null => {
+const ErrorNotification = (): ReactNode => {
   // State
   const [opened, setOpened] = useState<string[]>([])
 
@@ -40,7 +40,7 @@ const ErrorNotification = (): null => {
   // Notifications
   useCustomEffect(
     () => {
-      const currentOpened: string[] = opened
+      const currentOpened: string[] = [...opened]
 
       errors?.forEach((error) => {
         if (error.err?.message === 'Failed to fetch') {

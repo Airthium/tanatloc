@@ -55,13 +55,13 @@ const Materials = ({
   // Context
   const { dispatch } = useContext(SelectContext)
 
-  // Data
+  // Materials
   const materials = useMemo(
     () => simulation.scheme.configuration.materials!,
     [simulation]
   )
 
-  // Remove duplicated geometries
+  // Filtered geometries (remove duplicated)
   const filteredGeometries = useMemo(() => {
     const filtered = geometries.reduce(
       (accumulator: Geometry[], current: Geometry) => {
@@ -75,7 +75,7 @@ const Materials = ({
     return filtered
   }, [geometries])
 
-  // Part
+  // Part selection
   useCustomEffect(
     () => {
       if (filteredGeometries[0]?.summary) {
@@ -108,7 +108,6 @@ const Materials = ({
     (index: number): void => {
       const materialToEdit = materials.values![index]
       setMaterial(materialToEdit)
-
       setMaterialVisible(true)
       setVisible(false)
       dispatch(enable())

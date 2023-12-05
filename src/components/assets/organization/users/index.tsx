@@ -1,6 +1,13 @@
 /** @module Components.Assets.Organization.Users */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { Avatar, Card, Space, Table, TableColumnType } from 'antd'
 
 import {
@@ -41,7 +48,7 @@ export interface IProps {
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Users
  */
-const Users = ({ organization, swr }: IProps): React.JSX.Element => {
+const Users = ({ organization, swr }: IProps): ReactNode => {
   // State
   const [scrollAdmin, setScrollAdmin] = useState<{ y: number }>()
   const [scrollUsers, setScrollUsers] = useState<{ y: number }>()
@@ -64,7 +71,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const workspacesRender = useCallback(
-    (workspaces?: IFrontGroupsItem['workspaces']): React.JSX.Element => (
+    (workspaces?: IFrontGroupsItem['workspaces']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {workspaces?.map((workspace) => Utils.workspaceToAvatar(workspace))}
       </Avatar.Group>
@@ -78,7 +85,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const projectsRender = useCallback(
-    (projects?: IFrontGroupsItem['projects']): React.JSX.Element => (
+    (projects?: IFrontGroupsItem['projects']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {projects?.map((project) => Utils.projectToAvatar(project))}
       </Avatar.Group>
@@ -92,7 +99,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const usermodelsRender = useCallback(
-    (usermodels?: IFrontGroupsItem['usermodels']): React.JSX.Element => (
+    (usermodels?: IFrontGroupsItem['usermodels']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {usermodels?.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
       </Avatar.Group>
@@ -108,7 +115,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
   const ownerActionsRender = useCallback(
     (
       owner: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
-    ): React.JSX.Element => (
+    ): ReactNode => (
       <Delete
         disabled={organization.owners.length < 2 && !owner.pending}
         user={{
@@ -139,7 +146,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
   const userActionsRender = useCallback(
     (
       user: IFrontOrganizationsItem['users'][0] & { pending?: boolean }
-    ): React.JSX.Element => (
+    ): ReactNode => (
       <Delete
         user={{
           id: user.id,
@@ -280,7 +287,7 @@ const Users = ({ organization, swr }: IProps): React.JSX.Element => {
   }, [])
 
   // Handle window resize
-  useEffect((): (() => void) => {
+  useEffect(() => {
     window.addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)

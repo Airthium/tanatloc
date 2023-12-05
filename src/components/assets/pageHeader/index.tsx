@@ -1,5 +1,6 @@
 /** @module Components.Assets.PageHeader */
 
+import { ReactNode } from 'react'
 import { Divider } from 'antd'
 
 import style from './index.module.css'
@@ -9,10 +10,10 @@ import style from './index.module.css'
  */
 export interface IProps {
   className?: string
-  title?: string | React.JSX.Element
-  footer?: string | React.JSX.Element
-  extra?: string | React.JSX.Element
-  children?: React.JSX.Element | React.JSX.Element[]
+  title?: ReactNode
+  footer?: ReactNode
+  extra?: ReactNode
+  children?: ReactNode
 }
 
 /**
@@ -26,7 +27,7 @@ const PageHeader = ({
   footer,
   extra,
   children
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   return (
     <div className={className}>
       {(title || extra) && (

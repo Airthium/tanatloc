@@ -2,7 +2,7 @@
 
 import { NextRouter, useRouter } from 'next/router'
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -36,10 +36,7 @@ import {
 
 import { LIMIT50 } from '@/config/string'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { menuItems } from '@/components/dashboard'
@@ -93,26 +90,20 @@ export const errors = {
 export const _onOk = async (
   router: NextRouter,
   values: Pick<IFrontWorkspacesItem, 'name'>,
-  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> },
-  dispatch: Dispatch<INotificationAction>
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> }
 ): Promise<void> => {
-  try {
-    // Add
-    const workspace = await WorkspaceAPI.add(values)
+  // Add
+  const workspace = await WorkspaceAPI.add(values)
 
-    // Mutate
-    await swr.addOneWorkspace(workspace)
+  // Mutate
+  await swr.addOneWorkspace(workspace)
 
-    await router
-      .push({
-        pathname: '/dashboard',
-        query: { page: 'workspaces', workspaceId: workspace.id }
-      })
-      .catch()
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
-  }
+  await router
+    .push({
+      pathname: '/dashboard',
+      query: { page: 'workspaces', workspaceId: workspace.id }
+    })
+    .catch()
 }
 
 /**
@@ -125,7 +116,7 @@ const WorkspacesList = ({
   workspaces,
   organizations,
   swr
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -168,7 +159,7 @@ const WorkspacesList = ({
    */
   const onChange = useCallback(
     (activeKey: string): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         if (activeKey === 'add') setVisible(true)
         else if (activeKey === 'sample') setSampleVisible(true)
         else
@@ -176,7 +167,8 @@ const WorkspacesList = ({
             pathname: '/dashboard',
             query: { page: 'workspaces', workspaceId: activeKey }
           })
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )
@@ -189,12 +181,13 @@ const WorkspacesList = ({
     async (values: Pick<IFrontWorkspacesItem, 'name'>): Promise<void> => {
       setLoading(true)
       try {
-        await _onOk(router, values, swr, dispatch)
+        await _onOk(router, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.add, err }))
         setLoading(false)
         throw err
       }

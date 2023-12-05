@@ -6,7 +6,8 @@ import {
   useRef,
   useCallback,
   useMemo,
-  useContext
+  useContext,
+  ReactNode
 } from 'react'
 import {
   Badge,
@@ -72,7 +73,7 @@ export const errors = {
  * @param props Props
  * @returns Users
  */
-const Users = ({ users, swr }: IProps): React.JSX.Element => {
+const Users = ({ users, swr }: IProps): ReactNode => {
   // Ref
   const refTable = useRef<any>(null)
 
@@ -89,7 +90,7 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const authorizedpluginsRender = useCallback(
-    (authorizedplugins: string[]): React.JSX.Element => {
+    (authorizedplugins: string[]): ReactNode => {
       authorizedplugins.sort((a, b) => a.localeCompare(b))
       const list = authorizedplugins.map((authorizedplugin) => {
         const plugin = plugins?.find((p) => p.key === authorizedplugin)
@@ -121,7 +122,7 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const superuserRender = useCallback(
-    (superuser: boolean): React.JSX.Element | null =>
+    (superuser: boolean): ReactNode =>
       superuser ? <CheckOutlined className={globalStyle.textGreen} /> : null,
     []
   )
@@ -133,7 +134,7 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const actionsRender = useCallback(
-    (_: any, record: TUserItem): React.JSX.Element => (
+    (_: any, record: TUserItem): ReactNode => (
       <Space>
         <Edit
           plugins={
@@ -239,16 +240,12 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
   }, [])
 
   // Handle window resize
-  useCustomEffect(
-    () => {
-      window.addEventListener('resize', onResize)
-      return () => {
-        window.removeEventListener('resize', onResize)
-      }
-    },
-    undefined,
-    [onResize]
-  )
+  useEffect(() => {
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [onResize])
 
   // Set Table Scroll Limit
   useCustomEffect(
@@ -261,7 +258,7 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
 
   // Plugins list
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       try {
         const list = await PluginsAPI.completeList()
 
@@ -269,7 +266,8 @@ const Users = ({ users, swr }: IProps): React.JSX.Element => {
       } catch (err: any) {
         dispatch(addError({ title: errors.plugins, err }))
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [dispatch])
 
   /**

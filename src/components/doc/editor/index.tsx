@@ -1,5 +1,6 @@
 /** @module Components.Doc.Editor */
 
+import { ReactNode } from 'react'
 import { Typography } from 'antd'
 
 import style from '../index.module.css'
@@ -8,7 +9,7 @@ import style from '../index.module.css'
  * Editor
  * @returns Editor
  */
-const Editor = (): React.JSX.Element => {
+const Editor = (): ReactNode => {
   return (
     <>
       <Typography.Title level={4}>Model Editor</Typography.Title>

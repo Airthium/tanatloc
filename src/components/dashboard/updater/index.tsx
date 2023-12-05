@@ -1,6 +1,6 @@
 /** @module Components.Dashboard.Updater */
 
-import { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { Space, Typography } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
@@ -11,20 +11,17 @@ import Update, { IUpdateTrue } from '@/lib/update'
  * Updater
  * @returns Updater
  */
-const Updater = (): React.JSX.Element => {
+const Updater = (): ReactNode => {
   const [needUpdate, setNeedUpdate] = useState<IUpdateTrue>()
   const [visible, setVisible] = useState<boolean>(false)
 
   // Github call
   useEffect(() => {
-    ;(async () => {
-      try {
-        const update = await Update.needUpdate()
-        if (update.needed) setNeedUpdate(update)
-      } catch (err: any) {
-        console.error(err)
-      }
-    })()
+    const asyncFunction = async () => {
+      const update = await Update.needUpdate()
+      if (update.needed) setNeedUpdate(update)
+    }
+    asyncFunction().catch(console.error)
   }, [])
 
   // Visible

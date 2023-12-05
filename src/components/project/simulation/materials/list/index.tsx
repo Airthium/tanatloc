@@ -84,7 +84,7 @@ const ListItem = ({
    * Unhighlight
    */
   const unhighlight = useCallback((): void => {
-    enabled && setTimeout(() => dispatch(disable()), 50)
+    enabled && dispatch(disable())
   }, [enabled, dispatch])
 
   /**
@@ -93,7 +93,7 @@ const ListItem = ({
   const onEdit = useCallback((): void => {
     setEnabled(false)
     _onEdit(index)
-    setTimeout(() => setEnabled(true), 500)
+    setEnabled(true)
   }, [index, _onEdit])
 
   /**

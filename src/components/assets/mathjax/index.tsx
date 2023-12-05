@@ -1,16 +1,16 @@
 /** @module Components.Assets.Mathjax */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import parse from 'html-react-parser'
+import { Spin } from 'antd'
 
 import { mathjaxRefresh } from '@/lib/mathjax'
-import { Spin } from 'antd'
 
 /**
  * Head
  */
-const Head = (): React.JSX.Element => {
+const Head = (): ReactNode => {
   /**
    * Render
    */
@@ -26,7 +26,7 @@ export interface IPropsInline {
  * @param props Props
  * @returns Inline
  */
-const BackInline = ({ text }: IPropsInline): React.JSX.Element => {
+const BackInline = ({ text }: IPropsInline): ReactNode => {
   // Content
   let content = text ?? ''
   if (text && !text.includes('\\(') && !text.includes('\\)'))
@@ -42,7 +42,7 @@ const BackInline = ({ text }: IPropsInline): React.JSX.Element => {
  * Inline
  * @param props Props
  */
-const Inline = ({ text }: IPropsInline): React.JSX.Element => {
+const Inline = ({ text }: IPropsInline): ReactNode => {
   // State
   const [content, setContent] = useState<string>()
 
@@ -86,7 +86,7 @@ export interface IPropsFormula {
  * @param props Props
  * @returns Formula
  */
-const BackFormula = ({ text }: IPropsFormula): React.JSX.Element => {
+const BackFormula = ({ text }: IPropsFormula): ReactNode => {
   // Content
   let content = text ?? ''
   if (text && !text.includes('$$')) content = '$$' + text + '$$'
@@ -140,11 +140,9 @@ export interface IPropsHtml {
  * Html
  * @param props Props
  */
-const Html = ({ html }: IPropsHtml): React.JSX.Element => {
+const Html = ({ html }: IPropsHtml): ReactNode => {
   // State
-  const [content, setContent] = useState<
-    string | React.JSX.Element | React.JSX.Element[]
-  >()
+  const [content, setContent] = useState<ReactNode>()
   const [loading, setLoading] = useState<boolean>(false)
 
   // Ref

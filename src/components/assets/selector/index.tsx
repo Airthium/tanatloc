@@ -20,7 +20,6 @@ import {
 } from '@ant-design/icons'
 
 import { IFrontGeometriesItem } from '@/api/index.d'
-
 import { TGeometryColor } from '@/database/geometry/get'
 
 import { SelectContext, ISelect, ISelectAction } from '@/context/select'
@@ -174,6 +173,22 @@ const GeometryElementCard = ({
     return true
   }, [element, filter, search])
 
+  // Border color
+  const borderColor = useMemo(() => {
+    if (context.selected.find((s) => s.uuid === element.uuid)) return '#EE9817'
+    else if (context.highlighted?.uuid === element.uuid) return '#FAD114'
+    return 'transparent'
+  }, [element, context])
+
+  // Background color
+  const backgroundColor = useMemo(() => {
+    if (context.selected.find((s) => s.uuid === element.uuid))
+      return 'rgba(238, 152, 23, 0.3)'
+    else if (context.highlighted?.uuid === element.uuid)
+      return 'rgba(250, 209, 20, 0.3)'
+    return 'transparent'
+  }, [element, context])
+
   /**
    * On highglight
    * @param selection Selection
@@ -203,22 +218,6 @@ const GeometryElementCard = ({
     },
     [context]
   )
-
-  // Border color
-  const borderColor = useMemo(() => {
-    if (context.selected.find((s) => s.uuid === element.uuid)) return '#EE9817'
-    else if (context.highlighted?.uuid === element.uuid) return '#FAD114'
-    return 'transparent'
-  }, [element, context])
-
-  // Background color
-  const backgroundColor = useMemo(() => {
-    if (context.selected.find((s) => s.uuid === element.uuid))
-      return 'rgba(238, 152, 23, 0.3)'
-    else if (context.highlighted?.uuid === element.uuid)
-      return 'rgba(250, 209, 20, 0.3)'
-    return 'transparent'
-  }, [element, context])
 
   /**
    * On mouse enter
@@ -308,7 +307,6 @@ const Selector = ({
   updateSelected
 }: IProps): ReactNode => {
   // State
-  const [colors, setColors] = useState<TGeometryColor[]>([])
   const [filter, setFilter] = useState<TGeometryColor>()
   const [search, setSearch] = useState<string>()
 
@@ -319,24 +317,23 @@ const Selector = ({
   useCustomEffect(() => updateSelected(selected), [selected], [updateSelected])
 
   // Colors
-  useCustomEffect(() => {
-    const colorsList: TGeometryColor[] = []
+  const colors = useMemo(() => {
+    const colors: TGeometryColor[] = []
     if (type)
       geometry.summary[type]?.forEach((element) => {
         if (element.color) {
-          const existingColor = colorsList.find(
+          const existingColor = colors.find(
             (c) =>
               c.r === element.color!.r &&
               c.g === element.color!.g &&
               c.b === element.color!.b
           )
           if (!existingColor) {
-            colorsList.push(element.color)
+            colors.push(element.color)
           }
         }
       })
-
-    setColors(colorsList)
+    return colors
   }, [geometry, type])
 
   /**

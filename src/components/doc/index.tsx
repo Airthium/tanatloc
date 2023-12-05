@@ -1,7 +1,14 @@
 /** @module Components.Doc */
 
 import Link from 'next/link'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { useRouter } from 'next/router'
 import { Button, Layout, Menu, Typography } from 'antd'
 
@@ -24,12 +31,12 @@ import globalStyle from '@/styles/index.module.css'
  * Doc
  * @returns Doc
  */
-const Doc = () => {
+const Doc = (): ReactNode => {
   // Ref
   const navRef = useRef<{ section: string; tab: string }>()
 
   // State
-  const [content, setContent] = useState<React.JSX.Element>()
+  const [content, setContent] = useState<ReactNode>()
 
   // Data
   const router = useRouter()
@@ -39,9 +46,10 @@ const Doc = () => {
    * On tanatloc
    */
   const onTanatloc = useCallback(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push('/')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   /**
@@ -53,9 +61,10 @@ const Doc = () => {
       pathname: string
       query?: { section: string; tab?: string }
     }): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         await router.push(route)
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )
@@ -331,16 +340,6 @@ const Doc = () => {
                   , a deeptech startup working on decarbonizing the planet{' '}
                   <img src="/images/earth.png" alt="earth" />.
                 </Typography.Text>
-                {/* <Typography.Text>
-                  Learn more and support our efforts by investing in our{' '}
-                  <Link
-                    href="https://wefunder.com/airthium"
-                    target="_blank"
-                  >
-                    crowdfunding
-                  </Link>
-                  !
-                </Typography.Text> */}
               </Typography>
 
               <Typography className={style.text}>

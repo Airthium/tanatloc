@@ -1,5 +1,6 @@
 /** @module Components.Assets.Button.Edit */
 
+import { ReactNode } from 'react'
 import { Button, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
@@ -16,7 +17,7 @@ export interface IProps {
   dark?: boolean
   needMargin?: boolean
   loading?: boolean
-  children?: string
+  children?: ReactNode
   onEdit: () => void
 }
 
@@ -45,7 +46,7 @@ const EditButton = ({
   loading,
   children,
   onEdit
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   let type: 'link' | 'primary' | 'default'
   if (disabled) type = 'link'
   else if (primary) type = 'primary'

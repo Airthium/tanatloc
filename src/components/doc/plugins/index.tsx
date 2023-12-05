@@ -1,6 +1,6 @@
 /** @module Components.Doc.Plugins */
 
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Tabs, Typography } from 'antd'
@@ -13,7 +13,7 @@ import style from '../index.module.css'
  * HPC
  * @returns HPC
  */
-const Hpc = (): React.JSX.Element => {
+const Hpc = (): ReactNode => {
   /**
    * Render
    */
@@ -133,7 +133,7 @@ const Hpc = (): React.JSX.Element => {
  * Model
  * @returns Model
  */
-const Model = (): React.JSX.Element => {
+const Model = (): ReactNode => {
   /**
    * Render
    */
@@ -171,7 +171,7 @@ const tabs = [
  * Plugins
  * @returns Plugins
  */
-const Plugins = (): React.JSX.Element => {
+const Plugins = (): ReactNode => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -182,7 +182,7 @@ const Plugins = (): React.JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      ;(async () => {
+      const asyncFunction = async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -190,7 +190,8 @@ const Plugins = (): React.JSX.Element => {
             tab: key
           }
         })
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )

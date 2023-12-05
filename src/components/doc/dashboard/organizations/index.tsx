@@ -1,5 +1,6 @@
 /** @module Components.Doc.Dashboard.Organization */
 
+import { ReactNode } from 'react'
 import { Button, Typography } from 'antd'
 import { ControlOutlined } from '@ant-design/icons'
 
@@ -12,7 +13,7 @@ import style from '../../index.module.css'
  * Organizations
  * @returns Organizations
  */
-const Organizations = (): React.JSX.Element => {
+const Organizations = (): ReactNode => {
   /**
    * Render
    */

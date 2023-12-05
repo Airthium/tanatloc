@@ -1,6 +1,6 @@
 /** @module Components.Error */
 
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { NextPageContext } from 'next'
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
@@ -19,7 +19,7 @@ export interface IProps {
  * @param props Props
  * @return Error
  */
-function ErrorPage({ webStatusCode }: Readonly<IProps>): React.JSX.Element {
+function ErrorPage({ webStatusCode }: Readonly<IProps>): ReactNode {
   // Data
   const router = useRouter()
   const {
@@ -33,7 +33,7 @@ function ErrorPage({ webStatusCode }: Readonly<IProps>): React.JSX.Element {
   const reload = useCallback((): void => router.reload(), [router])
 
   // Render
-  let render: React.JSX.Element
+  let render: ReactNode
   if (electronStatusCode) {
     if (electronStatusCode === '100')
       render = (

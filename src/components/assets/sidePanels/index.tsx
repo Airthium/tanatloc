@@ -1,6 +1,6 @@
 /** @module Components.Assets.SidePanels */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 import style from './index.module.css'
@@ -10,8 +10,8 @@ import style from './index.module.css'
  */
 export interface IProps {
   className?: string
-  leftChild: React.JSX.Element
-  rightChild: React.JSX.Element
+  leftChild: ReactNode
+  rightChild: ReactNode
 }
 
 /**
@@ -40,7 +40,7 @@ const DividerRole = 'Divider'
 export const Divider = ({
   onMove,
   onDoubleClick
-}: IDividerProps): React.JSX.Element => {
+}: IDividerProps): ReactNode => {
   // State
   const [activated, setActivated] = useState<boolean>(false)
 
@@ -115,7 +115,7 @@ const SidePanels = ({
   className,
   leftChild,
   rightChild
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 

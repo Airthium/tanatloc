@@ -1,22 +1,20 @@
 /** @module Components.Account.Information */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 import isElectron from 'is-electron'
 
+import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
+
 import { LIMIT50 } from '@/config/string'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError, addSuccess } from '@/context/notification/actions'
 
 import { FormError } from '@/components/assets/notification'
 
-import { IFrontMutateUser, IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
@@ -58,19 +56,20 @@ export const errors = {
 /**
  * Before upload
  * @param file File
+ * @param displayError Display error
  */
 export const _beforeUpload = (
   file: {
     type: string
     size: number
   },
-  dispatch: Dispatch<INotificationAction>
+  displayError: (err: string) => void
 ): boolean => {
   const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
-  if (!goodFormat) dispatch(addError({ title: errors.badFormat }))
+  if (!goodFormat) displayError(errors.badFormat)
 
   const goodSize = file.size / 1024 / 1024 < 1
-  if (!goodSize) dispatch(addError({ title: errors.badSize }))
+  if (!goodSize) displayError(errors.badSize)
 
   return goodFormat && goodSize
 }
@@ -98,7 +97,6 @@ export const _getBase64 = async (file: Blob): Promise<any> => {
 export const _onChange = async (
   user: ILocalUser,
   info: UploadChangeParam<any>,
-  dispatch: Dispatch<INotificationAction>,
   swr: {
     mutateUser: (user: Partial<IFrontUser>) => Promise<void>
   }
@@ -106,25 +104,21 @@ export const _onChange = async (
   if (info.file.status === 'uploading') {
     return true
   } else if (info.file.status === 'done') {
-    try {
-      // Read image
-      const img = await _getBase64(info.file.originFileObj)
+    // Read image
+    const img = await _getBase64(info.file.originFileObj)
 
-      // Add avatar
-      await AvatarAPI.add({
-        name: info.file.name,
-        uid: info.file.uid,
-        data: img
-      })
+    // Add avatar
+    await AvatarAPI.add({
+      name: info.file.name,
+      uid: info.file.uid,
+      data: img
+    })
 
-      // Mutate user
-      await swr.mutateUser({
-        ...user,
-        avatar: Buffer.from(img)
-      })
-    } catch (err: any) {
-      dispatch(addError({ title: errors.upload, err: err }))
-    }
+    // Mutate user
+    await swr.mutateUser({
+      ...user,
+      avatar: Buffer.from(img)
+    })
 
     return false
   } else {
@@ -137,14 +131,15 @@ export const _onChange = async (
  * @param user User
  * @param values Values
  * @param swr SWR
+ * @param displaySuccess Display success
  */
 export const _onFinish = async (
   user: ILocalUser,
   values: ILocalValues,
-  dispatch: Dispatch<INotificationAction>,
   swr: {
     mutateUser: (user: IFrontMutateUser) => Promise<void>
-  }
+  },
+  displaySuccess: (title: string, description: string) => void
 ): Promise<void> => {
   try {
     const toUpdate = []
@@ -182,11 +177,9 @@ export const _onFinish = async (
     })
 
     if (toUpdate.find((u) => u.key === 'email'))
-      dispatch(
-        addSuccess({
-          title: 'Changes saved',
-          description: 'A validation email has been send to ' + values.email
-        })
+      displaySuccess(
+        'Changes saved',
+        'A validation email has been send to ' + values.email
       )
   } catch (err: any) {
     throw new APIError({ title: errors.update, err })
@@ -198,7 +191,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns Information
  */
-const Information = ({ user, swr }: IProps): React.JSX.Element => {
+const Information = ({ user, swr }: IProps): ReactNode => {
   // State
   const [uploading, setUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -208,12 +201,18 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
   const { dispatch } = useContext(NotificationContext)
 
   // Layout
-  const layout = {
-    labelCol: { span: 4 }
-  }
-  const buttonLayout = {
-    wrapperCol: { offset: 4 }
-  }
+  const layout = useMemo(
+    () => ({
+      labelCol: { span: 4 }
+    }),
+    []
+  )
+  const buttonLayout = useMemo(
+    () => ({
+      wrapperCol: { offset: 4 }
+    }),
+    []
+  )
 
   /**
    * Before upload
@@ -222,9 +221,8 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
    * @returns False
    */
   const beforeUpload = useCallback(
-    (file: { type: string; size: number }): boolean => {
-      return _beforeUpload(file, dispatch)
-    },
+    (file: { type: string; size: number }): boolean =>
+      _beforeUpload(file, (err: string) => dispatch(addError({ title: err }))),
     [dispatch]
   )
 
@@ -234,27 +232,40 @@ const Information = ({ user, swr }: IProps): React.JSX.Element => {
    */
   const onChange = useCallback(
     (info: UploadChangeParam<any>): void => {
-      ;(async () => {
-        const upload = await _onChange(user, info, dispatch, swr)
-        setUploading(upload)
-      })()
+      const asyncFunction = async () => {
+        try {
+          const upload = await _onChange(user, info, swr)
+          setUploading(upload)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.upload, err: err }))
+          setUploading(false)
+        }
+      }
+      asyncFunction().catch(console.error)
     },
     [user, swr, dispatch]
   )
 
+  /**
+   * On finidh
+   * @param values Values
+   */
   const onFinish = useCallback(
     (values: ILocalValues): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         setLoading(true)
         try {
-          await _onFinish(user, values, dispatch, swr)
+          await _onFinish(user, values, swr, (title: string, description) =>
+            dispatch(addSuccess({ title, description }))
+          )
           setFormError(undefined)
         } catch (err: any) {
           setFormError(err)
         } finally {
           setLoading(false)
         }
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [user, swr, dispatch]
   )

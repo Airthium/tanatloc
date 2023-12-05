@@ -1,6 +1,13 @@
 /** @module Components.Assets.Formula */
 
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
@@ -62,7 +69,7 @@ const Formula = ({
   onValueChange,
   onCheckedChange,
   onUnitChange
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [internalValue, setInternalValue] = useState<string>(
     String(defaultValue ?? 0)

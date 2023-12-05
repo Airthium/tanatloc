@@ -7,18 +7,15 @@ import {
   RefObject,
   useCallback,
   useMemo,
-  Dispatch,
-  useContext
+  useContext,
+  ReactNode
 } from 'react'
 import { Form, Input, InputRef, Select, Typography } from 'antd'
 import parse from 'html-react-parser'
 
 import { HPCClientPlugin } from '@/plugins/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton, EditButton } from '@/components/assets/button'
@@ -174,44 +171,38 @@ export const _onFinish = async (
   swr: {
     addOnePlugin?: (plugin: HPCClientPlugin) => Promise<void>
     mutateOnePlugin?: (plugin: HPCClientPlugin) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  }
 ): Promise<void> => {
-  try {
-    if (edit) {
-      const initialPlugin = Utils.deepCopy(plugin)
+  if (edit) {
+    const initialPlugin = Utils.deepCopy(plugin)
 
-      // Set values
-      Object.keys(values).forEach((key) => {
-        initialPlugin.configuration[key].value = values[key]
-      })
+    // Set values
+    Object.keys(values).forEach((key) => {
+      initialPlugin.configuration[key].value = values[key]
+    })
 
-      initialPlugin.needReInit = true
+    initialPlugin.needReInit = true
 
-      // API
-      await PluginAPI.update(initialPlugin)
+    // API
+    await PluginAPI.update(initialPlugin)
 
-      // Mutate
-      await swr.mutateOnePlugin?.(initialPlugin)
-    } else {
-      // New plugin
-      const newPlugin = Utils.deepCopy(plugin)
-      newPlugin.uuid = 'add'
+    // Mutate
+    await swr.mutateOnePlugin?.(initialPlugin)
+  } else {
+    // New plugin
+    const newPlugin = Utils.deepCopy(plugin)
+    newPlugin.uuid = 'add'
 
-      // Set values
-      Object.keys(values).forEach((key) => {
-        newPlugin.configuration[key].value = values[key]
-      })
+    // Set values
+    Object.keys(values).forEach((key) => {
+      newPlugin.configuration[key].value = values[key]
+    })
 
-      // API
-      await PluginAPI.add(newPlugin)
+    // API
+    await PluginAPI.add(newPlugin)
 
-      // Local
-      await swr.addOnePlugin?.(newPlugin)
-    }
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+    // Local
+    await swr.addOnePlugin?.(newPlugin)
   }
 }
 
@@ -220,26 +211,42 @@ export const _onFinish = async (
  * @param props Props
  * @returns PluginDialog
  */
-const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
+const PluginDialog = ({ plugin, swr, edit }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const [initialValues, setInitialValues] = useState<{}>({})
 
   // Context
   const { dispatch } = useContext(NotificationContext)
 
+  // Content
+  const content = useMemo(
+    () =>
+      Object.keys(plugin.configuration).map((key, index) => {
+        const item = plugin.configuration[key]
+        if (item.type === 'input')
+          return _inputItem(item, key, index === 0 ? inputRef : undefined)
+        else if (item.type === 'textarea') return _textareaItem(item, key)
+        else if (item.type === 'password') return _passwordItem(item, key)
+        else if (item.type === 'select') return _selectItem(item, key)
+        else return <div key={key}></div>
+      }),
+    [plugin.configuration]
+  )
+
   // Initial values
-  useEffect(() => {
-    const currentInitialValues: any = {}
+  const initialValues = useMemo(() => {
+    const initialValues: {
+      [key: string]: string | number | boolean | undefined
+    } = {}
     Object.keys(plugin.configuration).forEach((key) => {
-      currentInitialValues[key] =
+      initialValues[key] =
         plugin.configuration[key].value ?? plugin.configuration[key].default
     })
-    setInitialValues(currentInitialValues)
+    return initialValues
   }, [plugin?.configuration])
 
   // Autofocus
@@ -269,31 +276,18 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
     async (values: {}): Promise<void> => {
       setLoading(true)
       try {
-        await _onFinish(plugin, !!edit, values, swr, dispatch)
+        await _onFinish(plugin, !!edit, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
         throw err
       }
     },
     [plugin, swr, edit, dispatch]
-  )
-
-  const dialogContent = useMemo(
-    () =>
-      Object.keys(plugin.configuration).map((key, index) => {
-        const item = plugin.configuration[key]
-        if (item.type === 'input')
-          return _inputItem(item, key, index === 0 ? inputRef : undefined)
-        else if (item.type === 'textarea') return _textareaItem(item, key)
-        else if (item.type === 'password') return _passwordItem(item, key)
-        else if (item.type === 'select') return _selectItem(item, key)
-        else return <div key={key}></div>
-      }),
-    [plugin.configuration]
   )
 
   /**
@@ -311,7 +305,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): React.JSX.Element => {
       >
         <>
           <Typography.Text>{parse(plugin.description ?? '')}</Typography.Text>
-          {dialogContent}
+          {content}
         </>
       </Dialog>
       {edit ? (

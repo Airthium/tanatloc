@@ -1,5 +1,6 @@
 /** @module Components.Assets.Button.Download */
 
+import { ReactNode } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
@@ -12,7 +13,7 @@ export interface IProps {
   disabled?: boolean
   loading?: boolean
   bordered?: boolean
-  children?: string | React.ReactElement | React.ReactElement[]
+  children?: ReactNode
   onDownload: () => void
 }
 
@@ -33,7 +34,7 @@ const DownloadButton = ({
   bordered,
   children,
   onDownload
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   /**
    * Render
    */

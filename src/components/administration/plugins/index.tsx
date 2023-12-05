@@ -2,6 +2,7 @@
 
 import {
   Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -57,37 +58,32 @@ export const _onChange = async (
   system: IFrontSystem,
   plugin: ClientPlugin,
   checked: boolean,
-  swr: { mutateSystem: (system: IFrontMutateSystem) => Promise<void> },
-  dispatch: Dispatch<INotificationAction>
+  swr: { mutateSystem: (system: IFrontMutateSystem) => Promise<void> }
 ): Promise<void> => {
-  try {
-    // API
-    await SystemAPI.update([
-      {
-        key: 'defaultplugins',
-        type: 'array',
-        method: checked ? 'append' : 'remove',
-        value: plugin.key
-      }
-    ])
-
-    // Local
-    const defaultplugins = Utils.deepCopy(system?.defaultplugins ?? [])
-    const index: number = defaultplugins.indexOf(plugin.key)
-    if (checked && index === -1) {
-      defaultplugins.push(plugin.key)
+  // API
+  await SystemAPI.update([
+    {
+      key: 'defaultplugins',
+      type: 'array',
+      method: checked ? 'append' : 'remove',
+      value: plugin.key
     }
-    if (!checked && index !== -1) {
-      defaultplugins.splice(index, 1)
-    }
+  ])
 
-    // Mutate
-    await swr.mutateSystem({
-      defaultplugins
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
+  // Local
+  const defaultplugins = Utils.deepCopy(system?.defaultplugins ?? [])
+  const index: number = defaultplugins.indexOf(plugin.key)
+  if (checked && index === -1) {
+    defaultplugins.push(plugin.key)
   }
+  if (!checked && index !== -1) {
+    defaultplugins.splice(index, 1)
+  }
+
+  // Mutate
+  await swr.mutateSystem({
+    defaultplugins
+  })
 }
 
 /**
@@ -95,12 +91,7 @@ export const _onChange = async (
  * @param props Props
  * @returns Plugin
  */
-const Plugin = ({
-  plugin,
-  system,
-  swr,
-  dispatch
-}: IPluginProps): React.JSX.Element => {
+const Plugin = ({ plugin, system, swr, dispatch }: IPluginProps): ReactNode => {
   // State
   const [checked, setChecked] = useState<boolean>()
 
@@ -118,9 +109,14 @@ const Plugin = ({
    */
   const onChange = useCallback(
     (e: CheckboxChangeEvent): void => {
-      ;(async () => {
-        await _onChange(system, plugin, e.target.checked, swr, dispatch)
-      })()
+      const asyncFunction = async () => {
+        try {
+          await _onChange(system, plugin, e.target.checked, swr)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      }
+      asyncFunction().catch(console.error)
     },
     [plugin, system, swr, dispatch]
   )
@@ -151,7 +147,7 @@ const Plugins = () => {
 
   // Plugins list
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       try {
         const list = await PluginsAPI.completeList()
 
@@ -159,7 +155,8 @@ const Plugins = () => {
       } catch (err: any) {
         dispatch(addError({ title: errors.plugins, err }))
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [dispatch])
 
   /**
@@ -168,7 +165,7 @@ const Plugins = () => {
    * @returns Render
    */
   const renderPlugin = useCallback(
-    (plugin: ClientPlugin): React.JSX.Element => (
+    (plugin: ClientPlugin): ReactNode => (
       <Plugin
         system={system}
         plugin={plugin}

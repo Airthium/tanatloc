@@ -1,15 +1,15 @@
 /** @module Components.Assets.Share */
 
-import { useRouter } from 'next/router'
 import {
   useState,
   useEffect,
   CSSProperties,
   useMemo,
   useCallback,
-  Dispatch,
-  useContext
+  useContext,
+  ReactNode
 } from 'react'
+import { useRouter } from 'next/router'
 import {
   Button,
   Form,
@@ -31,10 +31,7 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { LinkButton } from '@/components/assets/button'
@@ -97,81 +94,75 @@ export const _onShare = async (
     | undefined,
   groupsSelected: string[],
   usersSelected: string[],
-  swr: IProps['swr'],
-  dispatch: Dispatch<INotificationAction>
+  swr: IProps['swr']
 ): Promise<void> => {
-  try {
-    if (workspace) {
-      // API
-      await WorkspaceAPI.update({ id: workspace.id }, [
-        {
-          key: 'groups',
-          value: groupsSelected
-        },
-        {
-          key: 'users',
-          value: usersSelected
-        }
-      ])
-      // Mutate
-      const newWorkspace = Utils.deepCopy(workspace)
-      newWorkspace.groups = groupsSelected.map(
-        (group) =>
-          ({
-            id: group
-          }) as IFrontWorkspacesItem['groups'][0]
-      )
-      newWorkspace.users = usersSelected.map(
-        (user) => ({ id: user }) as IFrontWorkspacesItem['users'][0]
-      )
-      await swr.mutateOneWorkspace!(newWorkspace)
-    } else if (project) {
-      // API
-      await ProjectAPI.update({ id: project.id }, [
-        {
-          key: 'groups',
-          value: groupsSelected
-        },
-        {
-          key: 'users',
-          value: usersSelected
-        }
-      ])
-      // Mutate
-      const newProject = Utils.deepCopy(project)
-      newProject.groups = groupsSelected.map(
-        (group) => ({ id: group }) as IFrontProjectsItem['groups'][0]
-      )
-      newProject.users = usersSelected.map(
-        (user) => ({ id: user }) as IFrontProjectsItem['users'][0]
-      )
-      await swr.mutateOneProject!(newProject)
-    } else {
-      // API
-      await UserModelAPI.update({ id: userModel!.id }, [
-        {
-          key: 'groups',
-          value: groupsSelected
-        },
-        {
-          key: 'users',
-          value: usersSelected
-        }
-      ])
+  if (workspace) {
+    // API
+    await WorkspaceAPI.update({ id: workspace.id }, [
+      {
+        key: 'groups',
+        value: groupsSelected
+      },
+      {
+        key: 'users',
+        value: usersSelected
+      }
+    ])
+    // Mutate
+    const newWorkspace = Utils.deepCopy(workspace)
+    newWorkspace.groups = groupsSelected.map(
+      (group) =>
+        ({
+          id: group
+        }) as IFrontWorkspacesItem['groups'][0]
+    )
+    newWorkspace.users = usersSelected.map(
+      (user) => ({ id: user }) as IFrontWorkspacesItem['users'][0]
+    )
+    await swr.mutateOneWorkspace!(newWorkspace)
+  } else if (project) {
+    // API
+    await ProjectAPI.update({ id: project.id }, [
+      {
+        key: 'groups',
+        value: groupsSelected
+      },
+      {
+        key: 'users',
+        value: usersSelected
+      }
+    ])
+    // Mutate
+    const newProject = Utils.deepCopy(project)
+    newProject.groups = groupsSelected.map(
+      (group) => ({ id: group }) as IFrontProjectsItem['groups'][0]
+    )
+    newProject.users = usersSelected.map(
+      (user) => ({ id: user }) as IFrontProjectsItem['users'][0]
+    )
+    await swr.mutateOneProject!(newProject)
+  } else {
+    // API
+    await UserModelAPI.update({ id: userModel!.id }, [
+      {
+        key: 'groups',
+        value: groupsSelected
+      },
+      {
+        key: 'users',
+        value: usersSelected
+      }
+    ])
 
-      // Mutate
-      const newUserModel = Utils.deepCopy(userModel!)
-      newUserModel.groups = groupsSelected.map(
-        (group) => ({ id: group }) as IFrontUserModel['groups'][0]
-      )
-      newUserModel.users = usersSelected.map(
-        (user) => ({ id: user }) as IFrontUserModel['users'][0]
-      )
-      await swr.mutateUser!(newUserModel)
-    }
-  } catch (err: any) {
-    dispatch(addError({ title: errors.share, err }))
-    throw err
+    // Mutate
+    const newUserModel = Utils.deepCopy(userModel!)
+    newUserModel.groups = groupsSelected.map(
+      (group) => ({ id: group }) as IFrontUserModel['groups'][0]
+    )
+    newUserModel.users = usersSelected.map(
+      (user) => ({ id: user }) as IFrontUserModel['users'][0]
+    )
+    await swr.mutateUser!(newUserModel)
   }
 }
 
@@ -213,7 +204,7 @@ const Share = ({
   organizations,
   swr,
   style
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -304,12 +295,13 @@ const Share = ({
    * Dashboard
    */
   const dashboard = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push({
         pathname: '/dashboard',
         query: { page: 'organizations' }
       })
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   /**
@@ -419,14 +411,14 @@ const Share = ({
         userModel,
         groupsSelected,
         usersSelected,
-        swr,
-        dispatch
+        swr
       )
 
       // Close
       setLoading(false)
       setVisible(false)
-    } catch (err) {
+    } catch (err: any) {
+      dispatch(addError({ title: errors.share, err }))
       setLoading(false)
       throw err
     }

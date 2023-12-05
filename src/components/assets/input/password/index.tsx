@@ -1,5 +1,6 @@
 /** @module Components.Assets.Input.Password */
 
+import { ReactNode } from 'react'
 import { Form, Input } from 'antd'
 
 import { IFrontSystem } from '@/api/index.d'
@@ -177,7 +178,7 @@ const PasswordItem = ({
   edit,
   style,
   required
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Data
   const [system] = SystemAPI.useSystem()
 

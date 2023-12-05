@@ -1,5 +1,6 @@
 /** @module Components.Assets.Button.Cancel */
 
+import { ReactNode } from 'react'
 import { Button, Tooltip } from 'antd'
 
 /**
@@ -8,7 +9,7 @@ import { Button, Tooltip } from 'antd'
 export interface IProps {
   disabled?: boolean
   loading?: boolean
-  children?: string | React.ReactElement | React.ReactElement[]
+  children?: ReactNode
   onCancel: () => void
 }
 
@@ -27,7 +28,7 @@ const CancelButton = ({
   loading,
   children,
   onCancel
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   /**
    * Render
    */

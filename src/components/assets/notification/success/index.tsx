@@ -1,6 +1,6 @@
 /** @module Components.Assets.Notification.Success */
 
-import { useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 import { App } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
@@ -12,7 +12,7 @@ import useCustomEffect from '@/components/utils/useCustomEffect'
  * Success notification
  * @returns SuccessNotification
  */
-const SuccessNotification = (): null => {
+const SuccessNotification = (): ReactNode => {
   // Context
   const { success, dispatch } = useContext(NotificationContext)
 

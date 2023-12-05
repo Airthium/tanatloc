@@ -1,6 +1,6 @@
 /** @module Components.Doc.Project */
 
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Switch, Tabs, Typography } from 'antd'
@@ -35,7 +35,7 @@ import style from '../index.module.css'
  * Geometry
  * @returns Geometry
  */
-const Geometry = (): React.JSX.Element => {
+const Geometry = (): ReactNode => {
   /**
    * Render
    */
@@ -92,7 +92,7 @@ const Geometry = (): React.JSX.Element => {
  * Simulation
  * @returns Simulation
  */
-const Simulation = (): React.JSX.Element => {
+const Simulation = (): ReactNode => {
   /**
    * Render
    */
@@ -494,7 +494,7 @@ const Simulation = (): React.JSX.Element => {
  * View
  * @returns View
  */
-const View = (): React.JSX.Element => {
+const View = (): ReactNode => {
   return (
     <>
       <Typography.Title level={4}>View Tools</Typography.Title>
@@ -627,7 +627,7 @@ const tabs = [
  * Project
  * @returns Project
  */
-const Project = (): React.JSX.Element => {
+const Project = (): ReactNode => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -638,7 +638,7 @@ const Project = (): React.JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      ;(async () => {
+      const asyncFunction = async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -646,7 +646,8 @@ const Project = (): React.JSX.Element => {
             tab: key
           }
         })
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )

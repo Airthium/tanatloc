@@ -1,19 +1,18 @@
 /** @module Components.Account.Password */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
+
+import { IFrontUser } from '@/api/index.d'
+
+import { NotificationContext } from '@/context/notification'
+import { addSuccess } from '@/context/notification/actions'
 
 import { PasswordItem } from '@/components/assets/input'
 import { FormError } from '@/components/assets/notification'
 
-import { IFrontUser } from '@/api/index.d'
 import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
-import { addSuccess } from '@/context/notification/actions'
 
 /**
  * Props
@@ -42,8 +41,7 @@ export const _onFinish = async (
   values: {
     password: string
     newPassword: string
-  },
-  dispatch: Dispatch<INotificationAction>
+  }
 ): Promise<void> => {
   let current: { valid: boolean }
   try {
@@ -67,10 +65,6 @@ export const _onFinish = async (
         value: values.newPassword
       }
     ])
-
-    dispatch(
-      addSuccess({ title: 'Your password has been changed successfully' })
-    )
   } catch (err: any) {
     throw new APIError({ title: errors.update, err })
   }
@@ -81,7 +75,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns Password
  */
-const Password = ({ user }: IProps): React.JSX.Element => {
+const Password = ({ user }: IProps): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
@@ -101,17 +95,21 @@ const Password = ({ user }: IProps): React.JSX.Element => {
    */
   const onFinish = useCallback(
     (values: { password: string; newPassword: string }): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         setLoading(true)
         try {
-          await _onFinish(user, values, dispatch)
+          await _onFinish(user, values)
           setFormError(undefined)
+          dispatch(
+            addSuccess({ title: 'Your password has been changed successfully' })
+          )
         } catch (err: any) {
           setFormError(err)
         } finally {
           setLoading(false)
         }
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [user, dispatch]
   )

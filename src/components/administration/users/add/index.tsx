@@ -1,7 +1,7 @@
 /** @module Components.Administration.User.Add */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -13,10 +13,7 @@ import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 import { IFrontMutateUser } from '@/api/index.d'
 import { ClientPlugin } from '@/plugins/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton } from '@/components/assets/button'
@@ -62,50 +59,44 @@ export const errors = {
  */
 export const _onAdd = async (
   values: ILocalValues,
-  swr: { addOneUser: (user: IFrontMutateUser) => Promise<void> },
-  dispatch: Dispatch<INotificationAction>
+  swr: { addOneUser: (user: IFrontMutateUser) => Promise<void> }
 ): Promise<void> => {
-  try {
-    // API
-    const newUser = await UserAPI.add({
-      email: values.email,
-      password: values.password
-    })
-    if (newUser.alreadyExists) throw new Error('User already exists')
+  // API
+  const newUser = await UserAPI.add({
+    email: values.email,
+    password: values.password
+  })
+  if (newUser.alreadyExists) throw new Error('User already exists')
 
-    // Update informations
-    await UserAPI.updateById(newUser.id as string, [
-      {
-        key: 'firstname',
-        value: values.firstname
-      },
-      {
-        key: 'lastname',
-        value: values.lastname
-      },
-      {
-        key: 'authorizedplugins',
-        value: values.authorizedplugins
-      },
-      {
-        key: 'superuser',
-        value: !!values.superuser
-      }
-    ])
-
-    // Mutate
-    const newUserWithData = {
-      ...newUser,
-      email: values.email,
-      firstname: values.firstname,
-      lastname: values.firstname,
-      superuser: values.superuser
+  // Update informations
+  await UserAPI.updateById(newUser.id as string, [
+    {
+      key: 'firstname',
+      value: values.firstname
+    },
+    {
+      key: 'lastname',
+      value: values.lastname
+    },
+    {
+      key: 'authorizedplugins',
+      value: values.authorizedplugins
+    },
+    {
+      key: 'superuser',
+      value: !!values.superuser
     }
-    await swr.addOneUser(newUserWithData)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
+  ])
+
+  // Mutate
+  const newUserWithData = {
+    ...newUser,
+    email: values.email,
+    firstname: values.firstname,
+    lastname: values.firstname,
+    superuser: values.superuser
   }
+  await swr.addOneUser(newUserWithData)
 }
 
 /**
@@ -113,7 +104,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ plugins, swr }: IProps): React.JSX.Element => {
+const Add = ({ plugins, swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -150,13 +141,14 @@ const Add = ({ plugins, swr }: IProps): React.JSX.Element => {
     async (values: ILocalValues): Promise<void> => {
       setLoading(true)
       try {
-        await _onAdd(values, swr, dispatch)
+        await _onAdd(values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
         setLoading(false)
+        dispatch(addError({ title: errors.add, err }))
         throw err
       }
     },

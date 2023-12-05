@@ -1,6 +1,6 @@
 /** @module Components.Doc.Installation */
 
-import { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Collapse, Spin, Table, Tabs, Typography } from 'antd'
@@ -20,13 +20,13 @@ export interface IRelease {
  * Desktop
  * @returns Desktop
  */
-const Desktop = (): React.JSX.Element => {
+const Desktop = (): ReactNode => {
   const [release, setRelease] = useState<IRelease>()
   const [releaseError, setReleaseError] = useState<string>('')
 
   // Release
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       try {
         const releaseResponse = await fetch(
           'https://api.github.com/repos/Airthium/tanatloc-electron/releases'
@@ -57,7 +57,8 @@ const Desktop = (): React.JSX.Element => {
       } catch (err: any) {
         setReleaseError(err.message)
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [])
 
   /**
@@ -208,7 +209,7 @@ const Desktop = (): React.JSX.Element => {
  * Server
  * @returns Server
  */
-const Server = (): React.JSX.Element => {
+const Server = (): ReactNode => {
   // Set data
   const setColumns = [
     {
@@ -547,7 +548,7 @@ const tabs = [
  * Installation
  * @returns Installation
  */
-const Installation = (): React.JSX.Element => {
+const Installation = (): ReactNode => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -558,7 +559,7 @@ const Installation = (): React.JSX.Element => {
    */
   const onChange = useCallback(
     (key: string) => {
-      ;(async () => {
+      const asyncFunction = async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -566,7 +567,8 @@ const Installation = (): React.JSX.Element => {
             tab: key
           }
         })
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )

@@ -1,7 +1,7 @@
 /** @module Components.Assets.Group */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -18,10 +18,7 @@ import {
   IFrontMutateGroupsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton, EditButton } from '@/components/assets/button'
@@ -72,34 +69,28 @@ export const _onAdd = async (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
     addOneGroup: (group: IFrontNewGroup) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    const newGroup = await GroupAPI.add(
-      { id: organization.id },
-      { name: values.name, users: values.users }
-    )
-
-    // Local
-    await swr.addOneGroup({
-      ...newGroup,
-      name: values.name,
-      users: values.users
-    })
-
-    await swr.mutateOneOrganization({
-      id: organization.id,
-      groups: [
-        ...organization.groups,
-        newGroup
-      ] as IFrontOrganizationsItem['groups']
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
   }
+): Promise<void> => {
+  // API
+  const newGroup = await GroupAPI.add(
+    { id: organization.id },
+    { name: values.name, users: values.users }
+  )
+
+  // Local
+  await swr.addOneGroup({
+    ...newGroup,
+    name: values.name,
+    users: values.users
+  })
+
+  await swr.mutateOneOrganization({
+    id: organization.id,
+    groups: [
+      ...organization.groups,
+      newGroup
+    ] as IFrontOrganizationsItem['groups']
+  })
 }
 
 /**
@@ -121,51 +112,45 @@ export const _onUpdate = async (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
     mutateOneGroup: (group: IFrontMutateGroupsItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // Check update
-    const toUpdate = []
-
-    // Name
-    if (group.name !== values.name)
-      toUpdate.push({
-        key: 'name',
-        value: values.name
-      })
-
-    // Users
-    if (group.users?.map((u) => u.id).toString() !== values.users.toString())
-      toUpdate.push({
-        key: 'users',
-        value: values.users
-      })
-
-    if (!toUpdate.length) return
-
-    // API
-    await GroupAPI.update({ id: group.id }, toUpdate)
-
-    // Local
-    await swr.mutateOneGroup({
-      ...group,
-      ...(values as any)
-    })
-
-    const groupIndex = organization.groups.findIndex((g) => g.id === group.id)
-    await swr.mutateOneOrganization({
-      id: organization.id,
-      groups: [
-        ...organization.groups.slice(0, groupIndex),
-        group,
-        ...organization.groups.slice(groupIndex + 1)
-      ]
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
   }
+): Promise<void> => {
+  // Check update
+  const toUpdate = []
+
+  // Name
+  if (group.name !== values.name)
+    toUpdate.push({
+      key: 'name',
+      value: values.name
+    })
+
+  // Users
+  if (group.users?.map((u) => u.id).toString() !== values.users.toString())
+    toUpdate.push({
+      key: 'users',
+      value: values.users
+    })
+
+  if (!toUpdate.length) return
+
+  // API
+  await GroupAPI.update({ id: group.id }, toUpdate)
+
+  // Local
+  await swr.mutateOneGroup({
+    ...group,
+    ...(values as any)
+  })
+
+  const groupIndex = organization.groups.findIndex((g) => g.id === group.id)
+  await swr.mutateOneOrganization({
+    id: organization.id,
+    groups: [
+      ...organization.groups.slice(0, groupIndex),
+      group,
+      ...organization.groups.slice(groupIndex + 1)
+    ]
+  })
 }
 
 /**
@@ -183,7 +168,7 @@ const Group = ({
   organization,
   group,
   swr
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -218,26 +203,25 @@ const Group = ({
       setLoading(true)
       try {
         if (group) {
-          await _onUpdate(
-            organization,
-            group,
-            values,
-            {
+          try {
+            await _onUpdate(organization, group, values, {
               mutateOneOrganization: swr.mutateOneOrganization,
               mutateOneGroup: swr.mutateOneGroup!
-            },
-            dispatch
-          )
+            })
+          } catch (err: any) {
+            dispatch(addError({ title: errors.update, err }))
+            throw err
+          }
         } else {
-          await _onAdd(
-            organization,
-            values,
-            {
+          try {
+            await _onAdd(organization, values, {
               mutateOneOrganization: swr.mutateOneOrganization,
               addOneGroup: swr.addOneGroup!
-            },
-            dispatch
-          )
+            })
+          } catch (err: any) {
+            dispatch(addError({ title: errors.add, err }))
+            throw err
+          }
         }
 
         // Close

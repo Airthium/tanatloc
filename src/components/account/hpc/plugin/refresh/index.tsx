@@ -1,15 +1,12 @@
 /** @module Components.Account.HPC.Plugin.Refresh */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { Button } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 
 import { HPCClientPlugin } from '@/plugins/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import Utils from '@/lib/utils'
@@ -36,20 +33,13 @@ export const errors = {
  * On update
  * @param plugin Plugin
  */
-export const _onUpdate = async (
-  plugin: HPCClientPlugin,
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // Local
-    const initialPlugin = Utils.deepCopy(plugin)
-    initialPlugin.needReInit = true
+export const _onUpdate = async (plugin: HPCClientPlugin): Promise<void> => {
+  // Local
+  const initialPlugin = Utils.deepCopy(plugin)
+  initialPlugin.needReInit = true
 
-    // API
-    await PluginAPI.update(initialPlugin)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.refresh, err }))
-  }
+  // API
+  await PluginAPI.update(initialPlugin)
 }
 
 /**
@@ -57,7 +47,7 @@ export const _onUpdate = async (
  * @param props Props
  * @returns Refresh
  */
-const Refresh = ({ plugin }: IProps): React.JSX.Element => {
+const Refresh = ({ plugin }: IProps): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -68,11 +58,17 @@ const Refresh = ({ plugin }: IProps): React.JSX.Element => {
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       setLoading(true)
-      await _onUpdate(plugin, dispatch)
-      setLoading(false)
-    })()
+      try {
+        await _onUpdate(plugin)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.refresh, err }))
+      } finally {
+        setLoading(false)
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [plugin, dispatch])
 
   /**

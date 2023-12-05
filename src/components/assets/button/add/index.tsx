@@ -1,5 +1,6 @@
 /** @module Components.Assets.Button.Add */
 
+import { ReactNode } from 'react'
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
@@ -16,7 +17,7 @@ export interface IProps {
   fullWidth?: boolean
   needMargin?: boolean
   loading?: boolean
-  children?: string | React.ReactElement | React.ReactElement[]
+  children?: ReactNode
   onAdd: () => void
 }
 
@@ -45,7 +46,7 @@ const AddButton = ({
   loading,
   children,
   onAdd
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   /**
    * Render
    */

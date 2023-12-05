@@ -1,10 +1,11 @@
 /** @module Components.Blog.Posts.Layout */
 
-import { GoBack } from '@/components/assets/button'
+import { ReactNode, useCallback } from 'react'
 import { Tag, Typography } from 'antd'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useCallback } from 'react'
+
+import { GoBack } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
 
@@ -43,7 +44,7 @@ export interface IProps {
  * @param props Props
  * @returns Ref
  */
-export const Ref = ({ code }: { code: string }): React.JSX.Element => {
+export const Ref = ({ code }: { code: string }): ReactNode => {
   return (
     <Link href={'#' + code}>
       <i>[{code}]</i>
@@ -65,7 +66,7 @@ const PostLayout = ({
   version,
   children,
   references
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Data
   const router = useRouter()
 
@@ -73,9 +74,10 @@ const PostLayout = ({
    * On go back
    */
   const onGoBack = useCallback(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push('/blog')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   /**

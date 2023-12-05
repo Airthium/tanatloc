@@ -6,7 +6,8 @@ import {
   useCallback,
   useRef,
   useMemo,
-  useContext
+  useContext,
+  ReactNode
 } from 'react'
 import { Avatar, Space, Table, TableColumnType } from 'antd'
 
@@ -56,15 +57,11 @@ export const errors = {
  * - organization (Object) Organization `{ id, owners, [users] }`
  * @returns Groups
  */
-const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
+const Groups = ({ organization, swr }: IProps): ReactNode => {
   // Ref
   const refTableGroup = useRef<any>(null)
 
   // State
-  const [userOptions, setUserOptions] = useState<
-    { label: string; value: string }[]
-  >([])
-
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
   // Context
@@ -77,7 +74,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
   ] = GroupAPI.useGroups(organization.id)
 
   // User options
-  useEffect(() => {
+  const userOptions = useMemo(() => {
     const owners = organization.owners
     const users = organization?.users
 
@@ -93,7 +90,8 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
         value: user.id
       }
     }) as { label: string; value: string }[]
-    setUserOptions(options)
+
+    return options
   }, [organization])
 
   // Groups error
@@ -108,7 +106,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const usersRender = useCallback(
-    (users: IFrontGroupsItem['users']): React.JSX.Element => (
+    (users: IFrontGroupsItem['users']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {users.map((user) => Utils.userToAvatar(user))}
       </Avatar.Group>
@@ -122,7 +120,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const workspacesRender = useCallback(
-    (workspaces: IFrontGroupsItem['workspaces']): React.JSX.Element => (
+    (workspaces: IFrontGroupsItem['workspaces']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {workspaces.map((workspace) => Utils.workspaceToAvatar(workspace))}
       </Avatar.Group>
@@ -136,7 +134,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const projectsRender = useCallback(
-    (projects: IFrontGroupsItem['projects']): React.JSX.Element => (
+    (projects: IFrontGroupsItem['projects']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {projects.map((project) => Utils.projectToAvatar(project))}
       </Avatar.Group>
@@ -150,7 +148,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const usermodelsRender = useCallback(
-    (usermodels: IFrontGroupsItem['usermodels']): React.JSX.Element => (
+    (usermodels: IFrontGroupsItem['usermodels']): ReactNode => (
       <Avatar.Group maxCount={5}>
         {usermodels.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
       </Avatar.Group>
@@ -165,7 +163,7 @@ const Groups = ({ organization, swr }: IProps): React.JSX.Element => {
    * @returns Render
    */
   const actionsRender = useCallback(
-    (_: any, group: IFrontGroupsItem): React.JSX.Element => (
+    (_: any, group: IFrontGroupsItem): ReactNode => (
       <Space>
         <Group
           userOptions={userOptions}

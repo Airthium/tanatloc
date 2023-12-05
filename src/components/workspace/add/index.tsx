@@ -1,7 +1,7 @@
 /** @module Components.Workspace.Add */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -14,10 +14,7 @@ import { IFrontNewWorkspace } from '@/api/index.d'
 
 import { LIMIT50 } from '@/config/string'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton } from '@/components/assets/button'
@@ -48,19 +45,13 @@ export const errors = {
  */
 export const _onAdd = async (
   values: Pick<IFrontNewWorkspace, 'name'>,
-  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> },
-  dispatch: Dispatch<INotificationAction>
+  swr: { addOneWorkspace: (workspace: IFrontNewWorkspace) => Promise<void> }
 ): Promise<void> => {
-  try {
-    // Add
-    const workspace = await WorkspaceAPI.add(values)
+  // Add
+  const workspace = await WorkspaceAPI.add(values)
 
-    // Mutate
-    await swr.addOneWorkspace(workspace)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
-  }
+  // Mutate
+  await swr.addOneWorkspace(workspace)
 }
 
 /**
@@ -68,7 +59,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ swr }: IProps): React.JSX.Element => {
+const Add = ({ swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -103,12 +94,13 @@ const Add = ({ swr }: IProps): React.JSX.Element => {
     async (values: Pick<IFrontNewWorkspace, 'name'>): Promise<void> => {
       setLoading(true)
       try {
-        await _onAdd(values, swr, dispatch)
+        await _onAdd(values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.add, err }))
         setLoading(false)
         throw err
       }

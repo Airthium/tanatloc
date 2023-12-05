@@ -1,7 +1,14 @@
 /** @module Components.Login */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect, useCallback, useContext, useRef } from 'react'
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef,
+  ReactNode
+} from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 import isElectron from 'is-electron'
 
@@ -63,7 +70,7 @@ export const _onLogin = async (
  * Login
  * @returns Login
  */
-const Login = (): React.JSX.Element => {
+const Login = (): ReactNode => {
   // Ref
   const justOne = useRef<number>(0)
 
@@ -82,7 +89,7 @@ const Login = (): React.JSX.Element => {
 
   // Electron
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       if (isElectron()) {
         try {
           await login({
@@ -92,7 +99,8 @@ const Login = (): React.JSX.Element => {
           await router.push('/dashboard')
         } catch (err) {}
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   // Error
@@ -104,9 +112,10 @@ const Login = (): React.JSX.Element => {
    * Dashboard
    */
   const dashboard = useCallback(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push('/dashboard')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   // Already connected
@@ -123,9 +132,10 @@ const Login = (): React.JSX.Element => {
    * Signup
    */
   const signup = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push('/signup')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router])
 
   /**
@@ -134,7 +144,7 @@ const Login = (): React.JSX.Element => {
    */
   const onFinish = useCallback(
     (values: { email: string; password: string }): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         setLoading(true)
         try {
           await _onLogin(values, mutateUser)
@@ -142,7 +152,8 @@ const Login = (): React.JSX.Element => {
           setFormError(err as APIError)
           setLoading(false)
         }
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [mutateUser]
   )

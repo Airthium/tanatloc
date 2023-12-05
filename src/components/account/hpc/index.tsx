@@ -3,20 +3,17 @@
 import {
   useState,
   useEffect,
-  Dispatch,
   useContext,
   useRef,
-  useCallback
+  useCallback,
+  ReactNode
 } from 'react'
 import { Card, Space, Spin } from 'antd'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
-import { addError } from '@/context/notification/actions'
-
 import { HPCClientPlugin } from '@/plugins/index.d'
+
+import { NotificationContext } from '@/context/notification'
+import { addError } from '@/context/notification/actions'
 
 import PluginsAPI from '@/api/plugins'
 
@@ -35,41 +32,25 @@ export const errors = {
  * Plugins list
  * @returns List
  */
-export const _pluginsList = async (
-  dispatch: Dispatch<INotificationAction>
-): Promise<React.JSX.Element[]> => {
-  try {
-    const plugins = await PluginsAPI.list()
+export const _pluginsList = async () => {
+  const plugins = await PluginsAPI.list()
 
-    const HPCPlugins = plugins.filter(
-      (plugin) => plugin.category === 'HPC'
-    ) as HPCClientPlugin[]
+  const HPCPlugins = plugins.filter(
+    (plugin) => plugin.category === 'HPC'
+  ) as HPCClientPlugin[]
 
-    if (HPCPlugins.length) {
-      return HPCPlugins.map((plugin) => (
-        <Card key={plugin.key} title={plugin.name}>
-          <Plugin plugin={plugin} />
-        </Card>
-      ))
-    } else {
-      return [
-        <Card key="no-access" title="No access">
-          You do not have access to any HPC plugin. Request it.
-        </Card>
-      ]
-    }
-  } catch (err: any) {
-    dispatch(
-      addError({
-        title: errors.plugins,
-        err
-      })
-    )
-    return [
-      <Card key="error" title="Error">
-        Something led to an error. Please try again later.
+  if (HPCPlugins.length) {
+    return HPCPlugins.map((plugin) => (
+      <Card key={plugin.key} title={plugin.name}>
+        <Plugin plugin={plugin} />
       </Card>
-    ]
+    ))
+  } else {
+    return (
+      <Card title="No access">
+        You do not have access to any HPC plugin. Request it.
+      </Card>
+    )
   }
 }
 
@@ -78,12 +59,12 @@ export const _pluginsList = async (
  * @param props Props
  * @returns HPC
  */
-const HPC = (): React.JSX.Element => {
+const HPC = (): ReactNode => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 
   // State
-  const [list, setList] = useState<React.JSX.Element[]>([
+  const [list, setList] = useState<ReactNode>([
     <Card key="loading" title="Loading">
       <Spin />
     </Card>
@@ -116,10 +97,25 @@ const HPC = (): React.JSX.Element => {
 
   // Plugins list
   useEffect(() => {
-    ;(async () => {
-      const newList = await _pluginsList(dispatch)
-      setList(newList)
-    })()
+    const asyncFunction = async () => {
+      try {
+        const newList = await _pluginsList()
+        setList(newList)
+      } catch (err: any) {
+        dispatch(
+          addError({
+            title: errors.plugins,
+            err
+          })
+        )
+        setList(
+          <Card key="error" title="Error">
+            Something leads to an error. Please try again later.
+          </Card>
+        )
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [dispatch])
 
   // Height

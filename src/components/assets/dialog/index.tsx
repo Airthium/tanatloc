@@ -27,7 +27,7 @@ export interface IProps {
   okButtonText?: string
   cancelButtonProps?: ModalProps['cancelButtonProps']
   cancelButtonText?: string
-  children: ReactNode | ReactNode[]
+  children: ReactNode
   onCancel?: () => void
   onOk?: (values: any) => Promise<void>
 }
@@ -69,7 +69,7 @@ const Dialog = ({
   children,
   onCancel,
   onOk
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [shift, setShift] = useState<boolean>(false)
 
@@ -88,7 +88,7 @@ const Dialog = ({
    * On Modal ok
    */
   const onModalOk = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       if (!onOk) return
       try {
         const values = await form.validateFields()
@@ -97,7 +97,8 @@ const Dialog = ({
       } catch (err: any) {
         dispatch(addError({ title: errors.onOk, err, display: false }))
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [form, onOk, dispatch])
 
   /**

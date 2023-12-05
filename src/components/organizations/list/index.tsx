@@ -2,6 +2,7 @@
 
 import {
   Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -122,22 +123,17 @@ export const _onQuit = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.quit({ id: organization.id })
-
-    // Local
-    const newOrganization = Utils.deepCopy(organization)
-    const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
-    newOrganization.users.splice(userIndex, 1)
-
-    await swr.mutateOneOrganization(newOrganization)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.quit, err }))
   }
+): Promise<void> => {
+  // API
+  await OrganizationAPI.quit({ id: organization.id })
+
+  // Local
+  const newOrganization = Utils.deepCopy(organization)
+  const userIndex = newOrganization.users.findIndex((u) => u.id === user.id)
+  newOrganization.users.splice(userIndex, 1)
+
+  await swr.mutateOneOrganization(newOrganization)
 }
 
 /**
@@ -156,46 +152,41 @@ export const _onAccept = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.accept(organization)
-
-    // Local
-    const newOrganization = Utils.deepCopy(organization)
-    const ownerIndex = newOrganization.pendingowners.findIndex(
-      (o) => o.id === user.id
-    )
-    const pendingowner = newOrganization.pendingowners[ownerIndex]
-
-    if (ownerIndex !== -1) {
-      newOrganization.pendingowners.splice(ownerIndex, 1)
-      newOrganization.owners.push({
-        ...pendingowner,
-        workspaces: [],
-        projects: [],
-        usermodels: []
-      })
-    } else {
-      const userIndex = newOrganization.pendingusers.findIndex(
-        (u) => u.id === user.id
-      )
-      const pendinguser = newOrganization.pendingusers[userIndex]
-      newOrganization.pendingusers.splice(userIndex, 1)
-      newOrganization.users.push({
-        ...pendinguser,
-        workspaces: [],
-        projects: [],
-        usermodels: []
-      })
-    }
-
-    await swr.mutateOneOrganization(newOrganization)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.accept, err }))
   }
+): Promise<void> => {
+  // API
+  await OrganizationAPI.accept(organization)
+
+  // Local
+  const newOrganization = Utils.deepCopy(organization)
+  const ownerIndex = newOrganization.pendingowners.findIndex(
+    (o) => o.id === user.id
+  )
+  const pendingowner = newOrganization.pendingowners[ownerIndex]
+
+  if (ownerIndex !== -1) {
+    newOrganization.pendingowners.splice(ownerIndex, 1)
+    newOrganization.owners.push({
+      ...pendingowner,
+      workspaces: [],
+      projects: [],
+      usermodels: []
+    })
+  } else {
+    const userIndex = newOrganization.pendingusers.findIndex(
+      (u) => u.id === user.id
+    )
+    const pendinguser = newOrganization.pendingusers[userIndex]
+    newOrganization.pendingusers.splice(userIndex, 1)
+    newOrganization.users.push({
+      ...pendinguser,
+      workspaces: [],
+      projects: [],
+      usermodels: []
+    })
+  }
+
+  await swr.mutateOneOrganization(newOrganization)
 }
 
 /**
@@ -213,36 +204,26 @@ export const _onDecline = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.decline({ id: organization.id })
-
-    // Local
-    const newOrganization = Utils.deepCopy(organization)
-    const ownerIndex = newOrganization.pendingowners?.findIndex(
-      (o) => o.id === user.id
-    )
-
-    if (ownerIndex !== -1) newOrganization.pendingowners.splice(ownerIndex, 1)
-    else {
-      const userIndex = newOrganization.pendingusers?.findIndex(
-        (u) => u.id === user.id
-      )
-      newOrganization.pendingusers.splice(userIndex, 1)
-    }
-
-    await swr.mutateOneOrganization(newOrganization)
-  } catch (err: any) {
-    dispatch(
-      addError({
-        title: errors.decline,
-        err
-      })
-    )
   }
+): Promise<void> => {
+  // API
+  await OrganizationAPI.decline({ id: organization.id })
+
+  // Local
+  const newOrganization = Utils.deepCopy(organization)
+  const ownerIndex = newOrganization.pendingowners?.findIndex(
+    (o) => o.id === user.id
+  )
+
+  if (ownerIndex !== -1) newOrganization.pendingowners.splice(ownerIndex, 1)
+  else {
+    const userIndex = newOrganization.pendingusers?.findIndex(
+      (u) => u.id === user.id
+    )
+    newOrganization.pendingusers.splice(userIndex, 1)
+  }
+
+  await swr.mutateOneOrganization(newOrganization)
 }
 
 /**
@@ -254,7 +235,7 @@ const ManageButton = ({
   organization,
   swr,
   setOrganization
-}: IManageProps): React.JSX.Element => {
+}: IManageProps): ReactNode => {
   /**
    * On click
    */
@@ -292,19 +273,23 @@ const QuitButton = ({
   organization,
   swr,
   dispatch
-}: IQuitProps): React.JSX.Element => {
+}: IQuitProps): ReactNode => {
   /**
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
-      await _onQuit(
-        { id: organization.id, users: organization.users },
-        { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization },
-        dispatch
-      )
-    })()
+    const asyncFunction = async () => {
+      try {
+        await _onQuit(
+          { id: organization.id, users: organization.users },
+          { id: user.id },
+          { mutateOneOrganization: swr.mutateOneOrganization }
+        )
+      } catch (err: any) {
+        dispatch(addError({ title: errors.quit, err }))
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [user, organization, swr, dispatch])
 
   /**
@@ -327,25 +312,29 @@ const AcceptButton = ({
   organization,
   swr,
   dispatch
-}: IAcceptProps): React.JSX.Element => {
+}: IAcceptProps): ReactNode => {
   /**
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
-      await _onAccept(
-        {
-          id: organization.id,
-          owners: organization.owners,
-          pendingowners: organization.pendingowners,
-          users: organization.users,
-          pendingusers: organization.pendingusers
-        },
-        { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization },
-        dispatch
-      )
-    })()
+    const asyncFunction = async () => {
+      try {
+        await _onAccept(
+          {
+            id: organization.id,
+            owners: organization.owners,
+            pendingowners: organization.pendingowners,
+            users: organization.users,
+            pendingusers: organization.pendingusers
+          },
+          { id: user.id },
+          { mutateOneOrganization: swr.mutateOneOrganization }
+        )
+      } catch (err: any) {
+        dispatch(addError({ title: errors.accept, err }))
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [user, organization, swr, dispatch])
 
   /**
@@ -368,20 +357,29 @@ const DeclineButton = ({
   organization,
   swr,
   dispatch
-}: IDeclineProps): React.JSX.Element => {
+}: IDeclineProps): ReactNode => {
   const onClick = useCallback((): void => {
-    ;(async () => {
-      await _onDecline(
-        {
-          id: organization.id,
-          pendingowners: organization.pendingowners,
-          pendingusers: organization.pendingusers
-        },
-        { id: user.id },
-        { mutateOneOrganization: swr.mutateOneOrganization },
-        dispatch
-      )
-    })()
+    const asyncFunction = async () => {
+      try {
+        await _onDecline(
+          {
+            id: organization.id,
+            pendingowners: organization.pendingowners,
+            pendingusers: organization.pendingusers
+          },
+          { id: user.id },
+          { mutateOneOrganization: swr.mutateOneOrganization }
+        )
+      } catch (err: any) {
+        dispatch(
+          addError({
+            title: errors.decline,
+            err
+          })
+        )
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [user, organization, swr, dispatch])
 
   /**
@@ -404,7 +402,7 @@ const List = ({
   organizations,
   swr,
   setOrganization
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
 
@@ -420,7 +418,7 @@ const List = ({
    * @returns Render
    */
   const ownersRender = useCallback(
-    (owners: IFrontUsers): React.JSX.Element => (
+    (owners: IFrontUsers): ReactNode => (
       <Avatar.Group maxCount={5}>
         {owners?.map((o) => Utils.userToAvatar(o))}
       </Avatar.Group>
@@ -434,7 +432,7 @@ const List = ({
    * @returns Render
    */
   const usersRender = useCallback(
-    (users: IFrontUsers): React.JSX.Element => (
+    (users: IFrontUsers): ReactNode => (
       <Avatar.Group maxCount={5}>
         {users?.map((u) => Utils.userToAvatar(u))}
       </Avatar.Group>
@@ -448,7 +446,7 @@ const List = ({
    * @returns Render
    */
   const groupsRender = useCallback(
-    (groups: IFrontGroups): React.JSX.Element => (
+    (groups: IFrontGroups): ReactNode => (
       <Avatar.Group maxCount={5}>
         {groups?.map((g) => Utils.groupToAvatar(g))}
       </Avatar.Group>
@@ -462,7 +460,7 @@ const List = ({
    * @returns Render
    */
   const actionsRender = useCallback(
-    (org: IFrontOrganizationsItem): React.JSX.Element | null => {
+    (org: IFrontOrganizationsItem): ReactNode => {
       if (org.owners.find((o) => o.id === user.id))
         return (
           <Space wrap>

@@ -1,19 +1,19 @@
 /** @module Components.Doc.Changelog */
 
+import { ReactNode, useEffect, useState } from 'react'
 import { Spin, Typography } from 'antd'
-import { useEffect, useState } from 'react'
 
 /**
  * Changelog
  * @returns Changelog
  */
-const Changelog = (): React.JSX.Element => {
+const Changelog = (): ReactNode => {
   // State
   const [content, setContent] = useState<string>()
 
   // Load
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       try {
         const res = await fetch(
           'https://raw.githubusercontent.com/Airthium/tanatloc/master/CHANGELOG.md'
@@ -26,7 +26,8 @@ const Changelog = (): React.JSX.Element => {
             err.message
         )
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [])
 
   /**

@@ -1,6 +1,6 @@
 /** @module Components.Loading */
 
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, Layout, Space, Spin, StepProps, Steps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
@@ -12,7 +12,7 @@ import style from './index.module.css'
  * Simple
  * @returns Loading.Simple
  */
-const Simple = (): React.JSX.Element => {
+const Simple = (): ReactNode => {
   /**
    * Render
    */
@@ -36,7 +36,7 @@ const Simple = (): React.JSX.Element => {
 }
 
 export interface IProps {
-  text?: string | React.ReactElement | React.ReactElement[]
+  text?: ReactNode
   status?: string[]
   errors?: string[]
 }
@@ -45,10 +45,10 @@ export interface IProps {
  * Loading
  * @returns Loading
  */
-const Loading = ({ text, status, errors }: IProps): React.JSX.Element => {
+const Loading = ({ text, status, errors }: IProps): ReactNode => {
   // State
   const [steps, setSteps] = useState<(StepProps & { index: number })[]>([])
-  const [errorMessages, setErrorMessages] = useState<React.JSX.Element[]>([])
+  const [errorMessages, setErrorMessages] = useState<ReactNode[]>([])
 
   // Status
   useEffect(() => {

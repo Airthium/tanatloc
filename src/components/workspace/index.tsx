@@ -5,7 +5,8 @@ import {
   useEffect,
   ChangeEvent,
   useCallback,
-  useContext
+  useContext,
+  ReactNode
 } from 'react'
 import { Avatar, Input, Layout, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
@@ -75,7 +76,7 @@ const Workspace = ({
   workspace,
   organizations,
   swr
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [filter, setFilter] = useState<string>()
   const [sorter, setSorter] = useState<string>()

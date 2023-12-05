@@ -2,7 +2,7 @@
 
 import { Tabs, Typography } from 'antd'
 import { useRouter } from 'next/router'
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import Workspace from './workspace'
 import Account from './account'
@@ -53,7 +53,7 @@ const tabs = [
  * Dashboard
  * @returns Dashboard
  */
-const Dashboard = (): React.JSX.Element => {
+const Dashboard = (): ReactNode => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -64,7 +64,7 @@ const Dashboard = (): React.JSX.Element => {
    */
   const onChange = useCallback(
     (key: string): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -72,7 +72,8 @@ const Dashboard = (): React.JSX.Element => {
             tab: key
           }
         })
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )

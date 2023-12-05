@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin.List */
 
-import { useState, useEffect } from 'react'
+import { useMemo, ReactNode } from 'react'
 import { Card, Space, Typography } from 'antd'
 import parse from 'html-react-parser'
 
@@ -27,12 +27,9 @@ export interface IProps {
  * @param props Props
  * @returns List
  */
-const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
-  // State
-  const [list, setList] = useState<React.JSX.Element[]>([])
-
+const List = ({ plugin, plugins, swr }: IProps): ReactNode => {
   // List
-  useEffect(() => {
+  const list = useMemo(() => {
     const pluginsList = plugins
       .map((p: HPCClientPlugin) => {
         if (p.key !== plugin.key) return
@@ -43,7 +40,7 @@ const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
           .map((key) => {
             if (key === 'name') return
 
-            let content: React.JSX.Element
+            let content: ReactNode
             if (configuration[key].type === 'textarea') {
               const code = configuration[key].value
               content = (
@@ -114,9 +111,9 @@ const List = ({ plugin, plugins, swr }: IProps): React.JSX.Element => {
           </Card>
         )
       })
-      .filter((c) => c) as React.JSX.Element[]
+      .filter((c) => c) as ReactNode
 
-    setList(pluginsList)
+    return pluginsList
   }, [plugin, plugins, swr])
 
   /**

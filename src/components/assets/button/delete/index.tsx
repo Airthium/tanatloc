@@ -1,6 +1,6 @@
 /** @module Components.Assets.Button.Delete */
 
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -17,7 +17,7 @@ export interface IProps {
   bordered?: boolean
   text?: string | React.ReactElement
   title?: string
-  children?: string | React.ReactElement | React.ReactElement[]
+  children?: ReactNode
   onDelete: () => Promise<void>
 }
 
@@ -42,7 +42,7 @@ const DeleteButton = ({
   title,
   children,
   onDelete
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
 

@@ -1,14 +1,11 @@
 /** @module Components.Administration.User.Delete */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -40,19 +37,13 @@ export const errors = {
  */
 export const _onDelete = async (
   user: Pick<IFrontUsersItem, 'id' | 'email'>,
-  swr: { delOneUser: (user: IFrontMutateUsersItem) => Promise<void> },
-  dispatch: Dispatch<INotificationAction>
+  swr: { delOneUser: (user: IFrontMutateUsersItem) => Promise<void> }
 ): Promise<void> => {
-  try {
-    // Delete
-    await UserAPI.delById(user.id)
+  // Delete
+  await UserAPI.delById(user.id)
 
-    // Mutate
-    await swr.delOneUser({ id: user.id })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.del, err }))
-    throw err
-  }
+  // Mutate
+  await swr.delOneUser({ id: user.id })
 }
 
 /**
@@ -60,7 +51,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ user, swr }: IProps): React.JSX.Element => {
+const Delete = ({ user, swr }: IProps): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -73,7 +64,10 @@ const Delete = ({ user, swr }: IProps): React.JSX.Element => {
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(user, swr, dispatch)
+      await _onDelete(user, swr)
+    } catch (err: any) {
+      dispatch(addError({ title: errors.del, err }))
+      throw err
     } finally {
       setLoading(false)
     }

@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization */
 
-import { Dispatch, useCallback, useContext } from 'react'
+import { ReactNode, useCallback, useContext } from 'react'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -9,10 +9,7 @@ import {
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import OrganizationAPI from '@/api/organization'
@@ -56,26 +53,21 @@ export const _onName = async (
     mutateOneOrganization: (
       organization: IFrontMutateOrganizationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // API
-    await OrganizationAPI.update(organization, [
-      {
-        key: 'name',
-        value: name
-      }
-    ])
-
-    // Local
-    await swr.mutateOneOrganization({
-      ...organization,
-      name: name
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.name, err }))
   }
+): Promise<void> => {
+  // API
+  await OrganizationAPI.update(organization, [
+    {
+      key: 'name',
+      value: name
+    }
+  ])
+
+  // Local
+  await swr.mutateOneOrganization({
+    ...organization,
+    name: name
+  })
 }
 
 /**
@@ -88,11 +80,7 @@ export const _onName = async (
  * - onClose (Function) On close
  * @returns Organization
  */
-const Organization = ({
-  organization,
-  swr,
-  onClose
-}: IProps): React.JSX.Element => {
+const Organization = ({ organization, swr, onClose }: IProps): ReactNode => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -102,16 +90,16 @@ const Organization = ({
    */
   const onChange = useCallback(
     (name: string): void => {
-      ;(async () => {
-        await _onName(
-          organization,
-          name,
-          {
+      const asyncFunction = async () => {
+        try {
+          await _onName(organization, name, {
             mutateOneOrganization: swr.mutateOneOrganization
-          },
-          dispatch
-        )
-      })()
+          })
+        } catch (err: any) {
+          dispatch(addError({ title: errors.name, err }))
+        }
+      }
+      asyncFunction().catch(console.error)
     },
     [organization, swr, dispatch]
   )

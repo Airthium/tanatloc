@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import { useState, useCallback, useContext, useMemo } from 'react'
+import {
+  useState,
+  useCallback,
+  useContext,
+  useMemo,
+  ReactNode,
+  useRef
+} from 'react'
 import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
@@ -19,7 +26,7 @@ import {
 import { IMaterialDatabase } from '@/config/materials'
 
 import { SelectContext, ISelect } from '@/context/select'
-import { setPart } from '@/context/select/actions'
+import { select, setPart } from '@/context/select/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
@@ -79,7 +86,7 @@ const MaterialsChild = ({
   unit,
   _onMaterialChange,
   _onUnitChange
-}: IMaterialsChildProps): React.JSX.Element => {
+}: IMaterialsChildProps): ReactNode => {
   /**
    * On material change
    * @param val Value
@@ -132,80 +139,89 @@ const Material = ({
   material,
   swr,
   onClose
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
+  // Ref
+  const init = useRef<boolean>(false)
+
   // State
-  const [alreadySelected, setAlreadySelected] = useState<ISelection[]>()
   const [current, setCurrent] = useState<IModelMaterialsValue>()
-  const [activeKey, setActiveKey] = useState<string>()
   const [error, setError] = useState<string>()
 
   // Context
   const { dispatch } = useContext(SelectContext)
 
-  // Data
+  // Dimension
   const dimension = useMemo(
     () => simulation.scheme.configuration.dimension,
     [simulation]
   )
+
+  // Variables
   const variables = useMemo(() => simulation.scheme.variables, [simulation])
+
+  // Materials
   const materials = useMemo(
-    () => simulation.scheme.configuration.materials,
+    () => simulation.scheme.configuration.materials!,
     [simulation]
   )
 
-  // Init
-  useCustomEffect(
-    () => {
-      const geometry = geometries.find((g) => g.id === material?.geometry)
-      if (geometry) {
-        dispatch(setPart(geometry.summary.uuid))
-        setActiveKey(geometry.id)
-      } else {
-        dispatch(setPart(geometries[0]?.summary.uuid))
-        setActiveKey(geometries[0]?.id)
-      }
-    },
-    [visible, geometries, material],
-    [dispatch]
-  )
+  // Already selected
+  const alreadySelected = useMemo(() => {
+    const alreadySelected =
+      materials.values
+        ?.map((m) => {
+          if (m.uuid === material?.uuid) return
+          return {
+            label: m.material.label,
+            selected: m.selected
+          }
+        })
+        .filter((s) => s) ?? []
+    return alreadySelected as ISelection[]
+  }, [material, materials])
 
-  // Visible
+  // Initialization
   useCustomEffect(() => {
-    if (!visible && current) setCurrent(undefined)
-  }, [visible, current])
+    if (!visible) {
+      setCurrent(undefined)
+      return
+    }
 
-  // Default
-  useCustomEffect(() => {
-    if (visible && !current && material) {
+    if (current) return
+
+    if (material) {
       setCurrent(material)
-    } else if (visible && !current && !material)
+      dispatch(select(material.selected))
+    } else
       setCurrent({
+        uuid: 'add',
         material: {
           label: 'Default',
-          children:
-            materials?.children.map((child) => ({
-              label: child.label,
-              symbol: child.name,
-              value: child.default
-            })) ?? []
+          children: materials.children.map((child) => ({
+            label: child.label,
+            symbol: child.name,
+            value: child.default
+          }))
         },
-        geometry: geometries[0]?.id
-      } as IModelMaterialsValue)
-  }, [visible, geometries, materials, current])
-
-  // Already selected
-  useCustomEffect(() => {
-    const currentAlreadySelected = materials?.values
-      ?.map((m) => {
-        if (m.uuid === material?.uuid) return
-        return {
-          label: m.material.label,
-          selected: m.selected
-        }
+        geometry: geometries[0]?.id,
+        selected: []
       })
-      .filter((s) => s)
-    setAlreadySelected((currentAlreadySelected ?? []) as ISelection[])
-  }, [simulation, material, materials])
+    init.current = true
+  }, [visible, geometries, material, materials, current])
+
+  // Set part
+  useCustomEffect(
+    () => {
+      if (!visible) return
+
+      const geometry = geometries.find(
+        (geometry) => geometry.id === current?.geometry
+      )
+      if (geometry) dispatch(setPart(geometry.summary.uuid))
+    },
+    [visible, geometries, current],
+    [dispatch]
+  )
 
   /**
    * On material select
@@ -213,12 +229,14 @@ const Material = ({
    */
   const onMaterialSelect = useCallback(
     (currentMaterial: IMaterialDatabase['key']['children'][0]): void => {
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelMaterialsValue),
+      if (!init.current) return
+
+      setCurrent({
+        ...current!,
         material: currentMaterial
-      }))
+      })
     },
-    []
+    [current]
   )
 
   /**
@@ -229,24 +247,26 @@ const Material = ({
    */
   const onMaterialChange = useCallback(
     (child: IModelMaterialsChild, index: number, val: string): void => {
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelMaterialsValue),
+      if (!init.current) return
+
+      setCurrent({
+        ...current!,
         material: {
           label: 'Custom',
           children: [
-            ...prevCurrent!.material.children.slice(0, index),
+            ...current!.material.children.slice(0, index),
             {
-              ...prevCurrent!.material.children[index],
+              ...current!.material.children[index],
               label: child.label,
               symbol: child.name,
               value: val
             },
-            ...prevCurrent!.material.children.slice(index + 1)
+            ...current!.material.children.slice(index + 1)
           ]
         }
-      }))
+      })
     },
-    []
+    [current]
   )
 
   /**
@@ -254,33 +274,43 @@ const Material = ({
    * @param index Index
    * @param unit Unit
    */
-  const onUnitChange = useCallback((index: number, unit: IUnit): void => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelMaterialsValue),
-      material: {
-        ...prevCurrent!.material,
-        children: [
-          ...prevCurrent!.material.children.slice(0, index),
-          {
-            ...prevCurrent!.material.children[index],
-            unit: unit
-          },
-          ...prevCurrent!.material.children.slice(index + 1)
-        ]
-      }
-    }))
-  }, [])
+  const onUnitChange = useCallback(
+    (index: number, unit: IUnit): void => {
+      if (!init.current) return
+
+      setCurrent({
+        ...current!,
+        material: {
+          ...current!.material,
+          children: [
+            ...current!.material.children.slice(0, index),
+            {
+              ...current!.material.children[index],
+              unit: unit
+            },
+            ...current!.material.children.slice(index + 1)
+          ]
+        }
+      })
+    },
+    [current]
+  )
 
   /**
    * On select
    * @param selected Selected
    */
-  const onSelected = useCallback((selected: ISelect[]): void => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelMaterialsValue),
-      selected: selected
-    }))
-  }, [])
+  const onSelected = useCallback(
+    (selected: ISelect[]): void => {
+      if (!init.current) return
+
+      setCurrent({
+        ...current!,
+        selected: selected
+      })
+    },
+    [current]
+  )
 
   /**
    * On geometry change
@@ -288,28 +318,28 @@ const Material = ({
    */
   const onGeometryChange = useCallback(
     (key: string): void => {
-      // Active key
-      setActiveKey(key)
+      if (!init.current) return
 
       // Set part
       const geometry = geometries.find((geometry) => geometry.id === key)
       dispatch(setPart(geometry!.summary.uuid))
 
       // Set geometry
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelMaterialsValue),
+      setCurrent({
+        ...current!,
         geometry: key
-      }))
+      })
     },
-    [geometries, dispatch]
+    [geometries, current, dispatch]
   )
 
   /**
    * On cancel
    */
   const onCancel = useCallback((): void => {
-    setCurrent(undefined)
     onClose()
+    setCurrent(undefined)
+    init.current = false
   }, [onClose])
 
   /**
@@ -405,7 +435,7 @@ const Material = ({
               />
             )
           }))}
-          activeKey={activeKey}
+          activeKey={current?.geometry}
           onChange={onGeometryChange}
         />
 

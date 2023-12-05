@@ -1,7 +1,7 @@
 /** @module Components.Login.Password */
 
 import {
-  Dispatch,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -10,10 +10,7 @@ import {
 } from 'react'
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError, addSuccess } from '@/context/notification/actions'
 
 import Dialog from '@/components/assets/dialog'
@@ -31,32 +28,15 @@ export const errors = {
  * Password recover
  * @param value Value
  */
-export const _passwordRecover = async (
-  value: {
-    email: string
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    await EmailAPI.recover(value.email)
-
-    dispatch(
-      addSuccess({
-        title: 'An email has been send to recover your password',
-        description: 'If you entered a valid email'
-      })
-    )
-  } catch (err: any) {
-    dispatch(addError({ title: errors.recover, err }))
-    throw err
-  }
-}
+export const _passwordRecover = async (value: {
+  email: string
+}): Promise<void> => await EmailAPI.recover(value.email)
 
 /**
  * Password recover
  * @returns PasswordRecover
  */
-const PasswordRecover = (): React.JSX.Element => {
+const PasswordRecover = (): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -91,12 +71,19 @@ const PasswordRecover = (): React.JSX.Element => {
     async (values: { email: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _passwordRecover(values, dispatch)
+        await _passwordRecover(values)
+        dispatch(
+          addSuccess({
+            title: 'An email has been send to recover your password',
+            description: 'If you entered a valid email'
+          })
+        )
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.recover, err }))
         setLoading(false)
         throw err
       }

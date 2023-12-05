@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useState, useEffect, useCallback, useContext, ReactNode } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
 import { TOKEN } from '@/config/email'
@@ -74,7 +74,7 @@ export const _onSignup = async (
  * Signup
  * @returns Signup
  */
-const Signup = (): React.JSX.Element => {
+const Signup = (): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
@@ -96,9 +96,10 @@ const Signup = (): React.JSX.Element => {
 
   // Already connected
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       if (user) await router.push('/dashboard')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [user, router])
 
   /**
@@ -107,7 +108,7 @@ const Signup = (): React.JSX.Element => {
    */
   const onFinish = useCallback(
     (values: { email: string; password: string }): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         setLoading(true)
         try {
           await _onSignup(router, values)
@@ -116,7 +117,8 @@ const Signup = (): React.JSX.Element => {
         } finally {
           setLoading(false)
         }
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [router]
   )

@@ -1,5 +1,7 @@
 /** @module API.Error */
 
+import { ReactNode } from 'react'
+
 import { ICallError } from '../index.d'
 
 /**
@@ -7,13 +9,13 @@ import { ICallError } from '../index.d'
  */
 export class APIError extends Error {
   title: string
-  render?: React.JSX.Element
+  render?: ReactNode
   err?: ICallError
   type?: 'error' | 'success' | 'info' | 'warning'
 
   constructor(params: {
     title: string
-    render?: React.JSX.Element
+    render?: ReactNode
     err?: ICallError
     type?: 'error' | 'success' | 'info' | 'warning'
   }) {

@@ -1,5 +1,6 @@
 /** @module Components.Doc.Dashboard.Workspace */
 
+import { ReactNode } from 'react'
 import Link from 'next/link'
 import { Button, Typography } from 'antd'
 import {
@@ -19,7 +20,7 @@ import globalStyle from '@/styles/index.module.css'
  * Workspace
  * @returns Workspace
  */
-const Workspace = (): React.JSX.Element => {
+const Workspace = (): ReactNode => {
   /**
    * Render
    */

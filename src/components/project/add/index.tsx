@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/router'
 import {
-  Dispatch,
   KeyboardEvent,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -20,10 +20,7 @@ import {
 
 import { LIMIT120, LIMIT50 } from '@/config/string'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { AddButton } from '@/components/assets/button'
@@ -34,12 +31,15 @@ import ProjectAPI from '@/api/project'
 /**
  * Props
  */
+export type Workspace = Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+export type Values = Pick<IFrontNewProject, 'title' | 'description'>
+export type Swr = {
+  mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+  addOneProject: (project: IFrontNewProject) => Promise<void>
+}
 export interface IProps {
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
-  swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-    addOneProject: (project: IFrontNewProject) => Promise<void>
-  }
+  workspace: Workspace
+  swr: Swr
 }
 
 /**
@@ -56,32 +56,23 @@ export const errors = {
  * @param swr SWR
  */
 export const _onAdd = async (
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
-  values: Pick<IFrontNewProject, 'title' | 'description'>,
-  swr: {
-    addOneProject: (project: IFrontNewProject) => Promise<void>
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  workspace: Workspace,
+  values: Values,
+  swr: Swr
 ): Promise<IFrontNewProject> => {
-  try {
-    // Add
-    const project = await ProjectAPI.add({ id: workspace.id }, values)
+  // Add
+  const project = await ProjectAPI.add({ id: workspace.id }, values)
 
-    // Mutate projects
-    await swr.addOneProject(project)
+  // Mutate projects
+  await swr.addOneProject(project)
 
-    // Mutate workspaces
-    await swr.mutateOneWorkspace({
-      ...workspace,
-      projects: [...workspace.projects, project.id]
-    })
+  // Mutate workspaces
+  await swr.mutateOneWorkspace({
+    ...workspace,
+    projects: [...workspace.projects, project.id]
+  })
 
-    return project
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
-  }
+  return project
 }
 
 /**
@@ -89,7 +80,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
+const Add = ({ workspace, swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -134,12 +125,10 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
    * @param values Values
    */
   const onOk = useCallback(
-    async (
-      values: Pick<IFrontNewProject, 'title' | 'description'>
-    ): Promise<void> => {
+    async (values: Values): Promise<void> => {
       setLoading(true)
       try {
-        const newProject = await _onAdd(workspace, values, swr, dispatch)
+        const newProject = await _onAdd(workspace, values, swr)
 
         // Close
         setLoading(false)
@@ -154,7 +143,8 @@ const Add = ({ workspace, swr }: IProps): React.JSX.Element => {
             projectId: newProject.id
           }
         })
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.add, err }))
         setLoading(false)
         throw err
       }

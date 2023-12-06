@@ -2,16 +2,18 @@
 
 import {
   useState,
-  useEffect,
   useCallback,
   Dispatch,
   SetStateAction,
-  useContext
+  useContext,
+  ReactNode,
+  useMemo
 } from 'react'
 import {
   Checkbox,
   Drawer,
   Dropdown,
+  Empty,
   Space,
   Table,
   TableColumnsType
@@ -28,9 +30,9 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { camelCase } from 'lodash'
 
-import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
+import { IFrontSimulation, IFrontSimulationsItem } from '@/api/index.d'
+import { ISimulationTaskData } from '@/database/simulation/get'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
@@ -46,15 +48,37 @@ import style from './index.module.css'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'name'>
 export interface IProps {
-  simulation?: Pick<IFrontSimulationsItem, 'id' | 'name'>
+  simulation: Simulation | undefined
 }
 
 export interface IColumnRenderProps {
   name: string
   index: number
-  columnSelection: boolean[]
-  setColumnSelection: Dispatch<SetStateAction<boolean[]>>
+  selection: boolean[]
+  setSelection: Dispatch<SetStateAction<boolean[]>>
+}
+
+/**
+ * Types
+ */
+export type RowData = {
+  xName: string
+  yNames: string[]
+  points: {
+    x: number
+    [key: string]: number
+  }[]
+}
+
+export type Plot = {
+  data: { x: number }[]
+  xMin: number
+  xMax: number
+  yMin: number
+  yMax: number
+  lines: ReactNode[]
 }
 
 /**
@@ -66,35 +90,31 @@ export const errors = {
 
 /**
  * Export CSV
- * @param simulation Simulation
- * @param datas Datas
- * @param names Names
- * @param camelNames Camel names
+ * @param name Name
+ * @param data Data
  * @param separator Separator (Default to ;)
  */
 export const _exportCSV = (
-  simulation: Pick<IFrontSimulationsItem, 'name'>,
-  datas: { key: number; x: number; [key: string]: number }[],
-  names: string[],
-  camelNames: string[],
+  name: string,
+  data: RowData,
   separator: string = ';'
 ): void => {
   let CSV = ''
 
   // Header
-  CSV = 'x' + separator + names.join(separator) + '\n'
+  CSV = 'x' + separator + data.yNames.join(separator) + '\n'
 
   // Data
-  datas.forEach((data) => {
-    CSV += data.x
-    camelNames?.forEach((name) => {
-      data[name] !== undefined && (CSV += separator + data[name])
+  data.points.forEach((point) => {
+    CSV += point.x
+    data.yNames.forEach((name) => {
+      CSV += separator + point[name]
     })
     CSV += '\n'
   })
 
   // Download
-  const fileName = simulation.name + '.csv'
+  const fileName = name + '.csv'
   const file = new File([CSV], fileName, { type: 'text/csv' })
   const url = window.URL.createObjectURL(file)
   const link = document.createElement('a')
@@ -104,12 +124,17 @@ export const _exportCSV = (
   link.remove()
 }
 
-const ColumnRender = ({
+/**
+ * Column
+ * @param props Props
+ * @returns Column
+ */
+const Column = ({
   name,
   index,
-  columnSelection,
-  setColumnSelection
-}: IColumnRenderProps): React.JSX.Element => {
+  selection,
+  setSelection
+}: IColumnRenderProps): ReactNode => {
   /**
    * On change
    * @param event Event
@@ -118,12 +143,12 @@ const ColumnRender = ({
     (event: CheckboxChangeEvent): void => {
       const checked = event.target.checked
 
-      const newSelection = [...columnSelection]
+      const newSelection = [...selection]
       newSelection[index] = checked
 
-      setColumnSelection(newSelection)
+      setSelection(newSelection)
     },
-    [index, columnSelection, setColumnSelection]
+    [index, selection, setSelection]
   )
 
   /**
@@ -134,7 +159,7 @@ const ColumnRender = ({
       {name}
       <Checkbox
         data-testid="table-checkbox"
-        checked={columnSelection[index]}
+        checked={selection[index]}
         onChange={onChange}
       >
         <LineChartOutlined style={{ fontSize: 20 }} />
@@ -148,173 +173,148 @@ const ColumnRender = ({
  * @param props Props
  * @returns Data
  */
-const Data = ({ simulation }: IProps): React.JSX.Element | null => {
+const Data = ({ simulation }: IProps): ReactNode => {
   // State
-  const [datas, setDatas] =
-    useState<{ key: number; x: number; [key: string]: number }[]>()
-  const [title, setTitle] = useState<string>()
-  const [names, setNames] = useState<string[]>()
-  const [camelNames, setCamelNames] = useState<string[]>()
-  const [columns, setColumns] = useState<TableColumnsType<object>>()
-  const [columnSelection, setColumnSelection] = useState<boolean[]>([true])
-  const [plot, setPlot] = useState<{
-    data: { x: number }[]
-    min: number
-    max: number
-    domainMin: number
-    domainMax: number
-    lines: React.JSX.Element[]
-  }>()
+  const [selection, setSelection] = useState<boolean[]>([true])
   const [downloading, setDownloading] = useState<boolean>(false)
 
   // Context
-  const { data, dispatch: selectDispatch } = useContext(SelectContext)
+  const { data: dataDisplay, dispatch: selectDispatch } =
+    useContext(SelectContext)
   const { dispatch } = useContext(NotificationContext)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
 
-  // Datas
-  useEffect(() => {
-    const tasks = currentSimulation?.tasks
+  // Row data
+  const data = useMemo(() => {
+    if (currentSimulation.id === '0') return
 
-    if (!tasks) {
-      setDatas(undefined)
-      setNames(undefined)
-      setCamelNames(undefined)
-      return
-    }
+    const validSimulation = currentSimulation as IFrontSimulation
+    const tasks = validSimulation.tasks
+    if (!tasks.length) return
 
-    // Get datas
-    const tasksDatas = tasks
+    // Tasks data
+    const taskData = tasks
       .map((task) => task.datas)
       .filter((t) => t)
-      .flatMap((t) => t) as IFrontSimulationTask['datas']
-
-    if (!tasksDatas?.length || !tasksDatas[0].names) {
-      setNames(undefined)
-      setCamelNames(undefined)
-      return
-    }
+      .flat() as ISimulationTaskData[]
+    if (!taskData.length) return
 
     // Sort
-    tasksDatas.sort((a, b) => a.x - b.x)
+    taskData.sort((a, b) => a.x - b.x)
 
-    const newTitle = tasksDatas[0].title
+    // Merge
+    const xName = taskData[0].title
+    let yNames: string[] = []
+    taskData.forEach(
+      (data) => (yNames = [...new Set([...yNames, ...data.names])])
+    )
+    const points = taskData.map((data) => {
+      const point: RowData['points'][0] = {
+        x: data.x
+      }
+      for (let i = 0; i < data.names.length; ++i) {
+        const name = data.names[i]
+        if (name === yNames[i]) point[name] = data.ys[i]
+        else point[name] = 0
+      }
 
-    const newNames = tasksDatas
-      .map((data) => data.names)
-      .flatMap((n) => n)
-      .filter(
-        (value, index, self) => self.findIndex((s) => s === value) === index
-      )
-    const newCamelNames = newNames.map((name: string) => camelCase(name))
-
-    const newDatas: { key: number; x: number; [key: string]: number }[] = []
-    tasksDatas.forEach((data, index) => {
-      data.names.forEach((name, nameIndex) => {
-        const existing = newDatas.find((d) => d.x === data.x)
-        if (!existing) {
-          newDatas.push({
-            key: index,
-            x: data.x,
-            [camelCase(name)]: data.ys[nameIndex]
-          })
-        } else {
-          existing[camelCase(name)] = data.ys[nameIndex]
-        }
-      })
+      return point
     })
 
-    setTitle(newTitle)
-    setDatas(newDatas)
-    setNames(newNames)
-    setCamelNames(newCamelNames)
-  }, [currentSimulation])
-
-  // Table
-  useEffect(() => {
-    if (!datas || !names || !camelNames) {
-      setColumns(undefined)
-      return
+    const data: RowData = {
+      xName,
+      yNames,
+      points
     }
 
-    const tableColumns: TableColumnsType<object> = names.map((name, index) => ({
-      align: 'center',
-      className: 'column' + (columnSelection[index] ? ' selected' : ''),
-      title: (
-        <ColumnRender
-          name={name}
-          index={index}
-          columnSelection={columnSelection}
-          setColumnSelection={setColumnSelection}
-        />
-      ),
-      dataIndex: camelNames[index],
-      key: camelNames[index]
-    }))
-    tableColumns.unshift({
-      align: 'center',
-      title: title ?? 'Iteration',
-      dataIndex: 'x',
+    return data
+  }, [currentSimulation])
+
+  // Columns
+  const columns = useMemo(() => {
+    if (!data) return
+
+    // Columns
+    const columns: TableColumnsType<object> = data.yNames.map(
+      (name, index) => ({
+        key: name,
+        dataIndex: name,
+        title: (
+          <Column
+            name={name}
+            index={index}
+            selection={selection}
+            setSelection={setSelection}
+          />
+        ),
+        align: 'center'
+      })
+    )
+    columns.unshift({
       key: 'x',
+      dataIndex: 'x',
+      title: data.xName,
+      align: 'center',
       fixed: 'left'
     })
 
-    setColumns(tableColumns)
-  }, [title, datas, names, camelNames, columnSelection])
+    return columns
+  }, [data, selection, setSelection])
 
   // Plot
-  useEffect(() => {
-    if (!datas || !names || !camelNames) {
-      setPlot(undefined)
-      return
-    }
+  const plot = useMemo(() => {
+    if (!data) return
 
-    // Set lines
-    const keys: string[] = []
-    const colors = Utils.colorGenerator(columnSelection.length)
-    const lines = columnSelection
+    // Lines
+    const colors = Utils.colorGenerator(selection.length)
+    const lines = selection
       .map((selection, index) => {
         if (!selection) return
 
-        const key = camelNames[index]
-        const name = names[index]
+        const name = data.yNames[index]
         const color = colors[index]
-        keys.push(key)
 
         return (
           <Line
-            key={key}
+            key={name}
             name={name}
             type="monotone"
-            dataKey={key}
+            dataKey={name}
             stroke={color}
             strokeWidth={2}
           />
         )
       })
-      .filter((l) => l) as React.JSX.Element[]
+      .filter((l) => l)
 
-    // Set data
-    const data = datas
-      .map((d) => {
-        const part: { x: number; [key: string]: number } = { x: d.x }
-        keys.forEach((key) => {
-          d[key] && (part[key] = d[key])
-        })
-        return part
+    // Min / max
+    const xs = data.points.map((point) => point.x)
+    const xMin = Math.min(...xs)
+    const xMax = Math.max(...xs)
+    const ys = selection
+      .map((selection, index) => {
+        if (!selection) return
+
+        const name = data.yNames[index]
+        const ys = data.points.map((point) => point[name])
+        return ys
       })
-      .filter((d) => d)
+      .filter((ys) => ys)
+      .flat() as number[]
+    const yMin = Math.min(...ys)
+    const yMax = Math.max(...ys)
+    const range = yMax - yMin
 
-    const min = Math.min(...keys.flatMap((key) => data.map((d) => d[key])))
-    const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
-    const range = max - min
-    const domainMin = min - range * 0.1
-    const domainMax = max + range * 0.1
-
-    setPlot({ data, min, max, domainMin, domainMax, lines })
-  }, [datas, names, camelNames, columnSelection])
+    return {
+      xMin,
+      xMax,
+      yMin: yMin - 0.1 * range,
+      yMax: yMax + 0.1 * range,
+      lines
+    }
+  }, [data, selection])
 
   /**
    * Set visible false
@@ -330,13 +330,13 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   const exportCSVTab = useCallback((): void => {
     setDownloading(true)
     try {
-      _exportCSV(simulation!, datas!, names!, camelNames!, '\t')
+      _exportCSV(simulation?.name!, data!, '\t')
     } catch (err: any) {
       dispatch(addError({ title: errors.download, err }))
     } finally {
       setDownloading(false)
     }
-  }, [simulation, datas, names, camelNames, dispatch])
+  }, [simulation, data, dispatch])
 
   /**
    * Export CSV comma
@@ -344,13 +344,13 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   const exportCSVComma = useCallback((): void => {
     setDownloading(true)
     try {
-      _exportCSV(simulation!, datas!, names!, camelNames!, ',')
+      _exportCSV(simulation?.name!, data!, ',')
     } catch (err: any) {
       dispatch(addError({ title: errors.download, err }))
     } finally {
       setDownloading(false)
     }
-  }, [simulation, datas, names, camelNames, dispatch])
+  }, [simulation, data, dispatch])
 
   /**
    * Export CSV default
@@ -358,13 +358,13 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
   const exportCSVDefault = useCallback((): void => {
     setDownloading(true)
     try {
-      _exportCSV(simulation!, datas!, names!, camelNames!)
+      _exportCSV(simulation?.name!, data!)
     } catch (err: any) {
       dispatch(addError({ title: errors.download, err }))
     } finally {
       setDownloading(false)
     }
-  }, [simulation, datas, names, camelNames, dispatch])
+  }, [simulation?.name, data, dispatch])
 
   /**
    * Format
@@ -379,14 +379,14 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
    * Render
    */
   if (!simulation) return null
-  if (!datas || !names || !camelNames) return null
+  if (!data || !columns) return null
   return (
     <Drawer
       title="Data visualization"
       placement="bottom"
       closable={true}
       onClose={setVisibleFalse}
-      open={data}
+      open={dataDisplay}
       mask={false}
       maskClosable={false}
       height="50vh"
@@ -394,7 +394,6 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
       extra={
         <Dropdown.Button
           loading={downloading}
-          disabled={!datas}
           menu={{
             items: [
               {
@@ -426,7 +425,7 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
             size="small"
             sticky={true}
             pagination={false}
-            dataSource={datas}
+            dataSource={data.points}
             columns={columns}
             scroll={{
               x: ((columns?.length ? +columns.length : 1) - 1) * 200
@@ -435,20 +434,21 @@ const Data = ({ simulation }: IProps): React.JSX.Element | null => {
         </div>
 
         <ResponsiveContainer width="49%" height="100%">
-          <LineChart
-            data={plot?.data}
-            margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={'x'} />
-            <YAxis
-              domain={plot ? [plot.domainMin, plot.domainMax] : [-1, 1]}
-              tickFormatter={format}
-            />
-            <ReTooltip />
-            <Legend />
-            {plot?.lines}
-          </LineChart>
+          {plot?.lines.length ? (
+            <LineChart
+              data={data.points}
+              margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey={'x'} domain={[plot.xMin, plot.xMax]} />
+              <YAxis domain={[plot.yMin, plot.yMax]} tickFormatter={format} />
+              <ReTooltip />
+              <Legend />
+              {plot.lines}
+            </LineChart>
+          ) : (
+            <Empty description="No data to display" />
+          )}
         </ResponsiveContainer>
       </div>
     </Drawer>

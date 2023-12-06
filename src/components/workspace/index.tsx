@@ -79,7 +79,7 @@ const Workspace = ({
 }: IProps): ReactNode => {
   // State
   const [filter, setFilter] = useState<string>()
-  const [sorter, setSorter] = useState<string>()
+  const [sorter, setSorter] = useState<string>('alphaAsc')
 
   // Context
   const { dispatch } = useContext(NotificationContext)
@@ -213,7 +213,7 @@ const Workspace = ({
             label: 'Name (Z-A)'
           }
         ]}
-        defaultActiveKey="modifiedDesc"
+        activeKey={sorter}
         onChange={setSorter}
       />
 

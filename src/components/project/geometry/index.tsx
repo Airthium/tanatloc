@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import {
@@ -9,10 +9,7 @@ import {
   IFrontProject
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import Loading from '@/components/loading'
@@ -26,7 +23,6 @@ import MathJax from '@/components/assets/mathjax'
 
 import GeometryAPI from '@/api/geometry'
 
-import Add from './add'
 import Edit from './edit'
 import Split from './split'
 
@@ -35,14 +31,17 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Project = Pick<IFrontProject, 'id' | 'geometries'>
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Swr = {
+  mutateProject: (project: Partial<IFrontProject>) => Promise<void>
+  mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
+  delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
+}
 export interface IProps {
-  project: Pick<IFrontProject, 'id' | 'geometries'>
-  geometry?: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
-  swr: {
-    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
-    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
-    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
-  }
+  project: Project
+  geometry: Geometry | undefined
+  swr: Swr
   close: () => void
   onCleanup: (id: string) => void
 }
@@ -60,25 +59,18 @@ export const errors = {
  * On download
  * @param geometry Geometry
  */
-export const _onDownload = async (
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>,
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    const file = await GeometryAPI.download({ id: geometry.id })
-    const data = new File(
-      [Buffer.from(file.buffer).toString()],
-      geometry.name + '.' + file.extension
-    )
-    const url = window.URL.createObjectURL(data)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', geometry.name + '.' + file.extension)
-    link.click()
-    link.remove()
-  } catch (err: any) {
-    dispatch(addError({ title: errors.download, err }))
-  }
+export const _onDownload = async (geometry: Geometry): Promise<void> => {
+  const file = await GeometryAPI.download({ id: geometry.id })
+  const data = new File(
+    [Buffer.from(file.buffer).toString()],
+    geometry.name + '.' + file.extension
+  )
+  const url = window.URL.createObjectURL(data)
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', geometry.name + '.' + file.extension)
+  link.click()
+  link.remove()
 }
 
 /**
@@ -88,29 +80,21 @@ export const _onDownload = async (
  * @param swr SWR
  */
 export const _onEdit = async (
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>,
+  geometry: Geometry,
   values: { name: string },
-  swr: {
-    mutateOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Pick<Swr, 'mutateOneGeometry'>
 ): Promise<void> => {
-  try {
-    // API
-    await GeometryAPI.update({ id: geometry.id }, [
-      {
-        key: 'name',
-        value: values.name
-      }
-    ])
+  // API
+  await GeometryAPI.update({ id: geometry.id }, [
+    {
+      key: 'name',
+      value: values.name
+    }
+  ])
 
-    // Local
-    geometry.name = values.name
-    await swr.mutateOneGeometry(geometry)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
-  }
+  // Local
+  geometry.name = values.name
+  await swr.mutateOneGeometry(geometry)
 }
 
 /**
@@ -121,49 +105,40 @@ export const _onEdit = async (
  * @param swr SWR
  */
 export const _onDelete = async (
-  geometry: Pick<IFrontGeometriesItem, 'id'>,
-  project: Pick<IFrontProject, 'id' | 'geometries'>,
+  project: Project,
+  geometry: Geometry,
   close: () => void,
-  swr: {
-    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
-    delOneGeometry: (geometry: IFrontMutateGeometriesItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Pick<Swr, 'mutateProject' | 'delOneGeometry'>
 ): Promise<void> => {
-  try {
-    // API
-    await GeometryAPI.del({ id: geometry.id })
+  // API
+  await GeometryAPI.del({ id: geometry.id })
 
-    // Local
-    const filteredGeometries = project.geometries.filter(
-      (g) => g !== geometry.id
-    )
-    await swr.mutateProject({
-      id: project.id,
-      geometries: filteredGeometries
-    })
-    await swr.delOneGeometry(geometry)
+  // Local
+  const filteredGeometries = project.geometries.filter((g) => g !== geometry.id)
+  await swr.mutateProject({
+    id: project.id,
+    geometries: filteredGeometries
+  })
+  await swr.delOneGeometry(geometry)
 
-    // Close
-    close()
-  } catch (err: any) {
-    dispatch(addError({ title: errors.del, err }))
-    throw err
-  }
+  // Close
+  close()
 }
+
+// TODO use this type definition for react components ????
 
 /**
  * Geometry
  * @param props Props
  * @returns Geometry
  */
-const Geometry = ({
+const Geometry: React.FunctionComponent<IProps> = ({
   project,
   geometry,
   swr,
   close,
   onCleanup
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [downloading, setDownloading] = useState<boolean>(false)
   const [editVisible, setEditVisible] = useState<boolean>(false)
@@ -181,15 +156,17 @@ const Geometry = ({
    * On download
    */
   const onDownload = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       setDownloading(true)
       try {
-        await _onDownload(geometry!, dispatch)
-      } catch (err) {
+        await _onDownload(geometry!)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.download, err }))
       } finally {
         setDownloading(false)
       }
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [geometry, dispatch])
 
   /**
@@ -197,8 +174,14 @@ const Geometry = ({
    * @param value Value
    */
   const onEdit = useCallback(
-    async (value: { name: string }): Promise<void> =>
-      _onEdit(geometry!, value, swr, dispatch),
+    async (value: { name: string }): Promise<void> => {
+      try {
+        await _onEdit(geometry!, value, swr)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
+        throw err
+      }
+    },
     [geometry, swr, dispatch]
   )
 
@@ -208,8 +191,11 @@ const Geometry = ({
   const onDelete = useCallback(async () => {
     setDeleting(true)
     try {
-      await _onDelete(geometry!, project, close, swr, dispatch)
+      await _onDelete(project, geometry!, close, swr)
       onCleanup(geometry!.id)
+    } catch (err: any) {
+      dispatch(addError({ title: errors.del, err }))
+      throw err
     } finally {
       setDeleting(false)
     }
@@ -302,6 +288,4 @@ const Geometry = ({
   )
 }
 
-Geometry.componentName = 'Geometry'
-Geometry.Add = Add
 export default Geometry

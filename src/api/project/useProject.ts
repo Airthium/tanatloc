@@ -4,7 +4,11 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import { IFrontMutateProject, IFrontProject } from '@/api/index.d'
+
 import { fetcher } from '@/api/call'
+
+// Default data
+export type DefaultData = { id: '0' }
 
 /**
  * Use project
@@ -14,7 +18,7 @@ import { fetcher } from '@/api/call'
 export const useProject = (
   id?: string
 ): [
-  IFrontProject,
+  IFrontProject | DefaultData,
   {
     mutateProject: (project: IFrontMutateProject) => Promise<void>
     errorProject: Error

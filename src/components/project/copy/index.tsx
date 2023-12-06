@@ -1,6 +1,6 @@
 /** @module Components.Project.Copy */
 
-import { Dispatch, useCallback, useContext } from 'react'
+import { ReactNode, useCallback, useContext } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
@@ -11,10 +11,7 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import ProjectAPI from '@/api/project'
@@ -24,13 +21,16 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Workspace = Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+export type Project = Pick<IFrontProjectsItem, 'id'>
+export type Swr = {
+  addOneProject: (project: IFrontNewProject) => Promise<void>
+  mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+}
 export interface IProps {
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
-  project: Pick<IFrontProjectsItem, 'id'>
-  swr: {
-    addOneProject: (project: IFrontNewProject) => Promise<void>
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  }
+  workspace: Workspace
+  project: Project
+  swr: Swr
 }
 
 /**
@@ -47,27 +47,19 @@ export const errors = {
  * @param swr SWR
  */
 export const _onCopy = async (
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
-  project: Pick<IFrontProjectsItem, 'id'>,
-  swr: {
-    addOneProject: (project: IFrontNewProject) => Promise<void>
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  workspace: Workspace,
+  project: Project,
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // Copy
-    const newProject = await ProjectAPI.copy(workspace, project)
+  // Copy
+  const newProject = await ProjectAPI.copy(workspace, project)
 
-    // Mutate projects
-    await swr.addOneProject(newProject)
+  // Mutate projects
+  await swr.addOneProject(newProject)
 
-    // Mutate workspaces
-    workspace.projects.push(newProject.id)
-    await swr.mutateOneWorkspace(workspace)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.copy, err }))
-  }
+  // Mutate workspaces
+  workspace.projects.push(newProject.id)
+  await swr.mutateOneWorkspace(workspace)
 }
 
 /**
@@ -75,7 +67,7 @@ export const _onCopy = async (
  * @param props Props
  * @returns Copy
  */
-const Copy = ({ workspace, project, swr }: IProps): React.JSX.Element => {
+const Copy = ({ workspace, project, swr }: IProps): ReactNode => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -83,9 +75,14 @@ const Copy = ({ workspace, project, swr }: IProps): React.JSX.Element => {
    * On copy
    */
   const onCopy = useCallback((): void => {
-    ;(async () => {
-      await _onCopy(workspace, project, swr, dispatch)
-    })()
+    const asyncFunction = async () => {
+      try {
+        await _onCopy(workspace, project, swr)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.copy, err }))
+      }
+    }
+    asyncFunction().catch(console.error)
   }, [workspace, project, swr, dispatch])
 
   /**

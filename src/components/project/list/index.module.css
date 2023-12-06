@@ -40,6 +40,18 @@
   background-color: #fafafa;
 }
 
+.cardUsers {
+  padding: 6px 0;
+  display: grid;
+  grid-template-columns: 10fr 1fr 20fr;
+  grid-template-rows: auto auto;
+}
+
+.cardDivider {
+  height: 80%;
+  border-color: #f0f0f0;
+}
+
 .carousel {
   margin: auto !important;
   text-align: center;

@@ -1,16 +1,13 @@
 /** @module Components.Project.Geometry.Add */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { Space, Typography, Upload, UploadFile } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 
 import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import Dialog from '@/components/assets/dialog'
@@ -23,13 +20,15 @@ import style from './index.module.css'
 /**
  * Props
  */
+export type Project = Pick<IFrontProject, 'id' | 'geometries'>
+export type Swr = {
+  mutateProject: (project: Partial<IFrontProject>) => Promise<void>
+  addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
+}
 export interface IProps {
   visible: boolean
-  project: Pick<IFrontProject, 'id' | 'geometries'>
-  swr: {
-    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
-    addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
-  }
+  project: Project
+  swr: Swr
   setVisible: (visible: boolean) => void
 }
 
@@ -73,39 +72,30 @@ export const _getFile = async (file: Blob): Promise<any> => {
  * @param swr SWR
  */
 export const _onUpload = async (
-  project: Pick<IFrontProject, 'id' | 'geometries'>,
+  project: Project,
   info: UploadChangeParam<any>,
-  swr: {
-    mutateProject: (project: Partial<IFrontProject>) => Promise<void>
-    addOneGeometry: (geometry: IFrontNewGeometry) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<boolean> => {
   if (info.file.status === 'uploading') return true
   if (info.file.status === 'done') {
     const buffer = await _getFile(info.file.originFileObj)
 
-    try {
-      // API
-      const geometry = await GeometryAPI.add(
-        { id: project.id },
-        {
-          name: info.file.name,
-          uid: info.file.uid,
-          buffer: Buffer.from(buffer)
-        }
-      )
+    // API
+    const geometry = await GeometryAPI.add(
+      { id: project.id },
+      {
+        name: info.file.name,
+        uid: info.file.uid,
+        buffer: Buffer.from(buffer)
+      }
+    )
 
-      // Local
-      await swr.addOneGeometry(geometry)
-      await swr.mutateProject({
-        id: project.id,
-        geometries: [...project.geometries, geometry.id]
-      })
-    } catch (err: any) {
-      dispatch(addError({ title: errors.add, err }))
-      throw err
-    }
+    // Local
+    await swr.addOneGeometry(geometry)
+    await swr.mutateProject({
+      id: project.id,
+      geometries: [...project.geometries, geometry.id]
+    })
   }
 
   return false
@@ -116,12 +106,7 @@ export const _onUpload = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({
-  visible,
-  project,
-  swr,
-  setVisible
-}: IProps): React.JSX.Element => {
+const Add = ({ visible, project, swr, setVisible }: IProps): ReactNode => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -139,15 +124,17 @@ const Add = ({
    */
   const onChange = useCallback(
     (info: UploadChangeParam<UploadFile<any>>): void => {
-      ;(async () => {
+      const asyncFunction = async () => {
         try {
-          const load = await _onUpload(project, info, swr, dispatch)
+          const load = await _onUpload(project, info, swr)
           setLoading(load)
           setVisible(load)
-        } catch (err) {
+        } catch (err: any) {
+          dispatch(addError({ title: errors.add, err }))
           setLoading(false)
         }
-      })()
+      }
+      asyncFunction().catch(console.error)
     },
     [project, swr, setVisible, dispatch]
   )

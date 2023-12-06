@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry.Edit */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { IFrontGeometriesItem } from '@/api/index.d'
@@ -10,9 +10,10 @@ import Dialog from '@/components/assets/dialog'
 /**
  * Props
  */
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name'>
 export interface IProps {
   visible: boolean
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'name'>
+  geometry: Geometry
   setVisible: (visible: boolean) => void
   onEdit: (values: { name: string }) => Promise<void>
 }
@@ -21,12 +22,7 @@ export interface IProps {
  * Edit
  * @param props Props
  */
-const Edit = ({
-  visible,
-  geometry,
-  setVisible,
-  onEdit
-}: IProps): React.JSX.Element => {
+const Edit = ({ visible, geometry, setVisible, onEdit }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

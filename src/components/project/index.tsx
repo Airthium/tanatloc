@@ -3,8 +3,9 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
-  Dispatch,
   MouseEvent,
+  ReactElement,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -44,10 +45,7 @@ import {
   IModelParameters
 } from '@/models/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
@@ -66,12 +64,14 @@ import GeometryAPI from '@/api/geometry'
 
 import Panel from './panel'
 import Geometry from './geometry'
+import GeometryAdd from './geometry/add'
 import View from './view'
 import Simulation from './simulation'
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
 
+// Data
 const Data = dynamic(() => import('./data'), { ssr: false })
 
 /**
@@ -80,7 +80,7 @@ const Data = dynamic(() => import('./data'), { ssr: false })
 export interface IGeometryProps {
   visible: boolean
   geometry: IFrontGeometriesItem
-  panel: React.JSX.Element | undefined
+  panel: ReactElement | undefined
   add: (geometry: IFrontGeometriesItem) => void
   del: (geometry: IFrontGeometriesItem) => void
   close: () => void
@@ -130,26 +130,20 @@ export const _onSelector = async (
   swr: {
     addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
     mutateProject: (project: Partial<IFrontProject>) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // Add
-    const simulation = await SimulationAPI.add(
-      { id: project.id },
-      { name: scheme.name, scheme }
-    )
-
-    // Mutate
-    await swr.addOneSimulation(simulation)
-    await swr.mutateProject({
-      id: project.id,
-      simulations: [...(project.simulations ?? []), simulation.id]
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.add, err }))
-    throw err
   }
+): Promise<void> => {
+  // Add
+  const simulation = await SimulationAPI.add(
+    { id: project.id },
+    { name: scheme.name, scheme }
+  )
+
+  // Mutate
+  await swr.addOneSimulation(simulation)
+  await swr.mutateProject({
+    id: project.id,
+    simulations: [...(project.simulations ?? []), simulation.id]
+  })
 }
 
 /**
@@ -164,7 +158,7 @@ const GeometryLabel = ({
   add,
   del,
   close
-}: IGeometryProps): React.JSX.Element => {
+}: IGeometryProps): ReactNode => {
   /**
    * On delete
    * @param e Event
@@ -172,14 +166,15 @@ const GeometryLabel = ({
   const onDelete = useCallback(
     (e: MouseEvent<HTMLSpanElement>): void => {
       e.stopPropagation()
-      if (
-        panel?.props?.children?.type?.componentName === Geometry.componentName
-      )
-        close()
+      console.log(panel?.props?.children?.type?.name)
+      console.log(Geometry.name)
+      if (panel?.props?.children?.type?.name === Geometry.name) close()
       del(geometry)
     },
     [geometry, panel, del, close]
   )
+
+  //   console.log(geometry)
 
   /**
    * On add
@@ -215,9 +210,7 @@ const GeometryLabel = ({
  * @param props Props
  * @returns SimulationLabel
  */
-const SimulationLabel = ({
-  simulation
-}: ISimulationProps): React.JSX.Element => {
+const SimulationLabel = ({ simulation }: ISimulationProps): ReactNode => {
   /**
    * Render
    */
@@ -245,7 +238,7 @@ const SimulationLabel = ({
  * Project
  * @returns Project
  */
-const Project = (): React.JSX.Element => {
+const Project = (): ReactNode => {
   // Router
   const router = useRouter()
   const {
@@ -686,12 +679,13 @@ const Project = (): React.JSX.Element => {
    * Dashboard
    */
   const dashboard = useCallback((): void => {
-    ;(async () => {
+    const asyncFunction = async () => {
       await router.push({
         pathname: '/dashboard',
         query: { page, workspaceId }
       })
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [router, page, workspaceId])
 
   /**
@@ -725,19 +719,16 @@ const Project = (): React.JSX.Element => {
   const onSelectorOk = useCallback(
     async (userModel: IFrontUserModel): Promise<void> => {
       try {
-        await _onSelector(
-          project,
-          userModel.model,
-          {
-            addOneSimulation,
-            mutateProject
-          },
-          dispatch
-        )
+        await _onSelector(project, userModel.model, {
+          addOneSimulation,
+          mutateProject
+        })
 
         // Close selector
         setSimulationSelectorVisible(false)
-      } catch (err) {}
+      } catch (err: any) {
+        dispatch(addError({ title: errors.add, err }))
+      }
     },
     [project, addOneSimulation, mutateProject, dispatch]
   )
@@ -769,9 +760,10 @@ const Project = (): React.JSX.Element => {
 
   // Not logged -> go to login page
   useEffect(() => {
-    ;(async () => {
+    const asyncFunction = async () => {
       if (!loadingUser && !user) await router.replace('/login')
-    })()
+    }
+    asyncFunction().catch(console.error)
   }, [user, loadingUser, router])
 
   // Errors
@@ -1090,7 +1082,7 @@ const Project = (): React.JSX.Element => {
           className={globalStyle.noScroll}
           style={{ position: 'relative' }}
         >
-          <Geometry.Add
+          <GeometryAdd
             visible={geometryAddVisible}
             project={{
               id: project.id,

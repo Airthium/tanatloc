@@ -1,8 +1,8 @@
 /** @module Components.Project.Edit */
 
 import {
-  Dispatch,
   KeyboardEvent,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -13,10 +13,7 @@ import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT120, LIMIT50 } from '@/config/string'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { EditButton } from '@/components/assets/button'
@@ -28,12 +25,15 @@ import ProjectAPI from '@/api/project'
 /**
  * Props
  */
+export type Project = Pick<IFrontProjectsItem, 'id' | 'title' | 'description'>
+export type Values = Pick<IFrontProjectsItem, 'title' | 'description'>
+export type Swr = {
+  mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+}
 export interface IProps {
   disabled?: boolean
-  project: Pick<IFrontProjectsItem, 'id' | 'title' | 'description'>
-  swr: {
-    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-  }
+  project: Project
+  swr: Swr
 }
 
 /**
@@ -50,33 +50,24 @@ export const errors = {
  * @param swr SWR
  */
 export const _onEdit = async (
-  project: Pick<IFrontProjectsItem, 'id'>,
-  values: Pick<IFrontProjectsItem, 'title' | 'description'>,
-  swr: {
-    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  project: Project,
+  values: Values,
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // Edit
-    await ProjectAPI.update({ id: project.id }, [
-      {
-        key: 'title',
-        value: values.title
-      },
-      {
-        key: 'description',
-        value: values.description
-      }
-    ])
+  // Edit
+  await ProjectAPI.update({ id: project.id }, [
+    {
+      key: 'title',
+      value: values.title
+    },
+    {
+      key: 'description',
+      value: values.description
+    }
+  ])
 
-    // Mutate projects
-    await swr.mutateOneProject(project)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.edit, err }))
-
-    throw err
-  }
+  // Mutate projects
+  await swr.mutateOneProject(project)
 }
 
 /**
@@ -84,7 +75,7 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
+const Edit = ({ disabled, project, swr }: IProps): ReactNode => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -116,17 +107,16 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
    * @param values Values
    */
   const onOk = useCallback(
-    async (
-      values: Pick<IFrontProjectsItem, 'title' | 'description'>
-    ): Promise<void> => {
+    async (values: Values): Promise<void> => {
       setLoading(true)
       try {
-        await _onEdit(project, values, swr, dispatch)
+        await _onEdit(project, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.edit, err }))
         setLoading(false)
         throw err
       }
@@ -134,6 +124,10 @@ const Edit = ({ disabled, project, swr }: IProps): React.JSX.Element => {
     [project, swr, dispatch]
   )
 
+  /**
+   * On key up
+   * @param event Event
+   */
   const onKeyUp = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>): void =>
       event.stopPropagation(),

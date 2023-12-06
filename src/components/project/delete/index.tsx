@@ -1,6 +1,6 @@
 /** @module Components.Project.Delete */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { Alert, Typography } from 'antd'
 
 import {
@@ -10,10 +10,7 @@ import {
   IFrontWorkspacesItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -23,14 +20,17 @@ import ProjectAPI from '@/api/project'
 /**
  * Props
  */
+export type Workspace = Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+export type Project = Pick<IFrontProjectsItem, 'id' | 'title'>
+export type Swr = {
+  mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+  delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+}
 export interface IProps {
   disabled?: boolean
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
-  project: Pick<IFrontProjectsItem, 'id' | 'title'>
-  swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-  }
+  workspace: Workspace
+  project: Project
+  swr: Swr
 }
 
 /**
@@ -47,32 +47,23 @@ export const errors = {
  * @param swr SWR
  */
 export const _onDelete = async (
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>,
-  project: Pick<IFrontProjectsItem, 'id' | 'title'>,
-  swr: {
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  workspace: Workspace,
+  project: Project,
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // Delete
-    await ProjectAPI.del({ id: workspace.id }, { id: project.id })
+  // Delete
+  await ProjectAPI.del({ id: workspace.id }, { id: project.id })
 
-    // Mutate workspaces
-    const index = workspace.projects.findIndex((p) => p === project.id)
-    workspace.projects = [
-      ...workspace.projects.slice(0, index),
-      ...workspace.projects.slice(index + 1)
-    ]
-    await swr.mutateOneWorkspace(workspace)
+  // Mutate workspaces
+  const index = workspace.projects.findIndex((p) => p === project.id)
+  workspace.projects = [
+    ...workspace.projects.slice(0, index),
+    ...workspace.projects.slice(index + 1)
+  ]
+  await swr.mutateOneWorkspace(workspace)
 
-    // Mutate projects
-    await swr.delOneProject({ id: project.id })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.del, err }))
-    throw err
-  }
+  // Mutate projects
+  await swr.delOneProject({ id: project.id })
 }
 
 /**
@@ -80,12 +71,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({
-  disabled,
-  workspace,
-  project,
-  swr
-}: IProps): React.JSX.Element => {
+const Delete = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
   // Sate
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -98,7 +84,10 @@ const Delete = ({
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(workspace, project, swr, dispatch)
+      await _onDelete(workspace, project, swr)
+    } catch (err: any) {
+      dispatch(addError({ title: errors.del, err }))
+      throw err
     } finally {
       setLoading(false)
     }

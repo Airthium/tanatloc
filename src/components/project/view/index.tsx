@@ -1,6 +1,6 @@
 /** @module Components.Project.View */
 
-import { Dispatch, useCallback, useContext, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -20,10 +20,7 @@ import {
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 import { SelectContext } from '@/context/select'
 import {
@@ -45,29 +42,27 @@ import style from './index.module.css'
 
 import theme from '@/styles/theme'
 
+// Tanatloc3D Renderer
 const Renderer = dynamic(
   () => import('@airthium/tanatloc-3d').then((mod) => mod.default.Renderer),
   { ssr: false }
 )
 
-// Local interfaces
-export interface TGeometry
-  extends Pick<IFrontGeometriesItem, 'id' | 'needCleanup'> {
-  visible?: boolean
-}
-
-export interface TResult
-  extends Pick<IFrontResult, 'name' | 'glb' | 'originPath' | 'extra'> {}
-
 /**
  * Props
  */
+export type Project = Pick<IFrontProject, 'id' | 'title'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'> & {
+  visible?: boolean
+}
+export type Result = Pick<IFrontResult, 'name' | 'glb' | 'originPath' | 'extra'>
 export interface IProps {
-  project: Pick<IFrontProject, 'id' | 'title'>
-  simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  geometries: TGeometry[]
-  results: TResult[]
-  postprocessing?: TResult
+  project: Project
+  simulation: Simulation | undefined
+  geometries: Geometry[]
+  results: Result[]
+  postprocessing: Result | undefined
 }
 
 /**
@@ -87,36 +82,30 @@ export const errors = {
  */
 export const _loadPart = async (
   simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
-  file: Pick<IFrontGeometriesItem, 'id'> | TResult,
-  type: 'geometry' | 'result',
-  dispatch: Dispatch<INotificationAction>
+  file: Pick<IFrontGeometriesItem, 'id'> | Result,
+  type: 'geometry' | 'result'
 ): Promise<IGeometryPart> => {
-  try {
-    if (type === 'geometry') {
-      const geometry = file as Pick<IFrontGeometriesItem, 'id'>
-      const part = await GeometryAPI.getPart({ id: geometry.id })
-      return { ...part, extra: { id: geometry.id } }
-    } else {
-      const result = file as Pick<
-        IFrontResult,
-        'name' | 'glb' | 'originPath' | 'extra'
-      >
-      const part = await ResultAPI.load(
-        { id: simulation!.id },
-        { originPath: result.originPath, glb: result.glb! }
-      )
-      return {
-        ...part,
-        extra: {
-          name: result.name,
-          glb: result.glb,
-          fields: result.extra
-        }
+  if (type === 'geometry') {
+    const geometry = file as Pick<IFrontGeometriesItem, 'id'>
+    const part = await GeometryAPI.getPart({ id: geometry.id })
+    return { ...part, extra: { id: geometry.id } }
+  } else {
+    const result = file as Pick<
+      IFrontResult,
+      'name' | 'glb' | 'originPath' | 'extra'
+    >
+    const part = await ResultAPI.load(
+      { id: simulation!.id },
+      { originPath: result.originPath, glb: result.glb! }
+    )
+    return {
+      ...part,
+      extra: {
+        name: result.name,
+        glb: result.glb,
+        fields: result.extra
       }
     }
-  } catch (err: any) {
-    dispatch(addError({ title: errors.part, err }))
-    throw err
   }
 }
 
@@ -130,8 +119,7 @@ export const _loadPart = async (
 export const _loadResults = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   parts: IGeometryPart[],
-  results: TResult[],
-  dispatch: Dispatch<INotificationAction>
+  results: Result[]
 ): Promise<IGeometryPart[]> => {
   const partsContent = []
   for (const result of results) {
@@ -141,7 +129,7 @@ export const _loadResults = async (
       continue
     }
 
-    const partContent = await _loadPart(simulation, result, 'result', dispatch)
+    const partContent = await _loadPart(simulation, result, 'result')
     partsContent.push(partContent)
   }
 
@@ -158,20 +146,14 @@ export const _loadResults = async (
 export const _loadPostprocessing = async (
   simulation: Pick<IFrontSimulationsItem, 'id'>,
   parts: IGeometryPart[],
-  dispatch: Dispatch<INotificationAction>,
-  postprocessing?: TResult
+  postprocessing?: Result
 ): Promise<IGeometryPart | undefined> => {
   if (!postprocessing) return
 
   const prevPart = parts.find((part) => part.extra?.glb === postprocessing.glb)
   if (prevPart) return prevPart
 
-  const partContent = await _loadPart(
-    simulation,
-    postprocessing,
-    'result',
-    dispatch
-  )
+  const partContent = await _loadPart(simulation, postprocessing, 'result')
   return partContent
 }
 
@@ -185,8 +167,7 @@ export const _loadPostprocessing = async (
 export const _loadGeometries = async (
   simulation: Pick<IFrontSimulationsItem, 'id'> | undefined,
   parts: IGeometryPart[],
-  geometries: TGeometry[],
-  dispatch: Dispatch<INotificationAction>
+  geometries: Geometry[]
 ): Promise<IGeometryPart[]> => {
   const partsContent = []
   for (const geometry of geometries) {
@@ -196,12 +177,7 @@ export const _loadGeometries = async (
       continue
     }
 
-    const partContent = await _loadPart(
-      simulation,
-      geometry,
-      'geometry',
-      dispatch
-    )
+    const partContent = await _loadPart(simulation, geometry, 'geometry')
     partsContent.push(partContent)
   }
 
@@ -219,7 +195,7 @@ const View = ({
   geometries,
   results,
   postprocessing
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // State
   const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -244,12 +220,7 @@ const View = ({
 
       // Results
       if (simulation && !postprocessing) {
-        const newResults = await _loadResults(
-          simulation,
-          parts,
-          results,
-          notificationDispatch
-        )
+        const newResults = await _loadResults(simulation, parts, results)
         newParts.push(...newResults)
       }
 
@@ -258,7 +229,6 @@ const View = ({
         const newPostprocessing = await _loadPostprocessing(
           simulation,
           parts,
-          notificationDispatch,
           postprocessing
         )
         newPostprocessing && newParts.push(newPostprocessing)
@@ -269,8 +239,7 @@ const View = ({
         const newGeometries = await _loadGeometries(
           simulation,
           parts,
-          geometries,
-          notificationDispatch
+          geometries
         )
         newParts.push(...newGeometries)
       }
@@ -279,7 +248,8 @@ const View = ({
     }
 
     load()
-      .catch((_err) => {
+      .catch((err): any => {
+        notificationDispatch(addError({ title: errors.part, err }))
         setLoading(false)
       })
       .finally(() => setLoading(false))

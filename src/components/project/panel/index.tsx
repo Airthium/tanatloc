@@ -1,5 +1,6 @@
 /** @module Components.Project.Panel*/
 
+import { ReactNode } from 'react'
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
@@ -11,7 +12,7 @@ import style from './index.module.css'
 export interface IProps {
   visible: boolean
   title: string
-  children?: React.ReactElement | React.ReactElement[]
+  children?: ReactNode
   onClose: () => void
 }
 
@@ -20,12 +21,7 @@ export interface IProps {
  * @param props Props
  * @returns Panel
  */
-const Panel = ({
-  visible,
-  title,
-  children,
-  onClose
-}: IProps): React.JSX.Element => {
+const Panel = ({ visible, title, children, onClose }: IProps): ReactNode => {
   /**
    * Render
    */

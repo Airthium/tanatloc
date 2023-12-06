@@ -16,9 +16,11 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Project = Pick<IFrontProject, 'id'>
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'summary'>
 export interface ISplitProps {
-  project: Pick<IFrontProject, 'id'>
-  geometry: Pick<IFrontGeometriesItem, 'id' | 'summary'>
+  project: Project
+  geometry: Geometry
 }
 
 // Errors
@@ -32,8 +34,8 @@ export const errors = {
  * @param geometry Geometry
  */
 const _onSplit = async (
-  project: Pick<IFrontProject, 'id'>,
-  geometry: Pick<IFrontGeometriesItem, 'id'>
+  project: Project,
+  geometry: Geometry
 ): Promise<string> => {
   const { message } = await GeometryAPI.splitStep(project, geometry)
   return message
@@ -61,15 +63,18 @@ const Split = ({ project, geometry }: ISplitProps): ReactNode => {
    * On split
    */
   const onSplit = useCallback(() => {
-    setLoading(true)
-    _onSplit(project, geometry)
-      .then((message) => {
+    const aysncFunction = async () => {
+      setLoading(true)
+      try {
+        const message = await _onSplit(project, geometry)
         message.length && dispatch(addError({ title: message }))
-      })
-      .catch((err) => {
+      } catch (err: any) {
         dispatch(addError({ title: errors.split, err }))
-      })
-      .finally(() => setLoading(false))
+      } finally {
+        setLoading(false)
+      }
+    }
+    aysncFunction().catch(console.error)
   }, [project, geometry, dispatch])
 
   /**

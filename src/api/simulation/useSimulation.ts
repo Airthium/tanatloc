@@ -4,7 +4,11 @@ import useSWR from 'swr'
 import { useCallback } from 'react'
 
 import { IFrontMutateSimulation, IFrontSimulation } from '@/api/index.d'
+
 import { fetcher } from '@/api/call'
+
+// Default data
+export type DefaultData = { id: '0' }
 
 /**
  * Use simulation
@@ -15,7 +19,7 @@ export const useSimulation = (
   id?: string,
   refresh?: number
 ): [
-  IFrontSimulation,
+  IFrontSimulation | DefaultData,
   {
     mutateSimulation: (simulation: IFrontMutateSimulation) => Promise<void>
     errorSimulation: Error

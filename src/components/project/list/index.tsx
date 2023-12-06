@@ -1,6 +1,13 @@
 /** @module Components.Project.List */
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  ReactNode
+} from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -42,66 +49,50 @@ import style from './index.module.css'
 /**
  * Props
  */
+export type User = Pick<IFrontUser, 'id'>
+export type Workspace = Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+export type Project = Pick<
+  IFrontProjectsItem,
+  | 'id'
+  | 'archived'
+  | 'title'
+  | 'description'
+  | 'createddate'
+  | 'lastaccess'
+  | 'avatar'
+  | 'owners'
+  | 'users'
+  | 'groups'
+>
+export type Organization = Pick<
+  IFrontOrganizationsItem,
+  'id' | 'name' | 'owners' | 'users' | 'groups'
+>
+export type Swr = {
+  addOneProject: (project: IFrontNewProject) => Promise<void>
+  mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
+  delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+  mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
+  loadingProjects: boolean
+}
 export interface IProps {
-  user: Pick<IFrontUser, 'id'>
+  user: User
   page: string
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
-  projects: Pick<
-    IFrontProjectsItem,
-    | 'id'
-    | 'archived'
-    | 'title'
-    | 'description'
-    | 'createddate'
-    | 'lastaccess'
-    | 'avatar'
-    | 'owners'
-    | 'users'
-    | 'groups'
-  >[]
-  organizations: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'name' | 'owners' | 'users' | 'groups'
-  >[]
+  workspace: Workspace
+  projects: Project[]
+  organizations: Organization[]
   filter?: string
   sorter?: string
-  swr: {
-    addOneProject: (project: IFrontNewProject) => Promise<void>
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-    loadingProjects: boolean
-  }
+  swr: Swr
 }
 
 export interface ICardProps {
-  user: Pick<IFrontUser, 'id'>
-  workspace: Pick<IFrontWorkspacesItem, 'id' | 'projects'>
+  user: User
+  workspace: Workspace
   page: string
-  project: Pick<
-    IFrontProjectsItem,
-    | 'id'
-    | 'archived'
-    | 'title'
-    | 'description'
-    | 'createddate'
-    | 'lastaccess'
-    | 'avatar'
-    | 'owners'
-    | 'users'
-    | 'groups'
-  >
-  organizations: Pick<
-    IFrontOrganizationsItem,
-    'id' | 'name' | 'owners' | 'users' | 'groups'
-  >[]
-  swr: {
-    addOneProject: (project: IFrontNewProject) => Promise<void>
-    mutateOneWorkspace: (workspace: IFrontMutateWorkspacesItem) => Promise<void>
-    delOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-    mutateOneProject: (project: IFrontMutateProjectsItem) => Promise<void>
-    loadingProjects: boolean
-  }
+  project: Project
+  organizations: Organization[]
+  swr: Swr
 }
 
 /**
@@ -116,24 +107,9 @@ const ProjectCard = ({
   project,
   organizations,
   swr
-}: ICardProps): React.JSX.Element => {
+}: ICardProps): ReactNode => {
   // Router
   const router = useRouter()
-
-  /**
-   * Open project
-   * @param project Project
-   */
-  const openProject = useCallback((): void => {
-    ;(async () => {
-      if (project.archived) return
-
-      await router.push({
-        pathname: '/project',
-        query: { page: page, workspaceId: workspace.id, projectId: project.id }
-      })
-    })()
-  }, [router, workspace, page, project])
 
   // Snapshot
   const snapshot = useMemo(() => {
@@ -142,7 +118,7 @@ const ProjectCard = ({
       return <img src={Buffer.from(project.avatar).toString()} alt="Tanatloc" />
     else
       return <Empty image="images/empty.svg" description={'No preview yet.'} />
-  }, [project])
+  }, [project.archived, project.avatar])
 
   // Description
   const description = useMemo(
@@ -165,26 +141,42 @@ const ProjectCard = ({
         )}
       </Space>
     ),
-    [project]
+    [project.createddate, project.lastaccess, project.description]
   )
 
   // Owners
   const owners = useMemo(
-    () => project.owners?.map((o) => Utils.userToAvatar(o)),
-    [project]
+    () => project.owners.map((o) => Utils.userToAvatar(o)),
+    [project.owners]
   )
 
   // Users
   const users = useMemo(
-    () => project.users?.map((u) => Utils.userToAvatar(u)),
-    [project]
+    () => project.users.map((u) => Utils.userToAvatar(u)),
+    [project.users]
   )
 
   // Groups
   const groups = useMemo(
-    () => project?.groups?.map((g) => Utils.groupToAvatar(g)),
-    [project]
+    () => project.groups.map((g) => Utils.groupToAvatar(g)),
+    [project.groups]
   )
+
+  /**
+   * Open project
+   * @param project Project
+   */
+  const openProject = useCallback((): void => {
+    const asyncFunction = async () => {
+      if (project.archived) return
+
+      await router.push({
+        pathname: '/project',
+        query: { page: page, workspaceId: workspace.id, projectId: project.id }
+      })
+    }
+    asyncFunction().catch(console.error)
+  }, [router, workspace.id, page, project.id, project.archived])
 
   /**
    * Return
@@ -315,22 +307,12 @@ const ProjectCard = ({
         </Dropdown>
       ]}
     >
-      <div
-        style={{
-          padding: '6px 0',
-          display: 'grid',
-          gridTemplateColumns: '10fr 1fr 20fr',
-          gridTemplateRows: 'auto auto'
-        }}
-      >
+      <div className={style.cardUsers}>
         <div>Admin:</div>
         <div />
         <div>Shared with:</div>
         <Avatar.Group maxCount={5}>{owners}</Avatar.Group>
-        <Divider
-          type="vertical"
-          style={{ height: '80%', borderColor: '#f0f0f0' }}
-        />
+        <Divider type="vertical" className={style.cardDivider} />
         <Avatar.Group>
           {users}
           {groups}
@@ -354,7 +336,7 @@ const ProjectList = ({
   filter,
   sorter,
   swr
-}: IProps): React.JSX.Element => {
+}: IProps): ReactNode => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 

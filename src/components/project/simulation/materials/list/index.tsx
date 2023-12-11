@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Materials.List */
 
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useContext, useMemo, useRef } from 'react'
 import { Card, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 
@@ -66,6 +66,9 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
   swr,
   _onEdit
 }) => {
+  // Ref
+  const disableDispatch = useRef<boolean>(false)
+
   // Context
   const { dispatch } = useContext(SelectContext)
 
@@ -99,6 +102,7 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
    * Unhighlight
    */
   const unhighlight = useCallback((): void => {
+    if (disableDispatch.current) return
     dispatch(disable())
   }, [dispatch])
 
@@ -106,7 +110,9 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
    * On edit
    */
   const onEdit = useCallback((): void => {
+    disableDispatch.current = true
     _onEdit(index)
+    setTimeout(() => (disableDispatch.current = false), 1_000)
   }, [index, _onEdit])
 
   /**

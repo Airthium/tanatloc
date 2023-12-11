@@ -18,13 +18,7 @@ import {
 import { IMaterialDatabase } from '@/config/materials'
 
 import { SelectContext, ISelect } from '@/context/select'
-import {
-  disable,
-  enable,
-  select,
-  setPart,
-  setType
-} from '@/context/select/actions'
+import { disable, enable, setPart, setType } from '@/context/select/actions'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -259,10 +253,13 @@ const Material: React.FunctionComponent<Props> = ({
       const dimension = geometry.summary.dimension
       setDimension(dimension)
 
+      // Type
+      const type = dimension === 2 ? 'faces' : 'solids'
+
       // Dispatch
       dispatch(enable())
+      dispatch(setType(type))
       dispatch(setPart(geometry.summary.uuid))
-      dispatch(setType(dimension === 2 ? 'faces' : 'solids'))
     },
     [geometries, dispatch]
   )
@@ -305,16 +302,6 @@ const Material: React.FunctionComponent<Props> = ({
       }
     )
   }, [value, materials, material])
-
-  // Initialize selected
-  useEffect(() => {
-    if (selected) return
-
-    const newSelected = value?.selected ?? []
-    setSelected(newSelected)
-    // TODO not so good
-    setTimeout(() => dispatch(select(newSelected)), 1_000)
-  }, [value, selected, dispatch])
 
   /**
    * Render

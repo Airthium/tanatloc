@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry.Edit */
 
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { IFrontGeometriesItem } from '@/api/index.d'
@@ -22,7 +22,12 @@ export interface IProps {
  * Edit
  * @param props Props
  */
-const Edit = ({ visible, geometry, setVisible, onEdit }: IProps): ReactNode => {
+const Edit: React.FunctionComponent<IProps> = ({
+  visible,
+  geometry,
+  setVisible,
+  onEdit
+}) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

@@ -1,6 +1,6 @@
 /** @module Components.Administration.Registration */
 
-import { ReactNode, useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -17,6 +17,7 @@ import {
 import { NotificationContext } from '@/context/notification'
 import { addError, addSuccess } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Loading from '@/components/loading'
 
 import SystemAPI from '@/api/system'
@@ -68,7 +69,7 @@ export const _onPasswordFinish = async (
  * Registration
  * @returns Registration
  */
-const Registration = (): ReactNode => {
+const Registration: React.FunctionComponent = () => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -101,15 +102,14 @@ const Registration = (): ReactNode => {
    * On Change
    */
   const onChange = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         await _onAllowSignup(system, mutateSystem)
         dispatch(addSuccess({ title: 'Changes saved' }))
       } catch (err: any) {
         dispatch(addError({ title: errors.update, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [system, mutateSystem, dispatch])
 
   /**
@@ -118,15 +118,14 @@ const Registration = (): ReactNode => {
    */
   const onFinish = useCallback(
     (values: IFrontSystem['password']): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         try {
           await _onPasswordFinish(values, mutateSystem)
           dispatch(addSuccess({ title: 'Changes saved' }))
         } catch (err: any) {
           dispatch(addError({ title: errors.update, err }))
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [mutateSystem, dispatch]
   )

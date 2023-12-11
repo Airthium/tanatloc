@@ -34,7 +34,7 @@ export interface IProps {
  * - onDelete (async Function) DeleteDialog click (this function can throw an error)
  * @returns DeleteButton
  */
-const DeleteButton = ({
+const DeleteButton: React.FunctionComponent<IProps> = ({
   disabled,
   loading,
   bordered,
@@ -42,7 +42,7 @@ const DeleteButton = ({
   title,
   children,
   onDelete
-}: IProps): ReactNode => {
+}) => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
 

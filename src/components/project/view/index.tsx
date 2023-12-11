@@ -1,6 +1,6 @@
 /** @module Components.Project.View */
 
-import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -189,13 +189,13 @@ export const _loadGeometries = async (
  * @param props Props
  * @returns View
  */
-const View = ({
+const View: React.FunctionComponent<IProps> = ({
   project,
   simulation,
   geometries,
   results,
   postprocessing
-}: IProps): ReactNode => {
+}) => {
   // State
   const [parts, setParts] = useState<IGeometryPart[]>([])
   const [loading, setLoading] = useState<boolean>(false)

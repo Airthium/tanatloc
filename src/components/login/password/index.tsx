@@ -1,13 +1,6 @@
 /** @module Components.Login.Password */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Button, Form, Input, InputRef, Typography } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
@@ -36,7 +29,7 @@ export const _passwordRecover = async (value: {
  * Password recover
  * @returns PasswordRecover
  */
-const PasswordRecover = (): ReactNode => {
+const PasswordRecover: React.FunctionComponent = () => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

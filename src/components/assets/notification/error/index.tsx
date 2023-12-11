@@ -1,6 +1,6 @@
 /** @module Components.Assets.Notification.Error */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { App, Button, Collapse, Space, Typography } from 'antd'
 import { v4 as uuid } from 'uuid'
 
@@ -15,7 +15,7 @@ import Sentry from '@/lib/sentry'
  * Error notification
  * @return ErrorNotification
  */
-const ErrorNotification = (): ReactNode => {
+const ErrorNotification: React.FunctionComponent = () => {
   // State
   const [opened, setOpened] = useState<string[]>([])
 

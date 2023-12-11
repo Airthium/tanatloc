@@ -6,6 +6,8 @@ import { Button, Layout, Menu, Popover } from 'antd'
 import { BarsOutlined } from '@ant-design/icons'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import UserAPI from '@/api/user'
 
 import globalStyle from '@/styles/index.module.css'
@@ -30,7 +32,7 @@ export const scrollToView = (id: string): void => {
  * IndexMenu
  * @returns IndexMenu
  */
-const IndexMenu = () => {
+const IndexMenu: React.FunctionComponent = () => {
   // Data
   const router = useRouter()
   const [user, { loadingUser }] = UserAPI.useUser()
@@ -41,9 +43,9 @@ const IndexMenu = () => {
    */
   const onRouter = useCallback(
     (route: string): void => {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         await router.push(route)
-      })()
+      })
     },
     [router]
   )

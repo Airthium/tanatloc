@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry.Add */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Space, Typography, Upload, UploadFile } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
@@ -10,6 +10,7 @@ import { IFrontProject, IFrontNewGeometry } from '@/api/index.d'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Dialog from '@/components/assets/dialog'
 
 import GeometryAPI from '@/api/geometry'
@@ -106,7 +107,12 @@ export const _onUpload = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ visible, project, swr, setVisible }: IProps): ReactNode => {
+const Add: React.FunctionComponent<IProps> = ({
+  visible,
+  project,
+  swr,
+  setVisible
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -124,7 +130,7 @@ const Add = ({ visible, project, swr, setVisible }: IProps): ReactNode => {
    */
   const onChange = useCallback(
     (info: UploadChangeParam<UploadFile<any>>): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         try {
           const load = await _onUpload(project, info, swr)
           setLoading(load)
@@ -133,8 +139,7 @@ const Add = ({ visible, project, swr, setVisible }: IProps): ReactNode => {
           dispatch(addError({ title: errors.add, err }))
           setLoading(false)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [project, swr, setVisible, dispatch]
   )

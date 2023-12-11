@@ -48,7 +48,7 @@ export interface IProps {
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Users
  */
-const Users = ({ organization, swr }: IProps): ReactNode => {
+const Users: React.FunctionComponent<IProps> = ({ organization, swr }) => {
   // State
   const [scrollAdmin, setScrollAdmin] = useState<{ y: number }>()
   const [scrollUsers, setScrollUsers] = useState<{ y: number }>()

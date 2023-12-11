@@ -1,12 +1,13 @@
 /** @module Components.Administration */
 
-import { ReactNode, useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Layout, Tabs, Typography } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import PageHeader from '@/components/assets/pageHeader'
 
 import UserAPI from '@/api/user'
@@ -46,7 +47,7 @@ export const errors = {
  * Administration
  * @returns Administration
  */
-const Administration = (): ReactNode => {
+const Administration: React.FunctionComponent = () => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -68,13 +69,12 @@ const Administration = (): ReactNode => {
    */
   const onChange = useCallback(
     (key: string): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.replace({
           pathname: '/dashboard',
           query: { page: 'administration', tab: key }
         })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

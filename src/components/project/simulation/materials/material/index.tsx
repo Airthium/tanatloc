@@ -1,13 +1,6 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import {
-  useState,
-  useCallback,
-  useContext,
-  useMemo,
-  ReactNode,
-  useRef
-} from 'react'
+import { useState, useCallback, useContext, useMemo, useRef } from 'react'
 import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
@@ -77,7 +70,7 @@ export interface IMaterialsChildProps {
  * @param props Props
  * @returns MaterialsChild
  */
-const MaterialsChild = ({
+const MaterialsChild: React.FunctionComponent<IMaterialsChildProps> = ({
   dimension,
   variables,
   child,
@@ -86,7 +79,7 @@ const MaterialsChild = ({
   unit,
   _onMaterialChange,
   _onUnitChange
-}: IMaterialsChildProps): ReactNode => {
+}) => {
   /**
    * On material change
    * @param val Value
@@ -132,14 +125,14 @@ const MaterialsChild = ({
  * @param props Props
  * @returns Material
  */
-const Material = ({
+const Material: React.FunctionComponent<IProps> = ({
   visible,
   geometries,
   simulation,
   material,
   swr,
   onClose
-}: IProps): ReactNode => {
+}) => {
   // Ref
   const init = useRef<boolean>(false)
 

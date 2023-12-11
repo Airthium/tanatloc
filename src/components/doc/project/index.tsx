@@ -1,6 +1,6 @@
 /** @module Components.Doc.Project */
 
-import { ReactNode, useCallback } from 'react'
+import { useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Switch, Tabs, Typography } from 'antd'
@@ -26,6 +26,7 @@ import {
   ZoomOutOutlined
 } from '@ant-design/icons'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { AddButton } from '@/components/assets/button'
 import Carousel from '@/components/assets/carousel'
 
@@ -35,7 +36,7 @@ import style from '../index.module.css'
  * Geometry
  * @returns Geometry
  */
-const Geometry = (): ReactNode => {
+const Geometry: React.FunctionComponent = () => {
   /**
    * Render
    */
@@ -92,7 +93,7 @@ const Geometry = (): ReactNode => {
  * Simulation
  * @returns Simulation
  */
-const Simulation = (): ReactNode => {
+const Simulation: React.FunctionComponent = () => {
   /**
    * Render
    */
@@ -494,7 +495,7 @@ const Simulation = (): ReactNode => {
  * View
  * @returns View
  */
-const View = (): ReactNode => {
+const View: React.FunctionComponent = () => {
   return (
     <>
       <Typography.Title level={4}>View Tools</Typography.Title>
@@ -627,7 +628,7 @@ const tabs = [
  * Project
  * @returns Project
  */
-const Project = (): ReactNode => {
+const Project: React.FunctionComponent = () => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -638,7 +639,7 @@ const Project = (): ReactNode => {
    */
   const onChange = useCallback(
     (key: string) => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -646,8 +647,7 @@ const Project = (): ReactNode => {
             tab: key
           }
         })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

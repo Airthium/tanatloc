@@ -23,7 +23,11 @@ export interface IProps {
  * - onClick (Function) Button click
  * @returns GoBack
  */
-const GoBack = ({ children, className, onClick }: IProps): ReactNode => {
+const GoBack: React.FunctionComponent<IProps> = ({
+  children,
+  className,
+  onClick
+}) => {
   /**
    * Render
    */

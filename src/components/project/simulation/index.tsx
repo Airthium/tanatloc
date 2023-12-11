@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation */
 
-import { useState, useCallback, useMemo, Dispatch, useContext } from 'react'
+import { useState, useCallback, useMemo, useContext } from 'react'
 import { Layout, Menu, Modal, Select, Tabs, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
@@ -15,13 +15,11 @@ import {
   IFrontUserModel
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import MathJax from '@/components/assets/mathjax'
 import { DeleteButton } from '@/components/assets/button'
@@ -70,17 +68,11 @@ export const errors = {
  * @param user User
  */
 export const _pluginsList = async (
-  user: Pick<IFrontUser, 'authorizedplugins'>,
-  dispatch: Dispatch<INotificationAction>
+  user: Pick<IFrontUser, 'authorizedplugins'>
 ): Promise<IModel[]> => {
-  try {
-    const list = await PluginsAPI.list()
+  const list = await PluginsAPI.list()
 
-    return _loadModels(user, Models, list)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.plugins, err }))
-    return []
-  }
+  return _loadModels(user, Models, list)
 }
 
 /**
@@ -135,7 +127,7 @@ export const _isInCategories = (
  * @param props Props
  * @returns Simulation.Selector
  */
-const Selector = ({
+const Selector: React.FunctionComponent<ISelectorProps> = ({
   visible,
   user,
   title,
@@ -143,14 +135,12 @@ const Selector = ({
   onOk,
   onCancel,
   onDelete
-}: ISelectorProps): React.JSX.Element => {
+}) => {
   // State
   const [key, setKey] = useState<string>()
   const [current, setCurrent] = useState<IFrontUserModel>()
   const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<IModel[]>([])
-  const [availableCategories, setAvailableCategories] =
-    useState<{ key: string; value: string }[]>()
   const [categories, setCategories] = useState<string[]>([])
 
   // Context
@@ -159,25 +149,29 @@ const Selector = ({
   // Models
   useCustomEffect(
     () => {
-      ;(async () => {
-        const newModels = await _pluginsList(user, dispatch)
-        setModels(newModels)
-      })()
+      asyncFunctionExec(async () => {
+        try {
+          const newModels = await _pluginsList(user)
+          setModels(newModels)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.plugins, err }))
+          setModels([])
+        }
+      })
     },
     [user],
     [dispatch]
   )
 
   // Categories
-  useCustomEffect(() => {
-    // Categories
+  const availableCategories: { key: string; value: string }[] = useMemo(() => {
     const newCategories = models
       .map((m) => m.category)
       .flat()
       .filter((value, index, self) => self.indexOf(value) === index)
       .map((c) => ({ key: c, value: c }))
 
-    setAvailableCategories(newCategories)
+    return newCategories
   }, [models])
 
   /**
@@ -213,7 +207,7 @@ const Selector = ({
    * On modal ok
    */
   const onModalOk = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       if (current)
         try {
@@ -222,7 +216,7 @@ const Selector = ({
       setLoading(false)
       setCurrent(undefined)
       setKey(undefined)
-    })()
+    })
   }, [current, onOk])
 
   /**
@@ -395,34 +389,29 @@ export const _onUpdate = async (
     mutateOneSimulation: (
       simulation: IFrontMutateSimulationsItem
     ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // Current model
-    const currentModel = models.find(
-      (m) => m.algorithm === simulation?.scheme?.algorithm
-    )
-
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
-
-    // Merge
-    merge(newSimulation.scheme, currentModel)
-
-    // Update simulation
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        value: newSimulation.scheme
-      }
-    ])
-
-    // Mutate
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
   }
+): Promise<void> => {
+  // Current model
+  const currentModel = models.find(
+    (m) => m.algorithm === simulation?.scheme?.algorithm
+  )
+
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
+
+  // Merge
+  merge(newSimulation.scheme, currentModel)
+
+  // Update simulation
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      value: newSimulation.scheme
+    }
+  ])
+
+  // Mutate
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -444,10 +433,15 @@ const Updater = ({
   // Models
   useCustomEffect(
     () => {
-      ;(async () => {
-        const newModels = await _pluginsList(user, dispatch)
-        setModels(newModels)
-      })()
+      asyncFunctionExec(async () => {
+        try {
+          const newModels = await _pluginsList(user)
+          setModels(newModels)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.plugins, err }))
+          setModels([])
+        }
+      })
     },
     [user],
     [dispatch]
@@ -473,9 +467,11 @@ const Updater = ({
           closable: false,
           okButtonProps: { hidden: true }
         })
-        _onUpdate(simulation, models, swr, dispatch).finally(() =>
-          Modal.destroyAll()
-        )
+        _onUpdate(simulation, models, swr)
+          .catch((err) => {
+            dispatch(addError({ title: errors.update, err }))
+          })
+          .finally(() => Modal.destroyAll())
       }
     }
   }, [simulation, models, swr])

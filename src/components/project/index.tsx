@@ -1,17 +1,16 @@
 /** @module Components.Project */
 
-import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import {
   MouseEvent,
   ReactElement,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState
 } from 'react'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import {
@@ -49,6 +48,7 @@ import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'
@@ -151,14 +151,14 @@ export const _onSelector = async (
  * @param props Props
  * @returns GeometryLabel
  */
-const GeometryLabel = ({
+const GeometryLabel: React.FunctionComponent<IGeometryProps> = ({
   visible,
   geometry,
   panel,
   add,
   del,
   close
-}: IGeometryProps): ReactNode => {
+}) => {
   /**
    * On delete
    * @param e Event
@@ -210,7 +210,9 @@ const GeometryLabel = ({
  * @param props Props
  * @returns SimulationLabel
  */
-const SimulationLabel = ({ simulation }: ISimulationProps): ReactNode => {
+const SimulationLabel: React.FunctionComponent<ISimulationProps> = ({
+  simulation
+}) => {
   /**
    * Render
    */
@@ -238,7 +240,7 @@ const SimulationLabel = ({ simulation }: ISimulationProps): ReactNode => {
  * Project
  * @returns Project
  */
-const Project = (): ReactNode => {
+const Project: React.FunctionComponent = () => {
   // Router
   const router = useRouter()
   const {
@@ -679,13 +681,12 @@ const Project = (): ReactNode => {
    * Dashboard
    */
   const dashboard = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push({
         pathname: '/dashboard',
         query: { page, workspaceId }
       })
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router, page, workspaceId])
 
   /**
@@ -760,10 +761,9 @@ const Project = (): ReactNode => {
 
   // Not logged -> go to login page
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (!loadingUser && !user) await router.replace('/login')
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [user, loadingUser, router])
 
   // Errors

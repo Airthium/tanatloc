@@ -1,6 +1,5 @@
 /** @module Components.Doc.Workflow */
 
-import { ReactNode } from 'react'
 import { Steps, Typography } from 'antd'
 
 import style from '../index.module.css'
@@ -9,7 +8,7 @@ import style from '../index.module.css'
  * Workflow
  * @returns Workflow
  */
-const Workflow = (): ReactNode => {
+const Workflow: React.FunctionComponent = () => {
   /**
    * Render
    */

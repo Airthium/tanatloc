@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Add */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import {
   IFrontMutateSimulationsItem,
@@ -8,12 +8,10 @@ import {
 } from '@/api/index.d'
 import { IModelSensor } from '@/models/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { AddButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -23,16 +21,18 @@ import SimulationAPI from '@/api/simulation'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
   sensor: Partial<IModelSensor>
   onError: (error?: string) => void
   onClose: () => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -52,45 +52,35 @@ export const errors = {
  * @param swr SWR
  */
 export const _onAdd = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   sensor: IModelSensor,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ) => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const run = newSimulation.scheme.configuration.run
+  // Update local
+  const run = newSimulation.scheme.configuration.run
 
-    // Diff
-    const diff = {
-      ...run,
-      sensors: [...(run.sensors ?? []), sensor]
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: diff
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+  // Diff
+  const diff = {
+    ...run,
+    sensors: [...(run.sensors ?? []), sensor]
   }
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: diff
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -98,13 +88,13 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({
+const Add: React.FunctionComponent<IProps> = ({
   simulation,
   sensor,
   onError,
   onClose,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>()
 
@@ -115,7 +105,7 @@ const Add = ({
    * On add
    */
   const onAdd = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         // Check
@@ -139,15 +129,16 @@ const Add = ({
 
         onError()
 
-        await _onAdd(simulation, sensor as IModelSensor, swr, dispatch)
+        await _onAdd(simulation, sensor as IModelSensor, swr)
 
         // Close
         setLoading(false)
         onClose()
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, sensor, onError, onClose, swr, dispatch])
 
   /**

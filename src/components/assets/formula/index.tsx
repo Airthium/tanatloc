@@ -1,13 +1,6 @@
 /** @module Components.Assets.Formula */
 
-import {
-  ChangeEvent,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
@@ -56,7 +49,7 @@ const saveDelay = 500
  * - onCheckedChange (Function) On checked change
  * @returns Formula
  */
-const Formula = ({
+const Formula: React.FunctionComponent<IProps> = ({
   label,
   noLarge,
   className,
@@ -69,7 +62,7 @@ const Formula = ({
   onValueChange,
   onCheckedChange,
   onUnitChange
-}: IProps): ReactNode => {
+}) => {
   // State
   const [internalValue, setInternalValue] = useState<string>(
     String(defaultValue ?? 0)

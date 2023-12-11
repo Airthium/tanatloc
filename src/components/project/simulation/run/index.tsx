@@ -1,13 +1,6 @@
 /** @module Components.Project.Simulation.Run */
 
-import {
-  Dispatch,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Button, Card, Checkbox, Layout, Space, Spin, Steps } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
@@ -28,16 +21,14 @@ import {
   IFrontMutateSimulation,
   IFrontMutateSimulationsItem,
   IFrontSimulationTask,
-  IFrontGeometriesItem
+  IFrontGeometriesItem,
+  IFrontSimulation
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Utils from '@/lib/utils'
 
@@ -53,18 +44,21 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  geometries: Geometry[]
+  simulation: Simulation
   results: IFrontResult[]
   setResults: (results: IFrontResult[]) => void
   setPostprocessing: (result?: IFrontResult) => void
   setVisible: (visible: boolean) => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -81,42 +75,34 @@ export const errors = {
  * @param cloudServer Cloud server
  */
 export const _onCloudServer = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   cloudServer: HPCClientPlugin,
-  swr: {
+  swr: Swr & {
     mutateSimulation: (simulation: IFrontMutateSimulation) => Promise<void>
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
-
-    // Update local
-    const configuration = simulation.scheme.configuration
-    configuration.run.cloudServer = cloudServer
-    newSimulation.scheme.configuration = configuration
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: configuration.run
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-    await swr.mutateSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
   }
+): Promise<void> => {
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
+
+  // Update local
+  const configuration = simulation.scheme.configuration
+  configuration.run.cloudServer = cloudServer
+  newSimulation.scheme.configuration = configuration
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: configuration.run
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
+  await swr.mutateSimulation(newSimulation)
 }
 
 /**
@@ -125,38 +111,21 @@ export const _onCloudServer = async (
  * @param keepMesh Keep mesh
  */
 export const _onRun = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
-  dispatch: Dispatch<INotificationAction>,
+  simulation: Simulation,
   keepMesh?: boolean
-): Promise<void> => {
-  try {
-    await SimulationAPI.run({ id: simulation.id }, keepMesh)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.run, err }))
-    throw err
-  }
-}
+): Promise<void> => await SimulationAPI.run({ id: simulation.id }, keepMesh)
 
 /**
  * On stop
  */
-export const _onStop = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    await SimulationAPI.stop({ id: simulation.id })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.stop, err }))
-    throw err
-  }
-}
+export const _onStop = async (simulation: Simulation): Promise<void> =>
+  await SimulationAPI.stop({ id: simulation.id })
 
 /**
  * Run
  * @param props Props
  */
-const Run = ({
+const Run: React.FunctionComponent<IProps> = ({
   geometries,
   simulation,
   results,
@@ -164,16 +133,10 @@ const Run = ({
   setPostprocessing,
   setVisible,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
-  const [disabled, setDisabled] = useState<boolean>(false)
   const [running, setRunning] = useState<boolean>(false)
-
-  const [keepMeshAvailable, setKeepMeshAvailable] = useState<boolean>(false)
   const [keepMesh, setKeepMesh] = useState<boolean>(false)
-
-  const [steps, setSteps] = useState<IFrontSimulationTask[]>([])
-  const [percent, setPercent] = useState<number>(0)
 
   // Context
   const { dispatch } = useContext(NotificationContext)
@@ -184,21 +147,21 @@ const Run = ({
     2000
   )
 
+  // Configuration
   const configuration = useMemo(
     () => simulation.scheme.configuration,
     [simulation]
   )
-  const currentConfiguration = useMemo(
-    () => currentSimulation?.scheme?.configuration,
-    [currentSimulation]
-  )
 
-  // Check tasks
-  useCustomEffect(() => {
-    if (!configuration) {
-      setDisabled(true)
-      return
-    }
+  // Current configuration
+  const currentConfiguration = useMemo(() => {
+    if (currentSimulation.id === '0') return
+    return (currentSimulation as IFrontSimulation).scheme.configuration
+  }, [currentSimulation])
+
+  // Disabled
+  const disabled = useMemo(() => {
+    if (!configuration) return true
 
     let done = true
     Object.keys(configuration).forEach((key) => {
@@ -214,52 +177,43 @@ const Run = ({
       }
     })
     if (!configuration.run.cloudServer) done = false
-    setDisabled(!done)
+    return done
   }, [configuration])
 
   // Keep mesh
-  useEffect(() => {
-    if (!configuration) return
+  const keepMeshAvailable = useMemo(() => {
+    if (!configuration) return false
 
     const geometry = configuration.geometry
     let alreadyMeshed = true
     geometry.children.forEach((child) => {
       if (!child.mesh) alreadyMeshed = false
     })
-    if (alreadyMeshed) {
-      setKeepMeshAvailable(true)
-    } else {
-      setKeepMeshAvailable(false)
-      setKeepMesh(false)
-    }
+    if (alreadyMeshed) return true
+    else return false
   }, [configuration])
 
-  // Running & steps
-  useCustomEffect(() => {
-    // Running
-    if (currentSimulation?.tasks?.find((t) => t?.status === 'error')) {
-      setRunning(false)
-    } else if (
-      currentSimulation?.tasks?.find((t) => t && t.status !== 'finish')
-    ) {
-      setRunning(true)
-    } else setRunning(false)
+  // Steps
+  const { steps, percent } = useMemo(() => {
+    if (currentSimulation.id === '0') return { steps: [], percent: undefined }
 
-    // Steps
-    const newSteps: (IFrontSimulationTask & { percent?: number })[] = []
-    currentSimulation?.tasks?.forEach((task, index) => {
+    const validSimulation = currentSimulation as IFrontSimulation
+
+    let percent
+    const newSteps: IFrontSimulationTask[] = []
+    validSimulation?.tasks?.forEach((task, index) => {
       if (!task) return
 
-      if (index === currentSimulation.tasks.length - 1) {
+      if (index === validSimulation.tasks.length - 1) {
         const lines = task.log?.split('\n') ?? []
         const percents = lines
           .filter((line) => line.startsWith('PERCENT:'))
           .filter((l) => l)
-        const percent = percents?.pop()
-        const percentNumber = percent
-          ? parseFloat(percent.replace('PERCENT: ', '').replace('%', ''))
+        const lastPercent = percents?.pop()
+        const percentNumber = lastPercent
+          ? parseFloat(lastPercent.replace('PERCENT: ', '').replace('%', ''))
           : 0
-        if (percentNumber) setPercent(percentNumber)
+        if (percentNumber) percent = percentNumber
       }
 
       // Steps
@@ -276,24 +230,41 @@ const Run = ({
       }
     })
 
-    setSteps(newSteps)
-  }, [currentSimulation?.tasks])
+    return { steps: newSteps, percent }
+  }, [currentSimulation])
+
+  // Running ?
+  useEffect(() => {
+    if (currentSimulation.id === '0') {
+      setRunning(false)
+      return
+    }
+
+    const validSimulation = currentSimulation as IFrontSimulation
+    if (validSimulation?.tasks?.find((t) => t?.status === 'error')) {
+      setRunning(false)
+    } else if (
+      validSimulation?.tasks?.find((t) => t && t.status !== 'finish')
+    ) {
+      setRunning(true)
+    } else setRunning(false)
+  }, [currentSimulation])
 
   /**
    * On ok
    * @param cloudServer Cloud server
    */
   const onOk = useCallback(
-    async (cloudServer: HPCClientPlugin): Promise<void> =>
-      _onCloudServer(
-        simulation,
-        cloudServer,
-        {
+    async (cloudServer: HPCClientPlugin): Promise<void> => {
+      try {
+        await _onCloudServer(simulation, cloudServer, {
           ...swr,
           mutateSimulation
-        },
-        dispatch
-      ),
+        })
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
+      }
+    },
     [simulation, swr, mutateSimulation, dispatch]
   )
 
@@ -301,34 +272,38 @@ const Run = ({
    * On keep mesh
    * @param event Event
    */
-  const onKeepMesh = useCallback((event: CheckboxChangeEvent): void => {
-    setKeepMesh(event.target.checked)
-  }, [])
+  const onKeepMesh = useCallback(
+    (event: CheckboxChangeEvent): void => setKeepMesh(event.target.checked),
+    []
+  )
 
   /**
    * On run click
    */
   const onRunClick = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setRunning(true)
       try {
-        await _onRun(simulation, dispatch, keepMesh)
-      } catch (err) {
+        await _onRun(simulation, keepMesh)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.run, err }))
         setRunning(false)
       }
-    })()
+    })
   }, [simulation, keepMesh, dispatch])
 
   /**
    * On stop click
    */
   const onStopClick = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       try {
-        await _onStop(simulation, dispatch)
+        await _onStop(simulation)
         setRunning(false)
-      } catch (err) {}
-    })()
+      } catch (err: any) {
+        dispatch(addError({ title: errors.stop, err }))
+      }
+    })
   }, [simulation, dispatch])
 
   /**
@@ -421,8 +396,8 @@ const Run = ({
             simulation={
               currentSimulation && {
                 id: currentSimulation.id,
-                scheme: currentSimulation.scheme,
-                tasks: currentSimulation.tasks
+                scheme: (currentSimulation as IFrontSimulation).scheme,
+                tasks: (currentSimulation as IFrontSimulation).tasks
               }
             }
             results={results}

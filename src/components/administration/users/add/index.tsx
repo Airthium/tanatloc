@@ -1,13 +1,6 @@
 /** @module Components.Administration.User.Add */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IFrontMutateUser } from '@/api/index.d'
@@ -104,7 +97,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ plugins, swr }: IProps): ReactNode => {
+const Add: React.FunctionComponent<IProps> = ({ plugins, swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

@@ -6,8 +6,7 @@ import {
   CSSProperties,
   useMemo,
   useCallback,
-  useContext,
-  ReactNode
+  useContext
 } from 'react'
 import { useRouter } from 'next/router'
 import {
@@ -34,6 +33,7 @@ import {
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { LinkButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 
@@ -196,7 +196,7 @@ export const _userTitle = (user: {
  * - style (Object) Button style
  * @returns Share
  */
-const Share = ({
+const Share: React.FunctionComponent<IProps> = ({
   disabled,
   workspace,
   project,
@@ -204,7 +204,7 @@ const Share = ({
   organizations,
   swr,
   style
-}: IProps): ReactNode => {
+}) => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -295,13 +295,12 @@ const Share = ({
    * Dashboard
    */
   const dashboard = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push({
         pathname: '/dashboard',
         query: { page: 'organizations' }
       })
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router])
 
   /**

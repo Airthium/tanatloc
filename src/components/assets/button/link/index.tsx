@@ -13,7 +13,7 @@ export interface IProps {
  * @param props Props
  * @returns Link
  */
-const Link = ({ children, onClick }: IProps): ReactNode => {
+const Link: React.FunctionComponent<IProps> = ({ children, onClick }) => {
   return (
     <Button type="link" onClick={onClick} style={{ padding: 0 }}>
       {children}

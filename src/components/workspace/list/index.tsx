@@ -1,14 +1,7 @@
 /** @module Components.Workspace.List */
 
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
 import {
   Button,
   Empty,
@@ -39,10 +32,10 @@ import { LIMIT50 } from '@/config/string'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
-import { menuItems } from '@/components/dashboard'
-
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Dialog from '@/components/assets/dialog'
 import PageHeader from '@/components/assets/pageHeader'
+import { menuItems } from '@/components/dashboard'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -111,12 +104,12 @@ export const _onOk = async (
  * @param props Props
  * @returns WorkspaceList
  */
-const WorkspacesList = ({
+const WorkspacesList: React.FunctionComponent<IProps> = ({
   user,
   workspaces,
   organizations,
   swr
-}: IProps): ReactNode => {
+}) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -159,7 +152,7 @@ const WorkspacesList = ({
    */
   const onChange = useCallback(
     (activeKey: string): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         if (activeKey === 'add') setVisible(true)
         else if (activeKey === 'sample') setSampleVisible(true)
         else
@@ -167,8 +160,7 @@ const WorkspacesList = ({
             pathname: '/dashboard',
             query: { page: 'workspaces', workspaceId: activeKey }
           })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

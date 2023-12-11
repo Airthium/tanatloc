@@ -1,9 +1,11 @@
 /** @module Components.Notauthorized */
 
-import { ReactNode, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 /**
  * Errors
@@ -16,7 +18,7 @@ export const errors = {
  * Not authorized
  * @returns NotAuthorized
  */
-const NotAuthorized = (): ReactNode => {
+const NotAuthorized: React.FunctionComponent = () => {
   // Data
   const router = useRouter()
 
@@ -24,10 +26,9 @@ const NotAuthorized = (): ReactNode => {
    * Home
    */
   const home = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push('/')
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router])
 
   /**

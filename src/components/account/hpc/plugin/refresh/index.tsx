@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin.Refresh */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 
@@ -8,6 +8,8 @@ import { HPCClientPlugin } from '@/plugins/index.d'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Utils from '@/lib/utils'
 
@@ -47,7 +49,7 @@ export const _onUpdate = async (plugin: HPCClientPlugin): Promise<void> => {
  * @param props Props
  * @returns Refresh
  */
-const Refresh = ({ plugin }: IProps): ReactNode => {
+const Refresh: React.FunctionComponent<IProps> = ({ plugin }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -58,7 +60,7 @@ const Refresh = ({ plugin }: IProps): ReactNode => {
    * On click
    */
   const onClick = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         await _onUpdate(plugin)
@@ -67,8 +69,7 @@ const Refresh = ({ plugin }: IProps): ReactNode => {
       } finally {
         setLoading(false)
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [plugin, dispatch])
 
   /**

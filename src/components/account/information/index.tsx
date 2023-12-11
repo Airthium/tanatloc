@@ -1,6 +1,6 @@
 /** @module Components.Account.Information */
 
-import { ReactNode, useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
@@ -13,6 +13,7 @@ import { LIMIT50 } from '@/config/string'
 import { NotificationContext } from '@/context/notification'
 import { addError, addSuccess } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { FormError } from '@/components/assets/notification'
 
 import { APIError } from '@/api/error'
@@ -191,7 +192,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns Information
  */
-const Information = ({ user, swr }: IProps): ReactNode => {
+const Information: React.FunctionComponent<IProps> = ({ user, swr }) => {
   // State
   const [uploading, setUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -232,7 +233,7 @@ const Information = ({ user, swr }: IProps): ReactNode => {
    */
   const onChange = useCallback(
     (info: UploadChangeParam<any>): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         try {
           const upload = await _onChange(user, info, swr)
           setUploading(upload)
@@ -240,8 +241,7 @@ const Information = ({ user, swr }: IProps): ReactNode => {
           dispatch(addError({ title: errors.upload, err: err }))
           setUploading(false)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [user, swr, dispatch]
   )
@@ -252,7 +252,7 @@ const Information = ({ user, swr }: IProps): ReactNode => {
    */
   const onFinish = useCallback(
     (values: ILocalValues): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         setLoading(true)
         try {
           await _onFinish(user, values, swr, (title: string, description) =>
@@ -264,8 +264,7 @@ const Information = ({ user, swr }: IProps): ReactNode => {
         } finally {
           setLoading(false)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [user, swr, dispatch]
   )

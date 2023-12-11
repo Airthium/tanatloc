@@ -1,6 +1,6 @@
 /** @module Components.Workspace.Sample */
 
-import React, { ReactNode, useCallback, useContext, useState } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { List } from 'antd'
 import { ArrowRightOutlined } from '@ant-design/icons'
@@ -217,12 +217,12 @@ export const _onSimulationAdd = async (
  * SampleWorkspace
  * @returns SampleWorkspace
  */
-const SampleWorkspace = ({
+const SampleWorkspace: React.FunctionComponent<IProps> = ({
   visible,
   setVisible,
   user,
   swr
-}: IProps): ReactNode => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -307,7 +307,7 @@ const SampleWorkspace = ({
    * @returns Render
    */
   const renderItem = useCallback(
-    (item: string): React.JSX.Element => (
+    (item: string): ReactNode => (
       <List.Item>
         {item && (
           <div>

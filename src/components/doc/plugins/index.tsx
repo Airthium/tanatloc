@@ -1,10 +1,11 @@
 /** @module Components.Doc.Plugins */
 
-import { ReactNode, useCallback } from 'react'
+import { useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Tabs, Typography } from 'antd'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Carousel from '@/components/assets/carousel'
 
 import style from '../index.module.css'
@@ -13,7 +14,7 @@ import style from '../index.module.css'
  * HPC
  * @returns HPC
  */
-const Hpc = (): ReactNode => {
+const Hpc: React.FunctionComponent = () => {
   /**
    * Render
    */
@@ -133,7 +134,7 @@ const Hpc = (): ReactNode => {
  * Model
  * @returns Model
  */
-const Model = (): ReactNode => {
+const Model: React.FunctionComponent = () => {
   /**
    * Render
    */
@@ -171,7 +172,7 @@ const tabs = [
  * Plugins
  * @returns Plugins
  */
-const Plugins = (): ReactNode => {
+const Plugins: React.FunctionComponent = () => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -182,7 +183,7 @@ const Plugins = (): ReactNode => {
    */
   const onChange = useCallback(
     (key: string) => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -190,8 +191,7 @@ const Plugins = (): ReactNode => {
             tab: key
           }
         })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

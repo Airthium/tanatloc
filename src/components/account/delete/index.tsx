@@ -1,6 +1,6 @@
 /** @module Components.Account.Delete */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Card } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
@@ -49,7 +49,7 @@ export const _onDelete = async (swr: {
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ swr }: IProps): ReactNode => {
+const Delete: React.FunctionComponent<IProps> = ({ swr }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

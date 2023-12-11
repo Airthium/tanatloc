@@ -36,7 +36,7 @@ export interface IProps {
  * - onEdit (Function) Button click
  * @returns EditButton
  */
-const EditButton = ({
+const EditButton: React.FunctionComponent<IProps> = ({
   disabled,
   primary = false,
   bordered,
@@ -46,7 +46,7 @@ const EditButton = ({
   loading,
   children,
   onEdit
-}: IProps): ReactNode => {
+}) => {
   let type: 'link' | 'primary' | 'default'
   if (disabled) type = 'link'
   else if (primary) type = 'primary'

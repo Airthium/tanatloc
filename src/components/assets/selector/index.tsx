@@ -7,8 +7,7 @@ import {
   useContext,
   Dispatch,
   SetStateAction,
-  useMemo,
-  ReactNode
+  useMemo
 } from 'react'
 import { Button, Card, Input, Space, Tag, Tooltip, Typography } from 'antd'
 import {
@@ -84,7 +83,10 @@ export interface IGeometryElementCardProps {
  * @param props Props
  * @returns ColorFilter
  */
-const ColorFilter = ({ color, setFilter }: IColorFilterProps): ReactNode => {
+const ColorFilter: React.FunctionComponent<IColorFilterProps> = ({
+  color,
+  setFilter
+}) => {
   /**
    * On color fitler
    * @param color Color
@@ -113,7 +115,10 @@ const ColorFilter = ({ color, setFilter }: IColorFilterProps): ReactNode => {
  * @param props Props
  * @returns ColorFilters
  */
-const ColorFilters = ({ colors, setFilter }: IColorFiltersProps): ReactNode => {
+const ColorFilters: React.FunctionComponent<IColorFiltersProps> = ({
+  colors,
+  setFilter
+}) => {
   /**
    * On color fitler clear
    */
@@ -147,13 +152,9 @@ const ColorFilters = ({ colors, setFilter }: IColorFiltersProps): ReactNode => {
  * @param props Props
  * @returns GeometryElementCard
  */
-const GeometryElementCard = ({
-  element,
-  alreadySelected,
-  filter,
-  search,
-  context
-}: IGeometryElementCardProps): ReactNode => {
+const GeometryElementCard: React.FunctionComponent<
+  IGeometryElementCardProps
+> = ({ element, alreadySelected, filter, search, context }) => {
   /**
    * Display?
    * @param element Element
@@ -301,11 +302,11 @@ const GeometryElementCard = ({
  * - updateSelected (Function) Update selected
  * @returns Selector
  */
-const Selector = ({
+const Selector: React.FunctionComponent<IProps> = ({
   geometry,
   alreadySelected,
   updateSelected
-}: IProps): ReactNode => {
+}) => {
   // State
   const [filter, setFilter] = useState<TGeometryColor>()
   const [search, setSearch] = useState<string>()

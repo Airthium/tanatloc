@@ -20,13 +20,13 @@ export interface IProps {
  * @param props Props
  * @returns FormListItem
  */
-export const FormListItem = ({
+export const FormListItem: React.FunctionComponent<IProps> = ({
   children,
   field,
   label,
   index,
   remove
-}: IProps): ReactNode => {
+}) => {
   /**
    * On remove
    */

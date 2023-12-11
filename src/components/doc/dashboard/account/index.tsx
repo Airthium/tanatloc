@@ -1,6 +1,5 @@
 /** @module Components.Doc.Dashboard.Account */
 
-import { ReactNode } from 'react'
 import { Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
@@ -11,7 +10,7 @@ import style from '../../index.module.css'
  * Account
  * @returns Account
  */
-const Account = (): ReactNode => {
+const Account: React.FunctionComponent = () => {
   /**
    * Render
    */

@@ -34,6 +34,8 @@ import {
 } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import Utils from '@/lib/utils'
 
 import OrganizationAPI from '@/api/organization'
@@ -231,11 +233,11 @@ export const _onDecline = async (
  * @param props props
  * @returns ManageButton
  */
-const ManageButton = ({
+const ManageButton: React.FunctionComponent<IManageProps> = ({
   organization,
   swr,
   setOrganization
-}: IManageProps): ReactNode => {
+}) => {
   /**
    * On click
    */
@@ -268,17 +270,17 @@ const ManageButton = ({
  * @param props Props
  * @returns QuitButton
  */
-const QuitButton = ({
+const QuitButton: React.FunctionComponent<IQuitProps> = ({
   user,
   organization,
   swr,
   dispatch
-}: IQuitProps): ReactNode => {
+}) => {
   /**
    * On click
    */
   const onClick = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         await _onQuit(
           { id: organization.id, users: organization.users },
@@ -288,8 +290,7 @@ const QuitButton = ({
       } catch (err: any) {
         dispatch(addError({ title: errors.quit, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [user, organization, swr, dispatch])
 
   /**
@@ -307,17 +308,17 @@ const QuitButton = ({
  * @param props Props
  * @returns AcceptButton
  */
-const AcceptButton = ({
+const AcceptButton: React.FunctionComponent<IAcceptProps> = ({
   user,
   organization,
   swr,
   dispatch
-}: IAcceptProps): ReactNode => {
+}) => {
   /**
    * On click
    */
   const onClick = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         await _onAccept(
           {
@@ -333,8 +334,7 @@ const AcceptButton = ({
       } catch (err: any) {
         dispatch(addError({ title: errors.accept, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [user, organization, swr, dispatch])
 
   /**
@@ -352,14 +352,14 @@ const AcceptButton = ({
  * @param props Props
  * @returns DeclineButton
  */
-const DeclineButton = ({
+const DeclineButton: React.FunctionComponent<IDeclineProps> = ({
   user,
   organization,
   swr,
   dispatch
-}: IDeclineProps): ReactNode => {
+}) => {
   const onClick = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         await _onDecline(
           {
@@ -378,8 +378,7 @@ const DeclineButton = ({
           })
         )
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [user, organization, swr, dispatch])
 
   /**
@@ -397,12 +396,12 @@ const DeclineButton = ({
  * @param props Props
  * @returns List
  */
-const List = ({
+const List: React.FunctionComponent<IProps> = ({
   user,
   organizations,
   swr,
   setOrganization
-}: IProps): ReactNode => {
+}) => {
   // State
   const [scroll, setScroll] = useState<{ y: number } | null>(null)
 

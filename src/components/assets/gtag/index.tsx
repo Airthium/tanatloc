@@ -1,13 +1,13 @@
 /** @module Components.Assets.GTag */
 
-import { ReactNode, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 
 /**
  * Google tag
  * @returns GoogleTag
  */
-const GoogleTag = (): ReactNode => {
+const GoogleTag: React.FunctionComponent = () => {
   // Data
   const [cookies] = useCookies(['gpdr-gtag-accept'])
 

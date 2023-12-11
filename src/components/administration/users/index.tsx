@@ -32,6 +32,7 @@ import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import PluginsAPI from '@/api/plugins'
 
@@ -73,7 +74,7 @@ export const errors = {
  * @param props Props
  * @returns Users
  */
-const Users = ({ users, swr }: IProps): ReactNode => {
+const Users: React.FunctionComponent<IProps> = ({ users, swr }) => {
   // Ref
   const refTable = useRef<any>(null)
 
@@ -258,7 +259,7 @@ const Users = ({ users, swr }: IProps): ReactNode => {
 
   // Plugins list
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         const list = await PluginsAPI.completeList()
 
@@ -266,8 +267,7 @@ const Users = ({ users, swr }: IProps): ReactNode => {
       } catch (err: any) {
         dispatch(addError({ title: errors.plugins, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [dispatch])
 
   /**

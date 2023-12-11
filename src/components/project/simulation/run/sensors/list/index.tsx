@@ -22,26 +22,24 @@ import style from '../../../index.module.css'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
   onEdit: (sensor: IModelSensor & { index: number }) => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 export interface IListItemProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
   sensor: IModelSensor
   index: number
   _onEdit: (sensor: IModelSensor & { index: number }) => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -49,13 +47,13 @@ export interface IListItemProps {
  * @param props Props
  * @returns ListItem
  */
-const ListItem = ({
+const ListItem: React.FunctionComponent<IListItemProps> = ({
   simulation,
   sensor,
   index,
   _onEdit,
   swr
-}: IListItemProps): React.JSX.Element => {
+}) => {
   // Data
   const { dispatch } = useContext(SelectContext)
 
@@ -110,7 +108,7 @@ const ListItem = ({
  * @param props Props
  * @returns List
  */
-const List = ({ simulation, onEdit, swr }: IProps): React.JSX.Element => {
+const List: React.FunctionComponent<IProps> = ({ simulation, onEdit, swr }) => {
   // Data
   const run = useMemo(() => simulation.scheme.configuration.run, [simulation])
 

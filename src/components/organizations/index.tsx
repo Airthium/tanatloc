@@ -1,7 +1,7 @@
 /** @module Components.Organizations */
 
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
-import { useState, useEffect, useCallback, ReactNode } from 'react'
 import { Layout, Space, Typography } from 'antd'
 
 import {
@@ -12,14 +12,15 @@ import {
   IFrontMutateOrganizationsItem
 } from '@/api/index.d'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Organization from '@/components/assets/organization'
 import PageHeader from '@/components/assets/pageHeader'
 
 import Add from './add'
 import List from './list'
 
-import globalStyle from '@/styles/index.module.css'
 import dashboardStyle from '@/components/dashboard/index.module.css'
+import globalStyle from '@/styles/index.module.css'
 
 /**
  * Props
@@ -44,7 +45,11 @@ export interface IProps {
  * @param props Props
  * @returns Organizations
  */
-const Organizations = ({ user, organizations, swr }: IProps): ReactNode => {
+const Organizations: React.FunctionComponent<IProps> = ({
+  user,
+  organizations,
+  swr
+}) => {
   // State
   const [organization, setOrganization] =
     useState<IFrontOrganizationsItem | null>()
@@ -78,7 +83,7 @@ const Organizations = ({ user, organizations, swr }: IProps): ReactNode => {
    * On close
    */
   const onClose = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push({
         pathname: 'dashboard',
         query: {
@@ -86,8 +91,7 @@ const Organizations = ({ user, organizations, swr }: IProps): ReactNode => {
         }
       })
       setOrganization(null)
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router])
 
   /**
@@ -96,7 +100,7 @@ const Organizations = ({ user, organizations, swr }: IProps): ReactNode => {
    */
   const setOrg = useCallback(
     (org: IFrontOrganizationsItem): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.push({
           pathname: 'dashboard',
           query: {
@@ -105,8 +109,7 @@ const Organizations = ({ user, organizations, swr }: IProps): ReactNode => {
           }
         })
         setOrganization(org)
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

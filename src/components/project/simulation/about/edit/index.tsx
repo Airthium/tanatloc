@@ -1,13 +1,6 @@
 /** @module Components.Project.Simulation.About.Edit */
 
-import {
-  Dispatch,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import {
@@ -15,10 +8,7 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { EditButton } from '@/components/assets/button'
@@ -29,13 +19,15 @@ import SimulationAPI from '@/api/simulation'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'name'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'name'>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  simulation: Simulation
+  swr: Swr
 }
 
 /**
@@ -52,30 +44,20 @@ export const errors = {
  * @param swr SWR
  */
 export const _onEdit = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
+  simulation: Simulation,
   values: { name: string },
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      { key: 'name', value: values.name }
-    ])
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    { key: 'name', value: values.name }
+  ])
 
-    // Local
-    await swr.mutateOneSimulation({
-      id: simulation.id,
-      name: values.name
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
-  }
+  // Local
+  await swr.mutateOneSimulation({
+    id: simulation.id,
+    name: values.name
+  })
 }
 
 /**
@@ -83,7 +65,7 @@ export const _onEdit = async (
  * @param props Props
  * @çeturns Edit
  */
-const Edit = ({ simulation, swr }: IProps): React.JSX.Element => {
+const Edit: React.FunctionComponent<IProps> = ({ simulation, swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 
@@ -108,12 +90,13 @@ const Edit = ({ simulation, swr }: IProps): React.JSX.Element => {
     async (values: { name: string }): Promise<void> => {
       setLoading(true)
       try {
-        await _onEdit(simulation, values, swr, dispatch)
+        await _onEdit(simulation, values, swr)
 
         // Close
         setLoading(false)
         setVisible(false)
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
         throw err
       }

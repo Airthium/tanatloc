@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Edit */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import {
   IFrontMutateSimulationsItem,
@@ -8,10 +8,7 @@ import {
 } from '@/api/index.d'
 import { IModelSensor } from '@/models/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { EditButton } from '@/components/assets/button'
@@ -19,20 +16,24 @@ import { EditButton } from '@/components/assets/button'
 import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Sensor = Partial<IModelSensor> & { index?: number }
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  sensor: Partial<IModelSensor> & { index: number }
+  simulation: Simulation
+  sensor: Sensor
   onError: (error?: string) => void
   onClose: () => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -52,42 +53,32 @@ export const errors = {
  * @param swr SWR
  */
 export const _onEdit = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  sensor: IModelSensor & { index?: number },
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  simulation: Simulation,
+  sensor: Sensor,
+  swr: Swr
 ) => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
-    const run = newSimulation.scheme.configuration.run
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
+  const run = newSimulation.scheme.configuration.run
 
-    // Local
-    const index = sensor.index
-    delete sensor.index
-    run.sensors![index!] = sensor
+  // Local
+  const index = sensor.index!
+  delete sensor.index
+  run.sensors![index] = sensor as IModelSensor
 
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: run
-      }
-    ])
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: run
+    }
+  ])
 
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
-  }
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -95,13 +86,13 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({
+const Edit: React.FunctionComponent<IProps> = ({
   simulation,
   sensor,
   onError,
   onClose,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>()
 
@@ -112,7 +103,7 @@ const Edit = ({
    * On edit
    */
   const onEdit = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         // Check
@@ -136,15 +127,16 @@ const Edit = ({
 
         onError()
 
-        await _onEdit(simulation, sensor as IModelSensor, swr, dispatch)
+        await _onEdit(simulation, sensor as IModelSensor, swr)
 
         // Close
         setLoading(false)
         onClose()
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, sensor, onError, onClose, swr, dispatch])
 
   /**

@@ -1,6 +1,6 @@
 /** @module Components.Project.Geometry.Split */
 
-import { ReactNode, useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { SplitCellsOutlined } from '@ant-design/icons'
 
@@ -18,7 +18,7 @@ import globalStyle from '@/styles/index.module.css'
  */
 export type Project = Pick<IFrontProject, 'id'>
 export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'summary'>
-export interface ISplitProps {
+export interface IProps {
   project: Project
   geometry: Geometry
 }
@@ -46,7 +46,7 @@ const _onSplit = async (
  * @param props Props
  * @returns Split
  */
-const Split = ({ project, geometry }: ISplitProps): ReactNode => {
+const Split: React.FunctionComponent<IProps> = ({ project, geometry }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

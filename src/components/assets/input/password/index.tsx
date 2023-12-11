@@ -1,6 +1,5 @@
 /** @module Components.Assets.Input.Password */
 
-import { ReactNode } from 'react'
 import { Form, Input } from 'antd'
 
 import { IFrontSystem } from '@/api/index.d'
@@ -168,7 +167,7 @@ export const _checkFormat = (
  * - style (Object) Style of the form item (default: none)
  * @returns PasswordItem
  */
-const PasswordItem = ({
+const PasswordItem: React.FunctionComponent<IProps> = ({
   labelCol,
   wrapperCol,
   name,
@@ -178,7 +177,7 @@ const PasswordItem = ({
   edit,
   style,
   required
-}: IProps): ReactNode => {
+}) => {
   // Data
   const [system] = SystemAPI.useSystem()
 

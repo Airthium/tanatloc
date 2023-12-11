@@ -1,7 +1,7 @@
 /** @module Components.Editor */
 
-import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/router'
 import {
   Layout,
   Menu,
@@ -17,6 +17,7 @@ import { CaretRightOutlined } from '@ant-design/icons'
 
 import EditorProvider from '@/context/editor'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { GoBack } from '@/components/assets/button'
 
 import Loading from '@/components/loading'
@@ -88,7 +89,7 @@ const steps: TourProps['steps'] = [
  * Editor
  * @returns Editor
  */
-const Editor = (): React.JSX.Element => {
+const Editor: React.FunctionComponent = () => {
   // State
   const [name, setName] = useState<string>()
   const [tourOpened, setTourOpened] = useState<boolean>(false)
@@ -100,9 +101,9 @@ const Editor = (): React.JSX.Element => {
 
   // Not logged -> go to login page
   useEffect(() => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       if (!loadingUser && !user) await router.replace('/')
-    })()
+    })
   }, [user, loadingUser, router])
 
   /**
@@ -123,11 +124,11 @@ const Editor = (): React.JSX.Element => {
    * Handle dashboard
    */
   const handleDashboard = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       await router.push({
         pathname: '/dashboard'
       })
-    })()
+    })
   }, [router])
 
   /**

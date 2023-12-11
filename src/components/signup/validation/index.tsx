@@ -1,6 +1,6 @@
 /** @module Components.Signup.Validation */
 
-import { ReactNode, useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
@@ -8,6 +8,8 @@ import { SUBSCRIBE, REVALIDATE } from '@/config/email'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import LinkAPI from '@/api/link'
 
@@ -26,7 +28,7 @@ export const errors = {
  * Validation
  * @returns Validation
  */
-const Validation = (): ReactNode => {
+const Validation: React.FunctionComponent = () => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -36,7 +38,7 @@ const Validation = (): ReactNode => {
 
   // Link
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (!id) return
 
       try {
@@ -56,8 +58,7 @@ const Validation = (): ReactNode => {
       } catch (err: any) {
         dispatch(addError({ title: errors.internal, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [id, router, dispatch])
 
   /**

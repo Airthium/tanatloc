@@ -172,12 +172,14 @@ export interface IModelParameters extends IModelCommon {
     | number
     | string
     | Error
-    | {
-        label: string
-        advanced?: boolean
-        children: IModelParameter[]
-      }
+    | IModelParametersGroup
     | undefined
+}
+
+export interface IModelParametersGroup {
+  label: string
+  advanced?: boolean
+  children: IModelParameter[]
 }
 
 export interface IModelParameter {

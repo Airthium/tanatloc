@@ -22,6 +22,8 @@ import {
 } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import Utils from '@/lib/utils'
 
 import PluginsAPI from '@/api/plugins'
@@ -91,7 +93,12 @@ export const _onChange = async (
  * @param props Props
  * @returns Plugin
  */
-const Plugin = ({ plugin, system, swr, dispatch }: IPluginProps): ReactNode => {
+const Plugin: React.FunctionComponent<IPluginProps> = ({
+  plugin,
+  system,
+  swr,
+  dispatch
+}) => {
   // State
   const [checked, setChecked] = useState<boolean>()
 
@@ -109,14 +116,13 @@ const Plugin = ({ plugin, system, swr, dispatch }: IPluginProps): ReactNode => {
    */
   const onChange = useCallback(
     (e: CheckboxChangeEvent): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         try {
           await _onChange(system, plugin, e.target.checked, swr)
         } catch (err: any) {
           dispatch(addError({ title: errors.update, err }))
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [plugin, system, swr, dispatch]
   )
@@ -147,7 +153,7 @@ const Plugins = () => {
 
   // Plugins list
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         const list = await PluginsAPI.completeList()
 
@@ -155,8 +161,7 @@ const Plugins = () => {
       } catch (err: any) {
         dispatch(addError({ title: errors.plugins, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [dispatch])
 
   /**

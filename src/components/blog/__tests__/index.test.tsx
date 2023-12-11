@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Blog from '..'
 
-let tag: JSX.Element
+let tag: React.JSX.Element
 const selectRole = 'Select'
 jest.mock('antd', () => {
   const actual = jest.requireActual('antd')

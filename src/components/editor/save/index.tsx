@@ -16,6 +16,8 @@ import {
 } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import UserModelAPI from '@/api/userModel'
 
 import Utils from '@/lib/utils'
@@ -23,11 +25,13 @@ import Utils from '@/lib/utils'
 /**
  * Props
  */
+export type User = Pick<IFrontUser, 'id' | 'usermodels'>
+export type Swr = {
+  mutateUser: (user: IFrontMutateUser) => Promise<void>
+}
 export interface IProps {
-  user: Pick<IFrontUser, 'id' | 'usermodels'>
-  swr: {
-    mutateUser: (user: IFrontMutateUser) => Promise<void>
-  }
+  user: User
+  swr: Swr
 }
 
 /**
@@ -49,10 +53,8 @@ export const errors = {
  * @param notificationDispatch Dispatch
  */
 export const _onSave = async (
-  user: Pick<IFrontUser, 'id' | 'usermodels'>,
-  swr: {
-    mutateUser: (user: IFrontMutateUser) => Promise<void>
-  },
+  user: User,
+  swr: Swr,
   model: string,
   template: string,
   editorDispatch: Dispatch<IEditorAction>,
@@ -188,7 +190,7 @@ export const _save = async (
  * @param props Props
  * @returns Save
  */
-const Save = ({ user, swr }: IProps): React.JSX.Element => {
+const Save: React.FunctionComponent<IProps> = ({ user, swr }) => {
   // State
   const [disabled, setDisabled] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -213,7 +215,7 @@ const Save = ({ user, swr }: IProps): React.JSX.Element => {
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       await _onSave(
         user,
@@ -224,7 +226,7 @@ const Save = ({ user, swr }: IProps): React.JSX.Element => {
         notificationDispatch
       )
       setLoading(false)
-    })()
+    })
   }, [user, model, template, swr, editorDispatch, notificationDispatch])
 
   /**

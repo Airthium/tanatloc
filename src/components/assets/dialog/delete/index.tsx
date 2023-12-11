@@ -7,6 +7,8 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 /**
  * Props
  */
@@ -38,14 +40,14 @@ export const errors = {
  * - onOk (Function) Dialog ok
  * @returns DeleteDialog
  */
-const DeleteDialog = ({
+const DeleteDialog: React.FunctionComponent<IProps> = ({
   visible,
   loading,
   title,
   children,
   onCancel,
   onOk
-}: IProps): ReactNode => {
+}) => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -53,15 +55,13 @@ const DeleteDialog = ({
    * On ok
    */
   const internalOnOk = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         await onOk()
       } catch (err: any) {
         dispatch(addError({ title: errors.onOk, err, display: false }))
       }
-    }
-
-    asyncFunction().catch(console.error)
+    })
   }, [onOk, dispatch])
 
   /**

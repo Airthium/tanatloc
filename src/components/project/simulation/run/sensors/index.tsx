@@ -20,17 +20,20 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  geometries: Geometry[]
+  simulation: Simulation
   setVisible: (visible: boolean) => void
   setResults: (results: IFrontResult[]) => void
   setPostprocessing: (result?: IFrontResult) => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -38,14 +41,14 @@ export interface IProps {
  * @param props Props
  * @returns Sensors
  */
-const Sensors = ({
+const Sensors: React.FunctionComponent<IProps> = ({
   geometries,
   simulation,
   setVisible,
   setResults,
   setPostprocessing,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [sensorVisible, setSensorVisible] = useState<boolean>()
   const [sensor, setSensor] = useState<IModelSensor & { index: number }>()

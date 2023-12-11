@@ -1,6 +1,6 @@
 /** @module Components.Account.HPC.Plugin.Delete */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import { HPCClientPlugin } from '@/plugins/index.d'
@@ -52,7 +52,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ plugin, swr }: IProps): ReactNode => {
+const Delete: React.FunctionComponent<IProps> = ({ plugin, swr }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

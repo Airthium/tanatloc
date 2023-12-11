@@ -1,6 +1,5 @@
 /** @module Components.Doc.Dashboard.Help */
 
-import { ReactNode } from 'react'
 import { Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
@@ -11,7 +10,7 @@ import style from '../../index.module.css'
  * Help
  * @returns Help
  */
-const Help = (): ReactNode => {
+const Help: React.FunctionComponent = () => {
   /**
    * Render
    */

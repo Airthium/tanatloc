@@ -1,8 +1,10 @@
 /** @module Components.Doc.Dashboard */
 
+import { useCallback } from 'react'
 import { Tabs, Typography } from 'antd'
 import { useRouter } from 'next/router'
-import { ReactNode, useCallback } from 'react'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Workspace from './workspace'
 import Account from './account'
@@ -53,7 +55,7 @@ const tabs = [
  * Dashboard
  * @returns Dashboard
  */
-const Dashboard = (): ReactNode => {
+const Dashboard: React.FunctionComponent = () => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -64,7 +66,7 @@ const Dashboard = (): ReactNode => {
    */
   const onChange = useCallback(
     (key: string): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -72,8 +74,7 @@ const Dashboard = (): ReactNode => {
             tab: key
           }
         })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

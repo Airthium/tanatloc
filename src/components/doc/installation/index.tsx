@@ -1,10 +1,12 @@
 /** @module Components.Doc.Installation */
 
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Collapse, Spin, Table, Tabs, Typography } from 'antd'
 import { URL } from 'url'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import style from '../index.module.css'
 
@@ -20,13 +22,13 @@ export interface IRelease {
  * Desktop
  * @returns Desktop
  */
-const Desktop = (): ReactNode => {
+const Desktop: React.FunctionComponent = () => {
   const [release, setRelease] = useState<IRelease>()
   const [releaseError, setReleaseError] = useState<string>('')
 
   // Release
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         const releaseResponse = await fetch(
           'https://api.github.com/repos/Airthium/tanatloc-electron/releases'
@@ -57,8 +59,7 @@ const Desktop = (): ReactNode => {
       } catch (err: any) {
         setReleaseError(err.message)
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [])
 
   /**
@@ -209,7 +210,7 @@ const Desktop = (): ReactNode => {
  * Server
  * @returns Server
  */
-const Server = (): ReactNode => {
+const Server: React.FunctionComponent = () => {
   // Set data
   const setColumns = [
     {
@@ -548,7 +549,7 @@ const tabs = [
  * Installation
  * @returns Installation
  */
-const Installation = (): ReactNode => {
+const Installation: React.FunctionComponent = () => {
   // Data
   const router = useRouter()
   const query = router.query
@@ -559,7 +560,7 @@ const Installation = (): ReactNode => {
    */
   const onChange = useCallback(
     (key: string) => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.push({
           pathname: '/doc',
           query: {
@@ -567,8 +568,7 @@ const Installation = (): ReactNode => {
             tab: key
           }
         })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

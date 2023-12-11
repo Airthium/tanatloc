@@ -23,12 +23,12 @@ export interface IProps {
  * - onCancel (Function) Button click
  * @returns CancelButton
  */
-const CancelButton = ({
+const CancelButton: React.FunctionComponent<IProps> = ({
   disabled,
   loading,
   children,
   onCancel
-}: IProps): ReactNode => {
+}) => {
   /**
    * Render
    */

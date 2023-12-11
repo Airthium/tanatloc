@@ -19,7 +19,7 @@ export interface IProps {
  * @param props Props
  * @return Error
  */
-function ErrorPage({ webStatusCode }: Readonly<IProps>): ReactNode {
+const ErrorPage = ({ webStatusCode }: Readonly<IProps>): ReactNode => {
   // Data
   const router = useRouter()
   const {

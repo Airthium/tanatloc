@@ -1,6 +1,6 @@
 /** @module Components.Administration.User.Delete */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IFrontMutateUsersItem, IFrontUsersItem } from '@/api/index.d'
@@ -51,7 +51,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ user, swr }: IProps): ReactNode => {
+const Delete: React.FunctionComponent<IProps> = ({ user, swr }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

@@ -129,12 +129,12 @@ export const _exportCSV = (
  * @param props Props
  * @returns Column
  */
-const Column = ({
+const Column: React.FunctionComponent<IColumnRenderProps> = ({
   name,
   index,
   selection,
   setSelection
-}: IColumnRenderProps): ReactNode => {
+}) => {
   /**
    * On change
    * @param event Event
@@ -173,7 +173,7 @@ const Column = ({
  * @param props Props
  * @returns Data
  */
-const Data = ({ simulation }: IProps): ReactNode => {
+const Data: React.FunctionComponent<IProps> = ({ simulation }) => {
   // State
   const [selection, setSelection] = useState<boolean[]>([true])
   const [downloading, setDownloading] = useState<boolean>(false)

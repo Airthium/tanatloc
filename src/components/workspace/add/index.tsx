@@ -1,13 +1,6 @@
 /** @module Components.Workspace.Add */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { IFrontNewWorkspace } from '@/api/index.d'
@@ -59,7 +52,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ swr }: IProps): ReactNode => {
+const Add: React.FunctionComponent<IProps> = ({ swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

@@ -37,10 +37,10 @@ const DividerRole = 'Divider'
  * Divider
  * @returns Divider
  */
-export const Divider = ({
+export const Divider: React.FunctionComponent<IDividerProps> = ({
   onMove,
   onDoubleClick
-}: IDividerProps): ReactNode => {
+}) => {
   // State
   const [activated, setActivated] = useState<boolean>(false)
 
@@ -111,11 +111,11 @@ export const Divider = ({
  * @param props Props
  * @returns SidePanels
  */
-const SidePanels = ({
+const SidePanels: React.FunctionComponent<IProps> = ({
   className,
   leftChild,
   rightChild
-}: IProps): ReactNode => {
+}) => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 

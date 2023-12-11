@@ -36,7 +36,7 @@ export interface IProps {
  * - onAdd (Function) Button click
  * @returns AddButton
  */
-const AddButton = ({
+const AddButton: React.FunctionComponent<IProps> = ({
   disabled,
   primary = true,
   light,
@@ -46,7 +46,7 @@ const AddButton = ({
   loading,
   children,
   onAdd
-}: IProps): ReactNode => {
+}) => {
   /**
    * Render
    */

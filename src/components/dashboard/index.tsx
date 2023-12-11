@@ -1,7 +1,7 @@
 /** @module Components.Dashboard */
 
 import { useRouter } from 'next/router'
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Layout, Menu, Typography } from 'antd'
 import {
   AppstoreOutlined,
@@ -20,6 +20,7 @@ import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Loading from '@/components/loading'
 import WorkspacesList from '@/components/workspace/list'
@@ -85,7 +86,7 @@ export const menuItems = {
 /**
  * Dashboard
  */
-const Dashboard = (): ReactNode => {
+const Dashboard: React.FunctionComponent = () => {
   // State
   const [currentKey, setCurrentKey] = useState<string>()
 
@@ -157,18 +158,17 @@ const Dashboard = (): ReactNode => {
    */
   const onMenuClick = useCallback(
     ({ keyPath }: { keyPath: string[] }): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         const key = keyPath.pop()
         await onSelect(key!)
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [onSelect]
   )
 
   // Not logged -> go to login page
   useCustomEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (isElectron()) {
         await login({
           email: 'admin',
@@ -177,14 +177,13 @@ const Dashboard = (): ReactNode => {
       } else if (!loadingUser && !user) {
         await router.replace('/')
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [user, loadingUser, router])
 
   // Page effect, only on mount
   useCustomEffect(
     () => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         const params = new URLSearchParams(window.location.search)
         const page = params.get('page')
 
@@ -192,8 +191,7 @@ const Dashboard = (): ReactNode => {
         else {
           await onSelect(menuItems.workspaces.key)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router],
     [onSelect]

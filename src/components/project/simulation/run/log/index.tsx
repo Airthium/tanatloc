@@ -22,11 +22,10 @@ import parse from 'html-react-parser'
 
 import { IFrontSimulationsItem, IFrontSimulationTask } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -35,13 +34,14 @@ import style from '../../index.module.css'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id'>
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id'>
+  simulation: Simulation
   steps: IFrontSimulationTask[]
 }
 
 export interface IStepProps {
-  simulation: Pick<IFrontSimulationsItem, 'id'>
+  simulation: Simulation
   step: IFrontSimulationTask
   loading: boolean
   setLoading: Dispatch<SetStateAction<boolean>>
@@ -60,30 +60,25 @@ export const errors = {
  * @param step Step
  */
 export const _getCompleteLog = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
-  step: IFrontSimulationTask,
-  dispatch: Dispatch<INotificationAction>
+  simulation: Simulation,
+  step: IFrontSimulationTask
 ) => {
-  try {
-    const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog!)
-    const log = Buffer.from(res.log).toString()
+  const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog!)
+  const log = Buffer.from(res.log).toString()
 
-    Modal.info({
-      title: 'System log',
-      width: 'unset',
-      content: (
-        <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
-          <pre>
-            <code>
-              {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
-            </code>
-          </pre>
-        </div>
-      )
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.log, err }))
-  }
+  Modal.info({
+    title: 'System log',
+    width: 'unset',
+    content: (
+      <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
+        <pre>
+          <code>
+            {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
+          </code>
+        </pre>
+      </div>
+    )
+  })
 }
 
 /**
@@ -91,12 +86,12 @@ export const _getCompleteLog = async (
  * @param props Props
  * @returns Step
  */
-const Step = ({
+const Step: React.FunctionComponent<IStepProps> = ({
   simulation,
   step,
   loading,
   setLoading
-}: IStepProps): React.JSX.Element => {
+}) => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -104,15 +99,16 @@ const Step = ({
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
-        await _getCompleteLog(simulation, step, dispatch)
-      } catch (err) {
+        await _getCompleteLog(simulation, step)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.log, err }))
       } finally {
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, step, setLoading, dispatch])
 
   // Collapse items
@@ -203,7 +199,7 @@ const Step = ({
  * @param props Props
  * @returns Log
  */
-const Log = ({ simulation, steps }: IProps): React.JSX.Element => {
+const Log: React.FunctionComponent<IProps> = ({ simulation, steps }) => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

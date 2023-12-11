@@ -27,7 +27,7 @@ export interface IProps {
  * @param props Props
  * @returns List
  */
-const List = ({ plugin, plugins, swr }: IProps): ReactNode => {
+const List: React.FunctionComponent<IProps> = ({ plugin, plugins, swr }) => {
   // List
   const list = useMemo(() => {
     const pluginsList = plugins

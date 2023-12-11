@@ -1,8 +1,8 @@
 /** @module Components.Index */
 
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
 import {
   Avatar,
   Button,
@@ -20,6 +20,7 @@ import { BugOutlined, SettingOutlined } from '@ant-design/icons'
 
 import packageJson from '../../../package.json'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Side from '@/components/assets/side'
 
 import Menu, { scrollToView } from './menu'
@@ -40,7 +41,7 @@ export interface IRelease {
  * Index
  * @returns Index
  */
-const Index = (): React.JSX.Element => {
+const Index: React.FunctionComponent = () => {
   // State
   const [dockerOpen, setDockerOpen] = useState<boolean>(false)
   const [troubleshootingOpen, setTroubleshootingOpen] = useState<boolean>(false)
@@ -52,7 +53,7 @@ const Index = (): React.JSX.Element => {
 
   // Release
   useEffect(() => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       try {
         const releaseResponse = await fetch(
           'https://api.github.com/repos/Airthium/tanatloc-electron/releases'
@@ -83,7 +84,7 @@ const Index = (): React.JSX.Element => {
       } catch (err: any) {
         setReleaseError(err.message)
       }
-    })()
+    })
   }, [])
 
   /**
@@ -92,9 +93,9 @@ const Index = (): React.JSX.Element => {
    */
   const onRouter = useCallback(
     (route: string): void => {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         await router.push(route)
-      })()
+      })
     },
     [router]
   )

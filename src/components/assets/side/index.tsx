@@ -24,7 +24,7 @@ export interface IProps {
  * @param props Props
  * @returns Side
  */
-const Side = ({
+const Side: React.FunctionComponent<IProps> = ({
   left,
   right,
   top,
@@ -37,7 +37,7 @@ const Side = ({
   topStyle,
   topClassName,
   id
-}: IProps): ReactNode => {
+}) => {
   /**
    * Render
    */

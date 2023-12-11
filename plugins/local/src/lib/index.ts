@@ -27,6 +27,8 @@ import SimulationDB, {
   ISimulationTaskFile
 } from '@/database/simulation'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import Services from '@/services'
 
 import Tools from '@/lib/tools'
@@ -107,7 +109,7 @@ const init = async (
  * @param tasks Tasks
  */
 const updateTasks = (id: string, tasks: ISimulationTask[]): void => {
-  ;(async () => {
+  asyncFunctionExec(async () => {
     try {
       await SimulationDB.update({ id }, [
         {
@@ -116,7 +118,7 @@ const updateTasks = (id: string, tasks: ISimulationTask[]): void => {
         }
       ])
     } catch (err) {}
-  })()
+  })
 }
 
 /**

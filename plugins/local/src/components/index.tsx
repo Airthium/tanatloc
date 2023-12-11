@@ -1,6 +1,6 @@
 /** @module Plugins.Local.Components */
 
-import { ReactNode, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Typography, Space, Modal, Form, InputNumber } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
@@ -23,7 +23,9 @@ export interface LocalParallelProps {
  * @param props Props
  * @returns LocalParallel
  */
-const LocalParallel = ({ onSelect }: LocalParallelProps): ReactNode => {
+const LocalParallel: React.FunctionComponent<LocalParallelProps> = ({
+  onSelect
+}) => {
   // State
   const [open, setOpen] = useState<boolean>(false)
 
@@ -89,7 +91,7 @@ const LocalParallel = ({ onSelect }: LocalParallelProps): ReactNode => {
  * @param props Props
  * @returns Local
  */
-const Local = ({ parallel, onSelect }: IProps): ReactNode => {
+const Local: React.FunctionComponent<IProps> = ({ parallel, onSelect }) => {
   /**
    * On click
    */

@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Run.Sensors.Delete */
 
-import { Dispatch, useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Typography } from 'antd'
 
 import {
@@ -8,12 +8,9 @@ import {
   IFrontSimulationsItem
 } from '@/api/index.d'
 
-import { ISelectAction, SelectContext } from '@/context/select'
+import { SelectContext } from '@/context/select'
 import { setPoint } from '@/context/select/actions'
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -25,14 +22,16 @@ import Utils from '@/lib/utils'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
   index: number
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -50,49 +49,35 @@ export const errors = {
  * @param swr SWR
  */
 export const _onDelete = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   index: number,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  selectDispatch: Dispatch<ISelectAction>,
-  notificationDispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Local
-    const run = newSimulation.scheme.configuration.run
+  // Local
+  const run = newSimulation.scheme.configuration.run
 
-    // Unselect
-    selectDispatch(setPoint())
+  // Remove value
+  run.sensors = [
+    ...run.sensors!.slice(0, index),
+    ...run.sensors!.slice(index + 1)
+  ]
 
-    // Remove value
-    run.sensors = [
-      ...run.sensors!.slice(0, index),
-      ...run.sensors!.slice(index + 1)
-    ]
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: run
+    }
+  ])
 
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: run
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    notificationDispatch(addError({ title: errors.update, err }))
-    throw err
-  }
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -100,7 +85,11 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
+const Delete: React.FunctionComponent<IProps> = ({
+  simulation,
+  index,
+  swr
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>()
 
@@ -108,8 +97,10 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   const { dispatch: selectDispatch } = useContext(SelectContext)
   const { dispatch: notificationDispatch } = useContext(NotificationContext)
 
-  // Data
+  // Run
   const run = useMemo(() => simulation.scheme.configuration.run, [simulation])
+
+  // Sensor
   const sensor = useMemo(() => run.sensors![index], [index, run])
 
   /**
@@ -118,13 +109,11 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(
-        simulation,
-        index,
-        swr,
-        selectDispatch,
-        notificationDispatch
-      )
+      await _onDelete(simulation, index, swr)
+      // Unselect
+      selectDispatch(setPoint())
+    } catch (err: any) {
+      notificationDispatch(addError({ title: errors.update, err }))
     } finally {
       setLoading(false)
     }

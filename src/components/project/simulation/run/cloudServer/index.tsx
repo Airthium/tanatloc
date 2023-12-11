@@ -19,12 +19,10 @@ import { merge } from 'lodash'
 import { HPCClientPlugin } from '@/plugins/index.d'
 import { IModel } from '@/models/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { LinkButton } from '@/components/assets/button'
 
 import PluginAPI from '@/api/plugin'
@@ -73,27 +71,20 @@ export const errors = {
  */
 export const _onExtra = async (
   plugin: HPCClientPlugin,
-  action: string,
-  dispatch: Dispatch<INotificationAction>
-): Promise<void> => {
-  try {
-    await PluginAPI.extra(plugin, action)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.extra, err }))
-  }
-}
+  action: string
+): Promise<void> => await PluginAPI.extra(plugin, action)
 
 /**
  * Plugin
  * @param props Props
  * @returns Plugin
  */
-const Plugin = ({
+const Plugin: React.FunctionComponent<IPluginProps> = ({
   plugin,
   parallel,
   onOk,
   setVisible
-}: IPluginProps): React.JSX.Element => {
+}) => {
   // Renderer
   const Renderer: ComponentType<{
     data: any
@@ -107,14 +98,14 @@ const Plugin = ({
    */
   const onSelect = useCallback(
     (diff: HPCClientPlugin): void => {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         // Merge
         merge(plugin, diff)
         // Ok
         await onOk(plugin)
         // Close
         setVisible(false)
-      })()
+      })
     },
     [plugin, onOk, setVisible]
   )
@@ -134,15 +125,18 @@ const Plugin = ({
  * @param props Props
  * @returns Plugins
  */
-const Plugins = ({
+const Plugins: React.FunctionComponent<IPluginsProps> = ({
   pluginsList,
   plugins,
   parallel,
   onOk,
   setVisible
-}: IPluginsProps): React.JSX.Element | null => {
-  if (!plugins?.length) return null
-
+}) => {
+  const pluginsLength = useMemo(() => plugins.length, [plugins])
+  /**
+   * Render
+   */
+  if (!pluginsLength) return null
   return (
     <Space align="start" direction="horizontal" wrap={true}>
       {plugins.map((plugin) => {
@@ -168,12 +162,12 @@ const Plugins = ({
  * @param props Props
  * @returns CloudServer
  */
-const CloudServer = ({
+const CloudServer: React.FunctionComponent<IProps> = ({
   disabled,
   parallel,
   cloudServer,
   onOk
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [pluginsList, setPluginsList] = useState<HPCClientPlugin[]>([])
@@ -193,7 +187,7 @@ const CloudServer = ({
 
   // Plugins
   useEffect(() => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       try {
         const list = await PluginsAPI.list()
         const listHPC = list.filter(
@@ -203,7 +197,7 @@ const CloudServer = ({
       } catch (err: any) {
         dispatch(addError({ title: errors.pluginsLoad, err }))
       }
-    })()
+    })
   }, [dispatch])
 
   /**
@@ -220,12 +214,12 @@ const CloudServer = ({
    * Dashboard
    */
   const dashboard = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       await router.push({
         pathname: '/dashboard',
         query: { page: 'account', tab: 'hpc' }
       })
-    })()
+    })
   }, [router])
 
   /**
@@ -234,9 +228,13 @@ const CloudServer = ({
    */
   const onExtra = useCallback(
     (action: string): void => {
-      ;(async () => {
-        await _onExtra(cloudServer!, action, dispatch)
-      })()
+      asyncFunctionExec(async () => {
+        try {
+          await _onExtra(cloudServer!, action)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.extra, err }))
+        }
+      })
     },
     [cloudServer, dispatch]
   )

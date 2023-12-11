@@ -10,7 +10,7 @@ import { mathjaxRefresh } from '@/lib/mathjax'
 /**
  * Head
  */
-const Head = (): ReactNode => {
+const Head: React.FunctionComponent = () => {
   /**
    * Render
    */
@@ -26,7 +26,7 @@ export interface IPropsInline {
  * @param props Props
  * @returns Inline
  */
-const BackInline = ({ text }: IPropsInline): ReactNode => {
+const BackInline: React.FunctionComponent<IPropsInline> = ({ text }) => {
   // Content
   let content = text ?? ''
   if (text && !text.includes('\\(') && !text.includes('\\)'))
@@ -42,7 +42,7 @@ const BackInline = ({ text }: IPropsInline): ReactNode => {
  * Inline
  * @param props Props
  */
-const Inline = ({ text }: IPropsInline): ReactNode => {
+const Inline: React.FunctionComponent<IPropsInline> = ({ text }) => {
   // State
   const [content, setContent] = useState<string>()
 
@@ -86,7 +86,7 @@ export interface IPropsFormula {
  * @param props Props
  * @returns Formula
  */
-const BackFormula = ({ text }: IPropsFormula): ReactNode => {
+const BackFormula: React.FunctionComponent<IPropsFormula> = ({ text }) => {
   // Content
   let content = text ?? ''
   if (text && !text.includes('$$')) content = '$$' + text + '$$'
@@ -101,7 +101,7 @@ const BackFormula = ({ text }: IPropsFormula): ReactNode => {
  * Formula
  * @param props Props
  */
-const Formula = ({ text }: IPropsFormula) => {
+const Formula: React.FunctionComponent<IPropsFormula> = ({ text }) => {
   // State
   const [content, setContent] = useState<string>()
 
@@ -140,7 +140,7 @@ export interface IPropsHtml {
  * Html
  * @param props Props
  */
-const Html = ({ html }: IPropsHtml): ReactNode => {
+const Html: React.FunctionComponent<IPropsHtml> = ({ html }) => {
   // State
   const [content, setContent] = useState<ReactNode>()
   const [loading, setLoading] = useState<boolean>(false)

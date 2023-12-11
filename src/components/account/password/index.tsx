@@ -1,6 +1,6 @@
 /** @module Components.Account.Password */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Card, Form, Input, Space } from 'antd'
 
 import { IFrontUser } from '@/api/index.d'
@@ -8,6 +8,7 @@ import { IFrontUser } from '@/api/index.d'
 import { NotificationContext } from '@/context/notification'
 import { addSuccess } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { PasswordItem } from '@/components/assets/input'
 import { FormError } from '@/components/assets/notification'
 
@@ -75,7 +76,7 @@ export const _onFinish = async (
  * @param props Props
  * @returns Password
  */
-const Password = ({ user }: IProps): ReactNode => {
+const Password: React.FunctionComponent<IProps> = ({ user }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
@@ -95,7 +96,7 @@ const Password = ({ user }: IProps): ReactNode => {
    */
   const onFinish = useCallback(
     (values: { password: string; newPassword: string }): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         setLoading(true)
         try {
           await _onFinish(user, values)
@@ -108,8 +109,7 @@ const Password = ({ user }: IProps): ReactNode => {
         } finally {
           setLoading(false)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [user, dispatch]
   )

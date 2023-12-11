@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization.User.Delete */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Typography } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
@@ -99,13 +99,13 @@ export const _onDelete = async (
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Delete
  */
-const Delete = ({
+const Delete: React.FunctionComponent<IProps> = ({
   disabled,
   user,
   organization,
   dBkey,
   swr
-}: IProps): ReactNode => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

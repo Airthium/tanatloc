@@ -19,6 +19,8 @@ import {
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
@@ -32,16 +34,16 @@ export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
 export type GeometryChild =
   IFrontSimulationsItem['scheme']['configuration']['geometry']['children'][0]
 export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
   geometries: Geometry[]
   simulation: Simulation
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 export interface OneGeometryProps {
@@ -50,11 +52,7 @@ export interface OneGeometryProps {
   child: GeometryChild
   index: number
   setGeometries: Dispatch<SetStateAction<IFrontGeometriesItem[]>>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -75,11 +73,7 @@ export const _onSelect = async (
   simulation: Simulation,
   geometry: Geometry,
   index: number,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 ): Promise<void> => {
   try {
     const newSimulation = Utils.deepCopy(simulation)
@@ -124,14 +118,14 @@ export const _onSelect = async (
  * @param props Props
  * @returns OneGeometry
  */
-const OneGeometry = ({
+const OneGeometry: React.FunctionComponent<OneGeometryProps> = ({
   geometries,
   simulation,
   child,
   index,
   setGeometries,
   swr
-}: OneGeometryProps) => {
+}) => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -147,11 +141,15 @@ const OneGeometry = ({
    */
   const onChange = useCallback(
     (value: string): void => {
-      const geometry = geometries.find((g) => g.id === value)!
-
-      _onSelect(simulation, geometry, index, swr)
-        .then(() => setGeometries([geometry as IFrontGeometriesItem]))
-        .catch((err) => dispatch(addError({ title: errors.update, err })))
+      asyncFunctionExec(async () => {
+        try {
+          const geometry = geometries.find((g) => g.id === value)!
+          await _onSelect(simulation, geometry, index, swr)
+          setGeometries([geometry as IFrontGeometriesItem])
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [geometries, simulation, index, setGeometries, swr, dispatch]
   )
@@ -195,13 +193,12 @@ const OneGeometry = ({
  * @param props Props
  * @returns Geometry
  */
-const Geometry = ({
-  // geometries,
+const Geometry: React.FunctionComponent<IProps> = ({
   geometries,
   simulation,
   setGeometries,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // Children
   const children = useMemo(
     () => simulation.scheme.configuration.geometry.children,

@@ -2,7 +2,6 @@
 
 import {
   KeyboardEvent,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -75,7 +74,7 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ disabled, project, swr }: IProps): ReactNode => {
+const Edit: React.FunctionComponent<IProps> = ({ disabled, project, swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

@@ -26,6 +26,8 @@ import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
 import packageJson from '../../../package.json'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import Utils from '@/lib/utils'
 
 import Posts from './posts'
@@ -51,7 +53,7 @@ export interface IPostCardProps {
  * @param props Props
  * @returns PostCard
  */
-const PostCard = ({
+const PostCard: React.FunctionComponent<IPostCardProps> = ({
   postKey,
   title,
   date,
@@ -59,7 +61,7 @@ const PostCard = ({
   description,
   keywords,
   author
-}: IPostCardProps): ReactNode => {
+}) => {
   // Data
   const router = useRouter()
 
@@ -67,13 +69,12 @@ const PostCard = ({
    * On click
    */
   const onClick = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push({
         pathname: '/blog',
         query: { post: postKey }
       })
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router, postKey])
 
   /**
@@ -112,7 +113,7 @@ const PostCard = ({
  * Blog
  * @returns Blog
  */
-const Blog = (): ReactNode => {
+const Blog: React.FunctionComponent = () => {
   // State
   const [postRender, setPostRender] = useState<ReactNode>()
   const [sort, setSort] = useState<number>(1)
@@ -135,10 +136,9 @@ const Blog = (): ReactNode => {
    * On tanatloc
    */
   const onTanatloc = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push('/')
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router])
 
   /**

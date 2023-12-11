@@ -21,7 +21,12 @@ export interface IProps {
  * @param props Props
  * @returns Panel
  */
-const Panel = ({ visible, title, children, onClose }: IProps): ReactNode => {
+const Panel: React.FunctionComponent<IProps> = ({
+  visible,
+  title,
+  children,
+  onClose
+}) => {
   /**
    * Render
    */

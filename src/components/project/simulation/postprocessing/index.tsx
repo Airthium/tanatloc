@@ -1,13 +1,6 @@
 /** @module Components.Project.Simulation.Postprocesssing */
 
-import {
-  Dispatch,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Button, Card, Drawer, Form, Input, Select, Space } from 'antd'
 import {
   EyeInvisibleOutlined,
@@ -19,14 +12,12 @@ import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 
 import PostprocessingList from '@/postprocessing'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 import { SelectContext } from '@/context/select'
 import { setPostProcessing } from '@/context/select/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Download from '@/components/project/simulation/run/results/download'
 
 import PostprocessingAPI from '@/api/postprocessing'
@@ -36,14 +27,17 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Result = Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>
+export type PostProcessing = Pick<IFrontResult, 'name' | 'fileName'>
 export interface IProps {
-  simulation?: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  results: Pick<IFrontResult, 'name' | 'fileName' | 'originPath'>[]
-  postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
+  simulation?: Simulation
+  results: Result[]
+  postprocessing?: PostProcessing
   setResult: (result?: IFrontResult) => void
 }
 
-export interface IPostProcessFile {
+export interface PostProcessingFile {
   fileName: string
   name: string
   originPath: string
@@ -52,16 +46,16 @@ export interface IPostProcessFile {
 }
 
 export interface IResultProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
-  result: IPostProcessFile
+  simulation: Simulation
+  postprocessing?: PostProcessing
+  result: PostProcessingFile
   setResult: (result?: IFrontResult) => void
 }
 
 export interface IResultsProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  postprocessing?: Pick<IFrontResult, 'name' | 'fileName'>
-  results: IPostProcessFile[]
+  simulation: Simulation
+  postprocessing?: PostProcessing
+  results: PostProcessingFile[]
   setResult: (result?: IFrontResult) => void
 }
 
@@ -80,18 +74,12 @@ export const errors = {
  * @param parameters Parameters
  */
 const _run = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
-  result: Pick<IFrontResult, 'fileName' | 'originPath'>,
+  simulation: Simulation,
+  result: Result,
   filter: string,
-  parameters: string[],
-  dispatch: Dispatch<INotificationAction>
-): Promise<IPostProcessFile[]> => {
-  try {
-    return await PostprocessingAPI.run(simulation, result, filter, parameters)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.run, err }))
-    throw err
-  }
+  parameters: string[]
+): Promise<PostProcessingFile[]> => {
+  return await PostprocessingAPI.run(simulation, result, filter, parameters)
 }
 
 /**
@@ -99,12 +87,12 @@ const _run = async (
  * @param props Props
  * @returns Result
  */
-const Result = ({
+const Result: React.FunctionComponent<IResultProps> = ({
   simulation,
   postprocessing,
   result,
   setResult
-}: IResultProps): React.JSX.Element => {
+}) => {
   /**
    * On click
    */
@@ -158,16 +146,19 @@ const Result = ({
  * @param props Props
  * @returns Results
  */
-const Results = ({
+const Results: React.FunctionComponent<IResultsProps> = ({
   simulation,
   postprocessing,
   results,
   setResult
-}: IResultsProps): React.JSX.Element => {
+}) => {
+  // Results length
+  const resultsLength = useMemo(() => results.length, [results])
+
   /**
    * Render
    */
-  if (!results.length) return <>No results</>
+  if (!resultsLength) return <>No results</>
   return (
     <Space direction="vertical" className={globalStyle.fullWidth}>
       {results.map((res) => (
@@ -188,18 +179,18 @@ const Results = ({
  * @param props Props
  * @returns Postprocessing
  */
-const Postprocessing = ({
+const Postprocessing: React.FunctionComponent<IProps> = ({
   simulation,
   results,
   postprocessing,
   setResult
-}: IProps): React.JSX.Element | null => {
+}) => {
   // State
   const [filter, setFilter] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
   const [current, setCurrent] = useState<{
     filter: string
-    results: IPostProcessFile[]
+    results: PostProcessingFile[]
   }>()
 
   // Context
@@ -308,20 +299,21 @@ const Postprocessing = ({
    */
   const onFinish = useCallback(
     (values: { parameters: string[] }): void => {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         setLoading(true)
         try {
           const newResults = await _run(
-            { id: simulation!.id },
+            simulation!,
             result,
             filter!,
-            values.parameters ?? [],
-            dispatch
+            values.parameters ?? []
           )
           setCurrent({ filter: filter!, results: newResults })
-        } catch (err) {}
+        } catch (err: any) {
+          dispatch(addError({ title: errors.run, err }))
+        }
         setLoading(false)
-      })()
+      })
     },
     [simulation, result, filter, dispatch]
   )

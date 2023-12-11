@@ -1,13 +1,6 @@
 /** @module Components.Workspace.Edit */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { LIMIT50 } from '@/config/string'
@@ -71,7 +64,7 @@ export const _onEdit = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ workspace, swr }: IProps): ReactNode => {
+const Edit: React.FunctionComponent<IProps> = ({ workspace, swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

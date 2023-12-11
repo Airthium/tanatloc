@@ -1,13 +1,6 @@
 /** @module Components.Assets.Group */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef, Select } from 'antd'
 
 import {
@@ -163,12 +156,12 @@ export const _onUpdate = async (
  * - swr (Object) SWR functions `{ addOneGroup, mutateOneGroup }`
  * @returns Group
  */
-const Group = ({
+const Group: React.FunctionComponent<IProps> = ({
   userOptions,
   organization,
   group,
   swr
-}: IProps): ReactNode => {
+}) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

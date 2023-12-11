@@ -1,8 +1,8 @@
 /** @module Components.Signup */
 
+import { useState, useEffect, useCallback, useContext } from 'react'
 import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
-import { useState, useEffect, useCallback, useContext, ReactNode } from 'react'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 
 import { TOKEN } from '@/config/email'
@@ -12,6 +12,7 @@ import { INewUser } from '@/database/user/index'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { PasswordItem } from '@/components/assets/input'
 import { FormError } from '@/components/assets/notification'
 
@@ -74,7 +75,7 @@ export const _onSignup = async (
  * Signup
  * @returns Signup
  */
-const Signup = (): ReactNode => {
+const Signup: React.FunctionComponent = () => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<APIError>()
@@ -96,10 +97,9 @@ const Signup = (): ReactNode => {
 
   // Already connected
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (user) await router.push('/dashboard')
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [user, router])
 
   /**
@@ -108,7 +108,7 @@ const Signup = (): ReactNode => {
    */
   const onFinish = useCallback(
     (values: { email: string; password: string }): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         setLoading(true)
         try {
           await _onSignup(router, values)
@@ -117,8 +117,7 @@ const Signup = (): ReactNode => {
         } finally {
           setLoading(false)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

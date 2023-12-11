@@ -7,8 +7,7 @@ import {
   RefObject,
   useCallback,
   useMemo,
-  useContext,
-  ReactNode
+  useContext
 } from 'react'
 import { Form, Input, InputRef, Select, Typography } from 'antd'
 import parse from 'html-react-parser'
@@ -211,7 +210,11 @@ export const _onFinish = async (
  * @param props Props
  * @returns PluginDialog
  */
-const PluginDialog = ({ plugin, swr, edit }: IProps): ReactNode => {
+const PluginDialog: React.FunctionComponent<IProps> = ({
+  plugin,
+  swr,
+  edit
+}) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

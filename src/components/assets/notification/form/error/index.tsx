@@ -1,6 +1,5 @@
 /** @module Components.Assets.Notification.Error */
 
-import { ReactNode } from 'react'
 import { Alert, Form, Typography } from 'antd'
 
 import { APIError } from '@/api/error'
@@ -17,7 +16,7 @@ export interface IProps {
  * @param props Props
  * @returns FormError
  */
-const FormError = ({ error }: IProps): ReactNode => {
+const FormError: React.FunctionComponent<IProps> = ({ error }) => {
   return error ? (
     <Form.Item>
       <Alert

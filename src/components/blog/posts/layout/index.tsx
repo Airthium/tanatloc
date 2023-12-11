@@ -1,10 +1,11 @@
 /** @module Components.Blog.Posts.Layout */
 
-import { ReactNode, useCallback } from 'react'
+import { useCallback } from 'react'
 import { Tag, Typography } from 'antd'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { GoBack } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -44,7 +45,7 @@ export interface IProps {
  * @param props Props
  * @returns Ref
  */
-export const Ref = ({ code }: { code: string }): ReactNode => {
+export const Ref: React.FunctionComponent<{ code: string }> = ({ code }) => {
   return (
     <Link href={'#' + code}>
       <i>[{code}]</i>
@@ -57,7 +58,7 @@ export const Ref = ({ code }: { code: string }): ReactNode => {
  * @param props Props
  * @returns PostLayout
  */
-const PostLayout = ({
+const PostLayout: React.FunctionComponent<IProps> = ({
   title,
   date,
   image,
@@ -66,7 +67,7 @@ const PostLayout = ({
   version,
   children,
   references
-}: IProps): ReactNode => {
+}) => {
   // Data
   const router = useRouter()
 
@@ -74,10 +75,9 @@ const PostLayout = ({
    * On go back
    */
   const onGoBack = useCallback(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push('/blog')
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router])
 
   /**

@@ -1,25 +1,26 @@
 /** @module Components.Project.Simulation.Run.Results.Download */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
 import { IFrontSimulationsItem, IFrontResult } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import ResultAPI from '@/api/result'
 
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id'>
+export type File = Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id'>
-  file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>
+  simulation: Simulation
+  file: File
 }
 
 /**
@@ -35,28 +36,23 @@ export const errors = {
  * @param file File
  */
 const _onDownload = async (
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
-  file: Pick<IFrontResult, 'originPath' | 'name' | 'fileName'>,
-  dispatch: Dispatch<INotificationAction>
+  simulation: Simulation,
+  file: File
 ): Promise<void> => {
-  try {
-    const content = await ResultAPI.download(
-      { id: simulation.id },
-      { originPath: file.originPath, fileName: file.fileName }
-    )
-    const blob = await content.blob()
+  const content = await ResultAPI.download(
+    { id: simulation.id },
+    { originPath: file.originPath, fileName: file.fileName }
+  )
+  const blob = await content.blob()
 
-    const url = window.URL.createObjectURL(new Blob([blob]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute(
-      'download',
-      file.name + '.' + file.fileName.split('.').pop()
-    )
-    link.click()
-  } catch (err: any) {
-    dispatch(addError({ title: errors.download, err }))
-  }
+  const url = window.URL.createObjectURL(new Blob([blob]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute(
+    'download',
+    file.name + '.' + file.fileName.split('.').pop()
+  )
+  link.click()
 }
 
 /**
@@ -64,7 +60,7 @@ const _onDownload = async (
  * @param props Props
  * @returns Download
  */
-const Download = ({ simulation, file }: IProps): React.JSX.Element => {
+const Download: React.FunctionComponent<IProps> = ({ simulation, file }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -75,15 +71,16 @@ const Download = ({ simulation, file }: IProps): React.JSX.Element => {
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
-        await _onDownload(simulation, file, dispatch)
-      } catch (err) {
+        await _onDownload(simulation, file)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.download, err }))
       } finally {
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, file, dispatch])
 
   /**

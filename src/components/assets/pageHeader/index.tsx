@@ -21,13 +21,13 @@ export interface IProps {
  * @param props Props
  * @returns PageHeader
  */
-const PageHeader = ({
+const PageHeader: React.FunctionComponent<IProps> = ({
   className,
   title,
   footer,
   extra,
   children
-}: IProps): ReactNode => {
+}) => {
   return (
     <div className={className}>
       {(title || extra) && (

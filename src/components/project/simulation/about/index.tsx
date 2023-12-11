@@ -21,17 +21,20 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Project = Pick<IFrontProject, 'id' | 'simulations'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
+export type Swr = {
+  mutateProject: (project: IFrontMutateProject) => Promise<void>
+  addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
+  delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
-  project?: Pick<IFrontProject, 'id' | 'simulations'>
-  simulation?: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>
-  swr: {
-    mutateProject: (project: IFrontMutateProject) => Promise<void>
-    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
-    delOneSimulation: (simulation: IFrontMutateSimulationsItem) => Promise<void>
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  project: Project | undefined
+  simulation: Simulation | undefined
+  swr: Swr
 }
 
 /**
@@ -39,7 +42,11 @@ export interface IProps {
  * @param props Props
  * @returns About
  */
-const About = ({ project, simulation, swr }: IProps): React.JSX.Element => {
+const About: React.FunctionComponent<IProps> = ({
+  project,
+  simulation,
+  swr
+}) => {
   /**
    * Render
    */

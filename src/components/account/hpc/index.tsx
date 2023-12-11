@@ -15,6 +15,8 @@ import { HPCClientPlugin } from '@/plugins/index.d'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
@@ -59,7 +61,7 @@ export const _pluginsList = async () => {
  * @param props Props
  * @returns HPC
  */
-const HPC = (): ReactNode => {
+const HPC: React.FunctionComponent = () => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -97,7 +99,7 @@ const HPC = (): ReactNode => {
 
   // Plugins list
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         const newList = await _pluginsList()
         setList(newList)
@@ -114,8 +116,7 @@ const HPC = (): ReactNode => {
           </Card>
         )
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [dispatch])
 
   // Height

@@ -1,6 +1,6 @@
 /** @module Components.Assets.Organization */
 
-import { ReactNode, useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -11,6 +11,8 @@ import {
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import OrganizationAPI from '@/api/organization'
 
@@ -80,7 +82,11 @@ export const _onName = async (
  * - onClose (Function) On close
  * @returns Organization
  */
-const Organization = ({ organization, swr, onClose }: IProps): ReactNode => {
+const Organization: React.FunctionComponent<IProps> = ({
+  organization,
+  swr,
+  onClose
+}) => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -90,7 +96,7 @@ const Organization = ({ organization, swr, onClose }: IProps): ReactNode => {
    */
   const onChange = useCallback(
     (name: string): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         try {
           await _onName(organization, name, {
             mutateOneOrganization: swr.mutateOneOrganization
@@ -98,8 +104,7 @@ const Organization = ({ organization, swr, onClose }: IProps): ReactNode => {
         } catch (err: any) {
           dispatch(addError({ title: errors.name, err }))
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [organization, swr, dispatch]
   )

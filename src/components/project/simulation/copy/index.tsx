@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Copy */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
@@ -11,10 +11,7 @@ import {
   IFrontNewSimulation
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import SimulationAPI from '@/api/simulation'
@@ -24,13 +21,16 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Project = Pick<IFrontProject, 'id' | 'simulations'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id'>
+export type Swr = {
+  mutateProject: (project: IFrontMutateProject) => Promise<void>
+  addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
+}
 export interface IProps {
-  project: Pick<IFrontProject, 'id' | 'simulations'>
-  simulation: Pick<IFrontSimulationsItem, 'id'>
-  swr: {
-    mutateProject: (project: IFrontMutateProject) => Promise<void>
-    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
-  }
+  project: Project
+  simulation: Simulation
+  swr: Swr
 }
 
 /**
@@ -47,29 +47,21 @@ export const errors = {
  * @param swr SWR
  */
 export const _onCopy = async (
-  project: Pick<IFrontProject, 'id' | 'simulations'>,
-  simulation: Pick<IFrontSimulationsItem, 'id'>,
-  swr: {
-    mutateProject: (project: IFrontMutateProject) => Promise<void>
-    addOneSimulation: (simulation: IFrontNewSimulation) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  project: Project,
+  simulation: Simulation,
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New simulation
-    const newSimulation = await SimulationAPI.copy(simulation)
+  // New simulation
+  const newSimulation = await SimulationAPI.copy(simulation)
 
-    // Mutate simulations
-    await swr.addOneSimulation(newSimulation)
+  // Mutate simulations
+  await swr.addOneSimulation(newSimulation)
 
-    // Mutate project
-    await swr.mutateProject({
-      id: project.id,
-      simulations: [...project.simulations, newSimulation.id]
-    })
-  } catch (err: any) {
-    dispatch(addError({ title: errors.copy, err }))
-  }
+  // Mutate project
+  await swr.mutateProject({
+    id: project.id,
+    simulations: [...project.simulations, newSimulation.id]
+  })
 }
 
 /**
@@ -77,7 +69,11 @@ export const _onCopy = async (
  * @param props Props
  * @returns Copy
  */
-const Copy = ({ project, simulation, swr }: IProps): React.JSX.Element => {
+const Copy: React.FunctionComponent<IProps> = ({
+  project,
+  simulation,
+  swr
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -91,7 +87,9 @@ const Copy = ({ project, simulation, swr }: IProps): React.JSX.Element => {
     ;(async () => {
       setLoading(true)
       try {
-        await _onCopy(project, simulation, swr, dispatch)
+        await _onCopy(project, simulation, swr)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.copy, err }))
       } finally {
         setLoading(false)
       }

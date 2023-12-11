@@ -25,22 +25,23 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import style from '@/components/notfound/index.module.css'
 
 /**
  * 404
  * @returns NotFound
  */
-const NotFound = (): React.JSX.Element => {
+const NotFound: React.FunctionComponent = () => {
   // Router
   const router = useRouter()
   const mount = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!WebGL.isWebGLAvailable()) {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         await router.push('/webgl')
-      })()
+      })
       return
     }
 
@@ -255,9 +256,9 @@ const NotFound = (): React.JSX.Element => {
    * Home
    */
   const home = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       await router.push('/')
-    })()
+    })
   }, [router])
 
   /**

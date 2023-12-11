@@ -1,6 +1,6 @@
 /** @module Components.Start */
 
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Typography } from 'antd'
 import isElectron from 'is-electron'
 
@@ -10,7 +10,7 @@ import Loading from '../loading'
  * Start
  * @returns Start
  */
-const Start = (): ReactNode => {
+const Start: React.FunctionComponent = () => {
   // State
   const [status, setStatus] = useState<string[]>([])
   const [errors, setErrors] = useState<string[]>([])

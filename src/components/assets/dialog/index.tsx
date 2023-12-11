@@ -13,6 +13,8 @@ import { Form, Modal, ModalProps, Typography } from 'antd'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
+
 import DeleteDialog from './delete'
 
 /**
@@ -57,7 +59,7 @@ export const errors = {
  * - onOk (Function) Dialog ok
  * @returns Dialog
  */
-const Dialog = ({
+const Dialog: React.FunctionComponent<IProps> = ({
   visible,
   loading,
   title,
@@ -69,7 +71,7 @@ const Dialog = ({
   children,
   onCancel,
   onOk
-}: IProps): ReactNode => {
+}) => {
   // State
   const [shift, setShift] = useState<boolean>(false)
 
@@ -88,7 +90,7 @@ const Dialog = ({
    * On Modal ok
    */
   const onModalOk = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (!onOk) return
       try {
         const values = await form.validateFields()
@@ -97,8 +99,7 @@ const Dialog = ({
       } catch (err: any) {
         dispatch(addError({ title: errors.onOk, err, display: false }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [form, onOk, dispatch])
 
   /**

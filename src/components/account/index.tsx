@@ -1,12 +1,13 @@
 /** @module Components.Account */
 
-import { ReactNode, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { Layout, Typography, Tabs, Space, TabsProps } from 'antd'
 import isElectron from 'is-electron'
 
 import { IFrontUser, IFrontMutateUser } from '@/api/index.d'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import PageHeader from '@/components/assets/pageHeader'
 
 import Information from './information'
@@ -33,7 +34,7 @@ export interface IProps {
  * @param props Props
  * @returns Account
  */
-const Account = ({ user, swr }: IProps): ReactNode => {
+const Account: React.FunctionComponent<IProps> = ({ user, swr }) => {
   // Data
   const router = useRouter()
   const { tab }: { tab?: string } = router.query
@@ -97,13 +98,12 @@ const Account = ({ user, swr }: IProps): ReactNode => {
    */
   const onChange = useCallback(
     (key: string): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.replace({
           pathname: '/dashboard',
           query: { page: 'account', tab: key }
         })
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

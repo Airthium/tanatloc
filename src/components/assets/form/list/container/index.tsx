@@ -19,12 +19,12 @@ export interface IProps {
  * @param props Props
  * @returns FormListContainer
  */
-const FormListContainer = ({
+const FormListContainer: React.FunctionComponent<IProps> = ({
   children,
   label,
   errors,
   add
-}: IProps): ReactNode => {
+}) => {
   /**
    * On add
    */

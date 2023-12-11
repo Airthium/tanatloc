@@ -1,6 +1,6 @@
 /** @module Components.Project.Copy */
 
-import { ReactNode, useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
@@ -13,6 +13,8 @@ import {
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import ProjectAPI from '@/api/project'
 
@@ -67,7 +69,7 @@ export const _onCopy = async (
  * @param props Props
  * @returns Copy
  */
-const Copy = ({ workspace, project, swr }: IProps): ReactNode => {
+const Copy: React.FunctionComponent<IProps> = ({ workspace, project, swr }) => {
   // Context
   const { dispatch } = useContext(NotificationContext)
 
@@ -75,14 +77,13 @@ const Copy = ({ workspace, project, swr }: IProps): ReactNode => {
    * On copy
    */
   const onCopy = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         await _onCopy(workspace, project, swr)
       } catch (err: any) {
         dispatch(addError({ title: errors.copy, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [workspace, project, swr, dispatch])
 
   /**

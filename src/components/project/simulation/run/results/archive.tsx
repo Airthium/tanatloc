@@ -1,15 +1,13 @@
 /** @module Components.Project.Simulation.Run.Results.Archive */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import { IFrontSimulationsItem } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { DownloadButton } from '@/components/assets/button'
 
 import ResultAPI from '@/api/result'
@@ -17,8 +15,9 @@ import ResultAPI from '@/api/result'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
 export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
 }
 
 /**
@@ -31,22 +30,15 @@ export const errors = {
 /**
  * On archive
  */
-export const _onArchive = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  dispatch: Dispatch<INotificationAction>
-) => {
-  try {
-    const archive = await ResultAPI.archive({ id: simulation.id })
-    const content = await archive.blob()
+export const _onArchive = async (simulation: Simulation) => {
+  const archive = await ResultAPI.archive({ id: simulation.id })
+  const content = await archive.blob()
 
-    const url = window.URL.createObjectURL(new Blob([content]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', simulation.scheme.name + '.zip')
-    link.click()
-  } catch (err: any) {
-    dispatch(addError({ title: errors.archive, err }))
-  }
+  const url = window.URL.createObjectURL(new Blob([content]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', simulation.scheme.name + '.zip')
+  link.click()
 }
 
 /**
@@ -65,15 +57,16 @@ const Archive = ({ simulation }: IProps): React.JSX.Element => {
    * On download
    */
   const onDownload = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
-        await _onArchive(simulation, dispatch)
-      } catch (err) {
+        await _onArchive(simulation)
+      } catch (err: any) {
+        dispatch(addError({ title: errors.archive, err }))
       } finally {
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, dispatch])
 
   /**

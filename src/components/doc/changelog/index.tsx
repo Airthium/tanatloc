@@ -1,19 +1,21 @@
 /** @module Components.Doc.Changelog */
 
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Spin, Typography } from 'antd'
+
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 /**
  * Changelog
  * @returns Changelog
  */
-const Changelog = (): ReactNode => {
+const Changelog: React.FunctionComponent = () => {
   // State
   const [content, setContent] = useState<string>()
 
   // Load
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       try {
         const res = await fetch(
           'https://raw.githubusercontent.com/Airthium/tanatloc/master/CHANGELOG.md'
@@ -26,8 +28,7 @@ const Changelog = (): ReactNode => {
             err.message
         )
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [])
 
   /**

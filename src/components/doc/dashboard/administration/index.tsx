@@ -1,6 +1,5 @@
 /** @module Components.Doc.Dashboard.Administration */
 
-import { ReactNode } from 'react'
 import { Typography } from 'antd'
 
 import Carousel from '@/components/assets/carousel'
@@ -12,7 +11,7 @@ import style from '../../index.module.css'
  * Administration
  * @returns Administration
  */
-const Administration = (): ReactNode => {
+const Administration: React.FunctionComponent = () => {
   /**
    * Render
    */

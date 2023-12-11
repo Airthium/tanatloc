@@ -14,6 +14,7 @@ import { addError } from '@/context/notification/actions'
 
 import Loading from '@/components/loading'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import {
   DeleteButton,
   DownloadButton,
@@ -125,8 +126,6 @@ export const _onDelete = async (
   close()
 }
 
-// TODO use this type definition for react components ????
-
 /**
  * Geometry
  * @param props Props
@@ -156,7 +155,7 @@ const Geometry: React.FunctionComponent<IProps> = ({
    * On download
    */
   const onDownload = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       setDownloading(true)
       try {
         await _onDownload(geometry!)
@@ -165,8 +164,7 @@ const Geometry: React.FunctionComponent<IProps> = ({
       } finally {
         setDownloading(false)
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [geometry, dispatch])
 
   /**

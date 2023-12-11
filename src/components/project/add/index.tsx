@@ -1,15 +1,14 @@
 /** @module Components.Project.Add */
 
-import { useRouter } from 'next/router'
 import {
   KeyboardEvent,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState
 } from 'react'
+import { useRouter } from 'next/router'
 import { Form, Input, InputRef } from 'antd'
 
 import {
@@ -80,7 +79,7 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({ workspace, swr }: IProps): ReactNode => {
+const Add: React.FunctionComponent<IProps> = ({ workspace, swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

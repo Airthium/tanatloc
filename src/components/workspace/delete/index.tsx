@@ -1,6 +1,6 @@
 /** @module Components.Workspace.Delete */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { IFrontMutateWorkspacesItem, IFrontWorkspacesItem } from '@/api/index.d'
@@ -52,7 +52,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ workspace, swr }: IProps): ReactNode => {
+const Delete: React.FunctionComponent<IProps> = ({ workspace, swr }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

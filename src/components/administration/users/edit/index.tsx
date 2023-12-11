@@ -1,13 +1,6 @@
 /** @module Components.Administration.User.Delete */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Checkbox, Form, Input, InputRef, Select } from 'antd'
 
 import { IDataBaseEntry } from '@/database/index.d'
@@ -103,7 +96,7 @@ export const _onUpdate = async (
  * @param props Props
  * @returns Edit
  */
-const Edit = ({ plugins, user, swr }: IProps): ReactNode => {
+const Edit: React.FunctionComponent<IProps> = ({ plugins, user, swr }) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

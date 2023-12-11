@@ -28,13 +28,13 @@ export interface IProps {
  * - onDownload (Function) Button click
  * @returns DownloadButton
  */
-const DownloadButton = ({
+const DownloadButton: React.FunctionComponent<IProps> = ({
   disabled,
   loading,
   bordered,
   children,
   onDownload
-}: IProps): ReactNode => {
+}) => {
   /**
    * Render
    */

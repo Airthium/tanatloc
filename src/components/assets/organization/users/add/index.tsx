@@ -1,13 +1,6 @@
 /** @module Components.Assets.Organization.User.Add */
 
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Form, Input, InputRef } from 'antd'
 
 import { NotificationContext } from '@/context/notification'
@@ -139,7 +132,12 @@ export const _onFinish = async (
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
  * @returns Add
  */
-const Add = ({ title, organization, dBkey, swr }: IProps): ReactNode => {
+const Add: React.FunctionComponent<IProps> = ({
+  title,
+  organization,
+  dBkey,
+  swr
+}) => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

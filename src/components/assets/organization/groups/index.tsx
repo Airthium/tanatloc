@@ -57,7 +57,7 @@ export const errors = {
  * - organization (Object) Organization `{ id, owners, [users] }`
  * @returns Groups
  */
-const Groups = ({ organization, swr }: IProps): ReactNode => {
+const Groups: React.FunctionComponent<IProps> = ({ organization, swr }) => {
   // Ref
   const refTableGroup = useRef<any>(null)
 

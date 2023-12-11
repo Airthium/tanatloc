@@ -18,6 +18,7 @@ import {
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Formula from '@/components/assets/formula'
 
 import Utils from '@/lib/utils'
@@ -34,15 +35,15 @@ export type MeshParameters =
   | IModelMeshSizeManual
   | IModelMeshSizeAuto
   | IModelMeshSizeFactor
-
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
   simulation: Simulation
   index: number
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -81,52 +82,44 @@ export const _onGlobal = async (
   simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
   index: number,
   meshParameters: MeshParameters,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 ): Promise<void> => {
-  try {
-    const newSimulation = Utils.deepCopy(simulation)
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update
-    newSimulation.scheme.configuration.geometry.children[index].meshParameters =
-      meshParameters
+  // Update
+  newSimulation.scheme.configuration.geometry.children[index].meshParameters =
+    meshParameters
 
-    const diff = {
-      ...newSimulation.scheme.configuration.geometry,
-      done: true
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'geometry'],
-        value: diff
-      }
-    ])
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...newSimulation.scheme.configuration.run,
-          done: false
-        }
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    throw err
+  const diff = {
+    ...newSimulation.scheme.configuration.geometry,
+    done: true
   }
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'geometry'],
+      value: diff
+    }
+  ])
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: {
+        ...newSimulation.scheme.configuration.run,
+        done: false
+      }
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -154,12 +147,16 @@ const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
    */
   const onType = useCallback(
     (type: keyof typeof defaultMeshSize): void => {
-      const newGlobal = defaultMeshSize[type]
-      _onGlobal(simulation, index, newGlobal, swr)
-        .then(() => {
+      asyncFunctionExec(async () => {
+        try {
+          const newGlobal = defaultMeshSize[type]
+          await _onGlobal(simulation, index, newGlobal, swr)
+
           setGlobal(newGlobal)
-        })
-        .catch((err) => dispatch(addError({ title: errors.update, err })))
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [simulation, index, swr, dispatch]
   )
@@ -170,15 +167,18 @@ const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
    */
   const onValue = useCallback(
     (value: string | number): void => {
-      const newGlobal = {
-        ...global,
-        value: value
-      } as MeshParameters
-      _onGlobal(simulation, index, newGlobal, swr)
-        .then(() => {
+      asyncFunctionExec(async () => {
+        try {
+          const newGlobal = {
+            ...global,
+            value: value
+          } as MeshParameters
+          await _onGlobal(simulation, index, newGlobal, swr)
           setGlobal(newGlobal)
-        })
-        .catch((err) => dispatch(addError({ title: errors.update, err })))
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [simulation, index, swr, global, dispatch]
   )
@@ -189,13 +189,18 @@ const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
    */
   const onUnit = useCallback(
     (unit: IUnit): void => {
-      const newGlobal = {
-        ...global,
-        unit
-      } as MeshParameters
-      _onGlobal(simulation, index, newGlobal, swr)
-        .then(() => setGlobal(newGlobal))
-        .catch((err) => dispatch(addError({ title: errors.update, err })))
+      asyncFunctionExec(async () => {
+        try {
+          const newGlobal = {
+            ...global,
+            unit
+          } as MeshParameters
+          _onGlobal(simulation, index, newGlobal, swr)
+          setGlobal(newGlobal)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [simulation, index, swr, global, dispatch]
   )

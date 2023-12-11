@@ -46,17 +46,21 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Sensor = IModelSensor & { index: number }
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
   visible?: boolean
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  sensor?: IModelSensor & { index: number }
+  geometries: Geometry[]
+  simulation: Simulation
+  sensor: Sensor | undefined
   onClose: () => void
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -64,25 +68,27 @@ export interface IProps {
  * @param props Props
  * @returns Sensor
  */
-const Sensor = ({
+const Sensor: React.FunctionComponent<IProps> = ({
   visible,
   geometries,
   simulation,
   sensor,
   onClose,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [selectionEnabled, setSelectionEnabled] = useState<boolean>()
   const [current, setCurrent] = useState<IModelSensor>()
   const [activeKey, setActiveKey] = useState<string>()
   const [error, setError] = useState<string>()
 
-  // Data
+  // Dimension
   const dimension = useMemo(
     () => simulation.scheme.configuration.dimension,
     [simulation]
   )
+
+  // Variables
   const variables = useMemo(() => simulation.scheme.variables, [simulation])
 
   // Context

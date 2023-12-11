@@ -5,8 +5,7 @@ import {
   useEffect,
   ChangeEvent,
   useCallback,
-  useContext,
-  ReactNode
+  useContext
 } from 'react'
 import { Avatar, Input, Layout, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
@@ -70,13 +69,13 @@ export const errors = {
  * @param props Props
  * @returns Workspace
  */
-const Workspace = ({
+const Workspace: React.FunctionComponent<IProps> = ({
   user,
   page,
   workspace,
   organizations,
   swr
-}: IProps): ReactNode => {
+}) => {
   // State
   const [filter, setFilter] = useState<string>()
   const [sorter, setSorter] = useState<string>('alphaAsc')

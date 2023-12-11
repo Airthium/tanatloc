@@ -17,6 +17,7 @@ import {
 import { addError } from '@/context/notification/actions'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Formula from '@/components/assets/formula'
 import {
@@ -39,26 +40,24 @@ export type TInitializationKey = 'none' | 'coupling' | 'direct'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
 export interface IProps {
   simulations: Pick<IFrontSimulationsItem, 'id' | 'name' | 'scheme'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  simulation: Simulation
+  swr: Swr
 }
 
 export interface IDirectItemProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+  simulation: Simulation
   child: IModelInitializationDirectChild
   index: number
   value: string | undefined
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
   dispatch: Dispatch<INotificationAction>
 }
 
@@ -76,41 +75,31 @@ export const errors = {
  * @param swr SWR
  */
 export const _onSelectorChange = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   key: TInitializationKey,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const initialization = newSimulation.scheme.configuration.initialization!
-    initialization.value = {
-      type: key
-    }
-
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'initialization'],
-        value: initialization
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+  // Update local
+  const initialization = newSimulation.scheme.configuration.initialization!
+  initialization.value = {
+    type: key
   }
+
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'initialization'],
+      value: initialization
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -120,48 +109,38 @@ export const _onSelectorChange = async (
  * @param swr SWR
  */
 export const _onCouplingChange = async (
-  simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulations: Simulation[],
+  simulation: Simulation,
   value: string,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // Check results
-    const results = await _loadResults(simulations, value)
+  // Check results
+  const results = await _loadResults(simulations, value)
 
-    // Update simulation
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // Update simulation
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const initialization = newSimulation.scheme.configuration.initialization!
-    initialization.value = {
-      ...initialization.value!,
-      simulation: value,
-      result: results?.[0]?.value
-    }
-
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'initialization'],
-        value: initialization
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+  // Update local
+  const initialization = newSimulation.scheme.configuration.initialization!
+  initialization.value = {
+    ...initialization.value!,
+    simulation: value,
+    result: results?.[0]?.value
   }
+
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'initialization'],
+      value: initialization
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -172,44 +151,34 @@ export const _onCouplingChange = async (
  * @param swr SWR
  */
 export const _onCouplingResultChange = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   value: string,
   option: { file: string },
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  // Update simulation
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const initialization = newSimulation.scheme.configuration.initialization!
-    initialization.value = {
-      ...initialization.value!,
-      number: +value,
-      result: option.file
-    }
-
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'initialization'],
-        value: initialization
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
+  // Update local
+  const initialization = newSimulation.scheme.configuration.initialization!
+  initialization.value = {
+    ...initialization.value!,
+    number: +value,
+    result: option.file
   }
+
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'initialization'],
+      value: initialization
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -218,41 +187,32 @@ export const _onCouplingResultChange = async (
  * @param value Value
  */
 export const _onChange = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   index: number,
   value: string,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const initialization = newSimulation.scheme.configuration.initialization!
-    if (!initialization.value!.values) initialization.value!.values = []
-    initialization.value!.values[index] = value
+  // Update local
+  const initialization = newSimulation.scheme.configuration.initialization!
+  if (!initialization.value!.values) initialization.value!.values = []
+  initialization.value!.values[index] = value
 
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'initialization'],
-        value: initialization
-      }
-    ])
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'initialization'],
+      value: initialization
+    }
+  ])
 
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-  }
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -306,7 +266,7 @@ const getFilesWithFilter = (
  * @param id Simulation id
  */
 export const _loadResults = async (
-  simulations: Pick<IFrontSimulationsItem, 'id' | 'scheme'>[],
+  simulations: Simulation[],
   id: string
 ): Promise<{ label: string; value: string; file: string }[]> => {
   const tasks: IFrontSimulationTask[] = await SimulationAPI.tasks({ id })
@@ -381,23 +341,27 @@ export const _loadResults = async (
  * @param props Props
  * @returns DirectItem
  */
-const DirectItem = ({
+const DirectItem: React.FunctionComponent<IDirectItemProps> = ({
   simulation,
   child,
   index,
   value,
   swr,
   dispatch
-}: IDirectItemProps): React.JSX.Element => {
+}) => {
   /**
    * On change
    * @param value Value
    */
   const onChange = useCallback(
     (value: string): void => {
-      ;(async () => {
-        await _onChange(simulation, index, value, swr, dispatch)
-      })()
+      asyncFunctionExec(async () => {
+        try {
+          await _onChange(simulation, index, value, swr)
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [simulation, index, swr, dispatch]
   )
@@ -420,27 +384,28 @@ const DirectItem = ({
  * Initialization
  * @param props Props
  */
-const Initialization = ({
+const Initialization: React.FunctionComponent<IProps> = ({
   simulations,
   simulation,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
   const [currentKey, setCurrentKey] = useState<TInitializationKey>()
-  const [couplingSimulation, setCouplingSimulation] =
-    useState<Pick<IFrontSimulationsItem, 'id' | 'scheme'>>()
+  const [couplingSimulation, setCouplingSimulation] = useState<Simulation>()
   const [couplingResults, setCouplingResults] =
     useState<{ label: string; value: string; file: string }[]>()
 
   // Context
   const { dispatch } = useContext(NotificationContext)
 
-  // Data
+  // Sub scheme
   const subScheme = useMemo(
     () => simulation?.scheme.configuration.initialization!,
     [simulation]
   )
+
+  // Dimension
   const dimension = useMemo(
     () => simulation?.scheme.configuration.dimension,
     [simulation]
@@ -472,12 +437,12 @@ const Initialization = ({
 
   // Results
   useCustomEffect(() => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       if (couplingSimulation) {
         const results = await _loadResults(simulations, couplingSimulation.id)
         setCouplingResults(results)
       }
-    })()
+    })
   }, [simulations, couplingSimulation])
 
   // Build selector
@@ -513,16 +478,17 @@ const Initialization = ({
    */
   const onCouplingChange = useCallback(
     (value: string): void => {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         setLoading(true)
         try {
-          await _onCouplingChange(simulations, simulation, value, swr, dispatch)
+          await _onCouplingChange(simulations, simulation, value, swr)
           setSimulation(value)
-        } catch (err) {
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
         } finally {
           setLoading(false)
         }
-      })()
+      })
     },
     [simulations, simulation, swr, setSimulation, dispatch]
   )
@@ -539,15 +505,18 @@ const Initialization = ({
         | { label: string; value: string; file: string }
         | { label: string; value: string; file: string }[]
     ): void => {
-      ;(async () => {
-        await _onCouplingResultChange(
-          simulation,
-          value,
-          option as { label: string; value: string; file: string },
-          swr,
-          dispatch
-        )
-      })()
+      asyncFunctionExec(async () => {
+        try {
+          await _onCouplingResultChange(
+            simulation,
+            value,
+            option as { label: string; value: string; file: string },
+            swr
+          )
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [simulation, swr, dispatch]
   )
@@ -696,12 +665,14 @@ const Initialization = ({
    */
   const onChange = useCallback(
     (key: TInitializationKey): void => {
-      ;(async () => {
+      asyncFunctionExec(async () => {
         try {
-          await _onSelectorChange(simulation, key, swr, dispatch)
+          await _onSelectorChange(simulation, key, swr)
           setCurrentKey(key)
-        } catch (err) {}
-      })()
+        } catch (err: any) {
+          dispatch(addError({ title: errors.update, err }))
+        }
+      })
     },
     [simulation, swr, dispatch]
   )

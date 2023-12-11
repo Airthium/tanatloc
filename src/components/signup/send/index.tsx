@@ -1,6 +1,5 @@
 /** @module Components.Signup.Send */
 
-import { ReactNode } from 'react'
 import { Card, Layout } from 'antd'
 
 import style from '../index.module.css'
@@ -9,7 +8,7 @@ import style from '../index.module.css'
  * Signup send
  * @return Send
  */
-const Send = (): ReactNode => {
+const Send: React.FunctionComponent = () => {
   /**
    * Render
    */

@@ -1,6 +1,6 @@
 /** @module Components.Project.Archive */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Form, Tooltip, Typography, Upload, UploadFile } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 import { UploadChangeParam } from 'antd/lib/upload'
@@ -8,6 +8,7 @@ import { UploadChangeParam } from 'antd/lib/upload'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import Dialog from '@/components/assets/dialog'
 import { DeleteButton } from '@/components/assets/button'
 
@@ -173,7 +174,12 @@ export const _onUpload = async (
  * @param props Props
  * @returns Archive
  */
-const Archive = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
+const Archive: React.FunctionComponent<IProps> = ({
+  disabled,
+  workspace,
+  project,
+  swr
+}) => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -212,7 +218,7 @@ const Archive = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
    * On unarchive (from server)
    */
   const onUnarchiveServer = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         await _onUnarchiveServer(workspace, project, swr)
@@ -223,8 +229,7 @@ const Archive = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
         dispatch(addError({ title: errors.unarchiveServer, err }))
         setLoading(false)
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [workspace, project, swr, dispatch])
 
   /**
@@ -233,7 +238,7 @@ const Archive = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
    */
   const onUpload = useCallback(
     (info: UploadChangeParam<UploadFile<any>>): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         const load = await _onUpload(
           workspace,
           project,
@@ -243,8 +248,7 @@ const Archive = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
         )
         setLoading(load)
         setVisible(load)
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [workspace, project, swr, dispatch]
   )

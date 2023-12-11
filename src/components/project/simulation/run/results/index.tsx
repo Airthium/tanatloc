@@ -17,8 +17,9 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
+export type Simulation = Pick<IFrontSimulation, 'id' | 'scheme' | 'tasks'>
 export interface IProps {
-  simulation: Pick<IFrontSimulation, 'id' | 'scheme' | 'tasks'>
+  simulation: Simulation
   results: IFrontResult[]
   setResults: (results: IFrontResult[]) => void
 }
@@ -42,12 +43,12 @@ export interface ISingleResultProps {
  * @param props Props
  * @returns SingleResult
  */
-const SingleResult = ({
+const SingleResult: React.FunctionComponent<ISingleResultProps> = ({
   simulation,
   results,
   file,
   setResults
-}: ISingleResultProps): React.JSX.Element => {
+}) => {
   /**
    * On click
    */
@@ -71,6 +72,7 @@ const SingleResult = ({
     }
   }, [results, file, setResults])
 
+  // Visible
   const visible = useMemo(() => {
     return results.find(
       (result) => result.fileName === file.fileName && result.name === file.name
@@ -112,38 +114,33 @@ const SingleResult = ({
  * @param props Props
  * @returns Results
  */
-const Results = ({
+const Results: React.FunctionComponent<IProps> = ({
   simulation,
   results,
   setResults
-}: IProps): React.JSX.Element => {
+}) => {
   //State
-  const [singleFiles, setSingleFiles] = useState<IFrontResult[]>()
-  const [filteredFiles, setFilteredFiles] = useState<IFilteredFiles>()
   const [currentNumber, setCurrentNumber] = useState<number>()
 
-  // Data
-  const configuration = useMemo(
-    () => simulation?.scheme?.configuration,
-    [simulation]
-  )
-
   // Get files
-  useCustomEffect(() => {
-    if (!simulation?.tasks) {
-      setSingleFiles([])
-      setFilteredFiles(undefined)
-      return
-    }
+  const { singleFiles, filteredFiles } = useMemo(() => {
+    if (!simulation.tasks)
+      return {
+        singleFiles: [],
+        filteredFiles: undefined
+      }
+
+    const configuration = simulation.scheme.configuration
 
     // New files
     const newSingleFiles: IFrontResult[] = []
+    let newFilteredFiles: IFilteredFiles | undefined = undefined
 
     // Filter
     const filter = configuration?.run?.resultsFilter
 
     // Loop tasks
-    simulation.tasks.forEach((task) => {
+    for (const task of simulation.tasks) {
       // Check file
       if (task.file) newSingleFiles.push(task.file)
 
@@ -182,18 +179,18 @@ const Results = ({
           newSingleFiles.push(...notFilteredFiles)
 
           // Add to filtered
-          setFilteredFiles({
+          newFilteredFiles = {
             filtered: true,
             name: filter.name,
             files: filesWithNumbers,
             options
-          })
+          }
         }
       }
-    })
+    }
 
-    setSingleFiles(newSingleFiles)
-  }, [simulation, configuration])
+    return { singleFiles: newSingleFiles, filteredFiles: newFilteredFiles }
+  }, [simulation])
 
   // Initial number
   useCustomEffect(() => {

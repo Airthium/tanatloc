@@ -12,6 +12,8 @@ import {
 import { useRouter } from 'next/router'
 import { Button, Layout, Menu, Typography } from 'antd'
 
+import { asyncFunctionExec } from '../utils/asyncFunction'
+
 import Utils from '@/lib/utils'
 
 import packageJson from '../../../package.json'
@@ -31,7 +33,7 @@ import globalStyle from '@/styles/index.module.css'
  * Doc
  * @returns Doc
  */
-const Doc = (): ReactNode => {
+const Doc: React.FunctionComponent = () => {
   // Ref
   const navRef = useRef<{ section: string; tab: string }>()
 
@@ -46,10 +48,9 @@ const Doc = (): ReactNode => {
    * On tanatloc
    */
   const onTanatloc = useCallback(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       await router.push('/')
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router])
 
   /**
@@ -61,10 +62,9 @@ const Doc = (): ReactNode => {
       pathname: string
       query?: { section: string; tab?: string }
     }): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         await router.push(route)
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router]
   )

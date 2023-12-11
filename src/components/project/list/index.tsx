@@ -1,13 +1,6 @@
 /** @module Components.Project.List */
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-  ReactNode
-} from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -35,6 +28,7 @@ import {
 
 import Loading from '@/components/loading'
 import Share from '@/components/assets/share'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 import Edit from '../edit'
 import Delete from '../delete'
@@ -100,14 +94,14 @@ export interface ICardProps {
  * @param props Props
  * @returns ProjectCard
  */
-const ProjectCard = ({
+const ProjectCard: React.FunctionComponent<ICardProps> = ({
   user,
   workspace,
   page,
   project,
   organizations,
   swr
-}: ICardProps): ReactNode => {
+}) => {
   // Router
   const router = useRouter()
 
@@ -167,15 +161,14 @@ const ProjectCard = ({
    * @param project Project
    */
   const openProject = useCallback((): void => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (project.archived) return
 
       await router.push({
         pathname: '/project',
         query: { page: page, workspaceId: workspace.id, projectId: project.id }
       })
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [router, workspace.id, page, project.id, project.archived])
 
   /**
@@ -327,7 +320,7 @@ const ProjectCard = ({
  * @param props Props
  * @returns ProjectList
  */
-const ProjectList = ({
+const ProjectList: React.FunctionComponent<IProps> = ({
   user,
   page,
   workspace,
@@ -336,7 +329,7 @@ const ProjectList = ({
   filter,
   sorter,
   swr
-}: IProps): ReactNode => {
+}) => {
   // Ref
   const containerRef = useRef<HTMLDivElement>(null)
 

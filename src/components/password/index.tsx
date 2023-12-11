@@ -1,6 +1,6 @@
 /** @module Components.Password */
 
-import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
   Button,
@@ -18,6 +18,7 @@ import { PASSWORD_RECOVERY } from '@/config/email'
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { PasswordItem } from '@/components/assets/input'
 import { FormError } from '@/components/assets/notification'
 
@@ -75,7 +76,7 @@ export const _onFinish = async (
  * Password recovery
  * @returns PasswordRecovery
  */
-const PasswordRecovery = (): ReactNode => {
+const PasswordRecovery: React.FunctionComponent = () => {
   // State
   const [checking, setChecking] = useState<boolean>(true)
   const [linkEmail, setLinkEmail] = useState<string>()
@@ -93,7 +94,7 @@ const PasswordRecovery = (): ReactNode => {
 
   // Check link type
   useEffect(() => {
-    const asyncFunction = async () => {
+    asyncFunctionExec(async () => {
       if (!id) return
 
       try {
@@ -108,8 +109,7 @@ const PasswordRecovery = (): ReactNode => {
       } catch (err: any) {
         dispatch(addError({ title: errors.internal, err }))
       }
-    }
-    asyncFunction().catch(console.error)
+    })
   }, [id, dispatch])
 
   /**
@@ -118,7 +118,7 @@ const PasswordRecovery = (): ReactNode => {
    */
   const onFinish = useCallback(
     (values: ILocalValues): void => {
-      const asyncFunction = async () => {
+      asyncFunctionExec(async () => {
         setLoading(true)
         try {
           await _onFinish(router, linkEmail!, id!, values)
@@ -126,8 +126,7 @@ const PasswordRecovery = (): ReactNode => {
           setFormError(err)
           setLoading(false)
         }
-      }
-      asyncFunction().catch(console.error)
+      })
     },
     [router, linkEmail, id]
   )

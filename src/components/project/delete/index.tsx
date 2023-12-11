@@ -1,6 +1,6 @@
 /** @module Components.Project.Delete */
 
-import { ReactNode, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Alert, Typography } from 'antd'
 
 import {
@@ -71,7 +71,12 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ disabled, workspace, project, swr }: IProps): ReactNode => {
+const Delete: React.FunctionComponent<IProps> = ({
+  disabled,
+  workspace,
+  project,
+  swr
+}) => {
   // Sate
   const [loading, setLoading] = useState<boolean>(false)
 

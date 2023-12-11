@@ -1,6 +1,6 @@
 /** @module Components.Assets.Formula.Large */
 
-import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import {
   Collapse,
   Form,
@@ -40,7 +40,7 @@ export interface DataType extends IModelVariable {}
  * @param props Props
  * @returns Large
  */
-const Large = ({
+const Large: React.FunctionComponent<IProps> = ({
   dimension,
   initialValue,
   additionalKeywords,
@@ -48,7 +48,7 @@ const Large = ({
   units,
   onChange,
   onUnitChange
-}: IProps): ReactNode => {
+}) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [value, setValue] = useState<string>(initialValue)
   const [error, setError] = useState<string>()

@@ -12,7 +12,7 @@ import style from './index.module.css'
  * Simple
  * @returns Loading.Simple
  */
-const Simple = (): ReactNode => {
+const Simple: React.FunctionComponent = () => {
   /**
    * Render
    */
@@ -45,7 +45,9 @@ export interface IProps {
  * Loading
  * @returns Loading
  */
-const Loading = ({ text, status, errors }: IProps): ReactNode => {
+const Loading: React.FunctionComponent<IProps> & {
+  Simple: React.FunctionComponent
+} = ({ text, status, errors }) => {
   // State
   const [steps, setSteps] = useState<(StepProps & { index: number })[]>([])
   const [errorMessages, setErrorMessages] = useState<ReactNode[]>([])

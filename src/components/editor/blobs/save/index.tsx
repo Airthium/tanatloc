@@ -152,7 +152,7 @@ export const _onAdd = (
  * Save
  * @returns Save
  */
-const Save = (): React.JSX.Element => {
+const Save: React.FunctionComponent = () => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

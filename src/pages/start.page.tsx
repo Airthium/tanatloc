@@ -5,7 +5,7 @@ import StartPage from '@/components/start'
 /**
  * Start
  */
-const Start = (): React.JSX.Element => {
+const Start: React.FunctionComponent = () => {
   /**
    * Render
    */

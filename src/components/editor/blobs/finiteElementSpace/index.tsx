@@ -128,7 +128,7 @@ finiteElementSpace.name = '${values.name}'
  * Finite element space
  * @returns FiniteElementSpace
  */
-const FiniteElementSpace = (): React.JSX.Element => {
+const FiniteElementSpace: React.FunctionComponent = () => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

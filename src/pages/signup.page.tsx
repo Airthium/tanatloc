@@ -5,7 +5,7 @@ import SignupPage from '@/components/signup'
 /**
  * Signup
  */
-const Signup = (): React.JSX.Element => {
+const Signup: React.FunctionComponent = () => {
   /**
    * Render
    */

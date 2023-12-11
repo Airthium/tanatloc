@@ -5,7 +5,7 @@ import SendPage from '@/components/signup/send'
 /**
  * Signup send
  */
-const Send = (): React.JSX.Element => {
+const Send: React.FunctionComponent = () => {
   /**
    * Render
    */

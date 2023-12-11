@@ -110,7 +110,7 @@ mesh.name = '${values.name}'
  * Mesh
  * @returns Mesh
  */
-const Mesh = (): React.JSX.Element => {
+const Mesh: React.FunctionComponent = () => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

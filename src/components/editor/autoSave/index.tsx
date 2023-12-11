@@ -14,7 +14,7 @@ import style from '../index.module.css'
  * AutoSave
  * @returns AutoSave
  */
-const AutoSave = (): React.JSX.Element => {
+const AutoSave: React.FunctionComponent = () => {
   // State
   const [disabled, setDisabled] = useState<boolean>(true)
   const [checked, setChecked] = useState<boolean>(true)

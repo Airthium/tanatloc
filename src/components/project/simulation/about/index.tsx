@@ -32,8 +32,8 @@ export type Swr = {
   ) => Promise<void>
 }
 export interface IProps {
-  project: Project | undefined
-  simulation: Simulation | undefined
+  project?: Project
+  simulation?: Simulation
   swr: Swr
 }
 

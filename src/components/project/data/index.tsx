@@ -50,7 +50,7 @@ import style from './index.module.css'
  */
 export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'name'>
 export interface IProps {
-  simulation: Simulation | undefined
+  simulation?: Simulation
 }
 
 export interface IColumnRenderProps {

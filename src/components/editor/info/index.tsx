@@ -24,7 +24,7 @@ export interface IProps {
  * @param props Props
  * @returns Info
  */
-const Info = ({ user }: IProps): React.JSX.Element => {
+const Info: React.FunctionComponent<IProps> = ({ user }) => {
   // State
   const [userModel, setUserModel] = useState<IFrontUserModel>()
 

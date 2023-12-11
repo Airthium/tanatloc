@@ -267,7 +267,7 @@ const Project: React.FunctionComponent = () => {
     item?: string
   }>()
 
-  const [panel, setPanel] = useState<React.JSX.Element>()
+  const [panel, setPanel] = useState<ReactElement>()
   const [panelVisible, setPanelVisible] = useState<boolean>(true)
 
   // Context
@@ -278,6 +278,12 @@ const Project: React.FunctionComponent = () => {
   const [project, { mutateProject, errorProject, loadingProject }] =
     ProjectAPI.useProject(projectId)
 
+  // Valid project
+  const validProject = useMemo(
+    () => (project.id === '0' ? undefined : (project as IFrontProject)),
+    [project]
+  )
+
   const [
     loadedSimulations,
     {
@@ -287,7 +293,7 @@ const Project: React.FunctionComponent = () => {
       errorSimulations,
       loadingSimulations
     }
-  ] = SimulationAPI.useSimulations(project?.simulations)
+  ] = SimulationAPI.useSimulations(validProject?.simulations)
   const [
     loadedGeometries,
     {
@@ -297,7 +303,7 @@ const Project: React.FunctionComponent = () => {
       errorGeometries,
       loadingGeometries
     }
-  ] = GeometryAPI.useGeometries(project?.geometries)
+  ] = GeometryAPI.useGeometries(validProject?.geometries)
 
   /**
    * Set geometry add visible true
@@ -388,6 +394,7 @@ const Project: React.FunctionComponent = () => {
       if (!geometry)
         setGeometries((prev) => [...prev, { ...toDisplay, visible: true }])
 
+      const project = validProject as IFrontProject
       setPanel(
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Geometry
@@ -408,7 +415,7 @@ const Project: React.FunctionComponent = () => {
       )
     },
     [
-      project,
+      validProject,
       loadedGeometries,
       geometries,
       mutateProject,
@@ -425,6 +432,7 @@ const Project: React.FunctionComponent = () => {
    */
   const setSimulationPanelAbout = useCallback(
     (current: IFrontSimulationsItem): void => {
+      const project = validProject as IFrontProject
       setPanel(
         <Panel visible={true} title={'About'} onClose={onPanelClose}>
           <Simulation.About
@@ -448,7 +456,7 @@ const Project: React.FunctionComponent = () => {
       )
     },
     [
-      project,
+      validProject,
       mutateProject,
       addOneSimulation,
       delOneSimulation,
@@ -720,6 +728,7 @@ const Project: React.FunctionComponent = () => {
   const onSelectorOk = useCallback(
     async (userModel: IFrontUserModel): Promise<void> => {
       try {
+        const project = validProject as IFrontProject
         await _onSelector(project, userModel.model, {
           addOneSimulation,
           mutateProject
@@ -731,7 +740,7 @@ const Project: React.FunctionComponent = () => {
         dispatch(addError({ title: errors.add, err }))
       }
     },
-    [project, addOneSimulation, mutateProject, dispatch]
+    [validProject, addOneSimulation, mutateProject, dispatch]
   )
 
   /**
@@ -959,7 +968,7 @@ const Project: React.FunctionComponent = () => {
    * Render
    */
   if (!user || loadingUser || loadingProject) return <Loading.Simple />
-  if (project.id === '0') return <NotAuthorized />
+  if (!validProject) return <NotAuthorized />
   return (
     <SelectProvider>
       <Layout hasSider={true}>
@@ -990,7 +999,7 @@ const Project: React.FunctionComponent = () => {
                 className: 'Menu-title',
                 label: (
                   <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
-                    {project.title}
+                    {validProject.title}
                   </Typography.Paragraph>
                 )
               }
@@ -1085,8 +1094,8 @@ const Project: React.FunctionComponent = () => {
           <GeometryAdd
             visible={geometryAddVisible}
             project={{
-              id: project.id,
-              geometries: project.geometries
+              id: validProject.id,
+              geometries: validProject.geometries
             }}
             swr={{ mutateProject, addOneGeometry }}
             setVisible={setGeometryAddVisible}
@@ -1122,8 +1131,8 @@ const Project: React.FunctionComponent = () => {
 
           <View
             project={{
-              id: project.id,
-              title: project.title
+              id: validProject.id,
+              title: validProject.title
             }}
             simulation={
               simulation && {

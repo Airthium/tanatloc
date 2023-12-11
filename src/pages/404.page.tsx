@@ -5,7 +5,7 @@ import NotFoundPage from '@/components/notfound'
 /**
  * 404 page
  */
-const _404 = (): React.JSX.Element => {
+const _404: React.FunctionComponent = () => {
   /**
    * Render
    */

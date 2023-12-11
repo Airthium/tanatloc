@@ -33,11 +33,11 @@ export interface IProps {
  * @param props Props
  * @returns UserModelShare
  */
-const UserModelShare = ({
+const UserModelShare: React.FunctionComponent<IProps> = ({
   user,
   organizations,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [visible, setVisible] = useState<boolean>(true)
   const [disabled, setDisabled] = useState<boolean>(true)

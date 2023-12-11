@@ -46,7 +46,7 @@ export const _onArchive = async (simulation: Simulation) => {
  * @param props Props
  * @returns Archive
  */
-const Archive = ({ simulation }: IProps): React.JSX.Element => {
+const Archive: React.FunctionComponent<IProps> = ({ simulation }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 

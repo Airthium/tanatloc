@@ -2,7 +2,7 @@
 
 import WebGLError from '@/components/webgl'
 
-const WebGL = (): React.JSX.Element => {
+const WebGL: React.FunctionComponent = () => {
   return <WebGLError />
 }
 

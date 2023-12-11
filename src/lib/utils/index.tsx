@@ -4,7 +4,13 @@ import { Avatar, Badge, Spin, Tooltip } from 'antd'
 import { parseOneAddress } from 'email-addresses'
 
 import { IModel } from '@/models/index.d'
+import { ReactNode } from 'react'
 
+/**
+ * Deep copy
+ * @param object Object
+ * @returns Copy
+ */
 const deepCopy = <T extends {}>(object: T) => {
   return JSON.parse(JSON.stringify(object)) as T
 }
@@ -109,7 +115,7 @@ const userToAvatar = (user: {
   firstname?: string
   lastname?: string
   avatar?: Buffer
-}): React.JSX.Element => {
+}): ReactNode => {
   const avatar = user.avatar && Buffer.from(user.avatar).toString()
   let name
   let abbrev
@@ -149,7 +155,7 @@ const userToAvatar = (user: {
 const workspaceToAvatar = (workspace: {
   id?: string
   name?: string
-}): React.JSX.Element => {
+}): ReactNode => {
   let name = workspace.name
   let abbrev
   if (name) abbrev = name[0]
@@ -170,7 +176,7 @@ const workspaceToAvatar = (workspace: {
 const projectToAvatar = (project: {
   id?: string
   title?: string
-}): React.JSX.Element => {
+}): ReactNode => {
   let name = project.title
   let abbrev
   if (name) abbrev = name[0]
@@ -191,7 +197,7 @@ const projectToAvatar = (project: {
 const usermodelToAvatar = (usermodel: {
   id?: string
   model?: IModel
-}): React.JSX.Element => {
+}): ReactNode => {
   let name = usermodel.model?.name
   let abbrev
   if (name) abbrev = name[0]
@@ -209,10 +215,7 @@ const usermodelToAvatar = (usermodel: {
  * @param group Group
  * @returns Avatar
  */
-const groupToAvatar = (group: {
-  id?: string
-  name?: string
-}): React.JSX.Element => {
+const groupToAvatar = (group: { id?: string; name?: string }): ReactNode => {
   let name = group.name
   let abbrev
   if (name) abbrev = name[0]

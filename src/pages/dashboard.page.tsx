@@ -5,7 +5,7 @@ import DashboardPage from '@/components/dashboard'
 /**
  * Dashboard
  */
-const Dashboard = (): React.JSX.Element => {
+const Dashboard: React.FunctionComponent = () => {
   /**
    * Render
    */

@@ -26,7 +26,7 @@ const Canvas = dynamic(
  * Global App component
  * @param props Props
  */
-const App = ({ Component, pageProps }: AppProps): React.JSX.Element => {
+const App: React.FunctionComponent<AppProps> = ({ Component, pageProps }) => {
   /**
    * Render
    */

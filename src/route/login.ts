@@ -71,9 +71,7 @@ const app = express()
 app.disable('x-powered-by')
 app.use(passport.initialize())
 app.post('/api/login', (req, res) => {
-  ;(async (req, res) => {
-    await loginRoute(req, res)
-  })(req, res)
+  loginRoute(req, res).catch(console.error)
 })
 
 export default app

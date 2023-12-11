@@ -16,7 +16,7 @@ import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
 import { SelectContext } from '@/context/select'
-import { enable, disable, setType } from '@/context/select/actions'
+import { setType } from '@/context/select/actions'
 
 import List from './list'
 import Material from './material'
@@ -26,14 +26,15 @@ import Material from './material'
  */
 export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
 export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-export interface IProps {
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
   geometries: Geometry[]
   simulation: Simulation
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
   setVisible: (visible: boolean) => void
 }
 
@@ -42,12 +43,12 @@ export interface IProps {
  * @param props Props
  * @returns Materials
  */
-const Materials = ({
+const Materials: React.FunctionComponent<Props> = ({
   geometries,
   simulation,
   swr,
   setVisible
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [material, setMaterial] = useState<IModelMaterialsValue>()
   const [materialVisible, setMaterialVisible] = useState<boolean>(false)
@@ -97,8 +98,7 @@ const Materials = ({
     setMaterial(undefined)
     setMaterialVisible(true)
     setVisible(false)
-    dispatch(enable())
-  }, [dispatch, setVisible])
+  }, [setVisible])
 
   /**
    * On edit
@@ -110,20 +110,18 @@ const Materials = ({
       setMaterial(materialToEdit)
       setMaterialVisible(true)
       setVisible(false)
-      dispatch(enable())
     },
-    [materials, dispatch, setVisible]
+    [materials, setVisible]
   )
 
   /**
    * On close
    */
   const onClose = useCallback((): void => {
-    dispatch(disable())
     setMaterialVisible(false)
     setMaterial(undefined)
     setVisible(true)
-  }, [dispatch, setVisible])
+  }, [setVisible])
 
   /**
    * Render

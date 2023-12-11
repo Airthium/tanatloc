@@ -58,7 +58,7 @@ export interface IProps {
   visible?: boolean
   geometries: Geometry[]
   simulation: Simulation
-  sensor: Sensor | undefined
+  sensor?: Sensor
   onClose: () => void
   swr: Swr
 }

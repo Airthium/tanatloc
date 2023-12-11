@@ -47,7 +47,7 @@ export interface Marker {
  * FreeFEM code
  * @returns FreeFEMCode
  */
-const FreeFEMCode = (): React.JSX.Element => {
+const FreeFEMCode: React.FunctionComponent = () => {
   // Ref
   const editorRef = useRef<ReactAce>()
   const cursorFromContext = useRef<boolean>()

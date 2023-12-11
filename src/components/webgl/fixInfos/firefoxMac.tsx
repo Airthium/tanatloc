@@ -6,7 +6,7 @@ import { Layout, Typography } from 'antd'
  * Firefox Mac
  * @returns FirefoxMac
  */
-const FirefoxMac = (): React.JSX.Element => {
+const FirefoxMac: React.FunctionComponent = () => {
   /**
    * Render
    */

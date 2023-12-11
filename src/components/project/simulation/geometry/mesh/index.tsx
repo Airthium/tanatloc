@@ -127,7 +127,7 @@ export const _onGlobal = async (
  * @param props Props
  * @returns Mesh
  */
-const Mesh = ({ simulation, index, swr }: IProps): React.JSX.Element => {
+const Mesh: React.FunctionComponent<IProps> = ({ simulation, index, swr }) => {
   // State
   const [global, setGlobal] = useState<MeshParameters>(defaultMeshSize.auto)
 

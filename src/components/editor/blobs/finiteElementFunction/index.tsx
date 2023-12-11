@@ -78,7 +78,7 @@ const unknownFunction = dimension === 2 ? '[${values.unknown1}, ${values.unknown
  * Finite element function
  * @returns FiniteElementFunction
  */
-const FiniteElementFunction = (): React.JSX.Element => {
+const FiniteElementFunction: React.FunctionComponent = () => {
   // Ref
   const inputRef = useRef<InputRef>(null)
 

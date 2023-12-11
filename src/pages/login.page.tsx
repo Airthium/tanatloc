@@ -5,7 +5,7 @@ import LoginPage from '@/components/login'
 /**
  * Login
  */
-const Login = (): React.JSX.Element => {
+const Login: React.FunctionComponent = () => {
   /**
    * Render
    */

@@ -6,7 +6,7 @@ import { Layout, Typography } from 'antd'
  * No manipulation browser
  * @returns NoManipBrowser
  */
-const NoManipBrowser = (): React.JSX.Element => {
+const NoManipBrowser: React.FunctionComponent = () => {
   /**
    * Render
    */

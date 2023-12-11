@@ -5,7 +5,7 @@ import Error from '@/components/error'
 /**
  * Error page
  */
-const error = (): React.JSX.Element => {
+const error: React.FunctionComponent = () => {
   /**
    * Render
    */

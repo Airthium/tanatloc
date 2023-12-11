@@ -588,7 +588,7 @@ const computeSimulation = async (
       simulationPath,
       path.join(runPath, id + '.edp'),
       ({ pid, error }) => {
-        ;(async ({ pid, error }) => {
+        asyncFunctionExec(async () => {
           simulationTask.status = 'process'
 
           pid && (simulationTask.pid = pid)
@@ -596,7 +596,7 @@ const computeSimulation = async (
           error && (simulationTask.error += 'Error: ' + error + '\n')
 
           if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
-        })({ pid, error })
+        })
       },
       nCores,
       freefemPath

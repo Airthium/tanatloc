@@ -15,7 +15,8 @@ import {
   IFrontGeometriesItem,
   IFrontProject,
   IFrontSimulationsItem,
-  IFrontResult
+  IFrontResult,
+  IFrontSimulation
 } from '@/api/index.d'
 
 import useCustomEffect from '@/components/utils/useCustomEffect'
@@ -59,10 +60,10 @@ export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'needCleanup'> & {
 export type Result = Pick<IFrontResult, 'name' | 'glb' | 'originPath' | 'extra'>
 export interface IProps {
   project: Project
-  simulation: Simulation | undefined
+  simulation?: Simulation
   geometries: Geometry[]
   results: Result[]
-  postprocessing: Result | undefined
+  postprocessing?: Result
 }
 
 /**
@@ -264,7 +265,14 @@ const View: React.FunctionComponent<IProps> = ({
 
   // Data enabled
   useEffect(() => {
-    const tasks = currentSimulation.tasks
+    if (currentSimulation.id === '0') {
+      setDataEnabled(false)
+      return
+    }
+
+    const validSimulation = currentSimulation as IFrontSimulation
+
+    const tasks = validSimulation.tasks
     const datas = tasks
       ?.map((task) => task.datas)
       .filter((d) => d)

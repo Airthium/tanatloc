@@ -5,7 +5,7 @@ import ProjectPage from '@/components/project'
 /**
  * Project
  */
-const Project = (): React.JSX.Element => {
+const Project: React.FunctionComponent = () => {
   /**
    * Render
    */

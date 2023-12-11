@@ -46,7 +46,7 @@ export const _onAdd = (
  * Header
  * @returns Header
  */
-const Header = (): React.JSX.Element => {
+const Header: React.FunctionComponent = () => {
   // Context
   const { template, templateCursor, dispatch } = useContext(EditorContext)
 

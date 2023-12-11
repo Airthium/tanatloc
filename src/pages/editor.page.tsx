@@ -5,7 +5,7 @@ import EditorPage from '../components/editor'
 /**
  * Editor page
  */
-const Editor = (): React.JSX.Element => {
+const Editor: React.FunctionComponent = () => {
   /**
    * Render
    */

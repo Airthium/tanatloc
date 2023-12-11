@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.Initialization */
 
-import { useState, useCallback, useMemo, Dispatch, useContext } from 'react'
+import {
+  useState,
+  useCallback,
+  useMemo,
+  Dispatch,
+  useContext,
+  ReactNode
+} from 'react'
 import { Card, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { IModelInitializationDirectChild, IModelRun } from '@/models/index.d'
@@ -531,7 +538,7 @@ const Initialization: React.FunctionComponent<IProps> = ({
     (
       options: { label: string; value: string; disabled: boolean }[],
       filter?: any
-    ): React.JSX.Element => (
+    ): ReactNode => (
       <>
         <Typography.Text>
           If you use coupling, the selected simulation mesh will be used, at
@@ -589,7 +596,7 @@ const Initialization: React.FunctionComponent<IProps> = ({
     (direct: {
       label: string
       children: IModelInitializationDirectChild[]
-    }): React.JSX.Element => (
+    }): ReactNode => (
       <Space direction="vertical" className={globalStyle.fullWidth}>
         {direct.children.map((child, index) => {
           if (dimension === 2 && child.only3D) return
@@ -613,9 +620,9 @@ const Initialization: React.FunctionComponent<IProps> = ({
   // Build initialization
   const initializations = useMemo(() => {
     const data: {
-      none: React.JSX.Element
-      coupling?: React.JSX.Element
-      direct?: React.JSX.Element
+      none: ReactNode
+      coupling?: ReactNode
+      direct?: ReactNode
     } = { none: <div /> }
 
     // Coupling

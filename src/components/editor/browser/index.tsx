@@ -76,7 +76,7 @@ export const _onDelete = async (
  * @param props Props
  * @returns Browser
  */
-const Browser = ({ user, swr }: IProps): React.JSX.Element => {
+const Browser: React.FunctionComponent<IProps> = ({ user, swr }) => {
   // State
   const [visible, setVisible] = useState<boolean>(false)
 

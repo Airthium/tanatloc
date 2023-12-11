@@ -17,6 +17,7 @@ import { addError } from '@/context/notification/actions'
 import SimulationAPI from '@/api/simulation'
 
 import globalStyle from '@/styles/index.module.css'
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
 /**
  * Props
@@ -84,7 +85,7 @@ const Copy: React.FunctionComponent<IProps> = ({
    * On click
    */
   const onClick = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         await _onCopy(project, simulation, swr)
@@ -93,7 +94,7 @@ const Copy: React.FunctionComponent<IProps> = ({
       } finally {
         setLoading(false)
       }
-    })()
+    })
   }, [project, simulation, swr, dispatch])
 
   /**

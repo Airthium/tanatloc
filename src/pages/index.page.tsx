@@ -5,7 +5,7 @@ import IndexPage2 from '@/components/indexpage'
 /**
  * Index
  */
-const Index = (): React.JSX.Element => {
+const Index: React.FunctionComponent = () => {
   /**
    * Render
    */

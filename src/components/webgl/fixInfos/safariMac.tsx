@@ -8,7 +8,7 @@ import globalStyle from '@/styles/index.module.css'
  * Safari Mac
  * @returns SafariMac
  */
-const SafariMac = (): React.JSX.Element => {
+const SafariMac: React.FunctionComponent = () => {
   /**
    * Render
    */

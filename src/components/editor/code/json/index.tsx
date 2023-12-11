@@ -28,7 +28,7 @@ export interface JSON5Error extends Error {
  * JSON code
  * @returns JSONCode
  */
-const JSONCode = (): React.JSX.Element => {
+const JSONCode: React.FunctionComponent = () => {
   // Ref
   const editorRef = useRef<ReactAce>()
 

@@ -419,11 +419,11 @@ export const _onUpdate = async (
  * @param props Props
  * @return Simulation.Updater
  */
-const Updater = ({
+const Updater: React.FunctionComponent<IUpdaterProps> = ({
   user,
   simulation,
   swr
-}: IUpdaterProps): React.JSX.Element | null => {
+}) => {
   // State
   const [models, setModels] = useState<IModel[]>([])
 

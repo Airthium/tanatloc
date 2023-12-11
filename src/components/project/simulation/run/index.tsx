@@ -163,7 +163,7 @@ const Run: React.FunctionComponent<IProps> = ({
   const disabled = useMemo(() => {
     if (!configuration) return true
 
-    let done = true
+    let disabled = false
     Object.keys(configuration).forEach((key) => {
       if (key !== 'dimension' && key !== 'run') {
         const item = configuration[key as keyof IModel['configuration']] as
@@ -173,11 +173,12 @@ const Run: React.FunctionComponent<IProps> = ({
           | IModelParameters
           | IModelInitialization
           | IModelBoundaryConditions
-        if (!item.done) done = false
+        if (!item.done) disabled = true
       }
     })
-    if (!configuration.run.cloudServer) done = false
-    return done
+    if (!configuration.run.cloudServer) disabled = false
+
+    return disabled
   }, [configuration])
 
   // Keep mesh

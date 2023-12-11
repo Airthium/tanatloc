@@ -166,15 +166,11 @@ const GeometryLabel: React.FunctionComponent<IGeometryProps> = ({
   const onDelete = useCallback(
     (e: MouseEvent<HTMLSpanElement>): void => {
       e.stopPropagation()
-      console.log(panel?.props?.children?.type?.name)
-      console.log(Geometry.name)
       if (panel?.props?.children?.type?.name === Geometry.name) close()
       del(geometry)
     },
     [geometry, panel, del, close]
   )
-
-  //   console.log(geometry)
 
   /**
    * On add
@@ -514,7 +510,10 @@ const Project: React.FunctionComponent = () => {
    * @param current Current simulation
    */
   const setSimulationPanelMaterials = useCallback(
-    (current: IFrontSimulationsItem): void => {
+    (
+      current: IFrontSimulationsItem,
+      geometries: IFrontGeometriesItem[]
+    ): void => {
       setPanel(
         <Panel
           visible={panelVisible}
@@ -539,7 +538,7 @@ const Project: React.FunctionComponent = () => {
         </Panel>
       )
     },
-    [geometries, panelVisible, mutateOneSimulation, onPanelClose]
+    [panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -566,7 +565,10 @@ const Project: React.FunctionComponent = () => {
    * @param current Current simulation
    */
   const setSimulationPanelBoundaryConditions = useCallback(
-    (current: IFrontSimulationsItem): void => {
+    (
+      current: IFrontSimulationsItem,
+      geometries: IFrontGeometriesItem[]
+    ): void => {
       setPanel(
         <Panel
           visible={panelVisible}
@@ -591,7 +593,7 @@ const Project: React.FunctionComponent = () => {
         </Panel>
       )
     },
-    [geometries, panelVisible, mutateOneSimulation, onPanelClose]
+    [panelVisible, mutateOneSimulation, onPanelClose]
   )
 
   /**
@@ -657,13 +659,13 @@ const Project: React.FunctionComponent = () => {
           setSimulationPanelParameters(current)
           break
         case 'materials':
-          setSimulationPanelMaterials(current)
+          setSimulationPanelMaterials(current, toDisplay)
           break
         case 'initialization':
           setSimulationPanelInitialization(current)
           break
         case 'boundaryConditions':
-          setSimulationPanelBoundaryConditions(current)
+          setSimulationPanelBoundaryConditions(current, toDisplay)
           break
         case 'run':
           setSimulationPanelRun(current)

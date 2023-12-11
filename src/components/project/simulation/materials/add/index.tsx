@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Materials.Add */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import { IModelMaterialsValue } from '@/models/index.d'
@@ -9,12 +9,10 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { AddButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -24,14 +22,16 @@ import SimulationAPI from '@/api/simulation'
 /**
  * Props
  */
-export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  material: Omit<IModelMaterialsValue, 'uuid'>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  simulation: Simulation
+  material: Partial<IModelMaterialsValue>
+  swr: Swr
   onError: (desc?: string) => void
   onClose: () => void
 }
@@ -52,64 +52,54 @@ export const errors = {
  * @param swr SWR
  */
 export const _onAdd = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  material: Omit<IModelMaterialsValue, 'uuid'>,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  simulation: Simulation,
+  material: IModelMaterialsValue,
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New material
-    const newMaterial = Utils.deepCopy(material) as IModelMaterialsValue
+  // New material
+  const newMaterial = Utils.deepCopy(material)
 
-    // Set uuid
-    newMaterial.uuid = uuid()
+  // Set uuid
+  newMaterial.uuid = uuid()
 
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const materials = newSimulation.scheme.configuration.materials!
-    materials.values = [...(materials.values ?? []), newMaterial]
+  // Update local
+  const materials = newSimulation.scheme.configuration.materials!
+  materials.values = [...(materials.values ?? []), newMaterial]
 
-    // Diff
-    const diff = {
-      ...materials,
-      done: true
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'materials'],
-        value: diff
-      }
-    ])
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...newSimulation.scheme.configuration.run,
-          done: false
-        }
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+  // Diff
+  const diff = {
+    ...materials,
+    done: true
   }
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'materials'],
+      value: diff
+    }
+  ])
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: {
+        ...newSimulation.scheme.configuration.run,
+        done: false
+      }
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -117,13 +107,13 @@ export const _onAdd = async (
  * @param props Props
  * @returns Add
  */
-const Add = ({
+const Add: React.FunctionComponent<Props> = ({
   simulation,
   material,
   swr,
   onError,
   onClose
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -134,7 +124,7 @@ const Add = ({
    * On add
    */
   const onAdd = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         // Check
@@ -151,14 +141,15 @@ const Add = ({
         }
         onError()
 
-        await _onAdd(simulation, material, swr, dispatch)
+        await _onAdd(simulation, material as IModelMaterialsValue, swr)
 
         setLoading(false)
         onClose()
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, material, swr, onError, onClose, dispatch])
 
   /**

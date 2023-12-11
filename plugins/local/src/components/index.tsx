@@ -104,7 +104,10 @@ const Local: React.FunctionComponent<IProps> = ({ parallel, onSelect }) => {
    */
   if (parallel) return <LocalParallel onSelect={onSelect} />
   return (
-    <Space className={globalStyle.fullWidth}>
+    <Space
+      className={globalStyle.fullWidth}
+      style={{ display: 'flex', justifyContent: 'space-between' }}
+    >
       <Typography.Text>Local computing</Typography.Text>
       <Button type="primary" onClick={onClick} icon={<SelectOutlined />}>
         Select

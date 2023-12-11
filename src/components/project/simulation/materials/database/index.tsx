@@ -11,7 +11,7 @@ import globalStyle from '@/styles/index.module.css'
 /**
  * Props
  */
-export interface IProps {
+export interface Props {
   onSelect: (material: IMaterialDatabase['key']['children'][0]) => void
 }
 
@@ -20,7 +20,7 @@ export interface IProps {
  * @param props Props
  * @return Database
  */
-const DataBase = ({ onSelect }: IProps): React.JSX.Element => {
+const DataBase: React.FunctionComponent<Props> = ({ onSelect }) => {
   // State
   const [visible, setVisible] = useState<boolean>()
   const [firstLevel, setFirstLevel] = useState<{
@@ -104,11 +104,14 @@ const DataBase = ({ onSelect }: IProps): React.JSX.Element => {
         onOk={onMaterialSelect}
         okText="Choose"
         okButtonProps={{ disabled: !current }}
-        width="50%"
+        width="80%"
       >
         <Layout>
           <Layout.Content>
-            <Space style={{ alignItems: 'stretch' }}>
+            <Space
+              className={globalStyle.fullWidth}
+              style={{ alignItems: 'stretch', gap: '20px' }}
+            >
               <Menu
                 mode="inline"
                 items={keys.map((key) => ({
@@ -127,7 +130,7 @@ const DataBase = ({ onSelect }: IProps): React.JSX.Element => {
                 onClick={onSecondLevel}
               />
               {current && (
-                <List itemLayout="vertical">
+                <List itemLayout="vertical" style={{ paddingLeft: '20px' }}>
                   {current.children.map((child) => (
                     <List.Item key={child.label}>
                       {child.label}: {child.symbol} = {child.value}

@@ -138,7 +138,7 @@ const Plugins: React.FunctionComponent<IPluginsProps> = ({
    */
   if (!pluginsLength) return null
   return (
-    <Space align="start" direction="horizontal" wrap={true}>
+    <Space direction="vertical">
       {plugins.map((plugin) => {
         const check = pluginsList.find((p) => p.key === plugin.key)
         if (!check) return null

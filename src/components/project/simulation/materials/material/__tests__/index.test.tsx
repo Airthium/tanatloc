@@ -107,7 +107,6 @@ describe('components/project/simulation/materials/material', () => {
   test('render', () => {
     const { unmount } = render(
       <Material
-        visible={true}
         geometries={geometries}
         simulation={simulation}
         swr={swr}
@@ -121,7 +120,6 @@ describe('components/project/simulation/materials/material', () => {
   test('no materials', () => {
     const { unmount } = render(
       <Material
-        visible={true}
         geometries={geometries}
         simulation={
           {
@@ -131,37 +129,6 @@ describe('components/project/simulation/materials/material', () => {
             }
           } as ISimulation
         }
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-
-    unmount()
-  })
-
-  test('not visible', () => {
-    const { rerender, unmount } = render(
-      <Material
-        visible={true}
-        geometries={geometries}
-        simulation={simulation}
-        material={
-          {
-            uuid: 'uuid',
-            material: {},
-            selected: [{ uuid: 'uuid', label: 1 }]
-          } as IModelMaterialsValue
-        }
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-
-    rerender(
-      <Material
-        visible={false}
-        geometries={geometries}
-        simulation={simulation}
         swr={swr}
         onClose={onClose}
       />
@@ -206,7 +173,6 @@ describe('components/project/simulation/materials/material', () => {
     ))
     const { unmount } = render(
       <Material
-        visible={true}
         geometries={geometries}
         simulation={simulation}
         swr={swr}
@@ -251,10 +217,9 @@ describe('components/project/simulation/materials/material', () => {
     ))
     const { unmount } = render(
       <Material
-        visible={true}
         geometries={geometries}
         simulation={simulation}
-        material={
+        value={
           {
             uuid: 'uuid',
             material: {},
@@ -276,7 +241,6 @@ describe('components/project/simulation/materials/material', () => {
   test('with values', () => {
     const { unmount } = render(
       <Material
-        visible={true}
         geometries={geometries}
         simulation={
           {
@@ -311,7 +275,7 @@ describe('components/project/simulation/materials/material', () => {
             }
           } as ISimulation
         }
-        material={
+        value={
           {
             uuid: 'uuid',
             material: {},
@@ -343,7 +307,6 @@ describe('components/project/simulation/materials/material', () => {
 
     const { unmount } = render(
       <Material
-        visible={true}
         geometries={geometries}
         simulation={simulation}
         swr={swr}

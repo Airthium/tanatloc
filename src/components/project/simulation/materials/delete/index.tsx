@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Materials.Delete */
 
-import { Dispatch, useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Typography } from 'antd'
 
 import {
@@ -8,16 +8,13 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
-import { DeleteButton } from '@/components/assets/button'
-
-import { ISelectAction, SelectContext } from '@/context/select'
+import { SelectContext } from '@/context/select'
 import { select } from '@/context/select/actions'
+
+import { DeleteButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
 
@@ -26,14 +23,16 @@ import SimulationAPI from '@/api/simulation'
 /**
  * Props
  */
-export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  simulation: Simulation
   index: number
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -47,15 +46,9 @@ export const errors = {
  * On delete
  */
 export const _onDelete = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   index: number,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  selectDispatch: Dispatch<ISelectAction>,
-  notificationDispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
   try {
     // New simulation
@@ -63,10 +56,6 @@ export const _onDelete = async (
 
     // Update local
     const materials = newSimulation.scheme.configuration.materials!
-    const material = materials.values![index]
-
-    // (unselect)
-    selectDispatch(select(material.selected))
 
     // Remove value
     materials.values = [
@@ -94,7 +83,6 @@ export const _onDelete = async (
     // Local
     await swr.mutateOneSimulation(newSimulation)
   } catch (err: any) {
-    notificationDispatch(addError({ title: errors.update, err }))
     throw err
   }
 }
@@ -104,20 +92,25 @@ export const _onDelete = async (
  * @param props Props
  * @returns Delete
  */
-const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
+const Delete: React.FunctionComponent<Props> = ({ simulation, index, swr }) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
   // Context
   const { dispatch: notificationDispatch } = useContext(NotificationContext)
-
-  // Data
   const { dispatch: selectDispatch } = useContext(SelectContext)
+
+  // Material
   const materials = useMemo(
     () => simulation.scheme.configuration.materials!,
     [simulation]
   )
+
+  // Material
   const material = useMemo(() => materials.values![index], [materials, index])
+
+  // Selected
+  const selected = useMemo(() => material.selected, [material.selected])
 
   /**
    * On delete
@@ -125,17 +118,15 @@ const Delete = ({ simulation, index, swr }: IProps): React.JSX.Element => {
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(
-        simulation,
-        index,
-        swr,
-        selectDispatch,
-        notificationDispatch
-      )
+      await _onDelete(simulation, index, swr)
+      // (unselect)
+      selectDispatch(select(selected))
+    } catch (err: any) {
+      notificationDispatch(addError({ title: errors.update, err }))
     } finally {
       setLoading(false)
     }
-  }, [simulation, index, swr, selectDispatch, notificationDispatch])
+  }, [simulation, index, swr, selected, selectDispatch, notificationDispatch])
 
   /**
    * Render

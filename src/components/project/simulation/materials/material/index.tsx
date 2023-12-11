@@ -1,13 +1,12 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
-import { useState, useCallback, useContext, useMemo, useRef } from 'react'
+import { useState, useCallback, useContext, useMemo, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Tabs, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import {
   IModelMaterialsChild,
   IModelMaterialsValue,
-  IModelVariable,
   IUnit
 } from '@/models/index.d'
 import {
@@ -19,9 +18,13 @@ import {
 import { IMaterialDatabase } from '@/config/materials'
 
 import { SelectContext, ISelect } from '@/context/select'
-import { select, setPart } from '@/context/select/actions'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
+import {
+  disable,
+  enable,
+  select,
+  setPart,
+  setType
+} from '@/context/select/actions'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -37,26 +40,27 @@ import style from '../../../panel/index.module.css'
 /**
  * Props
  */
-export interface IProps {
-  visible: boolean
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  material?: IModelMaterialsValue
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  geometries: Geometry[]
+  simulation: Simulation
+  value?: IModelMaterialsValue
+  swr: Swr
   onClose: () => void
 }
 
-export interface IMaterialsChildProps {
-  dimension?: number
-  variables?: IModelVariable[]
+export interface MaterialsChildProps {
+  simulation: Simulation
+  dimension: number | undefined
+  material?: IModelMaterialsValue['material']['children'][0]
   child: IModelMaterialsChild
   index: number
-  value: string | number | undefined
-  unit: IUnit | undefined
   _onMaterialChange: (
     child: IModelMaterialsChild,
     index: number,
@@ -70,16 +74,27 @@ export interface IMaterialsChildProps {
  * @param props Props
  * @returns MaterialsChild
  */
-const MaterialsChild: React.FunctionComponent<IMaterialsChildProps> = ({
+const MaterialsChild: React.FunctionComponent<MaterialsChildProps> = ({
+  simulation,
   dimension,
-  variables,
+  material,
   child,
   index,
-  value,
-  unit,
   _onMaterialChange,
   _onUnitChange
 }) => {
+  // Variables
+  const variables = useMemo(
+    () => simulation.scheme.variables,
+    [simulation.scheme.variables]
+  )
+
+  // Vaue
+  const value = useMemo(() => material?.value, [material])
+
+  // Unit
+  const unit = useMemo(() => material?.unit, [material])
+
   /**
    * On material change
    * @param val Value
@@ -125,32 +140,23 @@ const MaterialsChild: React.FunctionComponent<IMaterialsChildProps> = ({
  * @param props Props
  * @returns Material
  */
-const Material: React.FunctionComponent<IProps> = ({
-  visible,
+const Material: React.FunctionComponent<Props> = ({
   geometries,
   simulation,
-  material,
+  value,
   swr,
   onClose
 }) => {
-  // Ref
-  const init = useRef<boolean>(false)
-
   // State
-  const [current, setCurrent] = useState<IModelMaterialsValue>()
+  const [uuid, setUuid] = useState<string>()
+  const [material, setMaterial] = useState<IModelMaterialsValue['material']>()
+  const [geometry, setGeometry] = useState<Geometry>()
+  const [dimension, setDimension] = useState<number>()
+  const [selected, setSelected] = useState<ISelection['selected']>()
   const [error, setError] = useState<string>()
 
   // Context
   const { dispatch } = useContext(SelectContext)
-
-  // Dimension
-  const dimension = useMemo(
-    () => simulation.scheme.configuration.dimension,
-    [simulation]
-  )
-
-  // Variables
-  const variables = useMemo(() => simulation.scheme.variables, [simulation])
 
   // Materials
   const materials = useMemo(
@@ -163,7 +169,7 @@ const Material: React.FunctionComponent<IProps> = ({
     const alreadySelected =
       materials.values
         ?.map((m) => {
-          if (m.uuid === material?.uuid) return
+          if (m.uuid === uuid) return
           return {
             label: m.material.label,
             selected: m.selected
@@ -171,50 +177,7 @@ const Material: React.FunctionComponent<IProps> = ({
         })
         .filter((s) => s) ?? []
     return alreadySelected as ISelection[]
-  }, [material, materials])
-
-  // Initialization
-  useCustomEffect(() => {
-    if (!visible) {
-      setCurrent(undefined)
-      return
-    }
-
-    if (current) return
-
-    if (material) {
-      setCurrent(material)
-      dispatch(select(material.selected))
-    } else
-      setCurrent({
-        uuid: 'add',
-        material: {
-          label: 'Default',
-          children: materials.children.map((child) => ({
-            label: child.label,
-            symbol: child.name,
-            value: child.default
-          }))
-        },
-        geometry: geometries[0]?.id,
-        selected: []
-      })
-    init.current = true
-  }, [visible, geometries, material, materials, current])
-
-  // Set part
-  useCustomEffect(
-    () => {
-      if (!visible) return
-
-      const geometry = geometries.find(
-        (geometry) => geometry.id === current?.geometry
-      )
-      if (geometry) dispatch(setPart(geometry.summary.uuid))
-    },
-    [visible, geometries, current],
-    [dispatch]
-  )
+  }, [materials, uuid])
 
   /**
    * On material select
@@ -222,14 +185,9 @@ const Material: React.FunctionComponent<IProps> = ({
    */
   const onMaterialSelect = useCallback(
     (currentMaterial: IMaterialDatabase['key']['children'][0]): void => {
-      if (!init.current) return
-
-      setCurrent({
-        ...current!,
-        material: currentMaterial
-      })
+      setMaterial(currentMaterial)
     },
-    [current]
+    []
   )
 
   /**
@@ -240,26 +198,21 @@ const Material: React.FunctionComponent<IProps> = ({
    */
   const onMaterialChange = useCallback(
     (child: IModelMaterialsChild, index: number, val: string): void => {
-      if (!init.current) return
-
-      setCurrent({
-        ...current!,
-        material: {
-          label: 'Custom',
-          children: [
-            ...current!.material.children.slice(0, index),
-            {
-              ...current!.material.children[index],
-              label: child.label,
-              symbol: child.name,
-              value: val
-            },
-            ...current!.material.children.slice(index + 1)
-          ]
-        }
+      setMaterial({
+        label: 'Custom',
+        children: [
+          ...material!.children.slice(0, index),
+          {
+            ...material?.children[index],
+            label: child.label,
+            symbol: child.name,
+            value: val
+          },
+          ...material!.children.slice(index + 1)
+        ]
       })
     },
-    [current]
+    [material]
   )
 
   /**
@@ -269,41 +222,28 @@ const Material: React.FunctionComponent<IProps> = ({
    */
   const onUnitChange = useCallback(
     (index: number, unit: IUnit): void => {
-      if (!init.current) return
-
-      setCurrent({
-        ...current!,
-        material: {
-          ...current!.material,
-          children: [
-            ...current!.material.children.slice(0, index),
-            {
-              ...current!.material.children[index],
-              unit: unit
-            },
-            ...current!.material.children.slice(index + 1)
-          ]
-        }
+      setMaterial({
+        ...material!,
+        children: [
+          ...material!.children.slice(0, index),
+          {
+            ...material!.children[index],
+            unit: unit
+          },
+          ...material!.children.slice(index + 1)
+        ]
       })
     },
-    [current]
+    [material]
   )
 
   /**
    * On select
    * @param selected Selected
    */
-  const onSelected = useCallback(
-    (selected: ISelect[]): void => {
-      if (!init.current) return
-
-      setCurrent({
-        ...current!,
-        selected: selected
-      })
-    },
-    [current]
-  )
+  const onSelected = useCallback((selected: ISelect[]): void => {
+    setSelected(selected)
+  }, [])
 
   /**
    * On geometry change
@@ -311,19 +251,20 @@ const Material: React.FunctionComponent<IProps> = ({
    */
   const onGeometryChange = useCallback(
     (key: string): void => {
-      if (!init.current) return
+      // Geometry
+      const geometry = geometries.find((geometry) => geometry.id === key)!
+      setGeometry(geometry)
 
-      // Set part
-      const geometry = geometries.find((geometry) => geometry.id === key)
-      dispatch(setPart(geometry!.summary.uuid))
+      // Dimension
+      const dimension = geometry.summary.dimension
+      setDimension(dimension)
 
-      // Set geometry
-      setCurrent({
-        ...current!,
-        geometry: key
-      })
+      // Dispatch
+      dispatch(enable())
+      dispatch(setPart(geometry.summary.uuid))
+      dispatch(setType(dimension === 2 ? 'faces' : 'solids'))
     },
-    [geometries, current, dispatch]
+    [geometries, dispatch]
   )
 
   /**
@@ -331,9 +272,49 @@ const Material: React.FunctionComponent<IProps> = ({
    */
   const onCancel = useCallback((): void => {
     onClose()
-    setCurrent(undefined)
-    init.current = false
-  }, [onClose])
+    dispatch(disable())
+  }, [onClose, dispatch])
+
+  // Initialize uuid
+  useEffect(() => {
+    if (uuid) return
+
+    setUuid(value?.uuid ?? 'add')
+  }, [value, uuid])
+
+  // Initialize geometry
+  useEffect(() => {
+    if (geometry) return
+
+    let geometryId = value?.geometry ?? geometries[0].id
+    onGeometryChange(geometryId)
+  }, [geometries, value, geometry, onGeometryChange])
+
+  // Initialize material
+  useEffect(() => {
+    if (material) return
+
+    setMaterial(
+      value?.material ?? {
+        label: 'Default',
+        children: materials.children.map((child) => ({
+          label: child.label,
+          symbol: child.name,
+          value: child.default
+        }))
+      }
+    )
+  }, [value, materials, material])
+
+  // Initialize selected
+  useEffect(() => {
+    if (selected) return
+
+    const newSelected = value?.selected ?? []
+    setSelected(newSelected)
+    // TODO not so good
+    setTimeout(() => dispatch(select(newSelected)), 1_000)
+  }, [value, selected, dispatch])
 
   /**
    * Render
@@ -344,7 +325,7 @@ const Material: React.FunctionComponent<IProps> = ({
       title="Material"
       placement="left"
       closable={false}
-      open={visible}
+      open={true}
       mask={false}
       maskClosable={false}
       width={300}
@@ -352,34 +333,29 @@ const Material: React.FunctionComponent<IProps> = ({
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <CancelButton onCancel={onCancel} />
-          {material ? (
+          {value ? (
             <Edit
               material={{
-                uuid: current?.uuid ?? material.uuid,
-                material: current?.material ?? material.material,
-                geometry: current?.geometry ?? material.geometry,
-                selected: current?.selected ?? material.selected
+                uuid: uuid,
+                material: material,
+                geometry: geometry?.id,
+                selected: selected
               }}
-              simulation={{
-                id: simulation.id,
-                scheme: simulation.scheme
-              }}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              simulation={simulation}
+              swr={swr}
               onError={setError}
               onClose={onCancel}
             />
           ) : (
             <Add
               material={{
-                material: current?.material!,
-                geometry: current?.geometry!,
-                selected: current?.selected!
+                uuid: uuid,
+                material: material,
+                geometry: geometry?.id,
+                selected: selected
               }}
-              simulation={{
-                id: simulation.id,
-                scheme: simulation.scheme
-              }}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              simulation={simulation}
+              swr={swr}
               onError={setError}
               onClose={onCancel}
             />
@@ -392,22 +368,19 @@ const Material: React.FunctionComponent<IProps> = ({
           <Space direction="vertical" className={globalStyle.fullWidth}>
             <DataBase onSelect={onMaterialSelect} />
             <Typography.Text>
-              Material: {current?.material?.label ?? 'default'}
+              Material: {material?.label ?? 'default'}
             </Typography.Text>
             {materials?.children?.map((child, index) => {
-              const m = current?.material?.children?.find(
-                (c) => c.symbol === child.name
-              )
+              const m = material?.children?.find((c) => c.symbol === child.name)
 
               return (
                 <MaterialsChild
                   key={child.name}
+                  simulation={simulation}
                   dimension={dimension}
-                  variables={variables}
+                  material={m}
                   child={child}
                   index={index}
-                  value={m?.value}
-                  unit={m?.unit ?? child.unit}
                   _onMaterialChange={onMaterialChange}
                   _onUnitChange={onUnitChange}
                 />
@@ -428,7 +401,7 @@ const Material: React.FunctionComponent<IProps> = ({
               />
             )
           }))}
-          activeKey={current?.geometry}
+          activeKey={geometry?.id}
           onChange={onGeometryChange}
         />
 

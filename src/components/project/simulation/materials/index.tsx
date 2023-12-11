@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.Materials */
 
-import { useState, useCallback, useContext, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Card, Layout } from 'antd'
 
 import { IModelMaterialsValue } from '@/models/index.d'
@@ -10,13 +10,8 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
 import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
-
-import { SelectContext } from '@/context/select'
-import { setType } from '@/context/select/actions'
 
 import List from './list'
 import Material from './material'
@@ -53,9 +48,6 @@ const Materials: React.FunctionComponent<Props> = ({
   const [material, setMaterial] = useState<IModelMaterialsValue>()
   const [materialVisible, setMaterialVisible] = useState<boolean>(false)
 
-  // Context
-  const { dispatch } = useContext(SelectContext)
-
   // Materials
   const materials = useMemo(
     () => simulation.scheme.configuration.materials!,
@@ -75,21 +67,6 @@ const Materials: React.FunctionComponent<Props> = ({
     )
     return filtered
   }, [geometries])
-
-  // Part selection
-  useCustomEffect(
-    () => {
-      if (filteredGeometries[0]?.summary) {
-        dispatch(
-          setType(
-            filteredGeometries[0].summary.dimension === 2 ? 'faces' : 'solids'
-          )
-        )
-      }
-    },
-    [filteredGeometries],
-    [dispatch]
-  )
 
   /**
    * On add
@@ -131,45 +108,24 @@ const Materials: React.FunctionComponent<Props> = ({
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <AddButton onAdd={onAdd} fullWidth={true} primary={false}>
+          <AddButton onAdd={onAdd} fullWidth={true}>
             Add material
           </AddButton>
           <List
-            geometries={filteredGeometries.map((geometry) => ({
-              id: geometry.id,
-              summary: geometry.summary
-            }))}
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
+            geometries={filteredGeometries}
+            simulation={simulation}
             swr={swr}
             onEdit={onEdit}
           />
-          <Material
-            visible={materialVisible}
-            geometries={filteredGeometries.map((geometry) => ({
-              id: geometry.id,
-              name: geometry.name,
-              summary: geometry.summary
-            }))}
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
-            material={
-              material && {
-                uuid: material.uuid,
-                material: material.material,
-                geometry: material.geometry,
-                selected: material.selected
-              }
-            }
-            swr={{
-              mutateOneSimulation: swr.mutateOneSimulation
-            }}
-            onClose={onClose}
-          />
+          {materialVisible ? (
+            <Material
+              geometries={filteredGeometries}
+              simulation={simulation}
+              value={material}
+              swr={swr}
+              onClose={onClose}
+            />
+          ) : null}
         </Card>
       </Layout.Content>
     </Layout>

@@ -89,7 +89,7 @@ const description = (
       Houssein&apos;s{' '}
       <a
         target="_blank"
-        href="https://www.techrxiv.org/articles/preprint/Bi-pass_Formulation_for_Non-conforming_Meshes_in_Magnetostatic_Problems/24315232"
+        href="https://www.techrxiv.org/doi/full/10.36227/techrxiv.24315232.v1"
       >
         paper
       </a>

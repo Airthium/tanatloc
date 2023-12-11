@@ -36,6 +36,10 @@ const Magnetostatic2Bodies: IModel = {
     {
       label: 'Magnetic vector potential (z)',
       value: 'Az'
+    },
+    {
+      label: 'Rotational angle at each step',
+      value: 'alpha'
     }
   ],
   configuration: {

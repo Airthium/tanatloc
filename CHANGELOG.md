@@ -1,3 +1,23 @@
+## v1.3.3
+
+---
+
+## v1.3.2
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :arrow_up: Code refactor
+  - :beetle: Boundary condition & material bug
+
+---
+
+## v1.3.1
+
+- Global:
+  - :beetle: Bug fixes
+
+---
+
 ## v1.3.0
 
 - Global:

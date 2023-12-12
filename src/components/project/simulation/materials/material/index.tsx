@@ -116,7 +116,6 @@ const MaterialsChild: React.FunctionComponent<MaterialsChildProps> = ({
    */
   return (
     <Formula
-      key={child.name}
       dimension={dimension}
       label={child.name}
       defaultValue={value ?? String(child.default)}
@@ -283,7 +282,7 @@ const Material: React.FunctionComponent<Props> = ({
   useEffect(() => {
     if (geometry) return
 
-    let geometryId = value?.geometry ?? geometries[0].id
+    const geometryId = value?.geometry ?? geometries[0].id
     onGeometryChange(geometryId)
   }, [geometries, value, geometry, onGeometryChange])
 

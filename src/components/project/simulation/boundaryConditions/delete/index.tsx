@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Delete */
 
-import { Dispatch, useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Typography } from 'antd'
 
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
@@ -9,12 +9,9 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import { ISelectAction, SelectContext } from '@/context/select'
+import { SelectContext } from '@/context/select'
 import { select } from '@/context/select/actions'
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
 import { DeleteButton } from '@/components/assets/button'
@@ -26,15 +23,17 @@ import SimulationAPI from '@/api/simulation'
 /**
  * Props
  */
-export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  simulation: Simulation
   type: string
   index: number
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
 }
 
 /**
@@ -53,68 +52,53 @@ export const errors = {
  * @param swr SWR
  */
 export const _onDelete = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
+  simulation: Simulation,
   type: string,
   index: number,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  selectDispatch: Dispatch<ISelectAction>,
-  notificationDispatch: Dispatch<INotificationAction>
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const boundaryConditions =
-      newSimulation.scheme.configuration.boundaryConditions
-    const typedBoundaryCondition = boundaryConditions[
-      type
+  // Update local
+  const boundaryConditions =
+    newSimulation.scheme.configuration.boundaryConditions
+  const typedBoundaryCondition = boundaryConditions[
+    type
+  ] as IModelTypedBoundaryCondition
+
+  typedBoundaryCondition.values = [
+    ...typedBoundaryCondition.values!.slice(0, index),
+    ...typedBoundaryCondition.values!.slice(index + 1)
+  ]
+
+  // Diff
+  let done = false
+  Object.keys(boundaryConditions).forEach((t) => {
+    if (t === 'index' || t === 'title' || t === 'done') return
+    const ttypedBoundaryCondition = boundaryConditions[
+      t
     ] as IModelTypedBoundaryCondition
-    const boundaryCondition = typedBoundaryCondition.values![index]
-
-    // (unselect)
-    selectDispatch(select(boundaryCondition.selected))
-
-    typedBoundaryCondition.values = [
-      ...typedBoundaryCondition.values!.slice(0, index),
-      ...typedBoundaryCondition.values!.slice(index + 1)
-    ]
-
-    // Diff
-    let done = false
-    Object.keys(boundaryConditions).forEach((t) => {
-      if (t === 'index' || t === 'title' || t === 'done') return
-      const ttypedBoundaryCondition = boundaryConditions[
-        t
-      ] as IModelTypedBoundaryCondition
-      if (ttypedBoundaryCondition.values?.length) done = true
-    })
-    const diff = {
-      ...boundaryConditions,
-      done: done
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'boundaryConditions'],
-        value: diff
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    notificationDispatch(addError({ title: errors.update, err }))
-    throw err
+    if (ttypedBoundaryCondition.values?.length) done = true
+  })
+  const diff = {
+    ...boundaryConditions,
+    done: done
   }
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'boundaryConditions'],
+      value: diff
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -122,12 +106,12 @@ export const _onDelete = async (
  * @param props Props
  * @return Delete
  */
-const Delete = ({
+const Delete: React.FunctionComponent<Props> = ({
   type,
   index,
   simulation,
   swr
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -135,15 +119,19 @@ const Delete = ({
   const { dispatch: selectDispatch } = useContext(SelectContext)
   const { dispatch: notificationDispatch } = useContext(NotificationContext)
 
-  // Data
+  // Boundary conditions
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,
     [simulation]
   )
+
+  // Typed boundary condition
   const typedBoundaryCondition = useMemo(
     () => boundaryConditions[type] as IModelTypedBoundaryCondition,
     [boundaryConditions, type]
   )
+
+  // Boundary condition
   const boundaryCondition = useMemo(
     () => typedBoundaryCondition.values![index],
     [typedBoundaryCondition, index]
@@ -155,18 +143,24 @@ const Delete = ({
   const onDelete = useCallback(async (): Promise<void> => {
     setLoading(true)
     try {
-      await _onDelete(
-        simulation,
-        type,
-        index,
-        swr,
-        selectDispatch,
-        notificationDispatch
-      )
+      await _onDelete(simulation, type, index, swr)
+      // (unselect)
+      selectDispatch(select(boundaryCondition.selected))
+    } catch (err: any) {
+      notificationDispatch(addError({ title: errors.update, err }))
+      throw err
     } finally {
       setLoading(false)
     }
-  }, [simulation, type, index, swr, selectDispatch, notificationDispatch])
+  }, [
+    simulation,
+    type,
+    index,
+    swr,
+    boundaryCondition,
+    selectDispatch,
+    notificationDispatch
+  ])
 
   /**
    * Render

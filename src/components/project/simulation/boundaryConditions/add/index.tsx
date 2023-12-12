@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Add */
 
-import { Dispatch, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import {
@@ -12,12 +12,10 @@ import {
   IFrontMutateSimulationsItem
 } from '@/api/index.d'
 
-import {
-  INotificationAction,
-  NotificationContext
-} from '@/context/notification'
+import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
+import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 import { AddButton } from '@/components/assets/button'
 
 import Utils from '@/lib/utils'
@@ -27,14 +25,16 @@ import SimulationAPI from '@/api/simulation'
 /**
  * Props
  */
-export interface IProps {
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  boundaryCondition: Omit<IModelBoundaryConditionValue, 'uuid'>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  simulation: Simulation
+  boundaryCondition: Partial<IModelBoundaryConditionValue>
+  swr: Swr
   onError: (desc?: string) => void
   onClose: () => void
 }
@@ -56,76 +56,66 @@ export const errors = {
  * @param swr SWR
  */
 export const _onAdd = async (
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>,
-  boundaryCondition: Omit<IModelBoundaryConditionValue, 'uuid'>,
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  },
-  dispatch: Dispatch<INotificationAction>
+  simulation: Simulation,
+  boundaryCondition: IModelBoundaryConditionValue,
+  swr: Swr
 ): Promise<void> => {
-  try {
-    // New boundary condition
-    const newBoundaryCondition = {
-      ...boundaryCondition
-    } as IModelBoundaryConditionValue
+  // New boundary condition
+  const newBoundaryCondition = {
+    ...boundaryCondition
+  } as IModelBoundaryConditionValue
 
-    // Get type key
-    const type = newBoundaryCondition.type.key
+  // Get type key
+  const type = newBoundaryCondition.type.key
 
-    // Set uuid
-    newBoundaryCondition.uuid = uuid()
+  // Set uuid
+  newBoundaryCondition.uuid = uuid()
 
-    // New simulation
-    const newSimulation = Utils.deepCopy(simulation)
+  // New simulation
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update local
-    const boundaryConditions =
-      newSimulation.scheme.configuration.boundaryConditions
-    const TypedBoundaryCondition = boundaryConditions[
-      type
-    ] as IModelTypedBoundaryCondition
-    TypedBoundaryCondition.values = [
-      ...(TypedBoundaryCondition.values ?? []),
-      newBoundaryCondition
-    ]
+  // Update local
+  const boundaryConditions =
+    newSimulation.scheme.configuration.boundaryConditions
+  const TypedBoundaryCondition = boundaryConditions[
+    type
+  ] as IModelTypedBoundaryCondition
+  TypedBoundaryCondition.values = [
+    ...(TypedBoundaryCondition.values ?? []),
+    newBoundaryCondition
+  ]
 
-    // Diff
-    const diff = {
-      ...boundaryConditions,
-      done: true
-    }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'boundaryConditions'],
-        value: diff
-      }
-    ])
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration', 'run'],
-        value: {
-          ...newSimulation.scheme.configuration.run,
-          done: false
-        }
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    dispatch(addError({ title: errors.update, err }))
-    throw err
+  // Diff
+  const diff = {
+    ...boundaryConditions,
+    done: true
   }
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'boundaryConditions'],
+      value: diff
+    }
+  ])
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration', 'run'],
+      value: {
+        ...newSimulation.scheme.configuration.run,
+        done: false
+      }
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**
@@ -133,13 +123,13 @@ export const _onAdd = async (
  * @param props Props
  * @return Add
  */
-const Add = ({
+const Add: React.FunctionComponent<Props> = ({
   simulation,
   boundaryCondition,
   swr,
   onError,
   onClose
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -150,7 +140,7 @@ const Add = ({
    * On add
    */
   const onAdd = useCallback((): void => {
-    ;(async () => {
+    asyncFunctionExec(async () => {
       setLoading(true)
       try {
         // Check
@@ -173,15 +163,20 @@ const Add = ({
         }
         onError()
 
-        await _onAdd(simulation, boundaryCondition, swr, dispatch)
+        await _onAdd(
+          simulation,
+          boundaryCondition as IModelBoundaryConditionValue,
+          swr
+        )
 
         // Close
         setLoading(false)
         onClose()
-      } catch (err) {
+      } catch (err: any) {
+        dispatch(addError({ title: errors.update, err }))
         setLoading(false)
       }
-    })()
+    })
   }, [simulation, boundaryCondition, swr, onError, onClose, dispatch])
 
   /**

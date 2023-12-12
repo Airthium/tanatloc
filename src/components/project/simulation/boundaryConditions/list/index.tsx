@@ -1,7 +1,8 @@
 /** @module Components.Project.Simulation.BoundaryConditions.List */
 
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useRef } from 'react'
 import { Card, Typography } from 'antd'
+import { WarningOutlined } from '@ant-design/icons'
 
 import {
   IModelBoundaryConditionValue,
@@ -14,39 +15,45 @@ import {
 } from '@/api/index.d'
 
 import { SelectContext } from '@/context/select'
-import { enable, disable, select, setPart } from '@/context/select/actions'
+import {
+  enable,
+  disable,
+  select,
+  setPart,
+  setType
+} from '@/context/select/actions'
 
 import { EditButton } from '@/components/assets/button'
 
 import Delete from '../delete'
 
+import globalStyle from '@/styles/index.module.css'
 import style from '../../index.module.css'
 
 /**
  * Props
  */
-export interface IProps {
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  geometries: Geometry[]
+  simulation: Simulation
+  swr: Swr
   onEdit: (type: string, index: number) => void
 }
 
-export interface IListItemProps {
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export interface ListItemProps {
+  geometries: Geometry[]
+  simulation: Simulation
   boundaryCondition: IModelBoundaryConditionValue
   index: number
   type: string
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
   _onEdit: (type: string, index: number) => void
 }
 
@@ -55,7 +62,7 @@ export interface IListItemProps {
  * @param props Props
  * @returns ListItem
  */
-const ListItem = ({
+const ListItem: React.FunctionComponent<ListItemProps> = ({
   geometries,
   simulation,
   boundaryCondition,
@@ -63,12 +70,31 @@ const ListItem = ({
   type,
   swr,
   _onEdit
-}: IListItemProps): React.JSX.Element => {
-  // State
-  const [enabled, setEnabled] = useState<boolean>(true)
+}) => {
+  // Ref
+  const disableDispatch = useRef<boolean>(false)
 
   // Context
   const { dispatch } = useContext(SelectContext)
+
+  // Geometry
+  const geometry = useMemo(
+    () =>
+      geometries.find((geometry) => geometry.id === boundaryCondition.geometry),
+    [geometries, boundaryCondition]
+  )
+
+  // Selected
+  const selected = useMemo(
+    () => boundaryCondition.selected,
+    [boundaryCondition.selected]
+  )
+
+  // Type
+  const selectionType = useMemo(
+    () => (geometry?.summary.dimension === 2 ? 'edges' : 'faces'),
+    [geometry]
+  )
 
   /**
    * Highlight current
@@ -76,58 +102,58 @@ const ListItem = ({
    * @param index Index
    */
   const highlight = useCallback((): void => {
-    // Geometry
-    const geometryId = boundaryCondition.geometry
-    const geometry = geometries.find((geometry) => geometry.id === geometryId)
-
-    // Selected
-    const currentSelected = boundaryCondition.selected
-
-    // Dispatch
-    setTimeout(() => {
-      dispatch(enable())
-      dispatch(setPart(geometry?.summary.uuid))
-      dispatch(select(currentSelected))
-    }, 50)
-  }, [geometries, boundaryCondition, dispatch])
+    // Distpatch
+    dispatch(enable())
+    dispatch(setType(selectionType))
+    dispatch(setPart(geometry?.summary.uuid))
+    dispatch(select(selected))
+  }, [geometry, selected, selectionType, dispatch])
 
   /**
    * Unhighlight current
    */
   const unhighlight = useCallback((): void => {
-    enabled && dispatch(disable())
-  }, [enabled, dispatch])
+    if (disableDispatch.current) return
+    dispatch(disable())
+  }, [dispatch])
 
   /**
    * On edit
    */
   const onEdit = useCallback((): void => {
-    setEnabled(false)
+    disableDispatch.current = true
     _onEdit(type, index)
-    setEnabled(true)
+    setTimeout(() => (disableDispatch.current = false), 1_000)
   }, [index, type, _onEdit])
 
   return (
     <Card
-      className={style.listItem}
+      className={`${globalStyle.textAlignCenter} ${style.listItem}`}
       hoverable
-      onMouseEnter={highlight}
+      onMouseMove={highlight}
       onMouseLeave={unhighlight}
       actions={[
         <EditButton key="edit" onEdit={onEdit} />,
         <Delete
           key="delete"
-          simulation={{
-            id: simulation.id,
-            scheme: simulation.scheme
-          }}
+          simulation={simulation}
           type={type}
           index={index}
-          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+          swr={swr}
         />
       ]}
     >
-      <Typography.Text strong>{boundaryCondition.name}</Typography.Text>{' '}
+      {geometry ? null : (
+        <>
+          <Typography.Text type="danger" strong>
+            <WarningOutlined /> Geometry not found
+          </Typography.Text>
+          <br />
+        </>
+      )}
+      <Typography.Text strong className={globalStyle.textAlignCenter}>
+        {boundaryCondition.name}
+      </Typography.Text>{' '}
       <Typography.Text>({boundaryCondition.type.label})</Typography.Text>
     </Card>
   )
@@ -138,13 +164,13 @@ const ListItem = ({
  * @param props Props
  * @returns List
  */
-const List = ({
+const List: React.FunctionComponent<Props> = ({
   geometries,
   simulation,
   swr,
   onEdit
-}: IProps): React.JSX.Element => {
-  // Data
+}) => {
+  // Boundary conditions
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,
     [simulation]

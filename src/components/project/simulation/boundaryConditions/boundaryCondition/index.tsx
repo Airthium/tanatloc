@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
 
-import { useState, ChangeEvent, useCallback, useMemo, useContext } from 'react'
+import {
+  useState,
+  ChangeEvent,
+  useCallback,
+  useMemo,
+  useContext,
+  useEffect
+} from 'react'
 import {
   Button,
   Card,
@@ -19,7 +26,6 @@ import {
   IModelBoundaryCondition,
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition,
-  IModelVariable,
   IUnit
 } from '@/models/index.d'
 import {
@@ -28,10 +34,8 @@ import {
   IFrontGeometriesItem
 } from '@/api/index.d'
 
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
 import { ISelect, SelectContext } from '@/context/select'
-import { setPart } from '@/context/select/actions'
+import { disable, enable, setPart, setType } from '@/context/select/actions'
 
 import Formula from '@/components/assets/formula'
 import Selector, { ISelection } from '@/components/assets/selector'
@@ -46,44 +50,65 @@ import style from '../../../panel/index.module.css'
 /**
  * Props
  */
-export interface IProps {
-  visible: boolean
-  geometries: Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>[]
-  simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'>
-  boundaryCondition?: IModelBoundaryConditionValue
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
+  geometries: Geometry[]
+  simulation: Simulation
+  value?: IModelBoundaryConditionValue
+  swr: Swr
   onClose: () => void
 }
 
-export interface IBoundaryConditionItemProps {
-  dimension?: number
-  variables?: IModelVariable[]
-  boundaryCondition: IModelBoundaryCondition
+export interface BoundaryConditionItemProps {
+  simulation: Simulation
+  dimension: number | undefined
+  values: NonNullable<IModelBoundaryConditionValue['values']>
+  child: IModelBoundaryCondition
   index: number
-  value: string | number | undefined
-  checked: boolean | undefined
-  unit: IUnit | undefined
   _onValueChange: (index: number, value: string) => void
   _onCheckedChange: (index: number, checked: boolean) => void
   _onUnitChange: (index: number, unit: IUnit) => void
 }
 
-const BoundaryConditionItem = ({
+const BoundaryConditionItem: React.FunctionComponent<
+  BoundaryConditionItemProps
+> = ({
+  simulation,
   dimension,
-  variables,
-  boundaryCondition,
+  values,
+  child,
   index,
-  value,
-  checked,
-  unit,
   _onValueChange,
   _onCheckedChange,
   _onUnitChange
-}: IBoundaryConditionItemProps): React.JSX.Element => {
+}) => {
+  // Variables
+  const variables = useMemo(
+    () => simulation.scheme.variables,
+    [simulation.scheme.variables]
+  )
+
+  // Value
+  const value = useMemo(() => values[index].value, [values, index])
+
+  // Checked
+  const checked = useMemo(
+    () => (values.length > 1 ? values[index].checked : undefined),
+    [values, index]
+  )
+
+  // Unit
+  const unit = useMemo(
+    () => values[index].unit ?? child.unit,
+    [values, index, child]
+  )
+
   /**
    * On value change
    * @param value Value
@@ -116,16 +141,16 @@ const BoundaryConditionItem = ({
    */
   return (
     <Formula
-      label={boundaryCondition.label}
       dimension={dimension}
-      defaultValue={value}
+      label={child.label}
+      defaultValue={value ?? String(child.default)}
       defaultChecked={checked}
       additionalKeywords={variables}
+      units={child.units}
+      unit={unit}
       onValueChange={onValueChange}
       onCheckedChange={onCheckedChange}
       onUnitChange={onUnitChange}
-      units={boundaryCondition.units}
-      unit={unit}
     />
   )
 }
@@ -135,109 +160,35 @@ const BoundaryConditionItem = ({
  * @param props Props
  * @returns BoundaryCondition
  */
-const BoundaryCondition = ({
-  visible,
+const BoundaryCondition: React.FunctionComponent<Props> = ({
   geometries,
   simulation,
-  boundaryCondition,
+  value,
   swr,
   onClose
-}: IProps): React.JSX.Element => {
-  type BCExtended = (IModelTypedBoundaryCondition & { key: string })[]
+}) => {
   // State
-  const [alreadySelected, setAlreadySelected] = useState<ISelection[]>([])
-  const [types, setTypes] = useState<BCExtended>([])
-  const [totalNumber, setTotalNumber] = useState<number>()
-  const [current, setCurrent] = useState<IModelBoundaryConditionValue>()
-  const [activeKey, setActiveKey] = useState<string>()
+  const [uuid, setUuid] = useState<string>()
+  const [name, setName] = useState<string>()
+  const [bcType, setBCType] = useState<IModelBoundaryConditionValue['type']>()
+  const [geometry, setGeometry] = useState<Geometry>()
+  const [dimension, setDimension] = useState<number>()
+  const [selected, setSelected] = useState<ISelection['selected']>()
+  const [values, setValues] = useState<IModelBoundaryConditionValue['values']>()
   const [error, setError] = useState<string>()
 
   // Context
   const { dispatch } = useContext(SelectContext)
 
-  // Data
-  const variables = useMemo(() => simulation.scheme.variables, [simulation])
+  // Boundary conditions
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,
     [simulation]
   )
-  const dimension = useMemo(
-    () => simulation.scheme.configuration.dimension,
-    [simulation]
-  )
-
-  // Init
-  useCustomEffect(
-    () => {
-      const geometry = geometries.find(
-        (g) => g.id === boundaryCondition?.geometry
-      )
-      if (geometry) {
-        dispatch(setPart(geometry.summary.uuid))
-        setActiveKey(geometry.id)
-      } else {
-        dispatch(setPart(geometries[0]?.summary.uuid))
-        setActiveKey(geometries[0]?.id)
-      }
-    },
-    [visible, geometries, boundaryCondition],
-    [dispatch]
-  )
-
-  // Visible
-  useCustomEffect(() => {
-    if (!visible && current) setCurrent(undefined)
-  }, [visible, current])
-
-  // Types
-  useCustomEffect(() => {
-    const currentTypes = Object.keys(boundaryConditions)
-      .map((type) => {
-        if (type === 'index' || type === 'title' || type === 'done') return
-        const typedBoundaryCondition = boundaryConditions[
-          type
-        ] as IModelTypedBoundaryCondition
-        return {
-          key: type,
-          label: typedBoundaryCondition.label,
-          children: typedBoundaryCondition.children,
-          values: typedBoundaryCondition.values
-        }
-      })
-      .filter((t) => t) as BCExtended
-    setTypes(currentTypes)
-  }, [boundaryConditions])
-
-  // Total number
-  useCustomEffect(() => {
-    const numberOfBoundaryConditions = types
-      ?.map((t) => t.values?.length)
-      .filter((n) => n)
-      .reduce((a: any, b: any) => a + b, 0)
-
-    setTotalNumber(numberOfBoundaryConditions)
-  }, [types])
-
-  // Edit or name
-  useCustomEffect(() => {
-    if (visible && !current && boundaryCondition) setCurrent(boundaryCondition)
-    else if (
-      visible &&
-      !current &&
-      !boundaryCondition &&
-      totalNumber !== undefined
-    ) {
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelBoundaryConditionValue),
-        name: 'Boundary condition ' + (totalNumber + 1),
-        geometry: geometries[0]?.id
-      }))
-    }
-  }, [visible, boundaryCondition, current, totalNumber])
 
   // Already selected
-  useCustomEffect(() => {
-    const currentAlreadySelected = Object.keys(boundaryConditions)
+  const alreadySelected = useMemo(() => {
+    const alreadySelected = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
         const typedBoundaryCondition = boundaryConditions[
@@ -246,7 +197,7 @@ const BoundaryCondition = ({
 
         return typedBoundaryCondition?.values
           ?.map((b) => {
-            if (b.uuid === boundaryCondition?.uuid) return
+            if (b.uuid === uuid) return
             return {
               label: b.name,
               selected: b.selected
@@ -256,8 +207,26 @@ const BoundaryCondition = ({
       })
       .flat()
       .filter((s) => s)
-    setAlreadySelected(currentAlreadySelected as ISelection[])
-  }, [boundaryConditions, boundaryCondition])
+
+    return alreadySelected as ISelection[]
+  }, [boundaryConditions, uuid])
+
+  // Types
+  const types = useMemo(() => {
+    const types = Object.keys(boundaryConditions)
+      .map((type) => {
+        if (type === 'index' || type === 'title' || type === 'done') return
+        const typedBoundaryCondition = boundaryConditions[
+          type
+        ] as IModelTypedBoundaryCondition
+        return {
+          key: type,
+          label: typedBoundaryCondition.label
+        }
+      })
+      .filter((t) => t) as { key: string; label: string }[]
+    return types
+  }, [boundaryConditions])
 
   /**
    * On name
@@ -265,10 +234,7 @@ const BoundaryCondition = ({
    */
   const onName = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
     const name = event.target.value
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelBoundaryConditionValue),
-      name: name
-    }))
+    setName(name)
   }, [])
 
   /**
@@ -278,29 +244,24 @@ const BoundaryCondition = ({
   const onType = useCallback(
     (event: RadioChangeEvent): void => {
       const key = event.target.value
+
+      // Type
       const type = types.find(
         (t) => t.key === key
       ) as IModelTypedBoundaryCondition & {
         key: string
       }
+      setBCType(type)
+
+      // Values
       const typedBoundaryCondition = boundaryConditions[
         key
       ] as IModelTypedBoundaryCondition
-
       const values = typedBoundaryCondition.children?.map((child) => ({
         checked: true,
         value: child.default
       }))
-
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelBoundaryConditionValue),
-        type: {
-          key: type.key,
-          label: type.label,
-          children: type.children
-        },
-        values: values
-      }))
+      setValues(values ?? [])
     },
     [boundaryConditions, types]
   )
@@ -310,19 +271,19 @@ const BoundaryCondition = ({
    * @param index Index
    * @param value Value
    */
-  const onValueChange = useCallback((index: number, value: string): void => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelBoundaryConditionValue),
-      values: [
-        ...prevCurrent!.values!.slice(0, index),
+  const onValueChange = useCallback(
+    (index: number, value: string): void => {
+      setValues([
+        ...values!.slice(0, index),
         {
-          ...prevCurrent!.values![index],
+          ...values![index],
           value
         },
-        ...prevCurrent!.values!.slice(index + 1)
-      ]
-    }))
-  }, [])
+        ...values!.slice(index + 1)
+      ])
+    },
+    [values]
+  )
 
   /**
    * On checked change
@@ -331,19 +292,16 @@ const BoundaryCondition = ({
    */
   const onCheckedChange = useCallback(
     (index: number, checked: boolean): void => {
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelBoundaryConditionValue),
-        values: [
-          ...prevCurrent!.values!.slice(0, index),
-          {
-            ...prevCurrent!.values![index],
-            checked
-          },
-          ...prevCurrent!.values!.slice(index + 1)
-        ]
-      }))
+      setValues([
+        ...values!.slice(0, index),
+        {
+          ...values![index],
+          checked
+        },
+        ...values!.slice(index + 1)
+      ])
     },
-    []
+    [values]
   )
 
   /**
@@ -351,70 +309,27 @@ const BoundaryCondition = ({
    * @param index Index
    * @param unit Unit
    */
-  const onUnitChange = useCallback((index: number, unit: IUnit): void => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelBoundaryConditionValue),
-      values: [
-        ...prevCurrent!.values!.slice(0, index),
+  const onUnitChange = useCallback(
+    (index: number, unit: IUnit): void => {
+      setValues([
+        ...values!.slice(0, index),
         {
-          ...prevCurrent!.values![index],
+          ...values![index],
           unit
         },
-        ...prevCurrent!.values!.slice(index + 1)
-      ]
-    }))
-  }, [])
+        ...values!.slice(index + 1)
+      ])
+    },
+    [values]
+  )
 
   /**
    * On selected
    * @param selected Selected
    */
   const onSelected = useCallback((selected: ISelect[]): void => {
-    setCurrent((prevCurrent) => ({
-      ...(prevCurrent as IModelBoundaryConditionValue),
-      selected: selected
-    }))
+    setSelected(selected)
   }, [])
-
-  // Inputs
-  const inputs = useMemo(() => {
-    if (current?.type && current.type?.children) {
-      return (
-        <Card>
-          {current.type.children.map((child, index) => {
-            if (dimension === 2 && child.only3D) return
-            return (
-              <BoundaryConditionItem
-                key={child.label}
-                dimension={dimension}
-                variables={variables}
-                boundaryCondition={child}
-                index={index}
-                value={String(current.values![index].value)}
-                checked={
-                  current.type.children!.length > 1
-                    ? current.values![index].checked
-                    : undefined
-                }
-                unit={current.values![index].unit ?? child.unit}
-                _onValueChange={onValueChange}
-                _onCheckedChange={onCheckedChange}
-                _onUnitChange={onUnitChange}
-              />
-            )
-          })}
-        </Card>
-      )
-    }
-    return null
-  }, [
-    current,
-    dimension,
-    variables,
-    onCheckedChange,
-    onValueChange,
-    onUnitChange
-  ])
 
   /**
    * On geometry change
@@ -422,18 +337,21 @@ const BoundaryCondition = ({
    */
   const onGeometryChange = useCallback(
     (key: string): void => {
-      // Active key
-      setActiveKey(key)
+      // Geometry
+      const geometry = geometries.find((geometry) => geometry.id === key)!
+      setGeometry(geometry)
 
-      // Set part
-      const geometry = geometries.find((geometry) => geometry.id === key)
-      dispatch(setPart(geometry?.summary.uuid))
+      // Dimension
+      const dimension = geometry.summary.dimension
+      setDimension(dimension)
 
-      // Set geometry
-      setCurrent((prevCurrent) => ({
-        ...(prevCurrent as IModelBoundaryConditionValue),
-        geometry: key
-      }))
+      // Type
+      const type = dimension === 2 ? 'edges' : 'faces'
+
+      // Dispatch
+      dispatch(enable())
+      dispatch(setType(type))
+      dispatch(setPart(geometry.summary.uuid))
     },
     [geometries, dispatch]
   )
@@ -442,9 +360,103 @@ const BoundaryCondition = ({
    * On cancel
    */
   const onCancel = useCallback((): void => {
-    setCurrent(undefined)
     onClose()
-  }, [onClose])
+    dispatch(disable())
+  }, [onClose, dispatch])
+
+  // Inputs
+  const inputs = useMemo(() => {
+    if (!bcType) return
+    const typedBoundaryCondition = boundaryConditions[
+      bcType.key
+    ] as IModelTypedBoundaryCondition
+    const children = typedBoundaryCondition.children
+    if (!children) return
+
+    return (
+      <Card>
+        {children.map((child, index) => {
+          if (dimension === 2 && child.only3D) return
+
+          return (
+            <BoundaryConditionItem
+              key={child.label}
+              simulation={simulation}
+              dimension={dimension}
+              values={values!}
+              child={child}
+              index={index}
+              _onValueChange={onValueChange}
+              _onCheckedChange={onCheckedChange}
+              _onUnitChange={onUnitChange}
+            />
+          )
+        })}
+      </Card>
+    )
+  }, [
+    simulation,
+    boundaryConditions,
+    bcType,
+    dimension,
+    values,
+    onValueChange,
+    onCheckedChange,
+    onUnitChange
+  ])
+
+  const numberOfBCs = useMemo(() => {
+    let count = 0
+    Object.keys(boundaryConditions).forEach((key) => {
+      if (key === 'index' || key === 'title' || key === 'done') return
+
+      const typedBoundaryCondition = boundaryConditions[
+        key
+      ] as IModelTypedBoundaryCondition
+      count += typedBoundaryCondition.values?.length ?? 0
+    })
+    return count
+  }, [boundaryConditions])
+
+  // Initialize uuid
+  useEffect(() => {
+    if (uuid) return
+
+    setUuid(value?.uuid ?? 'add')
+  }, [value, uuid])
+
+  console.log(boundaryConditions)
+  // Initialize name
+  useEffect(() => {
+    if (name) return
+
+    if (value?.name) setName(value.name)
+    else {
+      setName('Boundary condition ' + (numberOfBCs + 1))
+    }
+  }, [value, name, numberOfBCs])
+
+  // Initialize geometry
+  useEffect(() => {
+    if (geometry) return
+
+    const geometryId = value?.geometry ?? geometries[0].id
+    onGeometryChange(geometryId)
+  }, [geometries, value, geometry, onGeometryChange])
+
+  // Initialize type (BC type)
+  useEffect(() => {
+    if (bcType) return
+
+    setBCType(value?.type)
+  }, [value, bcType])
+
+  // Initialize values
+  useEffect(() => {
+    if (values) return
+
+    setValues(value?.values ?? [])
+  }, [value, values])
 
   /**
    * Render
@@ -455,7 +467,7 @@ const BoundaryCondition = ({
       title="Boundary condition"
       placement="left"
       closable={false}
-      open={visible}
+      open={true}
       mask={false}
       maskClosable={false}
       width={300}
@@ -463,46 +475,34 @@ const BoundaryCondition = ({
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <CancelButton onCancel={onCancel} />
-          {boundaryCondition ? (
+          {value ? (
             <Edit
               boundaryCondition={{
-                uuid: current?.uuid ?? boundaryCondition.uuid,
-                name: current?.name ?? boundaryCondition.name,
-                type: current?.type ?? boundaryCondition.type,
-                geometry: current?.geometry ?? boundaryCondition.geometry,
-                selected: current?.selected ?? boundaryCondition.selected,
-                values: current?.values ?? boundaryCondition.values
+                uuid: uuid,
+                name: name,
+                type: bcType,
+                geometry: geometry?.id,
+                selected: selected,
+                values: values
               }}
-              oldBoundaryCondition={{
-                uuid: boundaryCondition.uuid,
-                name: boundaryCondition.name,
-                type: boundaryCondition.type,
-                geometry: boundaryCondition.geometry,
-                selected: boundaryCondition.selected,
-                values: boundaryCondition.values
-              }}
-              simulation={{
-                id: simulation.id,
-                scheme: simulation.scheme
-              }}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              oldBoundaryCondition={value}
+              simulation={simulation}
+              swr={swr}
               onError={setError}
               onClose={onClose}
             />
           ) : (
             <Add
               boundaryCondition={{
-                name: current?.name!,
-                type: current?.type!,
-                geometry: current?.geometry!,
-                selected: current?.selected!,
-                values: current?.values
+                uuid: uuid,
+                name: name,
+                type: bcType,
+                geometry: geometry?.id,
+                selected: selected,
+                values: values
               }}
-              simulation={{
-                id: simulation.id,
-                scheme: simulation.scheme
-              }}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              simulation={simulation}
+              swr={swr}
               onError={setError}
               onClose={onClose}
             />
@@ -520,11 +520,7 @@ const BoundaryCondition = ({
                 </Typography.Text>
               }
             >
-              <Input
-                value={current?.name ?? ''}
-                onChange={onName}
-                maxLength={50}
-              />
+              <Input value={name ?? ''} onChange={onName} maxLength={50} />
             </Form.Item>
           </Form>
         </Card>
@@ -540,7 +536,7 @@ const BoundaryCondition = ({
               <Radio.Group
                 optionType="button"
                 buttonStyle="solid"
-                value={current?.type?.key}
+                value={bcType?.key}
                 onChange={onType}
               >
                 {types?.map((type) => {
@@ -569,7 +565,7 @@ const BoundaryCondition = ({
               />
             )
           }))}
-          activeKey={activeKey}
+          activeKey={geometry?.id}
           onChange={onGeometryChange}
         />
 

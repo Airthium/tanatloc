@@ -285,7 +285,7 @@ export interface IModelBoundaryConditionValue {
   labels?: string
   values?: {
     checked?: boolean
-    value?: TValue
+    value?: number | string
     unit?: IUnit
   }[]
 }
@@ -293,7 +293,7 @@ export interface IModelBoundaryConditionValue {
 export interface IModelBoundaryCondition {
   label: string
   htmlEntity: IHtmlEntity
-  default: TValue
+  default: number | string
   only3D?: boolean
   units?: IUnit[]
   unit?: IUnit

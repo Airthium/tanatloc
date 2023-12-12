@@ -123,6 +123,7 @@ const Delete: React.FunctionComponent<Props> = ({ simulation, index, swr }) => {
       selectDispatch(select(selected))
     } catch (err: any) {
       notificationDispatch(addError({ title: errors.update, err }))
+      throw err
     } finally {
       setLoading(false)
     }

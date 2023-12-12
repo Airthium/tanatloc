@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions */
 
-import { useState, useCallback, useContext, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Card, Layout } from 'antd'
 
 import {
@@ -13,11 +13,6 @@ import {
   IFrontSimulationsItem
 } from '@/api/index.d'
 
-import { SelectContext } from '@/context/select'
-import { enable, disable, setType } from '@/context/select/actions'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
-
 import { AddButton } from '@/components/assets/button'
 import Loading from '@/components/loading'
 
@@ -29,14 +24,15 @@ import BoundaryCondition from './boundaryCondition'
  */
 export type Simulation = Pick<IFrontSimulationsItem, 'id' | 'scheme'>
 export type Geometry = Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
-export interface IProps {
+export type Swr = {
+  mutateOneSimulation: (
+    simulation: IFrontMutateSimulationsItem
+  ) => Promise<void>
+}
+export interface Props {
   simulation: Simulation
   geometries: Geometry[]
-  swr: {
-    mutateOneSimulation: (
-      simulation: IFrontMutateSimulationsItem
-    ) => Promise<void>
-  }
+  swr: Swr
   setVisible: (visible: boolean) => void
 }
 
@@ -45,28 +41,25 @@ export interface IProps {
  * @param props Props
  * @returns BoundaryConditions
  */
-const BoundaryConditions = ({
+const BoundaryConditions: React.FunctionComponent<Props> = ({
   simulation,
   geometries,
   swr,
   setVisible
-}: IProps): React.JSX.Element => {
+}) => {
   // State
   const [boundaryCondition, setBoundaryCondition] =
     useState<IModelBoundaryConditionValue>()
   const [boundaryConditionVisible, setBoundaryConditionVisible] =
     useState<boolean>(false)
 
-  // Context
-  const { dispatch } = useContext(SelectContext)
-
-  // Data
+  // Boundary conditions
   const boundaryConditions = useMemo(
     () => simulation.scheme.configuration.boundaryConditions,
     [simulation]
   )
 
-  // Remove duplicated geometries
+  // filtered geometries (reomve duplicated)
   const filteredGeometries = useMemo(() => {
     const filtered = geometries.reduce(
       (accumulator: Geometry[], current: Geometry) => {
@@ -80,21 +73,6 @@ const BoundaryConditions = ({
     return filtered
   }, [geometries])
 
-  // Part
-  useCustomEffect(
-    () => {
-      if (filteredGeometries[0]?.summary) {
-        dispatch(
-          setType(
-            filteredGeometries[0].summary.dimension === 2 ? 'edges' : 'faces'
-          )
-        )
-      }
-    },
-    [filteredGeometries],
-    [dispatch]
-  )
-
   /**
    * On add
    */
@@ -102,8 +80,7 @@ const BoundaryConditions = ({
     setBoundaryCondition(undefined)
     setBoundaryConditionVisible(true)
     setVisible(false)
-    dispatch(enable())
-  }, [dispatch, setVisible])
+  }, [setVisible])
 
   /**
    * On edit
@@ -120,20 +97,18 @@ const BoundaryConditions = ({
 
       setBoundaryConditionVisible(true)
       setVisible(false)
-      dispatch(enable())
     },
-    [boundaryConditions, dispatch, setVisible]
+    [boundaryConditions, setVisible]
   )
 
   /**
    * On close
    */
   const onClose = useCallback((): void => {
-    dispatch(disable())
     setBoundaryConditionVisible(false)
     setBoundaryCondition(undefined)
     setVisible(true)
-  }, [dispatch, setVisible])
+  }, [setVisible])
 
   /**
    * Render
@@ -143,47 +118,24 @@ const BoundaryConditions = ({
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <AddButton onAdd={onAdd} fullWidth={true} primary={false}>
+          <AddButton onAdd={onAdd} fullWidth={true}>
             Add boundary condition
           </AddButton>
           <List
-            geometries={filteredGeometries.map((geometry) => ({
-              id: geometry.id,
-              summary: geometry.summary
-            }))}
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
-            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+            geometries={filteredGeometries}
+            simulation={simulation}
+            swr={swr}
             onEdit={onEdit}
           />
-          <BoundaryCondition
-            visible={boundaryConditionVisible}
-            geometries={filteredGeometries.map((geometry) => ({
-              id: geometry.id,
-              name: geometry.name,
-              summary: geometry.summary
-            }))}
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
-            boundaryCondition={
-              boundaryCondition && {
-                uuid: boundaryCondition.uuid,
-                name: boundaryCondition.name,
-                type: boundaryCondition.type,
-                geometry: boundaryCondition.geometry,
-                selected: boundaryCondition.selected,
-                values: boundaryCondition.values
-              }
-            }
-            swr={{
-              mutateOneSimulation: swr.mutateOneSimulation
-            }}
-            onClose={onClose}
-          />
+          {boundaryConditionVisible ? (
+            <BoundaryCondition
+              geometries={filteredGeometries}
+              simulation={simulation}
+              value={boundaryCondition}
+              swr={swr}
+              onClose={onClose}
+            />
+          ) : null}
         </Card>
       </Layout.Content>
     </Layout>

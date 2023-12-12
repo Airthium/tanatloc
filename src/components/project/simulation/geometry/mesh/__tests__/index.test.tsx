@@ -92,11 +92,13 @@ describe('components/project/simulation/geometry/mesh', () => {
   })
 
   test('fill', async () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
       <div
-        role="Formula"
+        role={FormulaRole}
         onClick={props.onValueChange}
         onMouseMove={props.onUnitChange}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -134,9 +136,9 @@ describe('components/project/simulation/geometry/mesh', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
 
-    await waitFor(() => screen.getByRole('Formula'))
+    await waitFor(() => screen.getByRole(FormulaRole))
 
-    const formula = screen.getByRole('Formula')
+    const formula = screen.getByRole(FormulaRole)
     await act(() => fireEvent.click(formula))
     await act(() => fireEvent.mouseMove(formula))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))
@@ -153,11 +155,13 @@ describe('components/project/simulation/geometry/mesh', () => {
   })
 
   test('fill - error', async () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
       <div
-        role="Formula"
+        role={FormulaRole}
         onClick={() => props.onValueChange(1.1)}
         onMouseMove={props.onUnitChange}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -196,10 +200,10 @@ describe('components/project/simulation/geometry/mesh', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
 
-    await waitFor(() => screen.getByRole('Formula'))
+    await waitFor(() => screen.getByRole(FormulaRole))
 
     // Formula
-    const formula = screen.getByRole('Formula')
+    const formula = screen.getByRole(FormulaRole)
     await act(() => fireEvent.click(formula))
     await act(() => fireEvent.mouseMove(formula))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(8))

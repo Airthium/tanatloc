@@ -248,7 +248,7 @@ describe('components/project/simulation/run/cloudServer', () => {
       <div
         role={RendererRole}
         onClick={props.onSelect}
-        onKeyUp={console.info}
+        onKeyUp={console.debug}
       />
     ))
 

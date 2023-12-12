@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { IFrontGeometriesItem } from '@/api/index.d'
+import List, {
+  Geometry,
+  Simulation
+} from '@/components/project/simulation/materials/list'
 
-import List from '@/components/project/simulation/materials/list'
-
-import { ISimulation } from '@/database/simulation/index'
 import { SelectContext } from '@/context/select'
 
 const mockEditButton = jest.fn()
@@ -19,13 +19,14 @@ const mockDisable = jest.fn()
 const mockSelect = jest.fn()
 jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
+  setType: jest.fn,
   disable: () => mockDisable(),
   select: () => mockSelect(),
   setPart: jest.fn
 }))
 
 //@ts-ignore
-global.setTimeout = (callback: Function) => callback()
+// global.setTimeout = (callback: Function) => callback()
 
 describe('components/project/simulation/materials/list', () => {
   const EditButtonRole = 'EditButton'
@@ -35,7 +36,7 @@ describe('components/project/simulation/materials/list', () => {
       summary: {
         uuid: 'uuid'
       }
-    } as Pick<IFrontGeometriesItem, 'id' | 'summary'>
+    } as Geometry
   ]
   const simulation = {
     id: 'id',
@@ -55,7 +56,7 @@ describe('components/project/simulation/materials/list', () => {
         }
       }
     }
-  } as ISimulation
+  } as unknown as Simulation
   const swr = {
     mutateOneSimulation: jest.fn()
   }
@@ -89,6 +90,65 @@ describe('components/project/simulation/materials/list', () => {
     unmount()
   })
 
+  test('render 2D', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List
+          geometries={[
+            {
+              ...geometries[0],
+              summary: { uuid: 'uuid', dimension: 2 }
+            } as Geometry
+          ]}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('without geometry', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List
+          geometries={geometries}
+          simulation={
+            {
+              id: 'id',
+              scheme: {
+                configuration: {
+                  materials: {
+                    index: 2,
+                    title: 'title',
+                    values: [
+                      {
+                        uuid: 'uuid',
+                        geometry: 'id1',
+                        selected: [{ uuid: 'uuid', label: 1 }],
+                        material: { label: 'name', children: [] }
+                      }
+                    ]
+                  }
+                }
+              }
+            } as unknown as Simulation
+          }
+          swr={swr}
+          onEdit={onEdit}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
   test('highlight', () => {
     const { unmount } = render(
       <SelectContext.Provider
@@ -104,7 +164,7 @@ describe('components/project/simulation/materials/list', () => {
     )
 
     const item = screen.getByText('name')
-    fireEvent.mouseEnter(item)
+    fireEvent.mouseMove(item)
     expect(mockEnable).toHaveBeenCalledTimes(1)
 
     fireEvent.mouseLeave(item)
@@ -121,7 +181,7 @@ describe('components/project/simulation/materials/list', () => {
       <div
         role={EditButtonRole}
         onClick={props.onEdit}
-        onKeyDown={console.info}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(

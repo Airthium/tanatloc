@@ -78,14 +78,16 @@ describe('components/project/simulation/materials/delete', () => {
   })
 
   test('onDelete', async () => {
+    const DeleteRole = 'Delete'
     mockDeleteButton.mockImplementation((props) => (
       <div
-        role="button"
+        role={DeleteRole}
         onClick={async () => {
           try {
             await props.onDelete()
           } catch (err) {}
         }}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -94,7 +96,7 @@ describe('components/project/simulation/materials/delete', () => {
       </SelectContext.Provider>
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole(DeleteRole)
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -122,7 +124,7 @@ describe('components/project/simulation/materials/delete', () => {
     ]
     await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockSelect).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockSelect).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )

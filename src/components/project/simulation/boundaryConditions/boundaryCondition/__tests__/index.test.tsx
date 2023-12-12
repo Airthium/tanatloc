@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
-
-import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
+import BoundaryCondition, {
+  Geometry,
+  Simulation
+} from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 
 const mockFormula = jest.fn()
 jest.mock(
@@ -22,7 +23,10 @@ jest.mock('@/components/assets/button', () => ({
 }))
 
 jest.mock('@/context/select/actions', () => ({
-  setPart: jest.fn
+  enable: jest.fn,
+  setType: jest.fn,
+  setPart: jest.fn,
+  disable: jest.fn
 }))
 
 const mockAdd = jest.fn()
@@ -43,9 +47,9 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       id: 'id',
       name: 'name',
       summary: {}
-    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+    } as Geometry
   ]
-  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
+  const simulation: Simulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -121,41 +125,6 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   test('render', () => {
     const { unmount } = render(
       <BoundaryCondition
-        visible={true}
-        geometries={geometries}
-        simulation={simulation}
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-
-    unmount()
-  })
-
-  test('no visible', () => {
-    const { rerender, unmount } = render(
-      <BoundaryCondition
-        visible={true}
-        geometries={geometries}
-        simulation={simulation}
-        boundaryCondition={{
-          uuid: 'uuid',
-          name: 'name',
-          type: {
-            key: 'key',
-            label: 'key'
-          },
-          geometry: 'id',
-          selected: [{ uuid: 'uuid', label: 1 }]
-        }}
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-
-    rerender(
-      <BoundaryCondition
-        visible={false}
         geometries={geometries}
         simulation={simulation}
         swr={swr}
@@ -169,8 +138,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   test('2D render', () => {
     const { unmount } = render(
       <BoundaryCondition
-        visible={true}
-        geometries={[]}
+        geometries={[{ id: 'id', summary: { dimension: 2 } } as Geometry]}
         simulation={{
           id: 'id',
           scheme: {
@@ -214,12 +182,16 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   })
 
   test('close', () => {
+    const GoBackRole = 'GoBack'
     mockCancelButton.mockImplementation((props) => (
-      <div role="GoBack" onClick={props.onCancel} />
+      <div
+        role={GoBackRole}
+        onClick={props.onCancel}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <BoundaryCondition
-        visible={true}
         geometries={geometries}
         simulation={simulation}
         swr={swr}
@@ -227,35 +199,43 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       />
     )
 
-    const goBack = screen.getByRole('GoBack')
+    const goBack = screen.getByRole(GoBackRole)
     fireEvent.click(goBack)
 
     unmount()
   })
 
   test('Fill', () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
       <div
-        role="Formula"
+        role={FormulaRole}
         onClick={() => {
           props.onValueChange(1)
           props.onCheckedChange(true)
         }}
         onMouseMove={() => props.onUnitChange({})}
+        onKeyDown={console.debug}
       />
     ))
+    const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
       <div
-        role="Selector"
+        role={SelectorRole}
         onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
+        onKeyDown={console.debug}
       />
     ))
+    const AddRole = 'Add'
     mockAdd.mockImplementation((props) => (
-      <div role="Add" onClick={() => props.onError('error')}></div>
+      <div
+        role={AddRole}
+        onClick={() => props.onError('error')}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <BoundaryCondition
-        visible={true}
         geometries={geometries}
         simulation={simulation}
         swr={swr}
@@ -279,18 +259,18 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     fireEvent.click(radios[0])
 
     // Value
-    const formula = screen.getByRole('Formula')
+    const formula = screen.getByRole(FormulaRole)
     fireEvent.click(formula)
 
     // Unit
     fireEvent.mouseMove(formula)
 
     // Selector
-    const selector = screen.getByRole('Selector')
+    const selector = screen.getByRole(SelectorRole)
     fireEvent.click(selector)
 
     // Add
-    const add = screen.getByRole('Add')
+    const add = screen.getByRole(AddRole)
     fireEvent.click(add)
 
     // Close
@@ -302,15 +282,19 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   })
 
   test('edit', () => {
+    const EditRole = 'Edit'
     mockEdit.mockImplementation((props) => (
-      <div role="Edit" onClick={() => props.onError('error')} />
+      <div
+        role={EditRole}
+        onClick={() => props.onError('error')}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <BoundaryCondition
-        visible={true}
         geometries={geometries}
         simulation={simulation}
-        boundaryCondition={{
+        value={{
           uuid: 'uuid',
           name: 'name',
           type: {
@@ -318,6 +302,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
             label: 'key'
           },
           geometry: 'id',
+          values: [{}],
           selected: [{ uuid: 'uuid', label: 1 }]
         }}
         swr={swr}
@@ -338,17 +323,16 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
         id: 'id1',
         name: 'name1',
         summary: {}
-      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
+      } as Geometry,
       {
         id: 'id2',
         name: 'name2',
         summary: {}
-      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+      } as Geometry
     ]
 
     const { unmount } = render(
       <BoundaryCondition
-        visible={true}
         geometries={geometries}
         simulation={simulation}
         swr={swr}

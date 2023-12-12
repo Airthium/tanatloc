@@ -114,6 +114,20 @@ describe('components/project/view', () => {
     unmount()
   })
 
+  test('with default simulation', () => {
+    mockUseSimulation.mockImplementation(() => [{ id: '0' }])
+    const { unmount } = render(
+      <View
+        simulation={simulation}
+        project={project}
+        results={[]}
+        geometries={[]}
+      />
+    )
+
+    unmount()
+  })
+
   test('with simulation', () => {
     const { unmount } = render(
       <View
@@ -295,8 +309,13 @@ describe('components/project/view', () => {
   })
 
   test('snapshot', async () => {
+    const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div role="Renderer" onClick={props.snapshot.project.apiRoute} />
+      <div
+        role={RendererRole}
+        onClick={props.snapshot.project.apiRoute}
+        onKeyDown={console.debug}
+      />
     ))
 
     const { unmount } = render(
@@ -308,7 +327,7 @@ describe('components/project/view', () => {
       />
     )
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     fireEvent.click(renderer)
 
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
@@ -334,8 +353,13 @@ describe('components/project/view', () => {
   })
 
   test('highlight', async () => {
+    const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div role="Renderer" onClick={props.selection.onHighlight} />
+      <div
+        role={RendererRole}
+        onClick={props.selection.onHighlight}
+        onKeyDown={console.debug}
+      />
     ))
 
     const { unmount } = render(
@@ -347,7 +371,7 @@ describe('components/project/view', () => {
       />
     )
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     fireEvent.click(renderer)
 
     await waitFor(() => expect(mockHighlight).toHaveBeenCalledTimes(1))
@@ -356,8 +380,13 @@ describe('components/project/view', () => {
   })
 
   test('select', async () => {
+    const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div role="Renderer" onClick={props.selection.onSelect} />
+      <div
+        role={RendererRole}
+        onClick={props.selection.onSelect}
+        onKeyDown={console.debug}
+      />
     ))
 
     const { unmount } = render(
@@ -369,7 +398,7 @@ describe('components/project/view', () => {
       />
     )
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     fireEvent.click(renderer)
 
     await waitFor(() => expect(mockSelect).toHaveBeenCalledTimes(1))
@@ -378,8 +407,13 @@ describe('components/project/view', () => {
   })
 
   test('point', async () => {
+    const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div role="Renderer" onClick={props.selection.onPoint} />
+      <div
+        role={RendererRole}
+        onClick={props.selection.onPoint}
+        onKeyDown={console.debug}
+      />
     ))
 
     const { unmount } = render(
@@ -391,7 +425,7 @@ describe('components/project/view', () => {
       />
     )
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     fireEvent.click(renderer)
 
     await waitFor(() => expect(mockSetPoint).toHaveBeenCalledTimes(1))
@@ -400,8 +434,13 @@ describe('components/project/view', () => {
   })
 
   test('data', async () => {
+    const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div role="Renderer" onClick={props.onData} />
+      <div
+        role={RendererRole}
+        onClick={props.onData}
+        onKeyDown={console.debug}
+      />
     ))
 
     const { unmount } = render(
@@ -413,7 +452,7 @@ describe('components/project/view', () => {
       />
     )
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     fireEvent.click(renderer)
 
     await waitFor(() => expect(mockSetData).toHaveBeenCalledTimes(1))
@@ -422,8 +461,13 @@ describe('components/project/view', () => {
   })
 
   test('postProcessing', async () => {
+    const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div role="Renderer" onClick={props.onPostProcessing} />
+      <div
+        role={RendererRole}
+        onClick={props.onPostProcessing}
+        onKeyDown={console.debug}
+      />
     ))
 
     const { unmount } = render(
@@ -435,7 +479,7 @@ describe('components/project/view', () => {
       />
     )
 
-    const renderer = screen.getByRole('Renderer')
+    const renderer = screen.getByRole(RendererRole)
     fireEvent.click(renderer)
 
     await waitFor(() => expect(mockSetPostProcessing).toHaveBeenCalledTimes(1))

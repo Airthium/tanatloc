@@ -77,9 +77,46 @@ describe('components/project/simulation/materials/edit', () => {
     unmount()
   })
 
-  test('onEdit - without material.material', async () => {
+  test('onEdit - without uuid', async () => {
+    const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role="EditButton" onClick={props.onEdit} />
+      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
+    ))
+    const { unmount } = render(
+      <Edit
+        material={
+          {
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 3 }
+            ]
+          } as IModelMaterialsValue
+        }
+        simulation={simulation}
+        swr={swr}
+        onError={onError}
+        onClose={onClose}
+      />
+    )
+
+    const button = screen.getByRole(EditRole)
+
+    await act(() => fireEvent.click(button))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onError).toHaveBeenLastCalledWith(errors.uuid))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
+  test('onEdit - without material.material', async () => {
+    const EditRole = 'EditButton'
+    mockEditButton.mockImplementation((props) => (
+      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
     ))
     const { unmount } = render(
       <Edit
@@ -99,7 +136,7 @@ describe('components/project/simulation/materials/edit', () => {
       />
     )
 
-    const button = screen.getByRole('EditButton')
+    const button = screen.getByRole(EditRole)
 
     await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
@@ -116,8 +153,9 @@ describe('components/project/simulation/materials/edit', () => {
   })
 
   test('onEdit - without material.selected', async () => {
+    const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role="EditButton" onClick={props.onEdit} />
+      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
     ))
     const { unmount } = render(
       <Edit
@@ -140,7 +178,7 @@ describe('components/project/simulation/materials/edit', () => {
       />
     )
 
-    const button = screen.getByRole('EditButton')
+    const button = screen.getByRole(EditRole)
 
     await act(() => fireEvent.click(button))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
@@ -157,8 +195,9 @@ describe('components/project/simulation/materials/edit', () => {
   })
 
   test('onEdit', async () => {
+    const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role="EditButton" onClick={props.onEdit} />
+      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
     ))
     const { unmount } = render(
       <Edit
@@ -170,7 +209,7 @@ describe('components/project/simulation/materials/edit', () => {
       />
     )
 
-    const button = screen.getByRole('EditButton')
+    const button = screen.getByRole(EditRole)
 
     // Normal
     await act(() => fireEvent.click(button))

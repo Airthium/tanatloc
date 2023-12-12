@@ -43,16 +43,25 @@ jest.mock('../panel', () => (props: any) => mockPanel(props))
 const mockGeometry = jest.fn()
 jest.mock('../geometry', () => {
   const Geometry = (props: any) => mockGeometry(props)
-  const Add = (props: any) => (
-    <div role="GeometryAdd" onClick={props.setVisible} />
-  )
-  Geometry.Add = Add
   Geometry.componentName = 'Geometry'
   return Geometry
 })
 
+const GeometryAddRole = 'GeometryAdd'
+jest.mock('../geometry/add', () => (props: any) => (
+  <div
+    role={GeometryAddRole}
+    onClick={props.setVisible}
+    onKeyUp={console.debug}
+  />
+))
+
 jest.mock('../view', () => () => <div />)
 
+const SimulationMaterialsRole = 'Simulation.Materials'
+const SimulationBoundaryConditionsRole = 'Simulation.BoundaryCondition'
+const SimulationRunRole = 'Simulation.Run'
+const SimulationPostprocessingRole = 'Simulation.Postprocessing'
 const mockSelector = jest.fn()
 jest.mock('../simulation', () => {
   let count = 0
@@ -62,31 +71,38 @@ jest.mock('../simulation', () => {
     About: () => <div />,
     Geometry: () => <div />,
     Materials: (props: any) => (
-      <div role="Simulation.Materials" onClick={() => props.setVisible()} />
+      <div
+        role={SimulationMaterialsRole}
+        onClick={() => props.setVisible()}
+        onKeyUp={console.debug}
+      />
     ),
     Parameters: () => <div />,
     Initialization: () => <div />,
     BoundaryConditions: (props: any) => (
       <div
-        role="Simulation.BoundaryCondition"
+        role={SimulationBoundaryConditionsRole}
         onClick={() => props.setVisible()}
+        onKeyUp={console.debug}
       />
     ),
     Run: (props: any) => (
       <div
-        role="Simulation.Run"
+        role={SimulationRunRole}
         onClick={() => {
           count++
           if (count === 1) props.setResults([{}])
           else if (count === 2) props.setResults([])
           else props.setVisible(false)
         }}
+        onKeyUp={console.debug}
       />
     ),
     Postprocessing: (props: any) => (
       <div
-        role="Simulation.Postprocessing"
+        role={SimulationPostprocessingRole}
         onClick={() => props.setResult({})}
+        onKeyUp={console.debug}
       />
     )
   }
@@ -338,12 +354,13 @@ describe('components/project', () => {
   })
 
   test('dashboard', () => {
+    const GoBackRole = 'GoBack'
     mockGoBack.mockImplementation((props) => (
-      <div role="GoBack" onClick={props.onClick} />
+      <div role={GoBackRole} onClick={props.onClick} onKeyUp={console.debug} />
     ))
     const { unmount } = render(<Project />)
 
-    const goBack = screen.getByRole('GoBack')
+    const goBack = screen.getByRole(GoBackRole)
     fireEvent.click(goBack)
 
     expect(mockPush).toHaveBeenCalledTimes(1)
@@ -448,8 +465,13 @@ describe('components/project', () => {
   })
 
   test('menu', () => {
+    const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
-      <div role="Selector" onClick={props.onCancel} />
+      <div
+        role={SelectorRole}
+        onClick={props.onCancel}
+        onKeyDown={console.debug}
+      />
     ))
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Project />)
@@ -473,7 +495,7 @@ describe('components/project', () => {
     fireEvent.click(newSimulation)
 
     // Close selector
-    const selector = screen.getByRole('Selector')
+    const selector = screen.getByRole(SelectorRole)
     fireEvent.click(selector)
 
     // Open simulation 2
@@ -508,7 +530,7 @@ describe('components/project', () => {
       name: 'exclamation-circle Simulation 1 Materials'
     })
     fireEvent.click(simulationItem)
-    const materials = screen.getByRole('Simulation.Materials')
+    const materials = screen.getByRole(SimulationMaterialsRole)
     fireEvent.click(materials)
 
     simulationItem = screen.getByRole('menuitem', {
@@ -520,7 +542,7 @@ describe('components/project', () => {
       name: 'exclamation-circle Simulation 1 BC'
     })
     fireEvent.click(simulationItem)
-    const boundaryCondition = screen.getByRole('Simulation.BoundaryCondition')
+    const boundaryCondition = screen.getByRole(SimulationBoundaryConditionsRole)
     fireEvent.click(boundaryCondition)
 
     simulationItem = screen.getByRole('menuitem', {
@@ -550,7 +572,7 @@ describe('components/project', () => {
   test('Geometry add visible', () => {
     const { unmount } = render(<Project />)
 
-    const geometryAdd = screen.getByRole('GeometryAdd')
+    const geometryAdd = screen.getByRole(GeometryAddRole)
     fireEvent.click(geometryAdd)
 
     unmount()
@@ -558,8 +580,13 @@ describe('components/project', () => {
 
   test('Geometry cleanup', () => {
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
+    const GeometryRole = 'Geometry'
     mockGeometry.mockImplementation((props) => (
-      <div role="Geometry" onClick={() => props.onCleanup('idg')} />
+      <div
+        role={GeometryRole}
+        onClick={() => props.onCleanup('idg')}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(<Project />)
 
@@ -568,7 +595,7 @@ describe('components/project', () => {
     })
     fireEvent.click(geometry)
 
-    const geometryPanel = screen.getByRole('Geometry')
+    const geometryPanel = screen.getByRole(GeometryRole)
     fireEvent.click(geometryPanel)
 
     unmount()
@@ -622,12 +649,17 @@ describe('components/project', () => {
 
   test('Selector', async () => {
     mockProject.mockImplementation(() => ({}))
+    const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
-      <div role="Selector" onClick={() => props.onOk({ model: {} })} />
+      <div
+        role={SelectorRole}
+        onClick={() => props.onOk({ model: {} })}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(<Project />)
 
-    const selector = screen.getByRole('Selector')
+    const selector = screen.getByRole(SelectorRole)
 
     // Normal
     mockSimulationAdd.mockImplementation(() => ({ id: 'id' }))
@@ -665,10 +697,10 @@ describe('components/project', () => {
     })
     fireEvent.click(simulationItem)
 
-    const run = screen.getByRole('Simulation.Run')
+    const run = screen.getByRole(SimulationRunRole)
     fireEvent.click(run)
 
-    const postprocessing = screen.getByRole('Simulation.Postprocessing')
+    const postprocessing = screen.getByRole(SimulationPostprocessingRole)
     fireEvent.click(postprocessing)
 
     fireEvent.click(run)

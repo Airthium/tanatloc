@@ -1,10 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Material from '@/components/project/simulation/materials/material'
+import Material, {
+  Geometry,
+  Simulation
+} from '@/components/project/simulation/materials/material'
 
-import { ISimulation } from '@/database/simulation/index'
 import { IModelMaterialsValue } from '@/models/index.d'
-import { IFrontGeometriesItem } from '@/api/index.d'
 
 const mockFormula = jest.fn()
 jest.mock(
@@ -24,7 +25,10 @@ jest.mock('@/components/assets/button', () => ({
 }))
 
 jest.mock('@/context/select/actions', () => ({
-  setPart: jest.fn
+  enable: jest.fn,
+  setType: jest.fn,
+  setPart: jest.fn,
+  disable: jest.fn
 }))
 
 const mockDatabase = jest.fn()
@@ -51,7 +55,7 @@ describe('components/project/simulation/materials/material', () => {
       id: 'id',
       name: 'name',
       summary: {}
-    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+    } as Geometry
   ]
   const simulation = {
     id: 'id',
@@ -78,7 +82,7 @@ describe('components/project/simulation/materials/material', () => {
         }
       }
     }
-  } as ISimulation
+  } as Simulation
   const swr = { mutateOneSimulation: jest.fn() }
   const onClose = jest.fn()
 
@@ -117,43 +121,28 @@ describe('components/project/simulation/materials/material', () => {
     unmount()
   })
 
-  test('no materials', () => {
-    const { unmount } = render(
-      <Material
-        geometries={geometries}
-        simulation={
-          {
-            id: 'id',
-            scheme: {
-              configuration: {}
-            }
-          } as ISimulation
-        }
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-
-    unmount()
-  })
-
   test('fill', () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
       <div
-        role="Formula"
+        role={FormulaRole}
         onClick={() => props.onValueChange(1)}
         onMouseMove={() => props.onUnitChange({})}
+        onKeyDown={console.debug}
       />
     ))
+    const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
       <div
-        role="Selector"
+        role={SelectorRole}
         onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
+        onKeyDown={console.debug}
       />
     ))
+    const DatabaseRole = 'Database'
     mockDatabase.mockImplementation((props) => (
       <div
-        role="Database"
+        role={DatabaseRole}
         onClick={() =>
           props.onSelect({
             children: [
@@ -163,13 +152,24 @@ describe('components/project/simulation/materials/material', () => {
             ]
           })
         }
+        onKeyDown={console.debug}
       />
     ))
+    const AddRole = 'Add'
     mockAdd.mockImplementation((props) => (
-      <div role="Add" onClick={() => props.onError('error')}></div>
+      <div
+        role={AddRole}
+        onClick={() => props.onError('error')}
+        onKeyDown={console.debug}
+      />
     ))
+    const CancelRole = 'Cancel'
     mockCancelButton.mockImplementation((props) => (
-      <div role="Cancel" onClick={props.onCancel} />
+      <div
+        role={CancelRole}
+        onClick={props.onCancel}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <Material
@@ -181,26 +181,26 @@ describe('components/project/simulation/materials/material', () => {
     )
 
     // Formula
-    const formula = screen.getAllByRole('Formula')[0]
+    const formula = screen.getAllByRole(FormulaRole)[0]
     fireEvent.click(formula)
 
     // Unit
     fireEvent.mouseMove(formula)
 
     // Database
-    const database = screen.getByRole('Database')
+    const database = screen.getByRole(DatabaseRole)
     fireEvent.click(database)
 
     // Selector
-    const selector = screen.getByRole('Selector')
+    const selector = screen.getByRole(SelectorRole)
     fireEvent.click(selector)
 
     // Add
-    const add = screen.getByRole('Add')
+    const add = screen.getByRole(AddRole)
     fireEvent.click(add)
 
     // Close
-    const button = screen.getByRole('Cancel')
+    const button = screen.getByRole(CancelRole)
     fireEvent.click(button)
     expect(onClose).toHaveBeenCalledTimes(1)
 
@@ -212,8 +212,13 @@ describe('components/project/simulation/materials/material', () => {
   })
 
   test('edit', () => {
+    const EditRole = 'Edit'
     mockEdit.mockImplementation((props) => (
-      <div role="Edit" onClick={() => props.onError('error')} />
+      <div
+        role={EditRole}
+        onClick={() => props.onError('error')}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <Material
@@ -232,7 +237,7 @@ describe('components/project/simulation/materials/material', () => {
     )
 
     // Edit
-    const edit = screen.getByRole('Edit')
+    const edit = screen.getByRole(EditRole)
     fireEvent.click(edit)
 
     unmount()
@@ -261,7 +266,8 @@ describe('components/project/simulation/materials/material', () => {
                   ],
                   values: [
                     {
-                      uuid: 'uuid'
+                      uuid: 'uuid',
+                      material: {}
                     },
                     {
                       uuid: 'uuid2',
@@ -273,7 +279,7 @@ describe('components/project/simulation/materials/material', () => {
                 }
               }
             }
-          } as ISimulation
+          } as unknown as Simulation
         }
         value={
           {
@@ -297,12 +303,12 @@ describe('components/project/simulation/materials/material', () => {
         id: 'id1',
         name: 'name1',
         summary: {}
-      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
+      } as Geometry,
       {
         id: 'id2',
         name: 'name2',
         summary: {}
-      } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+      } as Geometry
     ]
 
     const { unmount } = render(

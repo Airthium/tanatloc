@@ -20,7 +20,7 @@ jest.mock('antd', () => {
             onClose: jest.fn
           }))
         }
-        onKeyUp={console.info}
+        onKeyUp={console.debug}
       />
     )
   }

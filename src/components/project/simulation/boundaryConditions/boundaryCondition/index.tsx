@@ -425,7 +425,6 @@ const BoundaryCondition: React.FunctionComponent<Props> = ({
     setUuid(value?.uuid ?? 'add')
   }, [value, uuid])
 
-  console.log(boundaryConditions)
   // Initialize name
   useEffect(() => {
     if (name) return

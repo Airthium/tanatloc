@@ -166,7 +166,7 @@ describe('components/project/simulation/run', () => {
   })
 
   test('loading', () => {
-    mockSimulation.mockImplementation(() => null)
+    mockSimulation.mockImplementation(() => ({ id: '0' }))
     const { container, unmount } = render(
       <Run
         geometries={geometries}
@@ -324,8 +324,13 @@ describe('components/project/simulation/run', () => {
   })
 
   test('onCloudServer', async () => {
+    const CloudServerRole = 'CloudServer'
     mockCloudServer.mockImplementation((props) => (
-      <div role="CloudServer" onClick={() => props.onOk({})} />
+      <div
+        role={CloudServerRole}
+        onClick={() => props.onOk({})}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <Run
@@ -339,7 +344,7 @@ describe('components/project/simulation/run', () => {
       />
     )
 
-    const cloudServer = screen.getByRole('CloudServer')
+    const cloudServer = screen.getByRole(CloudServerRole)
 
     // Error
     mockUpdate.mockImplementation(() => {

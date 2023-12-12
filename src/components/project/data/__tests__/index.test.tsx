@@ -44,7 +44,7 @@ describe('components/project/data', () => {
     mockErrorNotification.mockReset()
 
     mockSimulation.mockReset()
-    mockSimulation.mockImplementation(() => ({}))
+    mockSimulation.mockImplementation(() => ({ tasks: [] }))
   })
 
   test('render', () => {
@@ -68,21 +68,15 @@ describe('components/project/data', () => {
     unmount()
   })
 
-  test('no data names (old format)', () => {
-    const data = {
-      tasks: [
-        {
-          datas: [
-            {
-              name: 'name'
-            }
-          ]
-        }
-      ]
-    }
+  test('default simulation', () => {
+    const data = { id: '0' }
     mockSimulation.mockImplementation(() => data)
 
-    const { unmount } = render(<Data simulation={simulation} />)
+    const { unmount } = render(
+      <SelectContext.Provider value={contextValue}>
+        <Data simulation={simulation} />
+      </SelectContext.Provider>
+    )
 
     unmount()
   })
@@ -101,6 +95,47 @@ describe('components/project/data', () => {
               names: ['data name', 'data_name2'],
               x: 1,
               ys: [1, 2]
+            }
+          ]
+        },
+        {}
+      ]
+    }
+    mockSimulation.mockImplementation(() => data)
+
+    const { unmount } = render(
+      <SelectContext.Provider value={contextValue}>
+        <Data simulation={simulation} />
+      </SelectContext.Provider>
+    )
+
+    // Checkbox
+    const checkboxes = screen.getAllByTestId('table-checkbox')
+    fireEvent.click(checkboxes[0])
+    fireEvent.click(checkboxes[1])
+    fireEvent.click(checkboxes[0])
+
+    // Close
+    const closeButton = screen.getByRole('button', { name: 'Close' })
+    fireEvent.click(closeButton)
+
+    unmount()
+  })
+
+  test('with data', () => {
+    const data = {
+      tasks: [
+        {
+          datas: [
+            {
+              names: ['data name', 'data_name2'],
+              x: 0,
+              ys: [0, 0]
+            },
+            {
+              names: ['data name', 'data_name2', 'data_name3'],
+              x: 1,
+              ys: [1, 2, 3]
             }
           ]
         },

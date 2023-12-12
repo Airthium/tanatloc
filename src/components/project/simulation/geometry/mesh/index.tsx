@@ -195,7 +195,7 @@ const Mesh: React.FunctionComponent<IProps> = ({ simulation, index, swr }) => {
             ...global,
             unit
           } as MeshParameters
-          _onGlobal(simulation, index, newGlobal, swr)
+          await _onGlobal(simulation, index, newGlobal, swr)
           setGlobal(newGlobal)
         } catch (err: any) {
           dispatch(addError({ title: errors.update, err }))

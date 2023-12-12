@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { IFrontGeometriesItem, IFrontSimulationsItem } from '@/api/index.d'
-
-import List from '@/components/project/simulation/boundaryConditions/list'
+import List, {
+  Geometry,
+  Simulation
+} from '@/components/project/simulation/boundaryConditions/list'
 import { SelectContext } from '@/context/select'
 
 const mockEnable = jest.fn()
@@ -10,6 +11,7 @@ const mockDisable = jest.fn()
 const mockSelect = jest.fn()
 jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
+  setType: jest.fn,
   disable: () => mockDisable(),
   select: () => mockSelect(),
   setPart: jest.fn
@@ -31,9 +33,9 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     {
       id: 'id',
       summary: { uuid: 'uuid' }
-    } as Pick<IFrontGeometriesItem, 'id' | 'summary'>
+    } as Geometry
   ]
-  const simulation: Pick<IFrontSimulationsItem, 'id' | 'scheme'> = {
+  const simulation: Simulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -42,7 +44,6 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       code: 'code',
       version: 'version',
       description: 'description',
-      //@ts-ignore
       configuration: {
         boundaryConditions: {
           index: 1,
@@ -65,7 +66,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
         }
       }
     }
-  }
+  } as unknown as Simulation
   const swr = { mutateOneSimulation: jest.fn() }
   const onEdit = jest.fn()
 
@@ -97,10 +98,86 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     unmount()
   })
 
-  test('highlight', () => {
+  test('render 2D', () => {
     const { unmount } = render(
       <SelectContext.Provider
         value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List
+          geometries={[
+            {
+              ...geometries[0],
+              summary: { uuid: 'uuid', dimension: 2 }
+            } as Geometry
+          ]}
+          simulation={simulation}
+          swr={swr}
+          onEdit={onEdit}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('no geometry', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List
+          geometries={geometries}
+          simulation={
+            {
+              id: 'id',
+              scheme: {
+                category: 'category',
+                name: 'name',
+                algorithm: 'algorithm',
+                code: 'code',
+                version: 'version',
+                description: 'description',
+                configuration: {
+                  boundaryConditions: {
+                    index: 1,
+                    title: 'Boundary conditions',
+                    key: {
+                      label: 'label',
+                      values: [
+                        {
+                          uuid: 'uuid',
+                          name: 'name',
+                          type: {
+                            key: 'key',
+                            label: 'key'
+                          },
+                          geometry: 'id1',
+                          selected: [{ uuid: 'uuid', label: 1 }]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            } as unknown as Simulation
+          }
+          swr={swr}
+          onEdit={onEdit}
+        />
+      </SelectContext.Provider>
+    )
+
+    unmount()
+  })
+
+  test('highlight', () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          selected: [{ uuid: 'uuid', label: 1 }],
+          dispatch: jest.fn
+        }}
       >
         <List
           geometries={geometries}
@@ -112,7 +189,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     )
 
     const item = screen.getByText('name')
-    fireEvent.mouseEnter(item)
+    fireEvent.mouseMove(item)
     expect(mockEnable).toHaveBeenCalledTimes(1)
 
     fireEvent.mouseLeave(item)
@@ -130,7 +207,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       <div
         role={EditButtonRole}
         onClick={props.onEdit}
-        onKeyDown={console.info}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(

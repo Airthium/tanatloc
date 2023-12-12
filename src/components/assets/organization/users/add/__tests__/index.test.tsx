@@ -58,40 +58,48 @@ describe('componenets/assets/organization/users/add', () => {
   })
 
   test('setVisible', () => {
+    const AddRole = 'AddButton'
     mockAddButton.mockImplementation((props) => (
-      <div role="AddButton" onClick={props.onAdd} />
+      <div role={AddRole} onClick={props.onAdd} onKeyDown={console.debug} />
     ))
+    const DialogRole = 'Dialog'
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onCancel} />
+      <div
+        role={DialogRole}
+        onClick={props.onCancel}
+        onKeyDown={console.debug}
+      />
     ))
     const { unmount } = render(
       <Add title={title} organization={organization} dBkey={dBkey} swr={swr} />
     )
-    const button = screen.getByRole('AddButton')
+    const button = screen.getByRole(AddRole)
     fireEvent.click(button)
 
-    const dialog = screen.getByRole('Dialog')
+    const dialog = screen.getByRole(DialogRole)
     fireEvent.click(dialog)
 
     unmount()
   })
 
   test('onFinish', async () => {
+    const DialogRole = 'Dialog'
     mockDialog.mockImplementation((props) => (
       <div
-        role="Dialog"
+        role={DialogRole}
         onClick={async () => {
           try {
             await props.onOk({ email: 'email' })
           } catch (err) {}
         }}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
       <Add title={title} organization={organization} dBkey={dBkey} swr={swr} />
     )
 
-    const dialog = screen.getByRole('Dialog')
+    const dialog = screen.getByRole(DialogRole)
 
     // Normal
     await act(() => fireEvent.click(dialog))
@@ -110,7 +118,7 @@ describe('componenets/assets/organization/users/add', () => {
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.add,
-        new Error('update error')
+        new Error(errors.add)
       )
     )
 
@@ -118,14 +126,16 @@ describe('componenets/assets/organization/users/add', () => {
   })
 
   test('onFinish, exists', async () => {
+    const DialogRole = 'Dialog'
     mockDialog.mockImplementation((props) => (
       <div
-        role="Dialog"
+        role={DialogRole}
         onClick={async () => {
           try {
             await props.onOk({ email: 'email' })
           } catch (err) {}
         }}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -150,7 +160,7 @@ describe('componenets/assets/organization/users/add', () => {
       />
     )
 
-    const dialog = screen.getByRole('Dialog')
+    const dialog = screen.getByRole(DialogRole)
 
     // Normal
     await act(() => fireEvent.click(dialog))
@@ -158,7 +168,7 @@ describe('componenets/assets/organization/users/add', () => {
     await waitFor(() =>
       expect(mockErrorNotification).toHaveBeenLastCalledWith(
         errors.existing,
-        undefined
+        new Error(errors.existing)
       )
     )
 

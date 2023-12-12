@@ -1,10 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
-
-import { ISimulation } from '@/database/simulation/index'
-import { SelectContext } from '@/context/select'
-import { IFrontGeometriesItem } from '@/api/index.d'
+import BoundaryConditions, {
+  Geometry,
+  Simulation
+} from '@/components/project/simulation/boundaryConditions'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -23,30 +22,18 @@ jest.mock(
   () => (props: any) => mockBoundaryCondition(props)
 )
 
-const mockEnable = jest.fn()
-const mockDisable = jest.fn()
-const mockSetType = jest.fn()
-jest.mock('@/context/select/actions', () => ({
-  enable: () => mockEnable(),
-  disable: () => mockDisable(),
-  setType: () => mockSetType()
-}))
-
 describe('components/project/simulation/boundaryConditions', () => {
-  const AddButtonRole = 'AddButton'
-  const ListRole = 'List'
-  const BoundaryConditionRole = 'BoundaryCondition'
   const geometries = [
     {
       id: 'id',
       name: 'name',
       summary: {}
-    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>,
+    } as Geometry,
     {
-      id: 'id',
+      id: 'id1',
       name: 'name',
       summary: {}
-    } as Pick<IFrontGeometriesItem, 'id' | 'name' | 'summary'>
+    } as Geometry
   ]
   const simulation = {
     id: 'id',
@@ -78,7 +65,7 @@ describe('components/project/simulation/boundaryConditions', () => {
         }
       }
     }
-  } as ISimulation
+  } as unknown as Simulation
   const swr = { mutateOneSimulation: jest.fn() }
   const setVisible = jest.fn()
 
@@ -92,156 +79,128 @@ describe('components/project/simulation/boundaryConditions', () => {
     mockBoundaryCondition.mockReset()
     mockBoundaryCondition.mockImplementation(() => <div />)
 
-    mockEnable.mockReset()
-    mockDisable.mockReset()
-    mockSetType.mockReset()
-
     setVisible.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
-        <BoundaryConditions
-          geometries={geometries}
-          simulation={simulation}
-          swr={swr}
-          setVisible={setVisible}
-        />
-      </SelectContext.Provider>
+      <BoundaryConditions
+        geometries={geometries}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
     )
-
-    expect(mockSetType).toHaveBeenCalledTimes(1)
 
     unmount()
   })
 
   test('render - 2D', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
-        <BoundaryConditions
-          geometries={[
-            {
-              ...geometries[0],
-              summary: {
-                uuid: 'uuid',
-                type: 'geometry2D',
-                dimension: 2
-              }
+      <BoundaryConditions
+        geometries={[
+          {
+            ...geometries[0],
+            summary: {
+              uuid: 'uuid',
+              type: 'geometry2D',
+              dimension: 2
             }
-          ]}
-          simulation={simulation}
-          swr={swr}
-          setVisible={setVisible}
-        />
-      </SelectContext.Provider>
+          }
+        ]}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
     )
-
-    expect(mockSetType).toHaveBeenCalledTimes(1)
 
     unmount()
   })
 
   test('no geometry', () => {
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
-        <BoundaryConditions
-          geometries={[]}
-          simulation={simulation}
-          swr={swr}
-          setVisible={setVisible}
-        />
-      </SelectContext.Provider>
+      <BoundaryConditions
+        geometries={[]}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
     )
 
     unmount()
   })
 
   test('onAdd', () => {
+    const AddButtonRole = 'AddButton'
     mockAddButton.mockImplementation((props) => (
-      <div role={AddButtonRole} onClick={props.onAdd} onKeyUp={console.info} />
+      <div role={AddButtonRole} onClick={props.onAdd} onKeyUp={console.debug} />
     ))
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
-        <BoundaryConditions
-          geometries={geometries}
-          simulation={simulation}
-          swr={swr}
-          setVisible={setVisible}
-        />
-      </SelectContext.Provider>
+      <BoundaryConditions
+        geometries={geometries}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
     )
 
     const add = screen.getByRole(AddButtonRole)
     fireEvent.click(add)
 
-    expect(mockEnable).toHaveBeenCalledTimes(1)
-
     unmount()
   })
 
   test('onEdit', () => {
+    const ListRole = 'List'
     mockList.mockImplementation((props) => (
       <div
         role={ListRole}
         onClick={() => props.onEdit('dirichlet', 0)}
-        onKeyUp={console.info}
+        onKeyUp={console.debug}
       />
     ))
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
-        <BoundaryConditions
-          geometries={geometries}
-          simulation={simulation}
-          swr={swr}
-          setVisible={setVisible}
-        />
-      </SelectContext.Provider>
+      <BoundaryConditions
+        geometries={geometries}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
     )
 
     const list = screen.getByRole(ListRole)
     fireEvent.click(list)
 
-    expect(mockEnable).toHaveBeenCalledTimes(1)
-
     unmount()
   })
 
   test('onClose', () => {
+    const AddButtonRole = 'AddButton'
+    mockAddButton.mockImplementation((props) => (
+      <div role={AddButtonRole} onClick={props.onAdd} onKeyUp={console.debug} />
+    ))
+    const BoundaryConditionRole = 'BoundaryCondition'
     mockBoundaryCondition.mockImplementation((props) => (
       <div
         role={BoundaryConditionRole}
         onClick={props.onClose}
-        onKeyUp={console.info}
+        onKeyUp={console.debug}
       />
     ))
     const { unmount } = render(
-      <SelectContext.Provider
-        value={{ enabled: true, selected: [], dispatch: jest.fn }}
-      >
-        <BoundaryConditions
-          geometries={geometries}
-          simulation={simulation}
-          swr={swr}
-          setVisible={setVisible}
-        />
-      </SelectContext.Provider>
+      <BoundaryConditions
+        geometries={geometries}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
     )
+
+    const add = screen.getByRole(AddButtonRole)
+    fireEvent.click(add)
 
     const boundaryCondition = screen.getByRole(BoundaryConditionRole)
     fireEvent.click(boundaryCondition)
-
-    expect(mockDisable).toHaveBeenCalledTimes(1)
 
     unmount()
   })

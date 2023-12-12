@@ -521,11 +521,7 @@ const Project: React.FunctionComponent = () => {
           onClose={onPanelClose}
         >
           <Simulation.Materials
-            geometries={geometries.map((geometry) => ({
-              id: geometry.id,
-              name: geometry.name,
-              summary: geometry.summary
-            }))}
+            geometries={geometries}
             simulation={{
               id: current.id,
               scheme: current.scheme
@@ -576,11 +572,7 @@ const Project: React.FunctionComponent = () => {
           onClose={onPanelClose}
         >
           <Simulation.BoundaryConditions
-            geometries={geometries.map((geometry) => ({
-              id: geometry.id,
-              name: geometry.name,
-              summary: geometry.summary
-            }))}
+            geometries={geometries}
             simulation={{
               id: current.id,
               scheme: current.scheme

@@ -2,8 +2,6 @@ import { render } from '@testing-library/react'
 
 import Loading from '@/components/loading'
 
-jest.mock('@/components/background', () => 'background')
-
 Element.prototype.scrollTo = () => {}
 
 describe('components/loading', () => {

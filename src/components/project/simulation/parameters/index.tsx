@@ -322,11 +322,7 @@ export const _onChange = async (
 
   // Update local
   const parameters = newSimulation.scheme.configuration.parameters
-  const parameter = parameters[key] as {
-    label: string
-    advanced?: boolean
-    children: IModelParameter[]
-  }
+  const parameter = parameters[key] as IModelParametersGroup
   parameter.children[index].value = value
 
   // Diff
@@ -379,11 +375,7 @@ export const _onUnitChange = async (
 
   // Update local
   const parameters = newSimulation.scheme.configuration.parameters
-  const parameter = parameters[key] as {
-    label: string
-    advanced?: boolean
-    children: IModelParameter[]
-  }
+  const parameter = parameters[key] as IModelParametersGroup
   parameter.children[index].unit = unit
 
   // Diff
@@ -552,6 +544,7 @@ const ParameterChild: React.FunctionComponent<IParameterChildProps> = ({
   /**
    * Render
    */
+  if (child.hidden) return null
   if (dimension === 2)
     return (
       <ParameterChild2D
@@ -654,13 +647,10 @@ const Parameters: React.FunctionComponent<IProps> = ({ simulation, swr }) => {
       Object.keys(subScheme)
         .map((key) => {
           if (key === 'index' || key === 'title' || key === 'done') return null
-          const parameter = subScheme[key] as {
-            label: string
-            advanced?: boolean
-            children: IModelParameter[]
-          }
+          const parameter = subScheme[key] as IModelParametersGroup
 
           if (parameter.advanced) return null
+          if (parameter.hidden) return null
 
           return (
             <Parameter
@@ -683,13 +673,10 @@ const Parameters: React.FunctionComponent<IProps> = ({ simulation, swr }) => {
       Object.keys(subScheme)
         .map((key) => {
           if (key === 'index' || key === 'title' || key === 'done') return null
-          const parameter = subScheme[key] as {
-            label: string
-            advanced?: boolean
-            children: IModelParameter[]
-          }
+          const parameter = subScheme[key] as IModelParametersGroup
 
           if (!parameter.advanced) return null
+          if (parameter.hidden) return null
 
           return (
             <Parameter

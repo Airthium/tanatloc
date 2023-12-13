@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Run.Results */
 
 import { useCallback, useMemo, useState } from 'react'
-import { Button, Card, Select, Space, Spin } from 'antd'
+import { Button, Card, Select, Space } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
 import { IFrontSimulation, IFrontResult } from '@/api/index.d'
@@ -217,8 +217,7 @@ const Results: React.FunctionComponent<IProps> = ({
   )
 
   // Results render
-  if (!singleFiles && !filteredFiles) return <Spin />
-  if (!singleFiles?.length && !filteredFiles)
+  if (!singleFiles.length && !filteredFiles)
     return <Card size="small">No results yet</Card>
   return (
     <Card

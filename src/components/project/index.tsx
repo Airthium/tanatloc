@@ -1134,10 +1134,20 @@ const Project: React.FunctionComponent = () => {
                 scheme: simulation.scheme
               }
             }
-            geometries={geometries.map((geometry) => ({
-              id: geometry.id,
-              needCleanup: geometry.needCleanup
-            }))}
+            geometries={
+              geometries
+                .map((geometry) => {
+                  if (geometry.id === '0') return
+                  return {
+                    id: geometry.id,
+                    needCleanup: geometry.needCleanup
+                  }
+                })
+                .filter((g) => g) as Pick<
+                IFrontGeometriesItem,
+                'id' | 'needCleanup'
+              >[]
+            }
             results={results.map((result) => ({
               name: result.name,
               glb: result.glb,

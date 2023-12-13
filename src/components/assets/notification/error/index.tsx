@@ -31,6 +31,7 @@ const ErrorNotification: React.FunctionComponent = () => {
    */
   const onClose = useCallback(
     (key: string): void => {
+      console.log(opened)
       const index = opened.findIndex((open) => open === key)
       setOpened([...opened.slice(0, index), ...opened.slice(index + 1)])
     },

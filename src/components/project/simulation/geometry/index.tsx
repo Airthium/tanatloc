@@ -132,6 +132,12 @@ const OneGeometry: React.FunctionComponent<OneGeometryProps> = ({
   // Geometry id
   const geometryId = useMemo(() => child.value, [child.value])
 
+  // Not exists
+  const exists = useMemo(
+    () => !!geometries.find((geometry) => geometry.id === geometryId),
+    [geometries, geometryId]
+  )
+
   // Meshable
   const noMeshable = useMemo(() => child.noMeshable, [child.noMeshable])
 
@@ -165,6 +171,13 @@ const OneGeometry: React.FunctionComponent<OneGeometryProps> = ({
   return (
     <Card size="small" title={child.label}>
       <Form layout="vertical">
+        {exists
+          ? []
+          : [
+              <Typography.Text key="error" strong type="danger">
+                Geometry does not exists anymore
+              </Typography.Text>
+            ]}
         <Form.Item>
           <Select
             placeholder="Select a simulation domain"
@@ -172,7 +185,7 @@ const OneGeometry: React.FunctionComponent<OneGeometryProps> = ({
               value: geometry.id,
               label: geometry.name
             }))}
-            value={geometryId}
+            value={exists ? geometryId : undefined}
             onChange={onChange}
           />
         </Form.Item>

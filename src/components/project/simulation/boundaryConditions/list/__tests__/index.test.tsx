@@ -24,11 +24,7 @@ jest.mock('@/components/assets/button', () => ({
 
 jest.mock('../../delete', () => () => <div />)
 
-//@ts-ignore
-global.setTimeout = (callback: Function) => callback()
-
 describe('components/project/simulation/boundaryConditions/list', () => {
-  const EditButtonRole = 'EditButton'
   const geometries = [
     {
       id: 'id',
@@ -171,6 +167,14 @@ describe('components/project/simulation/boundaryConditions/list', () => {
   })
 
   test('highlight', () => {
+    const EditButtonRole = 'EditButton'
+    mockEditButton.mockImplementation((props) => (
+      <div
+        role={EditButtonRole}
+        onClick={props.onEdit}
+        onKeyDown={console.debug}
+      />
+    ))
     const { unmount } = render(
       <SelectContext.Provider
         value={{
@@ -195,6 +199,12 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     fireEvent.mouseLeave(item)
     expect(mockSelect).toHaveBeenCalledTimes(1)
 
+    const edit = screen.getByRole(EditButtonRole)
+    fireEvent.click(edit)
+
+    fireEvent.mouseLeave(item)
+    expect(mockSelect).toHaveBeenCalledTimes(1)
+
     unmount()
   })
 
@@ -202,7 +212,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     Object.defineProperty(global, 'setTimeout', {
       value: (callback: Function) => callback()
     })
-
+    const EditButtonRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
       <div
         role={EditButtonRole}

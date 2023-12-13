@@ -1,5 +1,11 @@
 ## v1.3.3
 
+- Models:
+  - :arrow_up: Add hidden property
+- Client:
+  - :beetle: Fix geometry error on delete
+  - :beetle: Fix non existing geometry in simulation/geometry
+
 ---
 
 ## v1.3.2

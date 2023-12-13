@@ -214,10 +214,9 @@ const Data: React.FunctionComponent<IProps> = ({ simulation }) => {
       const point: RowData['points'][0] = {
         x: data.x
       }
-      for (let i = 0; i < data.names.length; ++i) {
-        const name = data.names[i]
-        if (name === yNames[i]) point[name] = data.ys[i]
-        else point[name] = 0
+      for (const name of data.names) {
+        const index = yNames.indexOf(name)
+        point[name] = index === -1 ? 0 : data.ys[index]
       }
 
       return point
@@ -428,7 +427,7 @@ const Data: React.FunctionComponent<IProps> = ({ simulation }) => {
             dataSource={data.points}
             columns={columns}
             scroll={{
-              x: ((columns?.length ? +columns.length : 1) - 1) * 200
+              x: (columns.length - 1) * 200
             }}
           />
         </div>

@@ -177,12 +177,14 @@ export interface IModelParameters extends IModelCommon {
 }
 
 export interface IModelParametersGroup {
+  hidden?: boolean
   label: string
   advanced?: boolean
   children: IModelParameter[]
 }
 
 export interface IModelParameter {
+  hidden?: boolean
   only3D?: boolean
   label: string
   label2D?: string

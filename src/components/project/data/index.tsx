@@ -210,12 +210,13 @@ const Data: React.FunctionComponent<IProps> = ({ simulation }) => {
     taskData.forEach(
       (data) => (yNames = [...new Set([...yNames, ...data.names])])
     )
+
     const points = taskData.map((data) => {
       const point: RowData['points'][0] = {
         x: data.x
       }
-      for (const name of data.names) {
-        const index = yNames.indexOf(name)
+      for (const name of yNames) {
+        const index = data.names.indexOf(name)
         point[name] = index === -1 ? 0 : data.ys[index]
       }
 

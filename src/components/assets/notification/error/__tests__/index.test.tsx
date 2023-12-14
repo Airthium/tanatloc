@@ -52,6 +52,7 @@ describe('components/assets/notification/error', () => {
           errors: [
             { title: 'server1', err: new Error('Failed to fetch') },
             { title: 'server2', err: new Error('Failed to fetch') },
+            { title: 'with title only' },
             { title: 'other1', err: new Error('Other') },
             { title: 'other2', err: new Error('Other'), display: false },
             {
@@ -70,7 +71,7 @@ describe('components/assets/notification/error', () => {
       </NotificationContext.Provider>
     )
 
-    expect(errors.length).toBe(3)
+    expect(errors.length).toBe(4)
     expect(warnings.length).toBe(1)
 
     errors.forEach((error: any) => {

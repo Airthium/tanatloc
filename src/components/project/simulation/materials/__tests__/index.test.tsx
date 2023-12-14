@@ -33,6 +33,11 @@ describe('components/project/simulation/materials', () => {
       id: 'id',
       name: 'name',
       summary: {}
+    } as Geometry,
+    {
+      id: 'id',
+      name: 'name',
+      summary: {}
     } as Geometry
   ]
   const simulation = {

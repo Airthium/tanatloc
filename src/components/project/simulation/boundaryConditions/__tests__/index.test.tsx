@@ -30,6 +30,11 @@ describe('components/project/simulation/boundaryConditions', () => {
       summary: {}
     } as Geometry,
     {
+      id: 'id',
+      name: 'name',
+      summary: {}
+    } as Geometry,
+    {
       id: 'id1',
       name: 'name',
       summary: {}

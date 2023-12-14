@@ -1,12 +1,10 @@
 /** @module Components.Assets.Notification.Success */
 
-import { useContext } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { App } from 'antd'
 
-import { NotificationContext } from '@/context/notification'
+import { ISuccessItem, NotificationContext } from '@/context/notification'
 import { removeSuccess } from '@/context/notification/actions'
-
-import useCustomEffect from '@/components/utils/useCustomEffect'
 
 /**
  * Success notification
@@ -19,21 +17,28 @@ const SuccessNotification: React.FunctionComponent = () => {
   // Notification
   const { notification } = App.useApp()
 
-  // Notifications
-  useCustomEffect(
-    () => {
-      success?.forEach((success) => {
-        notification.success({
-          message: success.title,
-          description: success.description,
-          duration: 10
-        })
-        dispatch(removeSuccess(success))
+  /**
+   * Open notification
+   * @param success Success
+   */
+  const openNotification = useCallback(
+    (success: ISuccessItem) => {
+      notification.success({
+        message: success.title,
+        description: success.description,
+        duration: 10
       })
     },
-    [notification, success],
-    [dispatch]
+    [notification]
   )
+
+  // Notifications
+  useEffect(() => {
+    for (const s of success ?? []) {
+      openNotification(s)
+      dispatch(removeSuccess(s))
+    }
+  }, [success, openNotification, dispatch])
 
   return null
 }

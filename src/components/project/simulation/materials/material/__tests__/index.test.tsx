@@ -307,7 +307,7 @@ describe('components/project/simulation/materials/material', () => {
       {
         id: 'id2',
         name: 'name2',
-        summary: {}
+        summary: { dimension: 2 }
       } as Geometry
     ]
 

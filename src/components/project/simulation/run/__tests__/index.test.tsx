@@ -281,33 +281,31 @@ describe('components/project/simulation/run', () => {
 
   test('not running', () => {
     const notRunningData = {
-      data: {
-        scheme: { configuration: { run: {} } },
-        tasks: [
-          null,
-          {
-            label: 'Mesh',
-            index: 1,
-            status: 'finish',
-            file: { name: 'name', fileName: 'resultFileName' }
-          },
-          {
-            label: 'Simulation',
-            index: -1,
-            files: [{ name: 'name', fileName: 'resultFileName' }],
-            status: 'finish',
-            systemLog: 'system'
-          },
-          {
-            label: 'Mesh2',
-            index: 2,
-            status: 'finish',
-            systemLog: 'system'
-          }
-        ]
-      }
+      scheme: { configuration: { run: {} } },
+      tasks: [
+        null,
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish',
+          file: { name: 'name', fileName: 'resultFileName' }
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [{ name: 'name', fileName: 'resultFileName' }],
+          status: 'finish',
+          systemLog: 'system'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'finish',
+          systemLog: 'system'
+        }
+      ]
     }
-    mockSimulation.mockImplementationOnce(() => notRunningData)
+    mockSimulation.mockImplementation(() => notRunningData)
     const { unmount } = render(
       <Run
         geometries={geometries}

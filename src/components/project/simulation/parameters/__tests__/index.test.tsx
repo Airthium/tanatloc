@@ -102,6 +102,27 @@ describe('components/project/simulation/parameters', () => {
                 default: 0
               }
             ]
+          },
+          param4: {
+            hidden: true,
+            label: 'param4'
+          },
+          param5: {
+            label: 'param4',
+            children: [
+              {
+                label: 'Not hidden'
+              },
+              {
+                hidden: true,
+                label: 'Hidden'
+              }
+            ]
+          },
+          param6: {
+            hidden: true,
+            advanced: true,
+            label: 'param4'
           }
         },
         run: {
@@ -201,11 +222,13 @@ describe('components/project/simulation/parameters', () => {
 
   test('onChange', async () => {
     let value: number | undefined = 0
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
       <div
-        role="Formula"
+        role={FormulaRole}
         onClick={() => props.onValueChange(value)}
         onMouseMove={() => props.onUnitChange({})}
+        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
@@ -256,15 +279,23 @@ describe('components/project/simulation/parameters', () => {
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(10))
 
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    await act(() => fireEvent.click(checkbox))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(11))
+
     unmount()
   })
 
   test('2D', async () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
       <div
-        role="Formula"
+        role={FormulaRole}
         onClick={() => props.onValueChange()}
         onMouseMove={() => props.onUnitChange({})}
+        onKeyDown={console.debug}
       />
     ))
     simulation.scheme.configuration.dimension = 2

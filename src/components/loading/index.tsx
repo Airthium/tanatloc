@@ -1,9 +1,17 @@
 /** @module Components.Loading */
 
 import { ReactNode, useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Card, Layout, Space, Spin, StepProps, Steps, Typography } from 'antd'
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons'
+
+// Tanatloc3D Background
+const Background = dynamic(
+  () =>
+    import('@airthium/tanatloc-3d').then((mod) => mod.default.extra.Background),
+  { ssr: false }
+)
 
 import globalStyle from '@/styles/index.module.css'
 import style from './index.module.css'
@@ -128,6 +136,7 @@ const Loading: React.FunctionComponent<IProps> & {
    */
   return (
     <Layout>
+      <Background />
       <div className={globalStyle.logo}>
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>

@@ -49,11 +49,13 @@ jest.mock('@airthium/tanatloc-3d', () => ({
   __esModule: true,
   default: { Renderer: () => <div /> }
 }))
+
 const mockRenderer = jest.fn()
 jest.mock('next/dynamic', () => (callback: Function) => {
   callback()
   return (props: any) => mockRenderer(props)
 })
+
 describe('components/project/view', () => {
   const project = {
     id: 'id',

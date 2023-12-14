@@ -22,7 +22,6 @@ dist-install
 /renderer
 
 # public
-/public/three
 /public/mathjax
 /public/templates
 /public/robots.txt

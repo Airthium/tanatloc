@@ -5,6 +5,7 @@
 - Client:
   - :beetle: Fix geometry error on delete
   - :beetle: Fix non existing geometry in simulation/geometry
+  - :arrow_up: Remove ThreeJS (moved to tanatloc-3d)
 
 ---
 

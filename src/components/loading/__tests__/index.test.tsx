@@ -2,6 +2,16 @@ import { render } from '@testing-library/react'
 
 import Loading from '@/components/loading'
 
+jest.mock('@airthium/tanatloc-3d', () => ({
+  __esModule: true,
+  default: { extra: { Background: () => <div /> } }
+}))
+
+jest.mock('next/dynamic', () => (callback: Function) => {
+  callback()
+  return () => <div />
+})
+
 Element.prototype.scrollTo = () => {}
 
 describe('components/loading', () => {

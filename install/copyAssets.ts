@@ -21,26 +21,6 @@ const copyTemplates = async (): Promise<void> => {
 }
 
 /**
- * Copy threejs assets
- * @description Copy threejs assets in `public/three/libs`
- */
-const copyThreeAssets = async (): Promise<void> => {
-  // Create path
-  try {
-    await fs.mkdir('public/three/libs', { recursive: true })
-  } catch (err: any) {
-    if (err.code !== 'EEXIST') throw err
-  }
-
-  // Copy
-  await fs.cp(
-    'node_modules/three/examples/jsm/libs/draco',
-    'public/three/libs/draco',
-    { recursive: true }
-  )
-}
-
-/**
  * Copy MathJax assets
  * @description Copy MathJax assets in `public/mathjax`
  */
@@ -68,12 +48,6 @@ export const copyAssets = async (): Promise<void> => {
     await copyTemplates()
   } catch (err) {
     console.warn(' ⚠ Unable to copy Templates')
-    console.warn(err)
-  }
-  try {
-    await copyThreeAssets()
-  } catch (err) {
-    console.warn(' ⚠ Unable to copy ThreeJS assets')
     console.warn(err)
   }
   try {

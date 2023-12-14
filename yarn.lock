@@ -33,9 +33,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-3d@npm:1.0.13":
-  version: 1.0.13
-  resolution: "@airthium/tanatloc-3d@npm:1.0.13"
+"@airthium/tanatloc-3d@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@airthium/tanatloc-3d@npm:1.1.0"
   dependencies:
     "@ant-design/icons": "npm:5.2.6"
     "@react-three/drei": "npm:9.92.0"
@@ -46,7 +46,7 @@ __metadata:
   peerDependencies:
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: c7caeb1b3aa2ffb3cd1b021094ed619e11344194b920a4cc29598ccfe3bff2a9a40e346bbbdc17c9a7fbea12232e03c2ec32be5f9893e62257c37c9fc7a8796b
+  checksum: bd1dade4432b5adeac46ed2bf3247fc5fc2fcd429717740194994e10273179a0dd5afcb1124ea5aeadf31b573f2bed2968ee4f223966a726d3ef464558cca826
   languageName: node
   linkType: hard
 
@@ -2640,13 +2640,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/stats.js@npm:*":
-  version: 0.17.3
-  resolution: "@types/stats.js@npm:0.17.3"
-  checksum: ccccc992c6dfe08fb85049aa3ce44ca7e428db8da4a3edd20298f1c8b72768021fa8bacdfbe8e9735a7552ee5d57f667c6f557050ad2d9a87b699b3566a6177a
-  languageName: node
-  linkType: hard
-
 "@types/tar@npm:6.1.10":
   version: 6.1.10
   resolution: "@types/tar@npm:6.1.10"
@@ -2654,18 +2647,6 @@ __metadata:
     "@types/node": "npm:*"
     minipass: "npm:^4.0.0"
   checksum: 76290848f9392ef0f27bcd7118565b39b60a43b3f51a17e1380f25c5a4c21f18c3361885240f13a15fe4f14894f055ee00e47a3369354bdb010ce7da445bb001
-  languageName: node
-  linkType: hard
-
-"@types/three@npm:0.159.0":
-  version: 0.159.0
-  resolution: "@types/three@npm:0.159.0"
-  dependencies:
-    "@types/stats.js": "npm:*"
-    "@types/webxr": "npm:*"
-    fflate: "npm:~0.6.10"
-    meshoptimizer: "npm:~0.18.1"
-  checksum: c5ec776ba213d148f0ebcce07b7a31514b8676d20e3d19458ba46d286c87c9d95224ee9225872d18c771110563c712f0237ec5d2264ad7ab7b47f2d4c1fd93a9
   languageName: node
   linkType: hard
 
@@ -5607,7 +5588,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.6.9, fflate@npm:~0.6.10":
+"fflate@npm:^0.6.9":
   version: 0.6.10
   resolution: "fflate@npm:0.6.10"
   checksum: c452f720e4cb404b300fceb8ef0bdf345f18fbfd3f57f7d0974dce5f5e2ac0e8dd4b6ff4bb7061ae74fd919b9c707172f9dbd44d91149b1137199b8c705768f1
@@ -8059,13 +8040,6 @@ __metadata:
   peerDependencies:
     three: ">=0.137"
   checksum: 8b45158576793b171f8c035c76fcced26f9d6f244098081fb3243b40a0b7788c7274d7bcb7f5ae6fac5876fde8a0ea2cc4f96ebd5afb834fb35a4be798c230c8
-  languageName: node
-  linkType: hard
-
-"meshoptimizer@npm:~0.18.1":
-  version: 0.18.1
-  resolution: "meshoptimizer@npm:0.18.1"
-  checksum: 8a825c58b20b65585e8d00788843929b60c66ba4297e89afaa49f7c51ab9a0f7b9130f90cc9ad1b9b48b3d1bee3beb1bc93608acba0d73e78995c3e6e5ca436b
   languageName: node
   linkType: hard
 
@@ -11314,7 +11288,7 @@ __metadata:
     "@airthium/deep-object-diff": "npm:1.0.22"
     "@airthium/extract-json-from-string": "npm:1.0.40"
     "@airthium/pg-format": "npm:2.0.45"
-    "@airthium/tanatloc-3d": "npm:1.0.13"
+    "@airthium/tanatloc-3d": "npm:1.1.0"
     "@airthium/tanatloc-formula-validator": "npm:1.0.24"
     "@airthium/typedoc-plugin-airthium": "npm:1.1.26"
     "@ant-design/icons": "npm:5.2.6"
@@ -11338,7 +11312,6 @@ __metadata:
     "@types/set-interval-async": "npm:1.0.3"
     "@types/sharp": "npm:0.32.0"
     "@types/tar": "npm:6.1.10"
-    "@types/three": "npm:0.159.0"
     "@types/url-join": "npm:4.0.3"
     "@types/uuid": "npm:9.0.7"
     ajv: "npm:8.12.0"
@@ -11386,7 +11359,6 @@ __metadata:
     sharp: "npm:0.33.0"
     swr: "npm:2.2.4"
     tar: "npm:6.2.0"
-    three: "npm:0.159.0"
     ts-json-schema-generator: "npm:1.5.0"
     typedoc: "npm:0.25.4"
     typescript: "npm:5.3.3"

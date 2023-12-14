@@ -12,6 +12,16 @@ jest.mock('next/router', () => ({
 const mockIsElectron = jest.fn()
 jest.mock('is-electron', () => () => mockIsElectron())
 
+jest.mock('@airthium/tanatloc-3d', () => ({
+  __esModule: true,
+  default: { extra: { Background: () => <div /> } }
+}))
+
+jest.mock('next/dynamic', () => (callback: Function) => {
+  callback()
+  return () => <div />
+})
+
 jest.mock('@/components/loading', () => () => <div />)
 
 const mockErrorNotification = jest.fn()

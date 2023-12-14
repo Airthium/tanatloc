@@ -1,9 +1,17 @@
 /** @module Components.Login */
 
-import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback, useContext, useRef } from 'react'
+import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
 import isElectron from 'is-electron'
+
+// Tanatloc3D Background
+const Background = dynamic(
+  () =>
+    import('@airthium/tanatloc-3d').then((mod) => mod.default.extra.Background),
+  { ssr: false }
+)
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
@@ -154,6 +162,7 @@ const Login: React.FunctionComponent = () => {
   if (loadingUser || user) return <Loading />
   return (
     <Layout>
+      <Background />
       <Card bordered={false} className={style.login}>
         <Space
           direction="vertical"

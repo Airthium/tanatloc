@@ -2,6 +2,7 @@
 @value colorPrimary, textColorDark, textColorLight from variables;
 
 .logo {
+  z-index: 1;
   padding: 20px 8px;
   display: flex;
   justify-content: center;

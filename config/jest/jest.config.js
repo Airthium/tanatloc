@@ -4,7 +4,6 @@ const jestConfig = {
   rootDir: '../..',
   setupFiles: [
     '<rootDir>/config/jest/setup.js',
-    '<rootDir>/config/jest/mock.js',
     '<rootDir>/config/jest/mockMatchMedia.js',
     '<rootDir>/config/jest/mockResizeObserver.js'
   ],

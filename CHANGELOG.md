@@ -1,3 +1,10 @@
+## v1.3.5
+
+- Plugins:
+  - :beetle: Fix optional FreeFEM plugin compilation failed
+
+---
+
 ## v1.3.4
 
 - Plugins:

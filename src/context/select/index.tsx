@@ -143,7 +143,7 @@ export interface IProps {
  * @param props Props
  * @returns SelectProvider
  */
-const SelectProvider = ({ children }: IProps) => {
+const SelectProvider: React.FunctionComponent<IProps> = ({ children }) => {
   // Reducer
   const [selectState, selectDispatch] = useReducer(selectReducer, initialState)
 

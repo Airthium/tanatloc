@@ -9,10 +9,22 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../fixInfos/noManipBrowser', () => () => <div />)
-jest.mock('../fixInfos/firefoxWindows', () => () => <div />)
-jest.mock('../fixInfos/firefoxMac', () => () => <div />)
-jest.mock('../fixInfos/safariMac', () => () => <div />)
+const WebGLRole = 'WebGL'
+jest.mock('@airthium/tanatloc-3d', () => ({
+  __esModule: true,
+  default: {
+    extra: {
+      WebGL: () => <div />
+    }
+  }
+}))
+
+jest.mock('next/dynamic', () => (callback: Function) => {
+  callback()
+  return (props: any) => (
+    <div role={WebGLRole} onClick={props.back} onKeyDown={console.debug} />
+  )
+})
 
 describe('components/webgl', () => {
   beforeEach(() => {
@@ -28,20 +40,8 @@ describe('components/webgl', () => {
   test('back', () => {
     const { unmount } = render(<WebGL />)
 
-    const button = screen.getByRole('button', {
-      name: 'Return to the previous page'
-    })
+    const button = screen.getByRole(WebGLRole)
     fireEvent.click(button)
-    expect(mockBack).toHaveBeenCalledTimes(1)
-
-    unmount()
-  })
-
-  test('modals', () => {
-    const { unmount } = render(<WebGL />)
-
-    const buttons = screen.getAllByRole('button')
-    buttons.forEach((button) => fireEvent.click(button))
     expect(mockBack).toHaveBeenCalledTimes(1)
 
     unmount()

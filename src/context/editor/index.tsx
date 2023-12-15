@@ -156,7 +156,7 @@ export interface IProps {
  * @param props Props
  * @returns EditorProvider
  */
-const EditorProvider = ({ children }: IProps) => {
+const EditorProvider: React.FunctionComponent<IProps> = ({ children }) => {
   // Reducer
   const [editorState, editorDispatch] = useReducer(editorReducer, initialState)
 

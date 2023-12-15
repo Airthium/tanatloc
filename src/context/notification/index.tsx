@@ -111,7 +111,9 @@ export interface IProps {
  * @param props Props
  * @returns NotificationProvider
  */
-const NotificationProvider = ({ children }: IProps) => {
+const NotificationProvider: React.FunctionComponent<IProps> = ({
+  children
+}) => {
   // Reducer
   const [notificationState, notificationDispatch] = useReducer(
     notificationReducer,

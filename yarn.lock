@@ -33,9 +33,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-3d@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@airthium/tanatloc-3d@npm:1.1.0"
+"@airthium/tanatloc-3d@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@airthium/tanatloc-3d@npm:1.1.1"
   dependencies:
     "@ant-design/icons": "npm:5.2.6"
     "@react-three/drei": "npm:9.92.0"
@@ -46,7 +46,7 @@ __metadata:
   peerDependencies:
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: bd1dade4432b5adeac46ed2bf3247fc5fc2fcd429717740194994e10273179a0dd5afcb1124ea5aeadf31b573f2bed2968ee4f223966a726d3ef464558cca826
+  checksum: 5c31a2ff1630cc4b2ba52584f189d60bc0d90e80ce1538e7275221b0c280065f4c4c0d91a801729bd1a7569c3a44d74b84d75b67d0dcc40596e28ff38d61b490
   languageName: node
   linkType: hard
 
@@ -11288,7 +11288,7 @@ __metadata:
     "@airthium/deep-object-diff": "npm:1.0.22"
     "@airthium/extract-json-from-string": "npm:1.0.40"
     "@airthium/pg-format": "npm:2.0.45"
-    "@airthium/tanatloc-3d": "npm:1.1.0"
+    "@airthium/tanatloc-3d": "npm:1.1.1"
     "@airthium/tanatloc-formula-validator": "npm:1.0.24"
     "@airthium/typedoc-plugin-airthium": "npm:1.1.26"
     "@ant-design/icons": "npm:5.2.6"

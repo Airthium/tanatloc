@@ -35,7 +35,7 @@ export interface IStatus {
  * Status steps
  * @returns StatusSteps
  */
-const StatusSteps = ({ setName }: IProps) => {
+const StatusSteps: React.FunctionComponent<IProps> = ({ setName }) => {
   //State
   const [status, setStatus] = useState<{
     [key: string]: IStatus

@@ -1,3 +1,10 @@
+## v1.3.4
+
+- Plugins:
+  - :beetle: Fix Rescale plugin
+
+---
+
 ## v1.3.3
 
 - Models:

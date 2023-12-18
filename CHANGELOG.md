@@ -1,5 +1,9 @@
 ## v1.3.6
 
+- Plugins:
+  - :beetle: Rename Denso algorithm
+  - :beetle: Disable FreeFEM custom plugin
+
 ---
 
 ## v1.3.5

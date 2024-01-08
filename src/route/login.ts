@@ -55,15 +55,9 @@ export const loginRoute = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error(err)
     res.status(401).json({ error: true, message: err.message })
-    Sentry.configureScope((scope) => {
-      scope.setUser({
-        email: req.body.email
-      })
-    })
+    Sentry.getCurrentScope().setUser({ email: req.body.email })
     Sentry.captureException(err)
-    Sentry.configureScope((scope) => {
-      scope.setUser(null)
-    })
+    Sentry.getCurrentScope().setUser(null)
   }
 }
 

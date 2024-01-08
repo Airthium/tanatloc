@@ -49,9 +49,9 @@ jest.mock('@/auth/auth-cookies', () => ({
 }))
 
 jest.mock('@/lib/sentry', () => ({
-  configureScope: (callback: (param: { setUser: Function }) => void) => {
-    callback({ setUser: jest.fn })
-  },
+  getCurrentScope: () => ({
+    setUser: jest.fn
+  }),
   captureException: jest.fn
 }))
 

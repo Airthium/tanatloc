@@ -484,6 +484,7 @@ const checkCustomFreeFEMPlugins = async (
  * Compute simulation
  * @param simulation Simulation
  * @param scheme Simulation scheme
+ * @param keepMesh Keep mesh
  */
 const computeSimulation = async (
   { id }: { id: string },
@@ -631,8 +632,7 @@ const computeSimulation = async (
  * Monitoring
  * @param id Simulation id
  * @param _ Unused
- * @param tasks Tasks
- * @param simulationTask Simulation task
+ * @param updateTasksHelper Update tasks helper
  */
 const monitoring = async (
   id: string,

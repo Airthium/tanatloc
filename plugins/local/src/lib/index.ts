@@ -27,8 +27,6 @@ import SimulationDB, {
   ISimulationTaskFile
 } from '@/database/simulation'
 
-import { asyncFunctionExec } from '@/components/utils/asyncFunction'
-
 import Services from '@/services'
 
 import Tools from '@/lib/tools'
@@ -60,6 +58,14 @@ const updateDelay = 1000 // ms
  * Empty function
  */
 const emptyFunction = () => undefined
+
+/**
+ * Async function execution
+ * @param callback Callback
+ */
+export const asyncFunctionExec = (callback: () => Promise<void>): void => {
+  callback().catch(console.error)
+}
 
 /**
  * Initialization

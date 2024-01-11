@@ -537,6 +537,9 @@ const BoundaryCondition: React.FunctionComponent<Props> = ({
                 buttonStyle="solid"
                 value={bcType?.key}
                 onChange={onType}
+                style={{
+                  justifyContent: 'center'
+                }}
               >
                 {types?.map((type) => {
                   return (

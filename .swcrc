@@ -3,8 +3,7 @@
   "minify": true,
   "jsc": {
     "experimental": {
-      "keepImportAttributes": true,
-      "emitAssertForImportAttributes": true
+      "keepImportAssertions": true
     },
     "parser": {
       "syntax": "typescript",

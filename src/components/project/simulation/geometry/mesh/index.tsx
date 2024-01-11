@@ -52,7 +52,8 @@ export interface IProps {
 const defaultMeshSize = {
   manual: {
     type: 'manual',
-    value: 1
+    value: 1,
+    unit: { label: 'm' }
   } as IModelMeshSizeManual,
   auto: {
     type: 'auto',

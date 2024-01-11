@@ -1,3 +1,11 @@
+## v1.3.7
+
+- Global:
+  - :arrow_up: Node 20
+- Client:
+  - :beetle: Fix grid range
+  - :beetls: Add view units
+
 ## v1.3.6
 
 - Plugins:

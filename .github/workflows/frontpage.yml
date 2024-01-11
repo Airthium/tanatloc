@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@master
+        with:
+          node-version: '20.x'
       - name: Install
         run: yarn
       - name: Prestart

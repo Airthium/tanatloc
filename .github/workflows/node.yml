@@ -20,25 +20,25 @@ jobs:
           YARN_CHECKSUM_BEHAVIOR: update
 
       - name: Depcheck
-        run: yarn run depcheck || true
+        run: yarn run depcheck
 
       - name: Lint
-        run: yarn run prettier || true
+        run: yarn run prettier
 
       - name: Next lint
-        run: yarn run next lint || true
+        run: yarn run next lint
 
       - name: Doc
-        run: yarn run doc || true
+        run: yarn run doc
 
       - name: Tests
-        run: yarn run test || true
+        run: yarn run test
 
       - name: Unsubscribe
         run: yarn run next telemetry disable
 
       - name: Build
-        run: yarn run build || true
+        run: yarn run build
 
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master

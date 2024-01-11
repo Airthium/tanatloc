@@ -2,10 +2,6 @@
 
 set -e
 
-# Clean
-echo " + Clean"
-git clean -xdf >node.local.log 2>&1
-
 # Install
 echo " + Install"
 yarn install >>node.local.log 2>&1

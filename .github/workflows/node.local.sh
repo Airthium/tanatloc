@@ -4,7 +4,7 @@ set -e
 
 # Install
 echo " + Install"
-yarn install >>node.local.log 2>&1
+yarn install >node.local.log 2>&1
 
 # Depcheck
 echo " + Depcheck"

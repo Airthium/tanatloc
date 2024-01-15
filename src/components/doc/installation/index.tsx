@@ -41,14 +41,17 @@ const Desktop: React.FunctionComponent = () => {
         const assetsResponse = await fetch(latestRelease.assets_url)
         const assets = await assetsResponse.json()
 
-        const appImage = assets.find((a: any) => a.name.includes('.AppImage'))
-          ?.browser_download_url
+        const appImage = assets.find((a: any) =>
+          a.name.includes('.AppImage')
+        )?.browser_download_url
 
-        const dmg = assets.find((a: any) => a.name.includes('.dmg'))
-          ?.browser_download_url
+        const dmg = assets.find((a: any) =>
+          a.name.includes('.dmg')
+        )?.browser_download_url
 
-        const exe = assets.find((a: any) => a.name.includes('.exe'))
-          ?.browser_download_url
+        const exe = assets.find((a: any) =>
+          a.name.includes('.exe')
+        )?.browser_download_url
 
         setRelease({
           version: latestRelease.name,

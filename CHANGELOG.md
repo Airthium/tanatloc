@@ -5,6 +5,10 @@
 - Client:
   - :beetle: Fix grid range
   - :beetls: Add view units
+- Plugins:
+  - :beetls: Denso template bugfix
+
+---
 
 ## v1.3.6
 

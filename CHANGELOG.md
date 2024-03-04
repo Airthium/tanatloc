@@ -1,6 +1,7 @@
 ## v1.3.7
 
 - Global:
+  - :arrow_up: Update dependencies
   - :arrow_up: Node 20
 - Client:
   - :beetle: Fix grid range

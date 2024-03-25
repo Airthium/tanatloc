@@ -1,7 +1,7 @@
 /** @module Database */
 
 import { execSync } from 'child_process'
-import pg from 'pg'
+import pg, { QueryConfigValues } from 'pg'
 
 import {
   IDataBaseEntry,
@@ -161,7 +161,7 @@ export const stopdB = async (): Promise<void> => {
  */
 export const query = async (
   command: string,
-  args: (boolean | number | string | string[] | object | undefined)[]
+  args: QueryConfigValues<any>
 ): Promise<IDataBaseResponse> => {
   // Query
   const client = await tanatloc.pool.connect()

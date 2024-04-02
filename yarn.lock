@@ -12,24 +12,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/deep-object-diff@npm:1.0.32":
-  version: 1.0.32
-  resolution: "@airthium/deep-object-diff@npm:1.0.32"
-  checksum: 10c0/df4cbb366abfbcef1b916345066bb66fbc11f9796b9a1c38f3edd300b53c9e883bdb5a1ea8317e2c34673986d3e9b87601a7ccd4588ed4c7c0fd627a482b2af3
+"@airthium/deep-object-diff@npm:1.0.33":
+  version: 1.0.33
+  resolution: "@airthium/deep-object-diff@npm:1.0.33"
+  checksum: 10c0/a2b048a8f48e87f05ff826e2ee160dc4f5faa42b782f94f6a6ea073c78adc4502f0ad4ccdb4927fd0817868c393af01cee783f5e4877e391d97a7a032ff66867
   languageName: node
   linkType: hard
 
-"@airthium/extract-json-from-string@npm:1.0.50":
-  version: 1.0.50
-  resolution: "@airthium/extract-json-from-string@npm:1.0.50"
-  checksum: 10c0/86eb86c5260c324e0f1282c3b5b52af89ff656e4cc3a895fc5db4b5a3b083191db6e26d4088cc0f65715b700ffc5abe96c1bca0500105b92178a4f0f2bc7dd36
+"@airthium/extract-json-from-string@npm:1.0.51":
+  version: 1.0.51
+  resolution: "@airthium/extract-json-from-string@npm:1.0.51"
+  checksum: 10c0/354aa3e77b85797647ba890ef3cef6004f256e726be8a9194b17e46cfcaea57179c638cc0eeb699b3c5c7e617f374d9d9053e9054af0628bcccb12d4443181f9
   languageName: node
   linkType: hard
 
-"@airthium/pg-format@npm:2.0.55":
-  version: 2.0.55
-  resolution: "@airthium/pg-format@npm:2.0.55"
-  checksum: 10c0/b03f3084b0804b833b1fd0ef996c5c68c420146c2b3a0bbcb53bfd33776e32201a5c06dcb7da636fa1cbb798eadc4ba77d97152cce4897af2d83a812104988c0
+"@airthium/pg-format@npm:2.0.56":
+  version: 2.0.56
+  resolution: "@airthium/pg-format@npm:2.0.56"
+  checksum: 10c0/2e8939a22f9d16a0c2893fa3fa500c57712898a8be6cc22fb8686d1c89dcea8b0447b5bb069d8fee4e126e288e95030bbf1bc4cc1c5cf7f1a07c057a7a074410
   languageName: node
   linkType: hard
 
@@ -50,17 +50,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-formula-validator@npm:1.0.35":
-  version: 1.0.35
-  resolution: "@airthium/tanatloc-formula-validator@npm:1.0.35"
-  checksum: 10c0/c8ea0d0107b3d45d97d71f01bbbe0a6745d9568b930795e34e293656857e1795341e04226302a6ed72cd616515e7c9fc3aa5fa26becd1033f8f0f71fa4df34b1
+"@airthium/tanatloc-formula-validator@npm:1.0.36":
+  version: 1.0.36
+  resolution: "@airthium/tanatloc-formula-validator@npm:1.0.36"
+  checksum: 10c0/f4f17e1c359bb3931bf3e6167f223e8ee5b5a4b788296a30f72dfb84e29bae632a225df0e56c51d9a0ad14e7d9d2af3a9885ad226a6c99c11e71c7f66b5d1b61
   languageName: node
   linkType: hard
 
-"@airthium/typedoc-plugin-airthium@npm:1.1.36":
-  version: 1.1.36
-  resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.36"
-  checksum: 10c0/fa939cbf750e205fd9310386de8bb5394a3b7930efc2f763655e779c23eae11b817b3a69c32a28b8ee04e3ea67967141cfc3cc794c2d9144411553783b7b5a38
+"@airthium/typedoc-plugin-airthium@npm:1.1.37":
+  version: 1.1.37
+  resolution: "@airthium/typedoc-plugin-airthium@npm:1.1.37"
+  checksum: 10c0/617f4e7d3fff4eeaf2babacabc6db1244dbbbd8ef2f3a40cfaf92450974d3044b6ee17b970ed132c6db0d3cbca7017adecfeab87e3e0aad8e5ca0f8b3dd4aea3
   languageName: node
   linkType: hard
 
@@ -11747,12 +11747,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tanatloc@workspace:."
   dependencies:
-    "@airthium/deep-object-diff": "npm:1.0.32"
-    "@airthium/extract-json-from-string": "npm:1.0.50"
-    "@airthium/pg-format": "npm:2.0.55"
+    "@airthium/deep-object-diff": "npm:1.0.33"
+    "@airthium/extract-json-from-string": "npm:1.0.51"
+    "@airthium/pg-format": "npm:2.0.56"
     "@airthium/tanatloc-3d": "npm:1.1.16"
-    "@airthium/tanatloc-formula-validator": "npm:1.0.35"
-    "@airthium/typedoc-plugin-airthium": "npm:1.1.36"
+    "@airthium/tanatloc-formula-validator": "npm:1.0.36"
+    "@airthium/typedoc-plugin-airthium": "npm:1.1.37"
     "@ant-design/icons": "npm:5.3.5"
     "@babel/core": "npm:7.24.3"
     "@hapi/iron": "npm:7.0.1"

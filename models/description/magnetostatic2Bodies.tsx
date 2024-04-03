@@ -81,7 +81,7 @@ const description = (
       />
     </div>
     <div>
-      Finally, the &apos;Bi-pass Formulation for Non-conforming Meshes in
+      Finally, the &apos;Symmetric Formulation for Non-Conforming Meshes in
       Magnetostatic Problems&apos; is used to solve the magnetostatic problem,
       where the penalty method is employed to take care of the interface
       conditions. For more details about the used formulation or to check how
@@ -89,7 +89,7 @@ const description = (
       Houssein&apos;s{' '}
       <a
         target="_blank"
-        href="https://www.techrxiv.org/doi/full/10.36227/techrxiv.24315232.v1"
+        href="https://ieeexplore.ieee.org/abstract/document/10414152"
       >
         paper
       </a>

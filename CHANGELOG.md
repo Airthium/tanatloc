@@ -1,3 +1,8 @@
+## v1.3.8
+
+- Global:
+  - :beetle: SWC breaking change fix
+
 ## v1.3.7
 
 - Global:

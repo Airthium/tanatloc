@@ -142,7 +142,9 @@ const Loading: React.FunctionComponent<IProps> & {
       </div>
       <Card
         className={style.loading}
-        bodyStyle={{ padding: 0 }}
+        styles={{
+          body: { padding: 0 }
+        }}
         title={
           <div className={style.title}>
             {errors?.length ? (

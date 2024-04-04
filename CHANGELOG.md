@@ -6,6 +6,7 @@
 - Client:
   - :beetle: Fix grid range
   - :beetls: Add view units
+  - :arrow_up: Doc
 - Plugins:
   - :beetls: Denso template bugfix
 

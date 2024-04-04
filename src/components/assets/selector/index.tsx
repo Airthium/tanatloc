@@ -251,13 +251,15 @@ const GeometryElementCard: React.FunctionComponent<
     return (
       <Card
         style={{ marginBottom: '10px' }}
-        bodyStyle={{
-          position: 'relative',
-          padding: '10px 10px 10px 40px',
-          borderWidth: '2px',
-          borderStyle: 'solid',
-          borderColor,
-          backgroundColor
+        styles={{
+          body: {
+            position: 'relative',
+            padding: '10px 10px 10px 40px',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            borderColor,
+            backgroundColor
+          }
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onUnhighlight}

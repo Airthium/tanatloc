@@ -158,7 +158,7 @@ const Password: React.FunctionComponent<IProps> = ({ user }) => {
                   return Promise.resolve()
                 }
 
-                return Promise.reject(errors.passwordMismatch)
+                return Promise.reject(new Error(errors.passwordMismatch))
               }
             })
           ]}

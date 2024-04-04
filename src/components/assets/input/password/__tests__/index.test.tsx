@@ -55,29 +55,43 @@ describe('components/assets/input/password', () => {
     // Small
     fireEvent.change(input, { target: { value: 'small' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordTooSmall(6)))
+    await waitFor(() =>
+      screen.getByText(errors.passwordTooSmall(6), { exact: false })
+    )
 
     // Long
     fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordTooLong(16)))
+    await waitFor(() =>
+      screen.getByText(errors.passwordTooLong(16), { exact: false })
+    )
 
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordRequireLetter))
-    await waitFor(() => screen.getByText(errors.passwordRequireSymbol))
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireLetter, { exact: false })
+    )
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireSymbol, { exact: false })
+    )
 
     // Letters only
     fireEvent.change(input, { target: { value: 'abcdefgh' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordRequireNumber))
-    await waitFor(() => screen.getByText(errors.passwordRequireSymbol))
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireNumber, { exact: false })
+    )
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireSymbol, { exact: false })
+    )
 
     // Letters and numbers
     fireEvent.change(input, { target: { value: 'abcd1234' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordRequireSymbol))
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireSymbol, { exact: false })
+    )
 
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
@@ -119,29 +133,43 @@ describe('components/assets/input/password', () => {
     // Small
     fireEvent.change(input, { target: { value: 'small' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordTooSmall(8)))
+    await waitFor(() =>
+      screen.getByText(errors.passwordTooSmall(8), { exact: false })
+    )
 
     // Long
     fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordTooLong(16)))
+    await waitFor(() =>
+      screen.getByText(errors.passwordTooLong(16), { exact: false })
+    )
 
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordRequireLetter))
-    await waitFor(() => screen.getByText(errors.passwordRequireSymbol))
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireLetter, { exact: false })
+    )
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireSymbol, { exact: false })
+    )
 
     // Letters only
     fireEvent.change(input, { target: { value: 'abcdefgh' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordRequireNumber))
-    await waitFor(() => screen.getByText(errors.passwordRequireSymbol))
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireNumber, { exact: false })
+    )
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireSymbol, { exact: false })
+    )
 
     // Letters and numbers
     fireEvent.change(input, { target: { value: 'abcd1234' } })
     fireEvent.click(button)
-    await waitFor(() => screen.getByText(errors.passwordRequireSymbol))
+    await waitFor(() =>
+      screen.getByText(errors.passwordRequireSymbol, { exact: false })
+    )
 
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })

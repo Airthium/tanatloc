@@ -1,7 +1,16 @@
+## v1.3.9
+
+- Client:
+  - :beetle: Code smells
+
+---
+
 ## v1.3.8
 
 - Global:
   - :beetle: SWC breaking change fix
+
+---
 
 ## v1.3.7
 

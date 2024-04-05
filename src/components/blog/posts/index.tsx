@@ -7,6 +7,7 @@ import ModalAnalysis from './4-modalAnalysis'
 import ThermalDiffusion from './5-thermalDiffusion'
 import ThermalExpansion from './6-thermalExpansion'
 import ContactMechanics from './7-contactMechanics'
+import Magnetostatic2Bodies from './8-magnetostatic2Bodies'
 
 const Posts = [
   Poisson,
@@ -15,7 +16,8 @@ const Posts = [
   ModalAnalysis,
   ThermalDiffusion,
   ThermalExpansion,
-  ContactMechanics
+  ContactMechanics,
+  Magnetostatic2Bodies
 ]
 
 export default Posts

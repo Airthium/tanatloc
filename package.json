@@ -48,11 +48,11 @@
     "electron-store": "8.2.0"
   },
   "devDependencies": {
-    "@airthium/deep-object-diff": "1.0.34",
-    "@airthium/extract-json-from-string": "1.0.52",
-    "@airthium/pg-format": "2.0.57",
+    "@airthium/deep-object-diff": "1.0.35",
+    "@airthium/extract-json-from-string": "1.0.53",
+    "@airthium/pg-format": "2.0.58",
     "@airthium/tanatloc-3d": "1.1.17",
-    "@airthium/tanatloc-formula-validator": "1.0.37",
+    "@airthium/tanatloc-formula-validator": "1.0.38",
     "@airthium/typedoc-plugin-airthium": "1.1.38",
     "@ant-design/icons": "5.3.6",
     "@babel/core": "7.24.4",

@@ -3,7 +3,6 @@
 import { Typography } from 'antd'
 
 import MathJax from '@/components/assets/mathjax'
-import Carousel from '@/components/assets/carousel'
 
 import PostLayout, { Ref } from '../layout'
 
@@ -48,18 +47,18 @@ const Post = () => {
         <Typography.Title level={3}>Theory</Typography.Title>
 
         <p>
-          We consider <MathJax.BackInline text={'\\Omega^{1}'} /> and{' '}
-          <MathJax.BackInline text={'\\Omega^{2}'} /> two domains of{' '}
-          <MathJax.BackInline text={'\\mathbb{R}^{2}'} />. We suppose that{' '}
-          <MathJax.BackInline text={'\\Omega^{1}'} /> and{' '}
-          <MathJax.BackInline text={'\\Omega^{2}'} /> have a common interface
-          called <MathJax.BackInline text={'\\Gamma_{c}'} />.
+          We consider <MathJax.Inline text={'\\Omega^{1}'} /> and{' '}
+          <MathJax.Inline text={'\\Omega^{2}'} /> two domains of{' '}
+          <MathJax.Inline text={'\\mathbb{R}^{2}'} />. We suppose that{' '}
+          <MathJax.Inline text={'\\Omega^{1}'} /> and{' '}
+          <MathJax.Inline text={'\\Omega^{2}'} /> have a common interface called{' '}
+          <MathJax.Inline text={'\\Gamma_{c}'} />.
         </p>
 
         <p>
-          The domain <MathJax.BackInline text={'\\Omega^{i}'} />, with{' '}
-          <MathJax.BackInline text={'i= 1,2'} />, is bounded by{' '}
-          <MathJax.BackInline
+          The domain <MathJax.Inline text={'\\Omega^{i}'} />, with{' '}
+          <MathJax.Inline text={'i= 1,2'} />, is bounded by{' '}
+          <MathJax.Inline
             text={
               '\\partial \\Omega^{i} = \\Gamma_d^{i} \\cup\\Gamma_n^{i} \\cup \\Gamma_{c}'
             }
@@ -68,16 +67,16 @@ const Post = () => {
         </p>
 
         <p>
-          Let <MathJax.BackInline text={'A^{i}'} /> be the magnetic vector
-          potential in <MathJax.BackInline text={'\\Omega^{i}'} />, verifying{' '}
-          <MathJax.BackInline text={'B^{i} = \\nabla \\times A^{i}'} />, where{' '}
-          <MathJax.BackInline text={'B^{i}'} /> is the magnetic flux density in{' '}
-          <MathJax.BackInline text={'\\Omega^{i}'} />.
+          Let <MathJax.Inline text={'A^{i}'} /> be the magnetic vector potential
+          in <MathJax.Inline text={'\\Omega^{i}'} />, verifying{' '}
+          <MathJax.Inline text={'B^{i} = \\nabla \\times A^{i}'} />, where{' '}
+          <MathJax.Inline text={'B^{i}'} /> is the magnetic flux density in{' '}
+          <MathJax.Inline text={'\\Omega^{i}'} />.
         </p>
 
         <p>
           The magnetostatic equations read as follows
-          <MathJax.BackFormula
+          <MathJax.Formula
             text={`
 \\begin{align}
   \\nabla \\times ( \\frac{1}{\\mu_{i}} \\nabla \\times A^{i}) &= j^{i} &\\text{in }\\Omega^{i}\\\\
@@ -87,20 +86,20 @@ const Post = () => {
 \\end{align}
 `}
           />
-          where <MathJax.BackInline text={'\\mu_{i}'} /> is the magnetic
-          permeability of <MathJax.BackInline text={'\\Omega^{i}'} />,{' '}
-          <MathJax.BackInline text={'j^{i}'} /> the current density,{' '}
-          <MathJax.BackInline text={'n^{i}'} /> the outward unit normal vector
-          on the boundary <MathJax.BackInline text={'\\partial \\Omega^{i}'} />,
-          and <MathJax.BackInline text={'\\nabla \\cdot A^{i} = 0'} /> the
-          Coulomb gauge.
+          where <MathJax.Inline text={'\\mu_{i}'} /> is the magnetic
+          permeability of <MathJax.Inline text={'\\Omega^{i}'} />,{' '}
+          <MathJax.Inline text={'j^{i}'} /> the current density,{' '}
+          <MathJax.Inline text={'n^{i}'} /> the outward unit normal vector on
+          the boundary <MathJax.Inline text={'\\partial \\Omega^{i}'} />, and{' '}
+          <MathJax.Inline text={'\\nabla \\cdot A^{i} = 0'} /> the Coulomb
+          gauge.
         </p>
 
         <p>
           In addition, we have the interface conditions governing the contact
-          area <MathJax.BackInline text={'\\Gamma_{c}'} />, which are expressed
-          as follows
-          <MathJax.BackFormula
+          area <MathJax.Inline text={'\\Gamma_{c}'} />, which are expressed as
+          follows
+          <MathJax.Formula
             text={`
 \\begin{align}
   A^{1} \\times n^{1} &= -A^{2} \\times n^{2} &\\text{on }\\Gamma_c\\\\
@@ -111,9 +110,9 @@ const Post = () => {
         </p>
 
         <p>
-          The magnetic field intensity <MathJax.BackInline text={'H^{i}'} /> is
+          The magnetic field intensity <MathJax.Inline text={'H^{i}'} /> is
           given by
-          <MathJax.BackFormula
+          <MathJax.Formula
             text={`
           H^{i} = \\frac{1}{\\mu_{i}} B^{i}
         `}

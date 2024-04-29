@@ -13,7 +13,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": [],
+  "ignoreDeps": ["eslint"],
   "lockFileMaintenance": {
     "enabled": false
   }

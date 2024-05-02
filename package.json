@@ -83,7 +83,7 @@
     "babel-jest": "29.7.0",
     "cookie": "0.6.0",
     "depcheck": "1.4.7",
-    "ejs": "3.1.9",
+    "ejs": "3.1.10",
     "email-addresses": "5.0.0",
     "eslint": "8.57.0",
     "eslint-config-next": "14.1.4",

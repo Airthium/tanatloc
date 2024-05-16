@@ -6,8 +6,7 @@ import isElectron from 'is-electron'
 import ElectronStore from 'electron-store'
 
 let storage: ElectronStore
-if (isElectron())
-  storage = new ElectronStore<{ defaults: { 'auth-token': undefined } }>()
+if (isElectron()) storage = new ElectronStore()
 
 /**
  * Token name
@@ -34,7 +33,6 @@ const setTokenCookie = (res: Response, token: string): void => {
     sameSite: 'lax'
   })
 
-  //@ts-ignore // TODO https://github.com/sindresorhus/electron-store/issues/276
   if (isElectron()) storage.set('auth-token', cookie)
   else res.setHeader('Set-Cookie', cookie)
 }
@@ -49,7 +47,6 @@ const removeTokenCookie = (res: Response): void => {
     path: '/'
   })
 
-  //@ts-ignore // TODO https://github.com/sindresorhus/electron-store/issues/276
   if (isElectron()) storage.delete('auth-token')
   else res.setHeader('Set-Cookie', cookie)
 }
@@ -62,7 +59,6 @@ const removeTokenCookie = (res: Response): void => {
 const parseCookies = (req: Request): { [key: string]: string } => {
   // For API Routes we don't need to parse the cookies.
   if (isElectron()) {
-    //@ts-ignore // TODO https://github.com/sindresorhus/electron-store/issues/276
     const cookie = storage.get('auth-token') as string
     return parse(cookie?.toString() ?? '')
   } else {

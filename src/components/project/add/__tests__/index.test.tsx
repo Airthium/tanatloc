@@ -10,6 +10,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   AddButton: (props: any) => mockAddButton(props)

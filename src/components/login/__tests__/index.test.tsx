@@ -9,6 +9,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const mockIsElectron = jest.fn()
 jest.mock('is-electron', () => () => mockIsElectron())
 

@@ -9,6 +9,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const CanvasRole = 'Canvas'
 jest.mock('@airthium/tanatloc-3d', () => ({
   __esModule: true,

@@ -1,0 +1,6 @@
+{
+  "sonarlint.connectedMode.project": {
+    "connectionId": "airthium",
+    "projectKey": "Airthium_tanatloc"
+  }
+}

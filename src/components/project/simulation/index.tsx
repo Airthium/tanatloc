@@ -1,8 +1,16 @@
 /** @module Components.Project.Simulation */
 
 import { useState, useCallback, useMemo, useContext } from 'react'
-import { Layout, Menu, Modal, Select, Tabs, Tooltip, Typography } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import {
+  Layout,
+  Menu,
+  MenuProps,
+  Modal,
+  Select,
+  Tabs,
+  Tooltip,
+  Typography
+} from 'antd'
 import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
 import { merge } from 'lodash'
 
@@ -230,7 +238,7 @@ const Selector: React.FunctionComponent<ISelectorProps> = ({
 
   // Menu items (Tanatloc)
   const tanatlocMenuItems = useMemo(() => {
-    const items: ItemType[] = [
+    const items: MenuProps['items'] = [
       {
         key: 'category',
         disabled: true,
@@ -263,7 +271,7 @@ const Selector: React.FunctionComponent<ISelectorProps> = ({
 
   // Menu items (user)
   const userMenuItems = useMemo(() => {
-    const items: ItemType[] = [
+    const items: MenuProps['items'] = [
       {
         key: 'category',
         disabled: true,

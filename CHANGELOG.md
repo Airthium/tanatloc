@@ -1,5 +1,7 @@
 ## v1.3.9
 
+- Global:
+  - :arrow_up: Update dependencies
 - Client:
   - :beetle: Code smells
 

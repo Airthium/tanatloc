@@ -11,6 +11,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 

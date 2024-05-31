@@ -37,8 +37,8 @@ jest.mock('fs', () => ({
 const mockTarC = jest.fn()
 const mockTarX = jest.fn()
 jest.mock('tar', () => ({
-  c: () => mockTarC(),
-  x: () => mockTarX()
+  create: () => mockTarC(),
+  extract: () => mockTarX()
 }))
 
 jest.mock('crypto', () => ({

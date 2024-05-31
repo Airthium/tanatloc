@@ -8,6 +8,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   DeleteButton: (props: any) => mockDeleteButton(props)

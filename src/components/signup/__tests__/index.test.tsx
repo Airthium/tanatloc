@@ -14,6 +14,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const mockPasswordItem = jest.fn()
 jest.mock('@/components/assets/input', () => ({
   PasswordItem: (props: any) => mockPasswordItem(props)

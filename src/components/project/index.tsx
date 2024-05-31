@@ -11,8 +11,7 @@ import {
 } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { Button, Layout, Menu, Tooltip, Typography } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { Button, Layout, Menu, MenuProps, Tooltip, Typography } from 'antd'
 import {
   CodeSandboxOutlined,
   PieChartOutlined,
@@ -911,7 +910,7 @@ const Project: React.FunctionComponent = () => {
     () =>
       loadedSimulations.map((s) => {
         const configuration = s.scheme.configuration || {}
-        const categories: ItemType[] = []
+        const categories: MenuProps['items'] = []
         Object.keys(configuration).forEach((key) => {
           if (key === 'dimension') return
           const child = configuration[key as keyof IModel['configuration']] as

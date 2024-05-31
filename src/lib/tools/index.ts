@@ -9,7 +9,7 @@ import {
   createWriteStream,
   promises as fs
 } from 'fs'
-import tar from 'tar'
+import { create, extract } from 'tar'
 import crypto from 'crypto'
 
 import SecurityDB from '@/database/security'
@@ -142,7 +142,7 @@ const archive = async (
   target: string,
   directory: { C: string; path: string }
 ): Promise<void> => {
-  await tar.c(
+  await create(
     {
       gzip: true,
       C: directory.C,
@@ -156,7 +156,7 @@ const unarchive = async (
   source: string,
   directory: { C: string; path: string }
 ): Promise<void> => {
-  await tar.x({ file: source, C: directory.C }, [directory.path])
+  await extract({ file: source, C: directory.C }, [directory.path])
 }
 
 /**

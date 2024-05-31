@@ -7,6 +7,8 @@ jest.mock('next/router', () => ({
   useRouter: () => mockRouter()
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 const mockErrorNotification = jest.fn()
 jest.mock('@/context/notification/actions', () => ({
   addError: ({ title, err }: { title: string; err: Error }) =>

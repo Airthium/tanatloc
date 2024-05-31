@@ -199,12 +199,12 @@ const PasswordItem: React.FunctionComponent<IProps> = ({
             const err: string[] = []
             if (edit && value === '******') return Promise.resolve()
 
-            if (!value) return Promise.reject(errors.password)
+            if (!value) return Promise.reject(new Error(errors.password))
 
             _checkSize(passwordMinSize, passwordMaxSize, value, err)
             _checkFormat(system, value, err)
 
-            if (err.length) return Promise.reject(err)
+            if (err.length) return Promise.reject(new Error(err.join('; ')))
             else return Promise.resolve()
           }
         }),

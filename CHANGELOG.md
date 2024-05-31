@@ -1,7 +1,35 @@
+## v1.3.11
+
+- Plugins:
+  - :beetle: Fix typo
+  - :arrow_up: Update Denso plugin
+- Client:
+  - :beetle: Fix typo
+
+---
+
+## v1.3.10
+
+- Plugins:
+  - :beetle: Fix rescale plugin
+
+---
+
+## v1.3.9
+
+- Global:
+  - :arrow_up: Update dependencies
+- Client:
+  - :beetle: Code smells
+
+---
+
 ## v1.3.8
 
 - Global:
   - :beetle: SWC breaking change fix
+
+---
 
 ## v1.3.7
 
@@ -10,10 +38,10 @@
   - :arrow_up: Node 20
 - Client:
   - :beetle: Fix grid range
-  - :beetls: Add view units
+  - :beetle: Add view units
   - :arrow_up: Doc
 - Plugins:
-  - :beetls: Denso template bugfix
+  - :beetle: Denso template bugfix
 
 ---
 

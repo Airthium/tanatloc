@@ -179,7 +179,7 @@ const Signup: React.FunctionComponent = () => {
                     if (!value || getFieldValue('password') === value) {
                       return Promise.resolve()
                     }
-                    return Promise.reject(errors.passwordMismatch)
+                    return Promise.reject(new Error(errors.passwordMismatch))
                   }
                 })
               ]}

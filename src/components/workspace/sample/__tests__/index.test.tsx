@@ -9,6 +9,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@sentry/nextjs', () => ({ init: jest.fn }))
+
 jest.mock('@/models', () => [
   {
     algorithm: 'poisson',

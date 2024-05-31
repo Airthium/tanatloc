@@ -2,9 +2,8 @@
 
 import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Layout, Menu, Popover } from 'antd'
+import { Button, Layout, Menu, MenuProps, Popover } from 'antd'
 import { BarsOutlined } from '@ant-design/icons'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
 
 import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 
@@ -212,7 +211,7 @@ const IndexMenu: React.FunctionComponent = () => {
             label: loginButton,
             className: 'Menu-login'
           }
-      ].filter((m) => m) as ItemType[],
+      ].filter((m) => m) as MenuProps['items'],
     [
       user,
       loadingUser,

@@ -35,8 +35,8 @@ describe('components/assets/notification/error', () => {
 
     mockDispatch.mockReset()
 
-    errors.lenght = 0
-    warnings.lenght = 0
+    errors.length = 0
+    warnings.length = 0
   })
 
   test('simple', () => {

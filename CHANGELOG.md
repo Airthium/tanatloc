@@ -1,5 +1,11 @@
 ## v1.3.11
 
+- Plugins:
+  - :beetle: Fix typo
+  - :arrow_up: Update Denso plugin
+- Client:
+  - :beetle: Fix typo
+
 ---
 
 ## v1.3.10
@@ -32,10 +38,10 @@
   - :arrow_up: Node 20
 - Client:
   - :beetle: Fix grid range
-  - :beetls: Add view units
+  - :beetle: Add view units
   - :arrow_up: Doc
 - Plugins:
-  - :beetls: Denso template bugfix
+  - :beetle: Denso template bugfix
 
 ---
 

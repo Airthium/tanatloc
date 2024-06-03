@@ -1,5 +1,8 @@
 ## v1.3.12
 
+- Plugins:
+  - :beetle: Denso plugin
+
 ---
 
 ## v1.3.11

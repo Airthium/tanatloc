@@ -60,6 +60,7 @@
     "@sentry/nextjs": "8.8.0",
     "@swc/cli": "0.3.12",
     "@swc/core": "1.5.25",
+    "@testing-library/dom": "^10.1.0",
     "@testing-library/react": "16.0.0",
     "@types/archiver": "6.0.2",
     "@types/cookie": "0.6.0",

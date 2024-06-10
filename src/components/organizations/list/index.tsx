@@ -418,7 +418,7 @@ const List: React.FunctionComponent<IProps> = ({
    */
   const ownersRender = useCallback(
     (owners: IFrontUsers): ReactNode => (
-      <Avatar.Group maxCount={5}>
+      <Avatar.Group max={{ count: 5 }}>
         {owners?.map((o) => Utils.userToAvatar(o))}
       </Avatar.Group>
     ),
@@ -432,7 +432,7 @@ const List: React.FunctionComponent<IProps> = ({
    */
   const usersRender = useCallback(
     (users: IFrontUsers): ReactNode => (
-      <Avatar.Group maxCount={5}>
+      <Avatar.Group max={{ count: 5 }}>
         {users?.map((u) => Utils.userToAvatar(u))}
       </Avatar.Group>
     ),
@@ -446,7 +446,7 @@ const List: React.FunctionComponent<IProps> = ({
    */
   const groupsRender = useCallback(
     (groups: IFrontGroups): ReactNode => (
-      <Avatar.Group maxCount={5}>
+      <Avatar.Group max={{ count: 5 }}>
         {groups?.map((g) => Utils.groupToAvatar(g))}
       </Avatar.Group>
     ),

@@ -42,20 +42,20 @@ const Info: React.FunctionComponent<IProps> = ({ user }) => {
   return (
     <div className={style.info}>
       <Card size="small" title="Owners" className={style.infoCard}>
-        <Avatar.Group maxCount={5}>
+        <Avatar.Group max={{ count: 5 }}>
           {userModel.owners.map((owner) => Utils.userToAvatar(owner))}
         </Avatar.Group>
       </Card>
       {userModel.users.length ? (
         <Card size="small" title="Users" className={style.infoCard}>
-          <Avatar.Group maxCount={5}>
+          <Avatar.Group max={{ count: 5 }}>
             {userModel.users.map((user) => Utils.userToAvatar(user))}
           </Avatar.Group>
         </Card>
       ) : null}
       {userModel.groups.length ? (
         <Card size="small" title="Groups" className={style.infoCard}>
-          <Avatar.Group maxCount={5}>
+          <Avatar.Group max={{ count: 5 }}>
             {userModel.groups.map((group) => Utils.groupToAvatar(group))}
           </Avatar.Group>
         </Card>

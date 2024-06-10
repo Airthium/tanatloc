@@ -72,7 +72,7 @@ const Users: React.FunctionComponent<IProps> = ({ organization, swr }) => {
    */
   const workspacesRender = useCallback(
     (workspaces?: IFrontGroupsItem['workspaces']): ReactNode => (
-      <Avatar.Group maxCount={5}>
+      <Avatar.Group max={{ count: 5 }}>
         {workspaces?.map((workspace) => Utils.workspaceToAvatar(workspace))}
       </Avatar.Group>
     ),
@@ -86,7 +86,7 @@ const Users: React.FunctionComponent<IProps> = ({ organization, swr }) => {
    */
   const projectsRender = useCallback(
     (projects?: IFrontGroupsItem['projects']): ReactNode => (
-      <Avatar.Group maxCount={5}>
+      <Avatar.Group max={{ count: 5 }}>
         {projects?.map((project) => Utils.projectToAvatar(project))}
       </Avatar.Group>
     ),
@@ -100,7 +100,7 @@ const Users: React.FunctionComponent<IProps> = ({ organization, swr }) => {
    */
   const usermodelsRender = useCallback(
     (usermodels?: IFrontGroupsItem['usermodels']): ReactNode => (
-      <Avatar.Group maxCount={5}>
+      <Avatar.Group max={{ count: 5 }}>
         {usermodels?.map((usermodel) => Utils.usermodelToAvatar(usermodel))}
       </Avatar.Group>
     ),

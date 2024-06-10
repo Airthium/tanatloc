@@ -179,17 +179,17 @@ const Workspace: React.FunctionComponent<IProps> = ({
           <div className={style.shared}>
             <div>
               <span style={{ marginRight: '10px' }}>Admin:</span>
-              <Avatar.Group maxCount={5}>
+              <Avatar.Group max={{ count: 5 }}>
                 {workspace.owners?.map((u) => Utils.userToAvatar(u))}
               </Avatar.Group>
             </div>
 
             <div>
               <span style={{ marginRight: '10px' }}>Shared with:</span>
-              <Avatar.Group maxCount={5}>
+              <Avatar.Group max={{ count: 5 }}>
                 {workspace.users?.map((u) => Utils.userToAvatar(u))}
               </Avatar.Group>
-              <Avatar.Group maxCount={5}>
+              <Avatar.Group max={{ count: 5 }}>
                 {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
               </Avatar.Group>
             </div>

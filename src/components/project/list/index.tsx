@@ -304,7 +304,7 @@ const ProjectCard: React.FunctionComponent<ICardProps> = ({
         <div>Admin:</div>
         <div />
         <div>Shared with:</div>
-        <Avatar.Group maxCount={5}>{owners}</Avatar.Group>
+        <Avatar.Group max={{ count: 5 }}>{owners}</Avatar.Group>
         <Divider type="vertical" className={style.cardDivider} />
         <Avatar.Group>
           {users}

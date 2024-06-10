@@ -26,20 +26,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airthium/tanatloc-3d@npm:1.1.25":
-  version: 1.1.25
-  resolution: "@airthium/tanatloc-3d@npm:1.1.25"
+"@airthium/tanatloc-3d@npm:1.1.26":
+  version: 1.1.26
+  resolution: "@airthium/tanatloc-3d@npm:1.1.26"
   dependencies:
     "@ant-design/icons": "npm:5.3.7"
     "@react-three/drei": "npm:9.106.0"
-    "@react-three/fiber": "npm:8.16.7"
-    antd: "npm:5.17.4"
+    "@react-three/fiber": "npm:8.16.8"
+    antd: "npm:5.18.0"
     three: "npm:0.165.0"
     zustand: "npm:4.5.2"
   peerDependencies:
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: 10c0/7315385905fd68395e66a4c5799c735dab48e99ff6b1b736a88d28ec1ae04941efe8f64018f872b3cf03a8f3a3c3fdb6d5369fcad4a69a09529e2dda7f9e22aa
+  checksum: 10c0/af6d4a5fcf79a4f97da14c48177644a34b0f0ca227b3635bfe60db9970b6f952164c2d6cd82fd0f551fca31e3e4ce65cb910ad6b130e3ab62365d58f8f85c143
   languageName: node
   linkType: hard
 
@@ -2107,9 +2107,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-three/fiber@npm:8.16.7":
-  version: 8.16.7
-  resolution: "@react-three/fiber@npm:8.16.7"
+"@react-three/fiber@npm:8.16.8":
+  version: 8.16.8
+  resolution: "@react-three/fiber@npm:8.16.8"
   dependencies:
     "@babel/runtime": "npm:^7.17.8"
     "@types/react-reconciler": "npm:^0.26.7"
@@ -2144,7 +2144,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10c0/51b22f1e149332de497a654464d4f19c70984bee02029c47ba746af499ac77e6bc8b06778359086bf59718a3f82ef99f7c8421a85da3c987773f0e48915326e9
+  checksum: 10c0/bf3061bcc5096857a2e659f7859570bd3acb9af067573791e47a97ecaa1fc37efb12a41c081bc7c4ebe4440ebf44016fd04a69d83c553ca61e4ded595b7fd93b
   languageName: node
   linkType: hard
 
@@ -3876,65 +3876,6 @@ __metadata:
   version: 6.2.1
   resolution: "ansi-styles@npm:6.2.1"
   checksum: 10c0/5d1ec38c123984bcedd996eac680d548f31828bd679a66db2bdf11844634dde55fec3efa9c6bb1d89056a5e79c1ac540c4c784d592ea1d25028a92227d2f2d5c
-  languageName: node
-  linkType: hard
-
-"antd@npm:5.17.4":
-  version: 5.17.4
-  resolution: "antd@npm:5.17.4"
-  dependencies:
-    "@ant-design/colors": "npm:^7.0.2"
-    "@ant-design/cssinjs": "npm:^1.19.1"
-    "@ant-design/icons": "npm:^5.3.7"
-    "@ant-design/react-slick": "npm:~1.1.2"
-    "@babel/runtime": "npm:^7.24.5"
-    "@ctrl/tinycolor": "npm:^3.6.1"
-    "@rc-component/color-picker": "npm:~1.5.3"
-    "@rc-component/mutate-observer": "npm:^1.1.0"
-    "@rc-component/tour": "npm:~1.15.0"
-    "@rc-component/trigger": "npm:^2.1.1"
-    classnames: "npm:^2.5.1"
-    copy-to-clipboard: "npm:^3.3.3"
-    dayjs: "npm:^1.11.10"
-    qrcode.react: "npm:^3.1.0"
-    rc-cascader: "npm:~3.26.0"
-    rc-checkbox: "npm:~3.3.0"
-    rc-collapse: "npm:~3.7.3"
-    rc-dialog: "npm:~9.4.0"
-    rc-drawer: "npm:~7.1.0"
-    rc-dropdown: "npm:~4.2.0"
-    rc-field-form: "npm:~2.0.1"
-    rc-image: "npm:~7.6.0"
-    rc-input: "npm:~1.5.1"
-    rc-input-number: "npm:~9.1.0"
-    rc-mentions: "npm:~2.13.1"
-    rc-menu: "npm:~9.14.0"
-    rc-motion: "npm:^2.9.1"
-    rc-notification: "npm:~5.4.0"
-    rc-pagination: "npm:~4.0.4"
-    rc-picker: "npm:~4.5.0"
-    rc-progress: "npm:~4.0.0"
-    rc-rate: "npm:~2.12.0"
-    rc-resize-observer: "npm:^1.4.0"
-    rc-segmented: "npm:~2.3.0"
-    rc-select: "npm:~14.14.0"
-    rc-slider: "npm:~10.6.2"
-    rc-steps: "npm:~6.0.1"
-    rc-switch: "npm:~4.1.0"
-    rc-table: "npm:~7.45.6"
-    rc-tabs: "npm:~15.1.0"
-    rc-textarea: "npm:~1.7.0"
-    rc-tooltip: "npm:~6.2.0"
-    rc-tree: "npm:~5.8.7"
-    rc-tree-select: "npm:~5.21.0"
-    rc-upload: "npm:~4.5.2"
-    rc-util: "npm:^5.41.0"
-    scroll-into-view-if-needed: "npm:^3.1.0"
-    throttle-debounce: "npm:^5.0.0"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10c0/2ea5853bf72c2ec2b409b53b730c633d97ce409807aa65cc607813f20647b9b4c10ec7fc43fb56e1d0298628b3d852aebe1835e1a63365664ac16dde6dae53cf
   languageName: node
   linkType: hard
 
@@ -10662,22 +10603,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-drawer@npm:~7.1.0":
-  version: 7.1.0
-  resolution: "rc-drawer@npm:7.1.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.23.9"
-    "@rc-component/portal": "npm:^1.1.1"
-    classnames: "npm:^2.2.6"
-    rc-motion: "npm:^2.6.1"
-    rc-util: "npm:^5.38.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10c0/7a27192518f853e1d410391a687c2aae7a8760dbdd9bd0a9d864b83aac9b1253517517f89acd389c11bd7d682f557f6515c5405317e5c2010763f4e0de7dbfc6
-  languageName: node
-  linkType: hard
-
 "rc-drawer@npm:~7.2.0":
   version: 7.2.0
   resolution: "rc-drawer@npm:7.2.0"
@@ -10709,20 +10634,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-field-form@npm:~2.0.1":
-  version: 2.0.1
-  resolution: "rc-field-form@npm:2.0.1"
-  dependencies:
-    "@babel/runtime": "npm:^7.18.0"
-    "@rc-component/async-validator": "npm:^5.0.3"
-    rc-util: "npm:^5.32.2"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10c0/432028af840d51f12a723dd7b317a457637b888ebd057e5089bf116365898de3c8d56be3326845e9f713d2ed2b05b963b5f6b6583228a80621a2b4fde7ce8528
-  languageName: node
-  linkType: hard
-
 "rc-field-form@npm:~2.2.0":
   version: 2.2.1
   resolution: "rc-field-form@npm:2.2.1"
@@ -10734,23 +10645,6 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 10c0/59911ef8222b08df561ea32bf0cc8d0731c796a06de95be9faacd8399be24e9c82343ceb52201df13c061bf75713b43e8d3963de33c41be35b735991c8f0f500
-  languageName: node
-  linkType: hard
-
-"rc-image@npm:~7.6.0":
-  version: 7.6.0
-  resolution: "rc-image@npm:7.6.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.11.2"
-    "@rc-component/portal": "npm:^1.0.2"
-    classnames: "npm:^2.2.6"
-    rc-dialog: "npm:~9.4.0"
-    rc-motion: "npm:^2.6.2"
-    rc-util: "npm:^5.34.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10c0/ed9b0a8815de05ee582f89d062a4116cc85a1b920b125e9fc305d4f6f25da615338b47ebcca04f98fbe546c9822557c986cc30c9456057cd2e48f02673cd57a1
   languageName: node
   linkType: hard
 
@@ -10850,21 +10744,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-notification@npm:~5.4.0":
-  version: 5.4.0
-  resolution: "rc-notification@npm:5.4.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.10.1"
-    classnames: "npm:2.x"
-    rc-motion: "npm:^2.9.0"
-    rc-util: "npm:^5.20.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10c0/f8709d9dfc357a8f12a6f40ad1a5f7c40e06ee3d8936e0f4e68cd7f03f91efb9c3bb69ee992070103f91c9acb241fb70a3fc01b72a4a1359fa110d5dfb5a926a
-  languageName: node
-  linkType: hard
-
 "rc-notification@npm:~5.6.0":
   version: 5.6.0
   resolution: "rc-notification@npm:5.6.0"
@@ -10950,20 +10829,6 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 10c0/d3b47565470c5fec71a16f8d1939f1b1dd7d2dc9260893c6f70cafa84d9ee4231f3466be817db5fb9580932af46e34d52c74a710700ca9391b1901fa06c31f1e
-  languageName: node
-  linkType: hard
-
-"rc-rate@npm:~2.12.0":
-  version: 2.12.0
-  resolution: "rc-rate@npm:2.12.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.10.1"
-    classnames: "npm:^2.2.5"
-    rc-util: "npm:^5.0.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10c0/871bb040ec1de727c9b83e0d5db68877c22ef7494f82ce6dedbe655fc7894d7db63e99bed96584eed122e8845270df0b08e2a97a4cc5600e652ce229d561ace5
   languageName: node
   linkType: hard
 
@@ -11071,7 +10936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-table@npm:~7.45.6, rc-table@npm:~7.45.7":
+"rc-table@npm:~7.45.7":
   version: 7.45.7
   resolution: "rc-table@npm:7.45.7"
   dependencies:
@@ -12572,7 +12437,7 @@ __metadata:
     "@airthium/deep-object-diff": "npm:1.0.42"
     "@airthium/extract-json-from-string": "npm:1.0.61"
     "@airthium/pg-format": "npm:2.0.65"
-    "@airthium/tanatloc-3d": "npm:1.1.25"
+    "@airthium/tanatloc-3d": "npm:1.1.26"
     "@airthium/tanatloc-formula-validator": "npm:1.0.46"
     "@airthium/typedoc-plugin-airthium": "npm:1.1.46"
     "@ant-design/icons": "npm:5.3.7"

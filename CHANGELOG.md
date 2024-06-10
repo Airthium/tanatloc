@@ -2,6 +2,8 @@
 
 - Plugins:
   - :beetle: Denso plugin
+- Client :
+  - :beetle: 3D bug fix
 
 ---
 

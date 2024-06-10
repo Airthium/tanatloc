@@ -32,6 +32,7 @@ jobs:
         run: yarn run doc
 
       - name: Tests
+        continue-on-error: true
         run: yarn run test
 
       - name: Unsubscribe

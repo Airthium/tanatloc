@@ -13,6 +13,7 @@ import { Button, Card, Input, Space, Tag, Tooltip, Typography } from 'antd'
 import {
   CloseOutlined,
   CloseSquareOutlined,
+  PlusOutlined,
   PlusSquareOutlined,
   SearchOutlined,
   SwapOutlined
@@ -102,10 +103,9 @@ const ColorFilter: React.FunctionComponent<IColorFilterProps> = ({
     <Tooltip title="Color">
       <Button
         style={{ backgroundColor: Utils.rgbToHex(color) }}
+        icon={<PlusOutlined />}
         onClick={onColorFilter}
-      >
-        {' '}
-      </Button>
+      />
     </Tooltip>
   )
 }
@@ -131,7 +131,7 @@ const ColorFilters: React.FunctionComponent<IColorFiltersProps> = ({
    */
   return (
     colors.length > 1 && (
-      <>
+      <Space direction="horizontal" wrap={true}>
         <Tooltip title="Reset">
           <Button icon={<CloseOutlined />} onClick={onColorFilterClear} />
         </Tooltip>
@@ -142,7 +142,7 @@ const ColorFilters: React.FunctionComponent<IColorFiltersProps> = ({
             setFilter={setFilter}
           />
         ))}
-      </>
+      </Space>
     )
   )
 }

@@ -1,3 +1,12 @@
+## v1.3.14
+
+- Global:
+  - :arrow_up: Update dependencies
+- Plugins:
+  - :beetle: Denso plugin
+- Client:
+  - :beetle: Boundary conditions display
+
 ## v1.3.13
 
 - Plugins:

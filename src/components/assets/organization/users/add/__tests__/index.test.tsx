@@ -60,15 +60,11 @@ describe('componenets/assets/organization/users/add', () => {
   test('setVisible', () => {
     const AddRole = 'AddButton'
     mockAddButton.mockImplementation((props) => (
-      <div role={AddRole} onClick={props.onAdd} onKeyDown={console.debug} />
+      <button role={AddRole} onClick={props.onAdd} />
     ))
     const DialogRole = 'Dialog'
     mockDialog.mockImplementation((props) => (
-      <div
-        role={DialogRole}
-        onClick={props.onCancel}
-        onKeyDown={console.debug}
-      />
+      <button role={DialogRole} onClick={props.onCancel} />
     ))
     const { unmount } = render(
       <Add title={title} organization={organization} dBkey={dBkey} swr={swr} />
@@ -85,14 +81,13 @@ describe('componenets/assets/organization/users/add', () => {
   test('onFinish', async () => {
     const DialogRole = 'Dialog'
     mockDialog.mockImplementation((props) => (
-      <div
+      <button
         role={DialogRole}
         onClick={async () => {
           try {
             await props.onOk({ email: 'email' })
           } catch (err) {}
         }}
-        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -128,14 +123,13 @@ describe('componenets/assets/organization/users/add', () => {
   test('onFinish, exists', async () => {
     const DialogRole = 'Dialog'
     mockDialog.mockImplementation((props) => (
-      <div
+      <button
         role={DialogRole}
         onClick={async () => {
           try {
             await props.onOk({ email: 'email' })
           } catch (err) {}
         }}
-        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(

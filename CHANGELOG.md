@@ -2,10 +2,12 @@
 
 - Global:
   - :arrow_up: Update dependencies
+  - :arrow_up: Clean tests
 - Plugins:
   - :beetle: Denso plugin
 - Client:
   - :beetle: Boundary conditions display
+  - :arrow_up: 3D update
 
 ## v1.3.13
 

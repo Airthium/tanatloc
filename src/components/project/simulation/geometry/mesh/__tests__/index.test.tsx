@@ -94,11 +94,10 @@ describe('components/project/simulation/geometry/mesh', () => {
   test('fill', async () => {
     const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div
+      <button
         role={FormulaRole}
         onClick={props.onValueChange}
         onMouseMove={props.onUnitChange}
-        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -106,7 +105,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     )
 
     const collapse = screen.getByRole('button', {
-      name: 'right Mesh refinement'
+      name: 'collapsed Mesh refinement'
     })
     fireEvent.click(collapse)
 
@@ -157,11 +156,10 @@ describe('components/project/simulation/geometry/mesh', () => {
   test('fill - error', async () => {
     const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div
+      <button
         role={FormulaRole}
         onClick={() => props.onValueChange(1.1)}
         onMouseMove={props.onUnitChange}
-        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(
@@ -169,7 +167,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     )
 
     const collapse = screen.getByRole('button', {
-      name: 'right Mesh refinement'
+      name: 'collapsed Mesh refinement'
     })
     fireEvent.click(collapse)
 
@@ -272,7 +270,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     )
 
     const collapse = screen.getByRole('button', {
-      name: 'right Mesh refinement'
+      name: 'collapsed Mesh refinement'
     })
     fireEvent.click(collapse)
 
@@ -319,7 +317,7 @@ describe('components/project/simulation/geometry/mesh', () => {
     )
 
     const collapse = screen.getByRole('button', {
-      name: 'right Mesh refinement'
+      name: 'collapsed Mesh refinement'
     })
     fireEvent.click(collapse)
 

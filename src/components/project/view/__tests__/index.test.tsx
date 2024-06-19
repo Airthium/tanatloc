@@ -313,11 +313,7 @@ describe('components/project/view', () => {
   test('snapshot', async () => {
     const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div
-        role={RendererRole}
-        onClick={props.snapshot.project.apiRoute}
-        onKeyDown={console.debug}
-      />
+      <button role={RendererRole} onClick={props.snapshot.project.apiRoute} />
     ))
 
     const { unmount } = render(
@@ -357,11 +353,7 @@ describe('components/project/view', () => {
   test('highlight', async () => {
     const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div
-        role={RendererRole}
-        onClick={props.selection.onHighlight}
-        onKeyDown={console.debug}
-      />
+      <button role={RendererRole} onClick={props.selection.onHighlight} />
     ))
 
     const { unmount } = render(
@@ -384,11 +376,7 @@ describe('components/project/view', () => {
   test('select', async () => {
     const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div
-        role={RendererRole}
-        onClick={props.selection.onSelect}
-        onKeyDown={console.debug}
-      />
+      <button role={RendererRole} onClick={props.selection.onSelect} />
     ))
 
     const { unmount } = render(
@@ -411,11 +399,7 @@ describe('components/project/view', () => {
   test('point', async () => {
     const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div
-        role={RendererRole}
-        onClick={props.selection.onPoint}
-        onKeyDown={console.debug}
-      />
+      <button role={RendererRole} onClick={props.selection.onPoint} />
     ))
 
     const { unmount } = render(
@@ -438,11 +422,7 @@ describe('components/project/view', () => {
   test('data', async () => {
     const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div
-        role={RendererRole}
-        onClick={props.onData}
-        onKeyDown={console.debug}
-      />
+      <button role={RendererRole} onClick={props.onData} />
     ))
 
     const { unmount } = render(
@@ -465,11 +445,7 @@ describe('components/project/view', () => {
   test('postProcessing', async () => {
     const RendererRole = 'Renderer'
     mockRenderer.mockImplementation((props: any) => (
-      <div
-        role={RendererRole}
-        onClick={props.onPostProcessing}
-        onKeyDown={console.debug}
-      />
+      <button role={RendererRole} onClick={props.onPostProcessing} />
     ))
 
     const { unmount } = render(

@@ -147,7 +147,7 @@ describe('components/project/simulation/parameters', () => {
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
 
     // Open advanced
-    const open = screen.getByRole('button', { name: 'right Advanced' })
+    const open = screen.getByRole('button', { name: 'collapsed Advanced' })
     await act(() => fireEvent.click(open))
 
     unmount()
@@ -224,11 +224,10 @@ describe('components/project/simulation/parameters', () => {
     let value: number | undefined = 0
     const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div
+      <button
         role={FormulaRole}
         onClick={() => props.onValueChange(value)}
         onMouseMove={() => props.onUnitChange({})}
-        onKeyDown={console.debug}
       />
     ))
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
@@ -260,7 +259,7 @@ describe('components/project/simulation/parameters', () => {
     })
 
     // Open advanced
-    const open = screen.getByRole('button', { name: 'right Advanced' })
+    const open = screen.getByRole('button', { name: 'collapsed Advanced' })
     await act(() => fireEvent.click(open))
 
     // Select
@@ -291,11 +290,10 @@ describe('components/project/simulation/parameters', () => {
   test('2D', async () => {
     const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div
+      <button
         role={FormulaRole}
         onClick={() => props.onValueChange()}
         onMouseMove={() => props.onUnitChange({})}
-        onKeyDown={console.debug}
       />
     ))
     simulation.scheme.configuration.dimension = 2
@@ -311,7 +309,7 @@ describe('components/project/simulation/parameters', () => {
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(6))
 
     // Open advanced
-    const open = screen.getByRole('button', { name: 'right Advanced' })
+    const open = screen.getByRole('button', { name: 'collapsed Advanced' })
     await act(() => fireEvent.click(open))
 
     // Select

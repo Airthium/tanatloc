@@ -169,11 +169,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
   test('highlight', () => {
     const EditButtonRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div
-        role={EditButtonRole}
-        onClick={props.onEdit}
-        onKeyDown={console.debug}
-      />
+      <button role={EditButtonRole} onClick={props.onEdit} />
     ))
     const { unmount } = render(
       <SelectContext.Provider
@@ -214,11 +210,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     })
     const EditButtonRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div
-        role={EditButtonRole}
-        onClick={props.onEdit}
-        onKeyDown={console.debug}
-      />
+      <button role={EditButtonRole} onClick={props.onEdit} />
     ))
     const { unmount } = render(
       <SelectContext.Provider

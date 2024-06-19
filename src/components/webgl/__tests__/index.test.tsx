@@ -21,9 +21,7 @@ jest.mock('@airthium/tanatloc-3d', () => ({
 
 jest.mock('next/dynamic', () => (callback: Function) => {
   callback()
-  return (props: any) => (
-    <div role={WebGLRole} onClick={props.back} onKeyDown={console.debug} />
-  )
+  return (props: any) => <button role={WebGLRole} onClick={props.back} />
 })
 
 describe('components/webgl', () => {

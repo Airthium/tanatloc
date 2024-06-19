@@ -469,11 +469,7 @@ describe('components/project', () => {
   test('menu', () => {
     const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
-      <div
-        role={SelectorRole}
-        onClick={props.onCancel}
-        onKeyDown={console.debug}
-      />
+      <button role={SelectorRole} onClick={props.onCancel} />
     ))
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Project />)
@@ -584,11 +580,7 @@ describe('components/project', () => {
     mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     const GeometryRole = 'Geometry'
     mockGeometry.mockImplementation((props) => (
-      <div
-        role={GeometryRole}
-        onClick={() => props.onCleanup('idg')}
-        onKeyDown={console.debug}
-      />
+      <button role={GeometryRole} onClick={() => props.onCleanup('idg')} />
     ))
     const { unmount } = render(<Project />)
 
@@ -653,11 +645,7 @@ describe('components/project', () => {
     mockProject.mockImplementation(() => ({}))
     const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
-      <div
-        role={SelectorRole}
-        onClick={() => props.onOk({ model: {} })}
-        onKeyDown={console.debug}
-      />
+      <button role={SelectorRole} onClick={() => props.onOk({ model: {} })} />
     ))
     const { unmount } = render(<Project />)
 

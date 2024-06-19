@@ -184,11 +184,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   test('close', () => {
     const GoBackRole = 'GoBack'
     mockCancelButton.mockImplementation((props) => (
-      <div
-        role={GoBackRole}
-        onClick={props.onCancel}
-        onKeyDown={console.debug}
-      />
+      <button role={GoBackRole} onClick={props.onCancel} />
     ))
     const { unmount } = render(
       <BoundaryCondition
@@ -208,31 +204,25 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   test('Fill', () => {
     const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div
+      <button
         role={FormulaRole}
         onClick={() => {
           props.onValueChange(1)
           props.onCheckedChange(true)
         }}
         onMouseMove={() => props.onUnitChange({})}
-        onKeyDown={console.debug}
       />
     ))
     const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
-      <div
+      <button
         role={SelectorRole}
         onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
-        onKeyDown={console.debug}
       />
     ))
     const AddRole = 'Add'
     mockAdd.mockImplementation((props) => (
-      <div
-        role={AddRole}
-        onClick={() => props.onError('error')}
-        onKeyDown={console.debug}
-      />
+      <button role={AddRole} onClick={() => props.onError('error')} />
     ))
     const { unmount } = render(
       <BoundaryCondition
@@ -284,11 +274,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   test('edit', () => {
     const EditRole = 'Edit'
     mockEdit.mockImplementation((props) => (
-      <div
-        role={EditRole}
-        onClick={() => props.onError('error')}
-        onKeyDown={console.debug}
-      />
+      <button role={EditRole} onClick={() => props.onError('error')} />
     ))
     const { unmount } = render(
       <BoundaryCondition

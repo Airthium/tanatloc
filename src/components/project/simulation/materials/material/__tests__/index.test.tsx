@@ -124,24 +124,22 @@ describe('components/project/simulation/materials/material', () => {
   test('fill', () => {
     const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div
+      <button
         role={FormulaRole}
         onClick={() => props.onValueChange(1)}
         onMouseMove={() => props.onUnitChange({})}
-        onKeyDown={console.debug}
       />
     ))
     const SelectorRole = 'Selector'
     mockSelector.mockImplementation((props) => (
-      <div
+      <button
         role={SelectorRole}
         onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
-        onKeyDown={console.debug}
       />
     ))
     const DatabaseRole = 'Database'
     mockDatabase.mockImplementation((props) => (
-      <div
+      <button
         role={DatabaseRole}
         onClick={() =>
           props.onSelect({
@@ -152,24 +150,15 @@ describe('components/project/simulation/materials/material', () => {
             ]
           })
         }
-        onKeyDown={console.debug}
       />
     ))
     const AddRole = 'Add'
     mockAdd.mockImplementation((props) => (
-      <div
-        role={AddRole}
-        onClick={() => props.onError('error')}
-        onKeyDown={console.debug}
-      />
+      <button role={AddRole} onClick={() => props.onError('error')} />
     ))
     const CancelRole = 'Cancel'
     mockCancelButton.mockImplementation((props) => (
-      <div
-        role={CancelRole}
-        onClick={props.onCancel}
-        onKeyDown={console.debug}
-      />
+      <button role={CancelRole} onClick={props.onCancel} />
     ))
     const { unmount } = render(
       <Material
@@ -214,11 +203,7 @@ describe('components/project/simulation/materials/material', () => {
   test('edit', () => {
     const EditRole = 'Edit'
     mockEdit.mockImplementation((props) => (
-      <div
-        role={EditRole}
-        onClick={() => props.onError('error')}
-        onKeyDown={console.debug}
-      />
+      <button role={EditRole} onClick={() => props.onError('error')} />
     ))
     const { unmount } = render(
       <Material

@@ -324,11 +324,7 @@ describe('components/project/simulation/run', () => {
   test('onCloudServer', async () => {
     const CloudServerRole = 'CloudServer'
     mockCloudServer.mockImplementation((props) => (
-      <div
-        role={CloudServerRole}
-        onClick={() => props.onOk({})}
-        onKeyDown={console.debug}
-      />
+      <button role={CloudServerRole} onClick={() => props.onOk({})} />
     ))
     const { unmount } = render(
       <Run

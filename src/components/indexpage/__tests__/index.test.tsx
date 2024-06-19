@@ -74,7 +74,7 @@ describe('components/indexpage', () => {
     // Re-open
     buttons.forEach((button) => fireEvent.click(button))
     const collapse = screen.getByRole('button', {
-      name: 'right "There is an error with your Docker installation." error'
+      name: 'collapsed "There is an error with your Docker installation." error'
     })
     fireEvent.click(collapse)
 

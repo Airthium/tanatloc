@@ -41,7 +41,9 @@ describe('components/assets/cookies', () => {
   test('save & close - empty', async () => {
     const { unmount } = render(<Cookies />)
 
-    const collapse1 = screen.getByRole('button', { name: 'right More details' })
+    const collapse1 = screen.getByRole('button', {
+      name: 'collapsed More details'
+    })
     fireEvent.click(collapse1)
 
     const button = screen.getByRole('button', { name: 'Save & Close' })
@@ -58,7 +60,9 @@ describe('components/assets/cookies', () => {
   test('save & close - accepted', async () => {
     const { unmount } = render(<Cookies />)
 
-    const collapse1 = screen.getByRole('button', { name: 'right More details' })
+    const collapse1 = screen.getByRole('button', {
+      name: 'collapsed More details'
+    })
     fireEvent.click(collapse1)
 
     // Accepted

@@ -94,10 +94,10 @@ describe('components/doc/installation', () => {
     const { unmount } = render(<Installation />)
 
     const coll1 = screen.getByRole('button', {
-      name: 'right ./tanatloc.sh set'
+      name: 'collapsed ./tanatloc.sh set'
     })
     const coll2 = screen.getByRole('button', {
-      name: 'right ./tanatloc.sh add'
+      name: 'collapsed ./tanatloc.sh add'
     })
 
     fireEvent.click(coll1)

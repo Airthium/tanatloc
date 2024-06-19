@@ -80,7 +80,7 @@ describe('components/project/simulation/materials/edit', () => {
   test('onEdit - without uuid', async () => {
     const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
+      <button role={EditRole} onClick={props.onEdit} />
     ))
     const { unmount } = render(
       <Edit
@@ -116,7 +116,7 @@ describe('components/project/simulation/materials/edit', () => {
   test('onEdit - without material.material', async () => {
     const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
+      <button role={EditRole} onClick={props.onEdit} />
     ))
     const { unmount } = render(
       <Edit
@@ -155,7 +155,7 @@ describe('components/project/simulation/materials/edit', () => {
   test('onEdit - without material.selected', async () => {
     const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
+      <button role={EditRole} onClick={props.onEdit} />
     ))
     const { unmount } = render(
       <Edit
@@ -197,7 +197,7 @@ describe('components/project/simulation/materials/edit', () => {
   test('onEdit', async () => {
     const EditRole = 'EditButton'
     mockEditButton.mockImplementation((props) => (
-      <div role={EditRole} onClick={props.onEdit} onKeyDown={console.debug} />
+      <button role={EditRole} onClick={props.onEdit} />
     ))
     const { unmount } = render(
       <Edit

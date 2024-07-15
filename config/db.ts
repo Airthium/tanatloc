@@ -9,7 +9,9 @@
  */
 export const ADMIN: string =
   process.env.DB_ADMIN ??
-  (process.platform === 'darwin' ? process.env.USER ?? 'postgres' : 'postgres')
+  (process.platform === 'darwin'
+    ? (process.env.USER ?? 'postgres')
+    : 'postgres')
 
 /**
  * Admin database

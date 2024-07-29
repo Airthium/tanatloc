@@ -1,3 +1,12 @@
+## v1.3.16
+
+- Global:
+  - :arrow_up: Update dependencies
+- Plugins:
+  - :beetle: Denso plugin
+
+---
+
 ## v1.3.15
 
 - Client:

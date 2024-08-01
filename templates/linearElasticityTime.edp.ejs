@@ -155,9 +155,9 @@ try {
             2. * (Rho / dt) * <%- previousFunction -%>' * <%- testFunction %>
             - (Rho / dt) * <%- previousPreviousFunction -%>' * <%- testFunction %>
 <% if (dimension === 2){ -%>
-            + Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%- testFunction %>
+            + Rho * [<%- rhsX -%>, <%- rhsY -%>]' * <%- testFunction %>
 <% } else { -%>
-            + Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- testFunction %>
+            + Rho * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- testFunction %>
 <% } -%>
         )
 <% for (const p of normalPresure){ -%>

@@ -31,6 +31,10 @@ const LinearElasticity: IModel = {
       label: 'Displacement (z)',
       value: 'Uz',
       only3D: true
+    },
+    {
+      label: 'Gravity',
+      value: 'g'
     }
   ],
   configuration: {

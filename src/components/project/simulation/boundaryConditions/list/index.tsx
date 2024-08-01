@@ -126,6 +126,9 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
     setTimeout(() => (disableDispatch.current = false), 1_000)
   }, [index, type, _onEdit])
 
+  /**
+   * Render
+   */
   return (
     <Card
       className={`${globalStyle.textAlignCenter} ${style.listItem}`}

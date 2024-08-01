@@ -43,6 +43,10 @@ const LinearElasticityTime: IModel = {
     {
       label: 'Time step',
       value: 'dt'
+    },
+    {
+      label: 'Gravity',
+      value: 'g'
     }
   ],
   configuration: {

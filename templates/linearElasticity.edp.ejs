@@ -112,9 +112,9 @@ try {
     varf vLinearElasticityRHS(<%- freeFunction -%>, <%- testFunction -%>)
         = intN(<%- mesh.name -%>)(
 <% if (dimension === 2){ -%>
-            Rho * g * [<%- rhsX -%>, <%- rhsY -%>]' * <%- testFunction %>
+            Rho * [<%- rhsX -%>, <%- rhsY -%>]' * <%- testFunction %>
 <% } else { -%>
-            Rho * g * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- testFunction %>
+            Rho * [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%- testFunction %>
 <% } -%>
         )
 <% for (const p of normalPresure){ -%>

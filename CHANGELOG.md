@@ -1,3 +1,12 @@
+## v1.3.17
+
+- Models:
+  - :beetle: Linear elasticity (+ time): remove gravity from external force
+- Client:
+  - :beetle: Display global warning on wrong boundary condition
+
+---
+
 ## v1.3.16
 
 - Global:

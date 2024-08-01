@@ -15,6 +15,7 @@ import {
   IFrontMutateSimulationsItem,
   IFrontSimulationsItem
 } from '@/api/index.d'
+import { IModelTypedBoundaryCondition } from '@/models/index.d'
 
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
@@ -75,42 +76,63 @@ export const _onSelect = async (
   index: number,
   swr: Swr
 ): Promise<void> => {
-  try {
-    const newSimulation = Utils.deepCopy(simulation)
+  const newSimulation = Utils.deepCopy(simulation)
 
-    // Update
-    newSimulation.scheme.configuration.geometry.children[index].value =
-      geometry.id
+  // Update
+  newSimulation.scheme.configuration.geometry.children[index].value =
+    geometry.id
 
-    const diff = {
-      ...newSimulation.scheme.configuration,
-      dimension: geometry.summary.dimension ?? 3,
-      geometry: {
-        ...newSimulation.scheme.configuration.geometry,
-        done: true
-      },
-      run: {
-        ...newSimulation.scheme.configuration.run,
-        done: false
-      }
+  const diff = {
+    ...newSimulation.scheme.configuration,
+    dimension: geometry.summary.dimension ?? 3,
+    geometry: {
+      ...newSimulation.scheme.configuration.geometry,
+      done: true
+    },
+    run: {
+      ...newSimulation.scheme.configuration.run,
+      done: false
     }
-
-    // API
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'set',
-        path: ['configuration'],
-        value: diff
-      }
-    ])
-
-    // Local
-    await swr.mutateOneSimulation(newSimulation)
-  } catch (err: any) {
-    throw err
   }
+
+  // Check boundary conditions
+  const geometries = newSimulation.scheme.configuration.geometry.children.map(
+    (child) => child.value
+  )
+  console.log(geometries)
+  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
+
+  let done = false
+  for (const type of Object.keys(boundaryConditions)) {
+    if (type === 'index' || type === 'title' || type === 'done') continue
+
+    const typedBoundaryCondition = boundaryConditions[
+      type
+    ] as IModelTypedBoundaryCondition
+
+    for (const value of typedBoundaryCondition.values ?? []) {
+      geometries.forEach((geometry) => {
+        if (geometry === value.geometry) done = true
+      })
+      if (!done) break
+    }
+  }
+
+  newSimulation.scheme.configuration.boundaryConditions.done = done
+
+  // API
+  await SimulationAPI.update({ id: simulation.id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'set',
+      path: ['configuration'],
+      value: diff
+    }
+  ])
+
+  // Local
+  await swr.mutateOneSimulation(newSimulation)
 }
 
 /**

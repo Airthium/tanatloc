@@ -44,7 +44,8 @@ export const errors = {
 /**
  * Dialog
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - visible (boolean) Dialog visible
  * - closable (boolean) Dialog closable
  * - loading (boolean) Form loading

@@ -51,7 +51,7 @@ export const errors = {
  * On archive
  * @param workspace Workspace
  * @param project Project
- * @pram swr SWR
+ * @param swr SWR
  */
 export const _onArchive = async (
   workspace: Workspace,

@@ -63,7 +63,8 @@ const localPlugin = {
 
 /**
  * Create database
- * @description Create the Tanatloc database with `pgcrypto` extension
+ *
+ * Create the Tanatloc database with `pgcrypto` extension
  */
 export const createDatabase = async (): Promise<void> => {
   console.info(' == Create dB == ')

@@ -42,7 +42,7 @@ export interface IProps {
 /**
  * Organization users
  * @param props Props
- * @description
+ *
  * Props list:
  * - organization (Object) Organization `{ id, owners, [users] }`
  * - swr (Object) SWR functions `{ mutateOneOrganization }`

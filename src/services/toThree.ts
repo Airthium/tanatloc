@@ -8,8 +8,8 @@ import docker from './docker'
 
 /**
  * toThree service
- * @description Convert step, dxf, mesh, vtu to threeJS
- * @memberof Services
+ *
+ * Convert step, dxf, mesh, vtu to threeJS
  * @param bindPath Path
  * @param fileIn In file (POSIX path)
  * @param glbOut Out file (POSIX path)

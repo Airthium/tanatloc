@@ -8,7 +8,8 @@ import docker from './docker'
 
 /**
  * Custom service
- * @description Use tanatloc/worker docker custom command
+ *
+ * Use tanatloc/worker docker custom command
  * @param bindPath Path
  * @param executable Executable
  * @param args Arguments

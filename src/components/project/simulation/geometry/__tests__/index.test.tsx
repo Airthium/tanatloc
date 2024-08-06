@@ -55,6 +55,8 @@ describe('components/project/simulation/geometry', () => {
     mockErrorNotification.mockReset()
 
     mockUpdate.mockReset()
+
+    swr.mutateOneSimulation.mockReset()
   })
 
   test('render', () => {

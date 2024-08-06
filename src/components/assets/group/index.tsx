@@ -149,7 +149,8 @@ export const _onUpdate = async (
 /**
  * Group
  * @param props Props
- * @description
+ *
+ * Props list:
  * - userOptions (array) List of users
  * - organization (Object) Organization `{ id }`
  * - group (Object) Group in case of edit `{ id, name, users }`

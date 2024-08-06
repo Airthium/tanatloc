@@ -155,7 +155,6 @@ export const _checkFormat = (
  * Password item
  * @param props Props
  *
- * @description
  * Props:
  * - labelCol (Object) Label layout
  * - wrapperCol (Object) Input layout

@@ -116,7 +116,7 @@ export const errors = {
  * On quit
  * @param organization Organization
  * @param user User
- * @parm swr SWR
+ * @param swr SWR
  */
 export const _onQuit = async (
   organization: Pick<IFrontOrganizationsItem, 'id' | 'users'>,

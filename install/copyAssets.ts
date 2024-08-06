@@ -4,7 +4,8 @@ import { promises as fs } from 'fs'
 
 /**
  * Copy templates
- * @description Copy templates in `public/templates` for editor
+ *
+ * Copy templates in `public/templates` for editor
  */
 const copyTemplates = async (): Promise<void> => {
   // Create path
@@ -22,7 +23,8 @@ const copyTemplates = async (): Promise<void> => {
 
 /**
  * Copy MathJax assets
- * @description Copy MathJax assets in `public/mathjax`
+ *
+ * Copy MathJax assets in `public/mathjax`
  */
 const copyMathjaxAssets = async (): Promise<void> => {
   // Create path
@@ -40,7 +42,8 @@ const copyMathjaxAssets = async (): Promise<void> => {
 
 /**
  * Copy assets
- * @description Copy assets
+ *
+ * Copy assets
  */
 export const copyAssets = async (): Promise<void> => {
   console.info(' == Copy assets == ')

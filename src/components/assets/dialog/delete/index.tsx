@@ -31,7 +31,8 @@ export const errors = {
 /**
  * DeleteDialog
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - visible (boolean) Dialog visible
  * - loading (boolean) Dialog loading
  * - title (string) Dialog title

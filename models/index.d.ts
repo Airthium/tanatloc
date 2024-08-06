@@ -73,7 +73,8 @@ export interface IModelCommon {
 
 /**
  * Unit
- * @description Adder should be used only in field with number only (no formula)
+ *
+ * Adder should be used only in field with number only (no formula)
  */
 export interface IUnit {
   label: string

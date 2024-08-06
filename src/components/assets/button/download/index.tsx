@@ -20,7 +20,8 @@ export interface IProps {
 /**
  * Download button
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state
  * - bordered (boolean) Set border

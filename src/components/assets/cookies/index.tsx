@@ -188,7 +188,8 @@ const Cookies: React.FunctionComponent = () => {
 
 /**
  * WrappedCookies
- * @description Wrapped inside ant-design App component
+ *
+ * Wrapped inside ant-design App component
  * @returns WrappedCookies
  */
 const WrappedCookies: React.FunctionComponent = () => {

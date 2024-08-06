@@ -299,7 +299,8 @@ const GeometryElementCard: React.FunctionComponent<
 /**
  * Selector
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - alreadySelected (Array) Already selected
  * - updateSelected (Function) Update selected
  * @returns Selector

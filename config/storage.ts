@@ -5,7 +5,8 @@ import os from 'os'
 
 /**
  * Default storage path
- * @description Set as `${HOME}/tanatloc`
+ *
+ * Set as `${HOME}/tanatloc`
  */
 export const DEFAULT_STORAGE: string = path.join(os.homedir(), 'tanatloc')
 
@@ -17,13 +18,15 @@ if (!process.env.STORAGE_PATH)
 
 /**
  * Storage path
- * @description Set by `STORAGE_PATH` environment variable ot `DEFAULT_STORAGE`
+ *
+ * Set by `STORAGE_PATH` environment variable ot `DEFAULT_STORAGE`
  */
 export const STORAGE: string = process.env.STORAGE_PATH ?? DEFAULT_STORAGE
 
 /**
  * Avatar relative path
- * @description Set by `AVATAR_RELATIVE_PATH` environment variable ot `avatar`
+ *
+ * Set by `AVATAR_RELATIVE_PATH` environment variable ot `avatar`
  */
 export const AVATAR_RELATIVE: string =
   process.env.AVATAR_RELATIVE_PATH ?? 'avatar'
@@ -35,7 +38,8 @@ export const AVATAR: string = path.join(STORAGE, AVATAR_RELATIVE)
 
 /**
  * Geometry relative path
- * @description Set by `GEOMETRY_RELATIVE_PATH` environment variable ot `geometry`
+ *
+ * Set by `GEOMETRY_RELATIVE_PATH` environment variable ot `geometry`
  */
 export const GEOMETRY_RELATIVE: string =
   process.env.GEOMETRY_RELATIVE_PATH ?? 'geometry'
@@ -47,7 +51,8 @@ export const GEOMETRY: string = path.join(STORAGE, GEOMETRY_RELATIVE)
 
 /**
  * Simulation relative path
- * @description Set by `SIMULATION_RELATIVE_PATH` environment variable ot `simulation`
+ *
+ * Set by `SIMULATION_RELATIVE_PATH` environment variable ot `simulation`
  */
 export const SIMULATION_RELATIVE: string =
   process.env.SIMULATION_RELATIVE_PATH ?? 'simulation'

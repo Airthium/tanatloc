@@ -6,7 +6,7 @@ import SystemDB, { ISystem, TSystemGet } from '@/database/system'
 
 /**
  * Get items
- * @params items Items
+ * @param items Items
  * @returns System
  */
 const get = async <T extends TSystemGet>(items: T): Promise<ISystem<T>> => {
@@ -15,7 +15,7 @@ const get = async <T extends TSystemGet>(items: T): Promise<ISystem<T>> => {
 
 /**
  * Update items
- * @params items Items
+ * @param items Items
  */
 const update = async (items: IDataBaseEntry[]): Promise<void> => {
   await SystemDB.update(items)

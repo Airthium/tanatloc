@@ -48,7 +48,6 @@ export const errors = {
  * @param simulation Simulation
  * @param type Type
  * @param index Index
- * @param dispatch Dispatch
  * @param swr SWR
  */
 export const _onDelete = async (

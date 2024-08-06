@@ -124,7 +124,7 @@ export const _onFinish = async (
 /**
  * Add
  * @param props Props
- * @description
+ *
  * Props:
  * - title (string) Title
  * - organization (Object) Organization `{ id, [dBkey] }`

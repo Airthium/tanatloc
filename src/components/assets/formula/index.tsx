@@ -40,7 +40,8 @@ const saveDelay = 500
 /**
  * Formula
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - label (string) Label
  * - className (string) Class name
  * - defaultValue (string) Default value

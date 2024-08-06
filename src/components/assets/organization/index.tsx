@@ -75,7 +75,7 @@ export const _onName = async (
 /**
  * Organization
  * @param props Props
- * @description
+ *
  * Props list:
  * - organization (Object) Organization `{ id, name, owners, [users] }`
  * - swr (Object) SWR functions `{ mutateOneOrganization, loadingOrganizations }`

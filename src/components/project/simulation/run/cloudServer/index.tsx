@@ -66,8 +66,8 @@ export const errors = {
 
 /**
  * On extra
+ * @param plugin Plugin
  * @param action Action
- * @param dispatch Dispatch
  */
 export const _onExtra = async (
   plugin: HPCClientPlugin,

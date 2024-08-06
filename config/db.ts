@@ -3,7 +3,8 @@
 // Database configuration
 /**
  * Admin
- * @description Set by `DB_ADMIN` environment variable or:
+ *
+ * Set by `DB_ADMIN` environment variable or:
  * - `darwin` on MacOS
  * - `postrges` on Unix-like systems and Windows
  */
@@ -15,39 +16,45 @@ export const ADMIN: string =
 
 /**
  * Admin database
- * @description Set by `DB_ADMIN_DATABASE` environment variable or `postgres`
+ *
+ * Set by `DB_ADMIN_DATABASE` environment variable or `postgres`
  */
 export const ADMIN_DATABASE: string =
   process.env.DB_ADMIN_DATABASE ?? 'postgres'
 
 /**
  * Admin password
- * @description Set by `DB_ADMIN_PASSWORD` or empty string
+ *
+ * Set by `DB_ADMIN_PASSWORD` or empty string
  */
 export const ADMIN_PASSWORD: string =
   process.env.DB_ADMIN_PASSWORD ?? 'password'
 
 /**
  * User
- * @description Set by `DB_USER` environment variable or `tanatlocuser`
+ *
+ * Set by `DB_USER` environment variable or `tanatlocuser`
  */
 export const USER: string = process.env.DB_USER ?? 'tanatlocuser'
 
 /**
  * Schema
- * @description Schema name
+ *
+ * Schema name
  */
 export const SCHEMA: string = 'TANATLOCSCHEMA'
 
 /**
  * Host
- * @description Set by `DB_HOST` environment variable or `localhost`
+ *
+ * Set by `DB_HOST` environment variable or `localhost`
  */
 export const HOST: string = process.env.DB_HOST ?? 'localhost'
 
 /**
  * Port
- * @description Set by `DB_PORT` environment variable or `5432`
+ *
+ * Set by `DB_PORT` environment variable or `5432`
  */
 export const PORT: number = process.env.DB_PORT
   ? parseInt(process.env.DB_PORT)
@@ -55,13 +62,15 @@ export const PORT: number = process.env.DB_PORT
 
 /**
  * Database
- * @description Set by `DB_DATABASE` environment variable or `tanatloc2`
+ *
+ * Set by `DB_DATABASE` environment variable or `tanatloc2`
  */
 export const DATABASE: string = process.env.DB_DATABASE ?? 'tanatloc2'
 
 /**
  * Password
- * @description Set by `DB_PASSWORD` environment variable or `tanatloc`
+ *
+ * Set by `DB_PASSWORD` environment variable or `tanatloc`
  */
 export const PASSWORD: string = process.env.DB_PASSWORD ?? 'tanatloc'
 

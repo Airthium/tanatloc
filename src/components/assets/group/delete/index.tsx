@@ -47,7 +47,7 @@ export const _onDelete = async (
 /**
  * Delete
  * @param props Props
- * @description
+ *
  * Props:
  * - group (Object) Group `{ id, name }`
  * - swr (Object) SWR function `{ delOneGroup }`

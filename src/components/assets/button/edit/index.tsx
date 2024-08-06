@@ -24,7 +24,8 @@ export interface IProps {
 /**
  * Edit button
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - disabled (boolean) Set disabled state
  * - primary (boolean) Set Button type
  * - bordered (boolean) Set border

@@ -1,3 +1,11 @@
+## v1.3.18
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :beetle: Doc update
+
+---
+
 ## v1.3.17
 
 - Models:

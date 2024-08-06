@@ -36,7 +36,6 @@ export const errors = {
  * On allow signup
  * @param system System
  * @param mutateSystem Mutate system
- * @param displaySuccess Display success
  */
 export const _onAllowSignup = async (
   system: IFrontSystem,

@@ -18,7 +18,8 @@ export interface IProps {
 /**
  * Go back
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - children (React node) Button children (default to 'Go back')
  * - onClick (Function) Button click
  * @returns GoBack

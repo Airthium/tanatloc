@@ -36,7 +36,7 @@ export const setPart = (part?: string): ISelectAction => ({
 
 /**
  * Highlight
- * @param value Value
+ * @param highlighted Highlighted
  */
 export const highlight = (highlighted?: ISelect): ISelectAction => ({
   type: actionTypes.HIGHLIGHT,
@@ -45,7 +45,7 @@ export const highlight = (highlighted?: ISelect): ISelectAction => ({
 
 /**
  * Select
- * @param value Value
+ * @param selected Selected
  */
 export const select = (selected: ISelect[]): ISelectAction => ({
   type: actionTypes.SELECT,

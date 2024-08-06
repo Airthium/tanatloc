@@ -49,7 +49,7 @@ export const errors = {
  * @param swr SWR
  * @param model Model
  * @param template Template
- * @param editorDisptach Dispatch
+ * @param editorDispatch Dispatch
  * @param notificationDispatch Dispatch
  */
 export const _onSave = async (
@@ -123,7 +123,8 @@ export const _onSave = async (
  * @param user User
  * @param swr SWR
  * @param usermodel User model
- * @param dispatch Dispatch
+ * @param editorDispatch Dispatch
+ * @param notificationDispatch Dispatch
  */
 export const _save = async (
   user: Pick<IFrontUser, 'id' | 'usermodels'>,

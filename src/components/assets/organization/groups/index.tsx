@@ -52,7 +52,7 @@ export const errors = {
 /**
  * Groups
  * @param props Props
- * @description
+ *
  * Props:
  * - organization (Object) Organization `{ id, owners, [users] }`
  * @returns Groups

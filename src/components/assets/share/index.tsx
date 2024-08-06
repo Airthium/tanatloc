@@ -187,7 +187,8 @@ export const _userTitle = (user: {
 /**
  * Share
  * @param props Props
- * @description Props list:
+ *
+ * Props list:
  * - disabled (boolean) Set disabled state
  * - workspace (Object) Workspace
  * - project (Object) Project

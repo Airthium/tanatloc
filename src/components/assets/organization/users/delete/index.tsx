@@ -90,7 +90,7 @@ export const _onDelete = async (
 /**
  * Delete
  * @param props Props
- * @description
+ *
  * Props list:
  * - disabled (boolean) Set disabled state
  * - user (Object) User `{ id, email, [firstname], [lastname] }`

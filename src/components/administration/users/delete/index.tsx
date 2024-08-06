@@ -33,7 +33,6 @@ export const errors = {
  * On delete
  * @param user User
  * @param swr Swr
- * @param dispatch Dispatch
  */
 export const _onDelete = async (
   user: Pick<IFrontUsersItem, 'id' | 'email'>,

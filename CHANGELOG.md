@@ -3,6 +3,8 @@
 - Global:
   - :arrow_up: Update dependencies
   - :beetle: Doc update
+- Plugins:
+  - :arrow_up: Denso update
 
 ---
 

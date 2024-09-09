@@ -50,10 +50,10 @@
   "devDependencies": {
     "@airthium/deep-object-diff": "1.0.54",
     "@airthium/extract-json-from-string": "1.0.73",
-    "@airthium/pg-format": "2.0.76",
+    "@airthium/pg-format": "2.0.77",
     "@airthium/tanatloc-3d": "1.2.12",
     "@airthium/tanatloc-formula-validator": "1.0.58",
-    "@airthium/typedoc-plugin-airthium": "1.1.57",
+    "@airthium/typedoc-plugin-airthium": "1.1.58",
     "@ant-design/icons": "5.4.0",
     "@babel/core": "7.25.2",
     "@hapi/iron": "7.0.1",

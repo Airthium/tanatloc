@@ -25,7 +25,12 @@ const jestConfig = {
     '^.+\\.(t|j)sx?$': [
       'babel-jest',
       {
-        presets: ['next/babel']
+        presets: [
+          '@babel/preset-env',
+          '@babel/preset-react',
+          '@babel/preset-typescript'
+        ],
+        plugins: ['@babel/plugin-syntax-import-assertions']
       }
     ],
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'

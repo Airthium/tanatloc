@@ -93,6 +93,11 @@ const options = {
     'https-proxy-agent', // For plugins
     'node-fetch', // For plugins
     'url-join', // For plugins
+    '@babel/plugin-syntax-import-assertions', // For tests
+    '@babel/preset-env', // For tests
+    '@babel/preset-react', // For tests
+    '@babel/preset-typescript', // For tests
+    '@types/babel__preset-env', // For tests
     '@types/url-join'
   ],
   specials: [

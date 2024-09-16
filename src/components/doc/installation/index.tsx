@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button, Collapse, Spin, Table, Tabs, Typography } from 'antd'
-import { URL } from 'url'
 
 import { asyncFunctionExec } from '@/components/utils/asyncFunction'
 

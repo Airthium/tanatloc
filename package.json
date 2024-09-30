@@ -51,7 +51,7 @@
     "@airthium/deep-object-diff": "1.0.57",
     "@airthium/extract-json-from-string": "1.0.76",
     "@airthium/pg-format": "2.0.80",
-    "@airthium/tanatloc-3d": "1.2.14",
+    "@airthium/tanatloc-3d": "1.2.15",
     "@airthium/tanatloc-formula-validator": "1.0.60",
     "@airthium/typedoc-plugin-airthium": "1.1.59",
     "@ant-design/icons": "5.5.1",

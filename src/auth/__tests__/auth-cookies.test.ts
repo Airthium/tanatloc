@@ -39,7 +39,7 @@ describe('auth/auth-cookies', () => {
   })
 
   test('parseCookies', () => {
-    let cookie: { [key: string]: string }
+    let cookie: Record<string, string | undefined>
 
     // Empty
     cookie = auth.parseCookies({

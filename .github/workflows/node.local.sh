@@ -24,7 +24,7 @@ yarn run doc >>node.local.log 2>&1
 
 # Test
 echo " + Test"
-yarn run test --no-color >>node.local.log 2>&1
+yarn run test --no-color >>node.local.log 2>&1 &
 
 # Prestart
 echo " + Prestart"

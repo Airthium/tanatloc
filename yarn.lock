@@ -4833,6 +4833,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie@npm:0.7.0":
+  version: 0.7.0
+  resolution: "cookie@npm:0.7.0"
+  checksum: 10c0/15c20c9b85431c8565b1750f9bccff0bd289b943d956e25fffce3b146e57934075965c8305a4e3a65a70622c9ed483e013daf9159d9c50f5c3f97f2e7c8117ac
+  languageName: node
+  linkType: hard
+
 "copy-to-clipboard@npm:^3.3.3":
   version: 3.3.3
   resolution: "copy-to-clipboard@npm:3.3.3"
@@ -12465,7 +12472,7 @@ __metadata:
     antd: "npm:5.20.0"
     archiver: "npm:7.0.1"
     babel-jest: "npm:29.7.0"
-    cookie: "npm:0.6.0"
+    cookie: "npm:0.7.0"
     depcheck: "npm:1.4.7"
     ejs: "npm:3.1.10"
     electron: "npm:31.3.1"

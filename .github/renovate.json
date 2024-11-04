@@ -1,5 +1,5 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "timezone": "Europe/Paris",
   "schedule": ["before 9am on Monday"],
   "baseBranches": ["hotfix"],
@@ -8,9 +8,9 @@
   "groupSlug": "all",
   "packageRules": [
     {
-      "packagePatterns": ["*"],
       "groupName": "all dependencies",
-      "groupSlug": "all"
+      "groupSlug": "all",
+      "matchPackageNames": ["*"]
     }
   ],
   "ignoreDeps": ["eslint", "electron-store", "electron-serve"],

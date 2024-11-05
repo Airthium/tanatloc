@@ -1,3 +1,9 @@
+## v1.3.19
+
+- Global:
+  - :arrow_up: Update dependencies
+  - :beetle: Dependencies fix
+
 ## v1.3.18
 
 - Global:

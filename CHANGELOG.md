@@ -4,6 +4,8 @@
   - :arrow_up: Update dependencies
   - :beetle: Dependencies fix
 
+---
+
 ## v1.3.18
 
 - Global:

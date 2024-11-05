@@ -1,10 +1,10 @@
 // @ts-check
-/** @type {import('next').NextConfig} */
 
 import Sentry from './config/sentry.js'
 
 const basePath = ''
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config, { webpack }) => {
     config.module.rules.push(

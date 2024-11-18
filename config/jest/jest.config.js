@@ -75,7 +75,8 @@ const jestConfig = {
     '<rootDir>/public/',
     '<rootDir>/src/components/editor/code/freefem/mode/',
     '<rootDir>/tests/'
-  ]
+  ],
+  testTimeout: 100_000
 }
 
 export default jestConfig

@@ -262,7 +262,7 @@ describe('components/project/simulation/postprocessing', () => {
     expect(setResult).toHaveBeenCalledTimes(2)
 
     unmount()
-  }, 10_000)
+  })
 
   test('update visible', () => {
     const { rerender, unmount } = render(

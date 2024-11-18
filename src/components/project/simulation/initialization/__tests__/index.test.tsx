@@ -327,8 +327,9 @@ describe('components/project/simulation/initialization', () => {
   })
 
   test('onChange', async () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={props.onValueChange} />
+      <button role={FormulaRole} onClick={props.onValueChange} />
     ))
     const { unmount } = render(
       <Initialization
@@ -346,10 +347,10 @@ describe('components/project/simulation/initialization', () => {
     await act(() => fireEvent.click(direct))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
-    await waitFor(() => screen.getAllByRole('Formula'))
+    await waitFor(() => screen.getAllByRole(FormulaRole))
 
     // Click formula
-    const formulas = screen.getAllByRole('Formula')
+    const formulas = screen.getAllByRole(FormulaRole)
     await act(() => fireEvent.click(formulas[0]))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
 
@@ -748,8 +749,9 @@ describe('components/project/simulation/initialization', () => {
   })
 
   test('with value.values', async () => {
+    const FormulaRole = 'Formula'
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={props.onValueChange} />
+      <button role={FormulaRole} onClick={props.onValueChange} />
     ))
 
     const { unmount } = render(
@@ -838,10 +840,10 @@ describe('components/project/simulation/initialization', () => {
     await act(() => fireEvent.click(direct))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
-    await waitFor(() => screen.getAllByRole('Formula'))
+    await waitFor(() => screen.getAllByRole(FormulaRole))
 
     // Click formula
-    const formulas = screen.getAllByRole('Formula')
+    const formulas = screen.getAllByRole(FormulaRole)
     await act(() => fireEvent.click(formulas[0]))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
 

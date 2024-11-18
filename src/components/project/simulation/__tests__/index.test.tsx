@@ -21,9 +21,10 @@ jest.mock('@/context/notification/actions', () => ({
     mockErrorNotification(title, err)
 }))
 
+const DeleteButtonRole = 'DeleteButton'
 jest.mock('@/components/assets/button', () => ({
   DeleteButton: (props: any) => (
-    <div role="DeleteButton" onClick={props.onDelete} />
+    <button role={DeleteButtonRole} onClick={props.onDelete} />
   )
 }))
 
@@ -181,7 +182,7 @@ describe('components/project/simulation.Selector', () => {
     const tab = screen.getByRole('tab', { name: 'User algorithm' })
     await act(() => fireEvent.click(tab))
 
-    const button = screen.getAllByRole('DeleteButton')[0]
+    const button = screen.getAllByRole(DeleteButtonRole)[0]
     fireEvent.click(button)
 
     unmount()

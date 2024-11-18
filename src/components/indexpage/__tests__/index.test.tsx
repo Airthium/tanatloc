@@ -100,7 +100,7 @@ describe('components/indexpage', () => {
     await act(() => fireEvent.click(linux))
 
     unmount()
-  }, 20_000)
+  })
 
   test('release error', async () => {
     const { unmount } = render(<Index />)

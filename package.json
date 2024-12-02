@@ -54,7 +54,6 @@
     "@airthium/pg-format": "2.0.84",
     "@airthium/tanatloc-3d": "1.2.22",
     "@airthium/tanatloc-formula-validator": "1.0.63",
-    "@airthium/typedoc-plugin-airthium": "1.1.64",
     "@ant-design/icons": "5.5.1",
     "@babel/core": "7.26.0",
     "@babel/plugin-syntax-import-assertions": "7.26.0",

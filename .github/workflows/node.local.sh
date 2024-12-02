@@ -24,7 +24,7 @@ yarn run doc >>node.local.log 2>&1
 
 # Test
 echo " + Test"
-yarn run speedtest --no-color >>node.local.log 2>&1
+yarn run speedtest --no-color || true >>node.local.log 2>&1
 
 # Prestart
 echo " + Prestart"

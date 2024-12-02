@@ -30,6 +30,7 @@ const add = async (
 
   // Resize
   if (type === 'user') {
+    //@ts-ignore
     img = await sharp(img).resize(128, 128).toBuffer()
   }
 

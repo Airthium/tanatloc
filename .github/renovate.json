@@ -19,7 +19,9 @@
     "electron",
     "eslint",
     "electron-store",
-    "electron-serve"
+    "electron-serve",
+    "react",
+    "react-dom"
   ],
   "lockFileMaintenance": {
     "enabled": false

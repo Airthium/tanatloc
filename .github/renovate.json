@@ -21,7 +21,9 @@
     "electron-store",
     "electron-serve",
     "react",
-    "react-dom"
+    "react-dom",
+    "@types/react",
+    "@types/react-dom"
   ],
   "lockFileMaintenance": {
     "enabled": false

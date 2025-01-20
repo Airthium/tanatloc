@@ -511,13 +511,14 @@ const Initialization: React.FunctionComponent<IProps> = ({
       option:
         | { label: string; value: string; file: string }
         | { label: string; value: string; file: string }[]
+        | undefined
     ): void => {
       asyncFunctionExec(async () => {
         try {
           await _onCouplingResultChange(
             simulation,
             value,
-            option as { label: string; value: string; file: string },
+            (option ?? {}) as { label: string; value: string; file: string },
             swr
           )
         } catch (err: any) {

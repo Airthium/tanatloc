@@ -30,7 +30,7 @@ export interface JSON5Error extends Error {
  */
 const JSONCode: React.FunctionComponent = () => {
   // Ref
-  const editorRef = useRef<ReactAce>()
+  const editorRef = useRef<ReactAce>(undefined)
 
   // Data
   const { model, jsonHighlight, jsonError, dispatch } =

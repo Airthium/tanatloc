@@ -3,6 +3,7 @@
 - Global:
   - :arrow_up: Update dependencies
   - :beetle: Tests fix
+  - :beetle: Webpack fix
 
 ---
 

@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Typography } from 'antd'
 import AceEditor from 'react-ace'
 import { Range } from 'ace-builds'
+import { MouseEvent } from 'ace-builds-internal/mouse/mouse_event'
 import ReactAce from 'react-ace/lib/ace'
 import { setCompleters } from 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/theme-one_dark'
@@ -49,10 +50,10 @@ export interface Marker {
  */
 const FreeFEMCode: React.FunctionComponent = () => {
   // Ref
-  const editorRef = useRef<ReactAce>()
-  const cursorFromContext = useRef<boolean>()
-  const currentToken = useRef<string>()
-  const timeoutId = useRef<NodeJS.Timeout>()
+  const editorRef = useRef<ReactAce>(undefined)
+  const cursorFromContext = useRef<boolean>(undefined)
+  const currentToken = useRef<string>(undefined)
+  const timeoutId = useRef<NodeJS.Timeout>(undefined)
 
   // State
   const [tooltipPosition, setTooltipPosition] = useState<IPosition>({
@@ -80,7 +81,7 @@ const FreeFEMCode: React.FunctionComponent = () => {
    * On Mouse Move
    * @param event Mouse Event
    */
-  const onMouseMove = useCallback((event: MouseEvent) => {
+  const onMouseMove = useCallback((event: MouseEvent & { scrollTop?: any }) => {
     /* istanbul ignore next */
     if (!editorRef.current) return
 

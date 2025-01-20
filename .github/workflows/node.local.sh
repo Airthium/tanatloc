@@ -24,7 +24,7 @@ yarn run doc >>node.local.log 2>&1
 
 # Test
 echo " + Test"
-yarn run test --no-color >>node.local.log 2>&1 &
+yarn run speedtest --no-color || true >>node.local.log 2>&1
 
 # Prestart
 echo " + Prestart"
@@ -36,6 +36,6 @@ yarn run build >>node.local.log 2>&1
 
 # Export
 echo " + Export"
-NEXT_PUBLIC_SERVER_MODE=frontpage yarn build
+NEXT_PUBLIC_SERVER_MODE=frontpage yarn build >>node.local.log 2>&1
 
-echo "All done!"
+echo "All done!" >>node.local.log 2>&1

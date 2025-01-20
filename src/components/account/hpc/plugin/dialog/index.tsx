@@ -51,7 +51,7 @@ export const errors = {
 export const _inputItem = (
   item: HPCClientPlugin['configuration']['key'],
   key: string,
-  inputRef?: RefObject<InputRef>
+  inputRef?: RefObject<InputRef | undefined>
 ): React.ReactElement => {
   return (
     <Form.Item
@@ -216,7 +216,7 @@ const PluginDialog: React.FunctionComponent<IProps> = ({
   edit
 }) => {
   // Ref
-  const inputRef = useRef<InputRef>(null)
+  const inputRef = useRef<InputRef>(undefined)
 
   // State
   const [visible, setVisible] = useState<boolean>(false)

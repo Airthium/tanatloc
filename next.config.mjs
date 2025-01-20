@@ -19,6 +19,10 @@ const nextConfig = {
       {
         test: /\.cpp/,
         use: [{ loader: 'ignore-loader' }]
+      },
+      {
+        test: /\.d.ts/,
+        use: [{ loader: 'ignore-loader' }]
       }
     )
 
@@ -71,7 +75,9 @@ const nextConfig = {
     'rc-tree',
     'rc-tree-select',
     'rc-upload',
-    'rc-util'
+    'rc-util',
+    // electron-store
+    'electron-store'
   ]
 }
 

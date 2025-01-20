@@ -16,7 +16,7 @@ const useCustomEffect = (
   dependencies?: any[]
 ): void => {
   // Ref
-  const updatersRef = useRef<any[]>()
+  const updatersRef = useRef<any[]>(undefined)
 
   // Effect
   useEffect(() => {

@@ -21,8 +21,6 @@
     "**/__tests__/**"
   ],
   "entryPointStrategy": "expand",
-  "plugin": ["@airthium/typedoc-plugin-airthium"],
-  "theme": "airthium",
   "out": "../../doc",
   "readme": "../../README.md",
   "includeVersion": true

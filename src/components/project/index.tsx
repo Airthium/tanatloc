@@ -79,7 +79,7 @@ const Data = dynamic(() => import('./data'), { ssr: false })
 export interface IGeometryProps {
   visible: boolean
   geometry: IFrontGeometriesItem
-  panel: ReactElement | undefined
+  panel: ReactElement<{ children: any }> | undefined
   add: (geometry: IFrontGeometriesItem) => void
   del: (geometry: IFrontGeometriesItem) => void
   close: () => void
@@ -262,7 +262,7 @@ const Project: React.FunctionComponent = () => {
     item?: string
   }>()
 
-  const [panel, setPanel] = useState<ReactElement>()
+  const [panel, setPanel] = useState<ReactElement<{ children: any }>>()
   const [panelVisible, setPanelVisible] = useState<boolean>(true)
 
   // Context

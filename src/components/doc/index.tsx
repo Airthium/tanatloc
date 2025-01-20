@@ -35,7 +35,7 @@ import globalStyle from '@/styles/index.module.css'
  */
 const Doc: React.FunctionComponent = () => {
   // Ref
-  const navRef = useRef<{ section: string; tab: string }>()
+  const navRef = useRef<{ section: string; tab: string }>(undefined)
 
   // State
   const [content, setContent] = useState<ReactNode>()

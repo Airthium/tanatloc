@@ -52,7 +52,7 @@
     "@airthium/deep-object-diff": "1.0.67",
     "@airthium/extract-json-from-string": "1.0.84",
     "@airthium/pg-format": "2.0.89",
-    "@airthium/tanatloc-3d": "1.2.26",
+    "@airthium/tanatloc-3d": "1.2.27",
     "@airthium/tanatloc-formula-validator": "1.0.68",
     "@ant-design/icons": "5.6.1",
     "@babel/core": "7.26.9",

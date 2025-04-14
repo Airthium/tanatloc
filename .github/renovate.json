@@ -13,7 +13,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": ["react", "react-dom", "@types/react", "@types/react-dom"],
+  "ignoreDeps": [],
   "lockFileMaintenance": {
     "enabled": false
   }

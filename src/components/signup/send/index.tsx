@@ -14,7 +14,7 @@ const Send: React.FunctionComponent = () => {
    */
   return (
     <Layout>
-      <Card bordered={true} className={style.signup}>
+      <Card variant="outlined" className={style.signup}>
         A validation email has been send at your email address. Please follow
         the link.
       </Card>

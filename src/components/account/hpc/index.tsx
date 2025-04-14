@@ -10,8 +10,6 @@ import {
 } from 'react'
 import { Card, Space, Spin } from 'antd'
 
-import { HPCClientPlugin } from '@/plugins/index.d'
-
 import { NotificationContext } from '@/context/notification'
 import { addError } from '@/context/notification/actions'
 
@@ -37,9 +35,7 @@ export const errors = {
 export const _pluginsList = async () => {
   const plugins = await PluginsAPI.list()
 
-  const HPCPlugins = plugins.filter(
-    (plugin) => plugin.category === 'HPC'
-  ) as HPCClientPlugin[]
+  const HPCPlugins = plugins.filter((plugin) => plugin.category === 'HPC')
 
   if (HPCPlugins.length) {
     return HPCPlugins.map((plugin) => (

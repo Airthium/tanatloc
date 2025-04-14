@@ -163,7 +163,7 @@ const Login: React.FunctionComponent = () => {
   return (
     <Layout>
       <Background />
-      <Card bordered={false} className={style.login}>
+      <Card variant="borderless" className={style.login}>
         <Space
           direction="vertical"
           size="large"

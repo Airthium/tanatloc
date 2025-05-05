@@ -137,14 +137,14 @@ const PasswordRecovery: React.FunctionComponent = () => {
   if (checking)
     return (
       <Layout>
-        <Card bordered={false} className={style.password}>
+        <Card variant="borderless" className={style.password}>
           <Spin /> Loading...
         </Card>
       </Layout>
     )
   return (
     <Layout>
-      <Card bordered={false} className={style.password}>
+      <Card variant="borderless" className={style.password}>
         <Space
           direction="vertical"
           size="large"

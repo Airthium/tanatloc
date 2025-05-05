@@ -115,7 +115,7 @@ const archive = async (simulation: { id: string }): Promise<ReadStream> => {
       zip.append(Tools.readStream(file.path), { name: file.name })
     })
 
-    output.on('close', resolve)
+    output.on('close', resolve as any)
 
     // Finalize
     zip.finalize().catch(console.error)

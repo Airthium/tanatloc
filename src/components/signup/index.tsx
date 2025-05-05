@@ -137,7 +137,7 @@ const Signup: React.FunctionComponent = () => {
 
   return (
     <Layout>
-      <Card bordered={false} className={style.signup}>
+      <Card variant="borderless" className={style.signup}>
         <Space
           direction="vertical"
           size="large"

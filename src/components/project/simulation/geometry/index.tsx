@@ -99,7 +99,6 @@ export const _onSelect = async (
   const geometries = newSimulation.scheme.configuration.geometry.children.map(
     (child) => child.value
   )
-  console.log(geometries)
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
   let done = false

@@ -1,3 +1,10 @@
+## v1.3.21
+
+- Global:
+  - :arrow_up: Update dependencies
+
+---
+
 ## v1.3.20
 
 - Global:

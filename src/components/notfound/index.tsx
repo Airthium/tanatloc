@@ -7,7 +7,8 @@ import { Button, Layout, Typography } from 'antd'
 
 // Tanatloc3D 404
 const NotFoundCone = dynamic(
-  () => import('@airthium/tanatloc-3d').then((mod) => mod.default.extra._404),
+  () =>
+    import('@airthium/tanatloc-3d').then((mod) => mod.default.extra.NotFound),
   { ssr: false }
 )
 

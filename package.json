@@ -95,7 +95,7 @@
     "eslint": "9.26.0",
     "eslint-config-next": "15.3.1",
     "express": "5.1.0",
-    "form-data": "4.0.2",
+    "form-data": "4.0.4",
     "html-react-parser": "5.2.3",
     "https-proxy-agent": "7.0.6",
     "identity-obj-proxy": "3.0.0",

@@ -7312,16 +7312,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:36.1.0":
-  version: 36.1.0
-  resolution: "electron@npm:36.1.0"
+"electron@npm:36.8.1":
+  version: 36.8.1
+  resolution: "electron@npm:36.8.1"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10c0/850e7ee65a86e66290bdf9e99902d8d862d568e805ac2749e599f582ba48e384d834559b6ee0bafd845416438a335f8b23fbd55043739d8782434b21fc69d963
+  checksum: 10c0/a683f2276b460c404b8ea5d819c2282cdb5a963c5569eabac8accffca01432111d847860726f04e87277b7dcbe3099201afbe2f752c99918683c37734cef86da
   languageName: node
   linkType: hard
 
@@ -14312,7 +14312,7 @@ __metadata:
     cookie: "npm:1.0.2"
     depcheck: "npm:1.4.7"
     ejs: "npm:3.1.10"
-    electron: "npm:36.1.0"
+    electron: "npm:36.8.1"
     electron-serve: "npm:2.1.1"
     electron-store: "npm:10.0.1"
     email-addresses: "npm:5.0.0"

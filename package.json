@@ -84,7 +84,7 @@
     "@types/tar": "6.1.13",
     "@types/url-join": "5.0.0",
     "@types/uuid": "10.0.0",
-    "ajv": "8.17.1",
+    "ajv": "8.18.0",
     "antd": "5.24.9",
     "archiver": "7.0.1",
     "babel-jest": "29.7.0",

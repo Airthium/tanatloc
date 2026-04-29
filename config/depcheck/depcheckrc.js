@@ -12,7 +12,7 @@ const customTypedoc = async (fileName) => {
 
   try {
     if (basename(fileName) === 'package.json') {
-      const packageJson = (await import(fileName, { assert: { type: 'json' } }))
+      const packageJson = (await import(fileName, { with: { type: 'json' } }))
         .default
       Object.values(packageJson.scripts).forEach((script) => {
         if (script.includes('typedoc')) {

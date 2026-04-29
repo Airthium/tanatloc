@@ -28,7 +28,7 @@ const authGroup = async (
     | IWorkspaceGet<'group'[]>
     | IOrganizationGet<'group'[]>
 ) => {
-  for (let group of object.groups) {
+  for (const group of object.groups) {
     const groupData = await GroupLib.get(group, ['organization'])
     if (!groupData) return false
 

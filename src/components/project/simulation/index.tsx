@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography
 } from 'antd'
-import { addedDiff, updatedDiff } from '@airthium/deep-object-diff'
+import { addedDiff, updatedDiff } from '@2ltech/deep-object-diff'
 import { merge } from 'lodash'
 
 import { ClientPlugin } from '@/plugins/index.d'

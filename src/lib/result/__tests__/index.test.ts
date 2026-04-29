@@ -8,7 +8,7 @@ jest.mock('path', () => ({
 const mockArchiver = jest.fn()
 jest.mock('archiver', () => () => mockArchiver())
 
-jest.mock('@airthium/extract-json-from-string', () => (str: string) => [
+jest.mock('@2ltech/extract-json-from-string', () => (str: string) => [
   JSON.parse(str)
 ])
 

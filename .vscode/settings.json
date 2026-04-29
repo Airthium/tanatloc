@@ -2,5 +2,6 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "airthium",
     "projectKey": "Airthium_tanatloc"
-  }
+  },
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

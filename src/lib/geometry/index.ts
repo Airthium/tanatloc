@@ -1,7 +1,7 @@
 /** @module Lib.Geometry */
 
 import path from 'path'
-import extractJson from '@airthium/extract-json-from-string'
+import extractJson from '@2ltech/extract-json-from-string'
 import { v4 as uuid } from 'uuid'
 
 import { IDataBaseEntry } from '@/database/index.d'

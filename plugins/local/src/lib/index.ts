@@ -379,7 +379,7 @@ const computeMesh = async (
       ?.value as string
 
     // Compute mesh
-    let code = await Services.gmsh(
+    const code = await Services.gmsh(
       simulationPath,
       path.join(meshPath, geoFile),
       path.join(meshPath, mshFile),

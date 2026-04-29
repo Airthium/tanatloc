@@ -20,14 +20,15 @@ import OrganizationAPI from '@/api/organization'
 /**
  * Local interfacs
  */
-export interface IOrganizationItem
-  extends Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  > {}
+export interface IOrganizationItem extends Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+> {}
 
-export interface IUserItem
-  extends Pick<IFrontUsersItem, 'id' | 'email' | 'firstname' | 'lastname'> {}
+export interface IUserItem extends Pick<
+  IFrontUsersItem,
+  'id' | 'email' | 'firstname' | 'lastname'
+> {}
 
 /**
  * Props

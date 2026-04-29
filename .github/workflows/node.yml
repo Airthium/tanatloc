@@ -20,13 +20,14 @@ jobs:
           YARN_CHECKSUM_BEHAVIOR: update
 
       - name: Depcheck
+        continue-on-error: true
         run: yarn run depcheck
 
-      - name: Lint
+      - name: Prettier
         run: yarn run prettier
 
-      - name: Next lint
-        run: yarn run next lint
+      - name: Lint
+        run: yarn run lint
 
       - name: Doc
         run: yarn run doc

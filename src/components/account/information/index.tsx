@@ -25,8 +25,10 @@ import style from './index.module.css'
 /**
  * Local interfaces
  */
-export interface ILocalUser
-  extends Pick<IFrontUser, 'email' | 'firstname' | 'lastname' | 'avatar'> {}
+export interface ILocalUser extends Pick<
+  IFrontUser,
+  'email' | 'firstname' | 'lastname' | 'avatar'
+> {}
 
 export interface ILocalValues {
   email: string

@@ -20,7 +20,7 @@ const Changelog: React.FunctionComponent = () => {
         const res = await fetch(
           'https://raw.githubusercontent.com/Airthium/tanatloc/master/CHANGELOG.md'
         )
-        let changelog = await res.text()
+        const changelog = await res.text()
         setContent(changelog)
       } catch (err: any) {
         setContent(

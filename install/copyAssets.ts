@@ -37,7 +37,11 @@ const copyMathjaxAssets = async (): Promise<void> => {
   }
 
   // Copy
-  await fs.cp('node_modules/mathjax/es5', 'public/mathjax', { recursive: true })
+  await fs.cp(
+    'node_modules/mathjax/tex-mml-chtml.js',
+    'public/mathjax/tex-mml-chtml.js',
+    { recursive: true }
+  )
 }
 
 /**

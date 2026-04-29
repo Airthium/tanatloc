@@ -631,7 +631,7 @@ const Initialization: React.FunctionComponent<IProps> = ({
     if (coupling?.compatibility) {
       // Simulations
       const simulationsOptions = simulations.map((s) => {
-        let disabled =
+        const disabled =
           s.id === simulation.id ||
           !coupling.compatibility.find(
             (c) => c.algorithm === s.scheme.algorithm

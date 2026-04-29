@@ -1,7 +1,7 @@
 /** @module Install.CreateDatabase */
 
 import pg from 'pg'
-import format from '@airthium/pg-format'
+import format from '@2ltech/pg-format'
 import crypto from 'crypto'
 import { v4 as uuid } from 'uuid'
 import isElectron from 'is-electron'

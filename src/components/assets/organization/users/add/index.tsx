@@ -21,11 +21,10 @@ import OrganizationAPI from '@/api/organization'
 /**
  * Local interfaces
  */
-export interface IOrganizationItem
-  extends Pick<
-    IFrontOrganizationsItem,
-    'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
-  > {}
+export interface IOrganizationItem extends Pick<
+  IFrontOrganizationsItem,
+  'id' | 'owners' | 'pendingowners' | 'users' | 'pendingusers'
+> {}
 
 /**
  * Props

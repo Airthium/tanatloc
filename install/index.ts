@@ -4,7 +4,7 @@ import isElectron from 'is-electron'
 import isDocker from 'is-docker'
 import { execSync } from 'child_process'
 
-import packageJson from '../package.json' assert { type: 'json' }
+import packageJson from '../package.json' with { type: 'json' }
 
 import { createDatabase } from './createDatabase'
 import { createPaths } from './createPaths'

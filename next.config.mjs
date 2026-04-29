@@ -40,7 +40,7 @@ const nextConfig = {
   output: process.env.NEXT_PUBLIC_SERVER_MODE ? 'export' : undefined,
   distDir: process.env.NEXT_PUBLIC_SERVER_MODE ? 'renderer' : undefined,
   transpilePackages: [
-    // antd & deps
+    // antd & deps: bugs in build
     '@ant-design',
     '@rc-component',
     'antd',
@@ -75,9 +75,7 @@ const nextConfig = {
     'rc-tree',
     'rc-tree-select',
     'rc-upload',
-    'rc-util',
-    // electron-store
-    'electron-store'
+    'rc-util'
   ]
 }
 

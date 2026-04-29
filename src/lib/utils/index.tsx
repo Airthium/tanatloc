@@ -156,7 +156,7 @@ const workspaceToAvatar = (workspace: {
   id?: string
   name?: string
 }): ReactNode => {
-  let name = workspace.name
+  const name = workspace.name
   let abbrev
   if (name) abbrev = name[0]
   return (
@@ -177,7 +177,7 @@ const projectToAvatar = (project: {
   id?: string
   title?: string
 }): ReactNode => {
-  let name = project.title
+  const name = project.title
   let abbrev
   if (name) abbrev = name[0]
   return (
@@ -198,7 +198,7 @@ const usermodelToAvatar = (usermodel: {
   id?: string
   model?: IModel
 }): ReactNode => {
-  let name = usermodel.model?.name
+  const name = usermodel.model?.name
   let abbrev
   if (name) abbrev = name[0]
   return (
@@ -216,7 +216,7 @@ const usermodelToAvatar = (usermodel: {
  * @returns Avatar
  */
 const groupToAvatar = (group: { id?: string; name?: string }): ReactNode => {
-  let name = group.name
+  const name = group.name
   let abbrev
   if (name) abbrev = name[0]
   return (

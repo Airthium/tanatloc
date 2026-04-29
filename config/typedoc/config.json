@@ -16,6 +16,7 @@
     "../../node_modules/**",
     "../../renderer/**",
     "../../public/**",
+    "../../eslint.config.mjs",
     "../../*.d.ts",
     "../../next.config.mjs",
     "**/__tests__/**"

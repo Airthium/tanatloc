@@ -37,15 +37,13 @@ export interface IFrontNewAvatar extends INewAvatar {}
  */
 export interface IFrontNewGeometry extends INewGeometryWithData {}
 
-export interface IFrontGeometriesItem
-  extends IGeometry<
-    ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
-  > {
+export interface IFrontGeometriesItem extends IGeometry<
+  ('name' | 'originalfilename' | 'summary' | 'dimension' | 'project')[]
+> {
   needCleanup?: boolean
 }
 
-export interface IFrontMutateGeometriesItem
-  extends Partial<IFrontGeometriesItem> {
+export interface IFrontMutateGeometriesItem extends Partial<IFrontGeometriesItem> {
   id: string
 }
 
@@ -56,10 +54,9 @@ export interface IFrontGeometries extends Array<IFrontGeometriesItem> {}
  */
 export interface IFrontNewGroup extends INewGroup {}
 
-export interface IFrontGroupsItem
-  extends IGroupWithData<
-    ('name' | 'users' | 'workspaces' | 'projects' | 'usermodels')[]
-  > {}
+export interface IFrontGroupsItem extends IGroupWithData<
+  ('name' | 'users' | 'workspaces' | 'projects' | 'usermodels')[]
+> {}
 
 export interface IFrontMutateGroupsItem extends Partial<IFrontGroupsItem> {
   id: string
@@ -72,20 +69,11 @@ export interface IFrontGroups extends Array<IFrontGroupsItem> {}
  */
 export interface IFrontNewOrganization extends INewOrganization {}
 
-export interface IFrontOrganizationsItem
-  extends IOrganizationWithData<
-    (
-      | 'name'
-      | 'owners'
-      | 'pendingowners'
-      | 'users'
-      | 'pendingusers'
-      | 'groups'
-    )[]
-  > {}
+export interface IFrontOrganizationsItem extends IOrganizationWithData<
+  ('name' | 'owners' | 'pendingowners' | 'users' | 'pendingusers' | 'groups')[]
+> {}
 
-export interface IFrontMutateOrganizationsItem
-  extends Partial<IFrontOrganizationsItem> {
+export interface IFrontMutateOrganizationsItem extends Partial<IFrontOrganizationsItem> {
   id: string
 }
 
@@ -94,18 +82,17 @@ export interface IFrontOrganizations extends Array<IFrontOrganizationsItem> {}
 /**
  * Project
  */
-export interface IFrontProject
-  extends IProjectWithData<
-    (
-      | 'title'
-      | 'description'
-      | 'avatar'
-      | 'owners'
-      | 'users'
-      | 'geometries'
-      | 'simulations'
-    )[]
-  > {}
+export interface IFrontProject extends IProjectWithData<
+  (
+    | 'title'
+    | 'description'
+    | 'avatar'
+    | 'owners'
+    | 'users'
+    | 'geometries'
+    | 'simulations'
+  )[]
+> {}
 
 export interface IFrontMutateProject extends Partial<IFrontProject> {}
 
@@ -114,22 +101,21 @@ export interface IFrontMutateProject extends Partial<IFrontProject> {}
  */
 export interface IFrontNewProject extends INewProject {}
 
-export interface IFrontProjectsItem
-  extends IProjectWithData<
-    (
-      | 'archived'
-      | 'title'
-      | 'description'
-      | 'createddate'
-      | 'lastaccess'
-      | 'avatar'
-      | 'owners'
-      | 'users'
-      | 'groups'
-      | 'simulations'
-      | 'workspace'
-    )[]
-  > {}
+export interface IFrontProjectsItem extends IProjectWithData<
+  (
+    | 'archived'
+    | 'title'
+    | 'description'
+    | 'createddate'
+    | 'lastaccess'
+    | 'avatar'
+    | 'owners'
+    | 'users'
+    | 'groups'
+    | 'simulations'
+    | 'workspace'
+  )[]
+> {}
 
 export interface IFrontMutateProjectsItem extends Partial<IFrontProjectsItem> {
   id: string
@@ -145,8 +131,9 @@ export interface IFrontResult extends ISimulationTaskFile {}
 /**
  * Simulation
  */
-export interface IFrontSimulation
-  extends ISimulationGet<('name' | 'scheme' | 'tasks')[]> {}
+export interface IFrontSimulation extends ISimulationGet<
+  ('name' | 'scheme' | 'tasks')[]
+> {}
 
 export interface IFrontMutateSimulation extends Partial<IFrontSimulation> {}
 
@@ -157,11 +144,11 @@ export interface IFrontSimulationTask extends ISimulationTask {}
  */
 export interface IFrontNewSimulation extends INewSimulation {}
 
-export interface IFrontSimulationsItem
-  extends ISimulationGet<('name' | 'scheme' | 'project')[]> {}
+export interface IFrontSimulationsItem extends ISimulationGet<
+  ('name' | 'scheme' | 'project')[]
+> {}
 
-export interface IFrontMutateSimulationsItem
-  extends Partial<IFrontSimulationsItem> {
+export interface IFrontMutateSimulationsItem extends Partial<IFrontSimulationsItem> {
   id: string
 }
 
@@ -170,27 +157,27 @@ export interface IFrontSimulations extends Array<IFrontSimulationsItem> {}
 /**
  * System
  */
-export interface IFrontSystem
-  extends ISystem<('allowsignup' | 'password' | 'defaultplugins')[]> {}
+export interface IFrontSystem extends ISystem<
+  ('allowsignup' | 'password' | 'defaultplugins')[]
+> {}
 
 export interface IFrontMutateSystem extends Partial<IFrontSystem> {}
 
 /**
  * User
  */
-export interface IFrontUser
-  extends IUserWithData<
-    (
-      | 'lastname'
-      | 'firstname'
-      | 'email'
-      | 'avatar'
-      | 'superuser'
-      | 'authorizedplugins'
-      | 'plugins'
-      | 'usermodels'
-    )[]
-  > {}
+export interface IFrontUser extends IUserWithData<
+  (
+    | 'lastname'
+    | 'firstname'
+    | 'email'
+    | 'avatar'
+    | 'superuser'
+    | 'authorizedplugins'
+    | 'plugins'
+    | 'usermodels'
+  )[]
+> {}
 
 export interface IFrontMutateUser extends Partial<IFrontUser> {}
 
@@ -199,20 +186,19 @@ export interface IFrontMutateUser extends Partial<IFrontUser> {}
  */
 export interface IFrontNewUser extends INewUser {}
 
-export interface IFrontUsersItem
-  extends IUserWithData<
-    (
-      | 'id'
-      | 'firstname'
-      | 'lastname'
-      | 'email'
-      | 'authorizedplugins'
-      | 'superuser'
-      | 'workspaces'
-      | 'projects'
-      | 'usermodels'
-    )[]
-  > {}
+export interface IFrontUsersItem extends IUserWithData<
+  (
+    | 'id'
+    | 'firstname'
+    | 'lastname'
+    | 'email'
+    | 'authorizedplugins'
+    | 'superuser'
+    | 'workspaces'
+    | 'projects'
+    | 'usermodels'
+  )[]
+> {}
 
 export interface IFrontMutateUsersItem extends Partial<IFrontUsersItem> {
   id: string
@@ -223,13 +209,12 @@ export interface IFrontUsers extends Array<IFrontUsersItem> {}
 /**
  * User model
  */
-export interface IFrontUserModel
-  extends Pick<
-    IUserModelWithData<
-      ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
-    >,
-    'id' | 'model' | 'template' | 'owners' | 'users' | 'groups'
-  > {}
+export interface IFrontUserModel extends Pick<
+  IUserModelWithData<
+    ('id' | 'model' | 'template' | 'owners' | 'users' | 'groups')[]
+  >,
+  'id' | 'model' | 'template' | 'owners' | 'users' | 'groups'
+> {}
 
 export interface IFrontNewUserModel extends INewUserModel {}
 
@@ -238,13 +223,11 @@ export interface IFrontNewUserModel extends INewUserModel {}
  */
 export interface IFrontNewWorkspace extends INewWorkspace {}
 
-export interface IFrontWorkspacesItem
-  extends IWorkspaceWithData<
-    ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
-  > {}
+export interface IFrontWorkspacesItem extends IWorkspaceWithData<
+  ('name' | 'owners' | 'users' | 'groups' | 'projects')[]
+> {}
 
-export interface IFrontMutateWorkspacesItem
-  extends Partial<IFrontWorkspacesItem> {
+export interface IFrontMutateWorkspacesItem extends Partial<IFrontWorkspacesItem> {
   id: string
 }
 

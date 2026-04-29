@@ -9,7 +9,7 @@ import { stopdB } from '@/database'
  */
 const stopDocker = async (): Promise<void> => {
   try {
-    let id = execSync(
+    const id = execSync(
       'docker container ls -a --filter "name=tanatloc-postgres" -q'
     )
 

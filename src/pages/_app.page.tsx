@@ -1,5 +1,6 @@
 /** @module Pages.App */
 
+import { useCallback } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { AppProps } from 'next/app'
@@ -18,7 +19,6 @@ import theme from '@/styles/theme'
 
 import '@/styles/index.css'
 import '@/styles/fonts.css'
-import { useCallback } from 'react'
 
 const Canvas = dynamic(
   () => import('@airthium/tanatloc-3d').then((mod) => mod.default.Canvas),

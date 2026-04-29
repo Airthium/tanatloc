@@ -10,13 +10,13 @@ yarn install >node.local.log 2>&1
 echo " + Depcheck"
 yarn run depcheck >>node.local.log 2>&1
 
-# Lint
+# Prettier
 echo " + Prettier"
 yarn run prettier >>node.local.log 2>&1
 
-# Next lint
-echo " + Next lint"
-yarn run next lint >>node.local.log 2>&1
+# Lint
+echo " + Lint"
+yarn run lint --quiet >>node.local.log 2>&1
 
 # Doc
 echo " + Doc"

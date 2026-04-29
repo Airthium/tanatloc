@@ -5,7 +5,7 @@ jest.mock('path', () => ({
   join: (_: string, path: string) => mockPath(path)
 }))
 
-jest.mock('@airthium/extract-json-from-string', () => (str: string) => [
+jest.mock('@2ltech/extract-json-from-string', () => (str: string) => [
   JSON.parse(str)
 ])
 

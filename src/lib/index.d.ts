@@ -61,19 +61,20 @@ export interface IGeometryPart {
 /**
  * Group
  */
-export interface IGroupGet<T = []>
-  extends Omit<IGroup<T>, 'users' | 'workspaces' | 'projects' | 'usermodels'> {
+export interface IGroupGet<T = []> extends Omit<
+  IGroup<T>,
+  'users' | 'workspaces' | 'projects' | 'usermodels'
+> {
   users: 'users'[] extends T ? string[] : never[]
   workspaces: 'workspaces'[] extends T ? string[] : never[]
   projects: 'projects'[] extends T ? string[] : never[]
   usermodels: 'usermodels'[] extends T ? string[] : never[]
 }
 
-export interface IGroupWithData<T = []>
-  extends Omit<
-    IGroupGet<T>,
-    'users' | 'workspaces' | 'projects' | 'usermodels'
-  > {
+export interface IGroupWithData<T = []> extends Omit<
+  IGroupGet<T>,
+  'users' | 'workspaces' | 'projects' | 'usermodels'
+> {
   users: 'users'[] extends T
     ? Pick<
         IUserWithData<('firstname' | 'lastname' | 'email' | 'avatar')[]>,
@@ -94,22 +95,20 @@ export interface IGroupWithData<T = []>
 /**
  * Organization
  */
-export interface IOrganizationGet<T = []>
-  extends Omit<
-    IOrganization<T>,
-    'pendingowners' | 'users' | 'pendingusers' | 'groups'
-  > {
+export interface IOrganizationGet<T = []> extends Omit<
+  IOrganization<T>,
+  'pendingowners' | 'users' | 'pendingusers' | 'groups'
+> {
   pendingowners: 'pendingowners'[] extends T ? string[] : never[]
   users: 'users'[] extends T ? string[] : never[]
   pendingusers: 'pendingusers'[] extends T ? string[] : never[]
   groups: 'groups'[] extends T ? string[] : never[]
 }
 
-export interface IOrganizationWithData<T = []>
-  extends Omit<
-    IOrganizationGet<T>,
-    'owners' | 'pendingowners' | 'users' | 'pendingusers' | 'groups'
-  > {
+export interface IOrganizationWithData<T = []> extends Omit<
+  IOrganizationGet<T>,
+  'owners' | 'pendingowners' | 'users' | 'pendingusers' | 'groups'
+> {
   owners: 'owners'[] extends T
     ? Pick<
         IUserWithData<
@@ -170,11 +169,10 @@ export interface IOrganizationWithData<T = []>
 /**
  * Project
  */
-export interface IProjectGet<T = []>
-  extends Omit<
-    IProject<T>,
-    'geometries' | 'simulations' | 'owners' | 'users' | 'groups'
-  > {
+export interface IProjectGet<T = []> extends Omit<
+  IProject<T>,
+  'geometries' | 'simulations' | 'owners' | 'users' | 'groups'
+> {
   geometries: 'geometries'[] extends T ? string[] : never[]
   simulations: 'simulations'[] extends T ? string[] : never[]
   owners: 'owners'[] extends T ? string[] : never[]
@@ -182,8 +180,10 @@ export interface IProjectGet<T = []>
   groups: 'groups'[] extends T ? string[] : never[]
 }
 
-export interface IProjectWithData<T = []>
-  extends Omit<IProjectGet<T>, 'avatar' | 'owners' | 'users' | 'groups'> {
+export interface IProjectWithData<T = []> extends Omit<
+  IProjectGet<T>,
+  'avatar' | 'owners' | 'users' | 'groups'
+> {
   avatar?: 'avatar'[] extends T ? Buffer : never
   owners: 'owners'[] extends T
     ? Pick<
@@ -212,15 +212,14 @@ export interface ISimulationGet<T = []> extends Omit<ISimulation<T>, 'tasks'> {
 /**
  * User
  */
-export interface IUserGet<T = []>
-  extends Omit<
-    IUser<T>,
-    | 'organizations'
-    | 'workspaces'
-    | 'authorizedplugins'
-    | 'plugins'
-    | 'usermodels'
-  > {
+export interface IUserGet<T = []> extends Omit<
+  IUser<T>,
+  | 'organizations'
+  | 'workspaces'
+  | 'authorizedplugins'
+  | 'plugins'
+  | 'usermodels'
+> {
   organizations: 'organizations'[] extends T ? string[] : never[]
   projects: 'projects'[] extends T ? string[] : never[]
   workspaces: 'workspaces'[] extends T ? string[] : never[]
@@ -229,11 +228,10 @@ export interface IUserGet<T = []>
   usermodels: 'usermodels'[] extends T ? string[] : never[]
 }
 
-export interface IUserWithData<T = []>
-  extends Omit<
-    IUserGet<T>,
-    'avatar' | 'workspaces' | 'projects' | 'usermodels'
-  > {
+export interface IUserWithData<T = []> extends Omit<
+  IUserGet<T>,
+  'avatar' | 'workspaces' | 'projects' | 'usermodels'
+> {
   avatar?: 'avatar'[] extends T ? Buffer : never
   workspaces: 'workspaces'[] extends T
     ? Pick<IWorkspace<('id' | 'name')[]>, 'id' | 'name'>[]
@@ -254,11 +252,10 @@ export interface IUserWithData<T = []>
 /**
  * Workspace
  */
-export interface IWorkspaceGet<T = []>
-  extends Omit<
-    IWorkspace<T>,
-    'owners' | 'users' | 'groups' | 'projects' | 'archivedprojects'
-  > {
+export interface IWorkspaceGet<T = []> extends Omit<
+  IWorkspace<T>,
+  'owners' | 'users' | 'groups' | 'projects' | 'archivedprojects'
+> {
   owners: 'owners'[] extends T ? string[] : never[]
   users: 'users'[] extends T ? string[] : never[]
   groups: 'groups'[] extends T ? string[] : never[]
@@ -266,8 +263,10 @@ export interface IWorkspaceGet<T = []>
   archivedprojects: 'archivedprojects'[] extends T ? object[] : never[]
 }
 
-export interface IWorkspaceWithData<T = []>
-  extends Omit<IWorkspaceGet<T>, 'owners' | 'users' | 'groups' | 'projects'> {
+export interface IWorkspaceWithData<T = []> extends Omit<
+  IWorkspaceGet<T>,
+  'owners' | 'users' | 'groups' | 'projects'
+> {
   owners: 'owners'[] extends T
     ? Pick<
         IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>,
@@ -289,15 +288,19 @@ export interface IWorkspaceWithData<T = []>
 /**
  * UserModel
  */
-export interface IUserModelGet<T = []>
-  extends Omit<IUserModel<T>, 'owners' | 'users' | 'groups'> {
+export interface IUserModelGet<T = []> extends Omit<
+  IUserModel<T>,
+  'owners' | 'users' | 'groups'
+> {
   owners: 'owners'[] extends T ? string[] : never[]
   users: 'users'[] extends T ? string[] : never[]
   groups: 'groups'[] extends T ? string[] : never[]
 }
 
-export interface IUserModelWithData<T = []>
-  extends Omit<IUserModel<T>, 'owners' | 'groups' | 'users'> {
+export interface IUserModelWithData<T = []> extends Omit<
+  IUserModel<T>,
+  'owners' | 'groups' | 'users'
+> {
   owners: 'owners'[] extends T
     ? Pick<
         IUserWithData<('email' | 'lastname' | 'firstname' | 'avatar')[]>,

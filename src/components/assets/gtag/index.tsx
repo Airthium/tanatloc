@@ -23,8 +23,8 @@ const GoogleTag: React.FunctionComponent = () => {
     script.onload = () => {
       const win: any = window
       win.dataLayer = win.dataLayer || []
-      function gtag(..._args: any[]) {
-        win.dataLayer.push(arguments)
+      function gtag(...args: any[]) {
+        win.dataLayer.push(args)
       }
       gtag('js', new Date())
       gtag('config', 'G-NYKWRV173F')

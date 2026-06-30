@@ -56,7 +56,7 @@
     "@airthium/tanatloc-3d": "1.2.36",
     "@airthium/tanatloc-formula-validator": "1.0.72",
     "@ant-design/icons": "6.2.2",
-    "@babel/core": "7.29.0",
+    "@babel/core": "7.29.6",
     "@babel/plugin-syntax-import-assertions": "7.28.6",
     "@babel/preset-env": "7.29.2",
     "@babel/preset-react": "7.28.5",

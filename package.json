@@ -45,7 +45,7 @@
     "modelValidator": "ts-json-schema-generator --path models/index.d.ts --type 'IModel' --tsconfig ./tsconfig.json --no-type-check --out src/components/editor/steps/model.json"
   },
   "dependencies": {
-    "electron": "41.3.0",
+    "electron": "41.10.3",
     "electron-serve": "3.0.1",
     "electron-store": "11.0.2"
   },
